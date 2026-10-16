@@ -14,7 +14,7 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -40,8 +40,8 @@ The location component is bounded: it grows like
 amount to the estimating equation. Unlike the score of a Student t, it does
 not return to zero.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries. This method always returns the parameter scale. The
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries. This method always returns the parameter scale. The
 arithmetic runs in a compiled kernel; the Bessel ratio enters only the
 \eqn{\nu} component and is formed from the exponentially scaled functions.
 }

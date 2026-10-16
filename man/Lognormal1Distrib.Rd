@@ -45,10 +45,10 @@ object built by \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} they hol
 \eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the lognormal family on \eqn{(0, \infty)}: the law of a
-variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
-\eqn{\sigma^2 > 0}. Both parameters live \strong{on the log scale}, so neither is
-the mean or the variance of \eqn{Y} itself. It inherits from
+This is the S7 class of the lognormal family on \eqn{(0, \infty)}: the law of
+a variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
+\eqn{\sigma^2 > 0}. Both parameters live on the log scale, so neither is the
+mean or the variance of \eqn{Y} itself. It inherits from
 \code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
 the methods listed below are registered on it directly and everything else
 comes from the parent.
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Lognormal1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Lognormal1Distrib]{distrib_cdf()}},
@@ -105,7 +106,8 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- lognormal1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_bounds
 d@bounds

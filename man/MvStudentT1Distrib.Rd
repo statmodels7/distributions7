@@ -76,8 +76,8 @@ subclass of \link{MvStudentTDistrib} adding no properties of its own.
 }
 \description{
 \code{MvStudentT1Distrib} is the family whose matrix parametrization is the
-\strong{scale matrix} \eqn{\Sigma} and \code{MvStudentT2Distrib} the family whose
-parametrization is its \strong{inverse} \eqn{\Sigma^{-1}}. Both inherit from
+scale matrix \eqn{\Sigma} and \code{MvStudentT2Distrib} the family whose
+parametrization is its inverse \eqn{\Sigma^{-1}}. Both inherit from
 \link{MvStudentTDistrib}, which carries every method; the two differ in what
 their free values describe, and the computations are shared.
 }

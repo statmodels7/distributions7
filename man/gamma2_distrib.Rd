@@ -32,10 +32,9 @@ fifth order and the mixed derivatives of order three and four in the
 response and the parameters come from the numerical fallbacks of the base
 class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments specify the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive.
+logarithm, because both parameters are positive.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (0, \infty)} is
@@ -50,10 +49,11 @@ function its numerical inverse. The mean is \eqn{\mu}, the variance
 kurtosis \eqn{6\sigma^2/\mu^2}.
 
 This is the same law as \code{\link[=gamma1_distrib]{gamma1_distrib()}}, which carries the mean and a
-\emph{dispersion}, the two being related by \eqn{\sigma^2 = \phi\mu^2}. They are
-separate families because the second parameter is a different quantity in
+\emph{dispersion}, and the variance and the dispersion are related by
+\eqn{\sigma^2 = \phi\mu^2}. The two are separate families because the second parameter is a different quantity in
 each, with its own interpretation, standard error and interval. The choice
-between them is not only cosmetic: see the next section.
+between them has consequences beyond notation, which the next section
+describes.
 }
 
 \section{Derivatives, and orthogonality}{
@@ -75,9 +75,10 @@ and the expected Hessian is
         \dfrac{2\mu\left\{\mu^2\psi_1(\alpha) - \sigma^2\right\}}
               {(\sigma^2)^3}.}
 
-\strong{The mixed entry does not vanish.} The mean and the variance are not
+The mixed entry does not vanish. The mean and the variance are not
 orthogonal here, so their estimates are asymptotically correlated and a
-mean equation fitted with the variance held at a wrong value is biased. In
+mean equation is biased when the variance is held at a wrong value in the
+fit. In
 \code{\link[=gamma1_distrib]{gamma1_distrib()}}, where the second parameter is the dispersion
 \eqn{\phi = \sigma^2/\mu^2}, the same entry is exactly zero.
 
@@ -85,8 +86,8 @@ Third and fourth orders are closed form as well, observed and expected, in
 \code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3.Gamma2Distrib()}} and \code{\link[=distrib_deriv4.Gamma2Distrib]{distrib_deriv4.Gamma2Distrib()}}, as
 are the derivatives in the response, \code{\link[=distrib_grad_y.Gamma2Distrib]{distrib_grad_y.Gamma2Distrib()}} and
 \code{\link[=distrib_hess_y.Gamma2Distrib]{distrib_hess_y.Gamma2Distrib()}}. The derivatives of the \emph{distribution}
-function in the parameters have no elementary form, the derivative of an
-incomplete gamma in its shape being hypergeometric, and are computed by a
+function in the parameters have no elementary form because the derivative
+of an incomplete gamma in its shape is hypergeometric, and are computed by a
 compiled quadrature of the density times the derivatives of the
 log-density.
 }
@@ -116,7 +117,8 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, sigma2 = 2)
 all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 9 / 2, rate = 3 / 2))
 
-# Moments: skewness 2 sqrt(sigma2)/mu, excess kurtosis 6 sigma2/mu^2.
+# The moments are skewness 2 sqrt(sigma2)/mu and excess kurtosis
+# 6 sigma2/mu^2.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 c(2 * sqrt(2) / 3, 6 * 2 / 9)
@@ -147,7 +149,7 @@ the orthogonal parametrization; \code{\link[=exponential_distrib]{exponential_di
 \eqn{\sigma^2 = \mu^2}; \code{\link[=invgauss2_distrib]{invgauss2_distrib()}} and \code{\link[=lognormal2_distrib]{lognormal2_distrib()}} for
 other positive families written in the mean and the variance;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 \link{Gamma2Distrib} for the class.
 }

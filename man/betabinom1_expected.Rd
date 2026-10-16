@@ -16,8 +16,8 @@ betabinom1_expected(distrib, y, theta, order)
 \item{order}{The derivative order, 3 or 4.}
 }
 \value{
-A named list of numeric vectors keyed as \code{\link[=deriv_names]{deriv_names()}} keys them,
-each of the recycled length of \code{y} and the parameters.
+A named list of numeric vectors keyed as \code{\link[=deriv_names]{deriv_names()}} keys them.
+Each vector has the recycled length of \code{y} and the parameters.
 }
 \description{
 Returns the expectation of every derivative of one order of the

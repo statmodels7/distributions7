@@ -16,7 +16,8 @@ tail_probability(Fq, lower.tail)
 
 \item{theta}{A named list of parameter values.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail.}
 
 \item{Fq}{The value of \code{tail_cdf()}, or a plain numeric vector of
 distribution function values.}

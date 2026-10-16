@@ -12,10 +12,10 @@
 of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -38,7 +38,7 @@ is \eqn{1/(\mu(1-\mu))}, the reciprocal of the variance, so it is smallest
 at \eqn{\mu = 1/2} and grows without bound as the probability approaches
 either endpoint.
 
-On the \strong{link} scale with the default logit the value is
+On the link scale with the default logit the value is
 \eqn{-\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
 logit is the canonical link and the observed curvature there carries no
 data. Fisher scoring and Newton's method therefore take the same step on a
@@ -53,9 +53,9 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-\strong{observed information} under the model. The Bernoulli is a regular family,
+observed information under the model. The Bernoulli is a regular family,
 so the second Bartlett identity holds and this equals the variance of the
 score.
 }
@@ -64,11 +64,11 @@ score.
 d <- bernoulli_distrib()
 th <- list(mu = 0.3)
 
-# A single number, the reciprocal of the variance.
+# The result is a single number, the reciprocal of the variance.
 unique(distrib_expected_hessian(d, c(0, 1, 1), th)$mu_mu)
 -1 / (0.3 * 0.7)
 
-# Least information where the outcome is most uncertain.
+# The information is least where the outcome is most uncertain.
 vapply(c(0.5, 0.1, 0.01), function(p)
   -distrib_expected_hessian(d, 0, list(mu = p))$mu_mu, numeric(1))
 
@@ -79,7 +79,7 @@ rbind(observed = distrib_hessian(d, c(0, 1, 1), th, scale = "link")$mu_mu,
                                           scale = "link")$mu_mu)
 }
 \seealso{
-\code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}} for the observed quantity this
-is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+\code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

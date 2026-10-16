@@ -13,13 +13,13 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
@@ -36,7 +36,7 @@ closed form. Writing \eqn{r = y - \mu},
       \qquad
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{\mathrm{sign}(r)}{\sigma^2}.}
 
-The first entry is \strong{exactly zero for every observation}, and that is the
+The first entry is exactly zero for every observation, and that is the
 correct value: the log-density is piecewise linear in \eqn{\mu}, so away
 from \eqn{r = 0} its second derivative vanishes, and at \eqn{r = 0} the
 derivative does not exist. The curvature of the log-likelihood in the
@@ -44,7 +44,7 @@ location is concentrated at the single point \eqn{r = 0}, so the
 expectation of this second derivative is 0 although the information is
 positive.
 
-The consequence is that the observed information here is \strong{not} the
+The consequence is that the observed information here is not the
 information. \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns
 \eqn{-1/\sigma^2}, obtained from the variance of the score, and that page
 explains which identity holds and which fails.

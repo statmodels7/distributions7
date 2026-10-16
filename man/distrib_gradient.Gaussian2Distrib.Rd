@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma2} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -54,7 +54,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 1, sigma2 = 4)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# We write out the two closed forms.
 r <- y - 1
 all.equal(g$mu, r / 4)
 all.equal(g$sigma2, (r^2 - 4) / (2 * 4^2))
@@ -66,7 +66,7 @@ z <- rnorm(200, mean = 3, sd = 2)
 mle <- list(mu = mean(z), sigma2 = mean((z - mean(z))^2))
 vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 
-# Both parametrizations ride a log link on the spread, and log(sigma^2) is
+# Both parametrizations use a log link on the spread, and log(sigma^2) is
 # twice log(sigma), so the link-scale score here is half gaussian1's.
 distrib_gradient(d, y, th, scale = "link")$sigma2 /
   distrib_gradient(gaussian1_distrib(), y, list(mu = 1, sigma = 2),

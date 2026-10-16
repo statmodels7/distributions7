@@ -13,13 +13,13 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
@@ -35,13 +35,13 @@ Computes the first derivatives of the Gumbel log-density with respect to
         \dfrac{z(1 - w) - 1}{\sigma}.}
 
 The whole family is written in \eqn{w}, and under the model \eqn{w} is
-\strong{standard exponential} whatever the parameters. Every expectation of
+standard exponential whatever the parameters. Every expectation of
 this family is therefore a derivative of \eqn{\Gamma} at 1 or at 2. The
 score in \eqn{\mu} is bounded above by \eqn{1/\sigma} and unbounded below,
 because a value far to the left makes \eqn{w} large.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale.
 }
 \section{Notation}{
@@ -57,7 +57,7 @@ y <- c(-1, 0, 1)
 th <- list(mu = 0, sigma = 1)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 z <- (y - 0) / 1
 w <- exp(-z)
 all.equal(g$mu, (1 - w) / 1)

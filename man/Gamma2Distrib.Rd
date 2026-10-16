@@ -46,12 +46,12 @@ object built by \code{\link[=gamma2_distrib]{gamma2_distrib()}} they hold \code{
 for both parameters, and the two links.
 }
 \description{
-The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and
-its variance \eqn{\sigma^2 > 0}, so that the shape is
-\eqn{\alpha = \mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. It
-inherits from \code{continuous_distrib}, so every generic of the \code{distrib} class
-applies to it; the methods listed below are registered on it directly and
-everything else comes from the parent.
+This is the S7 class of the gamma family parametrized by its mean \eqn{\mu >
+0} and its variance \eqn{\sigma^2 > 0}, so that the shape is \eqn{\alpha =
+\mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. It inherits from
+\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
+the methods listed below are registered on it directly and everything else
+comes from the parent.
 
 Build one with \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Gamma2Distrib]{distrib_cdf()}},
@@ -101,13 +102,14 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- gamma2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 d@bounds
 
-# The second parameter is the variance itself, so it is what variance()
-# returns and what the fitted standard error describes.
+# The second parameter is the variance itself, so variance() returns it and
+# its fitted standard error is the standard error of the variance.
 variance(d, list(mu = 3, sigma2 = 2))
 }
 \seealso{
@@ -115,5 +117,5 @@ variance(d, list(mu = 3, sigma2 = 2))
 \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the same law in mean and dispersion, where the two
 parameters are orthogonal and these are not;
 \code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} and \code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient.Gamma2Distrib()}} for
-the closed forms this class supplies.
+the closed forms that this class supplies.
 }

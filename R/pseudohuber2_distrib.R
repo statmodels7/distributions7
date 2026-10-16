@@ -5,12 +5,12 @@ NULL
 #' @name PseudoHuber2Distrib
 #'
 #' @description
-#' The S7 class of the pseudo-Huber family parametrized by its location
-#' \eqn{\mu}, its standard deviation \eqn{\sigma} and its shape \eqn{\nu}. It
-#' is the family of [pseudohuber_distrib()] with the scale \eqn{\sigma_1} of
-#' that family replaced by \eqn{\sigma = \sigma_1 \sqrt{R(\nu)}}, where
-#' \eqn{R(\nu) = \sqrt{\nu}\, K_2(\sqrt{\nu}) / K_1(\sqrt{\nu})}. It inherits
-#' from `continuous_distrib`.
+#' This is the S7 class of the pseudo-Huber family parametrized by its location
+#' \eqn{\mu}, its standard deviation \eqn{\sigma} and its shape \eqn{\nu}. It is
+#' the family of [pseudohuber_distrib()] with the scale \eqn{\sigma_1} of that
+#' family replaced by \eqn{\sigma = \sigma_1 \sqrt{R(\nu)}}, where \eqn{R(\nu) =
+#' \sqrt{\nu}\, K_2(\sqrt{\nu}) / K_1(\sqrt{\nu})}. It inherits from
+#' `continuous_distrib`.
 #'
 #' Build one with [pseudohuber2_distrib()], which supplies the three link
 #' functions and fills the properties in. This page documents the raw S7
@@ -28,7 +28,8 @@ NULL
 #'   \eqn{(0, \infty)}, \eqn{(0, \infty)}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.PseudoHuber2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.PseudoHuber2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.PseudoHuber2Distrib] and

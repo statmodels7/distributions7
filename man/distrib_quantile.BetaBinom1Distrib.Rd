@@ -32,25 +32,25 @@ A numeric vector of counts in \eqn{\{0, \dots, n\}}, of length
 \description{
 Computes the generalized inverse \eqn{Q(p) = \min\{y : F(y) \ge p\}} by
 walking the exact cumulative sum over the support. The result is an integer
-count, the distribution function being a step function, so \code{Q(F(y))} returns
-\code{y} while \code{F(Q(p))} is at least \code{p} and generally exceeds it. A relative
-tolerance of 64 machine epsilons is allowed on the comparison so that a \code{p}
-obtained from \code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf.BetaBinom1Distrib()}} maps back to the count it
-came from. With \code{lower.tail = FALSE} the upper tail is inverted against
-\eqn{P(Y > k)} summed from the top of the support, so a small upper-tail
-probability gives the count it belongs to.
+count because the distribution function is a step function, so \code{Q(F(y))}
+returns \code{y} while \code{F(Q(p))} is at least \code{p} and generally exceeds it. A
+relative tolerance of 64 machine epsilons is allowed on the comparison so
+that a \code{p} obtained from \code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf.BetaBinom1Distrib()}} maps back to the
+count from which it came. With \code{lower.tail = FALSE} the upper tail is
+inverted against \eqn{P(Y > k)} summed from the top of the support, so a
+small upper-tail probability gives the count to which it belongs.
 }
 \examples{
 d <- betabinom1_distrib(size = 10)
 th <- list(mu = 0.3, sigma = 0.5)
 
-# The deciles, which are counts.
+# The deciles are counts.
 distrib_quantile(d, c(0.1, 0.5, 0.9), th)
 
 # The round trip from a count through F and back is the identity.
 all.equal(distrib_quantile(d, distrib_cdf(d, 0:10, th), th), as.numeric(0:10))
 
-# The other direction only reaches at least p, F being a step function.
+# The other direction only reaches at least p, because F is a step function.
 rbind(p = c(0.2, 0.45, 0.8),
       F_at_Q = distrib_cdf(d, distrib_quantile(d, c(0.2, 0.45, 0.8), th), th))
 }

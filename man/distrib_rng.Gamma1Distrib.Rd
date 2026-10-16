@@ -27,7 +27,8 @@ inverse-transform fallback of the base class is not used.
 \examples{
 d <- gamma1_distrib()
 
-# Same generator as stats::rgamma at the implied shape and rate.
+# The method uses the same generator as stats::rgamma at the implied shape
+# and rate.
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = 3, phi = 0.5))
 set.seed(2)

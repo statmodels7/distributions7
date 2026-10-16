@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -35,9 +35,9 @@ trigammas,
 \deqn{\dfrac{\partial^2 \ell}{\partial \alpha^2}
       = \psi_1(y+\alpha) - \psi_1(\alpha) - \psi_1(n+S) + \psi_1(S), \qquad
       S = \alpha + \beta,}
-and the \strong{mixed} shape component carries only the \eqn{S} part,
-\eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the mass separately
-otherwise. The reported components follow by the two-variable chain rule of
+and the mixed shape component carries only the \eqn{S} part,
+\eqn{-\psi_1(n+S) + \psi_1(S)}, because the two shapes otherwise enter the
+mass separately. The reported components follow by the two-variable chain rule of
 \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}, whose own second
 derivatives contribute the rest. This route is taken for
 \eqn{\sigma \ge 0.1}; for \eqn{\sigma < 0.1} the components are the direct

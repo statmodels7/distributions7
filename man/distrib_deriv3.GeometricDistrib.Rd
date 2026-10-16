@@ -16,9 +16,9 @@ of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both routes.}
+\item{approx}{Ignored, because a closed form is available for both routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -35,8 +35,8 @@ A named list of one numeric vector, \code{mu_mu_mu}, of length
 Computes the third derivative of the geometric log-mass with respect to the
 mean, in closed form. The log-mass is
 \eqn{y\log\mu - (y+1)\log(1+\mu)}, so every derivative is a combination of
-\eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}} with the data entering linearly
-through \eqn{y}: the value is \eqn{2(y/\mu^3 - (y+1)/(1+\mu)^3)}.
+\eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}}, and the data enter linearly through
+\eqn{y}. The value is \eqn{2(y/\mu^3 - (y+1)/(1+\mu)^3)}.
 
 The kernel writes the bracket \eqn{y/\mu^k - (y+1)/(1+\mu)^k} of order
 \eqn{k} as \eqn{y(1 - q^k)/\mu^k - 1/(1+\mu)^k} with
@@ -50,8 +50,8 @@ however small \eqn{\mu} is.
 
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2(1 - q^2)/\mu^2} with the same
-device. Both routes are closed form, so no quadrature is run and \code{approx}
-and \code{nsim} are ignored.
+device. Both routes are closed form, so the method runs no quadrature and
+ignores \code{approx} and \code{nsim}.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.
@@ -74,7 +74,7 @@ dn <- distrib_hessian(d, y, list(mu = 3 - eps))$mu_mu
 all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
           tolerance = 1e-5)
 
-# The expected value is one number, the data term having been averaged out.
+# The expected value is one number because the data term is averaged out.
 unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 }
 \seealso{

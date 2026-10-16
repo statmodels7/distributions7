@@ -13,7 +13,7 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -38,7 +38,7 @@ observation, in closed form. Writing \eqn{r = y - \mu} and
   + \dfrac{(\nu+1)r^2}{\nu D}
   - \log\!\left(1 + \dfrac{r^2}{\nu\sigma^2}\right)\right].}
 
-The location component \strong{redescends}: it rises to \eqn{(\nu+1)/(2\sigma\sqrt{\nu})}
+The location component redescends: it rises to \eqn{(\nu+1)/(2\sigma\sqrt{\nu})}
 at \eqn{|r| = \sigma\sqrt{\nu}} and falls back towards zero beyond it, so a
 gross outlier contributes almost nothing to the estimating equation. A
 Gaussian's location score \eqn{r/\sigma^2} grows linearly in \eqn{r}.

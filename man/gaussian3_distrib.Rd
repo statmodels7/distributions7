@@ -7,9 +7,9 @@
 gaussian3_distrib(link_mu = identity_link(), link_tau = log_link())
 }
 \arguments{
-\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
-over the whole line already.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean \eqn{\mu}.
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the mean already
+ranges over the whole line.}
 
 \item{link_tau}{A \code{link} object from \code{linkfunctions7} for the precision
 \eqn{\tau}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -29,7 +29,7 @@ returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and
 closed-form moments.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
 identity for
 the mean, which is already free, and the logarithm for the precision, which
@@ -43,12 +43,12 @@ with \eqn{\mu \in (-\infty, \infty)} and \eqn{\tau \in (0, \infty)}. The
 mean is \eqn{\mu}, the variance \eqn{1/\tau}, and both the skewness and the
 excess kurtosis are 0.
 
-This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different coordinates, and
-a separate family for the reason \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} is: the parameter
-here \emph{is} the precision, and that is what the estimate, the standard error
-and the interval describe. The precision is the parametrization a Bayesian
-conjugate analysis uses, the gamma being conjugate for \eqn{\tau} at known
-\eqn{\mu}.
+This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different coordinates. It
+is a separate family for the same reason as \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}: the
+parameter here \emph{is} the precision, and the estimate, the standard error and
+the interval describe the precision. The precision is the parametrization
+that a Bayesian conjugate analysis uses, because the gamma is conjugate for
+\eqn{\tau} at known \eqn{\mu}.
 }
 
 \section{Derivatives}{
@@ -66,7 +66,8 @@ and its expectation
 The zero off-diagonal makes the mean and the precision orthogonal, so their
 maximum likelihood estimates are asymptotically independent.
 
-It is the flattest of the three parametrizations. The log-density is
+It is the flattest of the three parametrizations of the Gaussian. The
+log-density is
 quadratic in \eqn{\mu} and, in \eqn{\tau}, is \eqn{\tfrac{1}{2}\log\tau}
 plus a term linear in \eqn{\tau}, so every third and fourth derivative is
 free of the response: at third order only \eqn{\ell^{(\mu\mu\tau)} = -1} and
@@ -96,7 +97,7 @@ parameter on the unconstrained scale of its link, with
 d <- gaussian3_distrib()
 d
 
-# The same law as gaussian1 at sigma = 1/sqrt(tau).
+# This is the same law as gaussian1 at sigma = 1/sqrt(tau).
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))

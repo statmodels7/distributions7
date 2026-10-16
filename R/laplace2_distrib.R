@@ -5,12 +5,12 @@ NULL
 #' @name Laplace2Distrib
 #'
 #' @description
-#' The S7 class of the Laplace (double exponential) family written by its
-#' rate \eqn{\lambda > 0} in place of its scale, with density
-#' \eqn{f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is
-#' the same law as [laplace_distrib()] at \eqn{\lambda = 1/\sigma}; the
-#' parametrization differs and the derivatives with it. It inherits from
-#' `continuous_distrib`, so every generic of the `distrib` class applies to it.
+#' This is the S7 class of the Laplace (double exponential) family written by
+#' its rate \eqn{\lambda > 0} in place of its scale, with density \eqn{f(y) =
+#' (\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is the same law
+#' as [laplace_distrib()] at \eqn{\lambda = 1/\sigma}; the parametrization
+#' differs and the derivatives with it. It inherits from `continuous_distrib`,
+#' so every generic of the `distrib` class applies to it.
 #'
 #' The rate form is the one in which a lasso penalty is written: with \eqn{\mu = 0}
 #' the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
@@ -43,7 +43,8 @@ NULL
 #'   [enet_distrib()], which mixes this family with a Gaussian.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Laplace2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Laplace2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Laplace2Distrib] and

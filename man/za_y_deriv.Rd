@@ -56,7 +56,7 @@ distributions7:::za_y_deriv(d, c(0, 2), theta, distrib_hess_y)
 }
 \seealso{
 \code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y.ZeroAdjustedContinuousDistrib()}} and
-\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y.ZeroAdjustedContinuousDistrib()}}, the two methods it
+\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y.ZeroAdjustedContinuousDistrib()}}, the two methods that it
 serves.
 }
 \keyword{internal}

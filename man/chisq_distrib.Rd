@@ -26,8 +26,9 @@ the log-density to fifth order in the parameter and to fourth order in the
 response, and closed-form moments. The derivatives of the distribution
 function in the parameter come from a compiled quadrature.
 
-The one argument chooses the link that carries the parameter to the
-unconstrained scale an optimizer works on, and defaults to the logarithm.
+The argument \code{link_mu} specifies the link that carries the parameter to the
+unconstrained scale on which an optimizer works. The default is the
+logarithm.
 }
 \section{The parametrization}{
 The degrees of freedom are treated as a continuous positive parameter, so
@@ -50,15 +51,14 @@ The family is a one-parameter exponential family in \eqn{\log y}, so
 \deqn{\dfrac{\partial \ell}{\partial \mu}
         = \dfrac{\log y - \log 2 - \psi(\mu/2)}{2}, \qquad
       \ell^{(k)} = -\dfrac{\psi^{(k-2)}(\mu/2)}{2^{k}}, \quad k \ge 2,}
-with \eqn{\psi} the digamma function. From the second order on nothing
-involves the response at all. Two things follow. On the parameter scale the
+with \eqn{\psi} the digamma function. From the second order on, every
+derivative is free of the response. Consequently, on the parameter scale the
 observed information is exactly the expected information, and the same holds
-at third and fourth order, so asking any of those methods for
-\code{expected = TRUE} returns the same numbers. And
-\eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2} is what gives the score mean
-zero.
+at third and fourth order, so calling any of those methods with
+\code{expected = TRUE} returns the same numbers. The score has mean zero because
+\eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2}.
 
-That coincidence does not carry to the scale a fit optimizes on. The
+That coincidence does not carry to the scale on which a fit optimizes. The
 second-order chain rule adds a term
 \eqn{h''(\eta)\,\partial\ell/\partial\mu} to the link-scale Hessian; the
 expected version drops it because the score has expectation zero, whereas
@@ -68,8 +68,8 @@ steps here and agree at the optimum, where the summed score vanishes. The
 example on \code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}} measures that difference.
 
 The derivatives of the \emph{distribution} function in the parameter have no
-elementary form, the derivative of an incomplete gamma in its shape being
-hypergeometric, and are computed by a compiled quadrature of the
+elementary form, because the derivative of an incomplete gamma in its shape
+is hypergeometric. They are computed by a compiled quadrature of the
 derivatives of the density (\code{\link[=compiled_cdf]{compiled_cdf()}}).
 }
 
@@ -108,8 +108,8 @@ all.equal(distrib_pdf(d, y, th),
 all.equal(distrib_pdf(d, y, list(mu = 2)),
           distrib_pdf(exponential_distrib(), y, list(mu = 2)))
 
-# From the second order on nothing involves the response, so the observed
-# and expected information coincide on the parameter scale.
+# From the second order on, the derivatives do not involve the response,
+# so the observed and expected information coincide on the parameter scale.
 identical(distrib_hessian(d, y, th), distrib_expected_hessian(d, y, th))
 
 # Fitting recovers the degrees of freedom; the sample mean starts it off.
@@ -124,10 +124,10 @@ Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
 Wiley, New York.
 }
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}} for the two-parameter family this sits inside at
+\code{\link[=gamma2_distrib]{gamma2_distrib()}} for the two-parameter family that contains this one at
 \eqn{\sigma^2 = 2\mu}, and \code{\link[=gamma1_distrib]{gamma1_distrib()}} for its dispersion form;
 \code{\link[=exponential_distrib]{exponential_distrib()}} for the case \eqn{\mu = 2};
 \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for a wider family still; \code{\link[=fit_distrib]{fit_distrib()}} to estimate
-the parameter; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against
-the same battery this one passes; \link{ChisqDistrib} for the class.
+the parameter; \code{\link[=check_distrib]{check_distrib()}} to validate a user-written family against
+the same battery that this one passes; \link{ChisqDistrib} for the class.
 }

@@ -50,7 +50,7 @@ names(h)
 # The scale-shape entry is -1/a at every observation.
 h$a_d
 
-# Against a central difference of the score.
+# The entry is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$d_p,
       numeric = (distrib_gradient(d, y, list(a = 2, d = 3,

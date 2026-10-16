@@ -12,7 +12,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -28,12 +28,12 @@ Computes the second derivative of the Bernoulli log-mass with respect to the
 probability, one value per observation, in closed form:
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}.}
 It is negative for every admissible \eqn{\mu} and takes one of two values
-according to whether the observation is 0 or 1. Each term is formed by
-dividing its coefficient by the base once per power, and a term with a zero
+according to whether the observation is 0 or 1. The kernel divides the
+coefficient of each term by the base once per power, and a term with a zero
 coefficient contributes zero, so at \eqn{y = 0} the value is
 \eqn{-1/(1-\mu)^2} however small \eqn{\mu} is.
 
-On the \strong{link} scale with the default logit the chain rule gives
+On the link scale with the default logit the chain rule gives
 \eqn{\partial^2\ell/\partial\eta^2 = -\mu(1-\mu)}, which carries no
 data; this is the defining property of a canonical link, and in exact
 arithmetic it makes the observed and the expected information the same
@@ -51,7 +51,8 @@ d <- bernoulli_distrib()
 y <- c(0, 1, 1)
 th <- list(mu = 0.3)
 
-# The closed form, written out; two values only.
+# The method agrees with the closed form written out, and the result has
+# two values only.
 all.equal(distrib_hessian(d, y, th)$mu_mu,
           -y / 0.3^2 - (1 - y) / 0.7^2)
 

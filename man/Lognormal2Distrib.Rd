@@ -42,16 +42,17 @@ properties hold \code{"lognormal2"}, \code{"univariate"}, \code{c(0, Inf)},
 \code{c("mean", "var")}, the interpretations \code{c(mean = "mean", var = "variance")}, \code{2} and the domains \eqn{(0, \infty)} for both.
 }
 \description{
-The S7 class of the lognormal family parametrized by the mean \eqn{m} and
-the variance \eqn{v} of \eqn{Y}. It inherits from \code{continuous_distrib}.
+This is the S7 class of the lognormal family parametrized by the mean \eqn{m}
+and the variance \eqn{v} of \eqn{Y}. It inherits from \code{continuous_distrib}.
 Build one with \code{\link[=lognormal2_distrib]{lognormal2_distrib()}}; this page documents the raw S7
-constructor; the validator of \code{distrib} checks that
-the properties are consistent (the parameter count, a bound and a link
-for every parameter, ordered support bounds).
+constructor; the validator of \code{distrib} checks that the properties are
+consistent (the parameter count, a bound and a link for every parameter,
+ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Lognormal2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Lognormal2Distrib]{distrib_cdf()}},

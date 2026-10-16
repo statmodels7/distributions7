@@ -45,14 +45,14 @@ object built by \code{\link[=gumbel_distrib]{gumbel_distrib()}} they hold \code{
 \eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the Gumbel (type I extreme value) family in the form for
-\strong{maxima}, a location-scale family on the whole real line with location
-\eqn{\mu} and scale \eqn{\sigma > 0} and density
-\eqn{\sigma^{-1}\exp\{-z - e^{-z}\}} at \eqn{z = (y-\mu)/\sigma}. Its shape
-is fixed: the skewness and the excess kurtosis are constants and cannot be
-fitted. It inherits from \code{continuous_distrib}, so every generic of the
-\code{distrib} class applies to it; the methods listed below are registered on it
-directly and everything else comes from the parent.
+This is the S7 class of the Gumbel (type I extreme value) family in the form
+for maxima, a location-scale family on the whole real line with location
+\eqn{\mu} and scale \eqn{\sigma > 0} and density \eqn{\sigma^{-1}\exp\{-z -
+e^{-z}\}} at \eqn{z = (y-\mu)/\sigma}. Its shape is fixed: the skewness and
+the excess kurtosis are constants and cannot be fitted. It inherits from
+\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
+the methods listed below are registered on it directly and everything else
+comes from the parent.
 
 Build one with \code{\link[=gumbel_distrib]{gumbel_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
@@ -61,7 +61,8 @@ the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each of them is
+linked to the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf()}},
@@ -107,7 +108,8 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- gumbel_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# The properties that a consumer reads to drive the family without any
+# family-specific code.
 d@params
 d@params_bounds
 d@bounds
@@ -124,5 +126,5 @@ rbind(a = c(skew = skewness(d, list(mu = 0, sigma = 1)),
 \code{\link[=weibull1_distrib]{weibull1_distrib()}}, which is this family under \eqn{e^{-Y}};
 \code{\link[=gpd_distrib]{gpd_distrib()}} for the other limit law of extremes;
 \code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf.GumbelDistrib()}} and \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient.GumbelDistrib()}} for
-the closed forms this class supplies.
+the closed forms that this class supplies.
 }

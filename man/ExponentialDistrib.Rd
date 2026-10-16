@@ -45,14 +45,14 @@ object built by \code{\link[=exponential_distrib]{exponential_distrib()}} they h
 \eqn{(0, \infty)}, and the one link.
 }
 \description{
-The S7 class of the exponential family parametrized by its \strong{mean}
-\eqn{\mu > 0}, with density \eqn{f(y) = \mu^{-1}e^{-y/\mu}} on
-\eqn{[0, \infty)}. It inherits from \code{continuous_distrib}, so every generic of
-the \code{distrib} class applies to it; the methods listed below are registered on
-it directly.
+This is the S7 class of the exponential family parametrized by its mean
+\eqn{\mu > 0}, with density \eqn{f(y) = \mu^{-1}e^{-y/\mu}} on \eqn{[0,
+\infty)}. It inherits from \code{continuous_distrib}, so every generic of the
+\code{distrib} class applies to it; the methods listed below are registered on it
+directly.
 
 The family has a single parameter, as does the chi-squared family, so every
-derivative array it returns has one component per order and its information
+derivative array that it returns has one component per order and its information
 is a number.
 
 The parametrization is by the mean, not by the rate: R's own \code{dexp} takes
@@ -65,7 +65,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.ExponentialDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.ExponentialDistrib]{distrib_cdf()}},
@@ -110,7 +111,7 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- exponential_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# One parameter, the mean, on the positive half line.
+# The family has one parameter, the mean, on the positive half line.
 d@params
 d@n_params
 d@bounds

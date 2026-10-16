@@ -33,7 +33,7 @@ Computes the generalized inverse of the distribution function,
 by calling \code{\link[stats:NegBinomial]{stats::qnbinom()}} at size \eqn{r = \mu/\theta} and mean
 \eqn{\mu}, so that the success probability \eqn{1/(1+\theta)} is never
 formed. The support is discrete, so the round trip
-through \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf.NegBin1Distrib()}} does \strong{not} return \code{p}: it returns
+through \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf.NegBin1Distrib()}} does not return \code{p}: it returns
 the mass up to the smallest integer whose cumulative probability reaches
 \code{p}, which overshoots.
 }

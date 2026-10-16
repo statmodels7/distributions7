@@ -5,11 +5,11 @@ NULL
 #' @name SkewTDistrib
 #'
 #' @description
-#' The S7 class of Azzalini's skew \eqn{t}: a Student \eqn{t} carrying a shape
-#' parameter that tilts it, so that the tail weight and the asymmetry are
+#' This is the S7 class of Azzalini's skew \eqn{t}: a Student \eqn{t} carrying a
+#' shape parameter that tilts it, so that the tail weight and the asymmetry are
 #' modeled by two parameters instead of one. With \eqn{z = (y-\mu)/\sigma} and
-#' \eqn{w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}} the density is
-#' \eqn{2 t_\nu(z)T_{\nu+1}(w)/\sigma}.
+#' \eqn{w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}} the density is \eqn{2
+#' t_\nu(z)T_{\nu+1}(w)/\sigma}.
 #'
 #' It contains three families as limits. At \eqn{\alpha = 0} it is the Student
 #' \eqn{t}; as \eqn{\nu \to \infty} it is the skew normal, approached at
@@ -34,7 +34,8 @@ NULL
 #'   \eqn{(0,\infty)}, \eqn{(-\infty,\infty)} and \eqn{(0,\infty)}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.SkewTDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.SkewTDistrib] and
 #'   [`distrib_rng()`][distrib_rng.SkewTDistrib];

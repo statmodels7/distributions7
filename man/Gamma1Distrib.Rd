@@ -46,12 +46,12 @@ object built by \code{\link[=gamma1_distrib]{gamma1_distrib()}} they hold \code{
 for both parameters, and the two links.
 }
 \description{
-The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and a
-dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
-The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}. It inherits from
-\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
-the methods listed below are registered on it directly and everything else
-comes from the parent.
+This is the S7 class of the gamma family parametrized by its mean \eqn{\mu >
+0} and a dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) =
+\phi\mu^2}. The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}. It
+inherits from \code{continuous_distrib}, so every generic of the \code{distrib} class
+applies to it; the methods listed below are registered on it directly and
+everything else comes from the parent.
 
 Build one with \code{\link[=gamma1_distrib]{gamma1_distrib()}}, which supplies the two link functions and
 fills the properties in. This page documents the raw S7 constructor, which
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Gamma1Distrib]{distrib_cdf()}},
@@ -101,7 +102,8 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- gamma1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 d@bounds

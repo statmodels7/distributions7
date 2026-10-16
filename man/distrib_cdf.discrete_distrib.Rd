@@ -27,7 +27,7 @@ recycled \code{q} and \code{theta}.
 \description{
 The fallback for a discrete family that implements no analytical
 distribution function: it sums the mass from the finite lower bound of the
-support up to \eqn{\lfloor q \rfloor}. The sum is \strong{exact}, not
+support up to \eqn{\lfloor q \rfloor}. The sum is exact, not
 approximate, so on a Poisson defined by its mass alone it agrees with
 \code{\link[stats:Poisson]{stats::ppois()}} to \eqn{10^{-16}} absolute, which is the rounding of the
 addition itself.

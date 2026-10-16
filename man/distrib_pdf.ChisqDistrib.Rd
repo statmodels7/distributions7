@@ -59,6 +59,6 @@ distrib_pdf(d, 2000, th, log = TRUE)
 \seealso{
 \code{\link[=distrib_cdf.ChisqDistrib]{distrib_cdf.ChisqDistrib()}} for the distribution function,
 \code{\link[=distrib_gradient.ChisqDistrib]{distrib_gradient.ChisqDistrib()}} for the derivative of the log-density,
-\code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} for the family this sits inside, and
+\code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} for the family that contains this one, and
 \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

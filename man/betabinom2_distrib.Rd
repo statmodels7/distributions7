@@ -33,7 +33,7 @@ Builds the distribution object for the beta-binomial family in its canonical
 parametrization, the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0},
 on the finite support \eqn{\{0, 1, \dots, n\}}. The returned object carries
 closed-form derivatives of the log-mass to fourth order and expectations
-that are exact finite sums over the support, so no quadrature is used. The
+that are exact finite sums over the support, so quadrature is not used. The
 fifth derivative comes from the numerical fallback of the base class.
 
 This is the same law as \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which is written in a mean
@@ -60,8 +60,8 @@ compiled kernels, and the third and fourth orders from
 \code{\link[=betabinom2_derivs]{betabinom2_derivs()}}. A component naming both shapes keeps only the terms
 in \eqn{S} and is therefore free of the data at every order.
 
-Every expectation is an \strong{exact finite sum} over \eqn{\{0, \dots, n\}}:
-the support is bounded, so there is nothing to integrate over.
+Every expectation is an exact finite sum over \eqn{\{0, \dots, n\}},
+because the support is bounded, and the method computes no integral.
 }
 
 \section{The cancellation at a large concentration}{
@@ -81,10 +81,10 @@ keeps its accuracy as the concentration grows.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
-shape is closed form, and the two are strongly correlated at a large
-concentration, the data then determining their ratio far better than their
-size.
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. The
+estimates of both shapes lack a closed form, and the two are
+strongly correlated at a large concentration, because the data then
+determine their ratio far better than their size.
 }
 
 \section{Notation}{
@@ -104,11 +104,12 @@ d
 th <- list(alpha = 2, beta = 3)
 sum(distrib_pdf(d, 0:10, th))
 
-# The closed-form moments, and the same numbers from the shapes.
+# The moments are computed by the object and again in closed form from the
+# shapes.
 c(mean = mean(d, th), var = variance(d, th),
   closed_mean = 10 * 2 / 5, closed_var = 10 * 2 * 3 * 15 / (25 * 6))
 
-# The same law as betabinom1 at mu = alpha / S and sigma = 1 / S.
+# This is the same law as betabinom1 at mu = alpha / S and sigma = 1 / S.
 all.equal(distrib_pdf(d, 0:10, th),
           distrib_pdf(betabinom1_distrib(size = 10), 0:10,
                       list(mu = 0.4, sigma = 0.2)))
@@ -140,10 +141,10 @@ Wiley, Hoboken.
 }
 \seealso{
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the same law in a mean proportion and a
-dispersion, which is the one to model a mean with;
+dispersion, which is the family to use when a mean is modeled;
 \code{\link[=binomial_distrib]{binomial_distrib()}} for the limit at a large concentration and
 \code{\link[=beta1_distrib]{beta1_distrib()}} for the mixing law;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the shapes; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
+user-defined family against the same battery that this one passes;
 \link{BetaBinom2Distrib} for the class.
 }

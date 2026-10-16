@@ -25,8 +25,8 @@ the response, in closed form. With \eqn{r = \log y - \mu},
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} =
       \dfrac{1}{y^2}\left(1 + \dfrac{r - 1}{\sigma^2}\right).}
 The sign changes at \eqn{r = 1 - \sigma^2}, that is at
-\eqn{y = e^{\mu + 1 - \sigma^2}}: the log-density is \strong{concave} in the
-response below that point and \strong{convex} above it, so a lognormal
+\eqn{y = e^{\mu + 1 - \sigma^2}}: the log-density is concave in the
+response below that point and convex above it, so a lognormal
 log-likelihood is not a concave function of an observation over the whole
 support.
 }

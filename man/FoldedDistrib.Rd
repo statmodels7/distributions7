@@ -61,7 +61,8 @@ validates neither.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.FoldedDistrib]{distrib_cdf()}} and

@@ -18,7 +18,7 @@ A numeric vector of length \code{length(y)}, every entry \eqn{-1/\mu}.
 }
 \description{
 Returns \eqn{-1/\mu} for every observation. The log-density is
-\eqn{-\log\mu - y/\mu}, which is \strong{linear} in \eqn{y}, so its derivative in
+\eqn{-\log\mu - y/\mu}, which is linear in \eqn{y}, so its derivative in
 the response is the constant slope \eqn{-1/\mu} and carries no information
 about where the observation fell.
 

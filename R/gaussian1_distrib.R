@@ -5,12 +5,12 @@ NULL
 #' @name Gaussian1Distrib
 #'
 #' @description
-#' The S7 class of the Gaussian (normal) family parametrized by its mean
-#' \eqn{\mu} and its standard deviation \eqn{\sigma > 0}, with density
-#' \eqn{f(y) = (2\pi)^{-1/2}\sigma^{-1}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the
-#' whole real line. It inherits from `continuous_distrib`, so every generic of
-#' the `distrib` class applies to it; the methods listed below are registered on
-#' it directly and everything else comes from the parent.
+#' This is the S7 class of the Gaussian (normal) family parametrized by its mean
+#' \eqn{\mu} and its standard deviation \eqn{\sigma > 0}, with density \eqn{f(y)
+#' = (2\pi)^{-1/2}\sigma^{-1}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the whole real
+#' line. It inherits from `continuous_distrib`, so every generic of the
+#' `distrib` class applies to it; the methods listed below are registered on it
+#' directly and everything else comes from the parent.
 #'
 #' Build one with [gaussian1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -33,10 +33,11 @@ NULL
 #'   [gaussian2_distrib()] for the same law in mean and variance and
 #'   [gaussian3_distrib()] for mean and precision;
 #'   [distrib_pdf.Gaussian1Distrib()] and [distrib_gradient.Gaussian1Distrib()]
-#'   for the closed forms this class supplies.
+#'   for the closed forms that this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Gaussian1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gaussian1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Gaussian1Distrib] and
@@ -79,13 +80,15 @@ NULL
 #' d <- gaussian1_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_bounds
 #' d@params_interpretation
 #'
-#' # The links carry each parameter to the unconstrained scale an optimizer
-#' # moves on: the mean is already free, the standard deviation rides a log.
+#' # The links carry each parameter to the unconstrained scale on which an
+#' # optimizer moves: the mean is already free, the standard deviation rides
+#' # a log.
 #' vapply(d@link_params, function(l) l@link_name, character(1))
 Gaussian1Distrib <- S7::new_class("Gaussian1Distrib", parent = continuous_distrib)
 
@@ -239,7 +242,7 @@ S7::method(distrib_cdf, Gaussian1Distrib) <- function(distrib, q, theta, lower.t
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # A quantile 40 standard deviations out, computed on the log scale
+#' # A quantile 40 standard deviations out is computed on the log scale
 #' # because the probability itself is zero in double precision.
 #' distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma = 1),
 #'                  log.p = TRUE)
@@ -343,7 +346,7 @@ S7::method(distrib_rng, Gaussian1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two components agree with their closed forms.
 #' all.equal(g$mu, (y - 0.4) / 1.5^2)
 #' all.equal(g$sigma, ((y - 0.4)^2 - 1.5^2) / 1.5^3)
 #'
@@ -373,7 +376,7 @@ S7::method(distrib_gradient, Gaussian1Distrib) <- function(distrib, y, theta, sc
 #'       \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{2(y - \mu)}{\sigma^3}.}
 #' Only the curvature in \eqn{\mu} is free of the data; the other two components
-#' vary with the residual, and their expectations are
+#' vary with the residual, and their expectations are returned by
 #' [distrib_expected_hessian.Gaussian1Distrib()].
 #'
 #' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
@@ -465,15 +468,15 @@ S7::method(distrib_hessian, Gaussian1Distrib) <- function(distrib, y, theta, sca
 #' is a regular family, so the second Bartlett identity holds and this equals
 #' the variance of the score.
 #'
-#' @seealso [distrib_hessian.Gaussian1Distrib()] for the observed quantity this
-#'   is the expectation of, [fit_distrib()] and [fisher_scoring()], which invert
+#' @seealso [distrib_hessian.Gaussian1Distrib()] for the observed quantity whose
+#'   expectation this is, [fit_distrib()] and [fisher_scoring()], which invert
 #'   it at each step, and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
 #' th <- list(mu = 0.4, sigma = 1.5)
 #'
-#' # The three constants, one value per observation.
+#' # The three components are constants, with one value per observation.
 #' lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #'
 #' # The observed Hessian averages onto them over a large sample.
@@ -493,14 +496,14 @@ S7::method(distrib_expected_hessian, Gaussian1Distrib) <- function(distrib, y, t
 #' @name distrib_dexpected_hessian.Gaussian1Distrib
 #' @aliases distrib_d2expected_hessian.Gaussian1Distrib
 #' @description
-#' The first and second derivatives of the expected information in the
+#' Returns the first and second derivatives of the expected information in the
 #' parameters, in closed form from a compiled kernel. Only the standard
 #' deviation moves it:
 #' \deqn{\partial_\sigma \mathbb{E}[\ell_{\mu\mu}] = \dfrac{2}{\sigma^3},\quad
 #'       \partial_\sigma \mathbb{E}[\ell_{\sigma\sigma}] = \dfrac{4}{\sigma^3},\quad
 #'       \partial_{\sigma\sigma} \mathbb{E}[\ell_{\mu\mu}] = -\dfrac{6}{\sigma^4},\quad
-#'       \partial_{\sigma\sigma} \mathbb{E}[\ell_{\sigma\sigma}] = -\dfrac{12}{\sigma^4},}
-#' every other component being zero. On the link scale the result is carried
+#'       \partial_{\sigma\sigma} \mathbb{E}[\ell_{\sigma\sigma}] = -\dfrac{12}{\sigma^4}.}
+#' Every other component is zero. On the link scale the result is carried
 #' across by [dexpected_link()].
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations, read for its length.
@@ -584,7 +587,7 @@ S7::method(distrib_d2expected_hessian, Gaussian1Distrib) <- function(distrib, y,
 #' # The log-density is quadratic in mu, so the third derivative there is 0.
 #' d3$mu_mu_mu
 #'
-#' # The other three, written out.
+#' # Two of the other three components are checked against their closed forms.
 #' all.equal(d3$mu_mu_sigma, rep(2 / 1.5^3, 3))
 #' all.equal(d3$mu_sigma_sigma, 6 * (y - 0.4) / 1.5^4)
 #'
@@ -651,7 +654,7 @@ S7::method(distrib_deriv3, Gaussian1Distrib) <- function(distrib, y, theta, expe
 #' @seealso [distrib_deriv3.Gaussian1Distrib()] for the order below,
 #'   [distrib_deriv4()] for the generic, and
 #'   [distrib_expected_hessian.Gaussian1Distrib()] for the second-order
-#'   expectation these extend.
+#'   expectation that these extend.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -666,7 +669,7 @@ S7::method(distrib_deriv3, Gaussian1Distrib) <- function(distrib, y, theta, expe
 #' # The mixed second-second component is constant at -6/sigma^4.
 #' all.equal(d4$mu_mu_sigma_sigma, rep(-6 / 1.5^4, 3))
 #'
-#' # Expected values: -54/sigma^4 in the pure sigma component.
+#' # The expected value of the pure sigma component is -54/sigma^4.
 #' lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #' -54 / 1.5^4
 S7::method(distrib_deriv4, Gaussian1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
@@ -781,8 +784,8 @@ S7::method(distrib_grad_y, Gaussian1Distrib) <- function(distrib, y, theta, ...)
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{\sigma^2},}
 #' in closed form. It does not depend on \eqn{y} or on \eqn{\mu}, so the value
 #' is constant within a parameter setting and is recycled to the length of `y`.
-#' Being a location family, the Gaussian has the same curvature in the response
-#' as in its location, and this equals the `mu_mu` component of
+#' Because the Gaussian is a location family, it has the same curvature in the
+#' response as in its location, and this equals the `mu_mu` component of
 #' [distrib_hessian.Gaussian1Distrib()].
 #'
 #' @param distrib A `Gaussian1Distrib` object, from [gaussian1_distrib()].
@@ -806,7 +809,8 @@ S7::method(distrib_grad_y, Gaussian1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' distrib_hess_y(d, y, th)
 #'
-#' # A location family: the same curvature as in the location.
+#' # The Gaussian is a location family, so the curvature is the same as in the
+#' # location.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
 #' # Negative everywhere, so the log-density is concave in the response.
@@ -826,15 +830,14 @@ S7::method(distrib_hess_y, Gaussian1Distrib) <- function(distrib, y, theta, ...)
 #' order in the response and to fifth order in the parameters, and closed-form
 #' moments.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. The defaults are the
-#' identity for
-#' the mean, which is already free, and the logarithm for the standard
-#' deviation, which keeps it positive at every predictor.
+#' identity for the mean, which is already free, and the logarithm for the
+#' standard deviation, which keeps it positive at every predictor.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the mean ranging
-#'   over the whole line already.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because the mean
+#'   already ranges over the whole line.
 #' @param link_sigma A `link` object from `linkfunctions7` for the standard
 #'   deviation \eqn{\sigma}. Defaults to [linkfunctions7::log_link()], which
 #'   maps \eqn{(0, \infty)} onto the line and so keeps every fitted value
@@ -933,7 +936,8 @@ S7::method(distrib_hess_y, Gaussian1Distrib) <- function(distrib, y, theta, ...)
 #' rbind(fitted = coef(fit),
 #'       closed = c(mu = mean(z), sigma = sqrt(mean((z - mean(z))^2))))
 #'
-#' # A different link changes the scale the optimizer moves on, not the answer.
+#' # A different link changes the scale on which the optimizer moves, not the
+#' # answer.
 #' d2 <- gaussian1_distrib(link_sigma = linkfunctions7::sqrt_link())
 #' all.equal(coef(fit_distrib(d2, z)), coef(fit), tolerance = 1e-6)
 #'

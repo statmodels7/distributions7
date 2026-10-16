@@ -45,12 +45,12 @@ object built by \code{\link[=geometric_distrib]{geometric_distrib()}} they hold 
 \eqn{(0, \infty)}, and the one link.
 }
 \description{
-The S7 class of the geometric family parametrized by its \strong{mean}
-\eqn{\mu > 0}: the number of failures before the first success in
-independent trials, each succeeding with probability
-\eqn{p = 1/(1+\mu)}. It inherits from \code{discrete_distrib}, so expectations
-over its support are sums and no derivative with respect to the response
-is defined.
+\code{GeometricDistrib} is the S7 class of the geometric family parametrized by
+its mean \eqn{\mu > 0}. The family describes the number of failures before
+the first success in independent trials, each of which succeeds with
+probability \eqn{p = 1/(1+\mu)}. It inherits from \code{discrete_distrib}, so
+expectations over its support are sums and derivatives with respect to the
+response are undefined.
 
 The parametrization is by the mean, so that a link can carry \eqn{\mu} to
 the unconstrained scale; the success probability is computed from
@@ -68,7 +68,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.GeometricDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GeometricDistrib]{distrib_cdf()}},

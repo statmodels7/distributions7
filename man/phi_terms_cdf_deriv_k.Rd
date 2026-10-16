@@ -36,7 +36,7 @@ elastic net, and both reach all four orders through this one function.
 The Leibniz rule splits the positions of the multi-index \eqn{I} between the
 weight and the tail. The weight side is
 \eqn{\partial^{S} e^{w} = e^{w} B_{S}(w)}, the complete Bell polynomial in
-the partials of the \strong{log} weight; the tail side is one Faa di Bruno pass
+the partials of the log weight; the tail side is one Faa di Bruno pass
 over \eqn{x}, whose outer derivatives (those of \eqn{\Phi}) are the Hermite
 factors of \code{\link[=phi_hermite]{phi_hermite()}} times \eqn{\varphi(x)}. Both sums run on the
 partition enumeration of the package, not on a transcribed expansion.

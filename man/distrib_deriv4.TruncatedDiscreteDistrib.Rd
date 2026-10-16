@@ -7,9 +7,9 @@
 \item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{y}{A numeric vector of counts inside the truncation interval. Both
-endpoints are \strong{included}.}
+endpoints are included.}
 
-\item{theta}{A named list of the \strong{parent's} parameters; truncation adds
+\item{theta}{A named list of the parent's parameters; truncation adds
 none.}
 
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the

@@ -5,7 +5,7 @@ NULL
 #' @name LogisticDistrib
 #'
 #' @description
-#' The S7 class of the logistic family with mean \eqn{\mu} and scale
+#' This is the S7 class of the logistic family with mean \eqn{\mu} and scale
 #' \eqn{\sigma > 0}, whose distribution function is the logistic sigmoid
 #' \eqn{F(q) = [1 + e^{-(q-\mu)/\sigma}]^{-1}} on the whole real line. It
 #' inherits from `continuous_distrib`, so every generic of the `distrib` class
@@ -37,7 +37,8 @@ NULL
 #'   [distrib_expected_hessian.LogisticDistrib()] for the information.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.LogisticDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.LogisticDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.LogisticDistrib] and
@@ -466,9 +467,9 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' a regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score.
 #'
-#' @seealso [distrib_hessian.LogisticDistrib()] for the observed quantity this
-#'   is the expectation of, [fisher_scoring()], which inverts it at each step,
-#'   and [distrib_expected_hessian()] for the generic.
+#' @seealso [distrib_hessian.LogisticDistrib()] for the observed quantity whose
+#'   expectation this is, [fisher_scoring()], which inverts it at each step, and
+#'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- logistic_distrib()
@@ -800,9 +801,9 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #' deviation. Its distribution function is the logistic sigmoid, the same curve
 #' `linkfunctions7` uses as the inverse logit link.
 #'
-#' @param link_mu A `link` object from `linkfunctions7` for the mean
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the mean ranging
-#'   over the whole line already.
+#' @param link_mu A `link` object from `linkfunctions7` for the mean \eqn{\mu}.
+#'   Defaults to [linkfunctions7::identity_link()], because the mean already
+#'   ranges over the whole line.
 #' @param link_sigma A `link` object from `linkfunctions7` for the scale
 #'   \eqn{\sigma}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.

@@ -35,8 +35,8 @@ normalized. It exists so that \code{\link[penalties7:ridge_penalty]{penalties7::
 construction as ridge and lasso, a \code{\link[penalties7:distrib_penalty]{penalties7::distrib_penalty()}} over a
 \code{\link[=fixed]{fixed()}} family, instead of a branch of its own.
 
-The parametrization is the one a reader of the penalty expects: an overall
-rate \eqn{\lambda} and a mixing weight \eqn{\alpha}, with
+The parametrization is the one that a reader of the penalty expects: an
+overall rate \eqn{\lambda} and a mixing weight \eqn{\alpha}, with
 \eqn{a = \lambda\alpha} the Laplace rate and \eqn{c = \lambda(1-\alpha)} the
 Gaussian one.
 }
@@ -44,16 +44,16 @@ Gaussian one.
 \eqn{Z = 2M(a/\sqrt{c})/\sqrt{c}} with \eqn{M} the Mills ratio, finite at
 both ends: \eqn{2/a} as \eqn{\alpha \to 1} and \eqn{\sqrt{2\pi/c}} as
 \eqn{\alpha \to 0}. Every derivative in the two rates is a polynomial in
-\eqn{x = a/\sqrt c} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, with
-\eqn{G' = 1 + xG - G^2} closing the recursion, and the chain to
+\eqn{x = a/\sqrt c} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, and
+\eqn{G' = 1 + xG - G^2} closes the recursion. The chain to
 \eqn{(\lambda, \alpha)} is bilinear.
 }
 
-\section{What is closed form}{
-All four derivative orders in the parameters, the expected information, the
+\section{Closed-form quantities}{
+The four derivative orders in the parameters, the expected information, the
 distribution function, the quantile function, the mean, the variance and the
-skewness. The \strong{kurtosis} is not, and comes from the base class by
-quadrature.
+skewness are closed form. The kurtosis is not, and comes from the base class
+by quadrature.
 
 The expected information is closed form because, in the two rates, the
 density is an exponential family with sufficient statistics \eqn{-|z|} and
@@ -71,8 +71,6 @@ entry.
 }
 
 \section{Numerical points}{
-Three points concern the normalizing constant, its derivatives and the
-tails.
 \itemize{
 \item \eqn{\log M(x)} written directly adds \eqn{x^2/2} to a log-probability of
 the same size and opposite sign, and loses a digit per factor of ten in
@@ -143,7 +141,7 @@ c(gaussian = 0, enet = kurtosis(d, th), laplace = 3)
 rbind(observed = unlist(distrib_hessian(d, 0, th)),
       expected = unlist(distrib_expected_hessian(d, 0, th)))
 
-# Held at zero, this is the prior a penalty is written from.
+# Held at zero, this is the prior from which a penalty is written.
 p <- fixed(d, mu = 0)
 p@params
 
@@ -156,6 +154,6 @@ Series B} 67, 301-320.
 \seealso{
 \code{\link[=laplace2_distrib]{laplace2_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two ends,
 \code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}} for the consumer,
-\code{\link[=fixed]{fixed()}} for holding the location at zero, which is how a penalty uses
-this, and \link{EnetDistrib} for the class and its method list.
+\code{\link[=fixed]{fixed()}} for holding the location at zero, as a penalty does when it uses
+this family, and \link{EnetDistrib} for the class and its method list.
 }

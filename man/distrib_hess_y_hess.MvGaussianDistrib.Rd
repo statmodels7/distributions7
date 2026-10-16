@@ -6,7 +6,7 @@
 \arguments{
 \item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} numeric matrix of observations. Not read.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. It is not read.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 

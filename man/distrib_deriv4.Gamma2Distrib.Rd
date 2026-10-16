@@ -17,10 +17,10 @@ recycled. Both must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -75,5 +75,5 @@ all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-3)
 \code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3.Gamma2Distrib()}} for the order below,
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
 \code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian.Gamma2Distrib()}} for the second-order
-expectation these extend.
+expectation that these extend.
 }

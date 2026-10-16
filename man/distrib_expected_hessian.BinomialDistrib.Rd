@@ -13,10 +13,10 @@
 of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -41,21 +41,21 @@ which follows from \eqn{\mathbb{E}[Y] = n\mu} in
 \eqn{n/(\mu(1-\mu))}, so it grows in proportion to the number of trials and
 is smallest at \eqn{\mu = 1/2}.
 
-On the \strong{link} scale with the default logit the value is
+On the link scale with the default logit the value is
 \eqn{-n\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
 logit is the canonical link, so iteratively reweighted least squares is
-Fisher scoring and Newton's method at once. The observed value is composed
-by the generic and loses relative accuracy where \eqn{|\eta|} is large
-(see \code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}}); this value does not.
+Fisher scoring and Newton's method at once. The generic composes the
+observed value, which loses relative accuracy where \eqn{|\eta|} is large
+(see \code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}}); the value returned here does not.
 
 Because the value does not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-\strong{observed information} under the model. The binomial is a regular family,
+observed information under the model. The binomial is a regular family,
 so the second Bartlett identity holds and this equals the variance of the
 score.
 }
@@ -64,7 +64,7 @@ score.
 d <- binomial_distrib(size = 10)
 th <- list(mu = 0.3)
 
-# A single number, -n divided by the Bernoulli variance.
+# The result is a single number, -n divided by the Bernoulli variance.
 unique(distrib_expected_hessian(d, c(0, 4, 10), th)$mu_mu)
 -10 / (0.3 * 0.7)
 
@@ -80,7 +80,7 @@ rbind(observed = distrib_hessian(d, c(0, 4, 10), th, scale = "link")$mu_mu,
                                           scale = "link")$mu_mu)
 }
 \seealso{
-\code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}} for the observed quantity this
-is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+\code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

@@ -17,10 +17,10 @@ recycled. \code{sigma} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -70,7 +70,7 @@ c(d4$mu_mu_mu_mu[1], d4$mu_mu_mu_sigma[1])
 # The mixed second-second component is constant at -6/sigma^4.
 all.equal(d4$mu_mu_sigma_sigma, rep(-6 / 1.5^4, 3))
 
-# Expected values: -54/sigma^4 in the pure sigma component.
+# The expected value of the pure sigma component is -54/sigma^4.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 -54 / 1.5^4
 }
@@ -78,5 +78,5 @@ lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 \code{\link[=distrib_deriv3.Gaussian1Distrib]{distrib_deriv3.Gaussian1Distrib()}} for the order below,
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
 \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the second-order
-expectation these extend.
+expectation that these extend.
 }

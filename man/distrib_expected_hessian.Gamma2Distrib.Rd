@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -48,7 +48,7 @@ form and with no quadrature or simulation. With \eqn{\alpha =
 They follow from \eqn{\mathbb{E}[Y] = \mu} and
 \eqn{\mathbb{E}[\log Y] = \psi(\alpha) - \log\lambda}.
 
-\strong{The mixed entry does not vanish}, so the mean and the variance are not
+The mixed entry does not vanish, so the mean and the variance are not
 orthogonal in this parametrization; their maximum likelihood estimates are
 asymptotically correlated. \code{\link[=gamma1_distrib]{gamma1_distrib()}} carries the same law with a
 dispersion in place of the variance, and there the mixed entry is exactly
@@ -63,9 +63,9 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The gamma is a
+expectation of the observed information under the model. The gamma is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score.
 }
@@ -74,11 +74,11 @@ variance of the score.
 d <- gamma2_distrib()
 th <- list(mu = 3, sigma2 = 2)
 
-# The three constants, one value per observation.
+# The three entries are constants, with one value per observation.
 eh <- lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 eh
 
-# Written out with the trigamma function.
+# The three formulas are written out with the trigamma function.
 al <- 9 / 2
 c((3 * 2 - 4 * 9 * trigamma(al)) / 2^2,
   -9 * (9 * trigamma(al) - 2) / 2^4,
@@ -102,8 +102,8 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
                         function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the observed quantity this is
-the expectation of, \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}} for the
+\code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the observed quantity whose
+expectation this is, \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}} for the
 orthogonal parametrization of the same law, \code{\link[=fisher_scoring]{fisher_scoring()}}, which
 inverts it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

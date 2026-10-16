@@ -5,14 +5,14 @@ NULL
 #' @name GumbelDistrib
 #'
 #' @description
-#' The S7 class of the Gumbel (type I extreme value) family in the form for
-#' maxima, a location-scale family on the whole real line with location
-#' \eqn{\mu} and scale \eqn{\sigma > 0} and density
-#' \eqn{\sigma^{-1}\exp\{-z - e^{-z}\}} at \eqn{z = (y-\mu)/\sigma}. Its shape
-#' is fixed: the skewness and the excess kurtosis are constants and cannot be
-#' fitted. It inherits from `continuous_distrib`, so every generic of the
-#' `distrib` class applies to it; the methods listed below are registered on it
-#' directly and everything else comes from the parent.
+#' This is the S7 class of the Gumbel (type I extreme value) family in the form
+#' for maxima, a location-scale family on the whole real line with location
+#' \eqn{\mu} and scale \eqn{\sigma > 0} and density \eqn{\sigma^{-1}\exp\{-z -
+#' e^{-z}\}} at \eqn{z = (y-\mu)/\sigma}. Its shape is fixed: the skewness and
+#' the excess kurtosis are constants and cannot be fitted. It inherits from
+#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it directly and everything else
+#' comes from the parent.
 #'
 #' Build one with [gumbel_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which
@@ -33,10 +33,11 @@ NULL
 #'   [weibull1_distrib()], which is this family under \eqn{e^{-Y}};
 #'   [gpd_distrib()] for the other limit law of extremes;
 #'   [distrib_pdf.GumbelDistrib()] and [distrib_gradient.GumbelDistrib()] for
-#'   the closed forms this class supplies.
+#'   the closed forms that this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each of them is
+#' linked to the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.GumbelDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.GumbelDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.GumbelDistrib] and
@@ -79,7 +80,8 @@ NULL
 #' d <- gumbel_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # The properties that a consumer reads to drive the family without any
+#' # family-specific code.
 #' d@params
 #' d@params_bounds
 #' d@bounds
@@ -99,11 +101,11 @@ GumbelDistrib <- S7::new_class("GumbelDistrib", parent = continuous_distrib)
 #' @description
 #' Computes the Gumbel density, with \eqn{z = (y - \mu)/\sigma},
 #' \deqn{f(y; \mu, \sigma) = \dfrac{1}{\sigma}
-#'       \exp\left\{-z - e^{-z}\right\},}
-#' written out rather than delegated, base R carrying no Gumbel. The two tails
-#' are of very different weight: the density falls like \eqn{e^{-z}} to the
-#' right and like \eqn{e^{-e^{-z}}} to the left, so the left tail is doubly
-#' exponential and decays much faster.
+#'       \exp\left\{-z - e^{-z}\right\}.}
+#' The function evaluates this formula directly because base R has no Gumbel
+#' density. The two tails are of very different weight: the density falls like
+#' \eqn{e^{-z}} to the right and like \eqn{e^{-e^{-z}}} to the left, so the left
+#' tail is doubly exponential and decays much faster.
 #'
 #' With `log = TRUE` the exponent is returned directly and stays finite where
 #' the density itself underflows.
@@ -123,15 +125,15 @@ GumbelDistrib <- S7::new_class("GumbelDistrib", parent = continuous_distrib)
 #'
 #' @seealso [distrib_cdf.GumbelDistrib()] for the distribution function,
 #'   [distrib_gradient.GumbelDistrib()] for the derivatives of the
-#'   log-density, [distrib_pdf.Weibull1Distrib()] for the family this becomes
-#'   under \eqn{e^{-Y}}, and [distrib_pdf()] for the generic.
+#'   log-density, [distrib_pdf.Weibull1Distrib()] for the family that this
+#'   becomes under \eqn{e^{-Y}}, and [distrib_pdf()] for the generic.
 #'
 #' @examples
 #' d <- gumbel_distrib()
 #' y <- c(-1, 0, 1)
 #' th <- list(mu = 0, sigma = 1)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' z <- (y - 0) / 1
 #' all.equal(distrib_pdf(d, y, th), exp(-z - exp(-z)))
 #'
@@ -165,7 +167,8 @@ S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALS
 #' @details
 #' Both tails are computed on the scale that keeps them accurate. The lower
 #' tail is exact on the log scale, \eqn{\log F = -e^{-z}}, and the upper tail
-#' goes through [base::expm1()], so neither loses precision where it is small.
+#' goes through [base::expm1()], so both computations keep their precision
+#' where the tail probability is small.
 #' Where \eqn{w = e^{-z}} is below \eqn{10^{-10}} the logarithm of the upper
 #' tail is taken as \eqn{-z - w/2}, which stays finite where \eqn{w}
 #' underflows.
@@ -194,7 +197,7 @@ S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALS
 #' th <- list(mu = 0, sigma = 1)
 #' q <- c(-1, 0, 1)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' all.equal(distrib_cdf(d, q, th), exp(-exp(-q)))
 #'
 #' # The two tails sum to one.
@@ -264,17 +267,17 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
 #' d <- gumbel_distrib()
 #' th <- list(mu = 0, sigma = 1)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_quantile(d, p, th), -log(-log(p)))
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # Mode, median and mean, in that order.
+#' # The mode, the median and the mean are listed in that order.
 #' c(mode = 0, median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 #'
-#' # A return level: the value exceeded once in 100 periods.
+#' # A return level is the value that is exceeded once in 100 periods.
 #' distrib_quantile(d, 1 - 1 / 100, th)
 S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   # log p is what the formula needs, so it is kept rather than exponentiated
@@ -300,7 +303,7 @@ S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower
 #' \eqn{E} standard exponential, using [stats::rexp()]. That is the
 #' inverse-transform identity written without a logarithm of a uniform, which
 #' keeps the left tail accurate: a uniform near zero has few significant digits
-#' left after one logarithm and none after two.
+#' left after one logarithm and loses all of them after a second one.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -312,14 +315,15 @@ S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower
 #'
 #' @return A numeric vector of `n` draws on the whole real line.
 #'
-#' @seealso [distrib_quantile.GumbelDistrib()] for the inverse it rests on,
+#' @seealso [distrib_quantile.GumbelDistrib()] for the inverse on which it rests,
 #'   [fit_distrib()] to estimate the parameters back from a sample, and
 #'   [distrib_rng()] for the generic.
 #'
 #' @examples
 #' d <- gumbel_distrib()
 #'
-#' # The identity the method uses: mu - sigma log(E), E standard exponential.
+#' # The method uses the identity mu - sigma log(E), with E standard
+#' # exponential.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = 0, sigma = 1))
 #' set.seed(2)
@@ -387,7 +391,7 @@ S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0, sigma = 1)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out.
 #' z <- (y - 0) / 1
 #' w <- exp(-z)
 #' all.equal(g$mu, (1 - w) / 1)
@@ -418,9 +422,9 @@ S7::method(distrib_gradient, GumbelDistrib) <- function(distrib, y, theta, scale
 #'       \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \qquad
 #'       \ell^{(\sigma\sigma)} =
 #'         \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.}
-#' The curvature in the location is negative at every observation, \eqn{w}
-#' being positive, so the log-likelihood is concave in \eqn{\mu} at any data
-#' set. The curvature in the scale is not: it is positive wherever
+#' The curvature in the location is negative at every observation because
+#' \eqn{w} is positive, so the log-likelihood is concave in \eqn{\mu} at any
+#' data set. The curvature in the scale is not: it is positive wherever
 #' \eqn{1 - 2z + 2zw - z^2w > 0}, which includes \eqn{y = \mu}.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
@@ -457,14 +461,15 @@ S7::method(distrib_gradient, GumbelDistrib) <- function(distrib, y, theta, scale
 #' h <- distrib_hessian(d, y, th)
 #' h
 #'
-#' # The three closed forms, written out.
+#' # The three closed forms are written out.
 #' z <- (y - 0) / 1
 #' w <- exp(-z)
 #' all.equal(h$mu_mu, -w)
 #' all.equal(h$mu_sigma, -(1 - w + z * w))
 #' all.equal(h$sigma_sigma, 1 - 2 * z + 2 * z * w - z^2 * w)
 #'
-#' # Concave in mu everywhere, and positive in sigma at y = mu.
+#' # The log-density is concave in mu everywhere, and the curvature in sigma
+#' # is positive at y = mu.
 #' c(all_negative_in_mu = all(h$mu_mu < 0),
 #'   sigma_at_mu = distrib_hessian(d, 0, th)$sigma_sigma)
 #'
@@ -491,17 +496,17 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #'       \mathbb{E}\left[\ell^{(\sigma\sigma)}\right] =
 #'         -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2}.}
 #'
-#' They are closed form for one reason, and it is the same reason the Weibull's
-#' are: under the model \eqn{w = e^{-Z}} is standard exponential whatever the
-#' parameters, so every expectation the family needs is a derivative of
-#' \eqn{\Gamma} at 2. Here that is \eqn{\mathbb{E}[w] = 1},
+#' They are closed form for the same reason as those of the Weibull: under the
+#' model \eqn{w = e^{-Z}} is standard exponential whatever the parameters, so
+#' every expectation that the family needs is a derivative of \eqn{\Gamma} at 2.
+#' Here that is \eqn{\mathbb{E}[w] = 1},
 #' \eqn{\mathbb{E}[w\log w] = 1 - \gamma} and
 #' \eqn{\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}, with
 #' \eqn{\mathbb{E}[Z] = \gamma}.
 #'
 #' The mixed entry does not vanish. The location and the scale are not
-#' orthogonal here, where in a symmetric location-scale family such as the
-#' Gaussian they are, and the reason is that this density is skewed. Their
+#' orthogonal here because this density is skewed, whereas in a symmetric
+#' location-scale family such as the Gaussian they are orthogonal. Their
 #' maximum likelihood estimates are asymptotically correlated.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
@@ -535,10 +540,10 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' variance of the score. \eqn{\gamma} is the Euler-Mascheroni constant,
 #' \eqn{-\psi(1) \approx 0.5772}.
 #'
-#' @seealso [distrib_hessian.GumbelDistrib()] for the observed quantity this is
-#'   the expectation of, [distrib_expected_hessian.Weibull1Distrib()] for the
-#'   family that shares these expectations, [fisher_scoring()], which inverts
-#'   it at each step, and [distrib_expected_hessian()] for the generic.
+#' @seealso [distrib_hessian.GumbelDistrib()] for the observed quantity whose
+#'   expectation this is, [distrib_expected_hessian.Weibull1Distrib()] for the
+#'   family that shares these expectations, [fisher_scoring()], which inverts it
+#'   at each step, and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- gumbel_distrib()
@@ -546,14 +551,14 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' e <- distrib_expected_hessian(d, c(-1, 0, 1), th)
 #' lapply(e, unique)
 #'
-#' # Written out with the Euler-Mascheroni constant.
+#' # The values are written out with the Euler-Mascheroni constant.
 #' g <- -digamma(1)
 #' c(-1, -((1 - g)^2 + pi^2 / 6), 1 - g)
 #'
 #' # The mixed entry is not zero, so the location and the scale are correlated.
 #' e$mu_sigma[1]
 #'
-#' # Negative definite all the same.
+#' # The matrix is negative definite all the same.
 #' M <- matrix(c(e$mu_mu[1], e$mu_sigma[1], e$mu_sigma[1], e$sigma_sigma[1]), 2)
 #' eigen(M, only.values = TRUE)$values
 #'
@@ -576,7 +581,8 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' polynomial in \eqn{z} and in \eqn{z^j w} divided by a power of \eqn{\sigma}.
 #'
 #' With `expected = TRUE` the expectations are returned, also in closed form.
-#' They rest on \eqn{w} being standard exponential under the model, which makes
+#' They rest on the fact that \eqn{w} is standard exponential under the model,
+#' which makes
 #' \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)} and
 #' \eqn{\mathbb{E}[z] = \gamma}: every expectation of the family is a
 #' derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma
@@ -623,7 +629,7 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' names(d3)
 #'
 #' # The pure location component is -w/sigma^3, which is the curvature in mu
-#' # divided by sigma. Shown at a scale where the two differ.
+#' # divided by sigma. The comparison uses a scale at which the two differ.
 #' th2 <- list(mu = 0, sigma = 2)
 #' all.equal(distrib_deriv3(d, y, th2)$mu_mu_mu,
 #'           distrib_hessian(d, y, th2)$mu_mu / 2)
@@ -686,7 +692,7 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' @seealso [distrib_deriv3.GumbelDistrib()] for the order below,
 #'   [distrib_deriv4()] for the generic, and
 #'   [distrib_expected_hessian.GumbelDistrib()] for the second-order
-#'   expectation these extend.
+#'   expectation that these extend.
 #'
 #' @examples
 #' d <- gumbel_distrib()
@@ -784,11 +790,11 @@ S7::method(distrib_deriv5, GumbelDistrib) <- function(distrib, y, theta,
 #'
 #' all.equal(distrib_grad_y(d, y, th), (exp(-y) - 1) / 1)
 #'
-#' # A location family: the derivative in the response is minus the score in
-#' # the location.
+#' # The Gumbel is a location family, so the derivative in the response is
+#' # minus the score in the location.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
-#' # Zero at the mode, which is mu itself.
+#' # The derivative is zero at the mode, which is mu itself.
 #' distrib_grad_y(d, 0, th)
 #'
 #' # It is the derivative of the log-density, so a central difference in y
@@ -808,10 +814,10 @@ S7::method(distrib_grad_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' response, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{w}{\sigma^2},
 #'       \qquad w = e^{-(y-\mu)/\sigma}.}
-#' It is negative at every observation, \eqn{w} being positive, so the
-#' log-density is concave in the response over the whole line. Being a location
-#' family, the Gumbel has the same curvature in the response as in its
-#' location, and this equals the `mu_mu` component of
+#' It is negative at every observation because \eqn{w} is positive, so the
+#' log-density is concave in the response over the whole line. Because the
+#' Gumbel is a location family, it has the same curvature in the response as
+#' in its location, and this equals the `mu_mu` component of
 #' [distrib_hessian.GumbelDistrib()].
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
@@ -836,7 +842,8 @@ S7::method(distrib_grad_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' distrib_hess_y(d, y, th)
 #'
-#' # A location family: the same curvature as in the location.
+#' # The Gumbel is a location family, so the curvature is the same as in the
+#' # location.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
 #' # Negative everywhere, so the log-density is concave in the response.
@@ -858,14 +865,14 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' parameters and to fourth order in the response, closed-form expectations
 #' to fourth order, and closed-form moments.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. The defaults are the
 #' identity for the location, which ranges over the whole line, and the
 #' logarithm for the scale, which keeps it positive at every predictor.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
-#'   ranging over the whole line already.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because the
+#'   location already ranges over the whole line.
 #' @param link_sigma A `link` object from `linkfunctions7` for the scale
 #'   \eqn{\sigma}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -886,9 +893,10 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' median \eqn{\mu - \sigma\log\log 2}, and the mean is above both.
 #'
 #' The law is the limit of the maximum of a sample from a light-tailed
-#' distribution, once centered and scaled, and that is what it is fitted to. It
-#' is max-stable: raising its distribution function to the \eqn{n}th power
-#' gives the same law with the location shifted by \eqn{\sigma\log n}.
+#' distribution, once centered and scaled, and the family is fitted to such
+#' maxima. It is max-stable: raising its distribution function to the
+#' \eqn{n}th power gives the same law with the location shifted by
+#' \eqn{\sigma\log n}.
 #'
 #' # Derivatives and expectations
 #'
@@ -928,8 +936,8 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' # Estimation
 #'
-#' [fit_distrib()] maximizes the log-likelihood on the link scale. Neither
-#' estimate is closed form. The fixed shape supplies the method of moments
+#' [fit_distrib()] maximizes the log-likelihood on the link scale. Both
+#' estimates lack a closed form. The fixed shape supplies the method of moments
 #' starting values: the scale is \eqn{s\sqrt{6}/\pi} and the location
 #' \eqn{\bar y - \gamma s\sqrt{6}/\pi}, with \eqn{s} the sample standard
 #' deviation. The example below shows them landing beside the estimates.
@@ -949,12 +957,13 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #'   \eqn{(0, \infty)}, and `link_params` the two links given here.
 #'
 #' @seealso
-#' [weibull1_distrib()] for the family this becomes under \eqn{e^{-Y}};
+#' [weibull1_distrib()] for the family that this becomes under \eqn{e^{-Y}};
 #' [gpd_distrib()] for exceedances over a threshold; [transformation()] for
 #' the reflection that gives minima; [gaussian1_distrib()] for the symmetric
 #' location-scale family whose parameters are orthogonal; [fit_distrib()] to
 #' estimate the parameters; [check_distrib()] to validate a family of your own
-#' against the same battery this one passes; [GumbelDistrib] for the class.
+#' against the same battery that this one passes; [GumbelDistrib] for the
+#' class.
 #'
 #' @references
 #' Coles, S. (2001). *An Introduction to Statistical Modeling of Extreme
@@ -967,7 +976,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' d <- gumbel_distrib()
 #' d
 #'
-#' # The density, written out.
+#' # The density is written out.
 #' y <- c(-1, 0, 1)
 #' th <- list(mu = 0, sigma = 1)
 #' all.equal(distrib_pdf(d, y, th), exp(-y - exp(-y)))

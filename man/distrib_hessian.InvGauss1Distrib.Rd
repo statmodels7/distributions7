@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -36,7 +36,7 @@ observation, in closed form:
         \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad
       \ell^{(\mu\phi)} = -\dfrac{y - \mu}{\phi^2\mu^3}.}
 
-\strong{Neither diagonal entry is negative at every observation.} The curvature
+Neither diagonal entry is negative at every observation. The curvature
 in \eqn{\mu} turns positive wherever \eqn{y < 2\mu/3}, and the curvature in
 \eqn{\phi} is negative only where \eqn{\phi < 2(y-\mu)^2/(\mu^2 y)}, so at
 \eqn{y = \mu} it is \eqn{+1/(2\phi^2)}. An observation near the mean

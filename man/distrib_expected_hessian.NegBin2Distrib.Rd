@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{Ignored. The mean and mixed entries are closed form and the
-dispersion entry is a truncated exact sum. Accepted so that the signature
-matches the generic's.}
+dispersion entry is a truncated exact sum. It is accepted so that the
+signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -63,9 +63,9 @@ example below shows.
 
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The negative
+expectation of the observed information under the model. The negative
 binomial is a regular family, so the second Bartlett identity holds and this
 equals the variance of the score.
 }
@@ -96,7 +96,7 @@ vapply(c(1e2, 1e4, 1e6),
        numeric(1))
 }
 \seealso{
-\code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}} for the observed quantity this
-is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
-and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

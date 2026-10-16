@@ -14,7 +14,7 @@ vector of length 1 or of the length of \code{y}. \code{kappa} must be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
 model is returned in place of the value at the data, computed numerically.
@@ -30,7 +30,7 @@ or \code{"opg"}. Read only when \code{expected = TRUE}.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -43,7 +43,7 @@ Computes the five distinct fourth derivatives of the von Mises log-density
 in \eqn{\mu} and \eqn{\kappa}, in closed form, by the construction
 \code{\link[=distrib_deriv3.VonMises1Distrib]{distrib_deriv3.VonMises1Distrib()}} describes carried one order further. The
 log-density is linear in \eqn{\kappa} apart from the normalizing constant,
-so \strong{two of the five are exactly zero}: \code{mu_mu_kappa_kappa} and
+so two of the five are exactly zero: \code{mu_mu_kappa_kappa} and
 \code{mu_kappa_kappa_kappa}. The pure-direction component is
 \eqn{\kappa\cos(y-\mu)}, the \eqn{\mu\mu\mu\kappa} one \eqn{-\sin(y-\mu)},
 and the pure-concentration one \eqn{-A^{(3)}(\kappa)}.

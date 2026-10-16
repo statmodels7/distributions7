@@ -5,12 +5,11 @@ NULL
 #' @name VonMises1Distrib
 #'
 #' @description
-#' The S7 class of the von Mises family, the natural distribution for an angle,
-#' parametrized by a mean direction \eqn{\mu} and a concentration
-#' \eqn{\kappa > 0}, with density
-#' \eqn{f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}} on
-#' \eqn{[-\pi, \pi)}. It inherits from `continuous_distrib`; the methods
-#' listed below are registered on it directly.
+#' This is the S7 class of the von Mises family, the natural distribution for an
+#' angle, parametrized by a mean direction \eqn{\mu} and a concentration
+#' \eqn{\kappa > 0}, with density \eqn{f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi
+#' I_0(\kappa)\}} on \eqn{[-\pi, \pi)}. It inherits from `continuous_distrib`;
+#' the methods listed below are registered on it directly.
 #'
 #' The support of this family has the topology of a circle: the two ends of
 #' the interval are the same point, so the density need not vanish at either.
@@ -37,7 +36,8 @@ NULL
 #'   [distrib_cdf.VonMises1Distrib()] for the Bessel series.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.VonMises1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.VonMises1Distrib] and
 #'   [`distrib_rng()`][distrib_rng.VonMises1Distrib];
@@ -741,11 +741,11 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' @seealso
 #' [vonmises2_distrib()] for the same law in the mean resultant length;
 #' [gaussian1_distrib()] for the analogous family on the line, which the von
-#' Mises approaches at a large concentration;
-#' [numericals7::log_bessel_i()] and [numericals7::bessel_i_ratio()] for the
-#' Bessel machinery; [fit_distrib()] to estimate the parameters;
-#' [check_distrib()] to validate a family of your own against the same battery
-#' this one passes; [VonMises1Distrib] for the class.
+#' Mises approaches at a large concentration; [numericals7::log_bessel_i()] and
+#' [numericals7::bessel_i_ratio()] for the Bessel machinery; [fit_distrib()] to
+#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' against the same battery that this one passes; [VonMises1Distrib] for the
+#' class.
 #' @export
 vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
                              link_kappa = log_link()) {

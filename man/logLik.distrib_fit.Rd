@@ -16,7 +16,7 @@ An object of class \code{logLik}: a single number carrying the attributes
 Returns the maximized log-likelihood as a \code{logLik} object, so that
 \code{\link[stats:AIC]{stats::AIC()}}, \code{\link[stats:AIC]{stats::BIC()}} and anything else in \pkg{stats} that reads
 one can be applied to a fit. The value is summed over observations and is
-\strong{not} divided by \eqn{n}, whatever scaling the optimizer worked with.
+not divided by \eqn{n}, whatever scaling the optimizer worked with.
 
 The \code{df} attribute is the number of estimated parameters, which for these
 fits is every parameter of the family: a fit estimates all of them, so

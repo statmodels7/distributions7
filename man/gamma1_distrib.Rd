@@ -24,17 +24,16 @@ An S7 object of class \code{Gamma1Distrib}, inheriting from
 \description{
 Builds the distribution object for the gamma family parametrized by its mean
 \eqn{\mu > 0} and a dispersion \eqn{\phi > 0}, so that
-\eqn{\operatorname{Var}(Y) = \phi\mu^2}. This is the parametrization a
-generalized linear model uses. The returned object carries closed-form
+\eqn{\operatorname{Var}(Y) = \phi\mu^2}. This is the parametrization that
+a generalized linear model uses. The returned object carries closed-form
 derivatives of the log-density to fourth order, in the parameters and in the
 response, and closed-form moments. The fifth order and the mixed
 derivatives of order three and four in the response and the parameters
 come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive.
+logarithm, because both parameters are positive.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (0, \infty)} is
@@ -53,9 +52,10 @@ the shape is 1 and the family is the exponential, \code{\link[=exponential_distr
 at \eqn{\phi \to 0} it tends to a Gaussian with variance \eqn{\phi\mu^2}.
 
 This is the same law as \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which carries the mean and the
-\emph{variance}, the two being related by \eqn{\sigma^2 = \phi\mu^2}. They are
-separate families because the second parameter is a different quantity in
-each, with its own interpretation, standard error and interval.
+\emph{variance}, and the two second parameters are related by
+\eqn{\sigma^2 = \phi\mu^2}. They are separate families because the second
+parameter is a different quantity in each, with its own interpretation,
+standard error and interval.
 }
 
 \section{Derivatives}{
@@ -69,7 +69,7 @@ and the expected Hessian is
       \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
         s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.}
 The zero off-diagonal makes the mean and the dispersion orthogonal, so the
-mean equation can be fitted with the dispersion held at any value without
+mean equation can be fitted at any fixed value of the dispersion without
 biasing it.
 
 Every derivative in \eqn{\phi} is the corresponding derivative in \eqn{s}
@@ -78,16 +78,16 @@ carried across by the one-variable chain rule, with \eqn{s' = -s^2},
 polygamma function is evaluated once. Two quantities in those derivatives
 cancel as \eqn{s} grows, \eqn{\log s - \psi(s)} and its polygamma analogues;
 each is computed as a polygamma minus its own leading asymptote, so the
-digits survive at the large shape a nearly Gaussian gamma reaches.
+digits survive at the large shape that a nearly Gaussian gamma reaches.
 
 Third and fourth orders are closed form as well, observed and expected, in
 \code{\link[=distrib_deriv3.Gamma1Distrib]{distrib_deriv3.Gamma1Distrib()}} and \code{\link[=distrib_deriv4.Gamma1Distrib]{distrib_deriv4.Gamma1Distrib()}}, as
 are the derivatives in the response, \code{\link[=distrib_grad_y.Gamma1Distrib]{distrib_grad_y.Gamma1Distrib()}} and
 \code{\link[=distrib_hess_y.Gamma1Distrib]{distrib_hess_y.Gamma1Distrib()}}. The derivatives of the \emph{distribution}
-function in the parameters have no elementary form here, the derivative of
-an incomplete gamma in its shape being hypergeometric, and are computed by
-a compiled quadrature of the density times the derivatives of the
-log-density.
+function in the parameters have no elementary form here because the
+derivative of an incomplete gamma in its shape is hypergeometric, and they
+are computed by a compiled quadrature of the density times the derivatives
+of the log-density.
 }
 
 \section{Estimation}{
@@ -118,12 +118,12 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 2, rate = 1 / 1.5))
 
-# Moments in closed form: skewness 2 sqrt(phi), excess kurtosis 6 phi.
+# The moments have closed forms: skewness 2 sqrt(phi), excess kurtosis 6 phi.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 c(2 * sqrt(0.5), 6 * 0.5)
 
-# Fitting recovers the parameters, the mean exactly at the sample mean.
+# Fitting recovers the parameters, and the fitted mean equals the sample mean.
 set.seed(4)
 z <- distrib_rng(d, 2000, th)
 fit <- fit_distrib(d, z)

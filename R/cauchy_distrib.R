@@ -5,7 +5,7 @@ NULL
 #' @name CauchyDistrib
 #'
 #' @description
-#' The S7 class of the Cauchy family with location \eqn{\mu} and scale
+#' This is the S7 class of the Cauchy family with location \eqn{\mu} and scale
 #' \eqn{\sigma > 0}, the Student's t on one degree of freedom, with density
 #' \eqn{f(y) = [\pi\sigma(1 + ((y-\mu)/\sigma)^2)]^{-1}} on the whole real line.
 #' It inherits from `continuous_distrib`, so every generic of the `distrib`
@@ -37,7 +37,8 @@ NULL
 #'   [distrib_gradient.CauchyDistrib()] for the redescending score.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.CauchyDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.CauchyDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.CauchyDistrib] and
@@ -87,7 +88,7 @@ NULL
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' c(mean(d, th), variance(d, th))
 #'
-#' # What does exist is the median and the half-interquartile range.
+#' # The median and the half-interquartile range exist.
 #' q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #' c(median = q[2], half_iqr = (q[3] - q[1]) / 2)
 CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
@@ -129,7 +130,8 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #' d <- cauchy_distrib()
 #' y <- c(-1.2, 0.3, 2.5)
 #'
-#' # The same values as stats::dcauchy at this parametrization.
+#' # The density takes the same values as stats::dcauchy at this
+#' # parametrization.
 #' all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
 #'           dcauchy(y, location = 0.4, scale = 1.5))
 #'
@@ -213,7 +215,7 @@ S7::method(distrib_cdf, CauchyDistrib) <- function(distrib, q, theta, lower.tail
 #' by calling [stats::qcauchy()]. The median is \eqn{\mu} and the quartiles are
 #' \eqn{\mu \pm \sigma}, so the two parameters are read off this function
 #' directly: they are the median and the half-interquartile range, the
-#' location and spread this family has in place of a mean and a standard
+#' location and spread that this family has in place of a mean and a standard
 #' deviation.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
@@ -233,8 +235,9 @@ S7::method(distrib_cdf, CauchyDistrib) <- function(distrib, q, theta, lower.tail
 #'   `max(length(p), length(mu), length(sigma))`.
 #'
 #' @seealso [distrib_cdf.CauchyDistrib()], which this inverts;
-#'   [skewness.CauchyDistrib()] for why the median and the half-interquartile
-#'   range are what this family offers; [distrib_quantile()] for the generic.
+#'   [skewness.CauchyDistrib()] for why this family has the median and the
+#'   half-interquartile range in place of moments; [distrib_quantile()] for the
+#'   generic.
 #'
 #' @examples
 #' d <- cauchy_distrib()
@@ -243,7 +246,7 @@ S7::method(distrib_cdf, CauchyDistrib) <- function(distrib, q, theta, lower.tail
 #' # The median is mu and the quartiles are mu -/+ sigma exactly.
 #' distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.01, 0.5, 0.99)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
@@ -296,7 +299,7 @@ S7::method(distrib_quantile, CauchyDistrib) <- function(distrib, p, theta, lower
 #' identical(a, rcauchy(3, location = 0.4, scale = 1.5))
 #'
 #' # The sample median converges on mu; the sample mean does not converge at
-#' # all, being itself Cauchy at every sample size.
+#' # all, because it is itself Cauchy at every sample size.
 #' set.seed(4)
 #' z <- distrib_rng(d, 1e5, list(mu = 3, sigma = 2))
 #' n <- c(1e2, 1e3, 1e4, 1e5)
@@ -323,9 +326,8 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta, ...) {
 #' The score in \eqn{\mu} is redescending: it rises to \eqn{1/\sigma} at
 #' \eqn{r = \sigma} and falls back towards zero as \eqn{|r|} grows, so an
 #' observation far from the location contributes almost nothing to the
-#' estimating equation. That is the mechanism behind the robustness of a Cauchy
-#' likelihood, and it is also why the log-likelihood can have several local
-#' maxima.
+#' estimating equation. This behavior makes a Cauchy likelihood robust, and it
+#' also makes several local maxima of the log-likelihood possible.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations.
@@ -344,8 +346,8 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta, ...) {
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
-#' \eqn{\sigma > 0} the scale. Neither is a moment, because the family has no
-#' moments.
+#' \eqn{\sigma > 0} the scale. The two parameters are not moments, because
+#' the family has no moments.
 #'
 #' @seealso [distrib_hessian.CauchyDistrib()] for the second derivatives,
 #'   [distrib_expected_hessian.CauchyDistrib()] for their expectation,
@@ -358,13 +360,13 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out.
 #' r <- y - 0.4; dd <- 1.5^2 + r^2
 #' all.equal(g$mu, 2 * r / dd)
 #' all.equal(g$sigma, (r^2 - 1.5^2) / (1.5 * dd))
 #'
 #' # The score redescends: it peaks at r = sigma, where it is 1/sigma, and
-#' # decays afterwards. An outlier is discounted, not chased.
+#' # decays afterwards. An outlier therefore contributes little to the score.
 #' r <- c(0, 0.75, 1.5, 3, 6, 12)
 #' round(distrib_gradient(d, 0.4 + r, th)$mu, 4)
 #' 1 / 1.5
@@ -390,8 +392,8 @@ S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale
 #' The curvature in \eqn{\mu} turns positive wherever \eqn{|r| > \sigma}, so
 #' a single observation beyond one scale unit contributes convexity and the
 #' observed information can fail to be positive definite. The expected values
-#' are well behaved, which is why Fisher scoring is the steadier route on this
-#' family; see [distrib_expected_hessian.CauchyDistrib()].
+#' are well behaved, so Fisher scoring is the steadier route on this family;
+#' see [distrib_expected_hessian.CauchyDistrib()].
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations.
@@ -421,7 +423,7 @@ S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' h <- distrib_hessian(d, y, th)
 #'
-#' # The closed forms, written out.
+#' # The closed forms are written out.
 #' r <- y - 0.4; dd <- 1.5^2 + r^2
 #' all.equal(h$mu_mu, 2 * (r^2 - 1.5^2) / dd^2)
 #' all.equal(h$mu_sigma, -4 * 1.5 * r / dd^2)
@@ -494,7 +496,8 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #' lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #' -1 / (2 * 1.5^2)
 #'
-#' # Half the information a Gaussian of the same scale carries in its location.
+#' # The information in the location is half the information that a Gaussian
+#' # of the same scale carries.
 #' distrib_expected_hessian(gaussian1_distrib(), 0, th)$mu_mu
 #'
 #' # The observed Hessian averages onto it over a large sample, although the
@@ -514,7 +517,7 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #' kernel. Every component is a rational function of \eqn{r = y - \mu} and
 #' \eqn{\sigma} with a power of \eqn{d = \sigma^2 + r^2} in the denominator,
 #' so all of them are bounded in \eqn{y}. Three of the four tend to zero as
-#' \eqn{|r|} grows; the component in \eqn{\sigma} alone tends to
+#' \eqn{|r|} grows; the component that is pure in \eqn{\sigma} tends to
 #' \eqn{2/\sigma^3}. The kernel evaluates them as described in
 #' [distrib_deriv5.CauchyDistrib()], without forming \eqn{r^2}.
 #'
@@ -584,8 +587,8 @@ S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' kernel of the third order. As at third order, every component is a
 #' rational function of \eqn{r = y - \mu} and \eqn{\sigma} with a power of
 #' \eqn{d = \sigma^2 + r^2} in the denominator, and so is bounded in
-#' \eqn{y}; the component in \eqn{\sigma} alone tends to \eqn{-6/\sigma^4}
-#' as \eqn{|r|} grows, and the others to zero.
+#' \eqn{y}; the component that is pure in \eqn{\sigma} tends to
+#' \eqn{-6/\sigma^4} as \eqn{|r|} grows, and the others to zero.
 #'
 #' With `expected = TRUE` the expectations under the model are returned, also
 #' in closed form; the two components odd in \eqn{r} vanish by symmetry. Both
@@ -657,8 +660,9 @@ S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' plus \eqn{(-1)^{n-1}(n-1)!/\sigma^n} from \eqn{\log\sigma} in the
 #' component that is pure in \eqn{\sigma}. The kernel forms \eqn{1/Y} by
 #' Smith's division and never forms \eqn{(y - \mu)^2} or \eqn{\sigma^2}, so
-#' no two terms cancel and the components stay finite at any residual. The
-#' observed orders one to four are computed by the same formula. With
+#' the terms do not cancel one another and the components stay finite at any
+#' residual. The observed orders one to four are computed by the same
+#' formula. With
 #' `scale = "link"` the components are composed with the link derivatives
 #' by the routine that every family with a fifth-order kernel uses.
 #'
@@ -682,8 +686,8 @@ S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' @examples
 #' d <- cauchy_distrib()
 #' d5 <- distrib_deriv5(d, c(-1.2, 0.3, 1e200), list(mu = 0.4, sigma = 1.5))
-#' # Finite far in the tail, where the component pure in sigma tends to
-#' # 24/sigma^5.
+#' # The derivatives are finite far in the tail, where the component pure in
+#' # sigma tends to 24/sigma^5.
 #' c(d5$sigma_sigma_sigma_sigma_sigma[3], 24 / 1.5^5)
 S7::method(distrib_deriv5, CauchyDistrib) <- function(distrib, y, theta,
     scale = c("parameter", "link"), ..., threads = 1L) {
@@ -729,7 +733,7 @@ S7::method(distrib_deriv5, CauchyDistrib) <- function(distrib, y, theta,
 #' # the location.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
-#' # Bounded by 1/sigma however far out the observation is.
+#' # The derivative is bounded by 1/sigma however far out the observation is.
 #' max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
 #' 1 / 1.5
 S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
@@ -748,11 +752,11 @@ S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
 #' response,
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{2(r^2 - \sigma^2)}{(\sigma^2 + r^2)^2},
 #'       \qquad r = y - \mu,}
-#' in closed form. Being a location family, the Cauchy has the same curvature in
-#' the response as in its location, so this equals the `mu_mu` component of
-#' [distrib_hessian.CauchyDistrib()]. It is negative only for \eqn{|r| <
+#' in closed form. Because the Cauchy is a location family, it has the same
+#' curvature in the response as in its location, so this equals the `mu_mu`
+#' component of [distrib_hessian.CauchyDistrib()]. It is negative only for \eqn{|r| <
 #' \sigma}: the log-density is concave near the location and convex in the
-#' tails, which is how heavy tails appear on the log scale.
+#' tails, and in this way heavy tails appear on the log scale.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations.
@@ -775,10 +779,11 @@ S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' distrib_hess_y(d, y, th)
 #'
-#' # A location family: the same curvature as in the location.
+#' # For a location family, the curvature is the same as in the location.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
-#' # Concave within one scale unit of the location, convex beyond it.
+#' # The log-density is concave within one scale unit of the location and
+#' # convex beyond it.
 #' z <- c(0, 1, 1.5, 2, 5)
 #' data.frame(r = z * 1.5,
 #'            hess_y = distrib_hess_y(d, 0.4 + z * 1.5, th),
@@ -803,9 +808,9 @@ S7::method(distrib_hess_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
 #' \eqn{n} with \eqn{j} derivatives in \eqn{\mu} and \eqn{k} in
 #' \eqn{\sigma} is one term,
 #' \deqn{-\tfrac{1}{\pi}(-1)^{j+n-1}(n-1)!\,\mathrm{Im}(i^k Y^{-n}),}
-#' computed by a compiled kernel without squaring the residual. The log scale
-#' divides by the probability of the requested tail, which [stats::pcauchy()]
-#' returns for either tail.
+#' computed by a compiled kernel without squaring the residual. On the log
+#' scale the method divides by the probability of the requested tail, which
+#' [stats::pcauchy()] returns for either tail.
 #'
 #' @param order The derivative order, 1 to 4.
 #'
@@ -855,8 +860,8 @@ cauchy_cdf_method <- function(order) {
 #' choice when the data carry gross outliers.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
-#'   ranging over the whole line already.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because the
+#'   location already ranges over the whole line.
 #' @param link_sigma A `link` object from `linkfunctions7` for the scale
 #'   \eqn{\sigma}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -877,9 +882,9 @@ cauchy_cdf_method <- function(order) {
 #' for every \eqn{p \ge 1} and the family has no mean, no variance and no
 #' higher moment. `mean()`, `variance()`, `skewness()` and `kurtosis()` return
 #' `NaN` directly, without attempting a quadrature over a divergent integral;
-#' [skewness.CauchyDistrib()] gives the argument in full. What the family does
-#' have is a median, equal to \eqn{\mu}, and quartiles at \eqn{\mu \pm \sigma},
-#' so \eqn{\sigma} is the half-interquartile range.
+#' [skewness.CauchyDistrib()] gives the argument in full. The family has a
+#' median, equal to \eqn{\mu}, and quartiles at \eqn{\mu \pm \sigma}, so
+#' \eqn{\sigma} is the half-interquartile range.
 #'
 #' # Derivatives
 #'
@@ -915,7 +920,8 @@ cauchy_cdf_method <- function(order) {
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
-#' \eqn{\sigma > 0} the scale. Neither is a moment. \eqn{\eta} is a parameter on
+#' \eqn{\sigma > 0} the scale. The two parameters are not moments.
+#' \eqn{\eta} is a parameter on
 #' the unconstrained scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
 #'
 #' @return An S7 object of class `CauchyDistrib`, inheriting from

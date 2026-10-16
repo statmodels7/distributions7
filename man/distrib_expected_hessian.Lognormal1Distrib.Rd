@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma2} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -51,9 +51,9 @@ variance of \eqn{\log Y}. Because the values do not depend on the data,
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The lognormal
+expectation of the observed information under the model. The lognormal
 is a regular family, so the second Bartlett identity holds and this equals
 the variance of the score.
 }
@@ -81,8 +81,7 @@ vapply(c(-2, 0, 5),
 }
 \seealso{
 \code{\link[=distrib_hessian.Lognormal1Distrib]{distrib_hessian.Lognormal1Distrib()}} for the observed quantity
-this is the expectation of,
-\code{\link[=distrib_expected_hessian.Gaussian2Distrib]{distrib_expected_hessian.Gaussian2Distrib()}}, which returns the same
-numbers, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+whose expectation this is, \code{\link[=distrib_expected_hessian.Gaussian2Distrib]{distrib_expected_hessian.Gaussian2Distrib()}},
+which returns the same numbers, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at
+each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

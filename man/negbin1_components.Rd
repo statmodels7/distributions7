@@ -75,7 +75,7 @@ and one further \eqn{\theta}-derivative sends
       -(a+b+j)\,c_j r^j G^{(a+j)} - c_j r^{j+1} G^{(a+j+1)},}
 because \eqn{\mathrm{d}r/\mathrm{d}\theta = -r/\theta} contributes to both
 the power of \eqn{r} and the order of \eqn{G}. The coefficients are
-integers, and the recursion is \strong{run rather than solved}, so every order is
+integers, and the recursion is run rather than solved, so every order is
 exact with nothing transcribed beyond this one step.
 }
 

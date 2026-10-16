@@ -35,10 +35,10 @@ d <- gamma1_distrib()
 y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 
-# Written out at the implied shape and rate.
+# The derivative is written out at the implied shape and rate.
 all.equal(distrib_grad_y(d, y, th), (2 - 1) / y - 1 / 1.5)
 
-# Zero at the mode, positive below it and negative above.
+# The derivative is zero at the mode, positive below it and negative above.
 mode <- (1 / 0.5 - 1) / (1 / (0.5 * 3))
 c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
 distrib_grad_y(d, c(0.5, 5), th)

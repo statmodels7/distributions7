@@ -26,7 +26,7 @@ Computes \eqn{\partial^2 \ell / \partial y^2} in closed form. With
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\nu}{\sigma^2 D^3}.}
 The family is a location family, so this equals the pure-location entry of
 \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}}, with no sign change; two derivatives
-in \eqn{\mu} carry two factors of \eqn{-1}. It is \strong{negative everywhere},
+in \eqn{\mu} carry two factors of \eqn{-1}. It is negative everywhere,
 so the log-density is concave in the response, and it decays like
 \eqn{|r|^{-3}} in the tails.
 }

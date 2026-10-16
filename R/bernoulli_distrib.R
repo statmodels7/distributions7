@@ -5,11 +5,11 @@ NULL
 #' @name BernoulliDistrib
 #'
 #' @description
-#' The S7 class of the Bernoulli family parametrized by its success probability
-#' \eqn{\mu \in (0, 1)}, with mass \eqn{P(Y = 1) = \mu} and
-#' \eqn{P(Y = 0) = 1 - \mu}. It inherits from `discrete_distrib`, so
-#' expectations over its support are sums and no derivative with respect to
-#' the response is defined.
+#' This is the S7 class of the Bernoulli family parametrized by its success
+#' probability \eqn{\mu \in (0, 1)}, with mass \eqn{P(Y = 1) = \mu} and \eqn{P(Y
+#' = 0) = 1 - \mu}. It inherits from `discrete_distrib`, so expectations over
+#' its support are sums, and derivatives with respect to the response are not
+#' defined.
 #'
 #' The mean is \eqn{\mu} and the variance \eqn{\mu(1-\mu)}, so the two are tied
 #' and the family has no dispersion parameter of its own. The default link is
@@ -40,7 +40,8 @@ NULL
 #'   [linkfunctions7::logit_link()], the canonical link.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.BernoulliDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.BernoulliDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.BernoulliDistrib] and
@@ -91,8 +92,8 @@ BernoulliDistrib <- S7::new_class("BernoulliDistrib", parent = discrete_distrib)
 #' Computes the Bernoulli probability mass
 #' \deqn{P(Y = y; \mu) = \mu^{y}(1-\mu)^{1-y}, \qquad y \in \{0, 1\},}
 #' by calling [stats::dbinom()] at `size = 1`. The `pdf` in the generic's name
-#' is the density with respect to counting measure, so what this returns is a
-#' probability.
+#' is the density with respect to counting measure, so the value that the
+#' method returns is a probability.
 #'
 #' @param distrib A `BernoulliDistrib` object, from [bernoulli_distrib()].
 #' @param y A numeric vector of zeros and ones. Any other value gives 0, and a
@@ -167,7 +168,7 @@ S7::method(distrib_pdf, BernoulliDistrib) <- function(distrib, y, theta, log = F
 #' d <- bernoulli_distrib()
 #' th <- list(mu = 0.3)
 #'
-#' # Three values, whatever q is.
+#' # The distribution function takes three values, whatever q is.
 #' distrib_cdf(d, c(-1, 0, 0.5, 1, 2), th)
 #'
 #' # The jump at 1 is exactly the mass there.
@@ -215,7 +216,7 @@ S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.t
 #' d <- bernoulli_distrib()
 #' th <- list(mu = 0.3)
 #'
-#' # One step, at p = 1 - mu.
+#' # The quantile function is one step, at p = 1 - mu.
 #' distrib_quantile(d, c(0.1, 0.5, 0.69, 0.71, 0.99), th)
 #'
 #' # The median is 0 whenever mu < 1/2 and 1 whenever mu > 1/2.
@@ -242,8 +243,9 @@ S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lo
 #' @param n A single positive integer, the number of draws.
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of length `n`. A value of length 1 is recycled, so a vector
-#'   of length `n` draws one variate per probability, the shape a regression
-#'   on a Bernoulli response supplies. `mu` must lie in \eqn{(0, 1)}.
+#'   of length `n` draws one variate per probability, which is the shape that
+#'   a regression on a Bernoulli response supplies. `mu` must lie in
+#'   \eqn{(0, 1)}.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return An integer vector of `n` zeros and ones.
@@ -265,7 +267,7 @@ S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lo
 #' z <- distrib_rng(d, 2e4, list(mu = 0.3))
 #' c(proportion = mean(z), variance = var(z), p_times_q = 0.3 * 0.7)
 #'
-#' # A probability per observation, which is what a regression supplies.
+#' # The probability varies by observation, as it does in a regression.
 #' set.seed(5)
 #' p <- plogis(seq(-2, 2, length.out = 6))
 #' rbind(p = round(p, 3), draw = distrib_rng(d, 6, list(mu = p)))
@@ -322,7 +324,7 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta, ...) {
 #' y <- c(0, 1, 1)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out.
+#' # The method agrees with the closed form written out.
 #' all.equal(distrib_gradient(d, y, th)$mu, (y - 0.3) / (0.3 * 0.7))
 #'
 #' # On the canonical logit link the score is the raw residual.
@@ -344,8 +346,8 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, sc
 #' probability, one value per observation, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}.}
 #' It is negative for every admissible \eqn{\mu} and takes one of two values
-#' according to whether the observation is 0 or 1. Each term is formed by
-#' dividing its coefficient by the base once per power, and a term with a zero
+#' according to whether the observation is 0 or 1. The kernel divides the
+#' coefficient of each term by the base once per power, and a term with a zero
 #' coefficient contributes zero, so at \eqn{y = 0} the value is
 #' \eqn{-1/(1-\mu)^2} however small \eqn{\mu} is.
 #'
@@ -384,7 +386,8 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, sc
 #' y <- c(0, 1, 1)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out; two values only.
+#' # The method agrees with the closed form written out, and the result has
+#' # two values only.
 #' all.equal(distrib_hessian(d, y, th)$mu_mu,
 #'           -y / 0.3^2 - (1 - y) / 0.7^2)
 #'
@@ -451,19 +454,19 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
-#' @seealso [distrib_hessian.BernoulliDistrib()] for the observed quantity this
-#'   is the expectation of, [fisher_scoring()], which inverts it, and
+#' @seealso [distrib_hessian.BernoulliDistrib()] for the observed quantity whose
+#'   expectation this is, [fisher_scoring()], which inverts it, and
 #'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- bernoulli_distrib()
 #' th <- list(mu = 0.3)
 #'
-#' # A single number, the reciprocal of the variance.
+#' # The result is a single number, the reciprocal of the variance.
 #' unique(distrib_expected_hessian(d, c(0, 1, 1), th)$mu_mu)
 #' -1 / (0.3 * 0.7)
 #'
-#' # Least information where the outcome is most uncertain.
+#' # The information is least where the outcome is most uncertain.
 #' vapply(c(0.5, 0.1, 0.01), function(p)
 #'   -distrib_expected_hessian(d, 0, list(mu = p))$mu_mu, numeric(1))
 #'
@@ -484,8 +487,8 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(1-y)}{(1-\mu)^3}.}
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives
-#' \eqn{2/\mu^2 - 2/(1-\mu)^2}. Both routes are closed form, so no quadrature
-#' is run and `approx` and `nsim` are ignored.
+#' \eqn{2/\mu^2 - 2/(1-\mu)^2}. Both routes are closed form, so the method
+#' runs no quadrature and ignores `approx` and `nsim`.
 #'
 #' The family has one parameter, so there is one component, where a
 #' two-parameter family carries four at this order.
@@ -522,11 +525,12 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #' y <- c(0, 1, 1)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out.
+#' # The method agrees with the closed form written out.
 #' all.equal(distrib_deriv3(d, y, th)$mu_mu_mu,
 #'           2 * y / 0.3^3 - 2 * (1 - y) / 0.7^3)
 #'
-#' # The expected value, and zero at mu = 1/2 by symmetry.
+#' # The expected value agrees with its closed form, and it is zero at
+#' # mu = 1/2 by symmetry.
 #' unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 #' 2 / 0.3^2 - 2 / 0.7^2
 #' distrib_deriv3(d, 0, list(mu = 0.5), expected = TRUE)$mu_mu_mu
@@ -583,11 +587,12 @@ S7::method(distrib_deriv3, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' y <- c(0, 1, 1)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out; negative at every admissible mu.
+#' # The method agrees with the closed form written out, and the value is
+#' # negative at every admissible mu.
 #' all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 #'           -6 * y / 0.3^4 - 6 * (1 - y) / 0.7^4)
 #'
-#' # The expected value.
+#' # The expected value agrees with its closed form.
 #' unique(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_mu_mu)
 #' -6 / 0.3^3 - 6 / 0.7^3
 #'
@@ -647,8 +652,9 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #'       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu(1-\mu).}
 #' The second carries no data, so the observed and the expected information
 #' coincide in exact arithmetic (the computed observed value loses accuracy at
-#' large \eqn{|\eta|}; see [distrib_hessian.BernoulliDistrib()]). Under a probit or a complementary log-log link they do not, and
-#' the choice between Fisher scoring and Newton's method becomes a real one.
+#' large \eqn{|\eta|}; see [distrib_hessian.BernoulliDistrib()]). Under a
+#' probit or a complementary log-log link they do not, and the choice between
+#' Fisher scoring and Newton's method becomes a real one.
 #'
 #' # Derivatives
 #'
@@ -700,10 +706,10 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' d <- bernoulli_distrib()
 #' d
 #'
-#' # The two masses, summing to one.
+#' # The two masses sum to one.
 #' distrib_pdf(d, c(0, 1), list(mu = 0.3))
 #'
-#' # Mean and variance are tied, the variance being maximal at 1/2.
+#' # Mean and variance are tied, and the variance is maximal at 1/2.
 #' vapply(c(0.1, 0.5, 0.9), function(p) {
 #'   th <- list(mu = p)
 #'   c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))

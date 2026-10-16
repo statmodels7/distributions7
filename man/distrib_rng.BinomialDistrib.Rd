@@ -40,7 +40,7 @@ z <- distrib_rng(d, 2e4, list(mu = 0.3))
 c(mean = mean(z), n_p = 10 * 0.3,
   var = var(z), n_p_q = 10 * 0.3 * 0.7)
 
-# Unequal group sizes, one per draw.
+# Unequal group sizes give one size per draw.
 set.seed(5)
 g <- binomial_distrib(size = c(5, 10, 20, 50))
 rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))

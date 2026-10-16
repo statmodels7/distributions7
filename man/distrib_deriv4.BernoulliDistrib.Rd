@@ -16,10 +16,10 @@ of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected value.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected value.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -51,11 +51,12 @@ d <- bernoulli_distrib()
 y <- c(0, 1, 1)
 th <- list(mu = 0.3)
 
-# The closed form, written out; negative at every admissible mu.
+# The method agrees with the closed form written out, and the value is
+# negative at every admissible mu.
 all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
           -6 * y / 0.3^4 - 6 * (1 - y) / 0.7^4)
 
-# The expected value.
+# The expected value agrees with its closed form.
 unique(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_mu_mu)
 -6 / 0.3^3 - 6 / 0.7^3
 

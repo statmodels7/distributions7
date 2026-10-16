@@ -13,7 +13,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -35,7 +35,7 @@ The residual is measured against \eqn{n\mu}, the expected count, and divided
 by \eqn{\mu(1-\mu)}. Its sum vanishes at \eqn{\hat\mu = \sum y_i / \sum n_i},
 the pooled proportion.
 
-On the \strong{link} scale with the default logit the generic's chain rule gives
+On the link scale with the default logit the generic's chain rule gives
 \eqn{\partial\ell/\partial\eta = y - n\mu}, the raw residual: the logit is
 the canonical link of this family.
 }
@@ -51,7 +51,7 @@ d <- binomial_distrib(size = 10)
 y <- c(0, 4, 10)
 th <- list(mu = 0.3)
 
-# The closed form, written out.
+# The closed form is written out.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 10 * 0.3) / (0.3 * 0.7))
 
 # On the canonical logit link the score is the raw residual.

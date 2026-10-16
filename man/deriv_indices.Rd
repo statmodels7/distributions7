@@ -30,7 +30,7 @@ multivariate families carry such names by construction
 as well as user-defined ones. Generating the indices and the names from the
 same enumeration removes the possibility of disagreement.
 
-Note that this is \strong{not} interchangeable with
+Note that this is not interchangeable with
 \code{deriv_index_list()} in \code{link_scale.R}: that one is ordered to match
 \code{\link[=hess_names]{hess_names()}} at order 2, which puts the diagonal first, whereas
 this one is lexicographic throughout to match \code{\link[=deriv_names]{deriv_names()}}. At

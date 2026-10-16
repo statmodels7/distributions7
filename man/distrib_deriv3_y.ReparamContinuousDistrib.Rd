@@ -9,7 +9,7 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters of the \strong{new} parametrization,
+\item{theta}{A named list of parameters of the new parametrization,
 carried to the parent's by \code{\link[=reparam_theta]{reparam_theta()}} before the call.}
 
 \item{...}{Passed to the parent's method.}

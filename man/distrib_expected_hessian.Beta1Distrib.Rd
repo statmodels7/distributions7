@@ -14,11 +14,11 @@ recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
 strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -45,9 +45,9 @@ form and with no quadrature or simulation. With \eqn{\alpha = \mu\phi},
 \deqn{\mathbb{E}\left[\ell^{(\mu\phi)}\right] =
         -\phi\left\{\mu\psi_1(\alpha) - (1-\mu)\psi_1(\beta)\right\}.}
 
-The first two are the observed values themselves, being free of the data.
-The third drops the log-odds residual the observed mixed entry carries,
-whose expectation is zero because
+The first two coincide with the observed values, because they are free of
+the data. The third drops the log-odds residual that the observed mixed
+entry carries, whose expectation is zero because
 \eqn{\mathbb{E}[\log\{Y/(1-Y)\}] = \psi(\alpha) - \psi(\beta)}.
 
 The mixed entry is non-zero except at \eqn{\mu = 1/2}, where the two
@@ -60,9 +60,9 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The beta is a
+expectation of the observed information under the model. The beta is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score.
 }
@@ -73,7 +73,7 @@ th <- list(mu = 0.4, phi = 5)
 eh <- distrib_expected_hessian(d, c(0.2, 0.5, 0.8), th)
 lapply(eh, unique)
 
-# Written out with the trigamma function.
+# The three closed forms are written out with the trigamma function.
 a <- 0.4 * 5
 b <- 0.6 * 5
 c(-5^2 * (trigamma(a) + trigamma(b)),
@@ -91,7 +91,7 @@ c(observed = mean(distrib_hessian(d, z, th)$mu_phi),
 distrib_expected_hessian(d, 0.5, list(mu = 0.5, phi = 5))$mu_phi
 }
 \seealso{
-\code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the observed quantity this is
-the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
+\code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

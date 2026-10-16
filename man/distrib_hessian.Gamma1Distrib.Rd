@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -40,10 +40,10 @@ carried across by the one-variable chain rule, with
 \eqn{s' = -s^2} and \eqn{s'' = 2s^3}, so each polygamma function is
 evaluated once.
 
-The curvature in \eqn{\mu} turns \strong{positive} wherever \eqn{y < \mu/2}, so
+The curvature in \eqn{\mu} turns positive wherever \eqn{y < \mu/2}, so
 the observed information of a gamma is not positive definite at every data
-point. Its expectation is, which is one reason a gamma model is fitted by
-Fisher scoring; see \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}}.
+point. Its expectation is positive definite, which is one reason why a gamma
+model is fitted by Fisher scoring; see \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}}.
 }
 \section{Notation}{
 
@@ -58,7 +58,7 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 h <- distrib_hessian(d, y, th)
 
-# The curvature in mu, written out, and positive at y = 1 < mu/2 = 1.5.
+# The curvature in mu is written out, and it is positive at y = 1 < mu/2 = 1.5.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(h$mu_mu, s * (1 - 2 * z) / 3^2)

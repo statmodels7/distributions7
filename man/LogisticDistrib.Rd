@@ -46,7 +46,7 @@ object built by \code{\link[=logistic_distrib]{logistic_distrib()}} they hold \c
 \eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the logistic family with mean \eqn{\mu} and scale
+This is the S7 class of the logistic family with mean \eqn{\mu} and scale
 \eqn{\sigma > 0}, whose distribution function is the logistic sigmoid
 \eqn{F(q) = [1 + e^{-(q-\mu)/\sigma}]^{-1}} on the whole real line. It
 inherits from \code{continuous_distrib}, so every generic of the \code{distrib} class
@@ -55,7 +55,7 @@ everything else comes from the parent.
 
 The family is symmetric about \eqn{\mu}, which is therefore both the mean
 and the median. Its variance is \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is
-\strong{not} the standard deviation, and its excess kurtosis is \eqn{6/5},
+not the standard deviation, and its excess kurtosis is \eqn{6/5},
 slightly heavier than a Gaussian's.
 
 Build one with \code{\link[=logistic_distrib]{logistic_distrib()}}. This page documents the raw S7
@@ -64,7 +64,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.LogisticDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.LogisticDistrib]{distrib_cdf()}},

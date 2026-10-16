@@ -12,8 +12,8 @@ gpd_distrib(link_sigma = log_link(), link_xi = identity_link())
 \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
 \item{link_xi}{A link object for the shape \eqn{\xi}, which is
-unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the shape
-being free to take either sign.}
+unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the
+shape is free to take either sign.}
 }
 \value{
 An S7 object of class \link{GPDDistrib}, inheriting from
@@ -26,7 +26,7 @@ and shape \eqn{\xi}. It is the family of exceedances over a high threshold,
 and the natural companion of \code{\link[=gumbel_distrib]{gumbel_distrib()}} in an analysis of extremes.
 
 At \eqn{\xi = 0} it is the exponential, at \eqn{\xi > 0} it has a
-polynomial tail, and at \eqn{\xi < 0} it has a \strong{finite upper endpoint} at
+polynomial tail, and at \eqn{\xi < 0} it has a finite upper endpoint at
 \eqn{-\sigma/\xi}. The last case makes the family non-regular, so the
 expected information exists only for \eqn{\xi > -1/2}.
 }
@@ -52,9 +52,10 @@ heavy-tailed members of the family. For the same reason \code{\link[=mv_sigma]{m
 
 \section{The support depends on the parameters}{
 For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}, so it depends on
-the parameters. What this costs is the automatic
+the parameters. This removes the automatic
 license to differentiate under the integral sign, on which the Bartlett
-identities rest. Two things survive and one does not:
+identities rest. The first two results below remain valid and the third
+fails:
 \itemize{
 \item the derivatives returned are correct as derivatives of the log-density at
 every admissible point, whatever the sign of \eqn{\xi};

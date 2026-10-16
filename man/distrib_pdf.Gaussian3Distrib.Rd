@@ -40,7 +40,7 @@ y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
           dnorm(y, mean = 1, sd = 2))
 
-# Same law as gaussian1 at sigma = 1/sqrt(tau), to the last bit.
+# This is the same law as gaussian1 at sigma = 1/sqrt(tau), to the last bit.
 all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
 

@@ -7,8 +7,8 @@
 gpd_endpoint(sigma, xi)
 }
 \arguments{
-\item{sigma}{A numeric vector of scales, strictly positive. Nothing is
-validated.}
+\item{sigma}{A numeric vector of scales, strictly positive. The function
+does not validate its arguments.}
 
 \item{xi}{A numeric vector of shapes, of any sign.}
 }
@@ -25,15 +25,15 @@ The endpoint depends on the parameters, which is the whole reason this
 family needs care. For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}
 and both ends of the interval move as the parameters do, so
 differentiating an expectation under the integral sign is not automatically
-licensed. The consequence a user meets is that the expected information
-exists only for \eqn{\xi > -1/2}; see \code{\link[=gpd_distrib]{gpd_distrib()}}.
+licensed. As a consequence, the expected information exists only for
+\eqn{\xi > -1/2}; see \code{\link[=gpd_distrib]{gpd_distrib()}}.
 
 The two arguments are recycled to a common length before the branch on
 the sign of the shape, so a vector of scales beside a scalar shape gives a
 vector of endpoints.
 }
 \examples{
-# Finite only for a negative shape.
+# The endpoint is finite only for a negative shape.
 distributions7:::gpd_endpoint(2, c(-0.4, -0.1, 0, 0.3))
 
 # The density really is zero at and beyond it.

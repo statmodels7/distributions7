@@ -14,7 +14,7 @@ and the tables are rounded to this many decimal places by
 \item{...}{Unused, accepted for compatibility with \code{\link[base:print]{base::print()}}.}
 }
 \value{
-\code{x}, invisibly. Called for the output it writes.
+\code{x}, invisibly. The function is called for the output that it writes.
 }
 \description{
 Shows a fit in four blocks: the family and the sample size with the
@@ -24,8 +24,8 @@ that the interval that the fit built is visible beside its image. When
 every link is the identity the last block is replaced by a one-line note.
 
 The optimizer line names the method that produced the estimates, which is
-not always the one requested, and the convergence line names the \strong{stopping
-rule} that ended the run. Without that rule \code{converged} says nothing: it
+not always the one requested, and the convergence line names the stopping
+rule that ended the run. Without that rule \code{converged} says nothing: it
 records that some test was met. A run that did not converge also prints
 the score per
 observation at the point it stopped at, which is the one number that says

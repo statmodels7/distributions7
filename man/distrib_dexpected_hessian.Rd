@@ -46,8 +46,8 @@ the first term is fully symmetric and the second is not, so the result is
 keyed by \code{\link[=dexpected_names]{dexpected_names()}} rather than by the sorted triples
 \code{\link[=deriv_names]{deriv_names()}} uses at order three.
 
-\strong{The default method differences the family's own expected
-information}, one central stencil per parameter, which is a single
+The default method differences the family's own expected
+information, one central stencil per parameter, which is a single
 difference of an analytic quantity wherever that quantity is a written-out
 formula. Where it is not, the method signals an error: see
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}.

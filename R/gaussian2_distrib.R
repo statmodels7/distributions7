@@ -5,12 +5,12 @@ NULL
 #' @name Gaussian2Distrib
 #'
 #' @description
-#' The S7 class of the Gaussian (normal) family parametrized by its mean
-#' \eqn{\mu} and its variance \eqn{\sigma^2 > 0}, with density
-#' \eqn{f(y) = (2\pi\sigma^2)^{-1/2}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the whole
-#' real line. It inherits from `continuous_distrib`, so every generic of the
-#' `distrib` class applies to it; the methods listed below are registered on it
-#' directly and everything else comes from the parent.
+#' This is the S7 class of the Gaussian (normal) family parametrized by its mean
+#' \eqn{\mu} and its variance \eqn{\sigma^2 > 0}, with density \eqn{f(y) =
+#' (2\pi\sigma^2)^{-1/2}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the whole real line.
+#' It inherits from `continuous_distrib`, so every generic of the `distrib`
+#' class applies to it; the methods listed below are registered on it directly
+#' and everything else comes from the parent.
 #'
 #' Build one with [gaussian2_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -33,10 +33,11 @@ NULL
 #'   [gaussian1_distrib()] for the same law in mean and standard deviation and
 #'   [gaussian3_distrib()] for mean and precision;
 #'   [distrib_pdf.Gaussian2Distrib()] and [distrib_gradient.Gaussian2Distrib()]
-#'   for the closed forms this class supplies.
+#'   for the closed forms that this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The methods registered on this class are listed below, and each is linked
+#' to the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Gaussian2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gaussian2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Gaussian2Distrib] and
@@ -79,7 +80,8 @@ NULL
 #' d <- gaussian2_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@params_bounds
@@ -129,7 +131,7 @@ Gaussian2Distrib <- S7::new_class("Gaussian2Distrib", parent = continuous_distri
 #' all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
 #'           dnorm(y, mean = 1, sd = 2))
 #'
-#' # Same law as gaussian1 at sigma = sqrt(sigma2), to the last bit.
+#' # The law is the same as gaussian1 at sigma = sqrt(sigma2), to the last bit.
 #' all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
 #'           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
 #'
@@ -238,7 +240,7 @@ S7::method(distrib_cdf, Gaussian2Distrib) <- function(distrib, q, theta,
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # A quantile 40 standard deviations out, computed on the log scale
+#' # The quantile 40 standard deviations out is computed on the log scale
 #' # because the probability itself is zero in double precision.
 #' distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma2 = 1),
 #'                  log.p = TRUE)
@@ -274,7 +276,7 @@ S7::method(distrib_quantile, Gaussian2Distrib) <- function(distrib, p, theta,
 #' @examples
 #' d <- gaussian2_distrib()
 #'
-#' # Same generator as stats::rnorm at sd = sqrt(sigma2).
+#' # The generator is the same as stats::rnorm at sd = sqrt(sigma2).
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = c(0, 1, 2), sigma2 = c(1, 2.25, 4)))
 #' set.seed(2)
@@ -337,7 +339,7 @@ S7::method(distrib_rng, Gaussian2Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 1, sigma2 = 4)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # We write out the two closed forms.
 #' r <- y - 1
 #' all.equal(g$mu, r / 4)
 #' all.equal(g$sigma2, (r^2 - 4) / (2 * 4^2))
@@ -349,7 +351,7 @@ S7::method(distrib_rng, Gaussian2Distrib) <- function(distrib, n, theta, ...) {
 #' mle <- list(mu = mean(z), sigma2 = mean((z - mean(z))^2))
 #' vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 #'
-#' # Both parametrizations ride a log link on the spread, and log(sigma^2) is
+#' # Both parametrizations use a log link on the spread, and log(sigma^2) is
 #' # twice log(sigma), so the link-scale score here is half gaussian1's.
 #' distrib_gradient(d, y, th, scale = "link")$sigma2 /
 #'   distrib_gradient(gaussian1_distrib(), y, list(mu = 1, sigma = 2),
@@ -369,7 +371,7 @@ S7::method(distrib_gradient, Gaussian2Distrib) <- function(distrib, y, theta,
 #'       \ell^{(\mu v)} = -\dfrac{r}{v^2}, \qquad
 #'       \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}.}
 #' Only the curvature in \eqn{\mu} is free of the data; the other two vary with
-#' the residual, and their expectations are
+#' the residual, and their expectations are returned by
 #' [distrib_expected_hessian.Gaussian2Distrib()].
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
@@ -467,16 +469,17 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #' a regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score.
 #'
-#' @seealso [distrib_hessian.Gaussian2Distrib()] for the observed quantity this
-#'   is the expectation of, [distrib_expected_hessian.Gaussian1Distrib()] for
-#'   the same information in the standard deviation, [fisher_scoring()], which
-#'   inverts it at each step, and [distrib_expected_hessian()] for the generic.
+#' @seealso [distrib_hessian.Gaussian2Distrib()] for the observed quantity of
+#'   which this is the expectation,
+#'   [distrib_expected_hessian.Gaussian1Distrib()] for the same information in
+#'   the standard deviation, [fisher_scoring()], which inverts it at each step,
+#'   and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- gaussian2_distrib()
 #' th <- list(mu = 1, sigma2 = 4)
 #'
-#' # The three constants, one value per observation.
+#' # The three components are constants, with one value per observation.
 #' lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #'
 #' # The observed Hessian averages onto them over a large sample.
@@ -555,7 +558,7 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #' # The log-density is quadratic in mu, so the third derivative there is 0.
 #' d3$mu_mu_mu
 #'
-#' # The other three, written out.
+#' # We write out the other three.
 #' r <- y - 1
 #' all.equal(d3$mu_mu_sigma2, rep(1 / 4^2, 3))
 #' all.equal(d3$mu_sigma2_sigma2, 2 * r / 4^3)
@@ -629,7 +632,7 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' @seealso [distrib_deriv3.Gaussian2Distrib()] for the order below,
 #'   [distrib_deriv4()] for the generic, and
 #'   [distrib_expected_hessian.Gaussian2Distrib()] for the second-order
-#'   expectation these extend.
+#'   expectation that these extend.
 #'
 #' @examples
 #' d <- gaussian2_distrib()
@@ -638,13 +641,14 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' d4 <- distrib_deriv4(d, y, th)
 #' names(d4)
 #'
-#' # Quadratic in mu, so the two components with three or more mu are zero.
+#' # The log-density is quadratic in mu, so the two components with three or
+#' # more mu are zero.
 #' c(d4$mu_mu_mu_mu[1], d4$mu_mu_mu_sigma2[1])
 #'
 #' # The mixed second-second component is constant at -2/v^3.
 #' all.equal(d4$mu_mu_sigma2_sigma2, rep(-2 / 4^3, 3))
 #'
-#' # Expected values: -9/v^4 in the pure variance component.
+#' # The expected value in the pure variance component is -9/v^4.
 #' lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #' -9 / 4^4
 S7::method(distrib_deriv4, Gaussian2Distrib) <- function(distrib, y, theta, expected = FALSE,
@@ -739,8 +743,8 @@ S7::method(distrib_deriv5, Gaussian2Distrib) <- function(distrib, y, theta,
 #'
 #' all.equal(distrib_grad_y(d, y, th), -(y - 1) / 4)
 #'
-#' # A location family: the derivative in the response is minus the score in
-#' # the location.
+#' # Because the family is a location family, the derivative in the response
+#' # is minus the score in the location.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
 #' # It is the derivative of the log-density, so a central difference in y
@@ -761,8 +765,8 @@ S7::method(distrib_grad_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #'       \qquad v = \sigma^2,}
 #' in closed form. It does not depend on \eqn{y} or on \eqn{\mu}, so the value
 #' is constant within a parameter setting and is recycled to the length of `y`.
-#' Being a location family, the Gaussian has the same curvature in the response
-#' as in its location, and this equals the `mu_mu` component of
+#' Because the Gaussian is a location family, it has the same curvature in the
+#' response as in its location, and this equals the `mu_mu` component of
 #' [distrib_hessian.Gaussian2Distrib()].
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
@@ -785,10 +789,12 @@ S7::method(distrib_grad_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #'
 #' distrib_hess_y(d, y, th)
 #'
-#' # A location family: the same curvature as in the location.
+#' # Because the family is a location family, the curvature in the response
+#' # is the same as in the location.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
-#' # Negative everywhere, so the log-density is concave in the response.
+#' # The second derivative is negative everywhere, so the log-density is
+#' # concave in the response.
 #' all(distrib_hess_y(d, y, th) < 0)
 S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...) {
   rep(-1 / theta[[2]], length.out = length(y))
@@ -804,15 +810,14 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #' in the response and to fifth order in the parameters, and closed-form
 #' moments.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. The defaults are the
-#' identity for
-#' the mean, which is already free, and the logarithm for the variance, which
-#' keeps it positive at every predictor.
+#' identity for the mean, which is already free, and the logarithm for the
+#' variance, which keeps it positive at every predictor.
 #'
-#' @param link_mu A `link` object from `linkfunctions7` for the mean
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the mean ranging
-#'   over the whole line already.
+#' @param link_mu A `link` object from `linkfunctions7` for the mean \eqn{\mu}.
+#'   Defaults to [linkfunctions7::identity_link()], because the mean already
+#'   ranges over the whole line.
 #' @param link_sigma2 A `link` object from `linkfunctions7` for the variance
 #'   \eqn{\sigma^2}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -828,8 +833,8 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #' the excess kurtosis are 0. The numbering follows the literature where it has
 #' one: this parametrization is `NO2` in the gamlss family catalog.
 #'
-#' This is the same law as [gaussian1_distrib()] in different coordinates,
-#' \eqn{\sigma^2} here being the square of the \eqn{\sigma} there. The two are
+#' This is the same law as [gaussian1_distrib()] in different coordinates;
+#' here \eqn{\sigma^2} is the square of the \eqn{\sigma} there. The two are
 #' separate families and not one family under a link. A link changes the
 #' scale on which a parameter is modeled and leaves the parameter unchanged,
 #' whereas here the parameter, its interpretation, its standard error and its
@@ -850,8 +855,9 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #'       \mathbb{E}\left[\ell^{(vv)}\right] = -\dfrac{1}{2v^2}.}
 #' The zero off-diagonal makes the mean and the variance orthogonal, so their
 #' maximum likelihood estimates are asymptotically independent. Orthogonality
-#' holds in all three parametrizations of this family, the mean being
-#' orthogonal to any smooth function of the spread alone.
+#' holds in all three parametrizations of this family, because the mean is
+#' orthogonal to any smooth function of the spread that does not involve the
+#' mean.
 #'
 #' Third and fourth orders are closed form as well, observed and expected, in
 #' [distrib_deriv3.Gaussian2Distrib()] and [distrib_deriv4.Gaussian2Distrib()],
@@ -895,12 +901,12 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #' d <- gaussian2_distrib()
 #' d
 #'
-#' # The same law as gaussian1 at sigma = sqrt(sigma2).
+#' # The law is the same as gaussian1 at sigma = sqrt(sigma2).
 #' y <- c(-1.2, 0.3, 2.5)
 #' all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
 #'           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
 #'
-#' # Moments in closed form: the variance is the parameter itself.
+#' # The moments are in closed form, and the variance is the parameter itself.
 #' th <- list(mu = 1, sigma2 = 4)
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))

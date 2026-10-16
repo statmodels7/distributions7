@@ -17,7 +17,7 @@ A numeric vector of zeros, of length \code{length(y)}.
 }
 \description{
 Returns zero for every observation. The Laplace log-density is
-\eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is \strong{linear} in \eqn{y} on
+\eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is linear in \eqn{y} on
 each side of the location, so its second derivative in the response vanishes
 wherever it exists. At \eqn{y = \mu} the first derivative drops from
 \eqn{1/\sigma} to \eqn{-1/\sigma} and the second derivative does not exist;

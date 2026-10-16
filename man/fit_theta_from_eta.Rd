@@ -23,7 +23,7 @@ Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)},
 and returns the parameters as the named list every generic in the package
 expects. It is the inverse of \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}.
 
-Every link maps onto the \strong{open} interior of its parameter's domain, and
+Every link maps onto the open interior of its parameter's domain, and
 \code{linkfunctions7} clamps the result strictly inside when the arithmetic
 saturates, so a \eqn{\theta} obtained this way is admissible whatever the
 optimizer proposed. On a Gaussian scale carried by the logarithm,

@@ -15,7 +15,7 @@ read. \code{lambda} must be strictly positive.}
 they are already their own expectations. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{Ignored, for the same reason as \code{expected}.}
 

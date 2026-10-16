@@ -6,34 +6,36 @@
 \arguments{
 \item{x}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}.
-Aligned and validated by name, so a missing or out-of-bounds
-component signals an error.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}. It is
+aligned and validated by name, so a missing or out-of-bounds component
+signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of zeros, of the length the recycled
+A numeric vector of zeros, of the length that the recycled
 parameters imply. The family is symmetric about its location at
-every setting of the two rates, so no parameter enters the value.
+every setting of the two rates, so the value does not depend on any
+parameter.
 }
 \description{
 Returns 0. The density is symmetric about \eqn{\mu} at every parameter
 value, so every odd central moment vanishes and the standardized third one
 with them. The zero is recycled to the length of the longest component of
-\code{theta}, so a \code{theta} whose components vary by observation gets one zero
-per observation.
+\code{theta}, so the result has one zero per observation when the components of
+\code{theta} vary by observation.
 
-The \strong{fourth} moment is not zero and is not closed form here: \code{\link[=kurtosis]{kurtosis()}}
+The fourth moment is not zero and is not closed form here: \code{\link[=kurtosis]{kurtosis()}}
 falls to the base class and integrates. Measured at \eqn{\mu = 0},
-\eqn{\lambda = 2}, \eqn{\alpha = 0.5} the excess kurtosis is 0.766, between
-the Gaussian's 0 and the Laplace's 3.
+\eqn{\lambda = 2} and \eqn{\alpha = 0.5} the excess kurtosis is 0.766,
+between the Gaussian's 0 and the Laplace's 3.
 }
 \examples{
 d <- enet_distrib()
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# Zero at every parameter value, and confirmed by a quadrature.
+# The skewness is zero at every parameter value, and a quadrature confirms
+# it.
 c(closed = skewness(d, th),
   quadrature = integrate(function(u) u^3 * distrib_pdf(d, u, th),
                          -Inf, Inf)$value)

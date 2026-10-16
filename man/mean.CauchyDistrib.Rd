@@ -26,7 +26,7 @@ numerical route of \code{\link[=moment]{moment()}} applied to a Cauchy signals a
 quadrature not reaching the requested accuracy.
 }
 \details{
-What the family does have is a \strong{median}, equal to \eqn{\mu}, and a
+What the family does have is a median, equal to \eqn{\mu}, and a
 half-interquartile range, equal to \eqn{\sigma}. Both are exact at every
 parameter value and both come from \code{\link[=distrib_quantile]{distrib_quantile()}}. A Cauchy sample
 mean is itself Cauchy with the same scale, so it does not settle as the

@@ -46,12 +46,12 @@ object built by \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} they hold 
 \eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the Gaussian (normal) family parametrized by its mean
-\eqn{\mu} and its standard deviation \eqn{\sigma > 0}, with density
-\eqn{f(y) = (2\pi)^{-1/2}\sigma^{-1}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the
-whole real line. It inherits from \code{continuous_distrib}, so every generic of
-the \code{distrib} class applies to it; the methods listed below are registered on
-it directly and everything else comes from the parent.
+This is the S7 class of the Gaussian (normal) family parametrized by its mean
+\eqn{\mu} and its standard deviation \eqn{\sigma > 0}, with density \eqn{f(y)
+= (2\pi)^{-1/2}\sigma^{-1}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the whole real
+line. It inherits from \code{continuous_distrib}, so every generic of the
+\code{distrib} class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 
 Build one with \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Gaussian1Distrib]{distrib_cdf()}},
@@ -107,13 +108,15 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- gaussian1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_bounds
 d@params_interpretation
 
-# The links carry each parameter to the unconstrained scale an optimizer
-# moves on: the mean is already free, the standard deviation rides a log.
+# The links carry each parameter to the unconstrained scale on which an
+# optimizer moves: the mean is already free, the standard deviation rides
+# a log.
 vapply(d@link_params, function(l) l@link_name, character(1))
 }
 \seealso{
@@ -121,5 +124,5 @@ vapply(d@link_params, function(l) l@link_name, character(1))
 \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} for the same law in mean and variance and
 \code{\link[=gaussian3_distrib]{gaussian3_distrib()}} for mean and precision;
 \code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf.Gaussian1Distrib()}} and \code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}}
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 }

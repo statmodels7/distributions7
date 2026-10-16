@@ -17,10 +17,10 @@ recycled. \code{sigma} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -28,7 +28,7 @@ and the expected values.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -42,8 +42,8 @@ respect to \eqn{\mu} and \eqn{\sigma}, in closed form from the compiled
 kernel of the third order. As at third order, every component is a
 rational function of \eqn{r = y - \mu} and \eqn{\sigma} with a power of
 \eqn{d = \sigma^2 + r^2} in the denominator, and so is bounded in
-\eqn{y}; the component in \eqn{\sigma} alone tends to \eqn{-6/\sigma^4}
-as \eqn{|r|} grows, and the others to zero.
+\eqn{y}; the component that is pure in \eqn{\sigma} tends to
+\eqn{-6/\sigma^4} as \eqn{|r|} grows, and the others to zero.
 
 With \code{expected = TRUE} the expectations under the model are returned, also
 in closed form; the two components odd in \eqn{r} vanish by symmetry. Both

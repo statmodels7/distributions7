@@ -46,12 +46,11 @@ object built by \code{\link[=vonmises2_distrib]{vonmises2_distrib()}} they hold 
 domains \eqn{(-\pi, \pi)} and \eqn{(0, 1)}.
 }
 \description{
-The S7 class of the von Mises family written in its mean direction
-\eqn{\mu} and its \strong{mean resultant length} \eqn{\rho \in (0, 1)}, which is
-the quantity that is conventionally reported in circular statistics and
-equals one minus the circular variance. It inherits from
-\code{continuous_distrib}; the methods listed below are registered on it
-directly.
+This is the S7 class of the von Mises family written in its mean direction
+\eqn{\mu} and its mean resultant length \eqn{\rho \in (0, 1)}, which is the
+quantity that is conventionally reported in circular statistics and equals
+one minus the circular variance. It inherits from \code{continuous_distrib}; the
+methods listed below are registered on it directly.
 
 The concentration of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is recovered as
 \eqn{\kappa = A^{-1}(\rho)} with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)},
@@ -66,7 +65,8 @@ them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.VonMises2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.VonMises2Distrib]{distrib_cdf()}} and

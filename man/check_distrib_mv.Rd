@@ -40,8 +40,8 @@ could not tell a real defect from them.
 
 The battery runs the checks that do generalize:
 \enumerate{
-\item \strong{the density is positive and finite} on a sample;
-\item \strong{the density integrates to one}. For a family that enumerates
+\item the density is positive and finite on a sample;
+\item the density integrates to one. For a family that enumerates
 its support through \code{\link[=mv_support]{mv_support()}} this is an exact sum over
 that support, with tolerance \code{1e-10}; otherwise it is importance
 sampling from the proposal that \code{\link[=mv_reference_draw]{mv_reference_draw()}} supplies, with
@@ -50,22 +50,22 @@ same mean and twice the covariance; the Student \eqn{t} uses a Student
 \eqn{t} with half the degrees of freedom and twice the scale matrix, and
 the Dirichlet the uniform law on the simplex. The proposal is not the
 distribution itself, which would make the ratio identically one;
-\item \strong{the score has mean zero}, the first Bartlett identity, under
+\item the score has mean zero, the first Bartlett identity, under
 the distribution's own generator, so it is also a check that the
 generator and the density describe the same law;
-\item \strong{gradient and Hessian} against finite differences of the
+\item gradient and Hessian against finite differences of the
 summed log-density;
-\item \strong{the expected information} against the Monte Carlo average of
+\item the expected information against the Monte Carlo average of
 the observed Hessian, and against the variance of the score, which is the
 second Bartlett identity;
-\item \strong{the generator} against the first two moments. When the mean or the
+\item the generator against the first two moments. When the mean or the
 covariance of the family is not finite (a Student \eqn{t} with
 \eqn{\nu \le 2}) the row has no statistic, and \code{\link[=check_distrib]{check_distrib()}} lists it
 among the skipped checks with that reason. The tolerance is
 \code{20 / sqrt(nsim)}, which assumes a finite fourth moment: for a Student
 \eqn{t} with \eqn{2 < \nu \le 4} the sample covariance has no variance,
 and the row can fail with a correct generator;
-\item \strong{the response derivatives} against finite differences in
+\item the response derivatives against finite differences in
 \eqn{y}.
 }
 

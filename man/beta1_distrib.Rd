@@ -27,26 +27,25 @@ An S7 object of class \code{Beta1Distrib}, inheriting from
 Builds the distribution object for the beta family on \eqn{(0, 1)}
 parametrized by its mean \eqn{\mu \in (0, 1)} and a precision \eqn{\phi > 0},
 so that the shapes are \eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi}.
-This is the parametrization beta regression uses. The returned object carries
-closed-form derivatives of the log-density to fourth order, in the parameters
-and in the response, and closed-form moments. The fifth order and the mixed
-derivatives of order three and four in the response and the parameters come
-from the numerical fallbacks of the base class.
+This is the parametrization that beta regression uses. The returned object
+carries closed-form derivatives of the log-density to fourth order, in the
+parameters and in the response, and closed-form moments. The fifth order and
+the mixed derivatives of order three and four in the response and the
+parameters come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the logit
-for
-the mean, which lives in \eqn{(0, 1)}, and the logarithm for the precision,
-which is positive.
+for the mean, which lives in \eqn{(0, 1)}, and the logarithm for the
+precision, which is positive.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (0, 1)} is
 \deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\alpha)\Gamma(\beta)}\,
       y^{\alpha-1}(1-y)^{\beta-1}, \qquad \alpha = \mu\phi, \quad
-      \beta = (1-\mu)\phi,}
-the distribution function \eqn{F(q) = I_q(\alpha, \beta)} with \eqn{I} the
-regularized incomplete beta function, and the quantile function its
-numerical inverse. The mean is \eqn{\mu}, the variance
+      \beta = (1-\mu)\phi.}
+The distribution function is \eqn{F(q) = I_q(\alpha, \beta)}, where
+\eqn{I} is the regularized incomplete beta function, and the quantile
+function is its numerical inverse. The mean is \eqn{\mu}, the variance
 \eqn{\mu(1-\mu)/(\phi+1)} and the skewness
 \eqn{2(1-2\mu)\sqrt{\phi+1}/\{(\phi+2)\sqrt{\mu(1-\mu)}\}}.
 
@@ -57,10 +56,10 @@ and the density is the uniform. A shape falls below one when
 \eqn{\mu\phi < 1} or \eqn{(1-\mu)\phi < 1}, and the density is then
 unbounded at the corresponding endpoint.
 
-This is the same law as \code{\link[=beta2_distrib]{beta2_distrib()}}, which carries the mean and the
-\emph{variance}, the two being related by \eqn{\sigma^2 = \mu(1-\mu)/(\phi+1)}.
-They are separate families because the second parameter is a different
-quantity in each, with its own interpretation, standard error and interval.
+This is the same law as \code{\link[=beta2_distrib]{beta2_distrib()}}, which carries the two shapes
+\eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi}. They are separate
+families because the parameters are different quantities in each, with
+their own interpretation, standard error and interval.
 }
 
 \section{Derivatives}{
@@ -85,7 +84,7 @@ precision are in general not orthogonal.
 The data reach the log-density only through
 \eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)}, which is linear in the shapes
 and so at most quadratic in \eqn{(\mu, \phi)} through the bilinear map
-\eqn{\alpha = \mu\phi}. Two consequences follow, and both are visible in the
+\eqn{\alpha = \mu\phi}. This has the following consequences for the
 methods:
 \itemize{
 \item the observed Hessian equals its expectation in \code{mu_mu} and \code{phi_phi} and
@@ -99,15 +98,15 @@ of \code{expected}.
 }
 
 The derivatives of the \emph{distribution} function in the parameters have no
-elementary form, the derivative of an incomplete beta in its shapes being
-hypergeometric, and are computed by a compiled quadrature of the density
+elementary form, because the derivative of an incomplete beta in its shapes
+is hypergeometric. They are computed by a compiled quadrature of the density
 times the derivatives of the log-density.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
-estimate is closed form: both estimating equations involve digamma
-functions of the shapes. The method of moments supplies the starting values
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Both
+estimates lack a closed form, because both estimating equations involve
+digamma functions of the shapes. The method of moments supplies the starting values
 \eqn{\hat\mu = \bar y} and \eqn{\hat\phi = \bar y(1-\bar y)/s^2 - 1}, and
 the example below shows them landing beside the estimates.
 }
@@ -160,6 +159,6 @@ rates and proportions. \emph{Journal of Applied Statistics} \strong{31}, 799-815
 probability; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}} for a response that takes only the
 values 0 and 1; \code{\link[=zero_adjusted]{zero_adjusted()}} for a response with a point mass at 0;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
-parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
+parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family against the
 same battery of checks that this family passes; \link{Beta1Distrib} for the class.
 }

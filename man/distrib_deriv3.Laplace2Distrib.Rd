@@ -16,7 +16,7 @@ must be strictly positive.}
 they are already their own expectations. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{Ignored, for the same reason as \code{expected}.}
 
@@ -32,8 +32,8 @@ The first three are zero and the last is constant at \eqn{2/\lambda^3}.
 \description{
 Computes the four distinct third derivatives of the Laplace log-density with
 respect to \eqn{\mu} and \eqn{\lambda}. In this parametrization the
-log-density is \eqn{\log(\lambda/2) - \lambda|y-\mu|}, which is \strong{linear in
-\eqn{\lambda}} apart from \eqn{\log\lambda}, and piecewise linear in
+log-density is \eqn{\log(\lambda/2) - \lambda|y-\mu|}, which is linear in
+\eqn{\lambda} apart from \eqn{\log\lambda}, and piecewise linear in
 \eqn{\mu}. Every third derivative involving \eqn{\mu} at all is therefore
 zero, and the only surviving component comes from \eqn{\log\lambda}:
 \deqn{\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},}

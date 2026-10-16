@@ -29,7 +29,7 @@ Where both shapes exceed one it changes sign at the mode
 negative above it. Where both shapes are below one it changes sign at the
 same point, the antimode, from negative to positive. Where exactly one shape
 is below one it has one sign on all of \eqn{(0, 1)}. At
-\eqn{\alpha = \beta = 1} it is identically zero, the density being the
+\eqn{\alpha = \beta = 1} it is identically zero, because the density is the
 uniform.
 }
 \examples{
@@ -39,11 +39,12 @@ th <- list(alpha = 2, beta = 5)
 
 all.equal(distrib_grad_y(d, y, th), (2 - 1) / y - (5 - 1) / (1 - y))
 
-# Zero at the mode (alpha - 1)/(alpha + beta - 2).
+# The derivative is zero at the mode (alpha - 1)/(alpha + beta - 2).
 mode <- (2 - 1) / (2 + 5 - 2)
 c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
 
-# Identically zero at alpha = beta = 1, where the density is the uniform.
+# The derivative is identically zero at alpha = beta = 1, where the density
+# is the uniform.
 distrib_grad_y(d, y, list(alpha = 1, beta = 1))
 
 # It is the derivative of the log-density, so a central difference in y

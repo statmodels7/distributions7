@@ -43,17 +43,17 @@ between the mode \eqn{\mu} and the mean \eqn{\mu + \gamma\sigma}.
 d <- gumbel_distrib()
 th <- list(mu = 0, sigma = 1)
 
-# The closed form, written out.
+# The closed form is written out.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_quantile(d, p, th), -log(-log(p)))
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 
-# Mode, median and mean, in that order.
+# The mode, the median and the mean are listed in that order.
 c(mode = 0, median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 
-# A return level: the value exceeded once in 100 periods.
+# A return level is the value that is exceeded once in 100 periods.
 distrib_quantile(d, 1 - 1 / 100, th)
 }
 \seealso{

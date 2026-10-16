@@ -16,8 +16,8 @@ positive.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{Ignored: the expectation is closed form. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored: the expectation is closed form. It is accepted so that
+the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason.}
 
@@ -39,9 +39,9 @@ is
 Gamma with shape \eqn{k = d/p} and unit rate:
 \deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
-So \code{approx} and \code{nsim} are ignored and \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers
-\code{TRUE}. It is the same device the Weibull and the Gumbel use, where the
-corresponding variable is standard exponential and the expectations are
+So \code{approx} and \code{nsim} are ignored and \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns
+\code{TRUE}. The Weibull and the Gumbel use the same device, with a standard
+exponential variable as the corresponding variable and the expectations as
 derivatives of \eqn{\Gamma} at 2.
 }
 \section{Identification}{
@@ -58,9 +58,9 @@ direction.
 
 \section{Notation}{
 
-\eqn{k = d/p}, \eqn{\psi} and \eqn{\psi'} the digamma and trigamma
-functions, and \eqn{u = (Y/a)^p} the Gamma-distributed transformation the
-family is built on.
+Here \eqn{k = d/p}, \eqn{\psi} and \eqn{\psi'} are the digamma and trigamma
+functions, and \eqn{u = (Y/a)^p} is the Gamma-distributed transformation on
+which the family is built.
 }
 
 \examples{
@@ -69,10 +69,11 @@ th <- list(a = 2, d = 3, p = 1.5)
 e <- distrib_expected_hessian(d, 0, th)
 names(e)
 
-# The scale-shape entry is the observed one, -1/a, the term being bilinear.
+# The scale-shape entry is the observed one, -1/a, because the term is
+# bilinear.
 c(expected = e$a_d, observed = -1 / 2)
 
-# The strategy argument is ignored, the expectation being closed form.
+# The strategy argument is ignored, because the expectation is closed form.
 identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 distributions7:::expected_hessian_exact(d)
 
@@ -82,7 +83,7 @@ M <- matrix(c(e$a_a, e$a_d, e$a_p, e$a_d, e$d_d, e$d_p,
               e$a_p, e$d_p, e$p_p), 3, 3, dimnames = list(nm, nm))
 ev <- eigen(-M)
 c(eigenvalues = ev$values, condition = max(ev$values) / min(ev$values))
-round(ev$vectors[, 3], 3)   # the flat direction
+round(ev$vectors[, 3], 3)   # this is the flat direction
 }
 \seealso{
 \code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian.GenGamma1Distrib()}} for the observed curvature,

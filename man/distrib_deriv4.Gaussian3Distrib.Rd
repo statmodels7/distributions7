@@ -8,8 +8,8 @@
 
 \item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{expected}{Logical of length 1, and without effect here, the observed
-and expected fourth derivatives being the same numbers. Defaults to
+\item{expected}{Logical of length 1, without effect here because the
+observed and expected fourth derivatives are the same numbers. Defaults to
 \code{FALSE}.}
 
 \item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
@@ -17,9 +17,9 @@ vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{ta
 be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available.}
+\item{approx}{Ignored, because a closed form is available.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -60,7 +60,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 1, tau = 0.25)
 d4 <- distrib_deriv4(d, y, th)
 
-# One non-zero component out of five, at -3/tau^4.
+# One component out of five is non-zero, and it equals -3/tau^4.
 lapply(d4, unique)
 -3 / 0.25^4
 

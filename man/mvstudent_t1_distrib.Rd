@@ -26,7 +26,7 @@ every point of the free scale.}
 \item{omega}{A \pkg{parameters7} parametrization of the inverse scale
 matrix, of dimension \code{n_dim} and of full rank. Defaults to
 \code{parameters7::log_cholesky(n_dim)}. It is the precision of the response
-only up to the factor \eqn{(\nu-2)/\nu}; see \strong{Details}.}
+only up to the factor \eqn{(\nu-2)/\nu}; see Details.}
 }
 \value{
 An S7 object of class \link{MvStudentT1Distrib} or \link{MvStudentT2Distrib},
@@ -40,7 +40,7 @@ which is \eqn{(0, \infty)}; and every link is the identity except that of
 \description{
 Two families on \eqn{\mathbb{R}^p}, differing in which matrix their
 parametrization describes: \code{mvstudent_t1_distrib()} parametrizes the
-\strong{scale matrix} \eqn{\Sigma} and \code{mvstudent_t2_distrib()} its \strong{inverse}
+scale matrix \eqn{\Sigma} and \code{mvstudent_t2_distrib()} its inverse
 \eqn{\Sigma^{-1}}. Each carries a location vector of \eqn{p} free
 parameters, the matrix through a \pkg{parameters7} parametrization, and a
 positive degrees-of-freedom parameter. The free values become ordinary
@@ -52,7 +52,7 @@ and to a log link on \code{nu}.
 }
 \section{The two matrices}{
 Neither matrix is a covariance, and neither is a precision. \eqn{\Sigma} is
-the \strong{scale matrix}, the matrix in the quadratic form of the density, and
+the scale matrix, the matrix in the quadratic form of the density, and
 the moments are obtained from it by scaling in \eqn{\nu}:
 
 \deqn{\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\,\Sigma \quad (\nu > 2),
@@ -77,8 +77,8 @@ therefore runs at \eqn{\nu = 1.5}.
 Two readings carry over from the matrix to the response without a factor,
 because a positive multiple cancels out of a ratio:
 \itemize{
-\item the \strong{correlations} of \eqn{\Sigma} are the correlations of \eqn{Y};
-\item the \strong{partial correlations} read off \eqn{\Sigma^{-1}}, as
+\item the correlations of \eqn{\Sigma} are the correlations of \eqn{Y};
+\item the partial correlations read off \eqn{\Sigma^{-1}}, as
 \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, are the partial
 correlations of \eqn{Y}.
 }
@@ -86,7 +86,7 @@ correlations of \eqn{Y}.
 The conditional variance does not carry over. For a gaussian
 \eqn{1/\Omega_{jj}} is the conditional variance of \eqn{Y_j} given the rest;
 here it is the Schur complement of the scale matrix, so it is a conditional
-\strong{scale}, and the conditional law of a \eqn{t} is itself a \eqn{t} whose
+scale, and the conditional law of a \eqn{t} is itself a \eqn{t} whose
 scale carries a further factor depending on the conditioning values.
 \code{\link[=mv_summary]{mv_summary()}} names that quantity \code{cscale_vj} and not \code{cvar_vj} for this
 reason, as it names the diagonal quantities \code{scale_sd_vj}.

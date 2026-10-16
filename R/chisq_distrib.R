@@ -5,12 +5,13 @@ NULL
 #' @name ChisqDistrib
 #'
 #' @description
-#' The S7 class of the chi-squared family on \eqn{(0, \infty)}, parametrized by
-#' its mean \eqn{\mu > 0}, which is the degrees of freedom. They are treated as
-#' a continuous positive parameter, so the one-parameter family is estimable;
-#' the variance is then \eqn{2\mu}. It inherits from `continuous_distrib`, so
-#' every generic of the `distrib` class applies to it; the methods listed below
-#' are registered on it directly and everything else comes from the parent.
+#' This is the S7 class of the chi-squared family on \eqn{(0, \infty)},
+#' parametrized by its mean \eqn{\mu > 0}, which is the degrees of freedom. They
+#' are treated as a continuous positive parameter, so the one-parameter family
+#' is estimable; the variance is then \eqn{2\mu}. It inherits from
+#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it directly and everything else
+#' comes from the parent.
 #'
 #' Build one with [chisq_distrib()], which supplies the link function and fills
 #' the properties in. This page documents the raw S7 constructor, which takes
@@ -34,7 +35,8 @@ NULL
 #'   [distrib_gradient.ChisqDistrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.ChisqDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ChisqDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.ChisqDistrib] and
@@ -112,7 +114,7 @@ ChisqDistrib <- S7::new_class("ChisqDistrib", parent = continuous_distrib)
 #'
 #' @seealso [distrib_cdf.ChisqDistrib()] for the distribution function,
 #'   [distrib_gradient.ChisqDistrib()] for the derivative of the log-density,
-#'   [distrib_pdf.Gamma2Distrib()] for the family this sits inside, and
+#'   [distrib_pdf.Gamma2Distrib()] for the family that contains this one, and
 #'   [distrib_pdf()] for the generic.
 #'
 #' @examples
@@ -169,8 +171,8 @@ S7::method(distrib_pdf, ChisqDistrib) <- function(distrib, y, theta, log = FALSE
 #'   [distrib_pdf.ChisqDistrib()] for the density, [distrib_grad_cdf()] for the
 #'   derivatives of this function in the parameter, which the chi-squared
 #'   computes by a compiled quadrature of the derivatives of the density
-#'   ([compiled_cdf()]), the derivative of an incomplete gamma in its shape
-#'   being hypergeometric; and [distrib_cdf()] for the generic.
+#'   ([compiled_cdf()]) because the derivative of an incomplete gamma in its
+#'   shape is hypergeometric; and [distrib_cdf()] for the generic.
 #'
 #' @examples
 #' d <- chisq_distrib()
@@ -228,17 +230,20 @@ S7::method(distrib_cdf, ChisqDistrib) <- function(distrib, q, theta,
 #' d <- chisq_distrib()
 #' th <- list(mu = 4)
 #'
-#' # The critical values a test reads, here at four degrees of freedom.
+#' # These are the critical values that a test reads, here at four degrees
+#' # of freedom.
 #' distrib_quantile(d, c(0.9, 0.95, 0.99), th)
 #'
-#' # A central 95 percent interval, asymmetric about the mean of 4.
+#' # These quantiles give a central 95 percent interval, which is asymmetric
+#' # about the mean of 4.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # The quantile function is an exact inverse, so the round trip returns the
+#' # probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # The median falls below the mean, the family being right skewed.
+#' # The median falls below the mean, because the family is right skewed.
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 S7::method(distrib_quantile, ChisqDistrib) <- function(distrib, p, theta,
                                                        lower.tail = TRUE,
@@ -272,14 +277,14 @@ S7::method(distrib_quantile, ChisqDistrib) <- function(distrib, p, theta,
 #' @examples
 #' d <- chisq_distrib()
 #'
-#' # Same generator as stats::rchisq at df = mu.
+#' # The method uses the same generator as stats::rchisq at df = mu.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = 4))
 #' set.seed(2)
 #' identical(a, rchisq(3, df = 4))
 #'
 #' # The sample mean recovers the degrees of freedom, and the variance is
-#' # about twice it, the two being tied.
+#' # about twice the mean, because the two are tied.
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 4))
 #' c(mean = mean(z), var = var(z))
@@ -303,8 +308,8 @@ S7::method(distrib_rng, ChisqDistrib) <- function(distrib, n, theta, ...) {
 #' The score has mean zero because
 #' \eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2}.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the link the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the link that
+#' the family carries before returning. This method always returns the parameter
 #' scale.
 #'
 #' @param distrib A `ChisqDistrib` object, from [chisq_distrib()].
@@ -339,7 +344,7 @@ S7::method(distrib_rng, ChisqDistrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 4)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The closed form, written out with the digamma function.
+#' # The closed form is written out with the digamma function.
 #' all.equal(g$mu, (log(y) - log(2) - digamma(2)) / 2)
 #'
 #' # It is a sufficient statistic minus its expectation, so the sample mean of
@@ -374,10 +379,11 @@ S7::method(distrib_gradient, ChisqDistrib) <- function(distrib, y, theta,
 #' [distrib_expected_hessian.ChisqDistrib()] exactly.
 #'
 #' The coincidence is on the parameter scale. On the link scale the two
-#' differ, the second-order chain rule adding a term
-#' \eqn{h''(\eta)\,\partial\ell/\partial\mu}, which the expected version
-#' drops because the score has expectation zero; the score of a sample is not
-#' zero away from the optimum, and the example below measures the term.
+#' differ, because the second-order chain rule adds a term
+#' \eqn{h''(\eta)\,\partial\ell/\partial\mu} to the observed version. The
+#' expected version drops this term since the score has expectation zero,
+#' whereas the score of a sample is not zero away from the optimum. The
+#' example below measures the term.
 #'
 #' @param distrib A `ChisqDistrib` object, from [chisq_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -411,15 +417,16 @@ S7::method(distrib_gradient, ChisqDistrib) <- function(distrib, y, theta,
 #' y <- c(1, 4, 9)
 #' th <- list(mu = 4)
 #'
-#' # A constant across the observations, written out with the trigamma.
+#' # The value is constant across the observations and is written out with
+#' # the trigamma function.
 #' distrib_hessian(d, y, th)
 #' -trigamma(2) / 4
 #'
 #' # Free of the response, so it equals its own expectation to the bit.
 #' identical(distrib_hessian(d, y, th), distrib_expected_hessian(d, y, th))
 #'
-#' # On the link scale they differ by h''(eta) times the score, which is what
-#' # makes Fisher scoring and Newton's method take different steps.
+#' # On the link scale they differ by h''(eta) times the score, so Fisher
+#' # scoring and Newton's method take different steps.
 #' obs <- distrib_hessian(d, y, th, scale = "link")$mu_mu
 #' exp_ <- distrib_expected_hessian(d, y, th, scale = "link")$mu_mu
 #' rbind(observed = obs, expected = exp_,
@@ -436,11 +443,11 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #' Returns the same number as [distrib_hessian.ChisqDistrib()],
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
 #'       = -\dfrac{\psi'(\mu/2)}{4},}
-#' the observed second derivative being free of the response and so equal to
-#' its own expectation. Nothing is averaged, integrated or simulated, so
+#' because the observed second derivative is free of the response and so equals
+#' its own expectation. The method does not average, integrate or simulate, so
 #' `approx` and `nsim` are ignored and `y` is read only for its length. The
-#' value is negative at every \eqn{\mu}, the trigamma function being positive,
-#' so the information is positive throughout.
+#' value is negative at every \eqn{\mu} because the trigamma function is
+#' positive, so the information is positive throughout.
 #'
 #' The identity holds on the parameter scale. On the link scale the
 #' second-order chain rule adds \eqn{h''(\eta)\,\partial\ell/\partial\mu} to
@@ -457,9 +464,9 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, the expectation being exact. It is accepted so that
-#'   the signature matches the generic's, where it selects between the Bartlett,
-#'   quadrature, Monte Carlo and outer-product routes.
+#' @param approx Ignored because the expectation is exact. It is accepted so
+#'   that the signature matches the generic's, where it selects between the
+#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -485,12 +492,13 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #' d <- chisq_distrib()
 #' th <- list(mu = 4)
 #'
-#' # A constant, and identical to the observed Hessian.
+#' # The value is a constant and is identical to the observed Hessian.
 #' unique(distrib_expected_hessian(d, c(1, 4, 9), th)$mu_mu)
 #' identical(distrib_expected_hessian(d, c(1, 4, 9), th),
 #'           distrib_hessian(d, c(1, 4, 9), th))
 #'
-#' # Negative at every mu, the trigamma function being positive.
+#' # The value is negative at every mu, because the trigamma function is
+#' # positive.
 #' vapply(c(0.5, 4, 40),
 #'        function(m) distrib_expected_hessian(d, 0, list(mu = m))$mu_mu,
 #'        numeric(1))
@@ -531,7 +539,7 @@ S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta
 #'   length 1 or of the length of `y`, recycled if of length 1. It must be
 #'   strictly positive.
 #' @param expected Logical of length 1. On the parameter scale it has no
-#'   effect, the observed and expected third derivatives being the same
+#'   effect, because the observed and expected third derivatives are the same
 #'   number; on the link scale it selects the expected composition. Defaults
 #'   to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
@@ -561,7 +569,8 @@ S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta
 #' y <- c(1, 4, 9)
 #' th <- list(mu = 4)
 #'
-#' # A constant, written out with the second derivative of the digamma.
+#' # The value is a constant and is written out with the second derivative
+#' # of the digamma function.
 #' unique(distrib_deriv3(d, y, th)$mu_mu_mu)
 #' -psigamma(2, deriv = 2) / 8
 #'
@@ -602,7 +611,7 @@ S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected
 #'   length 1 or of the length of `y`, recycled if of length 1. It must be
 #'   strictly positive.
 #' @param expected Logical of length 1. On the parameter scale it has no
-#'   effect, the observed and expected fourth derivatives being the same
+#'   effect, because the observed and expected fourth derivatives are the same
 #'   number; on the link scale it selects the expected composition. Defaults
 #'   to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
@@ -631,7 +640,8 @@ S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected
 #' y <- c(1, 4, 9)
 #' th <- list(mu = 4)
 #'
-#' # A constant, written out with the third derivative of the digamma.
+#' # The value is a constant and is written out with the third derivative
+#' # of the digamma function.
 #' unique(distrib_deriv4(d, y, th)$mu_mu_mu_mu)
 #' -psigamma(2, deriv = 3) / 16
 #'
@@ -724,10 +734,11 @@ S7::method(distrib_deriv5, ChisqDistrib) <- function(distrib, y, theta,
 #' y <- c(1, 4, 9)
 #' th <- list(mu = 4)
 #'
-#' # Written out.
+#' # The result agrees with the formula as written out.
 #' all.equal(distrib_grad_y(d, y, th), (4 / 2 - 1) / y - 0.5)
 #'
-#' # Zero at the mode mu - 2, positive below it and negative above.
+#' # The derivative is zero at the mode mu - 2, positive below it and
+#' # negative above.
 #' c(mode = 4 - 2, at_mode = distrib_grad_y(d, 2, th))
 #' distrib_grad_y(d, c(1, 9), th)
 #'
@@ -749,9 +760,9 @@ S7::method(distrib_grad_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' Computes the second derivative of the chi-squared log-density with respect
 #' to the response, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\mu/2 - 1}{y^2}.}
-#' The exponential term drops out, the log-density being linear in \eqn{y}
-#' apart from the \eqn{(\mu/2 - 1)\log y} term. The sign follows \eqn{\mu}: the
-#' log-density is concave in the response for \eqn{\mu > 2}, exactly flat at
+#' The exponential term drops out because the log-density is linear in
+#' \eqn{y} apart from the \eqn{(\mu/2 - 1)\log y} term. The sign follows
+#' \eqn{\mu}: the log-density is concave in the response for \eqn{\mu > 2}, exactly flat at
 #' \eqn{\mu = 2}, where the family is the exponential with mean 2, and convex
 #' for \eqn{\mu < 2}.
 #'
@@ -778,11 +789,11 @@ S7::method(distrib_grad_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' all.equal(distrib_hess_y(d, y, th), -(4 / 2 - 1) / y^2)
 #'
-#' # Concave above mu = 2, flat at it, convex below.
+#' # The log-density is concave above mu = 2, flat at it and convex below.
 #' vapply(c(4, 2, 1), function(m) distrib_hess_y(d, 4, list(mu = m)),
 #'        numeric(1))
 #'
-#' # Negative everywhere at four degrees of freedom.
+#' # The second derivative is negative everywhere at four degrees of freedom.
 #' all(distrib_hess_y(d, y, th) < 0)
 S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
   dy_log(theta[[1]] / 2 - 1, y, 2L)
@@ -800,8 +811,8 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' response, and closed-form moments. The derivatives of the distribution
 #' function in the parameter come from a compiled quadrature.
 #'
-#' The one argument chooses the link that carries the parameter to the
-#' unconstrained scale on which an optimizer works, and defaults to the
+#' The argument `link_mu` specifies the link that carries the parameter to the
+#' unconstrained scale on which an optimizer works. The default is the
 #' logarithm.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
@@ -831,15 +842,14 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' \deqn{\dfrac{\partial \ell}{\partial \mu}
 #'         = \dfrac{\log y - \log 2 - \psi(\mu/2)}{2}, \qquad
 #'       \ell^{(k)} = -\dfrac{\psi^{(k-2)}(\mu/2)}{2^{k}}, \quad k \ge 2,}
-#' with \eqn{\psi} the digamma function. From the second order on nothing
-#' involves the response at all. Two things follow. On the parameter scale the
+#' with \eqn{\psi} the digamma function. From the second order on, every
+#' derivative is free of the response. Consequently, on the parameter scale the
 #' observed information is exactly the expected information, and the same holds
-#' at third and fourth order, so asking any of those methods for
-#' `expected = TRUE` returns the same numbers. And
-#' \eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2} is what gives the score mean
-#' zero.
+#' at third and fourth order, so calling any of those methods with
+#' `expected = TRUE` returns the same numbers. The score has mean zero because
+#' \eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2}.
 #'
-#' That coincidence does not carry to the scale a fit optimizes on. The
+#' That coincidence does not carry to the scale on which a fit optimizes. The
 #' second-order chain rule adds a term
 #' \eqn{h''(\eta)\,\partial\ell/\partial\mu} to the link-scale Hessian; the
 #' expected version drops it because the score has expectation zero, whereas
@@ -849,8 +859,8 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' example on [distrib_hessian.ChisqDistrib()] measures that difference.
 #'
 #' The derivatives of the *distribution* function in the parameter have no
-#' elementary form, the derivative of an incomplete gamma in its shape being
-#' hypergeometric, and are computed by a compiled quadrature of the
+#' elementary form, because the derivative of an incomplete gamma in its shape
+#' is hypergeometric. They are computed by a compiled quadrature of the
 #' derivatives of the density ([compiled_cdf()]).
 #'
 #' # Estimation
@@ -873,12 +883,12 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #'   given here.
 #'
 #' @seealso
-#' [gamma2_distrib()] for the two-parameter family this sits inside at
+#' [gamma2_distrib()] for the two-parameter family that contains this one at
 #' \eqn{\sigma^2 = 2\mu}, and [gamma1_distrib()] for its dispersion form;
 #' [exponential_distrib()] for the case \eqn{\mu = 2};
 #' [gengamma1_distrib()] for a wider family still; [fit_distrib()] to estimate
-#' the parameter; [check_distrib()] to validate a family of your own against
-#' the same battery this one passes; [ChisqDistrib] for the class.
+#' the parameter; [check_distrib()] to validate a user-written family against
+#' the same battery that this one passes; [ChisqDistrib] for the class.
 #'
 #' @references
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
@@ -908,8 +918,8 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' all.equal(distrib_pdf(d, y, list(mu = 2)),
 #'           distrib_pdf(exponential_distrib(), y, list(mu = 2)))
 #'
-#' # From the second order on nothing involves the response, so the observed
-#' # and expected information coincide on the parameter scale.
+#' # From the second order on, the derivatives do not involve the response,
+#' # so the observed and expected information coincide on the parameter scale.
 #' identical(distrib_hessian(d, y, th), distrib_expected_hessian(d, y, th))
 #'
 #' # Fitting recovers the degrees of freedom; the sample mean starts it off.

@@ -33,9 +33,9 @@ A named list of fifteen numeric vectors, from \code{mu_mu_mu_mu} to
 \description{
 Computes the fifteen fourth derivatives of the log-density in closed form,
 in compiled code (\code{enet_deriv4_cpp()}), in the notation of
-\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}}. In the rates \eqn{(\mu, a, c)} no fourth
-derivative involves \eqn{\mu}, the data term being quadratic in \eqn{z} and
-linear in each rate. After the bilinear map every component naming
+\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}}. In the rates \eqn{(\mu, a, c)} every fourth
+derivative is free of \eqn{\mu}, because the data term is quadratic in
+\eqn{z} and linear in each rate. After the bilinear map every component naming
 \eqn{\mu} more than twice is exactly zero, the only nonzero component with
 \eqn{\mu} is \code{mu_mu_lambda_alpha}, the constant 1, and the others are
 derivatives of the normalizing constant carried through the
@@ -56,7 +56,8 @@ length(d4)
 d4$mu_mu_mu_mu
 d4$mu_mu_lambda_alpha
 
-# Against a central difference of the third order.
+# The component mu_mu_lambda_lambda is compared with a central difference
+# of the third derivative.
 eps <- 1e-5
 rbind(analytic = d4$mu_mu_lambda_lambda,
       numeric = (distrib_deriv3(d, y, list(mu = 0, lambda = 2 + eps,
@@ -65,7 +66,8 @@ rbind(analytic = d4$mu_mu_lambda_lambda,
                                            alpha = 0.5))$mu_mu_lambda) /
                 (2 * eps))
 
-# The pure-lambda component against one stencil on the log-density.
+# The pure-lambda component is compared with one stencil on the
+# log-density.
 ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, lambda = v,
                                              alpha = 0.5), log = TRUE))
 c(ours = sum(d4$lambda_lambda_lambda_lambda),

@@ -27,7 +27,7 @@ Computes \eqn{\partial \ell / \partial y} in closed form. With
 The family is a location family in \eqn{\mu}, so this is exactly the
 negative of the location score
 \code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}}\verb{$mu}, and like it, it is
-\strong{bounded}: it tends to \eqn{\mp 1/\sigma} as the residual runs away. This
+bounded: it tends to \eqn{\mp 1/\sigma} as the residual runs away. This
 quantity is what a quantile residual's delta-method standard error and a
 change of variable in the response both need.
 }

@@ -6,23 +6,23 @@
 \arguments{
 \item{x}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}.
-Aligned and validated by name, so a missing or out-of-bounds
-component signals an error.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}. It is
+aligned and validated by name, so a missing or out-of-bounds component
+signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of variances, strictly positive, of the
-length the recycled parameters imply. The location does not enter
+length that the recycled parameters imply. The location does not enter
 the value, so a setting that varies it repeats one number.
 }
 \description{
 Returns \eqn{(1 + xG)/c} in closed form, with \eqn{c = \lambda(1-\alpha)},
 \eqn{x = a/\sqrt c} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}. It is
 \eqn{-2\,\partial\log Z/\partial c}, the first cumulant of the sufficient
-statistic \eqn{-z^2/2}, so it needs nothing the score does not already
-compute.
+statistic \eqn{-z^2/2}, so it requires only quantities that the score
+already computes.
 
 At \eqn{\alpha \to 0} it tends to \eqn{1/c}, the Gaussian's; at
 \eqn{\alpha \to 1} to \eqn{2/a^2}, the Laplace's.
@@ -37,12 +37,13 @@ At \eqn{\alpha \to 0} it tends to \eqn{1/c}, the Gaussian's; at
 d <- enet_distrib()
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# Against a quadrature of the second central moment.
+# The closed form is compared with a quadrature of the second central
+# moment.
 c(closed = variance(d, th),
   quadrature = integrate(function(u) u^2 * distrib_pdf(d, u, th),
                          -Inf, Inf)$value)
 
-# The two ends: 1/c at alpha -> 0 and 2/a^2 at alpha -> 1.
+# The two ends are 1/c at alpha -> 0 and 2/a^2 at alpha -> 1.
 rbind(alpha = c(1e-10, 1 - 1e-10),
       ours = c(variance(d, list(mu = 0, lambda = 2, alpha = 1e-10)),
                variance(d, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))),

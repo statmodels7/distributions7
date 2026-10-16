@@ -38,17 +38,20 @@ increasing on \eqn{(0, \infty)}, so the round trip through
 d <- chisq_distrib()
 th <- list(mu = 4)
 
-# The critical values a test reads, here at four degrees of freedom.
+# These are the critical values that a test reads, here at four degrees
+# of freedom.
 distrib_quantile(d, c(0.9, 0.95, 0.99), th)
 
-# A central 95 percent interval, asymmetric about the mean of 4.
+# These quantiles give a central 95 percent interval, which is asymmetric
+# about the mean of 4.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# The quantile function is an exact inverse, so the round trip returns the
+# probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 
-# The median falls below the mean, the family being right skewed.
+# The median falls below the mean, because the family is right skewed.
 c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 }
 \seealso{

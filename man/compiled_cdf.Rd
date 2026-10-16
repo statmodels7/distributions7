@@ -29,7 +29,8 @@ compiled_cdf_args(distrib, q, theta)
 
 \item{theta}{A named list of parameter values.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail.}
 
 \item{...}{Unused.}
 

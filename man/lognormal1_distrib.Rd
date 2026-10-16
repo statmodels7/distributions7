@@ -26,17 +26,16 @@ An S7 object of class \code{Lognormal1Distrib}, inheriting from
 Builds the distribution object for the lognormal family on
 \eqn{(0, \infty)}: the law of a variable whose logarithm is Gaussian with
 mean \eqn{\mu} and variance \eqn{\sigma^2 > 0}. Both parameters are moments
-\strong{of the logarithm}, so neither is the mean or the variance of \eqn{Y}. The
+of the logarithm, so neither is the mean or the variance of \eqn{Y}. The
 returned object carries closed-form derivatives of the log-density to fourth
 order, in the parameters and in the response, closed-form derivatives of the
 distribution function, and closed-form moments. The fifth order and
 \code{\link[=distrib_cross3_y]{distrib_cross3_y()}} come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-\eqn{\mu}, which ranges over the whole line, and the logarithm for
-\eqn{\sigma^2}, which keeps it positive at every predictor.
+identity for \eqn{\mu}, which ranges over the whole line, and the logarithm
+for \eqn{\sigma^2}, which keeps it positive at every predictor.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (0, \infty)} is
@@ -75,7 +74,7 @@ component for component and at all four orders, observed and expected. The
 two parameters are orthogonal and the information does not depend on
 \eqn{\mu}.
 
-The derivatives \strong{in the response} are where the two families differ, the
+The derivatives in the response are where the two families differ, the
 Jacobian being a function of \eqn{y}. They are still closed form; see
 \code{\link[=distrib_grad_y.Lognormal1Distrib]{distrib_grad_y.Lognormal1Distrib()}} and
 \code{\link[=distrib_hess_y.Lognormal1Distrib]{distrib_hess_y.Lognormal1Distrib()}}, and note that the log-density is
@@ -94,7 +93,7 @@ scale, and the example below checks both against the sample.
 \section{Notation}{
 
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
-\eqn{\sigma^2 > 0} the variance \strong{of \eqn{\log Y}}. \eqn{\Phi} is the
+\eqn{\sigma^2 > 0} the variance of \eqn{\log Y}. \eqn{\Phi} is the
 standard normal distribution function and \eqn{r = \log y - \mu} the
 residual on the log scale. \eqn{\eta} is a parameter on the unconstrained
 scale of its link, with \eqn{\theta = g^{-1}(\eta)}.

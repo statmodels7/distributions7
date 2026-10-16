@@ -52,9 +52,10 @@ the parent's: \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params
 \eqn{(0, \infty)} for both, and the two links.
 }
 \description{
-The S7 class of the beta-binomial family in its canonical parametrization,
-the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0}, on the finite
-support \eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}.
+This S7 class represents the beta-binomial family in its canonical
+parametrization, the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0},
+on the finite support \eqn{\{0, 1, \dots, n\}}. It inherits from
+\code{discrete_distrib}.
 
 The class carries an extra property beyond the parent's, \code{size}: the number
 of trials \eqn{n}, fixed at construction as it is for
@@ -66,7 +67,8 @@ properties, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.BetaBinom2Distrib]{distrib_pdf()}} and
 \code{\link[=distrib_rng.BetaBinom2Distrib]{distrib_rng()}};

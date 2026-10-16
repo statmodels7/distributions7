@@ -40,7 +40,8 @@ NULL
 #'   a mixed distribution: a density with an atom on it.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution:
 #'   [`distrib_pdf()`][distrib_pdf.ZeroAdjustedDiscreteDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ZeroAdjustedDiscreteDistrib],
@@ -130,7 +131,8 @@ ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
 #'   for exactly that atom.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution:
 #'   [`distrib_pdf()`][distrib_pdf.ZeroAdjustedContinuousDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ZeroAdjustedContinuousDistrib],

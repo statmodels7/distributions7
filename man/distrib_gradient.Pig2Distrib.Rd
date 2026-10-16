@@ -34,7 +34,7 @@ these are derivatives in the orthogonal coordinates directly and no chain
 rule through \code{\link[=pig2_sigma]{pig2_sigma()}} is composed.
 
 The property that gives this parametrization its name lives one order up:
-the \strong{expected} value of \eqn{\partial^2\ell/\partial\mu\partial\alpha} is
+the expected value of \eqn{\partial^2\ell/\partial\mu\partial\alpha} is
 zero, so the two scores are uncorrelated and their maximum likelihood
 estimates asymptotically independent.
 }

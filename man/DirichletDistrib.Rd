@@ -56,7 +56,7 @@ are the parent's: \code{distrib_name}, \code{dimension}, \code{n_dim}, \code{bou
 its free value being unconstrained already.
 }
 \description{
-The S7 class of the Dirichlet family on the open simplex of \eqn{p}
+This is the S7 class of the Dirichlet family on the open simplex of \eqn{p}
 coordinates, parametrized by a mean vector \eqn{\mu} carried on a
 \code{parameters7} simplex and a concentration \eqn{\phi > 0}. It inherits from
 \code{multivariate_distrib}, so the distribution function and the quantile signal
@@ -73,7 +73,8 @@ supply links.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.DirichletDistrib]{distrib_pdf()}} and
 \code{\link[=distrib_rng.DirichletDistrib]{distrib_rng()}};

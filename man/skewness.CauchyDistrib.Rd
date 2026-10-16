@@ -41,7 +41,7 @@ The same holds for \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}}, \cod
 does not converge as \eqn{n} grows, it is itself Cauchy with the same scale,
 so no amount of data settles it. The example below shows that.
 
-The Cauchy has a \strong{median}, equal to \eqn{\mu}, and a half-interquartile
+The Cauchy has a median, equal to \eqn{\mu}, and a half-interquartile
 range, equal to \eqn{\sigma}. Both are finite at every parameter value and
 both are available from \code{\link[=distrib_quantile]{distrib_quantile()}}. They serve as a location and a
 spread where the mean and the variance do not exist.

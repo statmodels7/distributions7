@@ -23,11 +23,11 @@ quadratic in it.}
 \item{col_fit}{Color of the density curves, the contours and the printed
 correlations. Defaults to \code{"#B22222"}.}
 
-\item{...}{Accepted so that the signature matches the generic's, and not
-used.}
+\item{...}{It is accepted so that the signature matches the generic's, and
+not used.}
 }
 \value{
-\code{x}, invisibly. Called for the plot it draws.
+\code{x}, invisibly. The function is called for the plot that it draws.
 }
 \description{
 Draws a multivariate distribution as a matrix of panels: the marginal density

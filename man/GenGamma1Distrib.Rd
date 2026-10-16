@@ -44,15 +44,15 @@ An S7 object of class \code{GenGamma1Distrib}, inheriting from
 \eqn{(0, \infty)}.
 }
 \description{
-The S7 class of the generalized gamma in Stacy's three-parameter form: a
-scale \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}, with density
-\eqn{f(y) = p\,y^{d-1}e^{-(y/a)^p}/\{a^d\Gamma(d/p)\}} on \eqn{y > 0}.
+This S7 class represents the generalized gamma in Stacy's three-parameter
+form: a scale \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}, with
+density \eqn{f(y) = p\,y^{d-1}e^{-(y/a)^p}/\{a^d\Gamma(d/p)\}} on \eqn{y > 0}.
 
 It is the flexible family for a positive response, and it nests four others
 exactly: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
 exponential at \eqn{d = p = 1} and the half-normal at
-\eqn{a = \sqrt2, d = 1, p = 2}. The choice among these special cases can
-therefore be made by estimating \eqn{d} and \eqn{p}.
+\eqn{a = \sqrt2, d = 1, p = 2}. Estimates of \eqn{d} and \eqn{p} therefore
+show which of these special cases the data support.
 
 Build one with \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}, which supplies the three link
 functions. This page documents the raw S7 constructor; the validator of
@@ -62,7 +62,8 @@ for every parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GenGamma1Distrib]{distrib_cdf()}},
@@ -122,7 +123,7 @@ d@params_interpretation
 # All three parameters are positive, so all three ride a log link.
 vapply(d@link_params, function(l) l@link_name, character(1))
 
-# Three of the four exact special cases, at one point each.
+# Three of the four exact special cases are compared at one point each.
 y <- c(0.5, 1.5, 4)
 rbind(gamma = distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
               dgamma(y, shape = 3, scale = 2),

@@ -23,7 +23,7 @@ plotted. Defaults to \code{TRUE}.}
 over the settings; an \code{lty} is accepted and has no effect on the stems.}
 }
 \value{
-\code{x}, invisibly. Called for the plot it draws.
+\code{x}, invisibly. The function is called for the plot that it draws.
 }
 \description{
 Draws the probability mass of a discrete family as stems over the integers
@@ -32,7 +32,7 @@ vector gives one setting per element, exactly as in
 \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}.
 }
 \section{The two keys, and why they are not the continuous ones}{
-Settings are separated by \strong{color and symbol together}, the symbol sitting
+Settings are separated by color and symbol together, the symbol sitting
 at the top of each stem where the point already is. The line type is not
 used here: dashing a stem is what it would do, and a dashed stem reads as a
 broken one, so at a support of any size the panel fills with fragments that

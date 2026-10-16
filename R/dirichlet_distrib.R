@@ -5,7 +5,7 @@ NULL
 #' @name DirichletDistrib
 #'
 #' @description
-#' The S7 class of the Dirichlet family on the open simplex of \eqn{p}
+#' This is the S7 class of the Dirichlet family on the open simplex of \eqn{p}
 #' coordinates, parametrized by a mean vector \eqn{\mu} carried on a
 #' `parameters7` simplex and a concentration \eqn{\phi > 0}. It inherits from
 #' `multivariate_distrib`, so the distribution function and the quantile signal
@@ -41,7 +41,8 @@ NULL
 #'   [parameters7::simplex()] for the chart.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.DirichletDistrib] and
 #'   [`distrib_rng()`][distrib_rng.DirichletDistrib];
 #' - the derivatives in the parameters:
@@ -948,12 +949,12 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #'
 #' @seealso
 #' [beta1_distrib()] for a coordinate's marginal and the two-coordinate case
-#' seen on the line; [multinomial_distrib()] for the discrete family on the
-#' same simplex; [mvgaussian1_distrib()] for the elliptical multivariate
-#' family; [parameters7::simplex()] for the chart the mean rides;
-#' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
-#' [DirichletDistrib] for the class.
+#' seen on the line; [multinomial_distrib()] for the discrete family on the same
+#' simplex; [mvgaussian1_distrib()] for the elliptical multivariate family;
+#' [parameters7::simplex()] for the chart the mean rides; [fit_distrib()] to
+#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' against the same battery that this one passes; [DirichletDistrib] for the
+#' class.
 #' @export
 dirichlet_distrib <- function(n_dim, mean = parameters7::simplex(n_dim),
                               link_phi = log_link()) {

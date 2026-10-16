@@ -10,8 +10,8 @@
 value is infinite unless the shape is exactly 1.}
 
 \item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
-vector of length 1 or of the length of \code{y}. \code{mu} is not read, the rate
-having canceled. \code{phi} must be strictly positive.}
+vector of length 1 or of the length of \code{y}. \code{mu} is not read, because the
+rate has canceled. \code{phi} must be strictly positive.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -23,8 +23,8 @@ A numeric vector of length
 Computes the second derivative of the gamma log-density with respect to the
 response, in closed form at the implied shape \eqn{a = 1/\phi}:
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{a - 1}{y^2}.}
-The rate drops out, the log-density being linear in \eqn{y} apart from the
-\eqn{(a-1)\log y} term. The sign follows the shape: the log-density is
+The rate drops out because the log-density is linear in \eqn{y} apart from
+the \eqn{(a-1)\log y} term. The sign follows the shape: the log-density is
 concave in the response for \eqn{\phi < 1}, exactly flat at \eqn{\phi = 1},
 where the family is exponential, and convex for \eqn{\phi > 1}.
 }
@@ -39,7 +39,7 @@ all.equal(distrib_hess_y(d, y, th), -(1 / 0.5 - 1) / y^2)
 identical(distrib_hess_y(d, y, th),
           distrib_hess_y(d, y, list(mu = 300, phi = 0.5)))
 
-# Concave below phi = 1, flat at it, convex above.
+# The log-density is concave below phi = 1, flat at it and convex above.
 vapply(c(0.5, 1, 2), function(p) distrib_hess_y(d, 3, list(mu = 3, phi = p)),
        numeric(1))
 }

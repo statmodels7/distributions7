@@ -30,16 +30,16 @@ Computes the generalized inverse of the binomial distribution function,
 \deqn{Q(p; \mu) = \min\{k \in \{0, \dots, n\} : F(k; \mu) \ge p\},}
 by calling \code{\link[stats:Binomial]{stats::qbinom()}} at \code{size = distrib@size}. The distribution
 function is a step function, so the round trip through
-\code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf.BinomialDistrib()}} returns a probability \strong{at least} \code{p}.
+\code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf.BinomialDistrib()}} returns a probability at least \code{p}.
 }
 \examples{
 d <- binomial_distrib(size = 10)
 th <- list(mu = 0.3)
 
-# Integers, bounded by size.
+# The quantiles are integers bounded by size.
 distrib_quantile(d, c(0.025, 0.5, 0.975, 1), th)
 
-# The round trip overshoots, the support being discrete.
+# The round trip overshoots, because the support is discrete.
 p <- c(0.025, 0.5, 0.975)
 rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 }

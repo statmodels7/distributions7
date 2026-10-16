@@ -19,7 +19,7 @@ empty, each strictly inside its parameter's bounds and named after an
 entry of \code{distrib@params}.
 }
 \description{
-Returns, on the \strong{parameter} scale, a starting value for each parameter
+Returns, on the parameter scale, a starting value for each parameter
 whose intercept a regression should not take from the intercept-only
 maximum likelihood fit. A modeling layer carries each value onto the
 parameter's own link and writes it to that equation's intercept. The base

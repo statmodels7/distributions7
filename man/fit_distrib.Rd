@@ -21,8 +21,8 @@ multivariate one, or any wrapper of either.}
 \item{y}{A numeric vector of observations, or an \eqn{n \times p} matrix for
 a multivariate family. Every observation is read at the same \eqn{\theta}.}
 
-\item{start}{Optional named list of starting values \strong{on the parameter
-scale}. \code{NULL}, the default, takes the starting values from
+\item{start}{Optional named list of starting values on the parameter
+scale. \code{NULL}, the default, takes the starting values from
 \code{\link[=distrib_start]{distrib_start()}}, which computes them from the data for a family that
 registers a method and otherwise draws them from the parameter domains,
 with the restarts below. A value that is
@@ -32,13 +32,13 @@ positionally lands here.}
 
 \item{method}{How to optimize. One argument taking one of three things:
 \itemize{
-\item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default: Newton's method with the \strong{expected}
+\item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default: Newton's method with the expected
 information in place of the observed Hessian, the object carrying how
 that information is to be obtained when the family has no closed form
 for it. Passing an \code{approx} where the family does have one signals an
 error rather than ignoring it;
 \item an optimizer object from \pkg{optimizers7}, used as given and receiving
-the analytical gradient and the \strong{observed} Hessian, so that
+the analytical gradient and the observed Hessian, so that
 \code{method = lbfgs(criterion = crit_grad(1e-12))} selects the algorithm and
 the stopping rule together. A stopping rule the optimizer cannot
 evaluate is rejected here, where the message can name it;
@@ -86,8 +86,8 @@ says the mass function has broken down at the parameters reached.
 \description{
 Fits a \code{distrib} object to an i.i.d. sample by maximum likelihood and
 returns a \code{\link[=distrib_fit]{distrib_fit()}} carrying the estimates, their standard errors and
-confidence limits on both scales. The optimization runs on the \strong{link
-scale}, where the parameters are unconstrained, driven by the analytical
+confidence limits on both scales. The optimization runs on the link
+scale, where the parameters are unconstrained, driven by the analytical
 score and information the family supplies at \code{scale = "link"}; the estimates
 are then mapped back and reported on the parameter scale.
 
@@ -112,7 +112,7 @@ the Hessian divided by \eqn{n} with it. Scaling by a positive constant moves
 neither the maximum nor any Newton step, since \eqn{H^{-1}g} is unchanged
 when both are divided by \eqn{n}. What it changes is the meaning of a
 threshold: a tolerance on the gradient of this objective is a tolerance on
-the score \strong{per observation} whatever the sample size, so the same rule
+the score per observation whatever the sample size, so the same rule
 means the same thing at \eqn{n = 10} and at \eqn{n = 10^7}. \code{loglik}, the
 information and every standard error are recomputed unscaled at the optimum.
 }

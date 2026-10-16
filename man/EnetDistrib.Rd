@@ -45,18 +45,18 @@ domains \eqn{(-\infty,\infty)}, \eqn{(0,\infty)} and \eqn{(0,1)}, and
 \code{params_smooth = c(mu = FALSE, lambda = TRUE, alpha = TRUE)}.
 }
 \description{
-The S7 class of the density whose negative logarithm is the elastic-net
-penalty: a Laplace and a Gaussian at the same location, multiplied together
-and normalized,
+This is the S7 class of the density whose negative logarithm is the
+elastic-net penalty: a Laplace and a Gaussian at the same location,
+multiplied together and normalized,
 \deqn{f(y) \propto \exp\{-\lambda\alpha|y-\mu|
       - \lambda(1-\alpha)(y-\mu)^2/2\}.}
 At \eqn{\alpha \to 1} it is the Laplace of \link{Laplace2Distrib} and at
 \eqn{\alpha \to 0} the Gaussian; \eqn{\alpha} is confined to the open
-interval, as every bounded parameter in this package is, so neither end is
-a member. Both remain families of their own.
+interval, as every bounded parameter in this package is, so the two ends
+are not members. Both remain families of their own.
 
-Like the Laplace, its log-likelihood is \strong{not differentiable in
-\eqn{\mu}}: the absolute value carries a kink at the location, and
+Like the Laplace, its log-likelihood is not differentiable in
+\eqn{\mu}: the absolute value carries a kink at the location, and
 \code{params_smooth} records \code{mu = FALSE}.
 
 Build one with \code{\link[=enet_distrib]{enet_distrib()}}, which supplies the three link functions.
@@ -66,7 +66,8 @@ adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.EnetDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf()}},
@@ -103,7 +104,7 @@ Registered on this class, each linked to the page that documents it:
 Every other generic is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
-\section{The two quantities everything is written in}{
+\section{The two quantities in which every derivative is written}{
 
 With \eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)} and
 \eqn{x = a/\sqrt c}, every derivative in the two rates is a polynomial in
@@ -123,11 +124,11 @@ S7::S7_inherits(d, continuous_distrib)
 d@params
 d@params_bounds
 
-# The location carries a kink, so it is declared non-smooth. That is what
-# switches off the finite-difference guard in check_distrib().
+# The location carries a kink, so it is declared non-smooth. This
+# declaration switches off the finite-difference guard in check_distrib().
 d@params_smooth
 
-# The two ends, approached but not reached.
+# The two ends are approached but not reached.
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 c(laplace = distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10)),
   laplace_exact = distrib_pdf(laplace2_distrib(), 0.7,
@@ -138,5 +139,6 @@ c(laplace = distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10)),
 \seealso{
 \code{\link[=enet_distrib]{enet_distrib()}} to build one;
 \code{\link[=laplace2_distrib]{laplace2_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two ends;
-\code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}}, the consumer this family exists for.
+\code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}}, the consumer for which this family
+exists.
 }

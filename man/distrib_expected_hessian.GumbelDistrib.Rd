@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{si
 must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -25,7 +25,7 @@ quadrature, Monte Carlo and outer-product routes.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
@@ -43,17 +43,17 @@ Euler-Mascheroni constant,
       \mathbb{E}\left[\ell^{(\sigma\sigma)}\right] =
         -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2}.}
 
-They are closed form for one reason, and it is the same reason the Weibull's
-are: under the model \eqn{w = e^{-Z}} is standard exponential whatever the
-parameters, so every expectation the family needs is a derivative of
-\eqn{\Gamma} at 2. Here that is \eqn{\mathbb{E}[w] = 1},
+They are closed form for the same reason as those of the Weibull: under the
+model \eqn{w = e^{-Z}} is standard exponential whatever the parameters, so
+every expectation that the family needs is a derivative of \eqn{\Gamma} at 2.
+Here that is \eqn{\mathbb{E}[w] = 1},
 \eqn{\mathbb{E}[w\log w] = 1 - \gamma} and
 \eqn{\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}, with
 \eqn{\mathbb{E}[Z] = \gamma}.
 
-\strong{The mixed entry does not vanish.} The location and the scale are not
-orthogonal here, where in a symmetric location-scale family such as the
-Gaussian they are, and the reason is that this density is skewed. Their
+The mixed entry does not vanish. The location and the scale are not
+orthogonal here because this density is skewed, whereas in a symmetric
+location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
@@ -61,9 +61,9 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The Gumbel is a
+expectation of the observed information under the model. The Gumbel is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score. \eqn{\gamma} is the Euler-Mascheroni constant,
 \eqn{-\psi(1) \approx 0.5772}.
@@ -75,14 +75,14 @@ th <- list(mu = 0, sigma = 1)
 e <- distrib_expected_hessian(d, c(-1, 0, 1), th)
 lapply(e, unique)
 
-# Written out with the Euler-Mascheroni constant.
+# The values are written out with the Euler-Mascheroni constant.
 g <- -digamma(1)
 c(-1, -((1 - g)^2 + pi^2 / 6), 1 - g)
 
 # The mixed entry is not zero, so the location and the scale are correlated.
 e$mu_sigma[1]
 
-# Negative definite all the same.
+# The matrix is negative definite all the same.
 M <- matrix(c(e$mu_mu[1], e$mu_sigma[1], e$mu_sigma[1], e$sigma_sigma[1]), 2)
 eigen(M, only.values = TRUE)$values
 
@@ -94,8 +94,8 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
                         function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian.GumbelDistrib()}} for the observed quantity this is
-the expectation of, \code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}} for the
-family that shares these expectations, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts
-it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian.GumbelDistrib()}} for the observed quantity whose
+expectation this is, \code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}} for the
+family that shares these expectations, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it
+at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

@@ -10,7 +10,7 @@ mv_sigma(distrib, theta)
 \item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
 \item{theta}{A named list or vector of parameters, each component a single
-number. Aligned by the generic before dispatch.}
+number. The generic aligns it before dispatch.}
 }
 \value{
 A \eqn{p \times p} symmetric numeric matrix: positive definite, with

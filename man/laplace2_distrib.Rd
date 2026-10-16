@@ -25,7 +25,7 @@ An S7 object of class \code{Laplace2Distrib}, inheriting from
 }
 \description{
 Builds the distribution object for the Laplace (double exponential) family
-written by its \strong{rate} \eqn{\lambda > 0}, with density
+written by its rate \eqn{\lambda > 0}, with density
 \eqn{(\lambda/2)\exp(-\lambda|y-\mu|)}. It is the same law as
 \code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambda = 1/\sigma}, and every quantity that
 does not involve the second parameter is identical between them.
@@ -60,7 +60,7 @@ is \code{c(mu = FALSE, lambda = TRUE)}. The consequences are set out on
 
 A second consequence is visible at the higher orders. The log-density is
 \eqn{\log(\lambda/2) - \lambda|r|}, linear in \eqn{\lambda} apart from
-\eqn{\log\lambda} and piecewise linear in \eqn{\mu}, so \strong{every} third and
+\eqn{\log\lambda} and piecewise linear in \eqn{\mu}, so every third and
 fourth derivative except the pure-\eqn{\lambda} ones is exactly zero, and
 the pure-\eqn{\lambda} ones do not depend on the data. Hence
 \code{expected = TRUE} returns the same values at those orders. The observed

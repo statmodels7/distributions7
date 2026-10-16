@@ -53,7 +53,8 @@ y <- c(0.2, 1, 4)
 th <- list(sigma = 1.5, xi = 0.3)
 g <- distrib_gradient(d, y, th)
 
-# Against a central difference of the log-density.
+# The analytic score is compared with a central difference of the
+# log-density.
 eps <- 1e-6
 rbind(analytic = g$xi,
       numeric = (distrib_pdf(d, y, list(sigma = 1.5, xi = 0.3 + eps),

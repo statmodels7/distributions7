@@ -31,14 +31,14 @@ are closed.}
 }
 \value{
 A named list with one numeric vector per component: 3, 6, 10, 15
-and 21 components at orders one to five, the second order keyed
-\code{mean_mean}, \code{d_d}, \code{p_p}, \code{mean_d}, \code{mean_p}, \code{d_p}.
+and 21 components at orders one to five. The components of the second
+order are keyed \code{mean_mean}, \code{d_d}, \code{p_p}, \code{mean_d}, \code{mean_p}, \code{d_p}.
 }
 \description{
 Return the derivatives of the log-density in \eqn{(m, d, p)} of orders one
 to five, the expected information and its expected third and fourth
-derivatives, and the first two derivatives of the expected information,
-each from its own compiled kernel.
+derivatives, and the first two derivatives of the expected information.
+Each of them comes from its own compiled kernel.
 }
 \details{
 With \eqn{k = d/p}, \eqn{k_1 = (d+1)/p} and
@@ -48,7 +48,7 @@ log-density is
 Every component is a closed form derived offline and written out per
 component, one kernel per order. With \eqn{U = p\,w}, the data enter
 through \eqn{X = U - \psi(k)} and \eqn{Q = e^U/k - 1}, and each component
-is a polynomial in them whose coefficients depend on \eqn{(d, p)} alone,
+is a polynomial in them whose coefficients depend only on \eqn{(d, p)},
 through \eqn{\psi^{(n)}(k)} and the differences
 \eqn{\psi^{(n)}(k_1) - \psi^{(n)}(k)}. As \eqn{k} and \eqn{d} grow the
 terms of these coefficients agree to several orders, so above

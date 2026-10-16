@@ -5,14 +5,14 @@ NULL
 #' @name ExponentialDistrib
 #'
 #' @description
-#' The S7 class of the exponential family parametrized by its mean
-#' \eqn{\mu > 0}, with density \eqn{f(y) = \mu^{-1}e^{-y/\mu}} on
-#' \eqn{[0, \infty)}. It inherits from `continuous_distrib`, so every generic of
-#' the `distrib` class applies to it; the methods listed below are registered on
-#' it directly.
+#' This is the S7 class of the exponential family parametrized by its mean
+#' \eqn{\mu > 0}, with density \eqn{f(y) = \mu^{-1}e^{-y/\mu}} on \eqn{[0,
+#' \infty)}. It inherits from `continuous_distrib`, so every generic of the
+#' `distrib` class applies to it; the methods listed below are registered on it
+#' directly.
 #'
 #' The family has a single parameter, as does the chi-squared family, so every
-#' derivative array it returns has one component per order and its information
+#' derivative array that it returns has one component per order and its information
 #' is a number.
 #'
 #' The parametrization is by the mean, not by the rate: R's own `dexp` takes
@@ -38,7 +38,8 @@ NULL
 #'   family at a unit shape; [geometric_distrib()] for its discrete analogue.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.ExponentialDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ExponentialDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.ExponentialDistrib] and
@@ -80,7 +81,7 @@ NULL
 #' d <- exponential_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # One parameter, the mean, on the positive half line.
+#' # The family has one parameter, the mean, on the positive half line.
 #' d@params
 #' d@n_params
 #' d@bounds
@@ -100,8 +101,8 @@ ExponentialDistrib <- S7::new_class("ExponentialDistrib", parent = continuous_di
 #' Computes the exponential density
 #' \deqn{f(y; \mu) = \dfrac{1}{\mu}\exp\left(-\dfrac{y}{\mu}\right), \qquad y \ge 0,}
 #' by calling [stats::dexp()] at `rate = 1/mu`. The parametrization here is by
-#' the mean, so the reciprocal is taken inside the method; a reader passing
-#' `rate` where `mu` is expected gets the reciprocal distribution.
+#' the mean, so the reciprocal is taken inside the method; passing `rate`
+#' where `mu` is expected yields the reciprocal distribution.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param y A numeric vector of observations. The support is \eqn{[0, \infty)};
@@ -196,8 +197,8 @@ S7::method(distrib_cdf, ExponentialDistrib) <- function(distrib, q, theta,
 #' Computes the exponential quantile function
 #' \deqn{Q(p; \mu) = -\mu \log(1 - p)}
 #' by calling [stats::qexp()] at `rate = 1/mu`. The median is
-#' \eqn{\mu \log 2 \approx 0.693\mu}, below the mean, the distribution being
-#' right skewed at every parameter value.
+#' \eqn{\mu \log 2 \approx 0.693\mu}, which is below the mean because the
+#' distribution is right skewed at every parameter value.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
@@ -225,11 +226,11 @@ S7::method(distrib_cdf, ExponentialDistrib) <- function(distrib, q, theta,
 #' # The median is mu log 2, below the mean.
 #' c(median = distrib_quantile(d, 0.5, th), mu_log2 = 2 * log(2), mean = 2)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # Asked from the upper tail the quantile is -mu log p, exact however small.
+#' # With lower.tail = FALSE the quantile is -mu log p, exact however small.
 #' distrib_quantile(d, 1e-300, th, lower.tail = FALSE)
 #' -2 * log(1e-300)
 S7::method(distrib_quantile, ExponentialDistrib) <- function(distrib, p, theta,
@@ -314,10 +315,10 @@ S7::method(distrib_rng, ExponentialDistrib) <- function(distrib, n, theta, ...) 
 #' y <- c(0.3, 1.1, 4.0)
 #' th <- list(mu = 2)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out in R and compared with the method.
 #' all.equal(distrib_gradient(d, y, th)$mu, (y - 2) / 2^2)
 #'
-#' # One component, the family having one parameter.
+#' # There is one component, because the family has one parameter.
 #' names(distrib_gradient(d, y, th))
 #'
 #' # The summed score vanishes at the sample mean, which is the estimate.
@@ -368,10 +369,10 @@ S7::method(distrib_gradient, ExponentialDistrib) <- function(distrib, y, theta,
 #' th <- list(mu = 2)
 #' h <- distrib_hessian(d, y, th)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out in R and compared with the method.
 #' all.equal(h$mu_mu, (2 - 2 * y) / 2^3)
 #'
-#' # Positive below mu/2, negative above it.
+#' # The second derivative is positive below mu/2 and negative above it.
 #' data.frame(y = y, mu_mu = h$mu_mu, below_half = y < 2 / 2)
 #'
 #' # A central difference of the score reproduces it.
@@ -423,14 +424,14 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #' of the score.
 #'
 #' @seealso [distrib_hessian.ExponentialDistrib()] for the observed quantity
-#'   this is the expectation of, [fisher_scoring()], which inverts it, and
+#'   of which this is the expectation, [fisher_scoring()], which inverts it, and
 #'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- exponential_distrib()
 #' th <- list(mu = 2)
 #'
-#' # A single number, -1/mu^2.
+#' # The result is a single number, -1/mu^2.
 #' unique(distrib_expected_hessian(d, c(0.3, 1.1, 4.0), th)$mu_mu)
 #' -1 / 2^2
 #'
@@ -440,7 +441,7 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #' c(observed = mean(distrib_hessian(d, z, th)$mu_mu),
 #'   expected = distrib_expected_hessian(d, 0, th)$mu_mu)
 #'
-#' # It is the variance of the score, this family being regular.
+#' # It is the variance of the score, because this family is regular.
 #' c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
 #'   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y, theta,
@@ -458,7 +459,7 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.}
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{4/\mu^3}. Both routes are closed
-#' form, so no quadrature is run and `approx` and `nsim` are ignored.
+#' form, so quadrature is not run and `approx` and `nsim` are ignored.
 #'
 #' The family has one parameter, so there is one component, where a
 #' two-parameter family carries four at this order.
@@ -496,7 +497,7 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 #' y <- c(0.3, 1.1, 4.0)
 #' th <- list(mu = 2)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out in R and compared with the method.
 #' all.equal(distrib_deriv3(d, y, th)$mu_mu_mu, -2 / 2^3 + 6 * y / 2^4)
 #'
 #' # The expected value is 4/mu^3.
@@ -558,7 +559,7 @@ S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, ex
 #' y <- c(0.3, 1.1, 4.0)
 #' th <- list(mu = 2)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out in R and compared with the method.
 #' all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu, 6 / 2^4 - 24 * y / 2^5)
 #'
 #' # The expected value is -18/mu^4.
@@ -708,7 +709,7 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' The family has one parameter and a fixed shape: the standard deviation
 #' equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
 #' \eqn{\mu} is. It is the only continuous law with a constant hazard, which is
-#' the memorylessness the details set out.
+#' the memorylessness that the details set out.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps
@@ -724,19 +725,20 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' \eqn{Q(p) = -\mu\log(1-p)}.
 #'
 #' The mean and the standard deviation are both \eqn{\mu}, so the coefficient
-#' of variation is 1; the skewness is 2 and the excess kurtosis 6, neither
-#' depending on the parameter. The median is \eqn{\mu\log 2}, below the mean.
+#' of variation is 1; the skewness is 2 and the excess kurtosis is 6, and both
+#' are independent of the parameter. The median is \eqn{\mu\log 2}, below the mean.
 #'
 #' R parametrizes its own `dexp` by the rate, \eqn{1/\mu}, and the methods
 #' convert. [laplace2_distrib()] is the corresponding choice for the Laplace,
-#' where the rate is what the package carries.
+#' where the package carries the rate.
 #'
 #' # Memorylessness
 #'
 #' The survival function is \eqn{P(Y > q) = e^{-q/\mu}}, so
 #' \eqn{P(Y > s + t \mid Y > s) = P(Y > t)} for every \eqn{s, t \ge 0}: a wait
-#' already endured tells nothing about the wait remaining. Equivalently the
-#' hazard \eqn{f/(1-F)} is the constant \eqn{1/\mu}. On the log scale this is
+#' that has already been endured carries no information about the remaining
+#' wait. Equivalently the hazard \eqn{f/(1-F)} is the constant \eqn{1/\mu}. On
+#' the log scale this is
 #' the statement that both \eqn{\log f} and \eqn{\log(1-F)} are straight lines
 #' in \eqn{y}, which is why [distrib_grad_y.ExponentialDistrib()] is a constant
 #' and [distrib_hess_y.ExponentialDistrib()] is zero.

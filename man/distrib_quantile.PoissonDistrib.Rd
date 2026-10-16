@@ -29,7 +29,7 @@ Computes the generalized inverse of the Poisson distribution function,
 \deqn{Q(p; \mu) = \min\{k \in \{0, 1, 2, \dots\} : F(k; \mu) \ge p\},}
 by calling \code{\link[stats:Poisson]{stats::qpois()}}. The distribution function is a step function,
 so its inverse is a step function too and the round trip through
-\code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf.PoissonDistrib()}} returns a probability \strong{at least} \code{p}, not
+\code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf.PoissonDistrib()}} returns a probability at least \code{p}, not
 \code{p} itself.
 }
 \examples{

@@ -11,7 +11,8 @@ betabinom1_cum(n, theta, len, upper = FALSE)
 
 \item{theta}{A named list with the two parameters.}
 
-\item{len}{The length of the quantity the caller evaluates at.}
+\item{len}{The length of the quantity at which the caller evaluates the
+cumulative mass.}
 
 \item{upper}{Logical of length 1. When \code{TRUE} the upper tail is returned.
 Defaults to \code{FALSE}.}
@@ -21,9 +22,9 @@ A numeric vector of length \code{n + 1}, or a matrix with \code{n + 1}
 columns.
 }
 \description{
-The cumulative mass over \eqn{\{0, \dots, n\}}: a vector where both
+Returns the cumulative mass over \eqn{\{0, \dots, n\}}: a vector where both
 parameters are scalar, and otherwise a matrix with one row per observation,
-each observation's parameters crossed with the support. With
+in which each observation's parameters are crossed with the support. With
 \code{upper = TRUE} the entry at \eqn{k} is \eqn{P(Y > k)}, the mass above
 \eqn{k} accumulated from the top of the support, in place of
 \eqn{P(Y \le k)}.

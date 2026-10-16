@@ -18,7 +18,7 @@ parameter, the offending value(s) and the expected domain.
 \description{
 Verifies that every supplied parameter value lies strictly inside the
 distribution's \code{params_bounds}, and is finite. Domains are treated as
-\strong{open} intervals: for instance a Gaussian requires \eqn{\sigma > 0} and a
+open intervals: for instance a Gaussian requires \eqn{\sigma > 0} and a
 Bernoulli requires \eqn{0 < \mu < 1}, since the log-likelihood and its
 derivatives are not defined at the boundary.
 

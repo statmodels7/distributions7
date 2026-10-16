@@ -14,8 +14,8 @@ expectation; only its length does, through recycling.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{Ignored: the answer is exact. Accepted so that the signature
-matches the generic's.}
+\item{approx}{Ignored: the answer is exact. It is accepted so that the
+signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason.}
 
@@ -23,7 +23,7 @@ matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
@@ -35,7 +35,7 @@ Returns the expected Hessian in closed form. In the two rates the density is
 an exponential family, so the information in those rates is the Hessian of
 the log normalizing constant, which the observed Hessian also uses.
 
-\code{approx} and \code{nsim} are accepted and ignored, the answer being exact.
+\code{approx} and \code{nsim} are accepted and ignored because the answer is exact.
 }
 \section{The rate block}{
 With sufficient statistics \eqn{-|z|} and \eqn{-z^2/2}, \eqn{\log Z} is the
@@ -51,25 +51,25 @@ therefore their own expectations, which is why \code{lambda_lambda} and
 \code{alpha_alpha} repeat them exactly. The third does not: \code{lambda_alpha}
 carries \eqn{-|z| + z^2/2}, whose expectation
 \eqn{\partial_a\log Z - \partial_c\log Z} cancels the constant of the same
-value sitting beside it and leaves the \eqn{\log Z} term alone.
+value sitting beside it and leaves only the \eqn{\log Z} term.
 }
 
 \section{The location, where the kink lives}{
 The observed second derivative in \eqn{\mu} is \eqn{-c}, which misses the
-point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)} the
-density carries at its own location, exactly as the Laplace does. The
+point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)} that
+the density carries at its own location, exactly as the Laplace does. The
 information is defined there as the variance of the score, and
 \deqn{I_{\mu\mu} = E\left[(a\,\mathrm{sgn}(z) + cz)^2\right]
   = a^2 + 2ac\,E|z| + c^2E[z^2]
   = a^2 - 2ac\,\partial_a \log Z - 2c^2 \partial_c \log Z,}
 since \eqn{E|z| = -\partial_a\log Z} and \eqn{E[z^2] = -2\partial_c\log Z}.
 
-Measured at \eqn{\lambda = 2}: it is 3.99999996 as \eqn{\alpha \to 1}, which
-is the Laplace's \eqn{\lambda^2 = 1/\sigma^2}, and exactly 2 as
-\eqn{\alpha \to 0}, which is the Gaussian's \eqn{c}.
+Measured at \eqn{\lambda = 2}, the value of \eqn{I_{\mu\mu}} is 3.99999996 as
+\eqn{\alpha \to 1}, which is the Laplace's \eqn{\lambda^2 = 1/\sigma^2}, and
+exactly 2 as \eqn{\alpha \to 0}, which is the Gaussian's \eqn{c}.
 
-The location stays \strong{orthogonal} to both rates, every cross-expectation
-vanishing by symmetry, so \code{mu_lambda} and \code{mu_alpha} are exactly zero.
+The location stays orthogonal to both rates, because every cross-expectation
+vanishes by symmetry. Therefore \code{mu_lambda} and \code{mu_alpha} are exactly zero.
 }
 
 \section{Notation}{
@@ -100,13 +100,13 @@ rbind(alpha = c(1 - 1e-8, 0.5, 1e-8),
       information = vapply(c(1 - 1e-8, 0.5, 1e-8), inf_mu, 0),
       limit = c(2^2, NA, 2 * (1 - 1e-8)))
 
-# The strategy argument is ignored, the answer being exact.
+# The strategy arguments are ignored because the answer is exact.
 identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 }
 \seealso{
 \code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the observed curvature, which
 differs from this only in the location;
 \code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian.Laplace2Distrib()}} for the same phenomenon in
-the family this one contains; and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
+the family that this one contains; and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
 generic.
 }

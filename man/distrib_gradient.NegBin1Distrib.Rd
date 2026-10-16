@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -60,8 +60,8 @@ The cost is \eqn{y} terms per observation in place of a fixed number of
 digamma evaluations. The example below compares the value with this limit
 at three settings.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale.
 }
 

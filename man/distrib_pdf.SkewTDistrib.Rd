@@ -27,7 +27,7 @@ Computes the skew \eqn{t} density, with \eqn{z = (y-\mu)/\sigma} and
 \deqn{f(y; \mu, \sigma, \alpha, \nu) = \dfrac{2}{\sigma}\,
       t_\nu(z)\,T_{\nu+1}(w),}
 with \eqn{t_\nu} the standard Student \eqn{t} density and \eqn{T_{\nu+1}}
-its distribution function on \strong{one more} degree of freedom. The extra
+its distribution function on one more degree of freedom. The extra
 degree of freedom is deliberate: without it the tilted density would not
 integrate to one.
 

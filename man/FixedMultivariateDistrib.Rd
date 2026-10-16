@@ -73,15 +73,15 @@ An S7 object of class \code{FixedMultivariateDistrib}, inheriting from
 \code{fixed_params} beside the parent's properties, \code{n_dim} included.
 }
 \description{
-The S7 class of a MULTIVARIATE distribution in which some parameters of the
-wrapped distribution are held at known values. It follows
+This is the S7 class of a MULTIVARIATE distribution in which some parameters
+of the wrapped distribution are held at known values. It follows
 \link{FixedContinuousDistrib} in splicing the held values into \code{theta} and
-delegating to the parent. It has no distribution function, quantile or
-atoms, and adds the multivariate generics:
-\code{\link[=mv_location]{mv_location()}}, \code{\link[=mv_sigma]{mv_sigma()}}, \code{\link[=mv_marginal]{mv_marginal()}}, \code{\link[=mv_support]{mv_support()}},
-\code{\link[=mv_reference_draw]{mv_reference_draw()}} and \code{\link[=mv_derived]{mv_derived()}} all delegate to the parent at the
-spliced \code{theta}, and \code{\link[=mv_derived]{mv_derived()}} reports the parent's quantities with the
-Jacobian columns of the fixed parameters removed.
+delegating to the parent. It has no distribution function, quantile or atoms,
+and adds the multivariate generics: \code{\link[=mv_location]{mv_location()}}, \code{\link[=mv_sigma]{mv_sigma()}},
+\code{\link[=mv_marginal]{mv_marginal()}}, \code{\link[=mv_support]{mv_support()}}, \code{\link[=mv_reference_draw]{mv_reference_draw()}} and \code{\link[=mv_derived]{mv_derived()}} all
+delegate to the parent at the spliced \code{theta}, and \code{\link[=mv_derived]{mv_derived()}} reports the
+parent's quantities with the Jacobian columns of the fixed parameters
+removed.
 
 The motivating case is a CENTERED PRIOR: holding the mean components of a
 multivariate family at zero leaves the matrix parameter alone, and a matrix
@@ -89,7 +89,8 @@ parameter alone is what a random effect is distributed by.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.FixedMultivariateDistrib]{distrib_pdf()}}
 and \code{\link[=distrib_rng.FixedMultivariateDistrib]{distrib_rng()}};

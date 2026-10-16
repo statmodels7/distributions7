@@ -30,7 +30,7 @@ inputs.
 Computes the quantiles in closed form,
 \deqn{Q(p; \sigma, \xi) = \dfrac{\sigma}{\xi}\left\{(1-p)^{-\xi} - 1\right\},}
 with \eqn{-\sigma\log(1-p)} at \eqn{\xi = 0}. The quantile function is
-elementary, so nothing is inverted numerically and
+elementary, so the method does not invert numerically and
 \code{\link[=distrib_rng.GPDDistrib]{distrib_rng.GPDDistrib()}} uses the inverse transform.
 
 The method first forms the logarithm of the survival probability,
@@ -39,13 +39,13 @@ The method first forms the logarithm of the survival probability,
 one, and the corresponding forms when \code{log.p = TRUE}. The quantile is then
 \eqn{\sigma\,\mathrm{expm1}(-\xi\log S)/\xi}, and \eqn{-\sigma\log S} at
 \eqn{\xi = 0}, so a probability close to zero or close to one keeps its
-digits whichever tail it is given in.
+digits in whichever tail it is given.
 }
 \examples{
 d <- gpd_distrib()
 th <- list(sigma = 1.5, xi = 0.3)
 
-# The round trip is exact, both functions being closed form.
+# The round trip is exact because both functions are closed form.
 y <- c(0.2, 1, 4)
 all.equal(distrib_quantile(d, distrib_cdf(d, y, th), th), y)
 

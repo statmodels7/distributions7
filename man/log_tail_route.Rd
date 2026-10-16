@@ -22,9 +22,11 @@ log_tail_route(distrib, q, theta, order, lower.tail, log, generic)
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical.}
+\item{log}{A single logical; \code{TRUE} selects the derivatives of the log
+probability and \code{FALSE} those of the probability.}
 
 \item{generic}{The generic of that order, called back on the quantiles
 that stay with the family's method: those that are not far, and those

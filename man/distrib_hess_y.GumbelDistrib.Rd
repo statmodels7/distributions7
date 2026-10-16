@@ -24,10 +24,10 @@ Computes the second derivative of the Gumbel log-density with respect to the
 response, in closed form:
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{w}{\sigma^2},
       \qquad w = e^{-(y-\mu)/\sigma}.}
-It is negative at every observation, \eqn{w} being positive, so the
-log-density is concave in the response over the whole line. Being a location
-family, the Gumbel has the same curvature in the response as in its
-location, and this equals the \code{mu_mu} component of
+It is negative at every observation because \eqn{w} is positive, so the
+log-density is concave in the response over the whole line. Because the
+Gumbel is a location family, it has the same curvature in the response as
+in its location, and this equals the \code{mu_mu} component of
 \code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian.GumbelDistrib()}}.
 }
 \examples{
@@ -37,7 +37,8 @@ th <- list(mu = 0, sigma = 1)
 
 distrib_hess_y(d, y, th)
 
-# A location family: the same curvature as in the location.
+# The Gumbel is a location family, so the curvature is the same as in the
+# location.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 
 # Negative everywhere, so the log-density is concave in the response.

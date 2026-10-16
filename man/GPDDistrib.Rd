@@ -44,16 +44,15 @@ An S7 object of class \code{GPDDistrib}, inheriting from
 \eqn{(0,\infty)} and \eqn{(-\infty,\infty)}.
 }
 \description{
-The S7 class of the generalized Pareto family, the law of exceedances over a
-high threshold, parametrized by a scale \eqn{\sigma > 0} and a shape
-\eqn{\xi}:
-\eqn{f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}} on \eqn{y \ge 0}. At
-\eqn{\xi = 0} it is the exponential, reached by a series, so a fit may move
-the shape through zero.
+This is the S7 class of the generalized Pareto family, the law of exceedances
+over a high threshold, parametrized by a scale \eqn{\sigma > 0} and a shape
+\eqn{\xi}: \eqn{f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}} on \eqn{y
+\ge 0}. At \eqn{\xi = 0} it is the exponential, reached by a series, so a fit
+may move the shape through zero.
 
-For \eqn{\xi < 0} the support ends at \eqn{-\sigma/\xi}, so it \strong{moves with
-the parameters}. That is what makes the family non-regular, and it is why its expected information exists only
-above \eqn{\xi = -1/2}.
+For \eqn{\xi < 0} the support ends at \eqn{-\sigma/\xi}, so it moves with
+the parameters. Because of this the family is non-regular, and for the
+same reason its expected information exists only above \eqn{\xi = -1/2}.
 
 Build one with \code{\link[=gpd_distrib]{gpd_distrib()}}, which supplies the two link functions. This
 page documents the raw S7 constructor, which takes the parent's
@@ -62,7 +61,8 @@ adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GPDDistrib]{distrib_cdf()}},
@@ -104,9 +104,9 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 \section{Support depending on the parameters}{
 
 The derivatives are correct as derivatives of the log-density at every
-admissible point, whatever the sign of \eqn{\xi}. What is not automatic is
-the license to differentiate under the integral sign, which the Bartlett
-identities rest on. The expected information exists for \eqn{\xi > -1/2}
+admissible point, whatever the sign of \eqn{\xi}. The license to
+differentiate under the integral sign, on which the Bartlett identities
+rest, is not automatic. The expected information exists for \eqn{\xi > -1/2}
 and is Smith's closed form. At or below that value it does not exist, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} returns \code{NA}; the classical asymptotics of the
 maximum likelihood estimator do not hold either.

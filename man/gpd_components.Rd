@@ -51,24 +51,24 @@ to \eqn{z}. Differentiating it by Leibniz,
       \partial^{b-j}(1/\xi),}
 produces terms of size \eqn{\xi^{-(b+1)}} that cancel against each other, so
 near zero the form loses every digit. Below a threshold it is replaced by the
-series the cancellation leaves,
+series that the cancellation leaves,
 \deqn{W = \sum_{k \ge 0} \frac{(-1)^k \xi^k z^{k+1}}{k+1},}
 differentiated term by term.
 
-The threshold is on \eqn{\lvert\xi z\rvert} and \strong{not} on \eqn{\xi}. At
+The threshold is on \eqn{\lvert\xi z\rvert} and not on \eqn{\xi}. At
 order \eqn{b} the Leibniz terms are of size \eqn{z\xi^{-b}} against an answer
 of size \eqn{z^{b+1}}, so the relative cancellation is
 \eqn{(\xi z)^{-b}} and the accuracy is \eqn{\varepsilon(\xi z)^{-b}}, which
 at order four reaches 0.3 by \eqn{\xi z = 1.7\times10^{-4}}. The series
 needs \eqn{\lvert\xi z\rvert < 1} to converge and is cut at 0.2, where
-forty terms leave \eqn{10^{-28}} while the Leibniz form still carries \eqn{10^{-13}}, so
-the two overlap.
+forty terms leave \eqn{10^{-28}} while the Leibniz form still carries
+\eqn{10^{-13}}, so the two overlap.
 }
 
 \section{What the series branch evaluates}{
-The two elementwise powers the sum appears to need are algebraically one:
+The two elementwise powers that the sum appears to need are algebraically one:
 with \eqn{u = \xi z}, \eqn{\xi^{k-b}z^{k+1} = u^{k-b}z^{b+1}}, so
-\eqn{z^{b+1}/\sigma^a} leaves the sum and what remains is a \strong{polynomial in}
+\eqn{z^{b+1}/\sigma^a} leaves the sum and what remains is a polynomial in
 \eqn{u} whose coefficients are scalar in \eqn{k}. \code{gpd_poly_cpp()} evaluates
 it by Horner from the highest power down, which sums a decaying series
 smallest first. Each branch also runs on its own elements only, so a sample
@@ -76,8 +76,8 @@ straddling the cut does not pay for both in full.
 }
 
 \seealso{
-\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}} for the compiled kernels this
-assembly is checked against; \code{\link[=fdb2]{fdb2()}} for the two-variable composition
+\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}} for the compiled kernels against
+which this assembly is checked; \code{\link[=fdb2]{fdb2()}} for the two-variable composition
 template; and
 \code{\link[=gpd_distrib]{gpd_distrib()}} for the family.
 }

@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{tau} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -38,19 +38,20 @@ form and with no quadrature or simulation:
 \deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\tau, \qquad
       \mathbb{E}\left[\ell^{(\mu\tau)}\right] = 0, \qquad
       \mathbb{E}\left[\ell^{(\tau\tau)}\right] = -\dfrac{1}{2\tau^2}.}
-They follow from \eqn{\mathbb{E}[Y-\mu] = 0}, the other two entries being
-free of the data already. The negative of this matrix is the Fisher
-information for one observation; the zero off-diagonal says the mean and the
-precision are orthogonal, so their estimates are asymptotically independent.
+They follow from \eqn{\mathbb{E}[Y-\mu] = 0}, because the other two entries
+are already free of the data. The negative of this matrix is the Fisher
+information for one observation; the zero off-diagonal means that the mean
+and the precision are orthogonal, so their estimates are asymptotically
+independent.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The Gaussian is
+expectation of the observed information under the model. The Gaussian is
 a regular family, so the second Bartlett identity holds and this equals the
 variance of the score.
 }
@@ -59,7 +60,7 @@ variance of the score.
 d <- gaussian3_distrib()
 th <- list(mu = 1, tau = 0.25)
 
-# The three constants, one value per observation.
+# Each of the three constants has one value per observation.
 lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 
 # The observed Hessian averages onto them over a large sample.

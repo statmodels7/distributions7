@@ -5,12 +5,12 @@ NULL
 #' @name SkewNormal1Distrib
 #'
 #' @description
-#' The S7 class of Azzalini's skew normal family, a Gaussian carrying a shape
-#' parameter that tilts it. With \eqn{z = (y-\mu)/\sigma} the density is
-#' \eqn{f(y) = 2\phi(z)\Phi(\alpha z)/\sigma}, so the factor \eqn{2\Phi(\alpha z)}
-#' is above one on the side where \eqn{\alpha z > 0} and below one on the other.
-#' At \eqn{\alpha = 0} that factor is identically one and the family is the
-#' Gaussian.
+#' This is the S7 class of Azzalini's skew normal family, a Gaussian carrying a
+#' shape parameter that tilts it. With \eqn{z = (y-\mu)/\sigma} the density is
+#' \eqn{f(y) = 2\phi(z)\Phi(\alpha z)/\sigma}, so the factor \eqn{2\Phi(\alpha
+#' z)} is above one on the side where \eqn{\alpha z > 0} and below one on the
+#' other. At \eqn{\alpha = 0} that factor is identically one and the family is
+#' the Gaussian.
 #'
 #' The class inherits from `continuous_distrib`. Its parametrization is
 #' \eqn{(\mu, \sigma, \alpha)} with \eqn{\mu} a location and not the mean, since
@@ -35,7 +35,8 @@ NULL
 #'   \eqn{(-\infty,\infty)}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.SkewNormal1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.SkewNormal1Distrib] and
 #'   [`distrib_rng()`][distrib_rng.SkewNormal1Distrib];

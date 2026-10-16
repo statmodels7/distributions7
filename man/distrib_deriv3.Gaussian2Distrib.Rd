@@ -17,10 +17,10 @@ recycled. \code{sigma2} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -65,7 +65,7 @@ d3 <- distrib_deriv3(d, y, th)
 # The log-density is quadratic in mu, so the third derivative there is 0.
 d3$mu_mu_mu
 
-# The other three, written out.
+# We write out the other three.
 r <- y - 1
 all.equal(d3$mu_mu_sigma2, rep(1 / 4^2, 3))
 all.equal(d3$mu_sigma2_sigma2, 2 * r / 4^3)

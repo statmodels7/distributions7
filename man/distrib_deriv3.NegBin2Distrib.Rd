@@ -17,7 +17,7 @@ recycled. Both must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{Ignored, the expected values being closed form or exact sums.}
 

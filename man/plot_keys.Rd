@@ -23,7 +23,7 @@ distinguishable symbols, so that a printed copy with no color is still
 readable.
 
 A continuous family draws with the color and the line type; a discrete one
-draws with the color and the \strong{symbol}, because dashing a stem is what a
+draws with the color and the symbol, because dashing a stem is what a
 line type does there and a dashed stem reads as a broken one.
 }
 \seealso{

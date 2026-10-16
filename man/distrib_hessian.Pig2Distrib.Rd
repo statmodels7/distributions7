@@ -30,7 +30,7 @@ Returns the exact second derivatives of the log-mass in
 \eqn{(\mu, \alpha)}, read off columns \code{d20}, \code{d02} and \code{d11} of the compiled
 kernel \code{pig2_hessian_cpp}.
 
-The \strong{observed} mixed entry is not zero in general; what vanishes is its
+The observed mixed entry is not zero in general; what vanishes is its
 expectation. At \eqn{\mu = 3} and \eqn{\alpha = 3.0104} the entry is
 proportional to \eqn{y - \mu}, and its expectation is zero to rounding
 error.

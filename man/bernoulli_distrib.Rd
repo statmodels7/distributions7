@@ -54,8 +54,9 @@ the canonical link, and on its scale
       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu(1-\mu).}
 The second carries no data, so the observed and the expected information
 coincide in exact arithmetic (the computed observed value loses accuracy at
-large \eqn{|\eta|}; see \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}}). Under a probit or a complementary log-log link they do not, and
-the choice between Fisher scoring and Newton's method becomes a real one.
+large \eqn{|\eta|}; see \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}}). Under a
+probit or a complementary log-log link they do not, and the choice between
+Fisher scoring and Newton's method becomes a real one.
 }
 
 \section{Derivatives}{
@@ -79,7 +80,7 @@ not exist.
 
 \eqn{\ell} is the log-mass of one observation and \eqn{\mu \in (0,1)} the
 success probability. \eqn{\eta = \log(\mu/(1-\mu))} is the log odds, the
-parameter on the link scale. The \strong{canonical} link of an exponential family
+parameter on the link scale. The canonical link of an exponential family
 is the one that makes the log-mass linear in the sufficient statistic.
 }
 
@@ -87,10 +88,10 @@ is the one that makes the log-mass linear in the sufficient statistic.
 d <- bernoulli_distrib()
 d
 
-# The two masses, summing to one.
+# The two masses sum to one.
 distrib_pdf(d, c(0, 1), list(mu = 0.3))
 
-# Mean and variance are tied, the variance being maximal at 1/2.
+# Mean and variance are tied, and the variance is maximal at 1/2.
 vapply(c(0.1, 0.5, 0.9), function(p) {
   th <- list(mu = p)
   c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))

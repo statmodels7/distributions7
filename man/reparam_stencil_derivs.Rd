@@ -23,7 +23,7 @@ usable as an object's \code{reparam_derivs}, returning the keyed tables
 \description{
 The numerical fallback behind \code{\link[=reparam_tables]{reparam_tables()}}: every partial of the map
 is one central stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} in each direction,
-applied to the analytic map, iterated across \strong{distinct} directions. A
+applied to the analytic map, iterated across distinct directions. A
 cross-variable composition of two first differences is one mixed stencil and
 not the same-variable nesting the toolkit forbids.
 }

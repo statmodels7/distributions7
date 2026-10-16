@@ -45,16 +45,17 @@ object built by \code{\link[=poisson_distrib]{poisson_distrib()}} they hold \cod
 \eqn{(0, \infty)}, and the one link.
 }
 \description{
-The S7 class of the Poisson family parametrized by its mean \eqn{\mu > 0},
-with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative integers. It
-inherits from \code{discrete_distrib}, so expectations over its support are exact
-sums and no derivative with respect to the response is defined.
+This is the S7 class of the Poisson family parametrized by its mean \eqn{\mu
+> 0}, with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative
+integers. It inherits from \code{discrete_distrib}, so expectations over its
+support are exact sums and no derivative with respect to the response is
+defined.
 
 The mean and the variance are both \eqn{\mu}, which is the constraint a
 count model most often has to relax; \code{\link[=negbin2_distrib]{negbin2_distrib()}} and
 \code{\link[=negbin1_distrib]{negbin1_distrib()}} do that, and both contain this family in the limit.
 
-The default link is the logarithm, which is the \strong{canonical} link here. On
+The default link is the logarithm, which is the canonical link here. On
 its scale the observed and the expected information coincide in exact
 arithmetic, so Fisher scoring and Newton's method take the same step.
 
@@ -64,7 +65,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.PoissonDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf()}},

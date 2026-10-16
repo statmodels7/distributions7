@@ -59,22 +59,22 @@ multivariate distribution is validated by the separate battery of
 \details{
 The checks performed are:
 \itemize{
-\item \strong{density}: non-negativity and integration/summation to 1 over the support.
-\item \strong{cdf}: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
+\item density: non-negativity and integration/summation to 1 over the support.
+\item cdf: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
 and its agreement with the density: for a continuous family a central
 difference of the cdf against the density, with the step the response
 derivatives use, and for a discrete one \eqn{F(k) - F(k-1)} against the
 mass.
-\item \strong{quantile}: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
+\item quantile: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 distributions, and the generalized-inverse inequalities for discrete ones).
-\item \strong{rng}: the empirical distribution function of a large draw, at the
+\item rng: the empirical distribution function of a large draw, at the
 quantiles for the probabilities 0.05, 0.10, ..., 0.95, agrees with
 \code{\link[=distrib_cdf]{distrib_cdf()}} within Monte Carlo error (the largest standardized
 difference stays below 6).
-\item \strong{gradient, hessian, deriv3, deriv4}: analytical values against
+\item gradient, hessian, deriv3, deriv4: analytical values against
 \code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}},
 \code{\link[=numerical_deriv3]{numerical_deriv3()}} and \code{\link[=numerical_deriv4]{numerical_deriv4()}}.
-\item \strong{deriv5}, when \code{5} is among \code{orders}: \code{\link[=distrib_deriv5]{distrib_deriv5()}} against
+\item deriv5, when \code{5} is among \code{orders}: \code{\link[=distrib_deriv5]{distrib_deriv5()}} against
 \code{\link[=numerical_deriv5]{numerical_deriv5()}} at a higher accuracy, the sixth-order rule (six
 evaluations of the fourth order per parameter) in place of the default
 fourth-order one. For a family that reaches the numerical fifth order the row checks
@@ -86,7 +86,7 @@ family that owns its fourth-order method while building part of it from
 stencils passes that test and may still fail this row, whose statistic is
 an absolute error for a small component. The row appears only when \code{5} is
 among \code{orders}, which default to \code{1:4}.
-\item \strong{expected information}: \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} against a
+\item expected information: \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} against a
 Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 product of the score is used as reference because it remains valid when the
 log-likelihood is not differentiable in a parameter (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
@@ -94,7 +94,7 @@ A draw landing exactly on a finite bound of a continuous support, where the
 score of a family singular at that bound is infinite, is left out of the
 estimate and counted in the row's \code{detail}; a score that is not finite at
 an interior point still leaves the row without a statistic.
-\item \strong{response derivatives} (continuous only): \code{\link[=distrib_grad_y]{distrib_grad_y()}} and
+\item response derivatives (continuous only): \code{\link[=distrib_grad_y]{distrib_grad_y()}} and
 \code{\link[=distrib_hess_y]{distrib_hess_y()}} against central differences in \eqn{y} whose step is
 chosen observation by observation by \code{\link[=fd_stable_quotient]{fd_stable_quotient()}}, between a
 step cut to under half the distance to a bound and one scaled on that
@@ -103,7 +103,7 @@ at. A draw closer than \eqn{128\lvert b\rvert\varepsilon} to a finite
 bound \eqn{b \ne 0}, where the spacing of doubles is absolute and no
 central difference compares a derivative, is left out and counted in the
 row's \code{detail}.
-\item \strong{link scale}: \code{scale = "link"} derivatives against finite
+\item link scale: \code{scale = "link"} derivatives against finite
 differences of the log-likelihood in \eqn{\eta}.
 }
 

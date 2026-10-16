@@ -12,7 +12,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -33,7 +33,7 @@ linear in \eqn{\mu}. The term is formed by dividing \eqn{y} by \eqn{\mu}
 once per power, and a zero count contributes zero, so the value at
 \eqn{y = 0} stays zero however small \eqn{\mu} is.
 
-On the \strong{link} scale with the default logarithm the chain rule gives
+On the link scale with the default logarithm the chain rule gives
 \eqn{\partial^2\ell/\partial\eta^2 = -\mu}, which carries no data; this
 is the defining property of a canonical link, and in exact arithmetic it
 makes the observed and the expected information the same matrix there (see

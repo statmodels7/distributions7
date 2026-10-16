@@ -44,11 +44,11 @@ An S7 object of class \code{Pig1Distrib}, inheriting from
 \eqn{(0, \infty)}.
 }
 \description{
-The S7 class of the Poisson-inverse Gaussian on \eqn{\{0, 1, 2, \dots\}} in
-its mean-dispersion parametrization, gamlss's \code{PIG}: the mean is \eqn{\mu}
-and the variance \eqn{\mu + \sigma\mu^2}. The family is a Poisson mixed
-over an inverse Gaussian rate, an overdispersed count model with a heavier
-tail than the negative binomial at the same variance.
+This is the S7 class of the Poisson-inverse Gaussian on \eqn{\{0, 1, 2,
+\dots\}} in its mean-dispersion parametrization, gamlss's \code{PIG}: the mean is
+\eqn{\mu} and the variance \eqn{\mu + \sigma\mu^2}. The family is a Poisson
+mixed over an inverse Gaussian rate, an overdispersed count model with a
+heavier tail than the negative binomial at the same variance.
 
 Build one with \code{\link[=pig1_distrib]{pig1_distrib()}}, which supplies the two link functions. This
 page documents the raw S7 constructor, which takes the parent's
@@ -57,7 +57,8 @@ adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf()}} and
 \code{\link[=distrib_rng.Pig1Distrib]{distrib_rng()}};

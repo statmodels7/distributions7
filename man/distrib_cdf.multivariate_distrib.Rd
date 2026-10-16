@@ -9,7 +9,7 @@
 \item{q}{A numeric matrix of quantiles, one row per point. Not read: the
 error is signalled first.}
 
-\item{theta}{A named list of parameters. Not read.}
+\item{theta}{A named list of parameters. It is not read.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

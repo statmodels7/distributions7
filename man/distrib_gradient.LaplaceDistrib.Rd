@@ -13,13 +13,13 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
@@ -34,7 +34,7 @@ Writing \eqn{r = y - \mu},
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).}
 
 The score in \eqn{\mu} takes only the three values \eqn{-1/\sigma}, 0 and
-\eqn{+1/\sigma}: it carries the \strong{sign} of the residual and nothing about
+\eqn{+1/\sigma}: it carries the sign of the residual and nothing about
 its size, which is why the maximum likelihood estimate of \eqn{\mu} is the
 sample median. At \eqn{r = 0} exactly, \code{sign(0)} is 0 and the method returns
 0, the midpoint of the subdifferential \eqn{[-1/\sigma, 1/\sigma]}; the

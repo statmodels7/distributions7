@@ -24,8 +24,8 @@ the response,
       \qquad v = \sigma^2,}
 in closed form. It does not depend on \eqn{y} or on \eqn{\mu}, so the value
 is constant within a parameter setting and is recycled to the length of \code{y}.
-Being a location family, the Gaussian has the same curvature in the response
-as in its location, and this equals the \code{mu_mu} component of
+Because the Gaussian is a location family, it has the same curvature in the
+response as in its location, and this equals the \code{mu_mu} component of
 \code{\link[=distrib_hessian.Gaussian2Distrib]{distrib_hessian.Gaussian2Distrib()}}.
 }
 \examples{
@@ -35,10 +35,12 @@ th <- list(mu = 1, sigma2 = 4)
 
 distrib_hess_y(d, y, th)
 
-# A location family: the same curvature as in the location.
+# Because the family is a location family, the curvature in the response
+# is the same as in the location.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 
-# Negative everywhere, so the log-density is concave in the response.
+# The second derivative is negative everywhere, so the log-density is
+# concave in the response.
 all(distrib_hess_y(d, y, th) < 0)
 }
 \seealso{

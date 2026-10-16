@@ -36,7 +36,7 @@ Computes the Bernoulli distribution function by calling \code{\link[stats:Binomi
 d <- bernoulli_distrib()
 th <- list(mu = 0.3)
 
-# Three values, whatever q is.
+# The distribution function takes three values, whatever q is.
 distrib_cdf(d, c(-1, 0, 0.5, 1, 2), th)
 
 # The jump at 1 is exactly the mass there.

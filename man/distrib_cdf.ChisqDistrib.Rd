@@ -56,6 +56,6 @@ distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 \code{\link[=distrib_pdf.ChisqDistrib]{distrib_pdf.ChisqDistrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
 derivatives of this function in the parameter, which the chi-squared
 computes by a compiled quadrature of the derivatives of the density
-(\code{\link[=compiled_cdf]{compiled_cdf()}}), the derivative of an incomplete gamma in its shape
-being hypergeometric; and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
+(\code{\link[=compiled_cdf]{compiled_cdf()}}) because the derivative of an incomplete gamma in its
+shape is hypergeometric; and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

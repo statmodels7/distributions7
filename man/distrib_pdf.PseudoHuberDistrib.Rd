@@ -8,7 +8,7 @@
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Every real value is in the
-support, so no value is rejected.}
+support, so every value is accepted.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
 numeric vector of length 1 or of the length of \code{y}. A component of length
@@ -36,7 +36,7 @@ that loss. The square root is formed as a hypotenuse,
 finite where \eqn{z^2} overflows.
 
 The normalizing constant is formed on the log scale through the
-\strong{exponentially scaled} Bessel function,
+exponentially scaled Bessel function,
 \eqn{\log K_1(x) = \log\{e^x K_1(x)\} - x}. The identity is exact, and the
 scaled function stays finite where \eqn{K_1(\sqrt{\nu})} itself
 underflows, which happens beyond \eqn{\sqrt{\nu} \approx 700}.

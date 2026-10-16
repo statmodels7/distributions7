@@ -17,10 +17,10 @@ recycled. \code{sigma} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -28,7 +28,7 @@ and the expected values.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of five numeric vectors, \code{mu_mu_mu_mu},
@@ -75,5 +75,5 @@ all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-4)
 \code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3.GumbelDistrib()}} for the order below,
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
 \code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian.GumbelDistrib()}} for the second-order
-expectation these extend.
+expectation that these extend.
 }

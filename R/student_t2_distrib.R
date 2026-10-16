@@ -5,13 +5,13 @@ NULL
 #' @name StudentT2Distrib
 #'
 #' @description
-#' The S7 class of the Student t family parametrized by its location
+#' This is the S7 class of the Student t family parametrized by its location
 #' \eqn{\mu}, its standard deviation \eqn{\sigma} and its degrees of freedom
 #' \eqn{\nu > 2}. It inherits from `continuous_distrib`. Build one with
-#' [student_t2_distrib()]; this page documents the raw S7 constructor;
-#' the validator of `distrib` checks that
-#' the properties are consistent (the parameter count, a bound and a link
-#' for every parameter, ordered support bounds).
+#' [student_t2_distrib()]; this page documents the raw S7 constructor; the
+#' validator of `distrib` checks that the properties are consistent (the
+#' parameter count, a bound and a link for every parameter, ordered support
+#' bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -23,7 +23,8 @@ NULL
 #'   domains \eqn{\mathbb{R}}, \eqn{(0, \infty)} and \eqn{(2, \infty)}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.StudentT2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.StudentT2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.StudentT2Distrib] and

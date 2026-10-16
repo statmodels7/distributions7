@@ -20,7 +20,7 @@ the list of \eqn{(0, \infty)}, and \code{link_params} the one link given here.
 }
 \description{
 Builds the distribution object for the geometric family parametrized by its
-\strong{mean} \eqn{\mu > 0}: the number of failures before the first success in
+mean \eqn{\mu > 0}: the number of failures before the first success in
 independent trials of success probability \eqn{p = 1/(1+\mu)}. The returned
 object carries closed-form derivatives of the log-mass to fourth order,
 observed and expected, and closed-form moments.
@@ -48,15 +48,15 @@ value.
 The variance exceeds the mean by \eqn{\mu^2}, so this family sits above a
 Poisson of the same mean and is a one-parameter answer to overdispersion.
 The information about the mean is \eqn{1/(\mu(1+\mu))}, against a
-Poisson's \eqn{1/\mu}, so the mean is estimated less precisely. Where the amount of overdispersion should itself be
-estimated, \code{\link[=negbin2_distrib]{negbin2_distrib()}} adds the parameter and contains this family
-at \eqn{\theta = 1}.
+Poisson's \eqn{1/\mu}, so the mean is estimated less precisely. Where the
+amount of overdispersion should itself be estimated, \code{\link[=negbin2_distrib]{negbin2_distrib()}}
+adds the parameter and contains this family at \eqn{\theta = 1}.
 
 The survival function is \eqn{P(Y > q) = (\mu/(1+\mu))^{q+1}}, so
 \eqn{P(Y > s + t \mid Y > s) = P(Y > t)}: the count already accumulated
-tells nothing about the count remaining. The geometric is the only discrete
-law with this property, as the exponential is the only continuous one, and
-the two are counterparts.
+does not affect the distribution of the count remaining. The geometric is
+the only discrete law with this property, as the exponential is the only
+continuous one, and the two are counterparts.
 }
 
 \section{Estimation}{
@@ -70,7 +70,7 @@ sum vanishes there.
 \eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
 with variance \eqn{\mu(1+\mu)}. The success probability is
 \eqn{p = 1/(1+\mu)}. Counting starts at zero: \eqn{Y} is the number of
-failures \strong{before} the first success, not the number of trials.
+failures before the first success, not the number of trials.
 }
 
 \examples{
@@ -88,7 +88,7 @@ vapply(c(0.5, 3, 20), function(m) {
   c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))
 }, numeric(3))
 
-# Memoryless, as the exponential is on the continuous side.
+# The geometric is memoryless, as the exponential is on the continuous side.
 vapply(c(0, 2, 10, 50), function(s)
   distrib_cdf(d, s + 1, list(mu = 3), lower.tail = FALSE) /
     distrib_cdf(d, s, list(mu = 3), lower.tail = FALSE), numeric(1))

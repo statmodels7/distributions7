@@ -22,7 +22,7 @@ A named list with one numeric vector per parameter, keyed by
 }
 \description{
 The fallback for a family that implements no analytical score: the gradient
-of \code{distrib_pdf(..., log = TRUE)} by one \strong{central difference} per
+of \code{distrib_pdf(..., log = TRUE)} by one central difference per
 parameter, through \code{\link[=numerical_gradient]{numerical_gradient()}}. This is why \code{\link[=distrib_pdf]{distrib_pdf()}} is
 the only compulsory method of the package: a family that defines the density
 alone gets a score, an information, five orders of derivative and a fit.

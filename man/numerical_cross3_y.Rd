@@ -56,6 +56,6 @@ numerical_cross3_y(d, y, theta, which = "nu")
 
 }
 \seealso{
-\code{\link[=distrib_cross3_y]{distrib_cross3_y()}}, the generic it serves, and
-\code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} for the quantity it differences.
+\code{\link[=distrib_cross3_y]{distrib_cross3_y()}}, the generic that it serves, and
+\code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} for the quantity that it differences.
 }

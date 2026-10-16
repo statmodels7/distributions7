@@ -43,16 +43,17 @@ properties hold \code{"gengamma2"}, \code{"univariate"}, \code{c(0, Inf)},
 each parameter.
 }
 \description{
-The S7 class of the generalized gamma family parametrized by its mean
-\eqn{m}, its shape \eqn{d} and its power \eqn{p}. It inherits from
-\code{continuous_distrib}. Build one with \code{\link[=gengamma2_distrib]{gengamma2_distrib()}}; this page
+\code{GenGamma2Distrib} is the S7 class of the generalized gamma family
+parametrized by its mean \eqn{m}, its shape \eqn{d} and its power \eqn{p}.
+It inherits from \code{continuous_distrib}. Build one with \code{\link[=gengamma2_distrib]{gengamma2_distrib()}}; this page
 documents the raw S7 constructor; the validator of \code{distrib} checks that
 the properties are consistent (the parameter count, a bound and a link
 for every parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.GenGamma2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GenGamma2Distrib]{distrib_cdf()}},

@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -42,24 +42,25 @@ form and with no quadrature or simulation. With \eqn{s = 1/\phi},
       \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
         s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.}
 They follow from \eqn{\mathbb{E}[Y] = \mu} and
-\eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}, the second of which is
-exactly what makes the score in \eqn{\phi} have mean zero. The quantity
+\eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}, and the second of these
+identities is exactly the condition under which the score in \eqn{\phi}
+has mean zero. The quantity
 \eqn{1/s - \psi'(s)} is negative for every \eqn{s > 0}, so the pure
 dispersion entry is negative and the information is positive definite
 everywhere, where the observed Hessian is not.
 
 The off-diagonal entry is zero, so the mean and the dispersion are
 orthogonal. The score in \eqn{\mu} has the dispersion as a common factor,
-so the mean equation can be solved with the dispersion held at any value.
+so the mean equation can be solved at any fixed value of the dispersion.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The gamma is a
+expectation of the observed information under the model. The gamma is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score. \eqn{\psi'} is the trigamma function.
 }
@@ -68,10 +69,10 @@ variance of the score. \eqn{\psi'} is the trigamma function.
 d <- gamma1_distrib()
 th <- list(mu = 3, phi = 0.5)
 
-# The three constants, one value per observation.
+# The three constants take one value per observation.
 lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 
-# The dispersion entry, written out with the trigamma function.
+# The dispersion entry is written out with the trigamma function.
 s <- 1 / 0.5
 s^4 * (1 / s - trigamma(s))
 
@@ -82,8 +83,8 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
       expected = vapply(distrib_expected_hessian(d, z, th),
                         function(v) v[1], numeric(1)))
 
-# Negative definite at every parameter setting, where the observed Hessian
-# is positive in mu wherever y < mu/2.
+# The expected Hessian is negative definite at every parameter setting,
+# whereas the observed Hessian is positive in mu wherever y < mu/2.
 phi <- c(0.05, 0.5, 5)
 vapply(phi, function(p) {
   s <- 1 / p
@@ -91,7 +92,7 @@ vapply(phi, function(p) {
 }, numeric(1))
 }
 \seealso{
-\code{\link[=distrib_hessian.Gamma1Distrib]{distrib_hessian.Gamma1Distrib()}} for the observed quantity this is
-the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
+\code{\link[=distrib_hessian.Gamma1Distrib]{distrib_hessian.Gamma1Distrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

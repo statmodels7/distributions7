@@ -46,12 +46,11 @@ object built by \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} they hold 
 \eqn{(-\pi, \pi)} and \eqn{(0, \infty)}.
 }
 \description{
-The S7 class of the von Mises family, the natural distribution for an angle,
-parametrized by a mean direction \eqn{\mu} and a concentration
-\eqn{\kappa > 0}, with density
-\eqn{f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}} on
-\eqn{[-\pi, \pi)}. It inherits from \code{continuous_distrib}; the methods
-listed below are registered on it directly.
+This is the S7 class of the von Mises family, the natural distribution for an
+angle, parametrized by a mean direction \eqn{\mu} and a concentration
+\eqn{\kappa > 0}, with density \eqn{f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi
+I_0(\kappa)\}} on \eqn{[-\pi, \pi)}. It inherits from \code{continuous_distrib};
+the methods listed below are registered on it directly.
 
 The support of this family has the topology of a circle: the two ends of
 the interval are the same point, so the density need not vanish at either.
@@ -63,7 +62,8 @@ them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf()}} and

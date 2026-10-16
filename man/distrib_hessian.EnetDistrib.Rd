@@ -18,7 +18,7 @@ transformation is applied in the generic's body.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
@@ -28,15 +28,15 @@ data at all and are their own expectations.
 }
 \description{
 Computes the six second derivatives of the log-density in closed form. The
-data term of the log-density is \strong{linear in the two rates}, so every rate
+data term of the log-density is linear in the two rates, so every rate
 block is a second derivative of \eqn{\log Z} carried through the bilinear
 map \eqn{(\lambda,\alpha) \mapsto (a, c)}, whose own cross term contributes
 the \eqn{\lambda\alpha} entry. In the location the curvature is simply
 \eqn{-c}.
 
-That \eqn{-c} is the observed curvature and \strong{not} the information. It
+That \eqn{-c} is the observed curvature and not the information. It
 misses the point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z =
-2\delta(z)} the absolute value carries at the location, exactly as the
+2\delta(z)} that the absolute value carries at the location, exactly as the
 Laplace does; see \code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian.EnetDistrib()}} for what the
 information is instead.
 }
@@ -53,8 +53,8 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 h <- distrib_hessian(d, y, th)
 names(h)
 
-# The curvature in the location is -c at every observation, the absolute
-# value contributing nothing away from the kink.
+# The curvature in the location is -c at every observation, because the
+# absolute value contributes nothing away from the kink.
 c(observed = unique(h$mu_mu), minus_c = -(2 * (1 - 0.5)))
 
 # Two entries carry no data, so they equal their own expectations.
@@ -62,7 +62,7 @@ e <- distrib_expected_hessian(d, y, th)
 rbind(observed = c(h$lambda_lambda[1], h$alpha_alpha[1], h$mu_mu[1]),
       expected = c(e$lambda_lambda[1], e$alpha_alpha[1], e$mu_mu[1]))
 
-# Against a central difference of the score.
+# The analytic entry is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$lambda_alpha,
       numeric = (distrib_gradient(d, y, list(mu = 0, lambda = 2,

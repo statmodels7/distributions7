@@ -25,16 +25,16 @@ A numeric vector of quantiles, of the length of the recycled
 inputs.
 }
 \description{
-Inverts \code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf.EnetDistrib()}} in closed form, each half of the density
-being a truncated Gaussian. Below the median the quantile is
+Inverts \code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf.EnetDistrib()}} in closed form, because each half of the
+density is a truncated Gaussian. Below the median the quantile is
 \eqn{\mu + \{x + \Phi^{-1}(2p\,\Phi(-x))\}/\sqrt c} and above it the
-reflection. Nothing is inverted by root finding, so
+reflection. The inversion does not use root finding, so
 \code{\link[=distrib_rng.EnetDistrib]{distrib_rng.EnetDistrib()}} can use the inverse transform.
 
 The probability is first turned into the logarithms of both tails, without
 forming \eqn{1 - p} or exponentiating a logarithm, and each half is
-inverted from the logarithm of its own tail. The \code{qnorm} call is made on
-the \strong{log} scale, its argument being \eqn{\log P + \log 2 + \log\Phi(-x)},
+inverted from the logarithm of its own tail. The inversion calls \code{qnorm} on
+the log scale, where its argument is \eqn{\log P + \log 2 + \log\Phi(-x)},
 because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}. A
 probability outside \eqn{[0, 1]} gives \code{NaN}.
 }
@@ -42,15 +42,16 @@ probability outside \eqn{[0, 1]} gives \code{NaN}.
 d <- enet_distrib()
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# The round trip is exact, both functions being closed form.
+# The round trip is exact because both functions are closed form.
 q <- c(-2, -0.5, 0.5, 2)
 all.equal(distrib_quantile(d, distrib_cdf(d, q, th), th), q)
 
-# Symmetric about the location.
+# The quantiles are symmetric about the location.
 p <- c(0.1, 0.25, 0.5, 0.75, 0.9)
 round(distrib_quantile(d, p, th), 10)
 
-# It still answers where the Mills argument has passed 38.
+# The quantile function still returns values where the Mills argument
+# exceeds 38.
 distrib_quantile(d, c(0.25, 0.75),
                  list(mu = 0, lambda = 20, alpha = 0.995))
 }

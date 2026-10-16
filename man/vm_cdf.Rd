@@ -36,11 +36,11 @@ rapidly. From
   \sum_{j\ge1} \frac{I_j(\kappa)}{j}
   \big[\sin(j(x - \mu)) + \sin(j(\pi + \mu))\big].}
 The second sine is the lower limit, and it makes this the distribution
-function of the family \strong{as written}: the support is
+function of the family as written: the support is
 \eqn{[-\pi, \pi)} with the direction inside it, not a variable wrapped
 around the circle.
 
-Only the \strong{ratios} \eqn{I_j/I_0} are needed, and
+Only the ratios \eqn{I_j/I_0} are needed, and
 \code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}} gives them by a backward recurrence whose
 loop runs over the series index and not over the data. The series is cheap
 for that reason: \eqn{n} quadratures become a few dozen vectorized steps.

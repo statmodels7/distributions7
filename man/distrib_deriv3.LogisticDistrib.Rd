@@ -16,10 +16,10 @@ recycled. \code{sigma} must be strictly positive.}
 model are returned, in closed form. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
-\code{"opg"}. Ignored, a closed form being available for the expected
+\code{"opg"}. Ignored, because a closed form is available for the expected
 values; accepted so that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}

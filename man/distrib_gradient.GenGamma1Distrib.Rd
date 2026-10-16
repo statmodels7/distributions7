@@ -49,10 +49,11 @@ y <- c(0.5, 1.5, 4)
 th <- list(a = 2, d = 3, p = 1.5)
 g <- distrib_gradient(d, y, th)
 
-# The scale component written out.
+# The scale component agrees with its formula written out.
 all.equal(g$a, (1.5 * (y / 2)^1.5 - 3) / 2)
 
-# All three against numerical differentiation of the log-likelihood.
+# All three are compared with numerical differentiation of the
+# log-likelihood.
 f <- function(v) sum(distrib_pdf(d, y, list(a = v[1], d = v[2], p = v[3]),
                                  log = TRUE))
 rbind(analytic = vapply(g, sum, 0),

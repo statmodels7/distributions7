@@ -31,10 +31,9 @@ closed-form derivatives of the log-density to fourth order, in the
 parameters and in the response, and closed-form moments. The fifth order and
 \code{\link[=distrib_cross3_y]{distrib_cross3_y()}} come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive.
+logarithm, because both parameters are positive.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (0, \infty)} is
@@ -68,7 +67,7 @@ and the expected Hessian is
         -\dfrac{1}{2\lambda^2}.}
 The zero off-diagonal makes the mean and the shape orthogonal.
 
-The log-density is \strong{linear in \eqn{\lambda}} apart from
+The log-density is linear in \eqn{\lambda} apart from
 \eqn{\tfrac12\log\lambda}, and that shapes every higher order. The pure
 shape derivatives are those of the logarithm alone,
 \eqn{-1/(2\lambda^2)}, \eqn{1/\lambda^3} and \eqn{-3/\lambda^4}; every

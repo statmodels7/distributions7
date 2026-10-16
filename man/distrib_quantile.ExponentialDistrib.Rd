@@ -30,8 +30,8 @@ A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 Computes the exponential quantile function
 \deqn{Q(p; \mu) = -\mu \log(1 - p)}
 by calling \code{\link[stats:Exponential]{stats::qexp()}} at \code{rate = 1/mu}. The median is
-\eqn{\mu \log 2 \approx 0.693\mu}, below the mean, the distribution being
-right skewed at every parameter value.
+\eqn{\mu \log 2 \approx 0.693\mu}, which is below the mean because the
+distribution is right skewed at every parameter value.
 }
 \examples{
 d <- exponential_distrib()
@@ -40,11 +40,11 @@ th <- list(mu = 2)
 # The median is mu log 2, below the mean.
 c(median = distrib_quantile(d, 0.5, th), mu_log2 = 2 * log(2), mean = 2)
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 
-# Asked from the upper tail the quantile is -mu log p, exact however small.
+# With lower.tail = FALSE the quantile is -mu log p, exact however small.
 distrib_quantile(d, 1e-300, th, lower.tail = FALSE)
 -2 * log(1e-300)
 }

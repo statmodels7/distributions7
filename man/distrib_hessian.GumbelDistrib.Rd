@@ -13,13 +13,13 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
@@ -35,9 +35,9 @@ closed form. With \eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}},
       \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \qquad
       \ell^{(\sigma\sigma)} =
         \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.}
-The curvature in the location is negative at every observation, \eqn{w}
-being positive, so the log-likelihood is concave in \eqn{\mu} at any data
-set. The curvature in the scale is not: it is positive wherever
+The curvature in the location is negative at every observation because
+\eqn{w} is positive, so the log-likelihood is concave in \eqn{\mu} at any
+data set. The curvature in the scale is not: it is positive wherever
 \eqn{1 - 2z + 2zw - z^2w > 0}, which includes \eqn{y = \mu}.
 }
 \section{Notation}{
@@ -54,14 +54,15 @@ th <- list(mu = 0, sigma = 1)
 h <- distrib_hessian(d, y, th)
 h
 
-# The three closed forms, written out.
+# The three closed forms are written out.
 z <- (y - 0) / 1
 w <- exp(-z)
 all.equal(h$mu_mu, -w)
 all.equal(h$mu_sigma, -(1 - w + z * w))
 all.equal(h$sigma_sigma, 1 - 2 * z + 2 * z * w - z^2 * w)
 
-# Concave in mu everywhere, and positive in sigma at y = mu.
+# The log-density is concave in mu everywhere, and the curvature in sigma
+# is positive at y = mu.
 c(all_negative_in_mu = all(h$mu_mu < 0),
   sigma_at_mu = distrib_hessian(d, 0, th)$sigma_sigma)
 

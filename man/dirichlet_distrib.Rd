@@ -55,7 +55,7 @@ Writing \eqn{\alpha = \phi\mu} for the shapes, the density on the simplex
 with
 \deqn{\mathbb{E}[Y_j] = \mu_j, \qquad
       \operatorname{Cov}(Y_i, Y_j) = \frac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}.}
-So \eqn{\phi} is a \strong{precision}: the larger it is, the tighter the draws
+So \eqn{\phi} is a precision: the larger it is, the tighter the draws
 sit about the mean. The covariance is singular, the coordinates summing to
 one, and every off-diagonal entry is negative.
 
@@ -149,10 +149,10 @@ Chapman and Hall, London.
 }
 \seealso{
 \code{\link[=beta1_distrib]{beta1_distrib()}} for a coordinate's marginal and the two-coordinate case
-seen on the line; \code{\link[=multinomial_distrib]{multinomial_distrib()}} for the discrete family on the
-same simplex; \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for the elliptical multivariate
-family; \code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the mean rides;
-\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
-\link{DirichletDistrib} for the class.
+seen on the line; \code{\link[=multinomial_distrib]{multinomial_distrib()}} for the discrete family on the same
+simplex; \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for the elliptical multivariate family;
+\code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the mean rides; \code{\link[=fit_distrib]{fit_distrib()}} to
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+against the same battery that this one passes; \link{DirichletDistrib} for the
+class.
 }

@@ -34,11 +34,11 @@ is a truncated Gaussian, so with \eqn{z = q-\mu} and \eqn{x = a/\sqrt c},
 The method computes the logarithm of the tail beyond \eqn{|z|},
 \eqn{\log\Phi(-\sqrt c|z| - x) - \log\Phi(-x) - \log 2}, and the other
 tail from it as \eqn{\log(1 - e^{\cdot})} with \code{expm1()} or \code{log1p()}; the
-requested tail is returned on the log scale or exponentiated, so neither
-\code{lower.tail = FALSE} nor \code{log.p = TRUE} subtracts from one. The
-denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and zero
-beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches that
-at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
+requested tail is returned on the log scale or exponentiated, so the method
+does not subtract from one for \code{lower.tail = FALSE} or for \code{log.p = TRUE}.
+The denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and
+zero beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches
+that at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
 \eqn{\alpha = 0.995} it is 63.
 }
 \section{Notation}{
@@ -52,7 +52,7 @@ d <- enet_distrib()
 q <- c(-2, -0.5, 0, 0.5, 2)
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# Against a direct quadrature of the density.
+# The closed form is compared with a direct quadrature of the density.
 rbind(closed = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))

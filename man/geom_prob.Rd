@@ -20,12 +20,13 @@ functions \code{\link[stats:Geometric]{stats::dgeom()}}, \code{\link[stats:Geome
 }
 \details{
 The mean number of failures before the first success is \eqn{(1-p)/p}, so
-\eqn{p = 1/(1+\mu)}. Writing it once keeps the four methods that call
-\pkg{stats} from each repeating the algebra, and keeps them from drifting
+\eqn{p = 1/(1+\mu)}. Because it is written once, the four methods that call
+\pkg{stats} use it instead of repeating the algebra, and they cannot drift
 apart if the parametrization ever changes.
 
 The map is decreasing and carries \eqn{(0, \infty)} onto \eqn{(0, 1)}: a
-large mean is a small success probability. No validation is performed. A
+large mean is a small success probability. The function does not validate
+its argument. A
 negative \code{mu} other than \eqn{-1} gives a value outside \eqn{[0, 1]}, for
 which the base R functions return \code{NaN}, and \code{mu = 0} gives 1, which they
 accept as a point mass at zero. The methods are reached through the

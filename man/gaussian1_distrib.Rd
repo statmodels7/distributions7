@@ -8,8 +8,8 @@ gaussian1_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
-over the whole line already.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the mean
+already ranges over the whole line.}
 
 \item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the standard
 deviation \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which
@@ -30,11 +30,10 @@ returned object carries closed-form derivatives of the log-density to fourth
 order in the response and to fifth order in the parameters, and closed-form
 moments.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the standard
-deviation, which keeps it positive at every predictor.
+identity for the mean, which is already free, and the logarithm for the
+standard deviation, which keeps it positive at every predictor.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (-\infty, \infty)} is
@@ -107,7 +106,8 @@ fit <- fit_distrib(d, z)
 rbind(fitted = coef(fit),
       closed = c(mu = mean(z), sigma = sqrt(mean((z - mean(z))^2))))
 
-# A different link changes the scale the optimizer moves on, not the answer.
+# A different link changes the scale on which the optimizer moves, not the
+# answer.
 d2 <- gaussian1_distrib(link_sigma = linkfunctions7::sqrt_link())
 all.equal(coef(fit_distrib(d2, z)), coef(fit), tolerance = 1e-6)
 

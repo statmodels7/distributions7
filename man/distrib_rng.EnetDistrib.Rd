@@ -29,7 +29,7 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 set.seed(71)
 x <- distrib_rng(d, 2e5, th)
 
-# Two moments against their closed forms, and the symmetry.
+# Two moments and the symmetry are compared with their closed forms.
 rbind(sample = c(mean(x), var(x), mean((x - mean(x))^3) / sd(x)^3),
       theory = c(mean(d, th), variance(d, th), skewness(d, th)))
 
@@ -39,7 +39,8 @@ xl <- distrib_rng(d, 1e5, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))
 c(sample_var = var(xl), laplace_var = 2 / 2^2)
 }
 \seealso{
-\code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile.EnetDistrib()}}, which it inverts through,
-\code{\link[=variance.EnetDistrib]{variance.EnetDistrib()}} for the moment the draws reproduce, and
+\code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile.EnetDistrib()}}, which it uses for the inverse
+transform, \code{\link[=variance.EnetDistrib]{variance.EnetDistrib()}} for the moment that the draws
+reproduce, and
 \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

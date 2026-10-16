@@ -22,8 +22,8 @@ An S7 object of class \link{Pig1Distrib}, inheriting from
 Builds a Poisson-inverse Gaussian distribution in its mean-dispersion
 parametrization: mean \eqn{\mu} and variance \eqn{\mu + \sigma\mu^2}, which
 is gamlss's \code{PIG}. The family is the Poisson mixed over an inverse Gaussian
-rate, an overdispersed count model with a \strong{heavier upper tail than the
-negative binomial at the same variance}.
+rate, an overdispersed count model with a heavier upper tail than the
+negative binomial at the same variance.
 }
 \section{The mass function, and how it is computed}{
 The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
@@ -66,7 +66,7 @@ large count (see \code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4.Pig1Dis
 }
 
 \section{The expected information}{
-The \strong{expected information} is computed exactly, with its first and
+The expected information is computed exactly, with its first and
 second derivatives, by one pass over the support per observation; see
 \code{\link[=distrib_expected_hessian.Pig1Distrib]{distrib_expected_hessian()}}.
 }

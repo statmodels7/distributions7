@@ -28,8 +28,8 @@ the parameters \eqn{\theta} on their natural (constrained) scale, or
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
-\item{approx}{How the expectation is approximated \strong{when the distribution
-has no closed-form expected Hessian}; ignored otherwise. One of
+\item{approx}{How the expectation is approximated when the distribution
+has no closed-form expected Hessian; ignored otherwise. One of
 \code{"opg"} (the default: the outer product of the score, read at each
 observation without taking an expectation), \code{"bartlett"} (the second
 Bartlett identity, with the expectation taken by summation or

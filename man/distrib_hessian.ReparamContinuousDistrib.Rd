@@ -22,7 +22,7 @@ generic after this method has returned.}
 }
 \value{
 A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
-length of \code{y} recycled against \code{theta}. Note the \strong{order}: this route
+length of \code{y} recycled against \code{theta}. Note the order: this route
 enumerates as \code{\link[=hess_names]{hess_names()}} does, diagonal first, while a family written
 out by hand may enumerate lexicographically. Compare two such results by
 name and not by position.

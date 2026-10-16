@@ -5,7 +5,7 @@ NULL
 #' @name Gaussian3Distrib
 #'
 #' @description
-#' The S7 class of the Gaussian (normal) family parametrized by its mean
+#' This is the S7 class of the Gaussian (normal) family parametrized by its mean
 #' \eqn{\mu} and its precision \eqn{\tau = 1/\sigma^2 > 0}, with density
 #' \eqn{f(y) = (\tau/2\pi)^{1/2}\exp\{-\tau(y-\mu)^2/2\}} on the whole real
 #' line. It inherits from `continuous_distrib`, so every generic of the
@@ -36,7 +36,8 @@ NULL
 #'   for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Gaussian3Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gaussian3Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Gaussian3Distrib] and
@@ -79,7 +80,8 @@ NULL
 #' d <- gaussian3_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@params_bounds
@@ -129,7 +131,7 @@ Gaussian3Distrib <- S7::new_class("Gaussian3Distrib", parent = continuous_distri
 #' all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
 #'           dnorm(y, mean = 1, sd = 2))
 #'
-#' # Same law as gaussian1 at sigma = 1/sqrt(tau), to the last bit.
+#' # This is the same law as gaussian1 at sigma = 1/sqrt(tau), to the last bit.
 #' all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
 #'           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
 #'
@@ -272,7 +274,7 @@ S7::method(distrib_quantile, Gaussian3Distrib) <- function(distrib, p, theta,
 #' @examples
 #' d <- gaussian3_distrib()
 #'
-#' # Same generator as stats::rnorm at sd = 1/sqrt(tau).
+#' # The generator is the same as stats::rnorm at sd = 1/sqrt(tau).
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = c(0, 1, 2), tau = c(1, 0.25, 0.0625)))
 #' set.seed(2)
@@ -295,8 +297,9 @@ S7::method(distrib_rng, Gaussian3Distrib) <- function(distrib, n, theta, ...) {
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \tau r,
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \tau} = \dfrac{1}{2\tau} - \dfrac{r^2}{2}.}
-#' The precision component is linear in \eqn{r^2}. That linearity is why every
-#' third and fourth derivative of this parametrization is free of the response.
+#' The precision component is linear in \eqn{r^2}. Because of that linearity,
+#' every third and fourth derivative of this parametrization is free of the
+#' response.
 #' The arithmetic runs in a compiled kernel decomposed over the elements of the
 #' output, so the result does not depend on the thread count.
 #'
@@ -337,7 +340,7 @@ S7::method(distrib_rng, Gaussian3Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 1, tau = 0.25)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out.
 #' r <- y - 1
 #' all.equal(g$mu, 0.25 * r)
 #' all.equal(g$tau, 1 / (2 * 0.25) - r^2 / 2)
@@ -369,7 +372,7 @@ S7::method(distrib_gradient, Gaussian3Distrib) <- function(distrib, y, theta,
 #'       \ell^{(\mu\tau)} = r, \qquad
 #'       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.}
 #' Two of the three are free of the data, so the observed and the expected
-#' Hessians differ in the mixed entry alone. That entry sums to
+#' Hessians differ only in the mixed entry. That entry sums to
 #' \eqn{\sum_i (y_i - \mu)}, which vanishes at \eqn{\hat\mu = \bar y}. The
 #' summed observed and expected Hessians therefore coincide whenever the mean
 #' equation is solved, whatever the value of \eqn{\tau}, and differ otherwise.
@@ -437,10 +440,11 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #' \deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\tau, \qquad
 #'       \mathbb{E}\left[\ell^{(\mu\tau)}\right] = 0, \qquad
 #'       \mathbb{E}\left[\ell^{(\tau\tau)}\right] = -\dfrac{1}{2\tau^2}.}
-#' They follow from \eqn{\mathbb{E}[Y-\mu] = 0}, the other two entries being
-#' free of the data already. The negative of this matrix is the Fisher
-#' information for one observation; the zero off-diagonal says the mean and the
-#' precision are orthogonal, so their estimates are asymptotically independent.
+#' They follow from \eqn{\mathbb{E}[Y-\mu] = 0}, because the other two entries
+#' are already free of the data. The negative of this matrix is the Fisher
+#' information for one observation; the zero off-diagonal means that the mean
+#' and the precision are orthogonal, so their estimates are asymptotically
+#' independent.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -482,7 +486,7 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #' d <- gaussian3_distrib()
 #' th <- list(mu = 1, tau = 0.25)
 #'
-#' # The three constants, one value per observation.
+#' # Each of the three constants has one value per observation.
 #' lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #'
 #' # The observed Hessian averages onto them over a large sample.
@@ -520,8 +524,8 @@ S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, t
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
-#' @param expected Logical of length 1, and without effect here, the observed
-#'   and expected third derivatives being the same numbers. Defaults to
+#' @param expected Logical of length 1, without effect here because the
+#'   observed and expected third derivatives are the same numbers. Defaults to
 #'   `FALSE`.
 #' @param theta A named list with components `mu` and `tau`, each a numeric
 #'   vector of length 1 or of the length of `y`. `mu` is not read. `tau` must
@@ -592,8 +596,8 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
-#' @param expected Logical of length 1, and without effect here, the observed
-#'   and expected fourth derivatives being the same numbers. Defaults to
+#' @param expected Logical of length 1, without effect here because the
+#'   observed and expected fourth derivatives are the same numbers. Defaults to
 #'   `FALSE`.
 #' @param theta A named list with components `mu` and `tau`, each a numeric
 #'   vector of length 1 or of the length of `y`. `mu` is not read. `tau` must
@@ -628,7 +632,7 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #' th <- list(mu = 1, tau = 0.25)
 #' d4 <- distrib_deriv4(d, y, th)
 #'
-#' # One non-zero component out of five, at -3/tau^4.
+#' # One component out of five is non-zero, and it equals -3/tau^4.
 #' lapply(d4, unique)
 #' -3 / 0.25^4
 #'
@@ -745,8 +749,8 @@ S7::method(distrib_grad_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\tau,}
 #' in closed form. It does not depend on \eqn{y} or on \eqn{\mu}, so the value
 #' is constant within a parameter setting and is recycled to the length of `y`.
-#' Being a location family, the Gaussian has the same curvature in the response
-#' as in its location, and this equals the `mu_mu` component of
+#' Because the Gaussian is a location family, it has the same curvature in the
+#' response as in its location, and this equals the `mu_mu` component of
 #' [distrib_hessian.Gaussian3Distrib()]. In this parametrization that curvature
 #' is minus the precision, so a larger precision gives a sharper peak of the
 #' log-density.
@@ -792,15 +796,15 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' order in the response and to fifth order in the parameters, and
 #' closed-form moments.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. The defaults are the
 #' identity for
 #' the mean, which is already free, and the logarithm for the precision, which
 #' keeps it positive at every predictor.
 #'
-#' @param link_mu A `link` object from `linkfunctions7` for the mean
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the mean ranging
-#'   over the whole line already.
+#' @param link_mu A `link` object from `linkfunctions7` for the mean \eqn{\mu}.
+#'   Defaults to [linkfunctions7::identity_link()], because the mean already
+#'   ranges over the whole line.
 #' @param link_tau A `link` object from `linkfunctions7` for the precision
 #'   \eqn{\tau}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -815,12 +819,12 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' mean is \eqn{\mu}, the variance \eqn{1/\tau}, and both the skewness and the
 #' excess kurtosis are 0.
 #'
-#' This is the same law as [gaussian1_distrib()] in different coordinates, and
-#' a separate family for the reason [gaussian2_distrib()] is: the parameter
-#' here *is* the precision, and that is what the estimate, the standard error
-#' and the interval describe. The precision is the parametrization a Bayesian
-#' conjugate analysis uses, the gamma being conjugate for \eqn{\tau} at known
-#' \eqn{\mu}.
+#' This is the same law as [gaussian1_distrib()] in different coordinates. It
+#' is a separate family for the same reason as [gaussian2_distrib()]: the
+#' parameter here *is* the precision, and the estimate, the standard error and
+#' the interval describe the precision. The precision is the parametrization
+#' that a Bayesian conjugate analysis uses, because the gamma is conjugate for
+#' \eqn{\tau} at known \eqn{\mu}.
 #'
 #' # Derivatives
 #'
@@ -838,7 +842,8 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' The zero off-diagonal makes the mean and the precision orthogonal, so their
 #' maximum likelihood estimates are asymptotically independent.
 #'
-#' It is the flattest of the three parametrizations. The log-density is
+#' It is the flattest of the three parametrizations of the Gaussian. The
+#' log-density is
 #' quadratic in \eqn{\mu} and, in \eqn{\tau}, is \eqn{\tfrac{1}{2}\log\tau}
 #' plus a term linear in \eqn{\tau}, so every third and fourth derivative is
 #' free of the response: at third order only \eqn{\ell^{(\mu\mu\tau)} = -1} and
@@ -885,7 +890,7 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' d <- gaussian3_distrib()
 #' d
 #'
-#' # The same law as gaussian1 at sigma = 1/sqrt(tau).
+#' # This is the same law as gaussian1 at sigma = 1/sqrt(tau).
 #' y <- c(-1.2, 0.3, 2.5)
 #' all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
 #'           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))

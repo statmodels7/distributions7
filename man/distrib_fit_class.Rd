@@ -72,7 +72,7 @@ information could not be evaluated or inverted there; the estimates stand
 in that case and only the uncertainty is missing.}
 
 \item{loglik}{The maximized log-likelihood, summed over observations and
-\strong{not} divided by \eqn{n}.}
+not divided by \eqn{n}.}
 
 \item{aic, bic}{Information criteria built on the unscaled log-likelihood,
 \eqn{-2\ell + 2p} and \eqn{-2\ell + p\log n} respectively, with \eqn{p}
@@ -99,7 +99,7 @@ one requested: \code{"Fisher scoring"} and \code{"Newton-Raphson"} fall back to
 \code{h}: how many times the objective, its gradient and its Hessian were
 evaluated in the run that was kept.}
 
-\item{score}{The max-norm of the score \strong{per observation} at the reported
+\item{score}{The max-norm of the score per observation at the reported
 optimum. This is the quantity that the stopping rule tested, so it
 measures how close to stationary a run ended, and it is the number to read
 on a fit that did not converge.}

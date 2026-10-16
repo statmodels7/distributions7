@@ -6,10 +6,10 @@
 \arguments{
 \item{x}{A \code{BernoulliDistrib}, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{theta}{A named list with one component, \code{mu} (the success
-probability, strictly between 0 and 1), a numeric vector of length 1 or
-\code{n}. Aligned and validated by name, so a value at or outside the unit
-interval signals an error.}
+\item{theta}{A named list with one component, \code{mu} (the success probability,
+strictly between 0 and 1), a numeric vector of length 1 or \code{n}. It is
+aligned and validated by name, so a value at or outside the unit interval
+signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

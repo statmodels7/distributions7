@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{n}{A single positive integer, the number of draws. Note that the
-number of \strong{trials} is the object's \code{size} property, not this argument.}
+\item{n}{A single positive integer, the number of draws. The number of
+trials is the object's \code{size} property, not this argument.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of length \code{n}. A component of length 1 is recycled.
@@ -19,8 +19,8 @@ vector of length 1 or of length \code{n}. A component of length 1 is recycled.
 A numeric vector of \code{n} counts in \eqn{\{0, \dots, size\}}.
 }
 \description{
-Draws \code{n} independent beta-binomial counts by the two-stage hierarchy the
-family is defined by: a success probability from
+Draws \code{n} independent beta-binomial counts by the two-stage hierarchy that
+defines the family: a success probability from
 \eqn{\mathrm{Beta}(\alpha, \beta)} with \eqn{\alpha = \mu/\sigma} and
 \eqn{\beta = (1-\mu)/\sigma}, then a count from
 \eqn{\mathrm{Binomial}(n_{\mathrm{trials}}, p)} at that probability, one

@@ -27,8 +27,8 @@ response, in closed form:
 It is negative throughout, so the log-density is concave in the response,
 whenever both shapes are at least one; a shape below one makes the
 corresponding term positive and can turn the curvature positive near that
-endpoint. At \eqn{\alpha = \beta = 1} it is exactly zero, the density being
-the uniform.
+endpoint. At \eqn{\alpha = \beta = 1} it is exactly zero, because the density
+is the uniform.
 }
 \examples{
 d <- beta2_distrib()
@@ -38,10 +38,11 @@ th <- list(alpha = 2, beta = 5)
 all.equal(distrib_hess_y(d, y, th),
           -(2 - 1) / y^2 - (5 - 1) / (1 - y)^2)
 
-# Concave everywhere while both shapes exceed one.
+# The log-density is concave everywhere while both shapes exceed one.
 all(distrib_hess_y(d, y, th) < 0)
 
-# Exactly flat at alpha = beta = 1, where the beta is the uniform.
+# The log-density is exactly flat at alpha = beta = 1, where the beta is
+# the uniform.
 distrib_hess_y(d, y, list(alpha = 1, beta = 1))
 }
 \seealso{

@@ -18,8 +18,8 @@ recycled. Both must be strictly positive.}
 \eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
-logarithms of probabilities, which is how a quantile deep in a tail is
-requested without the probability underflowing. Defaults to \code{FALSE}.}
+logarithms of probabilities, so that a quantile deep in a tail can be
+requested without underflow in the probability. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -31,8 +31,8 @@ A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 Computes the gamma quantile function, the inverse of the regularized
 incomplete gamma function in its argument, by calling \code{\link[stats:GammaDist]{stats::qgamma()}} at
 shape \eqn{\alpha = \mu^2/\sigma^2} and rate \eqn{\lambda = \mu/\sigma^2}.
-There is no elementary closed form; \code{qgamma()} inverts the distribution
-function numerically. The gamma distribution function is strictly
+The quantile function has no elementary closed form; \code{qgamma()} inverts the
+distribution function numerically. The gamma distribution function is strictly
 increasing on \eqn{(0, \infty)}, so the round trip through
 \code{\link[=distrib_cdf.Gamma2Distrib]{distrib_cdf.Gamma2Distrib()}} returns \code{p}.
 }
@@ -40,14 +40,15 @@ increasing on \eqn{(0, \infty)}, so the round trip through
 d <- gamma2_distrib()
 th <- list(mu = 3, sigma2 = 2)
 
-# A central 95 percent interval, visibly asymmetric about the mean of 3.
+# This is a central 95 percent interval, visibly asymmetric about the mean
+# of 3.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 
 # Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 
-# The median falls below the mean, the gamma being right skewed.
+# The median falls below the mean because the gamma is right skewed.
 c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 }
 \seealso{

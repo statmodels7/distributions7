@@ -16,10 +16,10 @@ of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected value.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected value.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -38,7 +38,7 @@ the mean, in closed form:
 \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.}
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{4/\mu^3}. Both routes are closed
-form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+form, so quadrature is not run and \code{approx} and \code{nsim} are ignored.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.
@@ -55,7 +55,7 @@ d <- exponential_distrib()
 y <- c(0.3, 1.1, 4.0)
 th <- list(mu = 2)
 
-# The closed form, written out.
+# The closed form is written out in R and compared with the method.
 all.equal(distrib_deriv3(d, y, th)$mu_mu_mu, -2 / 2^3 + 6 * y / 2^4)
 
 # The expected value is 4/mu^3.

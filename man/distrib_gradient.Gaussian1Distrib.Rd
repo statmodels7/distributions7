@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -53,7 +53,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two components agree with their closed forms.
 all.equal(g$mu, (y - 0.4) / 1.5^2)
 all.equal(g$sigma, ((y - 0.4)^2 - 1.5^2) / 1.5^3)
 

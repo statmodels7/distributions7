@@ -11,7 +11,8 @@
 scale_only_theta2_methods(at = 1L)
 }
 \arguments{
-\item{at}{The index of the scale parameter in \code{distrib@params}. Default \code{1}.}
+\item{at}{The index of the scale parameter in \code{distrib@params}. The default
+is \code{1}.}
 }
 \value{
 A list of two method bodies, named \code{grad2} and \code{hess2}, each with

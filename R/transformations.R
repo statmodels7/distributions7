@@ -681,7 +681,8 @@ softplus_transform <- function(a = 1) {
 #'   and [fixed()] for the wrapper that removes parameters.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.TransformedDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.TransformedDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.TransformedDistrib] and

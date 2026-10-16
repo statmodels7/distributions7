@@ -14,10 +14,10 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, the expectation being exact. Accepted so that
-the signature matches the generic's, where it selects between
+\item{approx}{Ignored here, because the expectation is exact. It is accepted
+so that the signature matches the generic's, where it selects between
 \code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
@@ -42,7 +42,7 @@ form and with no quadrature or simulation:
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.}
 
-The location is \strong{orthogonal} to both other parameters: the two mixed
+The location is orthogonal to both other parameters: the two mixed
 entries containing \eqn{\mu} are exactly zero, the law being symmetric about
 \eqn{\mu} while the other two components are even in \eqn{r}. So
 \eqn{\hat\mu} is asymptotically independent of \eqn{\hat\sigma} and

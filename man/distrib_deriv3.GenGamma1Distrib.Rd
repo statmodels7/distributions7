@@ -35,8 +35,8 @@ and five.
 }
 \description{
 Return the third, fourth and fifth derivatives of the log-density in
-\eqn{(a, d, p)}, and for orders three and four their expectations, each
-from its own compiled kernel.
+\eqn{(a, d, p)}, and for orders three and four their expectations. Each of
+them is computed by its own compiled kernel.
 }
 \details{
 With \eqn{k = d/p} and \eqn{U = p\log(y/a)}, the log-density is
@@ -44,7 +44,7 @@ With \eqn{k = d/p} and \eqn{U = p\log(y/a)}, the log-density is
 and \eqn{e^{U} = (y/a)^p} is a gamma variable with shape \eqn{k} and unit
 rate. Every component is a closed form derived offline and written out: a
 polynomial in \eqn{U} and \eqn{e^{U}} whose coefficients depend
-on \eqn{(d, p)} alone, multiplied by \eqn{a^{-r}} for \eqn{r} derivatives
+only on \eqn{(d, p)}, multiplied by \eqn{a^{-r}} for \eqn{r} derivatives
 in \eqn{a}. The coefficients contain the polygamma functions at
 \eqn{k + 1}, through
 \eqn{\psi^{(n)}(k) = \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}}, so that the
@@ -66,10 +66,10 @@ up <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 + eps))$d_p
 dn <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 - eps))$d_p
 all.equal((up - dn) / (2 * eps), d3$d_p_p, tolerance = 1e-6)
 
-# The expected fourth derivatives, closed form.
+# The expected fourth derivatives are closed forms.
 distrib_deriv4(d, 1, th, expected = TRUE)$p_p_p_p
 
-# Order five on the link scale.
+# The fifth derivatives are also returned on the link scale.
 distrib_deriv5(d, y, th, scale = "link")$p_p_p_p_p
 }
 \seealso{

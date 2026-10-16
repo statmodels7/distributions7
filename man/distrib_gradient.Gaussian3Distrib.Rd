@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{tau} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -32,8 +32,9 @@ Computes the first derivatives of the Gaussian log-density with respect to
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \tau r,
       \qquad
       \dfrac{\partial \ell}{\partial \tau} = \dfrac{1}{2\tau} - \dfrac{r^2}{2}.}
-The precision component is linear in \eqn{r^2}. That linearity is why every
-third and fourth derivative of this parametrization is free of the response.
+The precision component is linear in \eqn{r^2}. Because of that linearity,
+every third and fourth derivative of this parametrization is free of the
+response.
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.
 
@@ -56,7 +57,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 1, tau = 0.25)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 r <- y - 1
 all.equal(g$mu, 0.25 * r)
 all.equal(g$tau, 1 / (2 * 0.25) - r^2 / 2)

@@ -75,8 +75,8 @@ hi <- distrib_cross2_y(g2, t, theta)
 (hi$mu - first$mu) / y^2
 }
 \seealso{
-\code{\link[=distrib_cross2_y.Lognormal1Distrib]{distrib_cross2_y.Lognormal1Distrib()}}, the three methods it
-serves, and \code{\link[=mapped_theta2]{mapped_theta2()}}, the route a family whose transformation
-DOES carry a parameter takes instead.
+\code{\link[=distrib_cross2_y.Lognormal1Distrib]{distrib_cross2_y.Lognormal1Distrib()}}, the three methods that it
+serves, and \code{\link[=mapped_theta2]{mapped_theta2()}}, the route a family whose transformation DOES
+carry a parameter takes instead.
 }
 \keyword{internal}

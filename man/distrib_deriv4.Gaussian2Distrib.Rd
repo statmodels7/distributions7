@@ -17,10 +17,10 @@ recycled. \code{sigma2} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -64,13 +64,14 @@ th <- list(mu = 1, sigma2 = 4)
 d4 <- distrib_deriv4(d, y, th)
 names(d4)
 
-# Quadratic in mu, so the two components with three or more mu are zero.
+# The log-density is quadratic in mu, so the two components with three or
+# more mu are zero.
 c(d4$mu_mu_mu_mu[1], d4$mu_mu_mu_sigma2[1])
 
 # The mixed second-second component is constant at -2/v^3.
 all.equal(d4$mu_mu_sigma2_sigma2, rep(-2 / 4^3, 3))
 
-# Expected values: -9/v^4 in the pure variance component.
+# The expected value in the pure variance component is -9/v^4.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 -9 / 4^4
 }
@@ -78,5 +79,5 @@ lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 \code{\link[=distrib_deriv3.Gaussian2Distrib]{distrib_deriv3.Gaussian2Distrib()}} for the order below,
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
 \code{\link[=distrib_expected_hessian.Gaussian2Distrib]{distrib_expected_hessian.Gaussian2Distrib()}} for the second-order
-expectation these extend.
+expectation that these extend.
 }

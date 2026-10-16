@@ -17,10 +17,10 @@ recycled. \code{sigma} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -41,8 +41,8 @@ differentiates twice or more in \eqn{\mu} is zero. What survives comes from
 
 With \code{expected = TRUE} the expectations under the model are returned, also in
 closed form, using \eqn{\mathbb{E}|r| = \sigma} and
-\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form, so no
-quadrature is run and \code{approx} and \code{nsim} are ignored.
+\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form, so the
+method runs no quadrature and ignores \code{approx} and \code{nsim}.
 }
 \section{Notation}{
 

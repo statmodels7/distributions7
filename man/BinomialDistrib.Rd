@@ -38,8 +38,8 @@ BinomialDistrib(
 
 \item{size}{A numeric vector, the number of trials. A single value applies
 to every observation; a vector of the length of the response gives one
-count of trials per observation. Not a parameter: it is fixed data, and
-the object stores it in the \code{size} property.}
+count of trials per observation. It is fixed data and not a parameter,
+and the object stores it in the \code{size} property.}
 }
 \value{
 An S7 object of class \code{BinomialDistrib}, inheriting from
@@ -49,23 +49,23 @@ An S7 object of class \code{BinomialDistrib}, inheriting from
 \code{size}. For an object built by \code{\link[=binomial_distrib]{binomial_distrib()}} they hold
 \code{"binomial"}, \code{"univariate"}, \code{c(0, max(size))}, \code{"mu"},
 \code{c(mu = "probability")}, \code{1}, the domain \eqn{(0, 1)}, the one link, and
-the \code{size} given.
+the supplied \code{size}.
 }
 \description{
-The S7 class of the binomial family: the number of successes in \code{size}
-independent trials, each succeeding with probability \eqn{\mu \in (0, 1)}.
-It inherits from \code{discrete_distrib}, so expectations over its support are
-sums and no derivative with respect to the response is defined.
+This is the S7 class of the binomial family: the number of successes in
+\code{size} independent trials, where each trial succeeds with probability
+\eqn{\mu \in (0, 1)}. It inherits from \code{discrete_distrib}, so expectations
+over its support are sums and the class defines no derivative with respect to
+the response.
 
 The class adds one property to the parent's, \code{size}, and that property is
-the reason it is documented separately from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}:
-\strong{\code{size} is a constant of the object, not a parameter}. It is not
-estimated, it carries
-no link and no bound, and it does not appear in \code{params}. It may be a single
-number or one value per observation, which is how grouped binary data with
-unequal group sizes is described.
+the reason that the class is documented separately from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}:
+\code{size} is a constant of the object, not a parameter. It is not estimated,
+it carries no link and no bound, and it does not appear in \code{params}. It may
+be a single number or one value per observation, which describes grouped
+binary data with unequal group sizes.
 
-The default link is the logit, the \strong{canonical} link here: on its scale the
+The default link is the logit, the canonical link here: on its scale the
 observed and the expected information coincide.
 
 Build one with \code{\link[=binomial_distrib]{binomial_distrib()}}. This page documents the raw S7
@@ -75,7 +75,8 @@ checked by \code{\link[=binomial_distrib]{binomial_distrib()}}, not by this cons
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf()}},

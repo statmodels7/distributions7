@@ -18,7 +18,7 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
 or \code{"opg"}. Read only when \code{expected = TRUE}.}
@@ -36,7 +36,7 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 }
 \description{
 Computes the five distinct fourth derivatives of the NB1 log-likelihood in
-\eqn{\mu} and \eqn{\theta}, \strong{in closed form}, by the construction
+\eqn{\mu} and \eqn{\theta}, in closed form, by the construction
 \code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}} describes carried one order further: the
 same coefficient recursion over the powers of \eqn{r = \mu/\theta} and the
 order of \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.

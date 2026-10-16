@@ -12,7 +12,7 @@ When a distribution does not supply a closed-form expected derivative, the
 expectation has to be approximated. The generics
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} therefore accept an \code{approx} argument
-selecting \emph{how} the expectation is taken. The argument is \strong{ignored}
+selecting \emph{how} the expectation is taken. The argument is ignored
 when the distribution provides an analytical method (which is always preferred).
 }
 \details{
@@ -31,8 +31,8 @@ derivatives. Writing the identity as a sum over set partitions of the
 index set,
 \deqn{\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,}
 the target term (the single-block partition) is obtained from all the
-others. At order 2 this is exactly the familiar \strong{outer product of
-gradients}, \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]};
+others. At order 2 this is exactly the familiar outer product of
+gradients, \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]};
 at order 3, \eqn{\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
     \mathbb{E}[\ell_{ik}\ell_j] + \mathbb{E}[\ell_{jk}\ell_i] +
     \mathbb{E}[\ell_i\ell_j\ell_k]\right)}, and so on.
@@ -62,7 +62,7 @@ robust option when quadrature struggles (heavy tails, awkward supports),
 but stochastic: the error decreases only as \eqn{1/\sqrt{n_{sim}}}, so
 results are not exactly reproducible unless the seed is fixed. Estimates
 the same quantity as \code{"integrate"}.
-\strong{Note:} the cost of this option is the cost of simulating from the
+Note: the cost of this option is the cost of simulating from the
 distribution. A native \code{\link[=distrib_rng]{distrib_rng()}} is best; failing that, the
 default generator uses inverse transform when the family has a quantile
 method of its own and \code{\link[=rng_grou]{rng_grou()}}, which only needs the density,
@@ -71,13 +71,13 @@ quantile function slow enough to make inverse transform sampling the
 bottleneck; prefer \code{"bartlett"} or \code{"integrate"} in that case.}
 }
 
-\strong{Defaults.} \code{distrib_expected_hessian} defaults to \code{"opg"}, which needs
+Defaults. \code{distrib_expected_hessian} defaults to \code{"opg"}, which needs
 one score evaluation per observation and no expectation. \code{distrib_deriv3} and
 \code{distrib_deriv4} default to \code{"integrate"}, since at those orders
 direct integration of the available derivative is usually cheaper and more
 accurate.
 
-\strong{Non-smooth parameters.} Where the log-density has a kink in a
+Non-smooth parameters. Where the log-density has a kink in a
 parameter, the observed second derivative has a point mass at the kink, and
 an average of its pointwise values does not contain that mass. For the
 Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its

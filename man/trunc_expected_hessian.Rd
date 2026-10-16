@@ -24,7 +24,8 @@ trunc_expected_hessian(
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{Ignored. Present so that the signature matches the generic's.}
+\item{approx}{Ignored. It is present so that the signature matches the
+generic's.}
 
 \item{nsim}{Ignored, for the same reason.}
 

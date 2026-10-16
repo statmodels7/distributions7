@@ -47,14 +47,14 @@ object built by \code{\link[=laplace_distrib]{laplace_distrib()}} they hold \cod
 \code{c(mu = FALSE, sigma = TRUE)} for \code{params_smooth}.
 }
 \description{
-The S7 class of the Laplace (double exponential) family with location
-\eqn{\mu} and scale \eqn{\sigma > 0}, with density
-\eqn{f(y) = (2\sigma)^{-1}\exp(-|y-\mu|/\sigma)} on the whole real line. It
-inherits from \code{continuous_distrib}, so every generic of the \code{distrib} class
-applies to it; the methods listed below are registered on it directly and
-everything else comes from the parent.
+This is the S7 class of the Laplace (double exponential) family with location
+\eqn{\mu} and scale \eqn{\sigma > 0}, with density \eqn{f(y) =
+(2\sigma)^{-1}\exp(-|y-\mu|/\sigma)} on the whole real line. It inherits from
+\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
+the methods listed below are registered on it directly and everything else
+comes from the parent.
 
-The density has a \strong{kink} at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
+The density has a kink at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
 differentiable. This makes the family non-regular in its location: the
 observed second derivative in \eqn{\mu} is 0 almost everywhere while the
 information is \eqn{1/\sigma^2}. The class records that by setting
@@ -67,7 +67,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf()}},

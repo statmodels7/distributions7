@@ -12,7 +12,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -39,10 +39,10 @@ y <- c(0.3, 1.1, 4.0)
 th <- list(mu = 2)
 h <- distrib_hessian(d, y, th)
 
-# The closed form, written out.
+# The closed form is written out in R and compared with the method.
 all.equal(h$mu_mu, (2 - 2 * y) / 2^3)
 
-# Positive below mu/2, negative above it.
+# The second derivative is positive below mu/2 and negative above it.
 data.frame(y = y, mu_mu = h$mu_mu, below_half = y < 2 / 2)
 
 # A central difference of the score reproduces it.

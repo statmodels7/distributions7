@@ -17,10 +17,10 @@ recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positi
 model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, the expectation being an exact finite sum. Accepted
-so that the signature matches the generic's.}
+\item{approx}{Ignored, because the expectation is an exact finite sum. It is
+accepted so that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -34,13 +34,13 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 }
 \description{
 Computes the five distinct fourth derivatives of the beta-binomial log-mass
-in \eqn{\mu} and \eqn{\sigma}, \strong{in closed form}, by the construction
-\code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3.BetaBinom1Distrib()}} describes carried one order further:
-the shape parametrization's fourth derivatives, each a difference of
-\eqn{\psi^{(3)}}, carried through the map
+in \eqn{\mu} and \eqn{\sigma}, in closed form, by the construction that
+\code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3.BetaBinom1Distrib()}} describes, carried one order further.
+For \eqn{\sigma \ge 0.1} the fourth derivatives of the shape
+parametrization, each of which is a difference of \eqn{\psi^{(3)}}, are
+carried through the map
 \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)} by the partition sum of
-\code{\link[=chain_derivatives]{chain_derivatives()}}, for \eqn{\sigma \ge 0.1}, and the direct sums
-below.
+\code{\link[=chain_derivatives]{chain_derivatives()}}, and the direct sums below are used otherwise.
 
 With \code{expected = TRUE} the method returns the expectation as an exact
 finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_expected()}}. \code{approx} and
@@ -50,8 +50,8 @@ finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_e
 
 \eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
 proportion, \eqn{\sigma > 0} the dispersion and \eqn{n} the trial count.
-\eqn{\alpha} and \eqn{\beta} are the two beta shapes the family is written
-in internally.
+\eqn{\alpha} and \eqn{\beta} are the two beta shapes in which the family is
+written internally.
 }
 
 \examples{

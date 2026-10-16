@@ -13,13 +13,13 @@ vector of length 1 or of the length of \code{y}. \code{mu} must lie in
 \eqn{(-\pi, \pi)} and \code{rho} in \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{rho}, each of length
@@ -35,15 +35,15 @@ observation, in closed form:
 with \eqn{\kappa = A^{-1}(\rho)} and
 \eqn{\kappa'(\rho) = 1/A'(\kappa)} from the inverse function rule.
 
-The map touches the \strong{second parameter only}, so the direction's component
+The map touches the second parameter only, so the direction's component
 is unchanged from the concentration parametrization. In the second,
 \eqn{\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
 = \rho\,\kappa'(\rho)}, so the difference \eqn{\cos(y-\mu) - \rho} is
 formed from \eqn{\rho} itself. The components are computed by a compiled
 kernel.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries. This method always returns the parameter scale.
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries. This method always returns the parameter scale.
 }
 \section{Notation}{
 

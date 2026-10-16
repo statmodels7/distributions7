@@ -28,7 +28,7 @@ inverse-transform fallback of the base class is not used.
 \examples{
 d <- beta2_distrib()
 
-# Same generator as stats::rbeta at these two shapes.
+# The method uses the same generator as stats::rbeta at these two shapes.
 set.seed(2)
 a <- distrib_rng(d, 3, list(alpha = 2, beta = 5))
 set.seed(2)

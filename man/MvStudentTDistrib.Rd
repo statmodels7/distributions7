@@ -81,7 +81,8 @@ constructor, which runs only the validators of \code{multivariate_distrib} and
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.MvStudentTDistrib]{distrib_pdf()}} and
 \code{\link[=distrib_rng.MvStudentTDistrib]{distrib_rng()}};

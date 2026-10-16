@@ -13,14 +13,14 @@ recycle in the usual way.}
 }
 \value{
 A list of two numeric vectors, \code{shape} and \code{rate}, of the lengths
-the arithmetic produces.
+that the arithmetic produces.
 }
 \description{
-Converts the \code{gamma1} parameters to the shape and rate \code{\link[stats:GammaDist]{stats::dgamma()}}
+Converts the \code{gamma1} parameters to the shape and rate that \code{\link[stats:GammaDist]{stats::dgamma()}}
 takes: \eqn{a = 1/\phi} and \eqn{b = 1/(\phi\mu)}. Under that pairing the
 mean \eqn{a/b} is \eqn{\mu} and the variance \eqn{a/b^2} is \eqn{\phi\mu^2}.
-Nothing is validated; a non-positive \code{phi} or \code{mu} propagates as an infinite
-or negative value to the caller.
+The function does not validate its input; a non-positive \code{phi} or \code{mu}
+propagates as an infinite or negative value to the caller.
 }
 \seealso{
 \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the family and

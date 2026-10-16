@@ -14,13 +14,13 @@ recycled. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{kappa}, each of
@@ -33,7 +33,7 @@ per observation, in closed form:
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad
       \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa),}
 with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} the derivative of
-\eqn{\log I_0} and also the \strong{mean resultant length} of the family.
+\eqn{\log I_0} and also the mean resultant length of the family.
 
 The components are computed by a compiled kernel. The ratio comes from
 numericals7's compiled \code{\link[numericals7:bessel_i_ratio]{numericals7::bessel_i_ratio()}}, which is finite and
@@ -41,8 +41,8 @@ accurate at any concentration. R's own scaled \code{besselI} underflows to an
 exact zero between \eqn{10^5} and \eqn{10^6}, so forming the ratio from two
 calls gives \code{NaN} over part of that band.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries. This method always returns the parameter scale.
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries. This method always returns the parameter scale.
 }
 \section{Notation}{
 

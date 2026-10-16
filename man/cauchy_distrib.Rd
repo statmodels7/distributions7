@@ -8,8 +8,8 @@ cauchy_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
-ranging over the whole line already.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the
+location already ranges over the whole line.}
 
 \item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
 \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -50,9 +50,9 @@ The density decays like \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,dy} diverges
 for every \eqn{p \ge 1} and the family has no mean, no variance and no
 higher moment. \code{mean()}, \code{variance()}, \code{skewness()} and \code{kurtosis()} return
 \code{NaN} directly, without attempting a quadrature over a divergent integral;
-\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} gives the argument in full. What the family does
-have is a median, equal to \eqn{\mu}, and quartiles at \eqn{\mu \pm \sigma},
-so \eqn{\sigma} is the half-interquartile range.
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} gives the argument in full. The family has a
+median, equal to \eqn{\mu}, and quartiles at \eqn{\mu \pm \sigma}, so
+\eqn{\sigma} is the half-interquartile range.
 }
 
 \section{Derivatives}{
@@ -90,7 +90,8 @@ one need not be.
 \section{Notation}{
 
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
-\eqn{\sigma > 0} the scale. Neither is a moment. \eqn{\eta} is a parameter on
+\eqn{\sigma > 0} the scale. The two parameters are not moments.
+\eqn{\eta} is a parameter on
 the unconstrained scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
 }
 

@@ -13,11 +13,11 @@ length 1 or of the length of \code{y}, recycled if of length 1. It must be
 strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, the expectation being exact. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored because the expectation is exact. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -25,7 +25,7 @@ quadrature, Monte Carlo and outer-product routes.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list with one numeric vector, \code{mu_mu}, of length
@@ -36,13 +36,13 @@ is.
 Returns the same number as \code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}},
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
       = -\dfrac{\psi'(\mu/2)}{4},}
-the observed second derivative being free of the response and so equal to
-its own expectation. Nothing is averaged, integrated or simulated, so
+because the observed second derivative is free of the response and so equals
+its own expectation. The method does not average, integrate or simulate, so
 \code{approx} and \code{nsim} are ignored and \code{y} is read only for its length. The
-value is negative at every \eqn{\mu}, the trigamma function being positive,
-so the information is positive throughout.
+value is negative at every \eqn{\mu} because the trigamma function is
+positive, so the information is positive throughout.
 
-The identity holds on the \strong{parameter} scale. On the link scale the
+The identity holds on the parameter scale. On the link scale the
 second-order chain rule adds \eqn{h''(\eta)\,\partial\ell/\partial\mu} to
 the observed Hessian. The expected version drops that term because the score
 has expectation zero, whereas the score of a finite sample is not zero away
@@ -52,9 +52,9 @@ the summed score vanishes.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-\strong{observed information} under the model. The chi-squared is a regular
+observed information under the model. The chi-squared is a regular
 family, so the second Bartlett identity holds and this equals the variance
 of the score. \eqn{\psi'} is the trigamma function.
 }
@@ -63,12 +63,13 @@ of the score. \eqn{\psi'} is the trigamma function.
 d <- chisq_distrib()
 th <- list(mu = 4)
 
-# A constant, and identical to the observed Hessian.
+# The value is a constant and is identical to the observed Hessian.
 unique(distrib_expected_hessian(d, c(1, 4, 9), th)$mu_mu)
 identical(distrib_expected_hessian(d, c(1, 4, 9), th),
           distrib_hessian(d, c(1, 4, 9), th))
 
-# Negative at every mu, the trigamma function being positive.
+# The value is negative at every mu, because the trigamma function is
+# positive.
 vapply(c(0.5, 4, 40),
        function(m) distrib_expected_hessian(d, 0, list(mu = m))$mu_mu,
        numeric(1))

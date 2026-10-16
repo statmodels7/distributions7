@@ -19,7 +19,7 @@ vector of length 1 or of length \code{n}. A component of length 1 is recycled.
 A numeric vector of \code{n} draws.
 }
 \description{
-Draws \code{n} independent Laplace variates by \strong{inverse transform}: \code{n} uniform
+Draws \code{n} independent Laplace variates by inverse transform: \code{n} uniform
 variates from \code{\link[stats:Uniform]{stats::runif()}} are passed through
 \code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile.Laplace2Distrib()}}. The base class draws the same way for
 a family with its own quantile method, so the method gives the draws that

@@ -31,7 +31,7 @@ prefixed free names, \code{n_params} is \code{p + param@n_free}, every entry of
 \description{
 Two families on \eqn{\mathbb{R}^p}, differing in which matrix of the law
 their parametrization describes: \code{mvgaussian1_distrib()} parametrizes the
-\strong{covariance} \eqn{\Sigma} and \code{mvgaussian2_distrib()} the \strong{precision}
+covariance \eqn{\Sigma} and \code{mvgaussian2_distrib()} the precision
 \eqn{\Omega = \Sigma^{-1}}. The mean is a vector of \eqn{p} free parameters
 and the matrix is carried by a \pkg{parameters7} parametrization whose free
 values become ordinary scalar parameters, so every generic of the \code{distrib}
@@ -44,8 +44,8 @@ The numbering is the package's convention, the one that separates
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} and \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}: one
 name per parametrization, because in a modeling framework a parametrization
 decides what a linear predictor acts on. Here the choice can change the model
-as well as the coordinates. A matrix parametrization is \strong{closed under
-inversion} when the inverse of every matrix that it produces is one of its
+as well as the coordinates. A matrix parametrization is closed under
+inversion when the inverse of every matrix that it produces is one of its
 own; \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}}, \code{\link[parameters7:matrix_log]{parameters7::matrix_log()}},
 \code{\link[parameters7:diagonal_matrix]{parameters7::diagonal_matrix()}}, \code{\link[parameters7:scalar_matrix]{parameters7::scalar_matrix()}},
 \code{\link[parameters7:compound_symmetry]{parameters7::compound_symmetry()}} and \code{\link[parameters7:dr_prod]{parameters7::dr_prod()}} are, and
@@ -61,7 +61,7 @@ covariance and on the precision give different maximized log-likelihoods.
 Both constructors accept any parametrization of the right dimension and of
 full rank. \code{mvgaussian2_distrib(p, parameters7::ar1(p))} is the model whose
 precision has the entries \eqn{\sigma^2\rho^{|i-j|}}, with \eqn{\sigma^2}
-the scale of \code{ar1()}, and it is a valid law. The AR(1) \strong{process} written
+the scale of \code{ar1()}, and it is a valid law. The AR(1) process written
 on the precision side is \code{mvgaussian2_distrib(p, parameters7::ar1_inv(p))},
 whose parametrization is that inverse.
 }

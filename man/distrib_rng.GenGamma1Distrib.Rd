@@ -31,16 +31,16 @@ th <- list(a = 2, d = 3, p = 1.5)
 set.seed(51)
 x <- distrib_rng(d, 2e5, th)
 
-# Two moments against their closed forms.
+# Two sample moments are compared with their closed forms.
 rbind(sample = c(mean(x), var(x)),
       theory = c(mean(d, th), variance(d, th)))
 
-# The representation, written out at the same seed.
+# The representation, written out at the same seed, reproduces the draws.
 set.seed(51)
 all.equal(x, 2 * rgamma(2e5, shape = 3 / 1.5)^(1 / 1.5))
 }
 \seealso{
-\code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf.GenGamma1Distrib()}} for the density the draws follow,
-\code{\link[=mean.GenGamma1Distrib]{mean.GenGamma1Distrib()}} for the moments they reproduce, and
+\code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf.GenGamma1Distrib()}} for the density that the draws
+follow, \code{\link[=mean.GenGamma1Distrib]{mean.GenGamma1Distrib()}} for the moments that they reproduce, and
 \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

@@ -8,7 +8,7 @@
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
 \code{theta} (the dispersion, positive), each a numeric vector of length 1 or
-\code{n}. Aligned and validated by name, so a missing or out-of-bounds
+\code{n}. It is aligned and validated by name, so a missing or out-of-bounds
 component signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}

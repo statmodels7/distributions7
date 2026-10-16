@@ -32,7 +32,7 @@ Computes the Cauchy quantile function
 by calling \code{\link[stats:Cauchy]{stats::qcauchy()}}. The median is \eqn{\mu} and the quartiles are
 \eqn{\mu \pm \sigma}, so the two parameters are read off this function
 directly: they are the median and the half-interquartile range, the
-location and spread this family has in place of a mean and a standard
+location and spread that this family has in place of a mean and a standard
 deviation.
 }
 \examples{
@@ -42,7 +42,7 @@ th <- list(mu = 0.4, sigma = 1.5)
 # The median is mu and the quartiles are mu -/+ sigma exactly.
 distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.01, 0.5, 0.99)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 
@@ -52,6 +52,7 @@ all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 }
 \seealso{
 \code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf.CauchyDistrib()}}, which this inverts;
-\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} for why the median and the half-interquartile
-range are what this family offers; \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} for why this family has the median and the
+half-interquartile range in place of moments; \code{\link[=distrib_quantile]{distrib_quantile()}} for the
+generic.
 }

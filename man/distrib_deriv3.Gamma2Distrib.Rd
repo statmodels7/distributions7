@@ -17,10 +17,10 @@ recycled. Both must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -47,10 +47,10 @@ respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form. With
 the set partitions of the differentiation indices, and those of
 \eqn{\alpha e(\mu)} from the product rule. The derivatives of \eqn{G} are
 \eqn{\log\alpha - \psi(\alpha)}, \eqn{1/\alpha - \psi_1(\alpha)},
-\eqn{-1/\alpha^2 - \psi_2(\alpha)} and \eqn{2/\alpha^3 - \psi_3(\alpha)},
-each evaluated from its asymptotic series at a large shape, and \eqn{e}
-from a series near \eqn{z = 1}, so the components keep their digits when
-\eqn{\alpha} is large. Every component of this order carries
+\eqn{-1/\alpha^2 - \psi_2(\alpha)} and \eqn{2/\alpha^3 - \psi_3(\alpha)}.
+The kernel evaluates each of them from its asymptotic series at a large
+shape, and \eqn{e} from a series near \eqn{z = 1}, so the components keep
+their digits when \eqn{\alpha} is large. Every component of this order carries
 \eqn{\psi_2}, the second derivative of the digamma function.
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing

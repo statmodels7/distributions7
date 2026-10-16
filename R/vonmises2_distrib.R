@@ -12,12 +12,11 @@ NULL
 #' @name VonMises2Distrib
 #'
 #' @description
-#' The S7 class of the von Mises family written in its mean direction
-#' \eqn{\mu} and its mean resultant length \eqn{\rho \in (0, 1)}, which is
-#' the quantity that is conventionally reported in circular statistics and
-#' equals one minus the circular variance. It inherits from
-#' `continuous_distrib`; the methods listed below are registered on it
-#' directly.
+#' This is the S7 class of the von Mises family written in its mean direction
+#' \eqn{\mu} and its mean resultant length \eqn{\rho \in (0, 1)}, which is the
+#' quantity that is conventionally reported in circular statistics and equals
+#' one minus the circular variance. It inherits from `continuous_distrib`; the
+#' methods listed below are registered on it directly.
 #'
 #' The concentration of [vonmises1_distrib()] is recovered as
 #' \eqn{\kappa = A^{-1}(\rho)} with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)},
@@ -47,7 +46,8 @@ NULL
 #'   [distrib_expected_hessian.VonMises2Distrib()] for the information.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.VonMises2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.VonMises2Distrib] and
 #'   [`distrib_rng()`][distrib_rng.VonMises2Distrib];
@@ -562,13 +562,13 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' coef(fit_distrib(d, distrib_rng(d, 2000, list(mu = 0.8, rho = 0.6))))
 #'
 #' @seealso
-#' [vonmises1_distrib()] for the same law in the concentration, which is
-#' better conditioned at a nearly deterministic direction;
+#' [vonmises1_distrib()] for the same law in the concentration, which is better
+#' conditioned at a nearly deterministic direction;
 #' [numericals7::bessel_i_ratio_inverse()] for the map and its derivatives;
-#' [beta1_distrib()] for another family on \eqn{(0, 1)};
-#' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
-#' [VonMises2Distrib] for the class.
+#' [beta1_distrib()] for another family on \eqn{(0, 1)}; [fit_distrib()] to
+#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' against the same battery that this one passes; [VonMises2Distrib] for the
+#' class.
 #' @export
 vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
                               link_rho = logit_link()) {

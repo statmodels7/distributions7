@@ -17,8 +17,8 @@ returns the parameter scale and the generic applies the link scale to its
 result. Every link of this family is the identity, so the two scales
 coincide.}
 
-\item{approx}{Ignored: the expectation is exact and no approximation
-strategy is consulted. Present so that the signature matches the generic's.}
+\item{approx}{Ignored: the expectation is exact and no approximation strategy
+is consulted. It is present so that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason.}
 

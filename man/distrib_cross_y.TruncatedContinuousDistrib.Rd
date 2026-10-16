@@ -10,7 +10,7 @@
 Outside it the parent's value is returned, because the method performs
 no test.}
 
-\item{theta}{A named list of parameters of the \strong{parent}, aligned by the
+\item{theta}{A named list of parameters of the parent, aligned by the
 generic. Truncation adds no parameter, the endpoints being constants.}
 
 \item{scale}{Handled by the generic after dispatch; this method always

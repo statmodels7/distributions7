@@ -16,10 +16,10 @@ of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected value.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected value.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 

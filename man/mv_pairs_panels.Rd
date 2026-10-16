@@ -44,9 +44,9 @@ used in the error message for more than three coordinates. Defaults to
 \item{...}{Unused.}
 }
 \value{
-\code{NULL}, invisibly. Called for the plot it draws. The function sets
-\code{mfrow}, \code{mar} and \code{mgp} for the panel matrix and restores the previous
-values on exit.
+\code{NULL}, invisibly. The function is called for the plot that it draws.
+The function sets \code{mfrow}, \code{mar} and \code{mgp} for the panel matrix and
+restores the previous values on exit.
 }
 \description{
 The shared engine of \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} and the multivariate

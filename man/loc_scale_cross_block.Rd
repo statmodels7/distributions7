@@ -16,7 +16,7 @@ a location and whose second is a scale.}
 scale second. The order is positional and is not checked.}
 }
 \value{
-An \strong{unnamed} list of two numeric vectors, each of length
+An unnamed list of two numeric vectors, each of length
 \code{length(y)}: the location component then the scale one. The caller names
 them.
 }
@@ -35,7 +35,7 @@ so no new algebra is needed for either.
 The scale formula uses only that \eqn{\sigma} is a scale, so it holds when
 there is no location at all and \eqn{z = y/\sigma}. That covers the
 exponential's mean, the Weibull's scale and the generalized Pareto's. A
-\strong{shape} parameter is not covered: it is written out per family, or
+shape parameter is not covered: it is written out per family, or
 differenced where it has no elementary form.
 
 Both components are recycled to the length of \code{y} by the \code{+ 0 * y} in the

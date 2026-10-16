@@ -11,12 +11,13 @@
 \item{theta}{A named list of parameters on the parameter scale. Components
 may be vectors, in which case the step is chosen elementwise.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
-default.}
+\item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+lower tail and \code{FALSE} the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical,
-\code{TRUE} by default. Far into a tail the probability underflows and the
-result is \code{-Inf} or \code{NaN}.}
+\item{log}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+derivatives of the log probability and \code{FALSE} those of the probability.
+Far into a tail the probability underflows and the result is \code{-Inf} or
+\code{NaN}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

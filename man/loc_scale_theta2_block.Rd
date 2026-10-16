@@ -15,7 +15,7 @@ parameters are a location and a scale in that order.}
 \item{theta}{A named list of parameters, location first and scale second.}
 
 \item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{2} for that of
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}. Default \code{1}.}
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}. The default is \code{1}.}
 }
 \value{
 A named list of three numeric vectors, keyed \code{mu_mu},

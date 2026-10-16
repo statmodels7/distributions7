@@ -32,7 +32,7 @@ Computes the first derivatives, with respect to the parameters, of
 \eqn{\log F(q;\theta)} --- or of \eqn{\log(1 - F(q;\theta))} when
 \code{lower.tail = FALSE}.
 
-These are what a \strong{censored} observation contributes to the score. An
+These are what a censored observation contributes to the score. An
 observation known only to be at most \eqn{q} contributes \eqn{\log F(q)}, one
 known only to exceed \eqn{q} contributes \eqn{\log(1-F(q))}, and an interval
 censored one contributes \eqn{\log(F(b) - F(a))}, which is assembled from the

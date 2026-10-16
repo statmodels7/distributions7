@@ -9,7 +9,7 @@ poisson_distrib(link_mu = log_link())
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
 \eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
-\eqn{(0, \infty)} onto the line and is the \strong{canonical} link of this
+\eqn{(0, \infty)} onto the line and is the canonical link of this
 family.}
 }
 \value{
@@ -25,7 +25,7 @@ mean \eqn{\mu > 0}, with mass \eqn{e^{-\mu}\mu^y/y!} on the non-negative
 integers. The returned object carries closed-form derivatives of the
 log-mass to fourth order, observed and expected, and closed-form moments.
 
-The family is \strong{equidispersed}: its variance equals its mean at every
+The family is equidispersed: its variance equals its mean at every
 parameter value. Real counts are usually more variable than that, so a
 Poisson fit is often the null a count analysis argues against;
 \code{\link[=negbin2_distrib]{negbin2_distrib()}} and \code{\link[=negbin1_distrib]{negbin1_distrib()}} add a dispersion parameter and
@@ -73,7 +73,7 @@ the family and on data that is not.
 
 \eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
 which is also the variance. \eqn{\eta = \log\mu} is the parameter on the
-link scale. The \strong{canonical} link of an exponential family is the one that
+link scale. The canonical link of an exponential family is the one that
 makes the log-mass linear in the sufficient statistic.
 }
 

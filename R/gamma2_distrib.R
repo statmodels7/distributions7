@@ -5,12 +5,12 @@ NULL
 #' @name Gamma2Distrib
 #'
 #' @description
-#' The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and
-#' its variance \eqn{\sigma^2 > 0}, so that the shape is
-#' \eqn{\alpha = \mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. It
-#' inherits from `continuous_distrib`, so every generic of the `distrib` class
-#' applies to it; the methods listed below are registered on it directly and
-#' everything else comes from the parent.
+#' This is the S7 class of the gamma family parametrized by its mean \eqn{\mu >
+#' 0} and its variance \eqn{\sigma^2 > 0}, so that the shape is \eqn{\alpha =
+#' \mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. It inherits from
+#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it directly and everything else
+#' comes from the parent.
 #'
 #' Build one with [gamma2_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which
@@ -33,10 +33,11 @@ NULL
 #'   [gamma1_distrib()] for the same law in mean and dispersion, where the two
 #'   parameters are orthogonal and these are not;
 #'   [distrib_pdf.Gamma2Distrib()] and [distrib_gradient.Gamma2Distrib()] for
-#'   the closed forms this class supplies.
+#'   the closed forms that this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Gamma2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gamma2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Gamma2Distrib] and
@@ -73,13 +74,14 @@ NULL
 #' d <- gamma2_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
 #'
-#' # The second parameter is the variance itself, so it is what variance()
-#' # returns and what the fitted standard error describes.
+#' # The second parameter is the variance itself, so variance() returns it and
+#' # its fitted standard error is the standard error of the variance.
 #' variance(d, list(mu = 3, sigma2 = 2))
 Gamma2Distrib <- S7::new_class("Gamma2Distrib", parent = continuous_distrib)
 
@@ -129,7 +131,7 @@ Gamma2Distrib <- S7::new_class("Gamma2Distrib", parent = continuous_distrib)
 #' all.equal(distrib_pdf(d, y, th),
 #'           dgamma(y, shape = 9 / 2, rate = 3 / 2))
 #'
-#' # The same law as gamma1 at phi = sigma2/mu^2.
+#' # This is the same law as gamma1 at phi = sigma2/mu^2.
 #' all.equal(distrib_pdf(d, y, th),
 #'           distrib_pdf(gamma1_distrib(), y, list(mu = 3, phi = 2 / 9)))
 #'
@@ -217,8 +219,8 @@ S7::method(distrib_cdf, Gamma2Distrib) <- function(distrib, q, theta, lower.tail
 #' Computes the gamma quantile function, the inverse of the regularized
 #' incomplete gamma function in its argument, by calling [stats::qgamma()] at
 #' shape \eqn{\alpha = \mu^2/\sigma^2} and rate \eqn{\lambda = \mu/\sigma^2}.
-#' There is no elementary closed form; `qgamma()` inverts the distribution
-#' function numerically. The gamma distribution function is strictly
+#' The quantile function has no elementary closed form; `qgamma()` inverts the
+#' distribution function numerically. The gamma distribution function is strictly
 #' increasing on \eqn{(0, \infty)}, so the round trip through
 #' [distrib_cdf.Gamma2Distrib()] returns `p`.
 #'
@@ -247,14 +249,15 @@ S7::method(distrib_cdf, Gamma2Distrib) <- function(distrib, q, theta, lower.tail
 #' d <- gamma2_distrib()
 #' th <- list(mu = 3, sigma2 = 2)
 #'
-#' # A central 95 percent interval, visibly asymmetric about the mean of 3.
+#' # This is a central 95 percent interval, visibly asymmetric about the mean
+#' # of 3.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
 #' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # The median falls below the mean, the gamma being right skewed.
+#' # The median falls below the mean because the gamma is right skewed.
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qgamma(
@@ -292,7 +295,8 @@ S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower
 #' @examples
 #' d <- gamma2_distrib()
 #'
-#' # Same generator as stats::rgamma at the implied shape and rate.
+#' # The method uses the same generator as stats::rgamma at the implied shape
+#' # and rate.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = 3, sigma2 = 2))
 #' set.seed(2)
@@ -328,7 +332,8 @@ S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta, ...) {
 #' \eqn{z = y/\mu} they equal
 #' \eqn{\{2\mu(g + e) + y - \mu\}/\sigma^2} and \eqn{-\alpha(g + e)/\sigma^2},
 #' where \eqn{g = \log\alpha - \psi(\alpha)} and \eqn{e = \log z - (z - 1)},
-#' and the kernel computes them in that form, each of \eqn{g} and \eqn{e}
+#' and the kernel computes them in that form, evaluating each of \eqn{g} and
+#' \eqn{e}
 #' without cancellation.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links of the
@@ -366,7 +371,7 @@ S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 3, sigma2 = 2)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out with the digamma function.
+#' # The two closed forms are written out with the digamma function.
 #' al <- 9 / 2
 #' lam <- 3 / 2
 #' all.equal(g$mu,
@@ -392,13 +397,13 @@ S7::method(distrib_gradient, Gamma2Distrib) <- function(distrib, y, theta, scale
 #' with respect to \eqn{\mu} and \eqn{\sigma^2}, one value per observation, in
 #' closed form, by differentiating the score of
 #' [distrib_gradient.Gamma2Distrib()] once more. Every component carries the
-#' trigamma function of \eqn{\alpha = \mu^2/\sigma^2}, both parameters moving
-#' the shape.
+#' trigamma function of \eqn{\alpha = \mu^2/\sigma^2}, because both parameters
+#' move the shape.
 #'
-#' The curvature in \eqn{\mu} is not negative at every data point, and neither
-#' is the curvature in \eqn{\sigma^2}: the observed information of a gamma is
-#' not positive definite everywhere. Its expectation is; see
-#' [distrib_expected_hessian.Gamma2Distrib()].
+#' The curvature in \eqn{\mu} is not negative at every data point, and the same
+#' holds for the curvature in \eqn{\sigma^2}: the observed information of a
+#' gamma is not positive definite everywhere. Its expectation is positive
+#' definite; see [distrib_expected_hessian.Gamma2Distrib()].
 #'
 #' The kernel evaluates them through the decomposition described on
 #' [distrib_deriv3.Gamma2Distrib()], which keeps the digits at a large shape.
@@ -510,8 +515,8 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score.
 #'
-#' @seealso [distrib_hessian.Gamma2Distrib()] for the observed quantity this is
-#'   the expectation of, [distrib_expected_hessian.Gamma1Distrib()] for the
+#' @seealso [distrib_hessian.Gamma2Distrib()] for the observed quantity whose
+#'   expectation this is, [distrib_expected_hessian.Gamma1Distrib()] for the
 #'   orthogonal parametrization of the same law, [fisher_scoring()], which
 #'   inverts it at each step, and [distrib_expected_hessian()] for the generic.
 #'
@@ -519,11 +524,11 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' d <- gamma2_distrib()
 #' th <- list(mu = 3, sigma2 = 2)
 #'
-#' # The three constants, one value per observation.
+#' # The three entries are constants, with one value per observation.
 #' eh <- lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 #' eh
 #'
-#' # Written out with the trigamma function.
+#' # The three formulas are written out with the trigamma function.
 #' al <- 9 / 2
 #' c((3 * 2 - 4 * 9 * trigamma(al)) / 2^2,
 #'   -9 * (9 * trigamma(al) - 2) / 2^4,
@@ -563,10 +568,10 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #' the set partitions of the differentiation indices, and those of
 #' \eqn{\alpha e(\mu)} from the product rule. The derivatives of \eqn{G} are
 #' \eqn{\log\alpha - \psi(\alpha)}, \eqn{1/\alpha - \psi_1(\alpha)},
-#' \eqn{-1/\alpha^2 - \psi_2(\alpha)} and \eqn{2/\alpha^3 - \psi_3(\alpha)},
-#' each evaluated from its asymptotic series at a large shape, and \eqn{e}
-#' from a series near \eqn{z = 1}, so the components keep their digits when
-#' \eqn{\alpha} is large. Every component of this order carries
+#' \eqn{-1/\alpha^2 - \psi_2(\alpha)} and \eqn{2/\alpha^3 - \psi_3(\alpha)}.
+#' The kernel evaluates each of them from its asymptotic series at a large
+#' shape, and \eqn{e} from a series near \eqn{z = 1}, so the components keep
+#' their digits when \eqn{\alpha} is large. Every component of this order carries
 #' \eqn{\psi_2}, the second derivative of the digamma function.
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
@@ -676,7 +681,7 @@ S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' @seealso [distrib_deriv3.Gamma2Distrib()] for the order below,
 #'   [distrib_deriv4()] for the generic, and
 #'   [distrib_expected_hessian.Gamma2Distrib()] for the second-order
-#'   expectation these extend.
+#'   expectation that these extend.
 #'
 #' @examples
 #' d <- gamma2_distrib()
@@ -733,10 +738,10 @@ S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' y <- c(1, 3, 5)
 #' th <- list(mu = 3, sigma2 = 2)
 #'
-#' # Written out at the implied shape and rate.
+#' # The derivative is written out at the implied shape and rate.
 #' all.equal(distrib_grad_y(d, y, th), (9 / 2 - 1) / y - 3 / 2)
 #'
-#' # Zero at the mode, positive below it and negative above.
+#' # The derivative is zero at the mode, positive below it and negative above.
 #' mode <- (9 / 2 - 1) / (3 / 2)
 #' c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
 #'
@@ -759,8 +764,8 @@ S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' Computes the second derivative of the gamma log-density with respect to the
 #' response, in closed form at the implied shape \eqn{\alpha = \mu^2/\sigma^2}:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\alpha - 1}{y^2}.}
-#' The rate drops out, the log-density being linear in \eqn{y} apart from the
-#' \eqn{(\alpha-1)\log y} term. The sign follows the shape: the log-density is
+#' The rate drops out because the log-density is linear in \eqn{y} apart from
+#' the \eqn{(\alpha-1)\log y} term. The sign follows the shape: the log-density is
 #' concave in the response when \eqn{\sigma^2 < \mu^2}, exactly flat when
 #' \eqn{\sigma^2 = \mu^2}, where the family is exponential, and convex when
 #' \eqn{\sigma^2 > \mu^2}.
@@ -791,7 +796,8 @@ S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' all.equal(distrib_hess_y(d, y, th),
 #'           distrib_hess_y(d, y, list(mu = 6, sigma2 = 8)))
 #'
-#' # Concave below sigma2 = mu^2, flat at it, convex above.
+#' # The log-density is concave below sigma2 = mu^2, flat at it and convex
+#' # above.
 #' vapply(c(2, 9, 20),
 #'        function(v) distrib_hess_y(d, 3, list(mu = 3, sigma2 = v)),
 #'        numeric(1))
@@ -814,7 +820,7 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' response and the parameters come from the numerical fallbacks of the base
 #' class.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments specify the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
 #' logarithm, because both parameters are positive.
 #'
@@ -840,10 +846,11 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' kurtosis \eqn{6\sigma^2/\mu^2}.
 #'
 #' This is the same law as [gamma1_distrib()], which carries the mean and a
-#' *dispersion*, the two being related by \eqn{\sigma^2 = \phi\mu^2}. They are
-#' separate families because the second parameter is a different quantity in
+#' *dispersion*, and the variance and the dispersion are related by
+#' \eqn{\sigma^2 = \phi\mu^2}. The two are separate families because the second parameter is a different quantity in
 #' each, with its own interpretation, standard error and interval. The choice
-#' between them is not only cosmetic: see the next section.
+#' between them has consequences beyond notation, which the next section
+#' describes.
 #'
 #' # Derivatives, and orthogonality
 #'
@@ -867,7 +874,8 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #'
 #' The mixed entry does not vanish. The mean and the variance are not
 #' orthogonal here, so their estimates are asymptotically correlated and a
-#' mean equation fitted with the variance held at a wrong value is biased. In
+#' mean equation is biased when the variance is held at a wrong value in the
+#' fit. In
 #' [gamma1_distrib()], where the second parameter is the dispersion
 #' \eqn{\phi = \sigma^2/\mu^2}, the same entry is exactly zero.
 #'
@@ -875,8 +883,8 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' [distrib_deriv3.Gamma2Distrib()] and [distrib_deriv4.Gamma2Distrib()], as
 #' are the derivatives in the response, [distrib_grad_y.Gamma2Distrib()] and
 #' [distrib_hess_y.Gamma2Distrib()]. The derivatives of the *distribution*
-#' function in the parameters have no elementary form, the derivative of an
-#' incomplete gamma in its shape being hypergeometric, and are computed by a
+#' function in the parameters have no elementary form because the derivative
+#' of an incomplete gamma in its shape is hypergeometric, and are computed by a
 #' compiled quadrature of the density times the derivatives of the
 #' log-density.
 #'
@@ -906,7 +914,7 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' \eqn{\sigma^2 = \mu^2}; [invgauss2_distrib()] and [lognormal2_distrib()] for
 #' other positive families written in the mean and the variance;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery of checks that this family
+#' user-defined family against the same battery of checks that this family
 #' passes;
 #' [Gamma2Distrib] for the class.
 #'
@@ -927,7 +935,8 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
 #' th <- list(mu = 3, sigma2 = 2)
 #' all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 9 / 2, rate = 3 / 2))
 #'
-#' # Moments: skewness 2 sqrt(sigma2)/mu, excess kurtosis 6 sigma2/mu^2.
+#' # The moments are skewness 2 sqrt(sigma2)/mu and excess kurtosis
+#' # 6 sigma2/mu^2.
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))
 #' c(2 * sqrt(2) / 3, 6 * 2 / 9)

@@ -5,12 +5,12 @@ NULL
 #' @name Lognormal2Distrib
 #'
 #' @description
-#' The S7 class of the lognormal family parametrized by the mean \eqn{m} and
-#' the variance \eqn{v} of \eqn{Y}. It inherits from `continuous_distrib`.
+#' This is the S7 class of the lognormal family parametrized by the mean \eqn{m}
+#' and the variance \eqn{v} of \eqn{Y}. It inherits from `continuous_distrib`.
 #' Build one with [lognormal2_distrib()]; this page documents the raw S7
-#' constructor; the validator of `distrib` checks that
-#' the properties are consistent (the parameter count, a bound and a link
-#' for every parameter, ordered support bounds).
+#' constructor; the validator of `distrib` checks that the properties are
+#' consistent (the parameter count, a bound and a link for every parameter,
+#' ordered support bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -21,7 +21,8 @@ NULL
 #'   var = "variance")`, `2` and the domains \eqn{(0, \infty)} for both.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Lognormal2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Lognormal2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Lognormal2Distrib] and

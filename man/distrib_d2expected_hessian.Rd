@@ -49,7 +49,7 @@ components as ordinary derivatives of its own written-out expected
 information; the components are symmetric in \eqn{(a,b)} and in \eqn{(c,d)}
 separately, and are keyed by \code{\link[=d2expected_names]{d2expected_names()}}.
 
-\strong{There is no numerical default.} A difference of
+There is no numerical default. A difference of
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, whose own default is already a difference,
 would be the nested differencing that the package does not use, so the base
 method signals an error and a family that does not register one has no

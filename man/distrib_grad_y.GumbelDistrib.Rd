@@ -34,11 +34,11 @@ th <- list(mu = 0, sigma = 1)
 
 all.equal(distrib_grad_y(d, y, th), (exp(-y) - 1) / 1)
 
-# A location family: the derivative in the response is minus the score in
-# the location.
+# The Gumbel is a location family, so the derivative in the response is
+# minus the score in the location.
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 
-# Zero at the mode, which is mu itself.
+# The derivative is zero at the mode, which is mu itself.
 distrib_grad_y(d, 0, th)
 
 # It is the derivative of the log-density, so a central difference in y

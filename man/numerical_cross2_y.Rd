@@ -81,6 +81,6 @@ numDeriv::grad(f, c(2, 1))
 
 }
 \seealso{
-\code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, the generic it serves, \code{\link[=distrib_hess_y]{distrib_hess_y()}} for
-the quantity it differences, and \code{\link[=fd_steps]{fd_steps()}} for the step rule.
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, the generic that it serves, \code{\link[=distrib_hess_y]{distrib_hess_y()}}
+for the quantity that it differences, and \code{\link[=fd_steps]{fd_steps()}} for the step rule.
 }

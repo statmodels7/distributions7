@@ -44,8 +44,8 @@ interpretations \code{c(mu = "mean", sigma = "standard deviation", gamma1 = "ske
 \eqn{(0,\infty)} and \eqn{(-0.9952717, 0.9952717)}.
 }
 \description{
-The S7 class of the skew normal written in its first three moments: the mean
-\eqn{\mu}, the standard deviation \eqn{\sigma} and the skewness
+This is the S7 class of the skew normal written in its first three moments:
+the mean \eqn{\mu}, the standard deviation \eqn{\sigma} and the skewness
 \eqn{\gamma_1}. It is the same law as \link{SkewNormal1Distrib}, reached through
 the map of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, and the only thing that differs is which three
 numbers name a member of it.
@@ -63,7 +63,8 @@ its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.SkewNormal2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.SkewNormal2Distrib]{distrib_cdf()}},

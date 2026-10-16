@@ -21,7 +21,7 @@ A numeric vector, the length of whatever \code{ratio} returns:
 Computes \eqn{d^I \log L} from the ratios \eqn{d^B L / L}, as
 \deqn{d^I \log L = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \frac{d^B L}{L},}
-the moment-to-cumulant relation. Only the \strong{ratios} are needed, never
+the moment-to-cumulant relation. Only the ratios are needed, never
 \eqn{L}'s own derivatives and never \eqn{L} itself, so a wrapper can
 differentiate a normalizing constant it can only evaluate up to scale.
 }

@@ -10,7 +10,7 @@
 first.}
 
 \item{which}{An integer vector of coordinates, already validated by the
-generic. Not read.}
+generic. It is not read.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

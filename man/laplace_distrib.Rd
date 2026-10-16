@@ -35,7 +35,7 @@ excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
 likelihood estimates are the sample median and the mean absolute deviation
 about it, both available in closed form.
 
-This family is \strong{not regular} in \eqn{\mu}: the density has a corner at
+This family is not regular in \eqn{\mu}: the density has a corner at
 \eqn{y = \mu} and the observed second derivative there is zero almost
 everywhere, while the information is \eqn{1/\sigma^2}. The object records
 this in \code{params_smooth}, and the details below say what follows from it.
@@ -62,7 +62,7 @@ visible in the methods:
 the sign of the residual;
 \item the observed second derivative in \eqn{\mu} is 0 wherever it exists, so
 \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} returns a vector of zeros;
-\item the second Bartlett identity fails, and the information is \strong{defined} as
+\item the second Bartlett identity fails, and the information is defined as
 the variance of the score, \eqn{1/\sigma^2}. That is what
 \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns.
 }
@@ -87,9 +87,9 @@ the fitted values against both closed forms.
 
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 \eqn{\sigma > 0} the scale, with variance \eqn{2\sigma^2}. \eqn{r = y - \mu}
-is the residual. The \strong{observed information} is
+is the residual. The observed information is
 \eqn{-\partial^2\ell/\partial\theta\,\partial\theta^\top} at the data; the
-\strong{expected information} is the variance of the score, which for a regular
+expected information is the variance of the score, which for a regular
 family equals the expectation of the observed one and here does not.
 }
 

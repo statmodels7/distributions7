@@ -5,9 +5,9 @@ NULL
 #' @name GenGamma2Distrib
 #'
 #' @description
-#' The S7 class of the generalized gamma family parametrized by its mean
-#' \eqn{m}, its shape \eqn{d} and its power \eqn{p}. It inherits from
-#' `continuous_distrib`. Build one with [gengamma2_distrib()]; this page
+#' `GenGamma2Distrib` is the S7 class of the generalized gamma family
+#' parametrized by its mean \eqn{m}, its shape \eqn{d} and its power \eqn{p}.
+#' It inherits from `continuous_distrib`. Build one with [gengamma2_distrib()]; this page
 #' documents the raw S7 constructor; the validator of `distrib` checks that
 #' the properties are consistent (the parameter count, a bound and a link
 #' for every parameter, ordered support bounds).
@@ -22,7 +22,8 @@ NULL
 #'   each parameter.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.GenGamma2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.GenGamma2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.GenGamma2Distrib] and
@@ -88,8 +89,8 @@ gengamma2_scale <- function(theta) {
 #'   distrib_rng.GenGamma2Distrib
 #'
 #' @description
-#' The generalized gamma with shape \eqn{d}, power \eqn{p} and scale
-#' \eqn{a = m\,\Gamma(d/p)/\Gamma((d+1)/p)}, so that \eqn{E[Y] = m}. The
+#' The distribution is the generalized gamma with shape \eqn{d}, power \eqn{p}
+#' and scale \eqn{a = m\,\Gamma(d/p)/\Gamma((d+1)/p)}, so that \eqn{E[Y] = m}. The
 #' density, the distribution function, the quantile function and the generator
 #' are those of [gengamma1_distrib()] at that scale: \eqn{(Y/a)^p} is a gamma
 #' variable with shape \eqn{d/p} and unit rate, with the same treatment of the
@@ -158,8 +159,8 @@ S7::method(distrib_rng, GenGamma2Distrib) <- function(distrib, n, theta, ...) {
 #' @description
 #' Return the derivatives of the log-density in \eqn{(m, d, p)} of orders one
 #' to five, the expected information and its expected third and fourth
-#' derivatives, and the first two derivatives of the expected information,
-#' each from its own compiled kernel.
+#' derivatives, and the first two derivatives of the expected information.
+#' Each of them comes from its own compiled kernel.
 #'
 #' @details
 #' With \eqn{k = d/p}, \eqn{k_1 = (d+1)/p} and
@@ -169,7 +170,7 @@ S7::method(distrib_rng, GenGamma2Distrib) <- function(distrib, n, theta, ...) {
 #' Every component is a closed form derived offline and written out per
 #' component, one kernel per order. With \eqn{U = p\,w}, the data enter
 #' through \eqn{X = U - \psi(k)} and \eqn{Q = e^U/k - 1}, and each component
-#' is a polynomial in them whose coefficients depend on \eqn{(d, p)} alone,
+#' is a polynomial in them whose coefficients depend only on \eqn{(d, p)},
 #' through \eqn{\psi^{(n)}(k)} and the differences
 #' \eqn{\psi^{(n)}(k_1) - \psi^{(n)}(k)}. As \eqn{k} and \eqn{d} grow the
 #' terms of these coefficients agree to several orders, so above
@@ -194,8 +195,8 @@ S7::method(distrib_rng, GenGamma2Distrib) <- function(distrib, n, theta, ...) {
 #' @param ...,threads Unused.
 #'
 #' @return A named list with one numeric vector per component: 3, 6, 10, 15
-#'   and 21 components at orders one to five, the second order keyed
-#'   `mean_mean`, `d_d`, `p_p`, `mean_d`, `mean_p`, `d_p`.
+#'   and 21 components at orders one to five. The components of the second
+#'   order are keyed `mean_mean`, `d_d`, `p_p`, `mean_d`, `mean_p`, `d_p`.
 #'
 #' @seealso [distrib_pdf.GenGamma2Distrib()].
 #'
@@ -259,9 +260,10 @@ register_dexpected(GenGamma2Distrib, function(d, y, th, k, t) {
 #'   distrib_hess_y_hess.GenGamma2Distrib
 #'
 #' @description
-#' The derivatives of the log-density in the response to order four, and the
-#' mixed derivatives of orders one and two in the response and one and two in
-#' \eqn{(m, d, p)}, each a closed form from its own compiled kernel.
+#' Return the derivatives of the log-density in the response to order four, and
+#' the mixed derivatives of orders one and two in the response and one and two
+#' in \eqn{(m, d, p)}. Each of them is a closed form from its own compiled
+#' kernel.
 #'
 #' @param distrib A `GenGamma2Distrib` object.
 #' @param y A numeric vector of strictly positive observations.
@@ -374,12 +376,12 @@ S7::method(kurtosis, GenGamma2Distrib) <- function(x, theta, ...) {
 #'
 #' @details
 #' The Stacy parametrization of [gengamma1_distrib()] has a scale, a shape and
-#' a power, and none of them is the mean. Since
+#' a power as parameters, and the mean is not among them. Since
 #' \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the scale here is
 #' \deqn{a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},}
 #' and every derivative in \eqn{(m, d, p)} to order five, the expected
 #' information and its derivatives, and the derivatives in the response are
-#' closed forms, each order in its own compiled kernel (see
+#' closed forms, and each order is computed by its own compiled kernel (see
 #' [distrib_gradient.GenGamma2Distrib()]).
 #'
 #' @section The distribution:

@@ -17,10 +17,10 @@ recycled. Both must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -50,9 +50,9 @@ Faa di Bruno on \eqn{s(\phi) = 1/\phi},
 with \eqn{s' = -s^2}, \eqn{s'' = 2s^3}, \eqn{s''' = -6s^4},
 \eqn{s'''' = 24s^5} and \eqn{f_k} the \eqn{k}th derivative of \eqn{\ell} in
 \eqn{s}. \eqn{f_2}, \eqn{f_3} and \eqn{f_4} are polygamma functions of
-\eqn{s}, each computed as a polygamma minus its own leading asymptote, and
-\eqn{f_1} also contains \eqn{\log z - (z - 1)}, so the digits survive at
-large shape.
+\eqn{s}, and each of them is computed as a polygamma minus its own leading
+asymptote. \eqn{f_1} also contains \eqn{\log z - (z - 1)}, so the digits
+survive at large shape.
 
 With \code{expected = TRUE} the expectations are returned, obtained by replacing
 \eqn{z} with 1 and \eqn{\log z} with \eqn{\psi(s) - \log s}. Both routes are
@@ -72,7 +72,7 @@ th <- list(mu = 3, phi = 0.5)
 d4 <- distrib_deriv4(d, y, th)
 names(d4)
 
-# The four components involving mu, written out.
+# The four components involving mu are written out.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(d4$mu_mu_mu_mu, s * (6 - 24 * z) / 3^4)
@@ -91,5 +91,5 @@ all.equal((up - dn) / (2 * eps), d4$mu_mu_phi_phi, tolerance = 1e-4)
 \code{\link[=distrib_deriv3.Gamma1Distrib]{distrib_deriv3.Gamma1Distrib()}} for the order below,
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
 \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}} for the second-order
-expectation these extend.
+expectation that these extend.
 }

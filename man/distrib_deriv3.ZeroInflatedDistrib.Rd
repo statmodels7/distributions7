@@ -23,7 +23,7 @@ each a numeric vector of length \code{length(y)}.
 }
 \description{
 Two regimes, and the observation decides which. At \eqn{y > 0} the
-log-likelihood is \eqn{\log(1-\zeta) + \ell(y;\theta)}, which \strong{separates}:
+log-likelihood is \eqn{\log(1-\zeta) + \ell(y;\theta)}, which separates:
 every mixed component in \eqn{\zeta} and a parent parameter is exactly zero.
 At \eqn{y = 0} it is \eqn{\log L_0} with
 \eqn{L_0 = \zeta + (1-\zeta) f(0;\theta)}, and the derivatives follow from
@@ -31,7 +31,7 @@ the moment-to-cumulant expansion over set partitions,
 \deqn{d^I \log L_0 = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \frac{d^B L_0}{L_0}.}
 
-\eqn{L_0} is \strong{affine} in \eqn{\zeta}, so any block of a partition naming
+\eqn{L_0} is affine in \eqn{\zeta}, so any block of a partition naming
 \eqn{\zeta} twice contributes nothing and the sum is shorter than it looks.
 A whole component may still be non-zero: its partition into singletons
 survives.

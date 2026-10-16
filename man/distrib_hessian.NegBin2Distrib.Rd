@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -50,7 +50,7 @@ accuracy, and a term with a zero coefficient contributes zero.
 The dispersion entry cancels at large \eqn{\theta} for the same reason the
 score does, and the kernel handles it the same way. Here the collapse is
 better than a series: with \eqn{a = \theta}, \eqn{b = \theta + y} and
-\eqn{c = \theta + \mu} the three leading terms combine \strong{exactly},
+\eqn{c = \theta + \mu} the three leading terms combine exactly,
 \deqn{-\dfrac{y}{ab} + \dfrac{\mu}{ac} + \dfrac{y-\mu}{c^2}
       = \dfrac{(y-\mu)^2}{b\,c^2},}
 so what is computed is that quotient plus the remainder

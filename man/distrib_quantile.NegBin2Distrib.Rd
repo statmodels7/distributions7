@@ -32,7 +32,7 @@ Computes the generalized inverse of the distribution function,
       \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
 by calling \code{\link[stats:NegBinomial]{stats::qnbinom()}} at \code{size = theta} and \code{mu = mu}. The support
 is discrete, so the round trip through
-\code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf.NegBin2Distrib()}} does \strong{not} return \code{p}: it returns the mass
+\code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf.NegBin2Distrib()}} does not return \code{p}: it returns the mass
 up to the smallest integer whose cumulative probability reaches \code{p}, which
 overshoots.
 }

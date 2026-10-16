@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -61,10 +61,11 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 g <- distrib_gradient(d, y, th)
 
-# The generalized linear model score: residual over the variance function.
+# The generalized linear model score is the residual over the variance
+# function.
 all.equal(g$mu, (y - 3) / (0.5 * 3^2))
 
-# The dispersion component, written out with the digamma function.
+# The dispersion component is written out with the digamma function.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(g$phi, -s^2 * (log(s) + 1 - digamma(s) + log(z) - z))

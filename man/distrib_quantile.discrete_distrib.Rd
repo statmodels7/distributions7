@@ -28,7 +28,7 @@ and \code{theta}.
 \description{
 The fallback for a discrete family that implements no analytical quantile
 function: the smallest support point \eqn{k} with \eqn{F(k) \ge p}, read off
-the cumulative table that \code{\link[=disc_cum_table]{disc_cum_table()}} builds. It is \strong{exact}. The
+the cumulative table that \code{\link[=disc_cum_table]{disc_cum_table()}} builds. It is exact. The
 distribution function of a discrete variable is a step function, so
 inverting it is a lookup and there is nothing to solve. The probability is
 compared with the running sum after a relative reduction of

@@ -20,21 +20,21 @@ NULL
 #'   `a`, `c`, `x`, `g` and `dg`.
 #'
 #' @return `p` with two components added: `d2g` for \eqn{G''} and `d3g` for
-#'   \eqn{G'''}, each of the length `g` has.
+#'   \eqn{G'''}, and each of them has the same length as `g`.
 #'
 #' @section Notation:
 #' \eqn{x = a/\sqrt c}, \eqn{M} the Mills ratio and
 #' \eqn{G = \mathrm{d}\log M/\mathrm{d}x}.
 #'
 #' @seealso [enet_distrib()] for the family and
-#'   [distrib_deriv3.EnetDistrib()] for the order these serve.
+#'   [distrib_deriv3.EnetDistrib()] for the order that these serve.
 #'
 #' @examples
 #' p <- distributions7:::.enet_g_higher(
 #'   distributions7:::.enet_parts(list(mu = 0, lambda = 2, alpha = 0.5)))
 #' c(x = p$x, G = p$g, dG = p$dg, d2G = p$d2g, d3G = p$d3g)
 #'
-#' # G'' against a central difference of G'.
+#' # G'' is compared with a central difference of G'.
 #' gp <- function(x) {
 #'   distributions7:::.enet_parts(list(mu = 0, lambda = 2 * x^2,
 #'                                     alpha = 0.5))$dg
@@ -77,18 +77,19 @@ NULL
 #' # The kink
 #'
 #' The location is not differentiable at \eqn{z = 0}, as in the Laplace, and
-#' the sign function is what the first derivative carries there. Nothing at
-#' order four touches \eqn{\mu} at all.
+#' the first derivative carries the sign function there. Every derivative of
+#' order four is free of \eqn{\mu}.
 #'
 #' @param y A numeric vector of observations.
 #' @param p The value of `.enet_parts()`, extended by [.enet_g_higher()] when
 #'   `order` is 3 or 4.
-#' @param order A single integer, 1 to 4: the highest derivative order wanted.
+#' @param order A single integer, 1 to 4: the highest derivative order to
+#'   compute.
 #'
 #' @return A list of length `order`; element `k` is a named list of the
 #'   order-`k` derivatives, keyed as
-#'   [`deriv_names(c("mu", "a", "c"), k)`][deriv_names] names them, each entry
-#'   a numeric vector of the length of `y`.
+#'   [`deriv_names(c("mu", "a", "c"), k)`][deriv_names] names them, and each
+#'   entry is a numeric vector of the length of `y`.
 #'
 #' @section Notation:
 #' \eqn{a = \lambda\alpha} is the Laplace rate, \eqn{c = \lambda(1-\alpha)} the
@@ -106,11 +107,11 @@ NULL
 #' out <- distributions7:::.enet_ac_derivs(y, p, 3L)
 #' vapply(out, length, 0L)          # 3, 6 and 10 components
 #'
-#' # The one third-order component that carries data.
+#' # This is the one third-order component that carries data.
 #' out[[3]][["mu_mu_c"]]
 #'
-#' # Everything else at order three is free of y, the data term being
-#' # quadratic in z and linear in each rate.
+#' # Every other component at order three is free of y, because the data term
+#' # is quadratic in z and linear in each rate.
 #' vapply(out[[3]][setdiff(names(out[[3]]), "mu_mu_c")],
 #'        function(v) diff(range(v)), 0)
 #'
@@ -156,16 +157,16 @@ NULL
 #' @description
 #' Returns the partial derivatives of \eqn{(\mu, a, c)} as functions of
 #' \eqn{(\mu, \lambda, \alpha)}, with \eqn{a = \lambda\alpha} and
-#' \eqn{c = \lambda(1-\alpha)}, in the keyed-table form [chain_assemble()]
+#' \eqn{c = \lambda(1-\alpha)}, in the keyed-table form that [chain_assemble()]
 #' consumes.
 #'
 #' @details
 #' The map is bilinear, so its second partials are the constants \eqn{\pm 1}
 #' and its third and higher vanish, so the table leaves them out.
 #'
-#' Those second partials are what carries a low-order derivative in the rates
-#' up to a high-order one in the parameters. That is why the third derivatives
-#' in \eqn{(\lambda, \alpha)} still depend on the data although the third
+#' Those second partials carry a low-order derivative in the rates up to a
+#' high-order one in the parameters. Because of this, the third derivatives
+#' in \eqn{(\lambda, \alpha)} still depend on the data, although the third
 #' derivatives in the rates do not.
 #'
 #' @param p The value of `.enet_parts()`, read for `al` and `lam`.
@@ -220,7 +221,7 @@ NULL
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `lambda` and `alpha`, read
 #'   positionally by `.enet_parts()`.
-#' @param order A single integer, 1 to 4: the derivative order wanted.
+#' @param order A single integer, 1 to 4: the derivative order to compute.
 #'
 #' @return A named list of the distinct order-`order` components in
 #'   \eqn{(\mu, \lambda, \alpha)}, named as [deriv_names()] names them, each a
@@ -240,7 +241,7 @@ NULL
 #' a1 <- distributions7:::.enet_chain(y, th, 1L)
 #' max(abs(unlist(a1[names(g)]) - unlist(g)))
 #'
-#' # And at order two, the hand-written Hessian.
+#' # At order two it reproduces the hand-written Hessian.
 #' h <- distrib_hessian(d, y, th)
 #' a2 <- distributions7:::.enet_chain(y, th, 2L)
 #' max(abs(unlist(a2[names(h)]) - unlist(h)))
@@ -310,7 +311,8 @@ NULL
 #' d3 <- distrib_deriv3(d, y, th)
 #' names(d3)
 #'
-#' # Against a central difference of the analytic Hessian.
+#' # The component mu_mu_lambda is compared with a central difference of the
+#' # analytic Hessian.
 #' eps <- 1e-5
 #' rbind(analytic = d3$mu_mu_lambda,
 #'       numeric = (distrib_hessian(d, y, list(mu = 0, lambda = 2 + eps,
@@ -322,8 +324,8 @@ NULL
 #' # the location alone is exactly zero.
 #' d3$mu_mu_mu
 #'
-#' # The pure-lambda component against one stencil on the log-density, a
-#' # route that shares no algebra with the assembly.
+#' # The pure-lambda component is compared with one stencil on the
+#' # log-density, a route that shares no algebra with the assembly.
 #' ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, lambda = v,
 #'                                              alpha = 0.5), log = TRUE))
 #' c(ours = sum(d3$lambda_lambda_lambda),
@@ -346,9 +348,9 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 #' @description
 #' Computes the fifteen fourth derivatives of the log-density in closed form,
 #' in compiled code (`enet_deriv4_cpp()`), in the notation of
-#' [distrib_deriv3.EnetDistrib()]. In the rates \eqn{(\mu, a, c)} no fourth
-#' derivative involves \eqn{\mu}, the data term being quadratic in \eqn{z} and
-#' linear in each rate. After the bilinear map every component naming
+#' [distrib_deriv3.EnetDistrib()]. In the rates \eqn{(\mu, a, c)} every fourth
+#' derivative is free of \eqn{\mu}, because the data term is quadratic in
+#' \eqn{z} and linear in each rate. After the bilinear map every component naming
 #' \eqn{\mu} more than twice is exactly zero, the only nonzero component with
 #' \eqn{\mu} is `mu_mu_lambda_alpha`, the constant 1, and the others are
 #' derivatives of the normalizing constant carried through the
@@ -390,7 +392,8 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 #' d4$mu_mu_mu_mu
 #' d4$mu_mu_lambda_alpha
 #'
-#' # Against a central difference of the third order.
+#' # The component mu_mu_lambda_lambda is compared with a central difference
+#' # of the third derivative.
 #' eps <- 1e-5
 #' rbind(analytic = d4$mu_mu_lambda_lambda,
 #'       numeric = (distrib_deriv3(d, y, list(mu = 0, lambda = 2 + eps,
@@ -399,7 +402,8 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 #'                                            alpha = 0.5))$mu_mu_lambda) /
 #'                 (2 * eps))
 #'
-#' # The pure-lambda component against one stencil on the log-density.
+#' # The pure-lambda component is compared with one stencil on the
+#' # log-density.
 #' ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, lambda = v,
 #'                                              alpha = 0.5), log = TRUE))
 #' c(ours = sum(d4$lambda_lambda_lambda_lambda),

@@ -21,7 +21,7 @@ ordered as \code{distrib@params}.
 \description{
 Returns the sample mean and the sample covariance, carried onto the
 distribution's matrix parametrization. For an unstructured covariance those
-\strong{are} the maximum likelihood estimate, so the fit begins at the answer
+are the maximum likelihood estimate, so the fit begins at the answer
 and confirms it in one step. For a structured one the matrix is carried
 onto the structure exactly where the structure can represent it, and
 otherwise approximated by least squares on the entries (see
@@ -31,7 +31,7 @@ One starting value is returned for any value of \code{n_start}, because the
 first point is already the estimate.
 }
 \details{
-Where the object parametrizes the \strong{precision}, the sample covariance is
+Where the object parametrizes the precision, the sample covariance is
 inverted first: the matrix the structure has to represent is
 \eqn{\hat\Sigma^{-1}}, not \eqn{\hat\Sigma}.
 

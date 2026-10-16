@@ -5,18 +5,18 @@ NULL
 #' @name BinomialDistrib
 #'
 #' @description
-#' The S7 class of the binomial family: the number of successes in `size`
-#' independent trials, each succeeding with probability \eqn{\mu \in (0, 1)}.
-#' It inherits from `discrete_distrib`, so expectations over its support are
-#' sums and no derivative with respect to the response is defined.
+#' This is the S7 class of the binomial family: the number of successes in
+#' `size` independent trials, where each trial succeeds with probability
+#' \eqn{\mu \in (0, 1)}. It inherits from `discrete_distrib`, so expectations
+#' over its support are sums and the class defines no derivative with respect to
+#' the response.
 #'
 #' The class adds one property to the parent's, `size`, and that property is
-#' the reason it is documented separately from [bernoulli_distrib()]:
-#' `size` is a constant of the object, not a parameter. It is not
-#' estimated, it carries
-#' no link and no bound, and it does not appear in `params`. It may be a single
-#' number or one value per observation, which is how grouped binary data with
-#' unequal group sizes is described.
+#' the reason that the class is documented separately from [bernoulli_distrib()]:
+#' `size` is a constant of the object, not a parameter. It is not estimated,
+#' it carries no link and no bound, and it does not appear in `params`. It may
+#' be a single number or one value per observation, which describes grouped
+#' binary data with unequal group sizes.
 #'
 #' The default link is the logit, the canonical link here: on its scale the
 #' observed and the expected information coincide.
@@ -29,8 +29,8 @@ NULL
 #' @inheritParams distrib
 #' @param size A numeric vector, the number of trials. A single value applies
 #'   to every observation; a vector of the length of the response gives one
-#'   count of trials per observation. Not a parameter: it is fixed data, and
-#'   the object stores it in the `size` property.
+#'   count of trials per observation. It is fixed data and not a parameter,
+#'   and the object stores it in the `size` property.
 #'
 #' @return An S7 object of class `BinomialDistrib`, inheriting from
 #'   `discrete_distrib` and from `distrib`. Its properties are the parent's
@@ -39,7 +39,7 @@ NULL
 #'   `size`. For an object built by [binomial_distrib()] they hold
 #'   `"binomial"`, `"univariate"`, `c(0, max(size))`, `"mu"`,
 #'   `c(mu = "probability")`, `1`, the domain \eqn{(0, 1)}, the one link, and
-#'   the `size` given.
+#'   the supplied `size`.
 #'
 #' @seealso [binomial_distrib()] to build one;
 #'   [bernoulli_distrib()], the case `size = 1`;
@@ -48,7 +48,8 @@ NULL
 #'   small probability.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.BinomialDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.BinomialDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.BinomialDistrib] and
@@ -104,7 +105,7 @@ BinomialDistrib <- S7::new_class("BinomialDistrib",
 #' Computes the binomial probability mass
 #' \deqn{P(Y = y; \mu) = \binom{n}{y}\mu^{y}(1-\mu)^{n-y}, \qquad y = 0, 1, \dots, n,}
 #' by calling [stats::dbinom()] at `size = distrib@size`. The number of trials
-#' comes from the object rather than from `theta`, `size` being fixed data and
+#' comes from the object and not from `theta`, because `size` is fixed data and
 #' not a parameter.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
@@ -136,8 +137,8 @@ BinomialDistrib <- S7::new_class("BinomialDistrib",
 #' # A probability mass: it sums to one over 0:n.
 #' sum(distrib_pdf(d, 0:10, list(mu = 0.3)))
 #'
-#' # size may be one value per observation, which is what grouped binary data
-#' # with unequal group sizes needs.
+#' # size may be one value per observation, as grouped binary data with
+#' # unequal group sizes require.
 #' g <- binomial_distrib(size = c(5, 10, 20))
 #' distrib_pdf(g, c(1, 4, 8), list(mu = 0.3))
 S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
@@ -186,7 +187,7 @@ S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FA
 #' all.equal(distrib_cdf(d, c(0, 4, 10), th),
 #'           pbinom(c(0, 4, 10), size = 10, prob = 0.3))
 #'
-#' # A step function reaching one at size.
+#' # The distribution function is a step function that reaches one at size.
 #' distrib_cdf(d, c(3, 3.5, 3.9, 10, 20), th)
 #'
 #' # The jump at an integer is exactly the mass there.
@@ -233,10 +234,10 @@ S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.ta
 #' d <- binomial_distrib(size = 10)
 #' th <- list(mu = 0.3)
 #'
-#' # Integers, bounded by size.
+#' # The quantiles are integers bounded by size.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975, 1), th)
 #'
-#' # The round trip overshoots, the support being discrete.
+#' # The round trip overshoots, because the support is discrete.
 #' p <- c(0.025, 0.5, 0.975)
 #' rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
@@ -286,7 +287,7 @@ S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, low
 #' c(mean = mean(z), n_p = 10 * 0.3,
 #'   var = var(z), n_p_q = 10 * 0.3 * 0.7)
 #'
-#' # Unequal group sizes, one per draw.
+#' # Unequal group sizes give one size per draw.
 #' set.seed(5)
 #' g <- binomial_distrib(size = c(5, 10, 20, 50))
 #' rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))
@@ -343,7 +344,7 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta, ...) {
 #' y <- c(0, 4, 10)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' all.equal(distrib_gradient(d, y, th)$mu, (y - 10 * 0.3) / (0.3 * 0.7))
 #'
 #' # On the canonical logit link the score is the raw residual.
@@ -366,7 +367,7 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' probability, one value per observation, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.}
 #' It is negative for every admissible \eqn{\mu} and depends on the data
-#' through \eqn{y} alone. Each term is formed by dividing its coefficient by
+#' only through \eqn{y}. Each term is formed by dividing its coefficient by
 #' the base once per power, and a term with a zero coefficient contributes
 #' zero, so at \eqn{y = 0} the value is \eqn{-n/(1-\mu)^2} however small
 #' \eqn{\mu} is.
@@ -409,7 +410,7 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' y <- c(0, 4, 10)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' all.equal(distrib_hessian(d, y, th)$mu_mu,
 #'           -y / 0.3^2 - (10 - y) / 0.7^2)
 #'
@@ -443,9 +444,9 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' On the link scale with the default logit the value is
 #' \eqn{-n\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
 #' logit is the canonical link, so iteratively reweighted least squares is
-#' Fisher scoring and Newton's method at once. The observed value is composed
-#' by the generic and loses relative accuracy where \eqn{|\eta|} is large
-#' (see [distrib_hessian.BinomialDistrib()]); this value does not.
+#' Fisher scoring and Newton's method at once. The generic composes the
+#' observed value, which loses relative accuracy where \eqn{|\eta|} is large
+#' (see [distrib_hessian.BinomialDistrib()]); the value returned here does not.
 #'
 #' Because the value does not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -477,15 +478,15 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
-#' @seealso [distrib_hessian.BinomialDistrib()] for the observed quantity this
-#'   is the expectation of, [fisher_scoring()], which inverts it, and
+#' @seealso [distrib_hessian.BinomialDistrib()] for the observed quantity whose
+#'   expectation this is, [fisher_scoring()], which inverts it, and
 #'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- binomial_distrib(size = 10)
 #' th <- list(mu = 0.3)
 #'
-#' # A single number, -n divided by the Bernoulli variance.
+#' # The result is a single number, -n divided by the Bernoulli variance.
 #' unique(distrib_expected_hessian(d, c(0, 4, 10), th)$mu_mu)
 #' -10 / (0.3 * 0.7)
 #'
@@ -512,8 +513,8 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(n-y)}{(1-\mu)^3}.}
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = n\mu}, which gives \eqn{2n/\mu^2 - 2n/(1-\mu)^2}. Both
-#' routes are closed form, so no quadrature is run and `approx` and `nsim` are
-#' ignored.
+#' routes are closed form, so the method runs no quadrature and ignores
+#' `approx` and `nsim`.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
@@ -549,11 +550,12 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' y <- c(0, 4, 10)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' all.equal(distrib_deriv3(d, y, th)$mu_mu_mu,
 #'           2 * y / 0.3^3 - 2 * (10 - y) / 0.7^3)
 #'
-#' # The expected value, and zero at mu = 1/2 by symmetry.
+#' # The expected value is checked against its closed form, and it is zero at
+#' # mu = 1/2 by symmetry.
 #' unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 #' 2 * 10 / 0.3^2 - 2 * 10 / 0.7^2
 #' distrib_deriv3(d, 0, list(mu = 0.5), expected = TRUE)$mu_mu_mu
@@ -613,11 +615,11 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #' y <- c(0, 4, 10)
 #' th <- list(mu = 0.3)
 #'
-#' # The closed form, written out; negative at every admissible mu.
+#' # The closed form is written out, and it is negative at every admissible mu.
 #' all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 #'           -6 * y / 0.3^4 - 6 * (10 - y) / 0.7^4)
 #'
-#' # The expected value.
+#' # The expected value is checked against its closed form.
 #' unique(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_mu_mu)
 #' -6 * 10 / 0.3^3 - 6 * 10 / 0.7^3
 #'
@@ -666,14 +668,15 @@ binomial_recycle <- function(y, mu, size) {
 #'
 #' @description
 #' Builds the distribution object for the binomial family: the number of
-#' successes in `size` independent trials, each succeeding with probability
-#' \eqn{\mu \in (0, 1)}. The returned object carries closed-form derivatives of
-#' the log-mass to fourth order, observed and expected, and closed-form moments.
+#' successes in `size` independent trials, where each trial succeeds with
+#' probability \eqn{\mu \in (0, 1)}. The returned object carries closed-form
+#' derivatives of the log-mass to fourth order, observed and expected, and
+#' closed-form moments.
 #'
 #' `size` is fixed data, not a parameter. It is carried on the object, it
 #' is not estimated, it has no link and no bound, and it does not appear in
-#' `params`. Giving it one value per observation is how grouped binary data
-#' with unequal group sizes is described.
+#' `params`. It may be given one value per observation, which describes
+#' grouped binary data with unequal group sizes.
 #'
 #' The default link is the logit, the canonical link here, so the observed and
 #' the expected information coincide on its scale.
@@ -707,8 +710,8 @@ binomial_recycle <- function(y, mu, size) {
 #' \eqn{1/\sqrt{n}} and the excess kurtosis like \eqn{1/n}, as the central
 #' limit theorem requires.
 #'
-#' As \eqn{n \to \infty} with \eqn{n\mu} held, the family tends to a Poisson of
-#' that mean; [poisson_distrib()] is the limit and is the family to use when
+#' As \eqn{n \to \infty} while \eqn{n\mu} stays fixed, the family tends to a
+#' Poisson of that mean; [poisson_distrib()] is the limit and is the family to use when
 #' the number of trials is large and unrecorded.
 #'
 #' # size is data
@@ -725,7 +728,7 @@ binomial_recycle <- function(y, mu, size) {
 #' parameter, so the logit is canonical and on its scale
 #' \deqn{\dfrac{\partial \ell}{\partial \eta} = y - n\mu, \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \eta^2} = -n\mu(1-\mu),}
-#' the second carrying no data. Under a probit or a complementary log-log link
+#' where the second derivative does not depend on the data. Under a probit or a complementary log-log link
 #' the observed and expected information differ.
 #'
 #' # Estimation
@@ -733,7 +736,8 @@ binomial_recycle <- function(y, mu, size) {
 #' The maximum likelihood estimate is the pooled proportion,
 #' \eqn{\hat\mu = \sum y_i / \sum n_i}, in closed form. If the observed counts
 #' are more variable than \eqn{n\mu(1-\mu)} allows, the binomial is the wrong
-#' family and [betabinom1_distrib()] adds the dispersion parameter it lacks.
+#' family and [betabinom1_distrib()] adds the dispersion parameter that the
+#' binomial lacks.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation, \eqn{n} the number of trials
@@ -784,7 +788,7 @@ binomial_recycle <- function(y, mu, size) {
 #'                              0:5, list(mu = 3 / 1000)),
 #'       poisson = distrib_pdf(poisson_distrib(), 0:5, list(mu = 3)))
 #'
-#' # Grouped data with unequal group sizes: one size per observation.
+#' # Grouped data with unequal group sizes take one size per observation.
 #' set.seed(5)
 #' g <- binomial_distrib(size = c(5, 10, 20, 50))
 #' rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))

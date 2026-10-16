@@ -17,10 +17,10 @@ recycled. \code{sigma} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -28,7 +28,7 @@ and the expected values.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
@@ -43,7 +43,8 @@ respect to \eqn{\mu} and \eqn{\sigma}, in closed form. With
 polynomial in \eqn{z} and in \eqn{z^j w} divided by a power of \eqn{\sigma}.
 
 With \code{expected = TRUE} the expectations are returned, also in closed form.
-They rest on \eqn{w} being standard exponential under the model, which makes
+They rest on the fact that \eqn{w} is standard exponential under the model,
+which makes
 \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)} and
 \eqn{\mathbb{E}[z] = \gamma}: every expectation of the family is a
 derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma
@@ -65,7 +66,7 @@ d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
 # The pure location component is -w/sigma^3, which is the curvature in mu
-# divided by sigma. Shown at a scale where the two differ.
+# divided by sigma. The comparison uses a scale at which the two differ.
 th2 <- list(mu = 0, sigma = 2)
 all.equal(distrib_deriv3(d, y, th2)$mu_mu_mu,
           distrib_hessian(d, y, th2)$mu_mu / 2)

@@ -7,7 +7,7 @@
 \item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Every real value is in the
-support, so no value is rejected.}
+support, so every value is accepted.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is

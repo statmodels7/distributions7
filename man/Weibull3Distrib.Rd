@@ -42,16 +42,17 @@ properties hold \code{"weibull3"}, \code{"univariate"}, \code{c(0, Inf)},
 \code{c("mean", "sigma")}, the interpretations \code{c(mean = "mean", sigma = "shape")}, \code{2} and the domains \eqn{(0, \infty)} for both.
 }
 \description{
-The S7 class of the Weibull family parametrized by its mean \eqn{m} and its
-shape \eqn{\sigma}. It inherits from \code{continuous_distrib}. Build one with
-\code{\link[=weibull3_distrib]{weibull3_distrib()}}; this page documents the raw S7 constructor;
-the validator of \code{distrib} checks that
-the properties are consistent (the parameter count, a bound and a link
-for every parameter, ordered support bounds).
+This is the S7 class of the Weibull family parametrized by its mean \eqn{m}
+and its shape \eqn{\sigma}. It inherits from \code{continuous_distrib}. Build one
+with \code{\link[=weibull3_distrib]{weibull3_distrib()}}; this page documents the raw S7 constructor; the
+validator of \code{distrib} checks that the properties are consistent (the
+parameter count, a bound and a link for every parameter, ordered support
+bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Weibull3Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Weibull3Distrib]{distrib_cdf()}},

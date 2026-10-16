@@ -34,14 +34,14 @@ below \code{\link[=bb_direct_cut]{bb_direct_cut()}}.
 }
 \details{
 The shape parametrization \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} carries closed derivatives
-at every order, each a difference of polygammas, and this parametrization is
-that one composed with a map. \code{\link[=chain_derivatives]{chain_derivatives()}} runs the Faa di Bruno
+at every order, and each of them is a difference of polygammas. This
+parametrization is that one composed with a map. \code{\link[=chain_derivatives]{chain_derivatives()}} runs the Faa di Bruno
 partition sum over the map, with the map's own partials supplied by
 \code{\link[=md_betabinom1]{md_betabinom1()}} as a keyed table; a key absent from the table is an exact
 zero. Both shapes are linear in \eqn{\mu} at fixed \eqn{\sigma}, so every
 partial carrying two or more \eqn{\mu} vanishes and the sum is short.
 
-The construction is the one \code{\link[=reparametrize]{reparametrize()}} runs, used here by a family
+The construction is the one that \code{\link[=reparametrize]{reparametrize()}} runs, used here by a family
 whose first two orders are written out by hand in a compiled kernel. A
 fresh \code{BetaBinom2Distrib} object is built on each call, which costs one S7
 construction per evaluation.

@@ -14,7 +14,7 @@ vector of length 1 or of the length of \code{y}. \code{rho} must lie in
 \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
 model is returned in place of the value at the data, computed numerically.
@@ -30,7 +30,7 @@ or \code{"opg"}. Read only when \code{expected = TRUE}.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_rho},
@@ -39,7 +39,7 @@ A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_rho},
 \description{
 Computes the four distinct third derivatives of the log-density in
 \eqn{\mu} and \eqn{\rho}, in closed form. Every component carrying at least
-one \eqn{\mu} collapses to a \strong{single term}
+one \eqn{\mu} collapses to a single term
 \eqn{D_a \kappa^{(b)}(\rho)}, with \eqn{D_a} the \eqn{a}-th
 \eqn{\mu}-derivative of \eqn{\cos(y-\mu)} and \eqn{\kappa^{(b)}} the
 \eqn{b}-th derivative of \eqn{A^{-1}}: the concentration parametrization's

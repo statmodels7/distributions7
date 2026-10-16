@@ -58,7 +58,7 @@ NULL
 #'       \partial^{b-j}(1/\xi),}
 #' produces terms of size \eqn{\xi^{-(b+1)}} that cancel against each other, so
 #' near zero the form loses every digit. Below a threshold it is replaced by the
-#' series the cancellation leaves,
+#' series that the cancellation leaves,
 #' \deqn{W = \sum_{k \ge 0} \frac{(-1)^k \xi^k z^{k+1}}{k+1},}
 #' differentiated term by term.
 #'
@@ -68,12 +68,12 @@ NULL
 #' \eqn{(\xi z)^{-b}} and the accuracy is \eqn{\varepsilon(\xi z)^{-b}}, which
 #' at order four reaches 0.3 by \eqn{\xi z = 1.7\times10^{-4}}. The series
 #' needs \eqn{\lvert\xi z\rvert < 1} to converge and is cut at 0.2, where
-#' forty terms leave \eqn{10^{-28}} while the Leibniz form still carries \eqn{10^{-13}}, so
-#' the two overlap.
+#' forty terms leave \eqn{10^{-28}} while the Leibniz form still carries
+#' \eqn{10^{-13}}, so the two overlap.
 #'
 #' # What the series branch evaluates
 #'
-#' The two elementwise powers the sum appears to need are algebraically one:
+#' The two elementwise powers that the sum appears to need are algebraically one:
 #' with \eqn{u = \xi z}, \eqn{\xi^{k-b}z^{k+1} = u^{k-b}z^{b+1}}, so
 #' \eqn{z^{b+1}/\sigma^a} leaves the sum and what remains is a polynomial in
 #' \eqn{u} whose coefficients are scalar in \eqn{k}. `gpd_poly_cpp()` evaluates
@@ -99,8 +99,8 @@ NULL
 #'   three at order 2, four at order 3 and five at order 4. Each has the
 #'   recycled length of the inputs.
 #'
-#' @seealso [distrib_deriv3.GPDDistrib()] for the compiled kernels this
-#'   assembly is checked against; [fdb2()] for the two-variable composition
+#' @seealso [distrib_deriv3.GPDDistrib()] for the compiled kernels against
+#'   which this assembly is checked; [fdb2()] for the two-variable composition
 #'   template; and
 #'   [gpd_distrib()] for the family.
 #' @keywords internal
@@ -201,8 +201,8 @@ gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
 #'
 #' @description
 #' Return the third, fourth and fifth derivatives of the log-density in
-#' \eqn{(\sigma, \xi)}, and for orders three and four their expectations, each
-#' from its own compiled kernel.
+#' \eqn{(\sigma, \xi)}, and for orders three and four their expectations. Each
+#' of these comes from its own compiled kernel.
 #'
 #' @details
 #' With \eqn{z = y/\sigma}, \eqn{t = 1 + \xi z} and \eqn{u = \xi z}, the
@@ -216,7 +216,7 @@ gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
 #' \deqn{\phi^{(j)}(u) = \frac{(-1)^j j!}{u^{j+1}} \sum_{i > j}
 #'   \frac{v^i}{i}, \qquad v = \frac{u}{1+u},}
 #' summed as a series in \eqn{v} for \eqn{|v| \le 3/4} and as \eqn{\log t}
-#' minus the first \eqn{j} terms elsewhere, so that no form divides by
+#' minus the first \eqn{j} terms elsewhere, so that the forms do not divide by
 #' \eqn{\xi} and \eqn{\xi = 0} is an ordinary point. \eqn{t} is formed from
 #' the exact product \eqn{\xi y}, which keeps its relative accuracy near the
 #' upper end of the support when \eqn{\xi < 0}.
@@ -269,7 +269,7 @@ gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
 #' # The shape zero is an ordinary point.
 #' distrib_deriv4(d, y, list(sigma = 1.5, xi = 0))$xi_xi_xi_xi
 #'
-#' # The expected third derivatives, NA where they do not exist.
+#' # The expected third derivatives are NA where they do not exist.
 #' distrib_deriv3(d, 1, list(sigma = 1.5, xi = c(0.2, -0.4)),
 #'                expected = TRUE)$xi_xi_xi
 S7::method(distrib_deriv3, GPDDistrib) <- function(distrib, y, theta,
@@ -315,10 +315,10 @@ S7::method(distrib_deriv5, GPDDistrib) <- function(distrib, y, theta,
 #' @description
 #' Return the derivatives of the log-density in the response to order four,
 #' and the mixed derivatives of orders one and two in the response and one and
-#' two in \eqn{(\sigma, \xi)}, each a closed form from its own compiled kernel.
-#' The derivative in the response is
+#' two in \eqn{(\sigma, \xi)}. Each of these is a closed form from its own
+#' compiled kernel. The derivative in the response is
 #' \eqn{\ell^{(y)} = -(1 + \xi)/(\sigma t)}, with \eqn{t = 1 + \xi y/\sigma},
-#' so none of these forms divides by \eqn{\xi}; \eqn{t} is formed as
+#' so these forms do not divide by \eqn{\xi}; \eqn{t} is formed as
 #' [distrib_deriv3.GPDDistrib()] describes. Outside the support every
 #' component is `NaN`.
 #'
@@ -387,8 +387,8 @@ S7::method(distrib_hess_y_hess, GPDDistrib) <- function(
 #'
 #' @description
 #' Return the derivatives in \eqn{(\sigma, \xi)} of the distribution function
-#' or of the survival function, or of their logarithms, at orders one to four,
-#' each from its own compiled kernel.
+#' or of the survival function, or of their logarithms, at orders one to four.
+#' Each of these comes from its own compiled kernel.
 #'
 #' @details
 #' The survival function is \eqn{S = e^{-W}} with

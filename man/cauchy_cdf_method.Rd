@@ -24,9 +24,9 @@ one order. With \eqn{Y = q - \mu + i\sigma},
 \eqn{n} with \eqn{j} derivatives in \eqn{\mu} and \eqn{k} in
 \eqn{\sigma} is one term,
 \deqn{-\tfrac{1}{\pi}(-1)^{j+n-1}(n-1)!\,\mathrm{Im}(i^k Y^{-n}),}
-computed by a compiled kernel without squaring the residual. The log scale
-divides by the probability of the requested tail, which \code{\link[stats:Cauchy]{stats::pcauchy()}}
-returns for either tail.
+computed by a compiled kernel without squaring the residual. On the log
+scale the method divides by the probability of the requested tail, which
+\code{\link[stats:Cauchy]{stats::pcauchy()}} returns for either tail.
 }
 \examples{
 d <- cauchy_distrib()

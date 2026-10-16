@@ -23,7 +23,7 @@ variance \eqn{\mu + \sigma\mu^2}, so setting both equal to the sample gives
 directly, with no root to find.
 
 Both are floored: \eqn{\mu} just above zero, and \eqn{\sigma} at
-\eqn{10^{-3}} when the sample is \strong{underdispersed} and the inversion
+\eqn{10^{-3}} when the sample is underdispersed and the inversion
 returns a negative number. A Poisson sample is the case that produces it,
 and \eqn{10^{-3}} is where this family is nearly Poisson, which is the right
 place to start from there.

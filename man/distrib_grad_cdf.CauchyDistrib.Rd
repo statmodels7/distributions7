@@ -11,12 +11,13 @@
 \item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
 a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
-default.}
+\item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+lower tail and \code{FALSE} the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical,
-\code{TRUE} by default. The Cauchy's tails are heavy, so the probability
-underflows far later here than for a Gaussian.}
+\item{log}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+derivatives of the log probability and \code{FALSE} those of the probability.
+The Cauchy's tails are heavy, so the probability underflows far later here
+than for a Gaussian.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{sigma}, each the

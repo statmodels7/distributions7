@@ -29,8 +29,8 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 Computes the Bernoulli probability mass
 \deqn{P(Y = y; \mu) = \mu^{y}(1-\mu)^{1-y}, \qquad y \in \{0, 1\},}
 by calling \code{\link[stats:Binomial]{stats::dbinom()}} at \code{size = 1}. The \code{pdf} in the generic's name
-is the density with respect to counting measure, so what this returns is a
-probability.
+is the density with respect to counting measure, so the value that the
+method returns is a probability.
 }
 \examples{
 d <- bernoulli_distrib()

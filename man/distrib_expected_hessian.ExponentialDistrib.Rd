@@ -12,10 +12,10 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -43,9 +43,9 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-\strong{observed information} under the model. The exponential is a regular
+observed information under the model. The exponential is a regular
 family, so the second Bartlett identity holds and this equals the variance
 of the score.
 }
@@ -54,7 +54,7 @@ of the score.
 d <- exponential_distrib()
 th <- list(mu = 2)
 
-# A single number, -1/mu^2.
+# The result is a single number, -1/mu^2.
 unique(distrib_expected_hessian(d, c(0.3, 1.1, 4.0), th)$mu_mu)
 -1 / 2^2
 
@@ -64,12 +64,12 @@ z <- distrib_rng(d, 2e5, th)
 c(observed = mean(distrib_hessian(d, z, th)$mu_mu),
   expected = distrib_expected_hessian(d, 0, th)$mu_mu)
 
-# It is the variance of the score, this family being regular.
+# It is the variance of the score, because this family is regular.
 c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 }
 \seealso{
 \code{\link[=distrib_hessian.ExponentialDistrib]{distrib_hessian.ExponentialDistrib()}} for the observed quantity
-this is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+of which this is the expectation, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

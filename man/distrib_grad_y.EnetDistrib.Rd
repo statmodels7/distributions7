@@ -19,10 +19,10 @@ A numeric vector of the length of the recycled inputs.
 \description{
 Computes \eqn{\partial\ell/\partial y = -a\,\mathrm{sgn}(y-\mu) - c(y-\mu)},
 with \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}. It is minus
-the derivative in \eqn{\mu}, the response and the location entering only
-through their difference.
+the derivative in \eqn{\mu}, because the response and the location enter
+only through their difference.
 
-It is \strong{undefined at the location}, where the sign jumps. \code{sign(0)} is 0 in
+It is undefined at the location, where the sign jumps. \code{sign(0)} is 0 in
 R, so the value returned there is \eqn{-c(y-\mu) = 0}, one point of the
 subdifferential.
 
@@ -45,7 +45,8 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 # It is minus the score in the location, exactly.
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 
-# Against a central difference of the log-density, away from the kink.
+# The analytic derivative is compared with a central difference of the
+# log-density, away from the kink.
 eps <- 1e-6
 rbind(analytic = distrib_grad_y(d, y, th),
       numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -

@@ -42,7 +42,7 @@ that observation is dropped. For a smooth log-likelihood nothing is ever
 dropped, so the check keeps its full strength: a gradient made 5\\% wrong is
 still caught.
 
-The two estimates are compared \strong{relative to their own magnitude} rather
+The two estimates are compared relative to their own magnitude rather
 than against a denominator floored at one: near a kink both are tiny yet
 differ by a factor of two, which a floor of one would hide. If no
 observation survives, all are kept, because a systematic disagreement is a

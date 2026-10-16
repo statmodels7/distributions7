@@ -31,10 +31,9 @@ log-density to fourth order, observed and expected, in the parameters and in
 the response, and closed-form moments. The fifth order and
 \code{\link[=distrib_cross3_y]{distrib_cross3_y()}} come from the numerical fallbacks of the base class.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. Both default to the
-logarithm,
-both parameters being positive.
+logarithm, because both parameters are positive.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (0, \infty)} is

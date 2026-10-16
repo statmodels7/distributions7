@@ -44,12 +44,12 @@ interpretations \code{c(mu = "location", sigma = "standard deviation", nu = "sha
 \eqn{(0, \infty)}, \eqn{(0, \infty)}.
 }
 \description{
-The S7 class of the pseudo-Huber family parametrized by its location
-\eqn{\mu}, its standard deviation \eqn{\sigma} and its shape \eqn{\nu}. It
-is the family of \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} with the scale \eqn{\sigma_1} of
-that family replaced by \eqn{\sigma = \sigma_1 \sqrt{R(\nu)}}, where
-\eqn{R(\nu) = \sqrt{\nu}\, K_2(\sqrt{\nu}) / K_1(\sqrt{\nu})}. It inherits
-from \code{continuous_distrib}.
+This is the S7 class of the pseudo-Huber family parametrized by its location
+\eqn{\mu}, its standard deviation \eqn{\sigma} and its shape \eqn{\nu}. It is
+the family of \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} with the scale \eqn{\sigma_1} of that
+family replaced by \eqn{\sigma = \sigma_1 \sqrt{R(\nu)}}, where \eqn{R(\nu) =
+\sqrt{\nu}\, K_2(\sqrt{\nu}) / K_1(\sqrt{\nu})}. It inherits from
+\code{continuous_distrib}.
 
 Build one with \code{\link[=pseudohuber2_distrib]{pseudohuber2_distrib()}}, which supplies the three link
 functions and fills the properties in. This page documents the raw S7
@@ -58,7 +58,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.PseudoHuber2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.PseudoHuber2Distrib]{distrib_cdf()}},

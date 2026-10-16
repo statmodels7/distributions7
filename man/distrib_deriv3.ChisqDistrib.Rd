@@ -13,14 +13,14 @@ length 1 or of the length of \code{y}, recycled if of length 1. It must be
 strictly positive.}
 
 \item{expected}{Logical of length 1. On the parameter scale it has no
-effect, the observed and expected third derivatives being the same
+effect, because the observed and expected third derivatives are the same
 number; on the link scale it selects the expected composition. Defaults
 to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available.}
+\item{approx}{Ignored, because a closed form is available.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -28,7 +28,7 @@ to \code{FALSE}.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list with one numeric vector, \code{mu_mu_mu}, of length
@@ -63,7 +63,8 @@ d <- chisq_distrib()
 y <- c(1, 4, 9)
 th <- list(mu = 4)
 
-# A constant, written out with the second derivative of the digamma.
+# The value is a constant and is written out with the second derivative
+# of the digamma function.
 unique(distrib_deriv3(d, y, th)$mu_mu_mu)
 -psigamma(2, deriv = 2) / 8
 

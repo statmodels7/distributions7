@@ -34,7 +34,8 @@ NULL
 #'   parent.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.ZeroInflatedDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.ZeroInflatedDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.ZeroInflatedDistrib] and

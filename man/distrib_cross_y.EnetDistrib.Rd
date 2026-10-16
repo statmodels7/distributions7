@@ -13,9 +13,10 @@ so the value returned is one point of the subdifferential.}
 numeric vector of length 1 or of the length of \code{y}.}
 
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. On the link
-scale the chain rule is the gradient's own first-order diagonal one, the
-response derivative not interacting with a reparametrization of \code{theta};
-the transformation is applied in the generic's body.}
+scale the chain rule is the gradient's own first-order diagonal one,
+because the response derivative does not interact with a
+reparametrization of \code{theta}; the transformation is applied in the
+generic's body.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -53,7 +54,8 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 cy <- distrib_cross_y(d, y, th)
 names(cy)
 
-# Against a central difference of the response derivative in a parameter.
+# The analytic value is compared with a central difference of the response
+# derivative in a parameter.
 eps <- 1e-6
 rbind(analytic = cy$lambda,
       numeric = (distrib_grad_y(d, y, list(mu = 0, lambda = 2 + eps,

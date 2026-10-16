@@ -11,15 +11,16 @@
 \item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
 a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
-default. With \code{log = FALSE}, \code{FALSE} flips the sign of every component;
-with \code{log = TRUE} it returns the derivatives of \eqn{\log S}, where
-\eqn{S = 1 - F}, which are not the negatives of the lower-tail ones.}
+\item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+lower tail and \code{FALSE} the upper tail. With \code{log = FALSE}, \code{FALSE} flips
+the sign of every component; with \code{log = TRUE} it returns the derivatives
+of \eqn{\log S}, where \eqn{S = 1 - F}, which are not the negatives of the
+lower-tail ones.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical,
-\code{TRUE} by default. The ratio \eqn{f/P} is formed as
-\eqn{\exp(\log f - \log P)}, so the result stays finite far into either
-tail, where \eqn{f} and \eqn{P} underflow.}
+\item{log}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+derivatives of the log probability and \code{FALSE} those of the probability.
+The ratio \eqn{f/P} is formed as \eqn{\exp(\log f - \log P)}, so the result
+stays finite far into either tail, where \eqn{f} and \eqn{P} underflow.}
 }
 \value{
 A named list of two numeric vectors, \code{mu} and \code{sigma}, each the

@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -41,7 +41,8 @@ second parameter is a dispersion, only the second component does. With
 \eqn{z = y/\mu} they equal
 \eqn{\{2\mu(g + e) + y - \mu\}/\sigma^2} and \eqn{-\alpha(g + e)/\sigma^2},
 where \eqn{g = \log\alpha - \psi(\alpha)} and \eqn{e = \log z - (z - 1)},
-and the kernel computes them in that form, each of \eqn{g} and \eqn{e}
+and the kernel computes them in that form, evaluating each of \eqn{g} and
+\eqn{e}
 without cancellation.
 
 With \code{scale = "link"} the generic applies the chain rule for the links of the
@@ -61,7 +62,7 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, sigma2 = 2)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out with the digamma function.
+# The two closed forms are written out with the digamma function.
 al <- 9 / 2
 lam <- 3 / 2
 all.equal(g$mu,

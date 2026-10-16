@@ -12,14 +12,14 @@
 vector of length 1 or of the length of \code{y}. Both must be strictly
 positive.}
 
-\item{expected}{Logical of length 1, and without effect here, the observed
-and expected fourth derivatives being the same numbers. Defaults to
+\item{expected}{Logical of length 1, without effect here because the
+observed and expected fourth derivatives are the same numbers. Defaults to
 \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available.}
+\item{approx}{Ignored, because a closed form is available.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -36,8 +36,8 @@ within itself when the parameters are.
 Computes the five distinct fourth derivatives of the beta log-density with
 respect to \eqn{\alpha} and \eqn{\beta}, in closed form:
 \deqn{\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
-      \ell^{(\beta^4)} = \psi'''(\alpha+\beta) - \psi'''(\beta),}
-and every one of the three mixed components equal to
+      \ell^{(\beta^4)} = \psi'''(\alpha+\beta) - \psi'''(\beta).}
+Each of the three mixed components is equal to
 \eqn{\psi'''(\alpha+\beta)}, with \eqn{\psi'''} the third derivative of the
 digamma function.
 

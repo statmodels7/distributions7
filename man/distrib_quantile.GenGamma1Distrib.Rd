@@ -7,9 +7,9 @@
 \item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
 \item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
-logarithms when \code{log.p = TRUE}. Note that the family's third parameter is
-also called \code{p}; here the argument is the probability, and the parameter
-is read from \code{theta}.}
+logarithms when \code{log.p = TRUE}. The family's third parameter is also
+called \code{p}; here the argument is the probability, and the parameter is
+read from \code{theta}.}
 
 \item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
 vector of length 1 or of the length of the probabilities. All three must
@@ -41,16 +41,17 @@ scale \code{qgamma()} returns 0.
 d <- gengamma1_distrib()
 th <- list(a = 2, d = 3, p = 1.5)
 
-# The round trip through the distribution function.
+# Applying the quantile function to the distribution function returns the
+# original values.
 y <- c(0.5, 1.5, 4)
 all.equal(distrib_quantile(d, distrib_cdf(d, y, th), th), y)
 
-# The identity written out.
+# The quantile function agrees with the identity written out.
 u <- c(0.1, 0.5, 0.9)
 all.equal(distrib_quantile(d, u, th),
           2 * qgamma(u, shape = 3 / 1.5)^(1 / 1.5))
 
-# The median sits below the mean, the family being right-skewed here.
+# The median is below the mean, because the family is right-skewed here.
 c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 }
 \seealso{

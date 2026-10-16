@@ -32,8 +32,8 @@ Builds the distribution object for the von Mises family, the natural
 distribution for an angle, parametrized by a mean direction \eqn{\mu} and a
 concentration \eqn{\kappa > 0}. The returned object carries closed-form
 derivatives of the log-density to fourth order in the parameters and in the
-response, a closed-form expected information, and a \strong{distribution function
-from a Bessel series} in place of the quadrature the base class would use.
+response, a closed-form expected information, and a distribution function
+from a Bessel series in place of the quadrature the base class would use.
 }
 \section{The parametrization}{
 The density on \eqn{y \in [-\pi, \pi)} is
@@ -58,8 +58,8 @@ and every second derivative is closed form, with
 \eqn{A'} and the higher derivatives of \eqn{A} from a power series for
 small \eqn{\kappa}, where that identity cancels, and from the identity in
 extended precision or an asymptotic series above. Since
-\eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, \strong{the two parameters are
-orthogonal}: the expected information is diagonal, and Fisher scoring
+\eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, the two parameters are
+orthogonal: the expected information is diagonal, and Fisher scoring
 updates the direction and the concentration independently.
 
 \eqn{A(\kappa)} is the mean resultant length, so \eqn{A'(\kappa)} is the
@@ -74,7 +74,7 @@ and two or more \eqn{\kappa} is exactly zero.
 \section{The moments a generic returns are not the circular ones}{
 \code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} are the
 ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
-numerically. They are \strong{not} the circular quantities that \eqn{\mu} and
+numerically. They are not the circular quantities that \eqn{\mu} and
 \eqn{\kappa} describe. \eqn{\mu} is the mean \emph{direction}, and
 \eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the interval
 is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the density is
@@ -103,7 +103,7 @@ numerically, once per observation; this class supplies
 \code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}} instead, a Fourier series integrated term
 by term with \eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms,
 and a quadrature of the tail where the requested tail is below
-\eqn{10^{-6}}. The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by
+\eqn{10^{-6}}. The quantile comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by
 root finding on the logarithm of the smaller tail.
 }
 
@@ -156,9 +156,9 @@ Wiley, Chichester.
 \seealso{
 \code{\link[=vonmises2_distrib]{vonmises2_distrib()}} for the same law in the mean resultant length;
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the analogous family on the line, which the von
-Mises approaches at a large concentration;
-\code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} and \code{\link[numericals7:bessel_i_ratio]{numericals7::bessel_i_ratio()}} for the
-Bessel machinery; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
-\code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the same battery
-this one passes; \link{VonMises1Distrib} for the class.
+Mises approaches at a large concentration; \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} and
+\code{\link[numericals7:bessel_i_ratio]{numericals7::bessel_i_ratio()}} for the Bessel machinery; \code{\link[=fit_distrib]{fit_distrib()}} to
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+against the same battery that this one passes; \link{VonMises1Distrib} for the
+class.
 }

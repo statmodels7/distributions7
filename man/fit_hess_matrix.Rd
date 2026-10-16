@@ -55,7 +55,7 @@ on a family whose observed curvature is unusable. On a Laplace at
 \eqn{\bigl(\begin{smallmatrix} 0 & 2\\ 2 & -392\end{smallmatrix}\bigr)}:
 \eqn{\partial^2\ell/\partial\mu^2} is zero almost everywhere, so the
 determinant is \eqn{-(\sum_i \mathrm{sign}(y_i - \mu))^2/\sigma^2}, which is
-negative unless the signs balance exactly, and the matrix is \strong{indefinite}.
+negative unless the signs balance exactly, and the matrix is indefinite.
 The expected information at the same point is \eqn{-400 I}.
 }
 \seealso{

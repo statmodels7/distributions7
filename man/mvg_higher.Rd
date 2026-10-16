@@ -87,7 +87,7 @@ c(exact = sum(d3[["sigma_log_L1_sigma_log_L1_sigma_L2.1"]]),
 }
 \seealso{
 \code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} and
-\code{\link[=distrib_deriv4.MvGaussianDistrib]{distrib_deriv4.MvGaussianDistrib()}}, the two methods it serves, and
-\code{\link[=mvg_ptensors]{mvg_ptensors()}} for the arrays it reads.
+\code{\link[=distrib_deriv4.MvGaussianDistrib]{distrib_deriv4.MvGaussianDistrib()}}, the two methods that it serves, and
+\code{\link[=mvg_ptensors]{mvg_ptensors()}} for the arrays that it reads.
 }
 \keyword{internal}

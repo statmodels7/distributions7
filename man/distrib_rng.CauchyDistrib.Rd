@@ -38,7 +38,7 @@ set.seed(2)
 identical(a, rcauchy(3, location = 0.4, scale = 1.5))
 
 # The sample median converges on mu; the sample mean does not converge at
-# all, being itself Cauchy at every sample size.
+# all, because it is itself Cauchy at every sample size.
 set.seed(4)
 z <- distrib_rng(d, 1e5, list(mu = 3, sigma = 2))
 n <- c(1e2, 1e3, 1e4, 1e5)

@@ -19,7 +19,7 @@ returns the parameter scale.}
 \value{
 A named list of Hessian component vectors, each of length
 \code{length(y)}, keyed by \code{\link[=hess_names]{hess_names()}}, which puts the diagonal first and is
-\strong{not} the lexicographic keying \code{\link[=deriv_names]{deriv_names()}} uses above order 2.
+not the lexicographic keying \code{\link[=deriv_names]{deriv_names()}} uses above order 2.
 }
 \description{
 The fallback for a family that implements no analytical Hessian. For a
@@ -27,7 +27,7 @@ family with a density alone it takes second differences of
 \code{distrib_pdf(..., log = TRUE)} through \code{\link[=numerical_hessian]{numerical_hessian()}}: a diagonal
 component takes the three-point stencil
 \eqn{[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)]/h^2} and an
-off-diagonal one the four-point mixed stencil, so both are a \strong{single}
+off-diagonal one the four-point mixed stencil, so both are a single
 difference of the log-density. For a family with its own score it takes
 one central difference of that score instead, through
 \code{\link[=tensor_derivatives]{tensor_derivatives()}} with \code{base = 1}: the component \eqn{(i, j)} is the

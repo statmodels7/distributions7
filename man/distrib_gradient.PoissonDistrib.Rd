@@ -12,7 +12,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -31,7 +31,7 @@ mean, one value per observation, in closed form:
 The log-mass is \eqn{y\log\mu - \mu - \log y!}, so the score is the residual
 divided by the mean and its sum vanishes exactly at \eqn{\hat\mu = \bar y}.
 
-On the \strong{link} scale with the default logarithm the generic's chain rule
+On the link scale with the default logarithm the generic's chain rule
 gives \eqn{\partial\ell/\partial\eta = y - \mu}, the raw residual: the log
 is the canonical link of this family and the score there is the sufficient
 statistic minus its mean.
@@ -40,7 +40,7 @@ statistic minus its mean.
 
 \eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
 which is also the variance. \eqn{\eta = \log\mu} is the parameter on the
-link scale. A \strong{canonical} link is the one for which the log-mass is linear
+link scale. A canonical link is the one for which the log-mass is linear
 in the sufficient statistic times \eqn{\eta}.
 }
 

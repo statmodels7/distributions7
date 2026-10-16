@@ -5,12 +5,12 @@ NULL
 #' @name GeometricDistrib
 #'
 #' @description
-#' The S7 class of the geometric family parametrized by its mean
-#' \eqn{\mu > 0}: the number of failures before the first success in
-#' independent trials, each succeeding with probability
-#' \eqn{p = 1/(1+\mu)}. It inherits from `discrete_distrib`, so expectations
-#' over its support are sums and no derivative with respect to the response
-#' is defined.
+#' `GeometricDistrib` is the S7 class of the geometric family parametrized by
+#' its mean \eqn{\mu > 0}. The family describes the number of failures before
+#' the first success in independent trials, each of which succeeds with
+#' probability \eqn{p = 1/(1+\mu)}. It inherits from `discrete_distrib`, so
+#' expectations over its support are sums and derivatives with respect to the
+#' response are undefined.
 #'
 #' The parametrization is by the mean, so that a link can carry \eqn{\mu} to
 #' the unconstrained scale; the success probability is computed from
@@ -42,7 +42,8 @@ NULL
 #'   [poisson_distrib()] for the equidispersed alternative.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.GeometricDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.GeometricDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.GeometricDistrib] and
@@ -90,12 +91,13 @@ GeometricDistrib <- S7::new_class("GeometricDistrib", parent = discrete_distrib)
 #'
 #' @details
 #' The mean number of failures before the first success is \eqn{(1-p)/p}, so
-#' \eqn{p = 1/(1+\mu)}. Writing it once keeps the four methods that call
-#' \pkg{stats} from each repeating the algebra, and keeps them from drifting
+#' \eqn{p = 1/(1+\mu)}. Because it is written once, the four methods that call
+#' \pkg{stats} use it instead of repeating the algebra, and they cannot drift
 #' apart if the parametrization ever changes.
 #'
 #' The map is decreasing and carries \eqn{(0, \infty)} onto \eqn{(0, 1)}: a
-#' large mean is a small success probability. No validation is performed. A
+#' large mean is a small success probability. The function does not validate
+#' its argument. A
 #' negative `mu` other than \eqn{-1} gives a value outside \eqn{[0, 1]}, for
 #' which the base R functions return `NaN`, and `mu = 0` gives 1, which they
 #' accept as a point mass at zero. The methods are reached through the
@@ -241,10 +243,11 @@ S7::method(distrib_cdf, GeometricDistrib) <- function(distrib, q, theta,
 #' d <- geometric_distrib()
 #' th <- list(mu = 3)
 #'
-#' # Integers, and the median well below the mean, the mass being at zero.
+#' # The quantiles are integers, and the median lies well below the mean
+#' # because the mass is largest at zero.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
-#' # The round trip overshoots, the support being discrete.
+#' # The round trip overshoots because the support is discrete.
 #' p <- c(0.025, 0.5, 0.975)
 #' rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 S7::method(distrib_quantile, GeometricDistrib) <- function(distrib, p, theta,
@@ -326,7 +329,7 @@ S7::method(distrib_rng, GeometricDistrib) <- function(distrib, n, theta, ...) {
 #' y <- c(0, 2, 7)
 #' th <- list(mu = 3)
 #'
-#' # The closed form, written out: the residual over the variance.
+#' # The closed form is written out as the residual over the variance.
 #' all.equal(distrib_gradient(d, y, th)$mu, (y - 3) / (3 * (1 + 3)))
 #'
 #' # The summed score vanishes at the sample mean, which is the estimate.
@@ -346,7 +349,7 @@ S7::method(distrib_gradient, GeometricDistrib) <- function(distrib, y, theta,
 #' \eqn{(y-\mu)/(\mu(1+\mu))} gives
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2}
 #'       = \dfrac{-\mu(1+\mu) - (y-\mu)(1+2\mu)}{\mu^2(1+\mu)^2},}
-#' which depends on the data through \eqn{y} alone. Its expectation is
+#' which depends on the data only through \eqn{y}. Its expectation is
 #' [distrib_expected_hessian.GeometricDistrib()]. Equivalently the value is
 #' \eqn{-(y/\mu^2 - (y+1)/(1+\mu)^2)}.
 #'
@@ -434,8 +437,8 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
-#' @seealso [distrib_hessian.GeometricDistrib()] for the observed quantity this
-#'   is the expectation of, [distrib_expected_hessian.PoissonDistrib()] for the
+#' @seealso [distrib_hessian.GeometricDistrib()] for the observed quantity whose
+#'   expectation this is, [distrib_expected_hessian.PoissonDistrib()] for the
 #'   equidispersed comparison, [fisher_scoring()], which inverts it, and
 #'   [distrib_expected_hessian()] for the generic.
 #'
@@ -443,12 +446,12 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #' d <- geometric_distrib()
 #' th <- list(mu = 3)
 #'
-#' # A single number, the reciprocal of the variance.
+#' # The value is a single number, the reciprocal of the variance.
 #' unique(distrib_expected_hessian(d, c(0, 2, 7), th)$mu_mu)
 #' -1 / (3 * (1 + 3))
 #'
-#' # Less information than a Poisson of the same mean, the variance being
-#' # larger.
+#' # The geometric carries less information than a Poisson of the same mean,
+#' # because its variance is larger.
 #' c(geometric = -distrib_expected_hessian(d, 0, th)$mu_mu,
 #'   poisson = -distrib_expected_hessian(poisson_distrib(), 0, th)$mu_mu)
 #'
@@ -470,8 +473,8 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #' Computes the third derivative of the geometric log-mass with respect to the
 #' mean, in closed form. The log-mass is
 #' \eqn{y\log\mu - (y+1)\log(1+\mu)}, so every derivative is a combination of
-#' \eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}} with the data entering linearly
-#' through \eqn{y}: the value is \eqn{2(y/\mu^3 - (y+1)/(1+\mu)^3)}.
+#' \eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}}, and the data enter linearly through
+#' \eqn{y}. The value is \eqn{2(y/\mu^3 - (y+1)/(1+\mu)^3)}.
 #'
 #' The kernel writes the bracket \eqn{y/\mu^k - (y+1)/(1+\mu)^k} of order
 #' \eqn{k} as \eqn{y(1 - q^k)/\mu^k - 1/(1+\mu)^k} with
@@ -529,7 +532,7 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #' all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
 #'           tolerance = 1e-5)
 #'
-#' # The expected value is one number, the data term having been averaged out.
+#' # The expected value is one number because the data term is averaged out.
 #' unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                          scale = c("parameter", "link"),
@@ -544,10 +547,9 @@ S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expe
 #' @description
 #' Computes the fourth derivative of the geometric log-mass with respect to the
 #' mean, in closed form. As at third order it is a combination of
-#' \eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}} with the data entering linearly
-#' through \eqn{y}: the value is \eqn{-6(y/\mu^4 - (y+1)/(1+\mu)^4)}, and the
-#' bracket is computed as at third order
-#' (see [distrib_deriv3.GeometricDistrib()]).
+#' \eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}}, and the data enter linearly through
+#' \eqn{y}. The value is \eqn{-6(y/\mu^4 - (y+1)/(1+\mu)^4)}, and the bracket
+#' is computed as at third order (see [distrib_deriv3.GeometricDistrib()]).
 #'
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-6(1 - q^3)/\mu^3}. Both routes
@@ -640,15 +642,15 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #' The variance exceeds the mean by \eqn{\mu^2}, so this family sits above a
 #' Poisson of the same mean and is a one-parameter answer to overdispersion.
 #' The information about the mean is \eqn{1/(\mu(1+\mu))}, against a
-#' Poisson's \eqn{1/\mu}, so the mean is estimated less precisely. Where the amount of overdispersion should itself be
-#' estimated, [negbin2_distrib()] adds the parameter and contains this family
-#' at \eqn{\theta = 1}.
+#' Poisson's \eqn{1/\mu}, so the mean is estimated less precisely. Where the
+#' amount of overdispersion should itself be estimated, [negbin2_distrib()]
+#' adds the parameter and contains this family at \eqn{\theta = 1}.
 #'
 #' The survival function is \eqn{P(Y > q) = (\mu/(1+\mu))^{q+1}}, so
 #' \eqn{P(Y > s + t \mid Y > s) = P(Y > t)}: the count already accumulated
-#' tells nothing about the count remaining. The geometric is the only discrete
-#' law with this property, as the exponential is the only continuous one, and
-#' the two are counterparts.
+#' does not affect the distribution of the count remaining. The geometric is
+#' the only discrete law with this property, as the exponential is the only
+#' continuous one, and the two are counterparts.
 #'
 #' # Estimation
 #'
@@ -698,7 +700,7 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #'   c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))
 #' }, numeric(3))
 #'
-#' # Memoryless, as the exponential is on the continuous side.
+#' # The geometric is memoryless, as the exponential is on the continuous side.
 #' vapply(c(0, 2, 10, 50), function(s)
 #'   distrib_cdf(d, s + 1, list(mu = 3), lower.tail = FALSE) /
 #'     distrib_cdf(d, s, list(mu = 3), lower.tail = FALSE), numeric(1))

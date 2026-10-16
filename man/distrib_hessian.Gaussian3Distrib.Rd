@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{tau} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -35,7 +35,7 @@ closed form. With \eqn{r = y - \mu},
       \ell^{(\mu\tau)} = r, \qquad
       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.}
 Two of the three are free of the data, so the observed and the expected
-Hessians differ in the mixed entry alone. That entry sums to
+Hessians differ only in the mixed entry. That entry sums to
 \eqn{\sum_i (y_i - \mu)}, which vanishes at \eqn{\hat\mu = \bar y}. The
 summed observed and expected Hessians therefore coincide whenever the mean
 equation is solved, whatever the value of \eqn{\tau}, and differ otherwise.

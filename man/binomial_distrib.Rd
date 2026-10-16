@@ -34,14 +34,15 @@ An S7 object of class \code{BinomialDistrib}, inheriting from
 }
 \description{
 Builds the distribution object for the binomial family: the number of
-successes in \code{size} independent trials, each succeeding with probability
-\eqn{\mu \in (0, 1)}. The returned object carries closed-form derivatives of
-the log-mass to fourth order, observed and expected, and closed-form moments.
+successes in \code{size} independent trials, where each trial succeeds with
+probability \eqn{\mu \in (0, 1)}. The returned object carries closed-form
+derivatives of the log-mass to fourth order, observed and expected, and
+closed-form moments.
 
-\strong{\code{size} is fixed data, not a parameter.} It is carried on the object, it
+\code{size} is fixed data, not a parameter. It is carried on the object, it
 is not estimated, it has no link and no bound, and it does not appear in
-\code{params}. Giving it one value per observation is how grouped binary data
-with unequal group sizes is described.
+\code{params}. It may be given one value per observation, which describes
+grouped binary data with unequal group sizes.
 
 The default link is the logit, the canonical link here, so the observed and
 the expected information coincide on its scale.
@@ -56,8 +57,8 @@ with \eqn{n} the number of trials and \eqn{\mu \in (0, 1)}. The mean is
 \eqn{1/\sqrt{n}} and the excess kurtosis like \eqn{1/n}, as the central
 limit theorem requires.
 
-As \eqn{n \to \infty} with \eqn{n\mu} held, the family tends to a Poisson of
-that mean; \code{\link[=poisson_distrib]{poisson_distrib()}} is the limit and is the family to use when
+As \eqn{n \to \infty} while \eqn{n\mu} stays fixed, the family tends to a
+Poisson of that mean; \code{\link[=poisson_distrib]{poisson_distrib()}} is the limit and is the family to use when
 the number of trials is large and unrecorded.
 }
 
@@ -74,7 +75,7 @@ The log-mass is linear in \eqn{y} once \eqn{\eta = \log(\mu/(1-\mu))} is the
 parameter, so the logit is canonical and on its scale
 \deqn{\dfrac{\partial \ell}{\partial \eta} = y - n\mu, \qquad
       \dfrac{\partial^2 \ell}{\partial \eta^2} = -n\mu(1-\mu),}
-the second carrying no data. Under a probit or a complementary log-log link
+where the second derivative does not depend on the data. Under a probit or a complementary log-log link
 the observed and expected information differ.
 }
 
@@ -82,14 +83,15 @@ the observed and expected information differ.
 The maximum likelihood estimate is the pooled proportion,
 \eqn{\hat\mu = \sum y_i / \sum n_i}, in closed form. If the observed counts
 are more variable than \eqn{n\mu(1-\mu)} allows, the binomial is the wrong
-family and \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} adds the dispersion parameter it lacks.
+family and \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} adds the dispersion parameter that the
+binomial lacks.
 }
 
 \section{Notation}{
 
 \eqn{\ell} is the log-mass of one observation, \eqn{n} the number of trials
 and \eqn{\mu \in (0,1)} the success probability.
-\eqn{\eta = \log(\mu/(1-\mu))} is the log odds. The \strong{canonical} link of an
+\eqn{\eta = \log(\mu/(1-\mu))} is the log odds. The canonical link of an
 exponential family makes the log-mass linear in the sufficient statistic.
 }
 
@@ -115,7 +117,7 @@ rbind(binomial = distrib_pdf(binomial_distrib(size = 1000),
                              0:5, list(mu = 3 / 1000)),
       poisson = distrib_pdf(poisson_distrib(), 0:5, list(mu = 3)))
 
-# Grouped data with unequal group sizes: one size per observation.
+# Grouped data with unequal group sizes take one size per observation.
 set.seed(5)
 g <- binomial_distrib(size = c(5, 10, 20, 50))
 rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))

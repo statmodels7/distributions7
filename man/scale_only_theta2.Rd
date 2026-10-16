@@ -15,9 +15,10 @@ no location.}
 \item{theta}{A named list of parameters.}
 
 \item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{2} for that of
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}. Default \code{1}.}
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}. The default is \code{1}.}
 
-\item{at}{The index of the scale parameter in \code{distrib@params}. Default \code{1}.}
+\item{at}{The index of the scale parameter in \code{distrib@params}. The default
+is \code{1}.}
 }
 \value{
 A numeric vector as long as \code{y}: the scale's own pair alone, not a

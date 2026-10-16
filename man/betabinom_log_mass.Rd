@@ -22,8 +22,8 @@ inputs.
 \description{
 Returns
 \eqn{\log\binom{n}{y} + \log B(y+\alpha, n-y+\beta) - \log B(\alpha, \beta)}
-by whichever of two routes is accurate at the shapes given. The choice is
-made from the shapes alone, so it is deterministic and costs one comparison.
+by whichever of two routes is accurate at the given shapes. The choice
+depends only on the shapes, so it is deterministic and costs one comparison.
 }
 \section{Why there are two routes}{
 The two beta functions are each of magnitude
@@ -32,14 +32,15 @@ one, so forming the mass as that difference carries an absolute error of
 \eqn{\varepsilon} times the larger magnitude. That route is used only while
 the error stays below \code{1e-8}.
 
-Beyond it the shifts \eqn{y}, \eqn{n-y} and \eqn{n} are \strong{integers}, so
+Beyond it the shifts \eqn{y}, \eqn{n-y} and \eqn{n} are integers, so
 each log-gamma difference is an exact sum of logarithms,
 \deqn{\log\Gamma(\alpha+y) - \log\Gamma(\alpha) =
       \sum_{j=0}^{y-1}\log(\alpha+j),}
-and the mass follows from three such sums, none of which forms a quantity
-larger than \eqn{n\log(\alpha+\beta)}. The sums also give the binomial limit
-correctly as the shapes grow at a fixed ratio, where the beta-function
-route loses one digit per factor of ten in the concentration.
+and the mass follows from three such sums, each of which forms only
+quantities no larger than \eqn{n\log(\alpha+\beta)}. The sums also give
+the binomial limit correctly as the shapes grow at a fixed ratio, where
+the beta-function route loses one digit per factor of ten in the
+concentration.
 
 The cost is \eqn{O(n)} in the size, which is why the route is taken only
 where it is needed.

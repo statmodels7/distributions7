@@ -12,7 +12,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -33,7 +33,7 @@ The residual is divided by the variance, so an observation near a
 probability of 0 or 1 that goes the other way contributes an arbitrarily
 large score.
 
-On the \strong{link} scale with the default logit the generic's chain rule gives
+On the link scale with the default logit the generic's chain rule gives
 \eqn{\partial\ell/\partial\eta = y - \mu}, the raw residual: the logit is
 the canonical link of this family.
 }
@@ -42,7 +42,7 @@ the canonical link of this family.
 \eqn{\ell} is the log-mass of one observation and \eqn{\mu \in (0,1)} the
 success probability, with variance \eqn{\mu(1-\mu)}.
 \eqn{\eta = \log(\mu/(1-\mu))} is the parameter on the link scale, the log
-odds. A \strong{canonical} link makes the log-mass linear in the sufficient
+odds. A canonical link makes the log-mass linear in the sufficient
 statistic times \eqn{\eta}.
 }
 
@@ -51,7 +51,7 @@ d <- bernoulli_distrib()
 y <- c(0, 1, 1)
 th <- list(mu = 0.3)
 
-# The closed form, written out.
+# The method agrees with the closed form written out.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 0.3) / (0.3 * 0.7))
 
 # On the canonical logit link the score is the raw residual.

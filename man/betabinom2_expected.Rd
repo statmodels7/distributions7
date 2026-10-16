@@ -40,7 +40,7 @@ A named list of component vectors, each of the recycled length of
 }
 \description{
 Averages every component of a derivative of the given order over the support
-\eqn{\{0, \dots, n\}}, weighted by the mass function. The support being
+\eqn{\{0, \dots, n\}}, weighted by the mass function. Because the support is
 finite, the average is the expectation exactly, with no quadrature error and
 no sampling error.
 }

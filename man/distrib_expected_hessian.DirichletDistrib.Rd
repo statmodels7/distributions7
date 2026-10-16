@@ -14,10 +14,10 @@ are ignored.}
 free values followed by \code{phi}, each of length 1.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, the expectation being exact. Accepted so that
-the signature matches the generic's, where it selects between
+\item{approx}{Ignored here, because the expectation is exact. It is accepted
+so that the signature matches the generic's, where it selects between
 \code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}

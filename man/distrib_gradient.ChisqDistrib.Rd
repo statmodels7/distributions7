@@ -14,13 +14,13 @@ length 1 or of the length of \code{y}, recycled if of length 1. It must be
 strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list with one numeric vector, \code{mu}, of length
@@ -33,15 +33,15 @@ Computes the derivative of the chi-squared log-density with respect to
       \dfrac{\log y - \log 2 - \psi(\mu/2)}{2},}
 with \eqn{\psi} the digamma function. The family is a one-parameter
 exponential family in \eqn{\log y}, so this is the sufficient statistic
-minus its expectation, and \strong{it is the only order that involves the
-response at all}: every derivative from the second up is a polygamma
+minus its expectation, and it is the only order that involves the
+response at all: every derivative from the second up is a polygamma
 function of \eqn{\mu/2} and nothing else.
 
 The score has mean zero because
 \eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2}.
 
-With \code{scale = "link"} the generic applies the chain rule for the link the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the link that
+the family carries before returning. This method always returns the parameter
 scale.
 }
 \section{Notation}{
@@ -57,7 +57,7 @@ y <- c(1, 4, 9)
 th <- list(mu = 4)
 g <- distrib_gradient(d, y, th)
 
-# The closed form, written out with the digamma function.
+# The closed form is written out with the digamma function.
 all.equal(g$mu, (log(y) - log(2) - digamma(2)) / 2)
 
 # It is a sufficient statistic minus its expectation, so the sample mean of

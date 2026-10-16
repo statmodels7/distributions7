@@ -9,7 +9,7 @@
 \item{...}{Unused, accepted for compatibility with \code{\link[base:print]{base::print()}}.}
 }
 \value{
-\code{x}, invisibly. Called for the output it writes.
+\code{x}, invisibly. The function is called for the output that it writes.
 }
 \description{
 Writes the strategy for the expected information, with the Monte Carlo

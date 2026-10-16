@@ -5,8 +5,8 @@ NULL
 #' @name Pig2Distrib
 #'
 #' @description
-#' The S7 class of the Poisson-inverse Gaussian in the parametrization whose
-#' two parameters are orthogonal, gamlss's `PIG2`. It is the same law as
+#' This is the S7 class of the Poisson-inverse Gaussian in the parametrization
+#' whose two parameters are orthogonal, gamlss's `PIG2`. It is the same law as
 #' [Pig1Distrib]; the mean stays \eqn{\mu} and the dispersion is replaced by
 #' \eqn{\alpha}, the argument the mass function's Bessel function is evaluated
 #' at.
@@ -31,7 +31,8 @@ NULL
 #'   \eqn{(0, \infty)}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Pig2Distrib] and
 #'   [`distrib_rng()`][distrib_rng.Pig2Distrib];
 #' - the derivatives in the parameters:

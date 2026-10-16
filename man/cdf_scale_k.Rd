@@ -20,10 +20,12 @@ the lower tail.}
 
 \item{order}{The derivative order wanted, 1 to 4.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical.
-\code{FALSE} reads only \code{dF[[order]]} and the lower tables are then unused.}
+\item{log}{A single logical; \code{TRUE} selects the derivatives of the log
+probability and \code{FALSE} those of the probability. \code{FALSE} reads only
+\code{dF[[order]]} and the lower tables are then unused.}
 }
 \value{
 A named list of numeric vectors of the requested order alone. The

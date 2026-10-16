@@ -58,7 +58,7 @@ distributions7:::trunc_y_deriv(tn, c(0, 3), theta, distrib_hess_y)
 }
 \seealso{
 \code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y.TruncatedContinuousDistrib()}} and
-\code{\link[=distrib_hess_y.TruncatedContinuousDistrib]{distrib_hess_y.TruncatedContinuousDistrib()}}, the two methods it serves,
-and \code{\link[=trunc_inside]{trunc_inside()}} for the test it applies.
+\code{\link[=distrib_hess_y.TruncatedContinuousDistrib]{distrib_hess_y.TruncatedContinuousDistrib()}}, the two methods that it
+serves, and \code{\link[=trunc_inside]{trunc_inside()}} for the test that it applies.
 }
 \keyword{internal}

@@ -31,8 +31,8 @@ four.
 }
 \description{
 Return the derivatives in \eqn{(\sigma, \xi)} of the distribution function
-or of the survival function, or of their logarithms, at orders one to four,
-each from its own compiled kernel.
+or of the survival function, or of their logarithms, at orders one to four.
+Each of these comes from its own compiled kernel.
 }
 \details{
 The survival function is \eqn{S = e^{-W}} with

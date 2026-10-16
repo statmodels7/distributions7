@@ -65,15 +65,15 @@ NULL
 #' @name EnetDistrib
 #'
 #' @description
-#' The S7 class of the density whose negative logarithm is the elastic-net
-#' penalty: a Laplace and a Gaussian at the same location, multiplied together
-#' and normalized,
+#' This is the S7 class of the density whose negative logarithm is the
+#' elastic-net penalty: a Laplace and a Gaussian at the same location,
+#' multiplied together and normalized,
 #' \deqn{f(y) \propto \exp\{-\lambda\alpha|y-\mu|
 #'       - \lambda(1-\alpha)(y-\mu)^2/2\}.}
 #' At \eqn{\alpha \to 1} it is the Laplace of [Laplace2Distrib] and at
 #' \eqn{\alpha \to 0} the Gaussian; \eqn{\alpha} is confined to the open
-#' interval, as every bounded parameter in this package is, so neither end is
-#' a member. Both remain families of their own.
+#' interval, as every bounded parameter in this package is, so the two ends
+#' are not members. Both remain families of their own.
 #'
 #' Like the Laplace, its log-likelihood is not differentiable in
 #' \eqn{\mu}: the absolute value carries a kink at the location, and
@@ -95,7 +95,8 @@ NULL
 #'   `params_smooth = c(mu = FALSE, lambda = TRUE, alpha = TRUE)`.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.EnetDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.EnetDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.EnetDistrib] and
@@ -129,7 +130,7 @@ NULL
 #'
 #' Every other generic is inherited from [continuous_distrib()].
 #'
-#' @section The two quantities everything is written in:
+#' @section The two quantities in which every derivative is written:
 #' With \eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)} and
 #' \eqn{x = a/\sqrt c}, every derivative in the two rates is a polynomial in
 #' \eqn{x} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, where \eqn{M} is the
@@ -142,7 +143,8 @@ NULL
 #'
 #' @seealso [enet_distrib()] to build one;
 #'   [laplace2_distrib()] and [gaussian1_distrib()] for the two ends;
-#'   [penalties7::elasticnet_penalty()], the consumer this family exists for.
+#'   [penalties7::elasticnet_penalty()], the consumer for which this family
+#'   exists.
 #'
 #' @examples
 #' d <- enet_distrib()
@@ -151,11 +153,11 @@ NULL
 #' d@params
 #' d@params_bounds
 #'
-#' # The location carries a kink, so it is declared non-smooth. That is what
-#' # switches off the finite-difference guard in check_distrib().
+#' # The location carries a kink, so it is declared non-smooth. This
+#' # declaration switches off the finite-difference guard in check_distrib().
 #' d@params_smooth
 #'
-#' # The two ends, approached but not reached.
+#' # The two ends are approached but not reached.
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #' c(laplace = distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10)),
 #'   laplace_exact = distrib_pdf(laplace2_distrib(), 0.7,
@@ -214,12 +216,12 @@ EnetDistrib <- S7::new_class("EnetDistrib", parent = continuous_distrib)
 #' # It integrates to one.
 #' integrate(function(u) distrib_pdf(d, u, th), -Inf, Inf)$value
 #'
-#' # The kernel written out, up to the constant.
+#' # The density equals the kernel written out, up to a constant.
 #' r <- distrib_pdf(d, y, th) /
 #'      exp(-1 * abs(y) - 1 * y^2 / 2)     # a = c = 1 at alpha = 0.5
 #' all.equal(r, rep(r[1], length(r)))
 #'
-#' # The two ends, approached to ten figures.
+#' # The two ends are approached to ten figures.
 #' rbind(alpha = c(1 - 1e-10, 1e-10),
 #'       enet = c(distrib_pdf(d, 0.7, list(mu = 0, lambda = 2,
 #'                                         alpha = 1 - 1e-10)),
@@ -250,11 +252,11 @@ S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
 #' The method computes the logarithm of the tail beyond \eqn{|z|},
 #' \eqn{\log\Phi(-\sqrt c|z| - x) - \log\Phi(-x) - \log 2}, and the other
 #' tail from it as \eqn{\log(1 - e^{\cdot})} with `expm1()` or `log1p()`; the
-#' requested tail is returned on the log scale or exponentiated, so neither
-#' `lower.tail = FALSE` nor `log.p = TRUE` subtracts from one. The
-#' denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and zero
-#' beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches that
-#' at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
+#' requested tail is returned on the log scale or exponentiated, so the method
+#' does not subtract from one for `lower.tail = FALSE` or for `log.p = TRUE`.
+#' The denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and
+#' zero beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches
+#' that at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
 #' \eqn{\alpha = 0.995} it is 63.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
@@ -284,7 +286,7 @@ S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
 #' q <- c(-2, -0.5, 0, 0.5, 2)
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #'
-#' # Against a direct quadrature of the density.
+#' # The closed form is compared with a direct quadrature of the density.
 #' rbind(closed = distrib_cdf(d, q, th),
 #'       quadrature = vapply(q, function(u)
 #'         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
@@ -320,16 +322,16 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #' @name distrib_quantile.EnetDistrib
 #'
 #' @description
-#' Inverts [distrib_cdf.EnetDistrib()] in closed form, each half of the density
-#' being a truncated Gaussian. Below the median the quantile is
+#' Inverts [distrib_cdf.EnetDistrib()] in closed form, because each half of the
+#' density is a truncated Gaussian. Below the median the quantile is
 #' \eqn{\mu + \{x + \Phi^{-1}(2p\,\Phi(-x))\}/\sqrt c} and above it the
-#' reflection. Nothing is inverted by root finding, so
+#' reflection. The inversion does not use root finding, so
 #' [distrib_rng.EnetDistrib()] can use the inverse transform.
 #'
 #' The probability is first turned into the logarithms of both tails, without
 #' forming \eqn{1 - p} or exponentiating a logarithm, and each half is
-#' inverted from the logarithm of its own tail. The `qnorm` call is made on
-#' the log scale, its argument being \eqn{\log P + \log 2 + \log\Phi(-x)},
+#' inverted from the logarithm of its own tail. The inversion calls `qnorm` on
+#' the log scale, where its argument is \eqn{\log P + \log 2 + \log\Phi(-x)},
 #' because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}. A
 #' probability outside \eqn{[0, 1]} gives `NaN`.
 #'
@@ -355,15 +357,16 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #' d <- enet_distrib()
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #'
-#' # The round trip is exact, both functions being closed form.
+#' # The round trip is exact because both functions are closed form.
 #' q <- c(-2, -0.5, 0.5, 2)
 #' all.equal(distrib_quantile(d, distrib_cdf(d, q, th), th), q)
 #'
-#' # Symmetric about the location.
+#' # The quantiles are symmetric about the location.
 #' p <- c(0.1, 0.25, 0.5, 0.75, 0.9)
 #' round(distrib_quantile(d, p, th), 10)
 #'
-#' # It still answers where the Mills argument has passed 38.
+#' # The quantile function still returns values where the Mills argument
+#' # exceeds 38.
 #' distrib_quantile(d, c(0.25, 0.75),
 #'                  list(mu = 0, lambda = 20, alpha = 0.995))
 S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
@@ -400,8 +403,9 @@ S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
 #'
 #' @return A numeric vector of `n` draws, symmetric about `mu`.
 #'
-#' @seealso [distrib_quantile.EnetDistrib()], which it inverts through,
-#'   [variance.EnetDistrib()] for the moment the draws reproduce, and
+#' @seealso [distrib_quantile.EnetDistrib()], which it uses for the inverse
+#'   transform, [variance.EnetDistrib()] for the moment that the draws
+#'   reproduce, and
 #'   [distrib_rng()] for the generic.
 #'
 #' @examples
@@ -411,7 +415,7 @@ S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
 #' set.seed(71)
 #' x <- distrib_rng(d, 2e5, th)
 #'
-#' # Two moments against their closed forms, and the symmetry.
+#' # Two moments and the symmetry are compared with their closed forms.
 #' rbind(sample = c(mean(x), var(x), mean((x - mean(x))^3) / sd(x)^3),
 #'       theory = c(mean(d, th), variance(d, th), skewness(d, th)))
 #'
@@ -448,7 +452,7 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
 #' \deqn{\dfrac{\partial\ell}{\partial\mu} = a\,\mathrm{sgn}(z) + cz,}
 #' and the two rate components are the data terms less the derivatives of
 #' \eqn{\log Z}, which are \eqn{G/\sqrt c} in \eqn{a} and \eqn{-(1+xG)/(2c)} in
-#' \eqn{c}. The chain to \eqn{(\lambda, \alpha)} is linear, the map being
+#' \eqn{c}. The chain to \eqn{(\lambda, \alpha)} is linear, because the map is
 #' bilinear.
 #'
 #' The location component is undefined at \eqn{y = \mu}, where
@@ -488,10 +492,10 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The location component written out.
+#' # The location component is written out.
 #' all.equal(g$mu, 1 * sign(y) + 1 * y)
 #'
-#' # The two rate components against numerical differentiation.
+#' # The two rate components are compared with numerical differentiation.
 #' f <- function(p) sum(distrib_pdf(d, y, list(mu = 0, lambda = p[1],
 #'                                             alpha = p[2]), log = TRUE))
 #' rbind(analytic = c(sum(g$lambda), sum(g$alpha)),
@@ -522,7 +526,7 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #'
 #' That \eqn{-c} is the observed curvature and not the information. It
 #' misses the point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z =
-#' 2\delta(z)} the absolute value carries at the location, exactly as the
+#' 2\delta(z)} that the absolute value carries at the location, exactly as the
 #' Laplace does; see [distrib_expected_hessian.EnetDistrib()] for what the
 #' information is instead.
 #'
@@ -558,8 +562,8 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #' h <- distrib_hessian(d, y, th)
 #' names(h)
 #'
-#' # The curvature in the location is -c at every observation, the absolute
-#' # value contributing nothing away from the kink.
+#' # The curvature in the location is -c at every observation, because the
+#' # absolute value contributes nothing away from the kink.
 #' c(observed = unique(h$mu_mu), minus_c = -(2 * (1 - 0.5)))
 #'
 #' # Two entries carry no data, so they equal their own expectations.
@@ -567,7 +571,7 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #' rbind(observed = c(h$lambda_lambda[1], h$alpha_alpha[1], h$mu_mu[1]),
 #'       expected = c(e$lambda_lambda[1], e$alpha_alpha[1], e$mu_mu[1]))
 #'
-#' # Against a central difference of the score.
+#' # The analytic entry is compared with a central difference of the score.
 #' eps <- 1e-5
 #' rbind(analytic = h$lambda_alpha,
 #'       numeric = (distrib_gradient(d, y, list(mu = 0, lambda = 2,
@@ -590,7 +594,7 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' an exponential family, so the information in those rates is the Hessian of
 #' the log normalizing constant, which the observed Hessian also uses.
 #'
-#' `approx` and `nsim` are accepted and ignored, the answer being exact.
+#' `approx` and `nsim` are accepted and ignored because the answer is exact.
 #'
 #' @details
 #' # The rate block
@@ -608,25 +612,25 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' `alpha_alpha` repeat them exactly. The third does not: `lambda_alpha`
 #' carries \eqn{-|z| + z^2/2}, whose expectation
 #' \eqn{\partial_a\log Z - \partial_c\log Z} cancels the constant of the same
-#' value sitting beside it and leaves the \eqn{\log Z} term alone.
+#' value sitting beside it and leaves only the \eqn{\log Z} term.
 #'
 #' # The location, where the kink lives
 #'
 #' The observed second derivative in \eqn{\mu} is \eqn{-c}, which misses the
-#' point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)} the
-#' density carries at its own location, exactly as the Laplace does. The
+#' point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)} that
+#' the density carries at its own location, exactly as the Laplace does. The
 #' information is defined there as the variance of the score, and
 #' \deqn{I_{\mu\mu} = E\left[(a\,\mathrm{sgn}(z) + cz)^2\right]
 #'   = a^2 + 2ac\,E|z| + c^2E[z^2]
 #'   = a^2 - 2ac\,\partial_a \log Z - 2c^2 \partial_c \log Z,}
 #' since \eqn{E|z| = -\partial_a\log Z} and \eqn{E[z^2] = -2\partial_c\log Z}.
 #'
-#' Measured at \eqn{\lambda = 2}: it is 3.99999996 as \eqn{\alpha \to 1}, which
-#' is the Laplace's \eqn{\lambda^2 = 1/\sigma^2}, and exactly 2 as
-#' \eqn{\alpha \to 0}, which is the Gaussian's \eqn{c}.
+#' Measured at \eqn{\lambda = 2}, the value of \eqn{I_{\mu\mu}} is 3.99999996 as
+#' \eqn{\alpha \to 1}, which is the Laplace's \eqn{\lambda^2 = 1/\sigma^2}, and
+#' exactly 2 as \eqn{\alpha \to 0}, which is the Gaussian's \eqn{c}.
 #'
-#' The location stays orthogonal to both rates, every cross-expectation
-#' vanishing by symmetry, so `mu_lambda` and `mu_alpha` are exactly zero.
+#' The location stays orthogonal to both rates, because every cross-expectation
+#' vanishes by symmetry. Therefore `mu_lambda` and `mu_alpha` are exactly zero.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param y A numeric vector. Its values do not enter the result, which is an
@@ -653,7 +657,7 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' @seealso [distrib_hessian.EnetDistrib()] for the observed curvature, which
 #'   differs from this only in the location;
 #'   [distrib_expected_hessian.Laplace2Distrib()] for the same phenomenon in
-#'   the family this one contains; and [distrib_expected_hessian()] for the
+#'   the family that this one contains; and [distrib_expected_hessian()] for the
 #'   generic.
 #'
 #' @examples
@@ -678,7 +682,7 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #'       information = vapply(c(1 - 1e-8, 0.5, 1e-8), inf_mu, 0),
 #'       limit = c(2^2, NA, 2 * (1 - 1e-8)))
 #'
-#' # The strategy argument is ignored, the answer being exact.
+#' # The strategy arguments are ignored because the answer is exact.
 #' identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 S7::method(distrib_expected_hessian, EnetDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
@@ -693,8 +697,8 @@ S7::method(distrib_expected_hessian, EnetDistrib) <- function(
 #' @description
 #' Computes \eqn{\partial\ell/\partial y = -a\,\mathrm{sgn}(y-\mu) - c(y-\mu)},
 #' with \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}. It is minus
-#' the derivative in \eqn{\mu}, the response and the location entering only
-#' through their difference.
+#' the derivative in \eqn{\mu}, because the response and the location enter
+#' only through their difference.
 #'
 #' It is undefined at the location, where the sign jumps. `sign(0)` is 0 in
 #' R, so the value returned there is \eqn{-c(y-\mu) = 0}, one point of the
@@ -730,7 +734,8 @@ S7::method(distrib_expected_hessian, EnetDistrib) <- function(
 #' # It is minus the score in the location, exactly.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
-#' # Against a central difference of the log-density, away from the kink.
+#' # The analytic derivative is compared with a central difference of the
+#' # log-density, away from the kink.
 #' eps <- 1e-6
 #' rbind(analytic = distrib_grad_y(d, y, th),
 #'       numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
@@ -752,8 +757,8 @@ S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta, ...) {
 #' @description
 #' Computes \eqn{\partial^2\ell/\partial y^2 = -c}, with
 #' \eqn{c = \lambda(1-\alpha)}: the absolute value contributes nothing away
-#' from the location, so the curvature in the response is the Gaussian part
-#' alone. It is constant, free of the data, and strictly negative.
+#' from the location, so the curvature in the response comes only from the
+#' Gaussian part. It is constant, free of the data, and strictly negative.
 #'
 #' At the location itself the second derivative carries a point mass
 #' \eqn{-2a\delta(y-\mu)}, which this value omits, exactly as
@@ -776,27 +781,29 @@ S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta, ...) {
 #' the Laplace one.
 #'
 #' @seealso [distrib_grad_y.EnetDistrib()] for the first derivative,
-#'   [distrib_hessian.EnetDistrib()] for the parameter curvature it shares an
-#'   expression with, and [distrib_hess_y()] for the generic.
+#'   [distrib_hessian.EnetDistrib()] for the parameter curvature, with which it
+#'   shares an expression, and [distrib_hess_y()] for the generic.
 #'
 #' @examples
 #' d <- enet_distrib()
 #' y <- c(-1.5, -0.3, 0.4, 2.1)
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #'
-#' # Constant, and equal to the curvature in the location.
+#' # The second derivative is constant, and equal to the curvature in the
+#' # location.
 #' c(hess_y = unique(distrib_hess_y(d, y, th)),
 #'   mu_mu = unique(distrib_hessian(d, y, th)$mu_mu),
 #'   minus_c = -(2 * (1 - 0.5)))
 #'
-#' # Against a central difference of the response derivative, away from the
-#' # kink.
+#' # The analytic value is compared with a central difference of the response
+#' # derivative, away from the kink.
 #' eps <- 1e-5
 #' rbind(analytic = distrib_hess_y(d, y, th),
 #'       numeric = (distrib_grad_y(d, y + eps, th) -
 #'                  distrib_grad_y(d, y - eps, th)) / (2 * eps))
 #'
-#' # The Gaussian rate alone, so it goes to zero as alpha approaches one.
+#' # The value equals minus the Gaussian rate, so it goes to zero as alpha
+#' # approaches one.
 #' vapply(c(0.1, 0.5, 0.9, 0.999),
 #'        function(a) distrib_hess_y(d, 1, list(mu = 0, lambda = 2,
 #'                                              alpha = a)), 0)
@@ -832,9 +839,10 @@ S7::method(distrib_hess_y, EnetDistrib) <- function(distrib, y, theta, ...) {
 #' @param theta A named list with components `mu`, `lambda` and `alpha`, each a
 #'   numeric vector of length 1 or of the length of `y`.
 #' @param scale Either `"parameter"`, the default, or `"link"`. On the link
-#'   scale the chain rule is the gradient's own first-order diagonal one, the
-#'   response derivative not interacting with a reparametrization of `theta`;
-#'   the transformation is applied in the generic's body.
+#'   scale the chain rule is the gradient's own first-order diagonal one,
+#'   because the response derivative does not interact with a
+#'   reparametrization of `theta`; the transformation is applied in the
+#'   generic's body.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors, `mu`, `lambda` and `alpha`,
@@ -854,7 +862,8 @@ S7::method(distrib_hess_y, EnetDistrib) <- function(distrib, y, theta, ...) {
 #' cy <- distrib_cross_y(d, y, th)
 #' names(cy)
 #'
-#' # Against a central difference of the response derivative in a parameter.
+#' # The analytic value is compared with a central difference of the response
+#' # derivative in a parameter.
 #' eps <- 1e-6
 #' rbind(analytic = cy$lambda,
 #'       numeric = (distrib_grad_y(d, y, list(mu = 0, lambda = 2 + eps,
@@ -882,12 +891,13 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #' @name mean.EnetDistrib
 #'
 #' @description
-#' Returns \eqn{\mu}, the location. The density is symmetric about it, both
-#' factors of the product being symmetric about the same point, so the location
-#' is the mean, the median and the mode at once.
+#' Returns \eqn{\mu}, the location. The density is symmetric about it because
+#' both factors of the product are symmetric about the same point. The location
+#' is therefore the mean, the median and the mode at once.
 #'
-#' The value is recycled to the length the three parameters imply, so a `theta`
-#' whose components vary by observation gets one mean per observation.
+#' The value is recycled to the length that the three parameters imply, so the
+#' result has one mean per observation when the components of `theta` vary by
+#' observation.
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`. It is
@@ -895,7 +905,7 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #'   signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of means, of the length the recycled
+#' @return A numeric vector of means, of the length that the recycled
 #'   parameters imply. The value is the location; the two rates do not
 #'   enter it, so a setting that varies one of them repeats one number.
 #'
@@ -911,7 +921,7 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #' # Mean, median and mode coincide.
 #' c(mean = mean(d, th), median = distrib_quantile(d, 0.5, th))
 #'
-#' # One value per observation when a parameter varies.
+#' # The result has one value per observation when a parameter varies.
 #' mean(d, list(mu = c(0, 3, 7), lambda = 2, alpha = 0.5))
 #'
 #' @keywords internal
@@ -927,8 +937,8 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' Returns \eqn{(1 + xG)/c} in closed form, with \eqn{c = \lambda(1-\alpha)},
 #' \eqn{x = a/\sqrt c} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}. It is
 #' \eqn{-2\,\partial\log Z/\partial c}, the first cumulant of the sufficient
-#' statistic \eqn{-z^2/2}, so it needs nothing the score does not already
-#' compute.
+#' statistic \eqn{-z^2/2}, so it requires only quantities that the score
+#' already computes.
 #'
 #' At \eqn{\alpha \to 0} it tends to \eqn{1/c}, the Gaussian's; at
 #' \eqn{\alpha \to 1} to \eqn{2/a^2}, the Laplace's.
@@ -940,7 +950,7 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, strictly positive, of the
-#'   length the recycled parameters imply. The location does not enter
+#'   length that the recycled parameters imply. The location does not enter
 #'   the value, so a setting that varies it repeats one number.
 #'
 #' @section Notation:
@@ -955,12 +965,13 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' d <- enet_distrib()
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #'
-#' # Against a quadrature of the second central moment.
+#' # The closed form is compared with a quadrature of the second central
+#' # moment.
 #' c(closed = variance(d, th),
 #'   quadrature = integrate(function(u) u^2 * distrib_pdf(d, u, th),
 #'                          -Inf, Inf)$value)
 #'
-#' # The two ends: 1/c at alpha -> 0 and 2/a^2 at alpha -> 1.
+#' # The two ends are 1/c at alpha -> 0 and 2/a^2 at alpha -> 1.
 #' rbind(alpha = c(1e-10, 1 - 1e-10),
 #'       ours = c(variance(d, list(mu = 0, lambda = 2, alpha = 1e-10)),
 #'                variance(d, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))),
@@ -983,13 +994,13 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #' Returns 0. The density is symmetric about \eqn{\mu} at every parameter
 #' value, so every odd central moment vanishes and the standardized third one
 #' with them. The zero is recycled to the length of the longest component of
-#' `theta`, so a `theta` whose components vary by observation gets one zero
-#' per observation.
+#' `theta`, so the result has one zero per observation when the components of
+#' `theta` vary by observation.
 #'
 #' The fourth moment is not zero and is not closed form here: [kurtosis()]
 #' falls to the base class and integrates. Measured at \eqn{\mu = 0},
-#' \eqn{\lambda = 2}, \eqn{\alpha = 0.5} the excess kurtosis is 0.766, between
-#' the Gaussian's 0 and the Laplace's 3.
+#' \eqn{\lambda = 2} and \eqn{\alpha = 0.5} the excess kurtosis is 0.766,
+#' between the Gaussian's 0 and the Laplace's 3.
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`. It is
@@ -997,9 +1008,10 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #'   signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of zeros, of the length the recycled
+#' @return A numeric vector of zeros, of the length that the recycled
 #'   parameters imply. The family is symmetric about its location at
-#'   every setting of the two rates, so no parameter enters the value.
+#'   every setting of the two rates, so the value does not depend on any
+#'   parameter.
 #'
 #' @seealso [mean.EnetDistrib()] and [variance.EnetDistrib()] for the other two
 #'   closed-form moments, and [kurtosis()] for the fourth.
@@ -1008,7 +1020,8 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #' d <- enet_distrib()
 #' th <- list(mu = 0, lambda = 2, alpha = 0.5)
 #'
-#' # Zero at every parameter value, and confirmed by a quadrature.
+#' # The skewness is zero at every parameter value, and a quadrature confirms
+#' # it.
 #' c(closed = skewness(d, th),
 #'   quadrature = integrate(function(u) u^3 * distrib_pdf(d, u, th),
 #'                          -Inf, Inf)$value)
@@ -1030,8 +1043,8 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' construction as ridge and lasso, a [penalties7::distrib_penalty()] over a
 #' [fixed()] family, instead of a branch of its own.
 #'
-#' The parametrization is the one a reader of the penalty expects: an overall
-#' rate \eqn{\lambda} and a mixing weight \eqn{\alpha}, with
+#' The parametrization is the one that a reader of the penalty expects: an
+#' overall rate \eqn{\lambda} and a mixing weight \eqn{\alpha}, with
 #' \eqn{a = \lambda\alpha} the Laplace rate and \eqn{c = \lambda(1-\alpha)} the
 #' Gaussian one.
 #'
@@ -1049,16 +1062,16 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' \eqn{Z = 2M(a/\sqrt{c})/\sqrt{c}} with \eqn{M} the Mills ratio, finite at
 #' both ends: \eqn{2/a} as \eqn{\alpha \to 1} and \eqn{\sqrt{2\pi/c}} as
 #' \eqn{\alpha \to 0}. Every derivative in the two rates is a polynomial in
-#' \eqn{x = a/\sqrt c} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, with
-#' \eqn{G' = 1 + xG - G^2} closing the recursion, and the chain to
+#' \eqn{x = a/\sqrt c} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, and
+#' \eqn{G' = 1 + xG - G^2} closes the recursion. The chain to
 #' \eqn{(\lambda, \alpha)} is bilinear.
 #'
-#' # What is closed form
+#' # Closed-form quantities
 #'
-#' All four derivative orders in the parameters, the expected information, the
+#' The four derivative orders in the parameters, the expected information, the
 #' distribution function, the quantile function, the mean, the variance and the
-#' skewness. The kurtosis is not, and comes from the base class by
-#' quadrature.
+#' skewness are closed form. The kurtosis is not, and comes from the base class
+#' by quadrature.
 #'
 #' The expected information is closed form because, in the two rates, the
 #' density is an exponential family with sufficient statistics \eqn{-|z|} and
@@ -1075,9 +1088,6 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' entry.
 #'
 #' # Numerical points
-#'
-#' Three points concern the normalizing constant, its derivatives and the
-#' tails.
 #'
 #' - \eqn{\log M(x)} written directly adds \eqn{x^2/2} to a log-probability of
 #'   the same size and opposite sign, and loses a digit per factor of ten in
@@ -1130,8 +1140,8 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #'
 #' @seealso [laplace2_distrib()] and [gaussian1_distrib()] for the two ends,
 #'   [penalties7::elasticnet_penalty()] for the consumer,
-#'   [fixed()] for holding the location at zero, which is how a penalty uses
-#'   this, and [EnetDistrib] for the class and its method list.
+#'   [fixed()] for holding the location at zero, as a penalty does when it uses
+#'   this family, and [EnetDistrib] for the class and its method list.
 #'
 #' @examples
 #' d <- enet_distrib()
@@ -1158,7 +1168,7 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' rbind(observed = unlist(distrib_hessian(d, 0, th)),
 #'       expected = unlist(distrib_expected_hessian(d, 0, th)))
 #'
-#' # Held at zero, this is the prior a penalty is written from.
+#' # Held at zero, this is the prior from which a penalty is written.
 #' p <- fixed(d, mu = 0)
 #' p@params
 #'
@@ -1208,7 +1218,7 @@ enet_distrib <- function(link_mu = identity_link(),
 #'
 #' The size of the kink is \eqn{2\lambda\alpha} and goes to zero with
 #' \eqn{\alpha}. A detector based on the second Bartlett identity therefore
-#' sees the missing curvature less clearly at small \eqn{\alpha}, where the
+#' detects the missing curvature less clearly at small \eqn{\alpha}, where the
 #' family is nearly Gaussian. The kink exists at every \eqn{\alpha > 0}, and
 #' the declaration records it independently of any measurement of the
 #' curvature.

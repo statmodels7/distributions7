@@ -31,16 +31,16 @@ from the five pieces of the log-density.
 With \eqn{L = \log(y/a)} the log-density splits into
 \deqn{\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},}
 and each piece is either elementary or a univariate function composed with a
-\strong{two-variable} inner map, which the written-out template of \code{\link[=fdb2]{fdb2()}}
+two-variable inner map, which the written-out template of \code{\link[=fdb2]{fdb2()}}
 covers.
 
-What keeps the sum from growing is that the two compositions do not share a
+The sum does not grow, because the two compositions do not share a
 variable pair: \eqn{-\log\Gamma(d/p)} involves \eqn{(d, p)} and
 \eqn{-e^{pL}} involves \eqn{(a, p)}. Every component of the three-variable
 derivative is therefore one term of one composition plus the elementary
-pieces, and no genuinely three-variable expansion is ever formed. A
-component naming both \eqn{a} and \eqn{d} comes from the elementary
-\eqn{-d\log a} alone.
+pieces, and the assembly never forms a genuinely three-variable expansion.
+A component that names both \eqn{a} and \eqn{d} comes only from the
+elementary term \eqn{-d\log a}.
 
 The tests compare the assembly at orders one to four with the compiled
 kernels of \code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient.GenGamma1Distrib()}},
@@ -51,7 +51,7 @@ loses accuracy, since it evaluates \eqn{\psi^{(n)}(k)} near its pole.
 
 \seealso{
 \code{\link[=distrib_deriv3.GenGamma1Distrib]{distrib_deriv3.GenGamma1Distrib()}} for the compiled kernels
-this assembly is checked against;
+against which this assembly is checked;
 \code{\link[=fdb2]{fdb2()}} for the two-variable composition template; and
 \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for the family.
 }

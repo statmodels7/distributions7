@@ -23,7 +23,7 @@ lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's p
 each a numeric vector of length \code{length(y)}.
 }
 \description{
-The hurdle likelihood \strong{factorizes} into a binary part and a positive part,
+The hurdle likelihood factorizes into a binary part and a positive part,
 so at every order the mixed components in \code{za} and a parent parameter are
 exactly zero, and the two halves are differentiated separately. The
 \eqn{\theta} part is the parent's derivative less that of the truncation

@@ -40,10 +40,11 @@ With \eqn{a} and \eqn{b} the shapes and \eqn{n} the size, the log-mass is
 \deqn{\log\Gamma(y+a) + \log\Gamma(n-y+b) - \log\Gamma(n+a+b)
       - \log\Gamma(a) - \log\Gamma(b) + \log\Gamma(a+b)}
 up to a term free of the parameters. A derivative in \eqn{a} alone
-differentiates the first, third, fourth and sixth terms; one in \eqn{b}
-alone the second, third, fifth and sixth; a \strong{mixed} one only the two
-terms carrying \eqn{a+b}, which is why a mixed component of any order is
-\eqn{-\psi^{(k)}(n+a+b) + \psi^{(k)}(a+b)} and free of the data.
+differentiates the first, third, fourth and sixth terms. A derivative in
+\eqn{b} alone differentiates the second, third, fifth and sixth terms. A
+mixed derivative differentiates only the two terms that carry \eqn{a+b},
+which is why a mixed component of any order is
+\eqn{-\psi^{(k)}(n+a+b) + \psi^{(k)}(a+b)} and does not depend on the data.
 }
 \seealso{
 \code{\link[=betabinom2_derivs]{betabinom2_derivs()}}, which calls this for every multi-index of

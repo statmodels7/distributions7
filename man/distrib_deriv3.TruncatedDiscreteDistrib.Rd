@@ -7,9 +7,9 @@
 \item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{y}{A numeric vector of counts inside the truncation interval. Both
-endpoints are \strong{included}.}
+endpoints are included.}
 
-\item{theta}{A named list of the \strong{parent's} parameters; truncation adds
+\item{theta}{A named list of the parent's parameters; truncation adds
 none.}
 
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
@@ -25,8 +25,8 @@ numeric vector of length \code{length(y)}. A one-parameter parent gives one.
 \description{
 The same construction as for a continuous parent, \eqn{\ell_T = \ell -
 \log Z} with \eqn{d^I \log Z} from the moment-to-cumulant expansion over
-set partitions, with every expectation taken by \strong{summation over the
-retained support} in place of a quadrature.
+set partitions, with every expectation taken by summation over the
+retained support in place of a quadrature.
 
 When both endpoints are finite, the support of a truncated discrete family is
 finite, so each block is a finite sum of terms that the parent already

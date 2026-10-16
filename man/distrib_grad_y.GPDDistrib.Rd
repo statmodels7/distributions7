@@ -31,10 +31,10 @@ mixed derivatives.
 \description{
 Return the derivatives of the log-density in the response to order four,
 and the mixed derivatives of orders one and two in the response and one and
-two in \eqn{(\sigma, \xi)}, each a closed form from its own compiled kernel.
-The derivative in the response is
+two in \eqn{(\sigma, \xi)}. Each of these is a closed form from its own
+compiled kernel. The derivative in the response is
 \eqn{\ell^{(y)} = -(1 + \xi)/(\sigma t)}, with \eqn{t = 1 + \xi y/\sigma},
-so none of these forms divides by \eqn{\xi}; \eqn{t} is formed as
+so these forms do not divide by \eqn{\xi}; \eqn{t} is formed as
 \code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}} describes. Outside the support every
 component is \code{NaN}.
 }

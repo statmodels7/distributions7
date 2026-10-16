@@ -32,7 +32,7 @@ parameters for three families whose expected information is itself a sum
 over the support.
 }
 \details{
-\strong{NB1.} The expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
+NB1. The expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
 G/\mu}, with \eqn{A} and \eqn{G = \mathbb{E}[\ell_{\theta\theta}]} the two
 sums over the support of \code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}; below
 \eqn{\theta = 0.02} \eqn{G} is \eqn{-\mathbb{E}[\sum_{j<Y} j^2/(\mu +
@@ -45,7 +45,7 @@ with the scores \eqn{s} and second derivatives \eqn{h} of the log-mass
 written so that no term of order \eqn{\mu/\theta^2} is formed. Every
 component keeps its accuracy down to the Poisson limit \eqn{\theta \to 0}.
 
-\strong{Beta-binomial.} The support \eqn{\{0, \dots, n\}} is finite, so the
+Beta-binomial. The support \eqn{\{0, \dots, n\}} is finite, so the
 identities
 \deqn{\partial_c \mathbb{E}[\ell_{ab}] = \mathbb{E}[\ell_{abc} + \ell_{ab}\ell_c]}
 and its second-order counterpart,

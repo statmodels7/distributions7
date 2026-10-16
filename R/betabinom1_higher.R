@@ -47,14 +47,14 @@ md_betabinom1 <- function(psi, order) {
 #'
 #' @details
 #' The shape parametrization [betabinom2_distrib()] carries closed derivatives
-#' at every order, each a difference of polygammas, and this parametrization is
-#' that one composed with a map. [chain_derivatives()] runs the Faa di Bruno
+#' at every order, and each of them is a difference of polygammas. This
+#' parametrization is that one composed with a map. [chain_derivatives()] runs the Faa di Bruno
 #' partition sum over the map, with the map's own partials supplied by
 #' [md_betabinom1()] as a keyed table; a key absent from the table is an exact
 #' zero. Both shapes are linear in \eqn{\mu} at fixed \eqn{\sigma}, so every
 #' partial carrying two or more \eqn{\mu} vanishes and the sum is short.
 #'
-#' The construction is the one [reparametrize()] runs, used here by a family
+#' The construction is the one that [reparametrize()] runs, used here by a family
 #' whose first two orders are written out by hand in a compiled kernel. A
 #' fresh `BetaBinom2Distrib` object is built on each call, which costs one S7
 #' construction per evaluation.
@@ -126,8 +126,8 @@ betabinom1_components <- function(distrib, y, theta, order) {
 #' @param theta A named list with components `mu` and `sigma`.
 #' @param order The derivative order, 3 or 4.
 #'
-#' @return A named list of numeric vectors keyed as [deriv_names()] keys them,
-#'   each of the recycled length of `y` and the parameters.
+#' @return A named list of numeric vectors keyed as [deriv_names()] keys them.
+#'   Each vector has the recycled length of `y` and the parameters.
 #'
 #' @seealso [betabinom1_components()] for the summand,
 #'   [distrib_deriv3.BetaBinom1Distrib()] and
@@ -144,9 +144,9 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #' @description
 #' Computes the four distinct third derivatives of the beta-binomial log-mass
 #' in \eqn{\mu} and \eqn{\sigma}, in closed form. The shape parametrization
-#' carries closed derivatives at every order, each a difference of polygammas,
-#' and this parametrization is that one at \eqn{\alpha = \mu/\sigma} and
-#' \eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
+#' carries closed derivatives at every order, and each of them is a difference
+#' of polygammas. This parametrization is that one at
+#' \eqn{\alpha = \mu/\sigma} and \eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
 #' [chain_derivatives()] over the map delivers them. Both shapes are linear in
 #' \eqn{\mu} at fixed \eqn{\sigma}, so every partial of the map carrying two or
 #' more \eqn{\mu} vanishes and the sum is short. This route is taken for
@@ -168,7 +168,7 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, the expectation being an exact finite sum. It is
+#' @param approx Ignored, because the expectation is an exact finite sum. It is
 #'   accepted so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -181,8 +181,8 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
 #' proportion, \eqn{\sigma > 0} the dispersion and \eqn{n} the trial count.
-#' \eqn{\alpha} and \eqn{\beta} are the two beta shapes the family is written
-#' in internally.
+#' \eqn{\alpha} and \eqn{\beta} are the two beta shapes in which the family is
+#' written internally.
 #'
 #' @seealso [distrib_hessian.BetaBinom1Distrib()] for the order below,
 #'   [distrib_deriv4.BetaBinom1Distrib()] for the order above,
@@ -196,7 +196,7 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #' names(d3)
 #'
 #' # A central difference of the Hessian reproduces the pure-mu component,
-#' # which is what says the partition sum over the map is right.
+#' # which confirms that the partition sum over the map is right.
 #' eps <- 1e-5
 #' up <- distrib_hessian(d, 0:10, list(mu = 0.3 + eps, sigma = 0.5))$mu_mu
 #' dn <- distrib_hessian(d, 0:10, list(mu = 0.3 - eps, sigma = 0.5))$mu_mu
@@ -221,13 +221,13 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @name distrib_deriv4.BetaBinom1Distrib
 #' @description
 #' Computes the five distinct fourth derivatives of the beta-binomial log-mass
-#' in \eqn{\mu} and \eqn{\sigma}, in closed form, by the construction
-#' [distrib_deriv3.BetaBinom1Distrib()] describes carried one order further:
-#' the shape parametrization's fourth derivatives, each a difference of
-#' \eqn{\psi^{(3)}}, carried through the map
+#' in \eqn{\mu} and \eqn{\sigma}, in closed form, by the construction that
+#' [distrib_deriv3.BetaBinom1Distrib()] describes, carried one order further.
+#' For \eqn{\sigma \ge 0.1} the fourth derivatives of the shape
+#' parametrization, each of which is a difference of \eqn{\psi^{(3)}}, are
+#' carried through the map
 #' \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)} by the partition sum of
-#' [chain_derivatives()], for \eqn{\sigma \ge 0.1}, and the direct sums
-#' below.
+#' [chain_derivatives()], and the direct sums below are used otherwise.
 #'
 #' With `expected = TRUE` the method returns the expectation as an exact
 #' finite sum over the support, from [betabinom1_expected()]. `approx` and
@@ -243,7 +243,7 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, the expectation being an exact finite sum. It is
+#' @param approx Ignored, because the expectation is an exact finite sum. It is
 #'   accepted so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -256,8 +256,8 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
 #' proportion, \eqn{\sigma > 0} the dispersion and \eqn{n} the trial count.
-#' \eqn{\alpha} and \eqn{\beta} are the two beta shapes the family is written
-#' in internally.
+#' \eqn{\alpha} and \eqn{\beta} are the two beta shapes in which the family is
+#' written internally.
 #'
 #' @seealso [distrib_deriv3.BetaBinom1Distrib()] for the order below,
 #'   [distrib_hessian.BetaBinom1Distrib()] for the second order,

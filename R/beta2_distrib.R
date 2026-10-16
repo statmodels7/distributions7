@@ -5,7 +5,7 @@ NULL
 #' @name Beta2Distrib
 #'
 #' @description
-#' The S7 class of the beta family on \eqn{(0, 1)} in its canonical
+#' This is the S7 class of the beta family on \eqn{(0, 1)} in its canonical
 #' parametrization, the two shapes \eqn{\alpha > 0} and \eqn{\beta > 0}, with
 #' density \eqn{y^{\alpha-1}(1-y)^{\beta-1}/B(\alpha, \beta)}. It inherits from
 #' `continuous_distrib`, so every generic of the `distrib` class applies to it;
@@ -35,7 +35,8 @@ NULL
 #'   closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Beta2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Beta2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Beta2Distrib] and
@@ -71,13 +72,14 @@ NULL
 #' d <- beta2_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
 #'
-#' # Both parameters are shapes, so neither is a mean: the mean is
-#' # alpha / (alpha + beta).
+#' # Both parameters are shapes, so the mean is not one of the parameters: the
+#' # mean is alpha / (alpha + beta).
 #' mean(d, list(alpha = 2, beta = 5))
 Beta2Distrib <- S7::new_class("Beta2Distrib", parent = continuous_distrib)
 
@@ -124,7 +126,8 @@ Beta2Distrib <- S7::new_class("Beta2Distrib", parent = continuous_distrib)
 #' # The method is stats::dbeta at these two shapes.
 #' all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 5))
 #'
-#' # The same law as beta1 at mu = alpha/(alpha + beta), phi = alpha + beta.
+#' # The density equals that of beta1 at mu = alpha/(alpha + beta),
+#' # phi = alpha + beta.
 #' all.equal(distrib_pdf(d, y, th),
 #'           distrib_pdf(beta1_distrib(), y, list(mu = 2 / 7, phi = 7)))
 #'
@@ -228,7 +231,8 @@ S7::method(distrib_cdf, Beta2Distrib) <- function(distrib, q, theta,
 #' d <- beta2_distrib()
 #' th <- list(alpha = 2, beta = 5)
 #'
-#' # A central 95 percent interval, asymmetric about the mean of 2/7.
+#' # These quantiles form a central 95 percent interval, which is asymmetric
+#' # about the mean of 2/7.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
 #' # Exact inverse: the round trip returns the probabilities that it was given.
@@ -270,7 +274,7 @@ S7::method(distrib_quantile, Beta2Distrib) <- function(distrib, p, theta,
 #' @examples
 #' d <- beta2_distrib()
 #'
-#' # Same generator as stats::rbeta at these two shapes.
+#' # The method uses the same generator as stats::rbeta at these two shapes.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(alpha = 2, beta = 5))
 #' set.seed(2)
@@ -298,8 +302,8 @@ S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta, ...) {
 #'         + \psi(\alpha+\beta),}
 #' with \eqn{\psi} the digamma function. The beta is an exponential family in
 #' the shapes with sufficient statistics \eqn{\log y} and \eqn{\log(1-y)}, so
-#' each component is the corresponding statistic minus its expectation. That
-#' is also why every derivative beyond this one is free of the response.
+#' each component is the corresponding statistic minus its expectation.
+#' Therefore every derivative beyond this one is also free of the response.
 #'
 #' The value is computed by a compiled kernel, and \eqn{\log(1-y)} is formed
 #' with `log1p()` so that it stays accurate at `y` near zero.
@@ -340,7 +344,7 @@ S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(alpha = 2, beta = 5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out with the digamma function.
+#' # The two closed forms are written out with the digamma function.
 #' all.equal(g$alpha, log(y) - digamma(2) + digamma(7))
 #' all.equal(g$beta, log1p(-y) - digamma(5) + digamma(7))
 #'
@@ -382,7 +386,8 @@ S7::method(distrib_gradient, Beta2Distrib) <- function(distrib, y, theta,
 #'
 #' @param theta A named list with components `alpha` and `beta`, each a numeric
 #'   vector. Both must be strictly positive.
-#' @param n The length to recycle each component to, normally `length(y)`.
+#' @param n The length to which each component is recycled, normally
+#'   `length(y)`.
 #' @param order The derivative order, `2L`, `3L` or `4L`. Any other value falls
 #'   through to the fourth-order branch.
 #'
@@ -431,8 +436,8 @@ beta2_higher <- function(theta, n, order) {
 #'       \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad
 #'       \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta),}
 #' with \eqn{\psi'} the trigamma function. All three are free of the
-#' response, the data entering the log-density only through a term linear in
-#' the parameters. The values are constant within a parameter setting and are
+#' response, because the data enter the log-density only through a term linear
+#' in the parameters. The values are constant within a parameter setting and are
 #' recycled to the length of `y`, and they equal
 #' [distrib_expected_hessian.Beta2Distrib()] exactly.
 #'
@@ -471,7 +476,7 @@ beta2_higher <- function(theta, n, order) {
 #' h <- distrib_hessian(d, y, th)
 #' h
 #'
-#' # Written out with the trigamma function.
+#' # The same values are written out with the trigamma function.
 #' c(trigamma(7) - trigamma(2), trigamma(7) - trigamma(5), trigamma(7))
 #'
 #' # Free of the response, so it equals its own expectation to the bit.
@@ -492,8 +497,8 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #' @title Beta Expected Hessian in the Shapes
 #' @name distrib_expected_hessian.Beta2Distrib
 #' @description
-#' Returns the same three numbers as [distrib_hessian.Beta2Distrib()], the
-#' observed Hessian being free of the response and so equal to its own
+#' Returns the same three numbers as [distrib_hessian.Beta2Distrib()], because
+#' the observed Hessian is free of the response and so equals its own
 #' expectation:
 #' \deqn{\mathbb{E}\left[\ell^{(\alpha\alpha)}\right] = \psi'(\alpha+\beta)
 #'         - \psi'(\alpha), \qquad
@@ -505,9 +510,9 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #' simulate; it ignores `approx` and `nsim` and reads `y` only for its length.
 #'
 #' The consequence for fitting is that Fisher scoring and Newton's method take
-#' the same step on the parameter scale, both inverting the same matrix. On the
-#' link scale they differ, the chain rule there adding a term in the score,
-#' which does read the data.
+#' the same step on the parameter scale, because both invert the same matrix.
+#' On the link scale they differ, because the chain rule there adds a term in
+#' the score, which does read the data.
 #'
 #' The mixed entry \eqn{\psi'(\alpha+\beta)} is positive and never zero, so the
 #' two shapes are not orthogonal at any parameter setting.
@@ -519,7 +524,7 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, the expectation being exact. It is accepted so that
+#' @param approx Ignored, because the expectation is exact. It is accepted so that
 #'   the signature matches the generic's, where it selects between the Bartlett,
 #'   quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
@@ -580,8 +585,8 @@ S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta
 #'         \psi''(\alpha+\beta), \qquad
 #'       \ell^{(\beta\beta\beta)} = \psi''(\alpha+\beta) - \psi''(\beta),}
 #' with \eqn{\psi''} the second derivative of the digamma function. The two
-#' mixed components are equal, every mixed derivative of \eqn{\log
-#' B(\alpha,\beta)} of a given order being the same polygamma of the sum.
+#' mixed components are equal because every mixed derivative of \eqn{\log
+#' B(\alpha,\beta)} of a given order is the same polygamma of the sum.
 #'
 #' The values are free of the response, so `expected` selects nothing: the same
 #' computation runs either way and the two results are identical to the bit.
@@ -592,8 +597,8 @@ S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta
 #' @param theta A named list with components `alpha` and `beta`, each a numeric
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
-#' @param expected Logical of length 1, and without effect here, the observed
-#'   and expected third derivatives being the same numbers. Defaults to
+#' @param expected Logical of length 1, without effect here because the
+#'   observed and expected third derivatives are the same numbers. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
@@ -647,8 +652,8 @@ S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected
 #' Computes the five distinct fourth derivatives of the beta log-density with
 #' respect to \eqn{\alpha} and \eqn{\beta}, in closed form:
 #' \deqn{\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
-#'       \ell^{(\beta^4)} = \psi'''(\alpha+\beta) - \psi'''(\beta),}
-#' and every one of the three mixed components equal to
+#'       \ell^{(\beta^4)} = \psi'''(\alpha+\beta) - \psi'''(\beta).}
+#' Each of the three mixed components is equal to
 #' \eqn{\psi'''(\alpha+\beta)}, with \eqn{\psi'''} the third derivative of the
 #' digamma function.
 #'
@@ -661,8 +666,8 @@ S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected
 #' @param theta A named list with components `alpha` and `beta`, each a numeric
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
-#' @param expected Logical of length 1, and without effect here, the observed
-#'   and expected fourth derivatives being the same numbers. Defaults to
+#' @param expected Logical of length 1, without effect here because the
+#'   observed and expected fourth derivatives are the same numbers. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
@@ -723,7 +728,7 @@ S7::method(distrib_deriv4, Beta2Distrib) <- function(distrib, y, theta, expected
 #' negative above it. Where both shapes are below one it changes sign at the
 #' same point, the antimode, from negative to positive. Where exactly one shape
 #' is below one it has one sign on all of \eqn{(0, 1)}. At
-#' \eqn{\alpha = \beta = 1} it is identically zero, the density being the
+#' \eqn{\alpha = \beta = 1} it is identically zero, because the density is the
 #' uniform.
 #'
 #'
@@ -749,11 +754,12 @@ S7::method(distrib_deriv4, Beta2Distrib) <- function(distrib, y, theta, expected
 #'
 #' all.equal(distrib_grad_y(d, y, th), (2 - 1) / y - (5 - 1) / (1 - y))
 #'
-#' # Zero at the mode (alpha - 1)/(alpha + beta - 2).
+#' # The derivative is zero at the mode (alpha - 1)/(alpha + beta - 2).
 #' mode <- (2 - 1) / (2 + 5 - 2)
 #' c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
 #'
-#' # Identically zero at alpha = beta = 1, where the density is the uniform.
+#' # The derivative is identically zero at alpha = beta = 1, where the density
+#' # is the uniform.
 #' distrib_grad_y(d, y, list(alpha = 1, beta = 1))
 #'
 #' # It is the derivative of the log-density, so a central difference in y
@@ -775,8 +781,8 @@ S7::method(distrib_grad_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' It is negative throughout, so the log-density is concave in the response,
 #' whenever both shapes are at least one; a shape below one makes the
 #' corresponding term positive and can turn the curvature positive near that
-#' endpoint. At \eqn{\alpha = \beta = 1} it is exactly zero, the density being
-#' the uniform.
+#' endpoint. At \eqn{\alpha = \beta = 1} it is exactly zero, because the density
+#' is the uniform.
 #'
 #' @param distrib A `Beta2Distrib` object, from [beta2_distrib()].
 #' @param y A numeric vector of observations in \eqn{(0, 1)}. An endpoint makes
@@ -801,10 +807,11 @@ S7::method(distrib_grad_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' all.equal(distrib_hess_y(d, y, th),
 #'           -(2 - 1) / y^2 - (5 - 1) / (1 - y)^2)
 #'
-#' # Concave everywhere while both shapes exceed one.
+#' # The log-density is concave everywhere while both shapes exceed one.
 #' all(distrib_hess_y(d, y, th) < 0)
 #'
-#' # Exactly flat at alpha = beta = 1, where the beta is the uniform.
+#' # The log-density is exactly flat at alpha = beta = 1, where the beta is
+#' # the uniform.
 #' distrib_hess_y(d, y, list(alpha = 1, beta = 1))
 S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
   dy_log(theta[[1]] - 1, y, 2L) + dy_log1m(theta[[2]] - 1, y, 2L)
@@ -822,10 +829,9 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' three and four in the response and the parameters come from the numerical
 #' fallbacks of the base class.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
-#' logarithm,
-#' both shapes being positive.
+#' logarithm, because both shapes are positive.
 #'
 #' @param link_alpha A `link` object from `linkfunctions7` for the first shape
 #'   \eqn{\alpha}. Defaults to [linkfunctions7::log_link()], which maps
@@ -850,9 +856,9 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #'
 #' This is the same law as [beta1_distrib()], which carries the mean and a
 #' precision, with \eqn{\alpha = \mu\varphi} and \eqn{\beta = (1-\mu)\varphi}.
-#' The mean parametrization is the one used in regression; this one is how the
-#' family is usually written, and it is what a conjugate analysis produces, the
-#' beta being conjugate for a binomial probability.
+#' The mean parametrization is the one used in regression; this one is the
+#' usual way of writing the family, and a conjugate analysis produces it,
+#' because the beta is conjugate for a binomial probability.
 #'
 #' # Where the response stops entering
 #'
@@ -862,32 +868,32 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #'         + \psi(\alpha+\beta), \qquad
 #'       \dfrac{\partial \ell}{\partial \beta} = \log(1-y) - \psi(\beta)
 #'         + \psi(\alpha+\beta),}
-#' each a statistic minus its expectation. The data enter only through
+#' and each component is a statistic minus its expectation. The data enter
+#' only through
 #' \eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)}, which is linear in the two
 #' parameters, so the second derivative already kills it:
 #' \deqn{\ell^{(\alpha\alpha)} = \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
 #'       \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad
 #'       \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta).}
 #'
-#' Three consequences follow. The observed and expected Hessians are the same
-#' matrix, so Fisher scoring and Newton's method take the same step on the
-#' parameter scale, and every method returns the same numbers with
-#' `expected = TRUE`. Every third and fourth derivative is likewise a difference
-#' of
-#' polygamma functions and free of the data. And the mixed entry
+#' The observed and expected Hessians are the same matrix, so Fisher scoring
+#' and Newton's method take the same step on the parameter scale, and every
+#' method returns the same numbers with `expected = TRUE`. Every third and
+#' fourth derivative is likewise a difference of polygamma functions and free
+#' of the data. The mixed entry
 #' \eqn{\psi'(\alpha+\beta)} is positive at every setting, so the two shapes
 #' are never orthogonal.
 #'
 #' The derivatives of the *distribution* function in the parameters have no
-#' elementary form, the derivative of an incomplete beta in its shapes being
-#' hypergeometric, and are computed by a compiled quadrature of the density
+#' elementary form because the derivative of an incomplete beta in its shapes
+#' is hypergeometric. They are computed by a compiled quadrature of the density
 #' times the derivatives of the log-density.
 #'
 #' # Estimation
 #'
 #' [fit_distrib()] maximizes the log-likelihood on the link scale. The
-#' estimates have no closed form, both estimating equations involving digamma
-#' functions. The method of moments supplies the starting values through the
+#' estimates have no closed form, because both estimating equations involve
+#' digamma functions. The method of moments supplies the starting values through the
 #' concentration \eqn{k = \bar y(1-\bar y)/s^2 - 1}, with
 #' \eqn{\hat\alpha = k\bar y} and \eqn{\hat\beta = k(1-\bar y)}, and the
 #' example below shows them landing beside the estimates.
@@ -906,11 +912,11 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #'
 #' @seealso
 #' [beta1_distrib()] for the same law in the mean and a precision, which is the
-#' parametrization a regression uses; [betabinom2_distrib()] for the beta as a
-#' mixing law over a binomial probability; [gamma1_distrib()] for the gamma,
+#' parametrization that a regression uses; [betabinom2_distrib()] for the beta
+#' as a mixing law over a binomial probability; [gamma1_distrib()] for the gamma,
 #' from which the beta arises as \eqn{X/(X+Y)} for independent gamma
 #' variables with a common scale; [fit_distrib()] to estimate the
-#' parameters; [check_distrib()] to validate a family of your own against the
+#' parameters; [check_distrib()] to validate a user-defined family against the
 #' same battery of checks that this family passes; [Beta2Distrib] for the class.
 #'
 #' @references
@@ -927,12 +933,13 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' th <- list(alpha = 2, beta = 5)
 #' all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 5))
 #'
-#' # Moments: the mean is alpha / (alpha + beta); neither parameter is a mean.
+#' # Moments: the mean is alpha / (alpha + beta), which is not a parameter.
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))
 #' c(2 / 7, 2 * 5 / (7^2 * 8))
 #'
-#' # The same law as beta1 at mu = alpha/(alpha + beta), phi = alpha + beta.
+#' # The density equals that of beta1 at mu = alpha/(alpha + beta),
+#' # phi = alpha + beta.
 #' all.equal(distrib_pdf(d, y, th),
 #'           distrib_pdf(beta1_distrib(), y, list(mu = 2 / 7, phi = 7)))
 #'

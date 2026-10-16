@@ -60,10 +60,11 @@ parameter carries an identity link, its free value being unconstrained
 already. The family has no dispersion parameter.
 }
 \description{
-The S7 class of the multinomial family on \eqn{p} categories and \eqn{n}
-trials, parametrized by a probability vector carried on a \code{parameters7}
-simplex. It inherits from \code{multivariate_distrib}. Its support is a finite set
-of points: every vector of non-negative integers summing to \eqn{n}.
+This is the S7 class of the multinomial family on \eqn{p} categories and
+\eqn{n} trials, parametrized by a probability vector carried on a
+\code{parameters7} simplex. It inherits from \code{multivariate_distrib}. Its support
+is a finite set of points: every vector of non-negative integers summing to
+\eqn{n}.
 
 The class carries two properties beyond the parent's: \code{size}, the number of
 trials, fixed at construction; and \code{param}, the simplex on which the
@@ -75,7 +76,8 @@ documents the raw S7 constructor, which runs only the validators of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf()}} and
 \code{\link[=distrib_rng.MultinomialDistrib]{distrib_rng()}};

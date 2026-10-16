@@ -7,7 +7,7 @@
 \item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Every real value is in the
-support, so no value is rejected.}
+support, so every value is accepted.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
@@ -25,11 +25,11 @@ A numeric vector of densities, of length
 \description{
 Computes the Gumbel density, with \eqn{z = (y - \mu)/\sigma},
 \deqn{f(y; \mu, \sigma) = \dfrac{1}{\sigma}
-      \exp\left\{-z - e^{-z}\right\},}
-written out rather than delegated, base R carrying no Gumbel. The two tails
-are of very different weight: the density falls like \eqn{e^{-z}} to the
-right and like \eqn{e^{-e^{-z}}} to the left, so the left tail is doubly
-exponential and decays much faster.
+      \exp\left\{-z - e^{-z}\right\}.}
+The function evaluates this formula directly because base R has no Gumbel
+density. The two tails are of very different weight: the density falls like
+\eqn{e^{-z}} to the right and like \eqn{e^{-e^{-z}}} to the left, so the left
+tail is doubly exponential and decays much faster.
 
 With \code{log = TRUE} the exponent is returned directly and stays finite where
 the density itself underflows.
@@ -39,7 +39,7 @@ d <- gumbel_distrib()
 y <- c(-1, 0, 1)
 th <- list(mu = 0, sigma = 1)
 
-# The closed form, written out.
+# The closed form is written out.
 z <- (y - 0) / 1
 all.equal(distrib_pdf(d, y, th), exp(-z - exp(-z)))
 
@@ -56,6 +56,6 @@ distrib_pdf(d, -8, th, log = TRUE)
 \seealso{
 \code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf.GumbelDistrib()}} for the distribution function,
 \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient.GumbelDistrib()}} for the derivatives of the
-log-density, \code{\link[=distrib_pdf.Weibull1Distrib]{distrib_pdf.Weibull1Distrib()}} for the family this becomes
-under \eqn{e^{-Y}}, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
+log-density, \code{\link[=distrib_pdf.Weibull1Distrib]{distrib_pdf.Weibull1Distrib()}} for the family that this
+becomes under \eqn{e^{-Y}}, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

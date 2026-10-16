@@ -46,8 +46,8 @@ object built by \code{\link[=invgauss2_distrib]{invgauss2_distrib()}} they hold 
 both parameters, and the two links.
 }
 \description{
-The S7 class of the inverse Gaussian family on \eqn{(0, \infty)} in its
-classical parametrization, the mean \eqn{\mu > 0} and the shape
+This is the S7 class of the inverse Gaussian family on \eqn{(0, \infty)} in
+its classical parametrization, the mean \eqn{\mu > 0} and the shape
 \eqn{\lambda > 0}, so that \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. It
 inherits from \code{continuous_distrib}, so every generic of the \code{distrib} class
 applies to it; the methods listed below are registered on it in this file and
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf()}},
@@ -105,7 +106,8 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- invgauss2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 d@bounds

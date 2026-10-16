@@ -5,8 +5,8 @@ NULL
 #' @name InvGauss2Distrib
 #'
 #' @description
-#' The S7 class of the inverse Gaussian family on \eqn{(0, \infty)} in its
-#' classical parametrization, the mean \eqn{\mu > 0} and the shape
+#' This is the S7 class of the inverse Gaussian family on \eqn{(0, \infty)} in
+#' its classical parametrization, the mean \eqn{\mu > 0} and the shape
 #' \eqn{\lambda > 0}, so that \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. It
 #' inherits from `continuous_distrib`, so every generic of the `distrib` class
 #' applies to it; the methods listed below are registered on it in this file and
@@ -36,7 +36,8 @@ NULL
 #'   [distrib_gradient.InvGauss2Distrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.InvGauss2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.InvGauss2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.InvGauss2Distrib] and
@@ -77,7 +78,8 @@ NULL
 #' d <- invgauss2_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
@@ -683,7 +685,7 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' parameters and in the response, and closed-form moments. The fifth order and
 #' [distrib_cross3_y()] come from the numerical fallbacks of the base class.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
 #' logarithm, because both parameters are positive.
 #'

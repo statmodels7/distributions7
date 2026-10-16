@@ -27,8 +27,8 @@ A numeric vector of densities, of length
 Computes the exponential density
 \deqn{f(y; \mu) = \dfrac{1}{\mu}\exp\left(-\dfrac{y}{\mu}\right), \qquad y \ge 0,}
 by calling \code{\link[stats:Exponential]{stats::dexp()}} at \code{rate = 1/mu}. The parametrization here is by
-the mean, so the reciprocal is taken inside the method; a reader passing
-\code{rate} where \code{mu} is expected gets the reciprocal distribution.
+the mean, so the reciprocal is taken inside the method; passing \code{rate}
+where \code{mu} is expected yields the reciprocal distribution.
 }
 \examples{
 d <- exponential_distrib()

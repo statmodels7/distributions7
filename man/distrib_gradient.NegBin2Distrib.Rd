@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -37,7 +37,7 @@ The mean component is the score of a generalized linear model with a
 quadratic variance function.
 }
 \section{The dispersion at large theta}{
-The dispersion component is \strong{not} computed as written above. As
+The dispersion component is not computed as written above. As
 \eqn{\theta} grows the family tends to the Poisson and this derivative
 vanishes, its three terms canceling to leading order:
 \eqn{\psi(y+\theta) - \psi(\theta)} is \eqn{y/\theta},
@@ -45,7 +45,7 @@ vanishes, its three terms canceling to leading order:
 \eqn{(\mu-y)/\theta}, and the three sum to zero, so the value is
 \eqn{O(\theta^{-2})} computed from terms of size \eqn{\theta^{-1}}. Written
 directly it is wrong by about one part in a thousand at \eqn{\theta = 10^6}
-and \strong{changes sign} at \eqn{10^8}.
+and changes sign at \eqn{10^8}.
 
 The kernel performs each cancellation symbolically instead. With
 \eqn{a = \theta}, \eqn{b = \theta + y}, \eqn{c = \theta + \mu} and
@@ -59,8 +59,8 @@ example below reproduces. A fit reaches that regime when the sample is
 nearly equidispersed, because the estimate of \eqn{\theta} then grows
 without bound.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale.
 }
 

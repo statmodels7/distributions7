@@ -21,7 +21,8 @@ quad_log_tail_prob(distrib, q, theta, lower.tail)
 
 \item{o}{The derivative order, 1 to 4.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail.}
 
 \item{all_orders}{Return the orders 1 to \code{o}, as a list of such lists?}
 }

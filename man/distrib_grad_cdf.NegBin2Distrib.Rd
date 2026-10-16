@@ -14,11 +14,11 @@ values below zero give a derivative of zero in both components.}
 dispersion component grows with the largest quantile, the sum running the
 support up to it.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
-default.}
+\item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+lower tail and \code{FALSE} the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical,
-\code{TRUE} by default.}
+\item{log}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+derivatives of the log probability and \code{FALSE} those of the probability.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

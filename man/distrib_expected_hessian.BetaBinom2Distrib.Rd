@@ -6,25 +6,25 @@
 \arguments{
 \item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
-\item{y}{A numeric vector of counts. Only its length is read, the
-expectation not depending on the data; the values are ignored.}
+\item{y}{A numeric vector of counts. Only its length is read, because the
+expectation does not depend on the data; the values are ignored.}
 
 \item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, the expectation being an exact sum. Accepted so
-that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
+\item{approx}{Ignored here, because the expectation is an exact sum. It is
+accepted so that the signature matches the generic's, where it selects
+between \code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{A single positive integer, the number of threads the
+\item{threads}{A single positive integer, the number of threads that the
 compiled kernel may use. Defaults to \code{1L}.}
 }
 \value{
@@ -34,8 +34,8 @@ and \code{alpha_beta}, each of length \code{length(y)} and each constant along i
 \description{
 Returns the expectation of the observed Hessian under the model,
 \eqn{\sum_{k=0}^{n} P(Y=k)\,\partial^2\ell/\partial\theta_i\partial\theta_j}
-evaluated at \eqn{y = k}. The family being discrete on
-\eqn{\{0, \dots, n\}}, that is an \strong{exact finite sum} of at most \eqn{n+1}
+evaluated at \eqn{y = k}. Because the family is discrete on
+\eqn{\{0, \dots, n\}}, this is an exact finite sum of at most \eqn{n+1}
 terms, so the answer is the expectation to machine precision. \code{approx} and
 \code{nsim} are therefore ignored: every strategy returns the same three
 numbers.
@@ -54,12 +54,12 @@ vapply(eh, function(v) v[1], numeric(1))
 w <- distrib_pdf(d, 0:10, th)
 vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 
-# The strategy argument is inert, the expectation being an exact sum.
+# The strategy argument is inert because the expectation is an exact sum.
 identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
                                        nsim = 50))
 }
 \seealso{
 \code{\link[=betabinom2_expected]{betabinom2_expected()}} for the summation,
-\code{\link[=distrib_hessian.BetaBinom2Distrib]{distrib_hessian.BetaBinom2Distrib()}} for the quantity this is the
-expectation of, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_hessian.BetaBinom2Distrib]{distrib_hessian.BetaBinom2Distrib()}} for the quantity whose expectation
+this method returns, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

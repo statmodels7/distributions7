@@ -5,12 +5,12 @@ NULL
 #' @name Weibull3Distrib
 #'
 #' @description
-#' The S7 class of the Weibull family parametrized by its mean \eqn{m} and its
-#' shape \eqn{\sigma}. It inherits from `continuous_distrib`. Build one with
-#' [weibull3_distrib()]; this page documents the raw S7 constructor;
-#' the validator of `distrib` checks that
-#' the properties are consistent (the parameter count, a bound and a link
-#' for every parameter, ordered support bounds).
+#' This is the S7 class of the Weibull family parametrized by its mean \eqn{m}
+#' and its shape \eqn{\sigma}. It inherits from `continuous_distrib`. Build one
+#' with [weibull3_distrib()]; this page documents the raw S7 constructor; the
+#' validator of `distrib` checks that the properties are consistent (the
+#' parameter count, a bound and a link for every parameter, ordered support
+#' bounds).
 #'
 #' @inheritParams distrib
 #'
@@ -21,7 +21,8 @@ NULL
 #'   sigma = "shape")`, `2` and the domains \eqn{(0, \infty)} for both.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Weibull3Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Weibull3Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Weibull3Distrib] and

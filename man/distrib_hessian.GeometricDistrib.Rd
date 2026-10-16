@@ -12,7 +12,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -29,7 +29,7 @@ mean, one value per observation, in closed form. Differentiating
 \eqn{(y-\mu)/(\mu(1+\mu))} gives
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2}
       = \dfrac{-\mu(1+\mu) - (y-\mu)(1+2\mu)}{\mu^2(1+\mu)^2},}
-which depends on the data through \eqn{y} alone. Its expectation is
+which depends on the data only through \eqn{y}. Its expectation is
 \code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian.GeometricDistrib()}}. Equivalently the value is
 \eqn{-(y/\mu^2 - (y+1)/(1+\mu)^2)}.
 

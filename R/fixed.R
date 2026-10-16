@@ -5,7 +5,8 @@ NULL
 #' @name FixedContinuousDistrib
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.FixedContinuousDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.FixedContinuousDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.FixedContinuousDistrib],
@@ -70,10 +71,10 @@ NULL
 #' @aliases variance.FixedContinuousDistrib
 #'
 #' @description
-#' The S7 class of a CONTINUOUS distribution in which some parameters of the
-#' wrapped distribution are held at known values. It is the only wrapper in
-#' this package that REMOVES parameters: the law is the parent's, evaluated at
-#' a `theta` short by however many were fixed. Build one with [fixed()], which
+#' This is the S7 class of a CONTINUOUS distribution in which some parameters of
+#' the wrapped distribution are held at known values. It is the only wrapper in
+#' this package that REMOVES parameters: the law is the parent's, evaluated at a
+#' `theta` short by however many were fixed. Build one with [fixed()], which
 #' picks this class or one of its two siblings from the parent.
 #'
 #' @details
@@ -151,7 +152,8 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @name FixedDiscreteDistrib
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.FixedDiscreteDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.FixedDiscreteDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.FixedDiscreteDistrib],
@@ -210,12 +212,12 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @aliases variance.FixedDiscreteDistrib
 #'
 #' @description
-#' The S7 class of a DISCRETE distribution in which some parameters of the
-#' wrapped distribution are held at known values. It behaves exactly as
+#' This is the S7 class of a DISCRETE distribution in which some parameters of
+#' the wrapped distribution are held at known values. It behaves exactly as
 #' [FixedContinuousDistrib] does; the split into three classes exists so that
-#' the wrapper inherits the right base class, and with it the right defaults
-#' for anything the parent does not register. Build one with [fixed()], which
-#' picks the class from the parent.
+#' the wrapper inherits the right base class, and with it the right defaults for
+#' anything the parent does not register. Build one with [fixed()], which picks
+#' the class from the parent.
 #'
 #' @details
 #' # How every method works
@@ -281,7 +283,8 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @name FixedMultivariateDistrib
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.FixedMultivariateDistrib]
 #'   and [`distrib_rng()`][distrib_rng.FixedMultivariateDistrib];
 #' - the derivatives in the parameters:
@@ -334,15 +337,15 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @aliases variance.FixedMultivariateDistrib
 #'
 #' @description
-#' The S7 class of a MULTIVARIATE distribution in which some parameters of the
-#' wrapped distribution are held at known values. It follows
+#' This is the S7 class of a MULTIVARIATE distribution in which some parameters
+#' of the wrapped distribution are held at known values. It follows
 #' [FixedContinuousDistrib] in splicing the held values into `theta` and
-#' delegating to the parent. It has no distribution function, quantile or
-#' atoms, and adds the multivariate generics:
-#' [mv_location()], [mv_sigma()], [mv_marginal()], [mv_support()],
-#' [mv_reference_draw()] and [mv_derived()] all delegate to the parent at the
-#' spliced `theta`, and [mv_derived()] reports the parent's quantities with the
-#' Jacobian columns of the fixed parameters removed.
+#' delegating to the parent. It has no distribution function, quantile or atoms,
+#' and adds the multivariate generics: [mv_location()], [mv_sigma()],
+#' [mv_marginal()], [mv_support()], [mv_reference_draw()] and [mv_derived()] all
+#' delegate to the parent at the spliced `theta`, and [mv_derived()] reports the
+#' parent's quantities with the Jacobian columns of the fixed parameters
+#' removed.
 #'
 #' The motivating case is a CENTERED PRIOR: holding the mean components of a
 #' multivariate family at zero leaves the matrix parameter alone, and a matrix

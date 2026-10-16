@@ -5,12 +5,12 @@ NULL
 #' @name Gamma1Distrib
 #'
 #' @description
-#' The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and a
-#' dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
-#' The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}. It inherits from
-#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
-#' the methods listed below are registered on it directly and everything else
-#' comes from the parent.
+#' This is the S7 class of the gamma family parametrized by its mean \eqn{\mu >
+#' 0} and a dispersion \eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) =
+#' \phi\mu^2}. The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}. It
+#' inherits from `continuous_distrib`, so every generic of the `distrib` class
+#' applies to it; the methods listed below are registered on it directly and
+#' everything else comes from the parent.
 #'
 #' Build one with [gamma1_distrib()], which supplies the two link functions and
 #' fills the properties in. This page documents the raw S7 constructor, which
@@ -35,7 +35,8 @@ NULL
 #'   the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Gamma1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Gamma1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Gamma1Distrib] and
@@ -72,7 +73,8 @@ NULL
 #' d <- gamma1_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
@@ -86,18 +88,18 @@ Gamma1Distrib <- S7::new_class("Gamma1Distrib", parent = continuous_distrib)
 #' Shape and Rate of the Gamma from Its Mean and Dispersion
 #'
 #' @description
-#' Converts the `gamma1` parameters to the shape and rate [stats::dgamma()]
+#' Converts the `gamma1` parameters to the shape and rate that [stats::dgamma()]
 #' takes: \eqn{a = 1/\phi} and \eqn{b = 1/(\phi\mu)}. Under that pairing the
 #' mean \eqn{a/b} is \eqn{\mu} and the variance \eqn{a/b^2} is \eqn{\phi\mu^2}.
-#' Nothing is validated; a non-positive `phi` or `mu` propagates as an infinite
-#' or negative value to the caller.
+#' The function does not validate its input; a non-positive `phi` or `mu`
+#' propagates as an infinite or negative value to the caller.
 #'
 #' @param theta A named list with components `mu` and `phi`, each a numeric
 #'   vector. The two are used elementwise, so components of different lengths
 #'   recycle in the usual way.
 #'
 #' @return A list of two numeric vectors, `shape` and `rate`, of the lengths
-#'   the arithmetic produces.
+#'   that the arithmetic produces.
 #'
 #' @seealso [gamma1_distrib()] for the family and
 #'   [distrib_pdf.Gamma1Distrib()] for the density that uses it.
@@ -261,14 +263,14 @@ S7::method(distrib_cdf, Gamma1Distrib) <- function(distrib, q, theta,
 #' d <- gamma1_distrib()
 #' th <- list(mu = 3, phi = 0.5)
 #'
-#' # A central 95 percent interval, visibly asymmetric about the mean of 3.
+#' # The central 95 percent interval is visibly asymmetric about the mean of 3.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
 #' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # The median falls below the mean, the gamma being right skewed.
+#' # The median falls below the mean because the gamma is right skewed.
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 S7::method(distrib_quantile, Gamma1Distrib) <- function(distrib, p, theta,
                                                          lower.tail = TRUE,
@@ -303,7 +305,8 @@ S7::method(distrib_quantile, Gamma1Distrib) <- function(distrib, p, theta,
 #' @examples
 #' d <- gamma1_distrib()
 #'
-#' # Same generator as stats::rgamma at the implied shape and rate.
+#' # The method uses the same generator as stats::rgamma at the implied shape
+#' # and rate.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = 3, phi = 0.5))
 #' set.seed(2)
@@ -375,10 +378,11 @@ S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 3, phi = 0.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The generalized linear model score: residual over the variance function.
+#' # The generalized linear model score is the residual over the variance
+#' # function.
 #' all.equal(g$mu, (y - 3) / (0.5 * 3^2))
 #'
-#' # The dispersion component, written out with the digamma function.
+#' # The dispersion component is written out with the digamma function.
 #' s <- 1 / 0.5
 #' z <- y / 3
 #' all.equal(g$phi, -s^2 * (log(s) + 1 - digamma(s) + log(z) - z))
@@ -414,8 +418,8 @@ S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
 #'
 #' The curvature in \eqn{\mu} turns positive wherever \eqn{y < \mu/2}, so
 #' the observed information of a gamma is not positive definite at every data
-#' point. Its expectation is, which is one reason a gamma model is fitted by
-#' Fisher scoring; see [distrib_expected_hessian.Gamma1Distrib()].
+#' point. Its expectation is positive definite, which is one reason why a gamma
+#' model is fitted by Fisher scoring; see [distrib_expected_hessian.Gamma1Distrib()].
 #'
 #' @param distrib A `Gamma1Distrib` object, from [gamma1_distrib()].
 #' @param y A numeric vector of strictly positive observations.
@@ -450,7 +454,7 @@ S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
 #' th <- list(mu = 3, phi = 0.5)
 #' h <- distrib_hessian(d, y, th)
 #'
-#' # The curvature in mu, written out, and positive at y = 1 < mu/2 = 1.5.
+#' # The curvature in mu is written out, and it is positive at y = 1 < mu/2 = 1.5.
 #' s <- 1 / 0.5
 #' z <- y / 3
 #' all.equal(h$mu_mu, s * (1 - 2 * z) / 3^2)
@@ -483,15 +487,16 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
 #'         s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.}
 #' They follow from \eqn{\mathbb{E}[Y] = \mu} and
-#' \eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}, the second of which is
-#' exactly what makes the score in \eqn{\phi} have mean zero. The quantity
+#' \eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}, and the second of these
+#' identities is exactly the condition under which the score in \eqn{\phi}
+#' has mean zero. The quantity
 #' \eqn{1/s - \psi'(s)} is negative for every \eqn{s > 0}, so the pure
 #' dispersion entry is negative and the information is positive definite
 #' everywhere, where the observed Hessian is not.
 #'
 #' The off-diagonal entry is zero, so the mean and the dispersion are
 #' orthogonal. The score in \eqn{\mu} has the dispersion as a common factor,
-#' so the mean equation can be solved with the dispersion held at any value.
+#' so the mean equation can be solved at any fixed value of the dispersion.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -523,18 +528,18 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #' regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score. \eqn{\psi'} is the trigamma function.
 #'
-#' @seealso [distrib_hessian.Gamma1Distrib()] for the observed quantity this is
-#'   the expectation of, [fisher_scoring()], which inverts it at each step, and
+#' @seealso [distrib_hessian.Gamma1Distrib()] for the observed quantity whose
+#'   expectation this is, [fisher_scoring()], which inverts it at each step, and
 #'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- gamma1_distrib()
 #' th <- list(mu = 3, phi = 0.5)
 #'
-#' # The three constants, one value per observation.
+#' # The three constants take one value per observation.
 #' lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
 #'
-#' # The dispersion entry, written out with the trigamma function.
+#' # The dispersion entry is written out with the trigamma function.
 #' s <- 1 / 0.5
 #' s^4 * (1 / s - trigamma(s))
 #'
@@ -545,8 +550,8 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
 #'
-#' # Negative definite at every parameter setting, where the observed Hessian
-#' # is positive in mu wherever y < mu/2.
+#' # The expected Hessian is negative definite at every parameter setting,
+#' # whereas the observed Hessian is positive in mu wherever y < mu/2.
 #' phi <- c(0.05, 0.5, 5)
 #' vapply(phi, function(p) {
 #'   s <- 1 / p
@@ -564,8 +569,8 @@ S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, thet
 #' @name distrib_dexpected_hessian.Gamma1Distrib
 #' @aliases distrib_d2expected_hessian.Gamma1Distrib
 #' @description
-#' The first and second derivatives of the expected information in
-#' \eqn{(\mu, \phi)}, from a compiled kernel. With \eqn{s = 1/\phi},
+#' Computes the first and second derivatives of the expected information in
+#' \eqn{(\mu, \phi)} with a compiled kernel. With \eqn{s = 1/\phi},
 #' \eqn{\mathbb{E}[\ell^{(\mu\mu)}] = -s/\mu^2},
 #' \eqn{\mathbb{E}[\ell^{(\mu\phi)}] = 0} and
 #' \eqn{\mathbb{E}[\ell^{(\phi\phi)}] = q(s) = s^4(1/s - \psi'(s))};
@@ -573,7 +578,7 @@ S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, thet
 #' \deqn{\partial_\phi \mathbb{E}[\ell_{\phi\phi}] = -s^2 q'(s),\qquad
 #'   \partial_{\phi\phi} \mathbb{E}[\ell_{\phi\phi}] = s^4 q''(s) + 2 s^3 q'(s),}
 #' with \eqn{q' = f_3 s^4 + 4 f_2 s^3} and \eqn{q'' = f_4 s^4 + 8 f_3 s^3 +
-#' 12 f_2 s^2}, each \eqn{f_k} computed in a form free of cancellation at
+#' 12 f_2 s^2}; each \eqn{f_k} is computed in a form free of cancellation at
 #' large \eqn{s}. The derivatives of \eqn{-\mu^{-2}\phi^{-1}} are monomials. On
 #' the link scale the result is carried across by [dexpected_link()].
 #' @param distrib A `Gamma1Distrib` object.
@@ -657,7 +662,7 @@ S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, th
 #' th <- list(mu = 3, phi = 0.5)
 #' d3 <- distrib_deriv3(d, y, th)
 #'
-#' # The three components involving mu, written out.
+#' # The three components involving mu are written out.
 #' s <- 1 / 0.5
 #' z <- y / 3
 #' all.equal(d3$mu_mu_mu, s * (6 * z - 2) / 3^3)
@@ -701,9 +706,9 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' with \eqn{s' = -s^2}, \eqn{s'' = 2s^3}, \eqn{s''' = -6s^4},
 #' \eqn{s'''' = 24s^5} and \eqn{f_k} the \eqn{k}th derivative of \eqn{\ell} in
 #' \eqn{s}. \eqn{f_2}, \eqn{f_3} and \eqn{f_4} are polygamma functions of
-#' \eqn{s}, each computed as a polygamma minus its own leading asymptote, and
-#' \eqn{f_1} also contains \eqn{\log z - (z - 1)}, so the digits survive at
-#' large shape.
+#' \eqn{s}, and each of them is computed as a polygamma minus its own leading
+#' asymptote. \eqn{f_1} also contains \eqn{\log z - (z - 1)}, so the digits
+#' survive at large shape.
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{z} with 1 and \eqn{\log z} with \eqn{\psi(s) - \log s}. Both routes are
@@ -739,7 +744,7 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' @seealso [distrib_deriv3.Gamma1Distrib()] for the order below,
 #'   [distrib_deriv4()] for the generic, and
 #'   [distrib_expected_hessian.Gamma1Distrib()] for the second-order
-#'   expectation these extend.
+#'   expectation that these extend.
 #'
 #' @examples
 #' d <- gamma1_distrib()
@@ -748,7 +753,7 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' d4 <- distrib_deriv4(d, y, th)
 #' names(d4)
 #'
-#' # The four components involving mu, written out.
+#' # The four components involving mu are written out.
 #' s <- 1 / 0.5
 #' z <- y / 3
 #' all.equal(d4$mu_mu_mu_mu, s * (6 - 24 * z) / 3^4)
@@ -810,10 +815,10 @@ S7::method(distrib_deriv4, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' y <- c(1, 3, 5)
 #' th <- list(mu = 3, phi = 0.5)
 #'
-#' # Written out at the implied shape and rate.
+#' # The derivative is written out at the implied shape and rate.
 #' all.equal(distrib_grad_y(d, y, th), (2 - 1) / y - 1 / 1.5)
 #'
-#' # Zero at the mode, positive below it and negative above.
+#' # The derivative is zero at the mode, positive below it and negative above.
 #' mode <- (1 / 0.5 - 1) / (1 / (0.5 * 3))
 #' c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
 #' distrib_grad_y(d, c(0.5, 5), th)
@@ -837,8 +842,8 @@ S7::method(distrib_grad_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' Computes the second derivative of the gamma log-density with respect to the
 #' response, in closed form at the implied shape \eqn{a = 1/\phi}:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{a - 1}{y^2}.}
-#' The rate drops out, the log-density being linear in \eqn{y} apart from the
-#' \eqn{(a-1)\log y} term. The sign follows the shape: the log-density is
+#' The rate drops out because the log-density is linear in \eqn{y} apart from
+#' the \eqn{(a-1)\log y} term. The sign follows the shape: the log-density is
 #' concave in the response for \eqn{\phi < 1}, exactly flat at \eqn{\phi = 1},
 #' where the family is exponential, and convex for \eqn{\phi > 1}.
 #'
@@ -846,8 +851,8 @@ S7::method(distrib_grad_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' @param y A numeric vector of strictly positive observations. At `y = 0` the
 #'   value is infinite unless the shape is exactly 1.
 #' @param theta A named list with components `mu` and `phi`, each a numeric
-#'   vector of length 1 or of the length of `y`. `mu` is not read, the rate
-#'   having canceled. `phi` must be strictly positive.
+#'   vector of length 1 or of the length of `y`. `mu` is not read, because the
+#'   rate has canceled. `phi` must be strictly positive.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
@@ -868,7 +873,7 @@ S7::method(distrib_grad_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' identical(distrib_hess_y(d, y, th),
 #'           distrib_hess_y(d, y, list(mu = 300, phi = 0.5)))
 #'
-#' # Concave below phi = 1, flat at it, convex above.
+#' # The log-density is concave below phi = 1, flat at it and convex above.
 #' vapply(c(0.5, 1, 2), function(p) distrib_hess_y(d, 3, list(mu = 3, phi = p)),
 #'        numeric(1))
 S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
@@ -882,14 +887,14 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' @description
 #' Builds the distribution object for the gamma family parametrized by its mean
 #' \eqn{\mu > 0} and a dispersion \eqn{\phi > 0}, so that
-#' \eqn{\operatorname{Var}(Y) = \phi\mu^2}. This is the parametrization a
-#' generalized linear model uses. The returned object carries closed-form
+#' \eqn{\operatorname{Var}(Y) = \phi\mu^2}. This is the parametrization that
+#' a generalized linear model uses. The returned object carries closed-form
 #' derivatives of the log-density to fourth order, in the parameters and in the
 #' response, and closed-form moments. The fifth order and the mixed
 #' derivatives of order three and four in the response and the parameters
 #' come from the numerical fallbacks of the base class.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
 #' logarithm, because both parameters are positive.
 #'
@@ -918,9 +923,10 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' at \eqn{\phi \to 0} it tends to a Gaussian with variance \eqn{\phi\mu^2}.
 #'
 #' This is the same law as [gamma2_distrib()], which carries the mean and the
-#' *variance*, the two being related by \eqn{\sigma^2 = \phi\mu^2}. They are
-#' separate families because the second parameter is a different quantity in
-#' each, with its own interpretation, standard error and interval.
+#' *variance*, and the two second parameters are related by
+#' \eqn{\sigma^2 = \phi\mu^2}. They are separate families because the second
+#' parameter is a different quantity in each, with its own interpretation,
+#' standard error and interval.
 #'
 #' # Derivatives
 #'
@@ -934,7 +940,7 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #'       \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
 #'         s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.}
 #' The zero off-diagonal makes the mean and the dispersion orthogonal, so the
-#' mean equation can be fitted with the dispersion held at any value without
+#' mean equation can be fitted at any fixed value of the dispersion without
 #' biasing it.
 #'
 #' Every derivative in \eqn{\phi} is the corresponding derivative in \eqn{s}
@@ -943,16 +949,16 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' polygamma function is evaluated once. Two quantities in those derivatives
 #' cancel as \eqn{s} grows, \eqn{\log s - \psi(s)} and its polygamma analogues;
 #' each is computed as a polygamma minus its own leading asymptote, so the
-#' digits survive at the large shape a nearly Gaussian gamma reaches.
+#' digits survive at the large shape that a nearly Gaussian gamma reaches.
 #'
 #' Third and fourth orders are closed form as well, observed and expected, in
 #' [distrib_deriv3.Gamma1Distrib()] and [distrib_deriv4.Gamma1Distrib()], as
 #' are the derivatives in the response, [distrib_grad_y.Gamma1Distrib()] and
 #' [distrib_hess_y.Gamma1Distrib()]. The derivatives of the *distribution*
-#' function in the parameters have no elementary form here, the derivative of
-#' an incomplete gamma in its shape being hypergeometric, and are computed by
-#' a compiled quadrature of the density times the derivatives of the
-#' log-density.
+#' function in the parameters have no elementary form here because the
+#' derivative of an incomplete gamma in its shape is hypergeometric, and they
+#' are computed by a compiled quadrature of the density times the derivatives
+#' of the log-density.
 #'
 #' # Estimation
 #'
@@ -1000,12 +1006,12 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' th <- list(mu = 3, phi = 0.5)
 #' all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 2, rate = 1 / 1.5))
 #'
-#' # Moments in closed form: skewness 2 sqrt(phi), excess kurtosis 6 phi.
+#' # The moments have closed forms: skewness 2 sqrt(phi), excess kurtosis 6 phi.
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))
 #' c(2 * sqrt(0.5), 6 * 0.5)
 #'
-#' # Fitting recovers the parameters, the mean exactly at the sample mean.
+#' # Fitting recovers the parameters, and the fitted mean equals the sample mean.
 #' set.seed(4)
 #' z <- distrib_rng(d, 2000, th)
 #' fit <- fit_distrib(d, z)

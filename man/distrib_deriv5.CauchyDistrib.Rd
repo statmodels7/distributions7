@@ -37,16 +37,17 @@ therefore the single term
 plus \eqn{(-1)^{n-1}(n-1)!/\sigma^n} from \eqn{\log\sigma} in the
 component that is pure in \eqn{\sigma}. The kernel forms \eqn{1/Y} by
 Smith's division and never forms \eqn{(y - \mu)^2} or \eqn{\sigma^2}, so
-no two terms cancel and the components stay finite at any residual. The
-observed orders one to four are computed by the same formula. With
+the terms do not cancel one another and the components stay finite at any
+residual. The observed orders one to four are computed by the same
+formula. With
 \code{scale = "link"} the components are composed with the link derivatives
 by the routine that every family with a fifth-order kernel uses.
 }
 \examples{
 d <- cauchy_distrib()
 d5 <- distrib_deriv5(d, c(-1.2, 0.3, 1e200), list(mu = 0.4, sigma = 1.5))
-# Finite far in the tail, where the component pure in sigma tends to
-# 24/sigma^5.
+# The derivatives are finite far in the tail, where the component pure in
+# sigma tends to 24/sigma^5.
 c(d5$sigma_sigma_sigma_sigma_sigma[3], 24 / 1.5^5)
 }
 \seealso{

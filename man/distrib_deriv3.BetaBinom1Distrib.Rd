@@ -17,10 +17,10 @@ recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positi
 model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, the expectation being an exact finite sum. Accepted
-so that the signature matches the generic's.}
+\item{approx}{Ignored, because the expectation is an exact finite sum. It is
+accepted so that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -34,10 +34,10 @@ entries of a symmetric third-order array over two parameters.
 }
 \description{
 Computes the four distinct third derivatives of the beta-binomial log-mass
-in \eqn{\mu} and \eqn{\sigma}, \strong{in closed form}. The shape parametrization
-carries closed derivatives at every order, each a difference of polygammas,
-and this parametrization is that one at \eqn{\alpha = \mu/\sigma} and
-\eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
+in \eqn{\mu} and \eqn{\sigma}, in closed form. The shape parametrization
+carries closed derivatives at every order, and each of them is a difference
+of polygammas. This parametrization is that one at
+\eqn{\alpha = \mu/\sigma} and \eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
 \code{\link[=chain_derivatives]{chain_derivatives()}} over the map delivers them. Both shapes are linear in
 \eqn{\mu} at fixed \eqn{\sigma}, so every partial of the map carrying two or
 more \eqn{\mu} vanishes and the sum is short. This route is taken for
@@ -53,8 +53,8 @@ finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_e
 
 \eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
 proportion, \eqn{\sigma > 0} the dispersion and \eqn{n} the trial count.
-\eqn{\alpha} and \eqn{\beta} are the two beta shapes the family is written
-in internally.
+\eqn{\alpha} and \eqn{\beta} are the two beta shapes in which the family is
+written internally.
 }
 
 \examples{
@@ -64,7 +64,7 @@ d3 <- distrib_deriv3(d, 0:10, th)
 names(d3)
 
 # A central difference of the Hessian reproduces the pure-mu component,
-# which is what says the partition sum over the map is right.
+# which confirms that the partition sum over the map is right.
 eps <- 1e-5
 up <- distrib_hessian(d, 0:10, list(mu = 0.3 + eps, sigma = 0.5))$mu_mu
 dn <- distrib_hessian(d, 0:10, list(mu = 0.3 - eps, sigma = 0.5))$mu_mu

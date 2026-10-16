@@ -29,7 +29,7 @@ Ignored for a univariate fit.}
 \code{xlab} or \code{xlim}.}
 }
 \value{
-\code{x}, invisibly. Called for the plot it draws.
+\code{x}, invisibly. The function is called for the plot that it draws.
 }
 \description{
 Compares the fitted distribution with the sample it was estimated from,

@@ -10,11 +10,11 @@
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
-default.}
+\item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+lower tail and \code{FALSE} the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical,
-\code{TRUE} by default.}
+\item{log}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+derivatives of the log probability and \code{FALSE} those of the probability.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -32,7 +32,7 @@ is the one that a first-order chain does not have, and it is why the map's secon
 partials are needed as well as its first.
 }
 \details{
-The test requires the parent to be exact at \strong{both} orders. A parent with a
+The test requires the parent to be exact at both orders. A parent with a
 closed gradient and a differenced Hessian sends this whole method to
 \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}, because carrying an exact first order onto an
 approximate second would not make the second exact.

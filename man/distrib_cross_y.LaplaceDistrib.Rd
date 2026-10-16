@@ -17,7 +17,7 @@ the parameter scale.}
 }
 \value{
 A named list with components \code{mu} and \code{sigma}, each a numeric vector
-of length \code{length(y)}. The \code{mu} component is \strong{exactly zero}
+of length \code{length(y)}. The \code{mu} component is exactly zero
 everywhere, the second response derivative of a Laplace being zero
 almost everywhere, and the \code{sigma} component is
 \eqn{\mathrm{sign}(y-\mu)/\sigma^2}, which jumps sign at the kink.

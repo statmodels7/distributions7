@@ -13,10 +13,10 @@ expectation not depending on the data; the values are ignored.}
 vector of length 1. \code{kappa} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, the expectation being exact. Accepted so that
-the signature matches the generic's, where it selects between
+\item{approx}{Ignored here, because the expectation is exact. It is accepted
+so that the signature matches the generic's, where it selects between
 \code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
@@ -25,7 +25,7 @@ the signature matches the generic's, where it selects between
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{kappa_kappa} and
@@ -44,7 +44,7 @@ form and with no quadrature or simulation. Under the model
 with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 
 The zero off-diagonal makes the direction and the concentration
-\strong{orthogonal}: the expected information is diagonal, their estimates are
+orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
 independently. \code{approx} and \code{nsim} are ignored, the expectation being exact.
 }

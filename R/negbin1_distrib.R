@@ -5,11 +5,11 @@ NULL
 #' @name NegBin1Distrib
 #'
 #' @description
-#' The S7 class of the negative binomial family on the non-negative integers
-#' whose variance is linear in the mean: with a mean \eqn{\mu > 0} and a
-#' dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, so
-#' the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits from
-#' `discrete_distrib`.
+#' This is the S7 class of the negative binomial family on the non-negative
+#' integers whose variance is linear in the mean: with a mean \eqn{\mu > 0} and
+#' a dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)},
+#' so the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits
+#' from `discrete_distrib`.
 #'
 #' Build one with [negbin1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -35,7 +35,8 @@ NULL
 #'   the closed forms this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.NegBin1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.NegBin1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.NegBin1Distrib] and
@@ -61,7 +62,8 @@ NULL
 #' d <- negbin1_distrib()
 #' S7::S7_inherits(d, discrete_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
@@ -597,8 +599,8 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' expectation of the observed information under the model. The first
 #' Bartlett identity is \eqn{\mathbb{E}[\partial\ell/\partial\theta] = 0}.
 #'
-#' @seealso [distrib_hessian.NegBin1Distrib()] for the observed quantity this
-#'   is the expectation of, [distrib_expected_hessian.NegBin2Distrib()] for the
+#' @seealso [distrib_hessian.NegBin1Distrib()] for the observed quantity whose
+#'   expectation this is, [distrib_expected_hessian.NegBin2Distrib()] for the
 #'   quadratic-variance family, whose mixed entry is exactly zero,
 #'   [fisher_scoring()], which inverts it at each step, and
 #'   [distrib_expected_hessian()] for the generic.
@@ -643,7 +645,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' closed-form derivatives of the log-mass to fourth order and closed-form
 #' moments.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
 #' logarithm, because both parameters are positive.
 #'
@@ -744,10 +746,10 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' @seealso
 #' [negbin2_distrib()] for the quadratic-variance family; [poisson_distrib()]
 #' for the limit as \eqn{\theta} goes to zero and [geometric_distrib()] for the
-#' case \eqn{\mu = \theta}; [pig1_distrib()] for a Poisson mixed over an
-#' inverse Gaussian; [zero_inflated()] and [zero_adjusted()] for counts with
-#' excess zeros; [fit_distrib()] to estimate the parameters; [check_distrib()]
-#' to validate a family of your own against the same battery this one passes;
+#' case \eqn{\mu = \theta}; [pig1_distrib()] for a Poisson mixed over an inverse
+#' Gaussian; [zero_inflated()] and [zero_adjusted()] for counts with excess
+#' zeros; [fit_distrib()] to estimate the parameters; [check_distrib()] to
+#' validate a family of your own against the same battery that this one passes;
 #' [NegBin1Distrib] for the class.
 #'
 #' @references

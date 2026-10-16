@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations inside the truncation interval.}
 
-\item{theta}{A named list of the \strong{parent's} parameters; truncation adds
+\item{theta}{A named list of the parent's parameters; truncation adds
 none, the endpoints being constants.}
 
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the

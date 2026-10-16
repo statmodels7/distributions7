@@ -18,10 +18,10 @@ the model is returned in place of the value at the data. Defaults to
 \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, both branches being exact. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored here, because both branches are exact. It is accepted
+so that the signature matches the generic's.}
 
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
@@ -36,11 +36,12 @@ A named list of five numeric vectors, \code{alpha_alpha_alpha_alpha},
 \description{
 Computes the five distinct fourth derivatives of the beta-binomial log-mass
 in the two shapes, in closed form, by the construction
-\code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3.BetaBinom2Distrib()}} describes carried one order further:
+that \code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3.BetaBinom2Distrib()}} describes, carried one order
+further:
 the same sum of terms with \eqn{\psi_3}, the third polygamma, in place of
 \eqn{\log\Gamma}, and the direct sums where \eqn{\alpha+\beta > 10}.
 
-With \code{expected = TRUE} the expectation is an \strong{exact finite sum} over the
+With \code{expected = TRUE} the expectation is an exact finite sum over the
 support, so \code{approx} and \code{nsim} are ignored on both branches.
 }
 \examples{

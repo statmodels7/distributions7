@@ -18,16 +18,16 @@ partial.
 \description{
 Returns the partial derivatives of \eqn{(\mu, a, c)} as functions of
 \eqn{(\mu, \lambda, \alpha)}, with \eqn{a = \lambda\alpha} and
-\eqn{c = \lambda(1-\alpha)}, in the keyed-table form \code{\link[=chain_assemble]{chain_assemble()}}
+\eqn{c = \lambda(1-\alpha)}, in the keyed-table form that \code{\link[=chain_assemble]{chain_assemble()}}
 consumes.
 }
 \details{
 The map is bilinear, so its second partials are the constants \eqn{\pm 1}
 and its third and higher vanish, so the table leaves them out.
 
-Those second partials are what carries a low-order derivative in the rates
-up to a high-order one in the parameters. That is why the third derivatives
-in \eqn{(\lambda, \alpha)} still depend on the data although the third
+Those second partials carry a low-order derivative in the rates up to a
+high-order one in the parameters. Because of this, the third derivatives
+in \eqn{(\lambda, \alpha)} still depend on the data, although the third
 derivatives in the rates do not.
 }
 \section{Notation}{

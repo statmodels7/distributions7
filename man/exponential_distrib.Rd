@@ -20,7 +20,7 @@ the list of \eqn{(0, \infty)}, and \code{link_params} the one link given here.
 }
 \description{
 Builds the distribution object for the exponential family parametrized by
-its \strong{mean} \eqn{\mu > 0}, with density \eqn{\mu^{-1}e^{-y/\mu}} on
+its mean \eqn{\mu > 0}, with density \eqn{\mu^{-1}e^{-y/\mu}} on
 \eqn{[0, \infty)}. The returned object carries closed-form derivatives of
 the log-density to fifth order in the mean and to fourth order in the
 response, and closed-form moments.
@@ -28,7 +28,7 @@ response, and closed-form moments.
 The family has one parameter and a fixed shape: the standard deviation
 equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
 \eqn{\mu} is. It is the only continuous law with a constant hazard, which is
-the memorylessness the details set out.
+the memorylessness that the details set out.
 }
 \section{The parametrization}{
 The density on \eqn{y \in [0, \infty)} is
@@ -38,19 +38,20 @@ with \eqn{\mu \in (0, \infty)}. The distribution function is
 \eqn{Q(p) = -\mu\log(1-p)}.
 
 The mean and the standard deviation are both \eqn{\mu}, so the coefficient
-of variation is 1; the skewness is 2 and the excess kurtosis 6, neither
-depending on the parameter. The median is \eqn{\mu\log 2}, below the mean.
+of variation is 1; the skewness is 2 and the excess kurtosis is 6, and both
+are independent of the parameter. The median is \eqn{\mu\log 2}, below the mean.
 
-R parametrizes its own \code{dexp} by the \strong{rate}, \eqn{1/\mu}, and the methods
+R parametrizes its own \code{dexp} by the rate, \eqn{1/\mu}, and the methods
 convert. \code{\link[=laplace2_distrib]{laplace2_distrib()}} is the corresponding choice for the Laplace,
-where the rate is what the package carries.
+where the package carries the rate.
 }
 
 \section{Memorylessness}{
 The survival function is \eqn{P(Y > q) = e^{-q/\mu}}, so
 \eqn{P(Y > s + t \mid Y > s) = P(Y > t)} for every \eqn{s, t \ge 0}: a wait
-already endured tells nothing about the wait remaining. Equivalently the
-hazard \eqn{f/(1-F)} is the constant \eqn{1/\mu}. On the log scale this is
+that has already been endured carries no information about the remaining
+wait. Equivalently the hazard \eqn{f/(1-F)} is the constant \eqn{1/\mu}. On
+the log scale this is
 the statement that both \eqn{\log f} and \eqn{\log(1-F)} are straight lines
 in \eqn{y}, which is why \code{\link[=distrib_grad_y.ExponentialDistrib]{distrib_grad_y.ExponentialDistrib()}} is a constant
 and \code{\link[=distrib_hess_y.ExponentialDistrib]{distrib_hess_y.ExponentialDistrib()}} is zero.
@@ -84,7 +85,7 @@ below checks it.
 
 \eqn{\ell} is the log-density of one observation and \eqn{\mu > 0} the mean,
 which is also the standard deviation and the reciprocal of the rate. The
-\strong{hazard} is \eqn{f(y)/(1 - F(y))}, the instantaneous failure rate given
+hazard is \eqn{f(y)/(1 - F(y))}, the instantaneous failure rate given
 survival to \eqn{y}.
 }
 

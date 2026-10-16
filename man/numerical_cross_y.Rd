@@ -43,7 +43,7 @@ form for some of its parameters calls it for the remaining ones through
 uses \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} instead.
 }
 \section{The quantity that is differenced}{
-The quantity differenced is the \strong{response gradient}, not the log-density,
+The quantity differenced is the response gradient, not the log-density,
 so a family with an analytical \code{distrib_grad_y} pays for exactly one
 finite-difference layer. Where the response gradient is itself the
 finite-difference fallback the composition is the four-point mixed stencil
@@ -73,7 +73,7 @@ numerical_cross_y(d, y, th, which = "sigma")
 
 }
 \seealso{
-\code{\link[=distrib_cross_y]{distrib_cross_y()}}, the generic it serves;
-\code{\link[=numerical_grad_y]{numerical_grad_y()}} for the quantity it differences;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}}, the generic that it serves;
+\code{\link[=numerical_grad_y]{numerical_grad_y()}} for the quantity that it differences;
 \code{\link[=numerical_cross2_y]{numerical_cross2_y()}} for the third-order analogue.
 }

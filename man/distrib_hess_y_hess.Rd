@@ -13,7 +13,7 @@ or a multivariate Gaussian or Student t distribution.}
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list, or named numeric vector, of distribution
-parameters. Aligned by the generic before dispatch.}
+parameters. The generic aligns it before dispatch.}
 
 \item{scale}{Either \code{"parameter"} (default) for derivatives with respect to
 the parameters \eqn{\theta} on their natural (constrained) scale, or

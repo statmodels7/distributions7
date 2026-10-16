@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations on the transformed scale.}
 
-\item{theta}{A named list of the \strong{parent's} parameters; a transformation
+\item{theta}{A named list of the parent's parameters; a transformation
 adds none.}
 
 \item{expected}{Logical of length 1. Passed to the parent, so the parent

@@ -6,19 +6,19 @@
 \arguments{
 \item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{y}{A numeric vector of counts. Only its length is read, the
-expectation not depending on the data; the values are ignored.}
+\item{y}{A numeric vector of counts. Only its length is read, because the
+expectation does not depend on the data; the values are ignored.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, the expectation being an exact sum. Accepted so
-that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
+\item{approx}{Ignored here, because the expectation is an exact sum. It is
+accepted so that the signature matches the generic's, where it selects
+between \code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
 \item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
@@ -35,10 +35,10 @@ A named list of three numeric vectors, \code{mu_mu}, \code{mu_sigma} and
 \description{
 Returns the expectation of the observed Hessian under the model,
 \eqn{\sum_{k=0}^{n} P(Y=k)\, \partial^2\ell/\partial\theta_i\partial\theta_j}
-evaluated at \eqn{y = k}. The support being finite, that is an \strong{exact
-finite sum} of \eqn{n+1} terms rather than a quadrature or a sample, and
-the summand is the observed Hessian of
-\code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian.BetaBinom1Distrib()}}, from the direct sums for
+evaluated at \eqn{y = k}. Because the support is finite, the expectation is
+an exact finite sum of \eqn{n+1} terms rather than a quadrature or a
+sample. The summand is the observed Hessian of
+\code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian.BetaBinom1Distrib()}}, which comes from the direct sums for
 \eqn{\sigma < 0.1} and from the shapes above.
 
 \code{approx} and \code{nsim} are therefore ignored; every strategy returns the same
@@ -61,7 +61,8 @@ vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 # entry does not vanish, so their estimates are asymptotically correlated.
 eh$mu_sigma[1]
 
-# The strategy argument is inert, the expectation being an exact sum.
+# The strategy argument has no effect, because the expectation is an exact
+# sum.
 identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
                                        nsim = 50))
 }

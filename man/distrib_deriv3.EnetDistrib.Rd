@@ -47,7 +47,7 @@ The kernel forms the components free of the data once per distinct pair
 \eqn{\mathrm{sgn}(z) - z} per observation. \code{\link[=.enet_chain]{.enet_chain()}} is the same
 assembly written in R.
 
-With \code{expected = TRUE} the value is an expectation, and there it is \strong{not}
+With \code{expected = TRUE} the value is an expectation, and there it is not
 closed form: the call routes to \code{\link[=expected_derivative]{expected_derivative()}}, so \code{approx} and
 \code{nsim} are read.
 }
@@ -64,7 +64,8 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
-# Against a central difference of the analytic Hessian.
+# The component mu_mu_lambda is compared with a central difference of the
+# analytic Hessian.
 eps <- 1e-5
 rbind(analytic = d3$mu_mu_lambda,
       numeric = (distrib_hessian(d, y, list(mu = 0, lambda = 2 + eps,
@@ -76,8 +77,8 @@ rbind(analytic = d3$mu_mu_lambda,
 # the location alone is exactly zero.
 d3$mu_mu_mu
 
-# The pure-lambda component against one stencil on the log-density, a
-# route that shares no algebra with the assembly.
+# The pure-lambda component is compared with one stencil on the
+# log-density, a route that shares no algebra with the assembly.
 ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, lambda = v,
                                              alpha = 0.5), log = TRUE))
 c(ours = sum(d3$lambda_lambda_lambda),

@@ -5,10 +5,11 @@ NULL
 #' @name MultinomialDistrib
 #'
 #' @description
-#' The S7 class of the multinomial family on \eqn{p} categories and \eqn{n}
-#' trials, parametrized by a probability vector carried on a `parameters7`
-#' simplex. It inherits from `multivariate_distrib`. Its support is a finite set
-#' of points: every vector of non-negative integers summing to \eqn{n}.
+#' This is the S7 class of the multinomial family on \eqn{p} categories and
+#' \eqn{n} trials, parametrized by a probability vector carried on a
+#' `parameters7` simplex. It inherits from `multivariate_distrib`. Its support
+#' is a finite set of points: every vector of non-negative integers summing to
+#' \eqn{n}.
 #'
 #' The class carries two properties beyond the parent's: `size`, the number of
 #' trials, fixed at construction; and `param`, the simplex on which the
@@ -41,7 +42,8 @@ NULL
 #'   [parameters7::simplex()] for the chart.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.MultinomialDistrib] and
 #'   [`distrib_rng()`][distrib_rng.MultinomialDistrib];
 #' - the derivatives in the parameters:
@@ -884,10 +886,10 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' [dirichlet_distrib()] for the conjugate family on the same simplex;
 #' [betabinom1_distrib()] for the overdispersed two-category count;
 #' [parameters7::simplex()] for the chart the probabilities ride;
-#' [numericals7::compositions()] for the support enumeration;
-#' [fit_distrib()] to estimate the probabilities; [check_distrib()] to validate
-#' a family of your own against the same battery this one passes;
-#' [MultinomialDistrib] for the class.
+#' [numericals7::compositions()] for the support enumeration; [fit_distrib()] to
+#' estimate the probabilities; [check_distrib()] to validate a family of your
+#' own against the same battery that this one passes; [MultinomialDistrib] for
+#' the class.
 #' @export
 multinomial_distrib <- function(n_dim, size,
                                 probs = parameters7::simplex(n_dim)) {

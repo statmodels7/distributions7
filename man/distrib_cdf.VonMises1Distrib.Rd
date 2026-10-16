@@ -32,7 +32,7 @@ series of the density integrated term by term, through \code{\link[=vm_cdf]{vm_c
 density has no elementary antiderivative, and the quadrature the base class
 would use costs one integration per observation; the series replaces
 \eqn{n} quadratures with a few dozen vectorized steps, using only the Bessel
-\strong{ratios} \eqn{I_j/I_0} from a backward recurrence.
+ratios \eqn{I_j/I_0} from a backward recurrence.
 
 Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, the
 support being the declared interval. Where the requested tail is below

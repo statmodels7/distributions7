@@ -8,8 +8,8 @@ gumbel_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
-ranging over the whole line already.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the
+location already ranges over the whole line.}
 
 \item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
 \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -24,16 +24,16 @@ An S7 object of class \code{GumbelDistrib}, inheriting from
 }
 \description{
 Builds the distribution object for the Gumbel (type I extreme value) family
-in the form for \strong{maxima}: a location-scale family on the whole real line
+in the form for maxima: a location-scale family on the whole real line
 with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
 carries closed-form derivatives of the log-density to fifth order in the
 parameters and to fourth order in the response, closed-form expectations
 to fourth order, and closed-form moments.
 
-The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. The defaults are the identity for
-the location, which ranges over the whole line, and the logarithm for the
-scale, which keeps it positive at every predictor.
+The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. The defaults are the
+identity for the location, which ranges over the whole line, and the
+logarithm for the scale, which keeps it positive at every predictor.
 }
 \section{The parametrization}{
 With \eqn{z = (y-\mu)/\sigma} the density on the whole real line is
@@ -44,14 +44,15 @@ function \eqn{Q(p) = \mu - \sigma\log(-\log p)}, both closed form. The mean
 is \eqn{\mu + \gamma\sigma} with \eqn{\gamma} the Euler-Mascheroni
 constant, the variance \eqn{\pi^2\sigma^2/6}, the skewness
 \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395} and the excess kurtosis
-\eqn{12/5}. The last two are constants: \strong{this family has a fixed shape and
-only its location and spread can be fitted.} The mode is \eqn{\mu}, the
+\eqn{12/5}. The last two are constants: this family has a fixed shape and
+only its location and spread can be fitted. The mode is \eqn{\mu}, the
 median \eqn{\mu - \sigma\log\log 2}, and the mean is above both.
 
 The law is the limit of the maximum of a sample from a light-tailed
-distribution, once centered and scaled, and that is what it is fitted to. It
-is max-stable: raising its distribution function to the \eqn{n}th power
-gives the same law with the location shifted by \eqn{\sigma\log n}.
+distribution, once centered and scaled, and the family is fitted to such
+maxima. It is max-stable: raising its distribution function to the
+\eqn{n}th power gives the same law with the location shifted by
+\eqn{\sigma\log n}.
 }
 
 \section{Derivatives and expectations}{
@@ -72,7 +73,7 @@ and the expectations are derivatives of \eqn{\Gamma} at 2 (and, for
 Hessian follows in one line, and so do the third and fourth orders, through
 \eqn{\mathbb{E}[z^k w] = (-1)^k\Gamma^{(k)}(2)}.
 
-\strong{The location and the scale are not orthogonal.} The mixed entry of the
+The location and the scale are not orthogonal. The mixed entry of the
 expected information is \eqn{(1-\gamma)/\sigma^2}, which is about
 \eqn{0.4228/\sigma^2} and never zero. In a symmetric location-scale family
 such as the Gaussian it vanishes; here the density is skewed and it does
@@ -83,7 +84,7 @@ not, so the two estimates are asymptotically correlated.
 If \eqn{Y} is Gumbel then \eqn{e^{-Y}} is Weibull, so
 \code{\link[=weibull1_distrib]{weibull1_distrib()}} is this family on the log scale and reversed, and the
 two share the expectations that produce their information matrices. For
-\strong{minima} the law is the reflection: fit this family to \eqn{-Y}, or use
+minima the law is the reflection: fit this family to \eqn{-Y}, or use
 \code{\link[=transformation]{transformation()}} with
 \code{\link[=affine_transform]{affine_transform(scale = -1)}}. \code{\link[=gpd_distrib]{gpd_distrib()}} is the
 other limit law of extremes, for exceedances over a threshold in place of
@@ -91,8 +92,8 @@ block maxima.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
-estimate is closed form. The fixed shape supplies the method of moments
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Both
+estimates lack a closed form. The fixed shape supplies the method of moments
 starting values: the scale is \eqn{s\sqrt{6}/\pi} and the location
 \eqn{\bar y - \gamma s\sqrt{6}/\pi}, with \eqn{s} the sample standard
 deviation. The example below shows them landing beside the estimates.
@@ -112,7 +113,7 @@ with \eqn{\theta = g^{-1}(\eta)}.
 d <- gumbel_distrib()
 d
 
-# The density, written out.
+# The density is written out.
 y <- c(-1, 0, 1)
 th <- list(mu = 0, sigma = 1)
 all.equal(distrib_pdf(d, y, th), exp(-y - exp(-y)))
@@ -154,10 +155,11 @@ Coles, S. (2001). \emph{An Introduction to Statistical Modeling of Extreme
 Values}, Chapter 3. Springer, London.
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}} for the family this becomes under \eqn{e^{-Y}};
+\code{\link[=weibull1_distrib]{weibull1_distrib()}} for the family that this becomes under \eqn{e^{-Y}};
 \code{\link[=gpd_distrib]{gpd_distrib()}} for exceedances over a threshold; \code{\link[=transformation]{transformation()}} for
 the reflection that gives minima; \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the symmetric
 location-scale family whose parameters are orthogonal; \code{\link[=fit_distrib]{fit_distrib()}} to
 estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
-against the same battery this one passes; \link{GumbelDistrib} for the class.
+against the same battery that this one passes; \link{GumbelDistrib} for the
+class.
 }

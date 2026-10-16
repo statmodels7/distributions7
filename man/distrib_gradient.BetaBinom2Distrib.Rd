@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{A single positive integer, the number of threads the
+\item{threads}{A single positive integer, the number of threads that the
 compiled kernel may use. Defaults to \code{1L}.}
 }
 \value{
@@ -32,13 +32,13 @@ the two shapes, one value per observation, in closed form:
           - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),}
 and the same with \eqn{n-y} and \eqn{\beta} in place of \eqn{y} and
 \eqn{\alpha}. The two share the term in \eqn{\alpha+\beta}, which is the
-only part a mixed second derivative keeps. The compiled kernel evaluates
-each difference of digammas as a series remainder plus one \code{log1p()}, the
-form \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} uses, so that the score keeps its digits as the
-shapes grow.
+only part that a mixed second derivative keeps. The compiled kernel
+evaluates each difference of digammas as a series remainder plus one
+\code{log1p()}, the form that \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} uses, so that the score
+keeps its digits as the shapes grow.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale; the transformation happens in the generic.
 }
 \section{Notation}{
@@ -63,7 +63,7 @@ d <- betabinom2_distrib(size = 10)
 th <- list(alpha = 2, beta = 3)
 g <- distrib_gradient(d, 0:10, th)
 
-# The alpha component, written out.
+# The alpha component is written out.
 ds <- digamma(5) - digamma(15)
 all.equal(g$alpha, digamma(0:10 + 2) - digamma(2) + ds)
 

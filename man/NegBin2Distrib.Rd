@@ -46,8 +46,8 @@ object built by \code{\link[=negbin2_distrib]{negbin2_distrib()}} they hold \cod
 \eqn{(0, \infty)} for both parameters, and the two links.
 }
 \description{
-The S7 class of the negative binomial family on the non-negative integers in
-the NB2 parametrization: the mean \eqn{\mu > 0} and a dispersion
+This is the S7 class of the negative binomial family on the non-negative
+integers in the NB2 parametrization: the mean \eqn{\mu > 0} and a dispersion
 \eqn{\theta > 0}, so that \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}
 and the variance is quadratic in the mean. It inherits from
 \code{discrete_distrib}.
@@ -59,7 +59,8 @@ them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.NegBin2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf()}},
@@ -90,7 +91,8 @@ Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_di
 d <- negbin2_distrib()
 S7::S7_inherits(d, discrete_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 d@bounds

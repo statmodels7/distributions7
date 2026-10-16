@@ -55,7 +55,8 @@ NULL
 #'   with `mu = 0` turns a folded gaussian into the half-normal.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.FoldedDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.FoldedDistrib] and
 #'   [`distrib_rng()`][distrib_rng.FoldedDistrib];

@@ -23,8 +23,8 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of the expected information in
-\eqn{(\mu, \phi)}, from a compiled kernel. With \eqn{\alpha = \mu\phi},
+Computes the first and second derivatives of the expected information in
+\eqn{(\mu, \phi)} with a compiled kernel. With \eqn{\alpha = \mu\phi},
 \eqn{\beta = (1-\mu)\phi} and polygamma functions evaluated there and at
 \eqn{\phi},
 \deqn{\mathbb{E}[\ell_{\mu\mu}] = -\phi^2(\psi'(\alpha) + \psi'(\beta)),\quad

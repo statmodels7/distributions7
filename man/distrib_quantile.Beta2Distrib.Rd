@@ -38,7 +38,8 @@ trip through \code{\link[=distrib_cdf.Beta2Distrib]{distrib_cdf.Beta2Distrib()}}
 d <- beta2_distrib()
 th <- list(alpha = 2, beta = 5)
 
-# A central 95 percent interval, asymmetric about the mean of 2/7.
+# These quantiles form a central 95 percent interval, which is asymmetric
+# about the mean of 2/7.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 
 # Exact inverse: the round trip returns the probabilities that it was given.

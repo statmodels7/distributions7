@@ -50,7 +50,8 @@ NULL
 #'   closed-form score.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.MvGaussianDistrib] and
 #'   [`distrib_rng()`][distrib_rng.MvGaussianDistrib];
 #' - the derivatives in the parameters:

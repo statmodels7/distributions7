@@ -36,7 +36,8 @@ shifted by \eqn{\sigma\log n}.
 \details{
 Both tails are computed on the scale that keeps them accurate. The lower
 tail is exact on the log scale, \eqn{\log F = -e^{-z}}, and the upper tail
-goes through \code{\link[base:Log]{base::expm1()}}, so neither loses precision where it is small.
+goes through \code{\link[base:Log]{base::expm1()}}, so both computations keep their precision
+where the tail probability is small.
 Where \eqn{w = e^{-z}} is below \eqn{10^{-10}} the logarithm of the upper
 tail is taken as \eqn{-z - w/2}, which stays finite where \eqn{w}
 underflows.
@@ -46,7 +47,7 @@ d <- gumbel_distrib()
 th <- list(mu = 0, sigma = 1)
 q <- c(-1, 0, 1)
 
-# The closed form, written out.
+# The closed form is written out.
 all.equal(distrib_cdf(d, q, th), exp(-exp(-q)))
 
 # The two tails sum to one.

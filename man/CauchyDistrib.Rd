@@ -46,7 +46,7 @@ object built by \code{\link[=cauchy_distrib]{cauchy_distrib()}} they hold \code{
 \eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the Cauchy family with location \eqn{\mu} and scale
+This is the S7 class of the Cauchy family with location \eqn{\mu} and scale
 \eqn{\sigma > 0}, the Student's t on one degree of freedom, with density
 \eqn{f(y) = [\pi\sigma(1 + ((y-\mu)/\sigma)^2)]^{-1}} on the whole real line.
 It inherits from \code{continuous_distrib}, so every generic of the \code{distrib}
@@ -63,7 +63,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.CauchyDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf()}},
@@ -116,7 +117,7 @@ d@params_interpretation
 th <- list(mu = 0.4, sigma = 1.5)
 c(mean(d, th), variance(d, th))
 
-# What does exist is the median and the half-interquartile range.
+# The median and the half-interquartile range exist.
 q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 c(median = q[2], half_iqr = (q[3] - q[1]) / 2)
 }

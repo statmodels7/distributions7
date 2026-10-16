@@ -9,7 +9,8 @@
 scale_only_cross2_method(at = 1L)
 }
 \arguments{
-\item{at}{The index of the scale parameter in \code{distrib@params}. Default \code{1}.}
+\item{at}{The index of the scale parameter in \code{distrib@params}. The default
+is \code{1}.}
 }
 \value{
 A method body with \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}'s signature, returning a

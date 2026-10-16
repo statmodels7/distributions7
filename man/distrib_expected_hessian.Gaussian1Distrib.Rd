@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's, where it selects between the
+Bartlett, quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -52,8 +52,8 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]},
-the expectation of the \strong{observed information} under the model. The Gaussian
+The expected information is \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]},
+the expectation of the observed information under the model. The Gaussian
 is a regular family, so the second Bartlett identity holds and this equals
 the variance of the score.
 }
@@ -62,7 +62,7 @@ the variance of the score.
 d <- gaussian1_distrib()
 th <- list(mu = 0.4, sigma = 1.5)
 
-# The three constants, one value per observation.
+# The three components are constants, with one value per observation.
 lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 
 # The observed Hessian averages onto them over a large sample.
@@ -76,7 +76,7 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 distrib_expected_hessian(d, 0, th)$mu_sigma
 }
 \seealso{
-\code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the observed quantity this
-is the expectation of, \code{\link[=fit_distrib]{fit_distrib()}} and \code{\link[=fisher_scoring]{fisher_scoring()}}, which invert
+\code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fit_distrib]{fit_distrib()}} and \code{\link[=fisher_scoring]{fisher_scoring()}}, which invert
 it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

@@ -28,7 +28,7 @@ bounds, which the validator treats as open.
 \description{
 Returns the starting values that \code{\link[=fit_distrib]{fit_distrib()}} begins from, computed
 from the response where the family has a method for it. The result is a
-list of named parameter lists on the \strong{parameter} scale. The fit tries
+list of named parameter lists on the parameter scale. The fit tries
 them in order until two converged runs agree on the best objective, so the
 first element is the one tried first.
 }

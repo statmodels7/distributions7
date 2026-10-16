@@ -18,7 +18,7 @@ A numeric vector of means, of length
 }
 \description{
 Closed form: \eqn{E[Y] = \mu\,\Gamma(1 + 1/\sigma)}. The first parameter of
-this parametrization is the \strong{scale}, following \code{gamlss}'s \code{WEI}, so it is
+this parametrization is the scale, following \code{gamlss}'s \code{WEI}, so it is
 not the mean; the gamma factor is what separates the two, and it is 1 only
 at shape 1, where the family is exponential.
 }

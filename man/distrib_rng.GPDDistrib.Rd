@@ -45,7 +45,7 @@ x0 <- distrib_rng(d, 1e5, list(sigma = 1.5, xi = 0))
 c(sample_mean = mean(x0), theory = 1.5)
 }
 \seealso{
-\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile.GPDDistrib()}}, which it inverts through,
-\code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf.GPDDistrib()}} for the density the draws follow, and
-\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile.GPDDistrib()}}, through which it inverts the
+distribution function, \code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf.GPDDistrib()}} for the density that the
+draws follow, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

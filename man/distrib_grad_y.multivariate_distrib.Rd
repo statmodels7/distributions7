@@ -6,9 +6,9 @@
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{y}{An \eqn{n \times p} numeric matrix of observations. Not read.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. It is not read.}
 
-\item{theta}{A named list of parameters. Not read.}
+\item{theta}{A named list of parameters. It is not read.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

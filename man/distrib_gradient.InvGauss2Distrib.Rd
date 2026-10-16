@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -33,7 +33,7 @@ form:
       \qquad
       \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{2\lambda}
         - \dfrac{(y-\mu)^2}{2\mu^2 y}.}
-The log-density is \strong{linear in the shape} apart from
+The log-density is linear in the shape apart from
 \eqn{\tfrac12\log\lambda}. Every derivative of this family is elementary for
 that reason, and every expectation reduces to
 \eqn{\mathbb{E}[Y] = \mu} and \eqn{\mathbb{E}[(Y-\mu)^2/Y] = \mu^2/\lambda}.

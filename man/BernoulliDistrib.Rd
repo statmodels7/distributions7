@@ -45,15 +45,15 @@ object built by \code{\link[=bernoulli_distrib]{bernoulli_distrib()}} they hold 
 domain \eqn{(0, 1)}, and the one link.
 }
 \description{
-The S7 class of the Bernoulli family parametrized by its success probability
-\eqn{\mu \in (0, 1)}, with mass \eqn{P(Y = 1) = \mu} and
-\eqn{P(Y = 0) = 1 - \mu}. It inherits from \code{discrete_distrib}, so
-expectations over its support are sums and no derivative with respect to
-the response is defined.
+This is the S7 class of the Bernoulli family parametrized by its success
+probability \eqn{\mu \in (0, 1)}, with mass \eqn{P(Y = 1) = \mu} and \eqn{P(Y
+= 0) = 1 - \mu}. It inherits from \code{discrete_distrib}, so expectations over
+its support are sums, and derivatives with respect to the response are not
+defined.
 
 The mean is \eqn{\mu} and the variance \eqn{\mu(1-\mu)}, so the two are tied
 and the family has no dispersion parameter of its own. The default link is
-the logit, which is the \strong{canonical} link here: on its scale the observed
+the logit, which is the canonical link here: on its scale the observed
 and the expected information coincide.
 
 A Bernoulli is a binomial on one trial: \code{\link[=binomial_distrib]{binomial_distrib()}} with
@@ -66,7 +66,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.BernoulliDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.BernoulliDistrib]{distrib_cdf()}},

@@ -40,14 +40,14 @@ in \eqn{A_r}, i.e. those with
 
 Two devices make this numerically safe for an arbitrary user-supplied density:
 \itemize{
-\item \strong{Recentering.} The kernel is shifted to its mode,
+\item Recentering. The kernel is shifted to its mode,
 \eqn{K(z) \propto f(m + z)}, and the mode is added back to the draws. Without
 this a distribution located far from the origin (say \eqn{\mu = 1000}) gives a
 wildly elongated bounding rectangle and an acceptance rate close to zero.
 Recentering also splits the box exactly: \eqn{h(z) = z\,K(z)^{r/(r+1)}} is
 non-positive for \eqn{z \le 0} and non-negative for \eqn{z \ge 0}, so
 \eqn{v_{\min}} and \eqn{v_{\max}} are each found on one side of the mode.
-\item \strong{Normalization.} The kernel is rescaled by its value at the mode, so
+\item Normalization. The kernel is rescaled by its value at the mode, so
 that \eqn{\max K = 1} and \eqn{u_{\max} = 1}. Every quantity stays in a safe
 numerical range whatever the height of the density, and all computations are
 carried out on the log scale.

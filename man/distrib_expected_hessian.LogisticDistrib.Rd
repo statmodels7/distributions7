@@ -13,10 +13,10 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -24,7 +24,7 @@ signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
@@ -50,9 +50,9 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The logistic is
+expectation of the observed information under the model. The logistic is
 a regular family, so the second Bartlett identity holds and this equals the
 variance of the score.
 }
@@ -73,7 +73,7 @@ rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
                         function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the observed quantity this
-is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
-and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

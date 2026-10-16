@@ -13,10 +13,10 @@ vector of length 1 or of the length of \code{y}. Both must be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, the expectation being exact. Accepted so that the
-signature matches the generic's, where it selects between the Bartlett,
+\item{approx}{Ignored, because the expectation is exact. It is accepted so that
+the signature matches the generic's, where it selects between the Bartlett,
 quadrature, Monte Carlo and outer-product routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
@@ -33,8 +33,8 @@ and \code{alpha_beta}, in that order, each of length
 \code{max(length(y), length(alpha), length(beta))}.
 }
 \description{
-Returns the same three numbers as \code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}}, the
-observed Hessian being free of the response and so equal to its own
+Returns the same three numbers as \code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}}, because
+the observed Hessian is free of the response and so equals its own
 expectation:
 \deqn{\mathbb{E}\left[\ell^{(\alpha\alpha)}\right] = \psi'(\alpha+\beta)
         - \psi'(\alpha), \qquad
@@ -46,18 +46,18 @@ The expectation is exact, so the method does not average, integrate or
 simulate; it ignores \code{approx} and \code{nsim} and reads \code{y} only for its length.
 
 The consequence for fitting is that Fisher scoring and Newton's method take
-the same step on the parameter scale, both inverting the same matrix. On the
-\strong{link} scale they differ, the chain rule there adding a term in the score,
-which does read the data.
+the same step on the parameter scale, because both invert the same matrix.
+On the link scale they differ, because the chain rule there adds a term in
+the score, which does read the data.
 
 The mixed entry \eqn{\psi'(\alpha+\beta)} is positive and never zero, so the
 two shapes are not orthogonal at any parameter setting.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-expectation of the \strong{observed information} under the model. The beta is a
+expectation of the observed information under the model. The beta is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score.
 }

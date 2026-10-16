@@ -80,7 +80,8 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.TruncatedDiscreteDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.TruncatedDiscreteDistrib]{distrib_cdf()}},

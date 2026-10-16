@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{sigma2} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -33,7 +33,7 @@ With \eqn{r = \log y - \mu},
       \dfrac{\partial \ell}{\partial \sigma^2} =
         \dfrac{r^2 - \sigma^2}{2\sigma^4}.}
 
-\strong{These are exactly the Gaussian's, read at \eqn{\log y}.} The lognormal
+These are exactly the Gaussian's, read at \eqn{\log y}. The lognormal
 log-density is the Gaussian's at \eqn{\log y} minus \eqn{\log y}, and that
 last term carries no parameter, so it disappears from every derivative in
 \eqn{\mu} and \eqn{\sigma^2}. The same holds at all four orders and for the
@@ -50,7 +50,7 @@ scale.
 \section{Notation}{
 
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
-\eqn{\sigma^2 > 0} the variance \strong{of \eqn{\log Y}}, not of \eqn{Y}.
+\eqn{\sigma^2 > 0} the variance of \eqn{\log Y}, not of \eqn{Y}.
 \eqn{r = \log y - \mu} is the residual on the log scale.
 }
 

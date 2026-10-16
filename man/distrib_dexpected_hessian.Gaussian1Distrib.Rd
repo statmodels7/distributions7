@@ -23,14 +23,14 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of the expected information in the
+Returns the first and second derivatives of the expected information in the
 parameters, in closed form from a compiled kernel. Only the standard
 deviation moves it:
 \deqn{\partial_\sigma \mathbb{E}[\ell_{\mu\mu}] = \dfrac{2}{\sigma^3},\quad
       \partial_\sigma \mathbb{E}[\ell_{\sigma\sigma}] = \dfrac{4}{\sigma^3},\quad
       \partial_{\sigma\sigma} \mathbb{E}[\ell_{\mu\mu}] = -\dfrac{6}{\sigma^4},\quad
-      \partial_{\sigma\sigma} \mathbb{E}[\ell_{\sigma\sigma}] = -\dfrac{12}{\sigma^4},}
-every other component being zero. On the link scale the result is carried
+      \partial_{\sigma\sigma} \mathbb{E}[\ell_{\sigma\sigma}] = -\dfrac{12}{\sigma^4}.}
+Every other component is zero. On the link scale the result is carried
 across by \code{\link[=dexpected_link]{dexpected_link()}}.
 }
 \seealso{

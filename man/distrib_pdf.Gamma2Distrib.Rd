@@ -46,7 +46,7 @@ th <- list(mu = 3, sigma2 = 2)
 all.equal(distrib_pdf(d, y, th),
           dgamma(y, shape = 9 / 2, rate = 3 / 2))
 
-# The same law as gamma1 at phi = sigma2/mu^2.
+# This is the same law as gamma1 at phi = sigma2/mu^2.
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(gamma1_distrib(), y, list(mu = 3, phi = 2 / 9)))
 

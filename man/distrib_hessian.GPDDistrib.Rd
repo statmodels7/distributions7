@@ -36,7 +36,7 @@ the analytic function \eqn{\Lambda(u) = \log(1+u)/u} (written
 terms that individually diverge as \eqn{\xi \to 0} cancel, and the limit
 is an ordinary point of the formula.
 
-This is the \strong{observed} curvature at the data. The expected one is closed
+This is the observed curvature at the data. The expected one is closed
 form as well, but only above \eqn{\xi = -1/2}; see
 \code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian.GPDDistrib()}}.
 }
@@ -53,7 +53,7 @@ th <- list(sigma = 1.5, xi = 0.3)
 h <- distrib_hessian(d, y, th)
 names(h)
 
-# Against a central difference of the score.
+# The analytic Hessian is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$sigma_xi,
       numeric = (distrib_gradient(d, y, list(sigma = 1.5,

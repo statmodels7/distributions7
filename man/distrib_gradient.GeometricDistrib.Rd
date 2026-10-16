@@ -12,7 +12,7 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -42,7 +42,7 @@ d <- geometric_distrib()
 y <- c(0, 2, 7)
 th <- list(mu = 3)
 
-# The closed form, written out: the residual over the variance.
+# The closed form is written out as the residual over the variance.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 3) / (3 * (1 + 3)))
 
 # The summed score vanishes at the sample mean, which is the estimate.

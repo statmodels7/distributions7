@@ -7,7 +7,7 @@
 \item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
 \item{y}{A numeric vector of observations. Every real value is in the
-support, so no value is rejected.}
+support, so every value is accepted.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
@@ -37,7 +37,8 @@ underflowed to zero.
 d <- cauchy_distrib()
 y <- c(-1.2, 0.3, 2.5)
 
-# The same values as stats::dcauchy at this parametrization.
+# The density takes the same values as stats::dcauchy at this
+# parametrization.
 all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
           dcauchy(y, location = 0.4, scale = 1.5))
 

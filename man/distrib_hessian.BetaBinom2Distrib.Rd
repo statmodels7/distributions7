@@ -13,11 +13,11 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{A single positive integer, the number of threads the
+\item{threads}{A single positive integer, the number of threads that the
 compiled kernel may use. Defaults to \code{1L}.}
 }
 \value{
@@ -34,11 +34,11 @@ place:
 \deqn{\dfrac{\partial^2\ell}{\partial\alpha^2}
         = \psi_1(y+\alpha) - \psi_1(\alpha)
           - \psi_1(n+S) + \psi_1(S), \qquad S = \alpha+\beta,}
-and the same with \eqn{n-y} and \eqn{\beta}. The \strong{mixed} component keeps
+and the same with \eqn{n-y} and \eqn{\beta}. The mixed component keeps
 only the shared term,
-\eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the log-mass
-separately otherwise, so it does not depend on the data at all and equals
-its own expectation at every observation. The compiled kernel evaluates the
+\eqn{-\psi_1(n+S) + \psi_1(S)}, because the two shapes otherwise enter the
+log-mass separately. It therefore does not depend on the data at all and
+equals its own expectation at every observation. The compiled kernel evaluates the
 differences of trigammas as series remainders, as for the score.
 }
 \section{Notation}{

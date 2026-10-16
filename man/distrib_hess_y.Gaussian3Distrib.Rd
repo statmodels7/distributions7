@@ -24,8 +24,8 @@ the response,
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\tau,}
 in closed form. It does not depend on \eqn{y} or on \eqn{\mu}, so the value
 is constant within a parameter setting and is recycled to the length of \code{y}.
-Being a location family, the Gaussian has the same curvature in the response
-as in its location, and this equals the \code{mu_mu} component of
+Because the Gaussian is a location family, it has the same curvature in the
+response as in its location, and this equals the \code{mu_mu} component of
 \code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}}. In this parametrization that curvature
 is minus the precision, so a larger precision gives a sharper peak of the
 log-density.

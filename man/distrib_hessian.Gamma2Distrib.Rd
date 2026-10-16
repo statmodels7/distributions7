@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -32,13 +32,13 @@ Computes the three distinct second derivatives of the gamma log-density
 with respect to \eqn{\mu} and \eqn{\sigma^2}, one value per observation, in
 closed form, by differentiating the score of
 \code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient.Gamma2Distrib()}} once more. Every component carries the
-trigamma function of \eqn{\alpha = \mu^2/\sigma^2}, both parameters moving
-the shape.
+trigamma function of \eqn{\alpha = \mu^2/\sigma^2}, because both parameters
+move the shape.
 
-The curvature in \eqn{\mu} is not negative at every data point, and neither
-is the curvature in \eqn{\sigma^2}: the observed information of a gamma is
-not positive definite everywhere. Its expectation is; see
-\code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian.Gamma2Distrib()}}.
+The curvature in \eqn{\mu} is not negative at every data point, and the same
+holds for the curvature in \eqn{\sigma^2}: the observed information of a
+gamma is not positive definite everywhere. Its expectation is positive
+definite; see \code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian.Gamma2Distrib()}}.
 
 The kernel evaluates them through the decomposition described on
 \code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3.Gamma2Distrib()}}, which keeps the digits at a large shape.

@@ -18,7 +18,7 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
 or \code{"opg"}. Read only when \code{expected = TRUE}.}
@@ -35,7 +35,7 @@ A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_theta},
 }
 \description{
 Computes the four distinct third derivatives of the NB1 log-likelihood in
-the mean \eqn{\mu} and the dispersion \eqn{\theta}, \strong{in closed form},
+the mean \eqn{\mu} and the dispersion \eqn{\theta}, in closed form,
 through \code{\link[=negbin1_components]{negbin1_components()}}. In the size \eqn{r = \mu/\theta} the
 log-likelihood is \eqn{G(r) + rB(\theta) + C(\theta)}, so the only composite
 piece is \eqn{G(\mu/\theta)}, and its mixed derivatives follow a recursion

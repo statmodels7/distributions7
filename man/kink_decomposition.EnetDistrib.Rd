@@ -22,7 +22,7 @@ is again the only non-smooth parameter, and \eqn{m_\mu = 0} for every
 
 The size of the kink is \eqn{2\lambda\alpha} and goes to zero with
 \eqn{\alpha}. A detector based on the second Bartlett identity therefore
-sees the missing curvature less clearly at small \eqn{\alpha}, where the
+detects the missing curvature less clearly at small \eqn{\alpha}, where the
 family is nearly Gaussian. The kink exists at every \eqn{\alpha > 0}, and
 the declaration records it independently of any measurement of the
 curvature.

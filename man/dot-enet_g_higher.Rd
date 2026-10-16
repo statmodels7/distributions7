@@ -12,7 +12,7 @@
 }
 \value{
 \code{p} with two components added: \code{d2g} for \eqn{G''} and \code{d3g} for
-\eqn{G'''}, each of the length \code{g} has.
+\eqn{G'''}, and each of them has the same length as \code{g}.
 }
 \description{
 Adds \eqn{G''} and \eqn{G'''} to the list of pieces, the second and third
@@ -38,7 +38,7 @@ p <- distributions7:::.enet_g_higher(
   distributions7:::.enet_parts(list(mu = 0, lambda = 2, alpha = 0.5)))
 c(x = p$x, G = p$g, dG = p$dg, d2G = p$d2g, d3G = p$d3g)
 
-# G'' against a central difference of G'.
+# G'' is compared with a central difference of G'.
 gp <- function(x) {
   distributions7:::.enet_parts(list(mu = 0, lambda = 2 * x^2,
                                     alpha = 0.5))$dg
@@ -49,6 +49,6 @@ c(analytic = p$d2g, numeric = (gp(p$x + eps) - gp(p$x - eps)) / (2 * eps))
 }
 \seealso{
 \code{\link[=enet_distrib]{enet_distrib()}} for the family and
-\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}} for the order these serve.
+\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}} for the order that these serve.
 }
 \keyword{internal}

@@ -75,8 +75,8 @@ subclass of \link{MvGaussianDistrib} adding no properties of its own.
 }
 \description{
 \code{MvGaussian1Distrib} is the family whose matrix parametrization is the
-\strong{covariance} and \code{MvGaussian2Distrib} the family whose matrix
-parametrization is the \strong{precision}. Both inherit from \link{MvGaussianDistrib},
+covariance and \code{MvGaussian2Distrib} the family whose matrix
+parametrization is the precision. Both inherit from \link{MvGaussianDistrib},
 which carries every method; the two differ in what their free values
 describe, and the computations are shared.
 }

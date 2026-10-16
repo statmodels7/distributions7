@@ -18,8 +18,8 @@ recycled. \code{sigma2} must be strictly positive.}
 \eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
-logarithms of probabilities, which is how a quantile deep in a tail is
-requested without the probability underflowing. Defaults to \code{FALSE}.}
+logarithms of probabilities, so that a quantile deep in a tail can be
+requested without underflow in the probability. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -45,7 +45,7 @@ distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 
-# A quantile 40 standard deviations out, computed on the log scale
+# The quantile 40 standard deviations out is computed on the log scale
 # because the probability itself is zero in double precision.
 distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma2 = 1),
                  log.p = TRUE)

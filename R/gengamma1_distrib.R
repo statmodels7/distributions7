@@ -5,15 +5,15 @@ NULL
 #' @name GenGamma1Distrib
 #'
 #' @description
-#' The S7 class of the generalized gamma in Stacy's three-parameter form: a
-#' scale \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}, with density
-#' \eqn{f(y) = p\,y^{d-1}e^{-(y/a)^p}/\{a^d\Gamma(d/p)\}} on \eqn{y > 0}.
+#' This S7 class represents the generalized gamma in Stacy's three-parameter
+#' form: a scale \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}, with
+#' density \eqn{f(y) = p\,y^{d-1}e^{-(y/a)^p}/\{a^d\Gamma(d/p)\}} on \eqn{y > 0}.
 #'
 #' It is the flexible family for a positive response, and it nests four others
 #' exactly: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
 #' exponential at \eqn{d = p = 1} and the half-normal at
-#' \eqn{a = \sqrt2, d = 1, p = 2}. The choice among these special cases can
-#' therefore be made by estimating \eqn{d} and \eqn{p}.
+#' \eqn{a = \sqrt2, d = 1, p = 2}. Estimates of \eqn{d} and \eqn{p} therefore
+#' show which of these special cases the data support.
 #'
 #' Build one with [gengamma1_distrib()], which supplies the three link
 #' functions. This page documents the raw S7 constructor; the validator of
@@ -31,7 +31,8 @@ NULL
 #'   \eqn{(0, \infty)}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.GenGamma1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.GenGamma1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.GenGamma1Distrib] and
@@ -90,7 +91,7 @@ NULL
 #' # All three parameters are positive, so all three ride a log link.
 #' vapply(d@link_params, function(l) l@link_name, character(1))
 #'
-#' # Three of the four exact special cases, at one point each.
+#' # Three of the four exact special cases are compared at one point each.
 #' y <- c(0.5, 1.5, 4)
 #' rbind(gamma = distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
 #'               dgamma(y, shape = 3, scale = 2),
@@ -146,14 +147,14 @@ GenGamma1Distrib <- S7::new_class("GenGamma1Distrib", parent = continuous_distri
 #' y <- c(0.5, 1.5, 4)
 #' th <- list(a = 2, d = 3, p = 1.5)
 #'
-#' # The formula written out.
+#' # The density agrees with the formula written out.
 #' all.equal(distrib_pdf(d, y, th),
 #'           1.5 / (2^3 * gamma(3 / 1.5)) * y^(3 - 1) * exp(-(y / 2)^1.5))
 #'
 #' # It integrates to one.
 #' integrate(function(v) distrib_pdf(d, v, th), 0, Inf)$value
 #'
-#' # The four exact special cases.
+#' # The four exact special cases are compared with the densities of base R.
 #' c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
 #'                   dgamma(y, shape = 3, scale = 2))),
 #'   weibull = max(abs(distrib_pdf(d, y, list(a = 2, d = 1.5, p = 1.5)) -
@@ -163,7 +164,7 @@ GenGamma1Distrib <- S7::new_class("GenGamma1Distrib", parent = continuous_distri
 #'   half_normal = max(abs(distrib_pdf(d, y, list(a = sqrt(2), d = 1, p = 2)) -
 #'                         2 * dnorm(y))))
 #'
-#' # d decides what happens at the origin.
+#' # The value of d determines what happens at the origin.
 #' distrib_pdf(d, 1e-8, list(a = 2, d = c(0.5, 1, 2), p = 1.5))
 S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
   out <- gengamma_logpdf_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
@@ -216,10 +217,10 @@ S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = F
 #' q <- c(0.5, 1.5, 4)
 #' th <- list(a = 2, d = 3, p = 1.5)
 #'
-#' # The identity written out.
+#' # The distribution function agrees with the identity written out.
 #' all.equal(distrib_cdf(d, q, th), pgamma((q / 2)^1.5, shape = 3 / 1.5))
 #'
-#' # Against a direct quadrature of the density.
+#' # The values are compared with a direct quadrature of the density.
 #' rbind(gamma_identity = distrib_cdf(d, q, th),
 #'       quadrature = vapply(q, function(u)
 #'         integrate(function(v) distrib_pdf(d, v, th), 0, u)$value, 0))
@@ -253,9 +254,9 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or their
-#'   logarithms when `log.p = TRUE`. Note that the family's third parameter is
-#'   also called `p`; here the argument is the probability, and the parameter
-#'   is read from `theta`.
+#'   logarithms when `log.p = TRUE`. The family's third parameter is also
+#'   called `p`; here the argument is the probability, and the parameter is
+#'   read from `theta`.
 #' @param theta A named list with components `a`, `d` and `p`, each a numeric
 #'   vector of length 1 or of the length of the probabilities. All three must
 #'   be strictly positive.
@@ -277,16 +278,17 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
 #' d <- gengamma1_distrib()
 #' th <- list(a = 2, d = 3, p = 1.5)
 #'
-#' # The round trip through the distribution function.
+#' # Applying the quantile function to the distribution function returns the
+#' # original values.
 #' y <- c(0.5, 1.5, 4)
 #' all.equal(distrib_quantile(d, distrib_cdf(d, y, th), th), y)
 #'
-#' # The identity written out.
+#' # The quantile function agrees with the identity written out.
 #' u <- c(0.1, 0.5, 0.9)
 #' all.equal(distrib_quantile(d, u, th),
 #'           2 * qgamma(u, shape = 3 / 1.5)^(1 / 1.5))
 #'
-#' # The median sits below the mean, the family being right-skewed here.
+#' # The median is below the mean, because the family is right-skewed here.
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
                                                            lower.tail = TRUE,
@@ -317,8 +319,8 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
-#' @seealso [distrib_pdf.GenGamma1Distrib()] for the density the draws follow,
-#'   [mean.GenGamma1Distrib()] for the moments they reproduce, and
+#' @seealso [distrib_pdf.GenGamma1Distrib()] for the density that the draws
+#'   follow, [mean.GenGamma1Distrib()] for the moments that they reproduce, and
 #'   [distrib_rng()] for the generic.
 #'
 #' @examples
@@ -328,11 +330,11 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
 #' set.seed(51)
 #' x <- distrib_rng(d, 2e5, th)
 #'
-#' # Two moments against their closed forms.
+#' # Two sample moments are compared with their closed forms.
 #' rbind(sample = c(mean(x), var(x)),
 #'       theory = c(mean(d, th), variance(d, th)))
 #'
-#' # The representation, written out at the same seed.
+#' # The representation, written out at the same seed, reproduces the draws.
 #' set.seed(51)
 #' all.equal(x, 2 * rgamma(2e5, shape = 3 / 1.5)^(1 / 1.5))
 S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta, ...) {
@@ -384,10 +386,11 @@ S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(a = 2, d = 3, p = 1.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The scale component written out.
+#' # The scale component agrees with its formula written out.
 #' all.equal(g$a, (1.5 * (y / 2)^1.5 - 3) / 2)
 #'
-#' # All three against numerical differentiation of the log-likelihood.
+#' # All three are compared with numerical differentiation of the
+#' # log-likelihood.
 #' f <- function(v) sum(distrib_pdf(d, y, list(a = v[1], d = v[2], p = v[3]),
 #'                                  log = TRUE))
 #' rbind(analytic = vapply(g, sum, 0),
@@ -449,7 +452,7 @@ S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
 #' # The scale-shape entry is -1/a at every observation.
 #' h$a_d
 #'
-#' # Against a central difference of the score.
+#' # The entry is compared with a central difference of the score.
 #' eps <- 1e-5
 #' rbind(analytic = h$d_p,
 #'       numeric = (distrib_gradient(d, y, list(a = 2, d = 3,
@@ -471,9 +474,9 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' Gamma with shape \eqn{k = d/p} and unit rate:
 #' \deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
 #'       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
-#' So `approx` and `nsim` are ignored and [expected_hessian_exact()] answers
-#' `TRUE`. It is the same device the Weibull and the Gumbel use, where the
-#' corresponding variable is standard exponential and the expectations are
+#' So `approx` and `nsim` are ignored and [expected_hessian_exact()] returns
+#' `TRUE`. The Weibull and the Gumbel use the same device, with a standard
+#' exponential variable as the corresponding variable and the expectations as
 #' derivatives of \eqn{\Gamma} at 2.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
@@ -507,9 +510,9 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' direction.
 #'
 #' @section Notation:
-#' \eqn{k = d/p}, \eqn{\psi} and \eqn{\psi'} the digamma and trigamma
-#' functions, and \eqn{u = (Y/a)^p} the Gamma-distributed transformation the
-#' family is built on.
+#' Here \eqn{k = d/p}, \eqn{\psi} and \eqn{\psi'} are the digamma and trigamma
+#' functions, and \eqn{u = (Y/a)^p} is the Gamma-distributed transformation on
+#' which the family is built.
 #'
 #' @seealso [distrib_hessian.GenGamma1Distrib()] for the observed curvature,
 #'   [expected_hessian_exact()] for the predicate, and
@@ -521,10 +524,11 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' e <- distrib_expected_hessian(d, 0, th)
 #' names(e)
 #'
-#' # The scale-shape entry is the observed one, -1/a, the term being bilinear.
+#' # The scale-shape entry is the observed one, -1/a, because the term is
+#' # bilinear.
 #' c(expected = e$a_d, observed = -1 / 2)
 #'
-#' # The strategy argument is ignored, the expectation being closed form.
+#' # The strategy argument is ignored, because the expectation is closed form.
 #' identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 #' distributions7:::expected_hessian_exact(d)
 #'
@@ -534,7 +538,7 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #'               e$a_p, e$d_p, e$p_p), 3, 3, dimnames = list(nm, nm))
 #' ev <- eigen(-M)
 #' c(eigenvalues = ev$values, condition = max(ev$values) / min(ev$values))
-#' round(ev$vectors[, 3], 3)   # the flat direction
+#' round(ev$vectors[, 3], 3)   # this is the flat direction
 S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
@@ -549,8 +553,8 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #' @description
 #' Builds a generalized gamma distribution object in Stacy's form, with a scale
 #' \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}. The family contains
-#' the gamma, the Weibull and the exponential as special cases, so the choice
-#' among them can be made by estimating \eqn{d} and \eqn{p}.
+#' the gamma, the Weibull and the exponential as special cases, so estimates
+#' of \eqn{d} and \eqn{p} show which of them the data support.
 #'
 #' @param link_a A `linkfunctions7` link object for the scale \eqn{a}, which
 #'   must be strictly positive. Defaults to [linkfunctions7::log_link()].
@@ -578,11 +582,11 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'   scale \eqn{a};
 #' - \eqn{d = p = 1} is the [exponential][exponential_distrib];
 #' - \eqn{a = \sqrt2}, \eqn{d = 1}, \eqn{p = 2} is the half-normal;
-#' - \eqn{p \to 0} with \eqn{d/p} held large approaches the
+#' - \eqn{p \to 0} while \eqn{d/p} is kept large approaches the
 #'   [lognormal][lognormal1_distrib].
 #'
 #' The first four are exact and are checked in the examples. The fifth is a
-#' limit, reached at no admissible value.
+#' limit and is not attained at any admissible parameter value.
 #'
 #' # Score and information
 #'
@@ -593,8 +597,8 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'         + \dfrac{d\psi(k)}{p^{2}} - wL,}
 #' and the expected information is closed form, because
 #' \eqn{u = (Y/a)^p} is Gamma with
-#' shape \eqn{k} and unit rate, so every expectation the Hessian needs is one
-#' of \eqn{E[u] = k}, \eqn{E[u\log u] = k\psi(k+1)} and
+#' shape \eqn{k} and unit rate, so every expectation that the Hessian needs is
+#' one of \eqn{E[u] = k}, \eqn{E[u\log u] = k\psi(k+1)} and
 #' \eqn{E[u(\log u)^2] = k\{\psi(k+1)^2 + \psi'(k+1)\}}. The same
 #' representation gives the distribution function, the quantile function and
 #' the generator.
@@ -631,8 +635,8 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #' *Annals of Mathematical Statistics* 33, 1187-1192.
 #'
 #' @seealso [gamma2_distrib()], [weibull1_distrib()],
-#'   [exponential_distrib()] and [lognormal1_distrib()] for the families it
-#'   nests or approaches, [fixed()] for holding a shape, and
+#'   [exponential_distrib()] and [lognormal1_distrib()] for the families that
+#'   it nests or approaches, [fixed()] for holding a shape, and
 #'   [GenGamma1Distrib] for the class and its method list.
 #'
 #' @importFrom linkfunctions7 log_link
@@ -645,7 +649,7 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'
 #' distrib_pdf(d, c(0.5, 2, 5), th)
 #'
-#' # The four exact special cases, at three points each.
+#' # The four exact special cases are compared at three points each.
 #' y <- c(0.5, 2, 5)
 #' c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
 #'                   dgamma(y, shape = 3, scale = 2))),
@@ -656,11 +660,11 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'   half_normal = max(abs(distrib_pdf(d, y, list(a = sqrt(2), d = 1, p = 2)) -
 #'                         2 * dnorm(y))))
 #'
-#' # The moment formula.
+#' # The moment formula is compared with the mean method.
 #' c(closed = 2 * gamma((3 + 1) / 1.5) / gamma(3 / 1.5), ours = mean(d, th))
 #'
-#' # Two fits at two sizes: the standard errors say how much data the three
-#' # parameters want.
+#' # Two fits at two sample sizes show, through the standard errors, how much
+#' # data a fit of the three parameters requires.
 #' for (n in c(200, 2000)) {
 #'   set.seed(52)
 #'   f <- fit_distrib(d, distrib_rng(d, n, th))

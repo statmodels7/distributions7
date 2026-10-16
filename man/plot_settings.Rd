@@ -27,7 +27,7 @@ becomes three settings that share a mean and differ in scale.
 }
 \details{
 Every component must have length 1 or the same \eqn{k}. A length that only
-\strong{divides} \eqn{k} signals an error, because R would recycle such a
+divides \eqn{k} signals an error, because R would recycle such a
 component without a warning.
 
 The meaning is available only because a plot has no data to recycle a

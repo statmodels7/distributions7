@@ -24,19 +24,19 @@ An S7 object of class \code{NegBin1Distrib}, inheriting from
 }
 \description{
 Builds the distribution object for the negative binomial family on the
-non-negative integers whose variance is \strong{linear} in the mean: with a mean
+non-negative integers whose variance is linear in the mean: with a mean
 \eqn{\mu > 0} and a dispersion \eqn{\theta > 0},
 \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}. The returned object carries
 closed-form derivatives of the log-mass to fourth order and closed-form
 moments.
 
-The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
-both parameters being positive.
+The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. Both default to the
+logarithm, because both parameters are positive.
 }
 \section{Relation to the quadratic-variance negative binomial}{
-Two negative binomials are in common use and they are \strong{different
-families}, not two parametrizations of one. Here the variance is
+Two negative binomials are in common use and they are different
+families, not two parametrizations of one. Here the variance is
 \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean; \code{\link[=negbin2_distrib]{negbin2_distrib()}} has
 \eqn{\mu + \mu^2/\theta}, growing quadratically. Fitting one is not fitting
@@ -45,7 +45,7 @@ models.
 
 The difference is visible in where the mean sits. The size is
 \eqn{r = \mu/\theta} and the success probability \eqn{1/(1+\theta)}, so
-\eqn{\mu} appears \strong{inside} the gamma functions of the mass; in the
+\eqn{\mu} appears inside the gamma functions of the mass; in the
 quadratic form the size is \eqn{\theta} and the mean stays outside them.
 }
 
@@ -74,7 +74,7 @@ information every term carrying \eqn{P} drops out, its expectation vanishing
 by the first Bartlett identity, and what remains is two sums over the
 support against the exact mass (\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}).
 
-\strong{The mean and the dispersion are not orthogonal here.} The mixed entry of
+The mean and the dispersion are not orthogonal here. The mixed entry of
 the expected information is non-zero, where \code{\link[=negbin2_distrib]{negbin2_distrib()}} has exactly
 zero.
 }
@@ -157,9 +157,9 @@ tests. \emph{Journal of Applied Econometrics} \strong{1}, 29-53.
 \seealso{
 \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the quadratic-variance family; \code{\link[=poisson_distrib]{poisson_distrib()}}
 for the limit as \eqn{\theta} goes to zero and \code{\link[=geometric_distrib]{geometric_distrib()}} for the
-case \eqn{\mu = \theta}; \code{\link[=pig1_distrib]{pig1_distrib()}} for a Poisson mixed over an
-inverse Gaussian; \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for counts with
-excess zeros; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}}
-to validate a family of your own against the same battery this one passes;
+case \eqn{\mu = \theta}; \code{\link[=pig1_distrib]{pig1_distrib()}} for a Poisson mixed over an inverse
+Gaussian; \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for counts with excess
+zeros; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to
+validate a family of your own against the same battery that this one passes;
 \link{NegBin1Distrib} for the class.
 }

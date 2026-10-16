@@ -7,9 +7,9 @@
 logistic_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
-over the whole line already.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean \eqn{\mu}.
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the mean already
+ranges over the whole line.}
 
 \item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
 \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps

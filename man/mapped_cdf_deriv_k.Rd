@@ -33,9 +33,11 @@ mapped_cdf_deriv_k(
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical.}
+\item{log}{A single logical; \code{TRUE} selects the derivatives of the log
+probability and \code{FALSE} those of the probability.}
 
 \item{q_par}{The quantiles on the parent's scale. \code{q} by default, and
 \code{log(q)} for a lognormal.}
@@ -52,7 +54,7 @@ requested tail and scale.
 The body that every mapped family registers at orders 3 and 4, at 2 as well
 where its written-out route stops at the gradient, and at every order for
 the centered skew normal. It tests whether the parent's cdf derivatives
-are exact at \strong{every} order up to the one wanted, takes
+are exact at every order up to the one wanted, takes
 \code{\link[=chain_cdf_deriv_k]{chain_cdf_deriv_k()}} if they are, and falls back to \code{\link[=cdf_tables]{cdf_tables()}} on the
 new family's own cdf if they are not.
 }

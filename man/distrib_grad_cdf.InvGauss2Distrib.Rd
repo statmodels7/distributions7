@@ -11,11 +11,11 @@
 \item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
 (positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
-default.}
+\item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+lower tail and \code{FALSE} the upper tail.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical,
-\code{TRUE} by default.}
+\item{log}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
+derivatives of the log probability and \code{FALSE} those of the probability.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

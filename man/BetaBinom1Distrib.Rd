@@ -52,9 +52,9 @@ the parent's: \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params
 \eqn{(0, 1)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the beta-binomial family parametrized by a mean proportion
-\eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the finite support
-\eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}.
+This is the S7 class of the beta-binomial family parametrized by a mean
+proportion \eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the
+finite support \eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}.
 
 The class carries an extra property beyond the parent's, \code{size}: the number
 of trials \eqn{n}, fixed at construction as it is for
@@ -66,7 +66,8 @@ properties, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.BetaBinom1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf()}},
@@ -100,7 +101,8 @@ S7::S7_inherits(d, discrete_distrib)
 d@size
 d@bounds
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 

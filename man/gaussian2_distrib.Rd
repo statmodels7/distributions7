@@ -7,9 +7,9 @@
 gaussian2_distrib(link_mu = identity_link(), link_sigma2 = log_link())
 }
 \arguments{
-\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
-over the whole line already.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean \eqn{\mu}.
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the mean already
+ranges over the whole line.}
 
 \item{link_sigma2}{A \code{link} object from \code{linkfunctions7} for the variance
 \eqn{\sigma^2}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -29,11 +29,10 @@ object carries closed-form derivatives of the log-density to fourth order
 in the response and to fifth order in the parameters, and closed-form
 moments.
 
-The two arguments choose the links that carry each parameter to the
+The two arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works. The defaults are the
-identity for
-the mean, which is already free, and the logarithm for the variance, which
-keeps it positive at every predictor.
+identity for the mean, which is already free, and the logarithm for the
+variance, which keeps it positive at every predictor.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (-\infty, \infty)} is
@@ -44,8 +43,8 @@ mean is \eqn{\mu}, the variance \eqn{\sigma^2}, and both the skewness and
 the excess kurtosis are 0. The numbering follows the literature where it has
 one: this parametrization is \code{NO2} in the gamlss family catalog.
 
-This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different coordinates,
-\eqn{\sigma^2} here being the square of the \eqn{\sigma} there. The two are
+This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different coordinates;
+here \eqn{\sigma^2} is the square of the \eqn{\sigma} there. The two are
 separate families and not one family under a link. A link changes the
 scale on which a parameter is modeled and leaves the parameter unchanged,
 whereas here the parameter, its interpretation, its standard error and its
@@ -66,8 +65,9 @@ and its expectation
       \mathbb{E}\left[\ell^{(vv)}\right] = -\dfrac{1}{2v^2}.}
 The zero off-diagonal makes the mean and the variance orthogonal, so their
 maximum likelihood estimates are asymptotically independent. Orthogonality
-holds in all three parametrizations of this family, the mean being
-orthogonal to any smooth function of the spread alone.
+holds in all three parametrizations of this family, because the mean is
+orthogonal to any smooth function of the spread that does not involve the
+mean.
 
 Third and fourth orders are closed form as well, observed and expected, in
 \code{\link[=distrib_deriv3.Gaussian2Distrib]{distrib_deriv3.Gaussian2Distrib()}} and \code{\link[=distrib_deriv4.Gaussian2Distrib]{distrib_deriv4.Gaussian2Distrib()}},
@@ -95,12 +95,12 @@ the unconstrained scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
 d <- gaussian2_distrib()
 d
 
-# The same law as gaussian1 at sigma = sqrt(sigma2).
+# The law is the same as gaussian1 at sigma = sqrt(sigma2).
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
           distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
 
-# Moments in closed form: the variance is the parameter itself.
+# The moments are in closed form, and the variance is the parameter itself.
 th <- list(mu = 1, sigma2 = 4)
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))

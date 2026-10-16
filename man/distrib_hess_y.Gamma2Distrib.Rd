@@ -23,8 +23,8 @@ A numeric vector of length
 Computes the second derivative of the gamma log-density with respect to the
 response, in closed form at the implied shape \eqn{\alpha = \mu^2/\sigma^2}:
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\alpha - 1}{y^2}.}
-The rate drops out, the log-density being linear in \eqn{y} apart from the
-\eqn{(\alpha-1)\log y} term. The sign follows the shape: the log-density is
+The rate drops out because the log-density is linear in \eqn{y} apart from
+the \eqn{(\alpha-1)\log y} term. The sign follows the shape: the log-density is
 concave in the response when \eqn{\sigma^2 < \mu^2}, exactly flat when
 \eqn{\sigma^2 = \mu^2}, where the family is exponential, and convex when
 \eqn{\sigma^2 > \mu^2}.
@@ -40,7 +40,8 @@ all.equal(distrib_hess_y(d, y, th), -(9 / 2 - 1) / y^2)
 all.equal(distrib_hess_y(d, y, th),
           distrib_hess_y(d, y, list(mu = 6, sigma2 = 8)))
 
-# Concave below sigma2 = mu^2, flat at it, convex above.
+# The log-density is concave below sigma2 = mu^2, flat at it and convex
+# above.
 vapply(c(2, 9, 20),
        function(v) distrib_hess_y(d, 3, list(mu = 3, sigma2 = v)),
        numeric(1))

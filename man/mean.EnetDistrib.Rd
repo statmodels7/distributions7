@@ -6,24 +6,25 @@
 \arguments{
 \item{x}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}.
-Aligned and validated by name, so a missing or out-of-bounds
-component signals an error.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}. It is
+aligned and validated by name, so a missing or out-of-bounds component
+signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means, of the length the recycled
+A numeric vector of means, of the length that the recycled
 parameters imply. The value is the location; the two rates do not
 enter it, so a setting that varies one of them repeats one number.
 }
 \description{
-Returns \eqn{\mu}, the location. The density is symmetric about it, both
-factors of the product being symmetric about the same point, so the location
-is the mean, the median and the mode at once.
+Returns \eqn{\mu}, the location. The density is symmetric about it because
+both factors of the product are symmetric about the same point. The location
+is therefore the mean, the median and the mode at once.
 
-The value is recycled to the length the three parameters imply, so a \code{theta}
-whose components vary by observation gets one mean per observation.
+The value is recycled to the length that the three parameters imply, so the
+result has one mean per observation when the components of \code{theta} vary by
+observation.
 }
 \examples{
 d <- enet_distrib()
@@ -32,7 +33,7 @@ th <- list(mu = 3, lambda = 2, alpha = 0.5)
 # Mean, median and mode coincide.
 c(mean = mean(d, th), median = distrib_quantile(d, 0.5, th))
 
-# One value per observation when a parameter varies.
+# The result has one value per observation when a parameter varies.
 mean(d, list(mu = c(0, 3, 7), lambda = 2, alpha = 0.5))
 
 }

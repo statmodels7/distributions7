@@ -5,8 +5,8 @@ NULL
 #' @name PseudoHuberDistrib
 #'
 #' @description
-#' The S7 class of the pseudo-Huber family, a location-scale family on the
-#' whole real line whose log-density is the negative pseudo-Huber loss
+#' This is the S7 class of the pseudo-Huber family, a location-scale family on
+#' the whole real line whose log-density is the negative pseudo-Huber loss
 #' \eqn{-\sqrt{\nu + z^2}}, with a shape \eqn{\nu > 0} interpolating between a
 #' Laplace at \eqn{\nu \to 0} and a Gaussian at \eqn{\nu \to \infty}. It is the
 #' symmetric hyperbolic distribution, a special case of the generalized
@@ -36,7 +36,8 @@ NULL
 #'   [distrib_pdf.PseudoHuberDistrib()] for the density.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.PseudoHuberDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.PseudoHuberDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.PseudoHuberDistrib] and
@@ -81,7 +82,8 @@ NULL
 #' d <- pseudohuber_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #'
@@ -1026,7 +1028,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' [student_t1_distrib()] for the other robust three-parameter family here,
 #' whose score redescends to zero where this one flattens to a bound;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
+#' family of your own against the same battery that this one passes;
 #' [PseudoHuberDistrib] for the class.
 #' @export
 pseudohuber_distrib <- function(link_mu = identity_link(), link_sigma = log_link(), link_nu = log_link()) {

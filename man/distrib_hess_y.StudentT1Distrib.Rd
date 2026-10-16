@@ -28,7 +28,7 @@ Student t log-density with respect to the response, in closed form. With
 The family is a location family, so this equals the pure-location entry of
 \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}}, with no sign change; two derivatives
 in \eqn{\mu} carry two factors of \eqn{-1}. It is negative near the mode and
-\strong{positive} beyond \eqn{|r| = \sigma\sqrt{\nu}}, so the log-density is not
+positive beyond \eqn{|r| = \sigma\sqrt{\nu}}, so the log-density is not
 concave in the response, unlike a Gaussian's.
 }
 \examples{

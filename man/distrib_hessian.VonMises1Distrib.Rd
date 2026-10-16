@@ -14,13 +14,13 @@ recycled. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{kappa_kappa} and
@@ -34,7 +34,7 @@ one value per observation, in closed form:
       \ell^{(\mu\kappa)} = \sin(y-\mu), \qquad
       \ell^{(\kappa\kappa)} = -A'(\kappa),}
 with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}. The
-pure-concentration entry is \strong{free of the data}: the log-density is
+pure-concentration entry is free of the data: the log-density is
 \eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in \eqn{\kappa}
 apart from the normalizing constant, so its second derivative in
 \eqn{\kappa} comes from \eqn{\log I_0} alone. It therefore equals its own

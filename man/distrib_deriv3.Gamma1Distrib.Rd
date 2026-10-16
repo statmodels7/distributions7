@@ -17,10 +17,10 @@ recycled. Both must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -67,7 +67,7 @@ y <- c(1, 3, 5)
 th <- list(mu = 3, phi = 0.5)
 d3 <- distrib_deriv3(d, y, th)
 
-# The three components involving mu, written out.
+# The three components involving mu are written out.
 s <- 1 / 0.5
 z <- y / 3
 all.equal(d3$mu_mu_mu, s * (6 * z - 2) / 3^3)

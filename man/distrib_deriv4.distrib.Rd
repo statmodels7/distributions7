@@ -33,7 +33,7 @@ A named list of fourth-derivative component vectors, each of length
 }
 \description{
 The fallback for a family that registers no fourth-order method. Observed
-derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}: a \strong{second} difference of the
+derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}: a second difference of the
 family's own \code{\link[=distrib_hessian]{distrib_hessian()}} rather than a difference of the third
 order, or, for a family without its own Hessian, one tensor-product stencil
 on its score or its log-density. On both routes each component is a single

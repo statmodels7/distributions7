@@ -34,8 +34,8 @@ th <- list(mu = 1, sigma2 = 4)
 
 all.equal(distrib_grad_y(d, y, th), -(y - 1) / 4)
 
-# A location family: the derivative in the response is minus the score in
-# the location.
+# Because the family is a location family, the derivative in the response
+# is minus the score in the location.
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 
 # It is the derivative of the log-density, so a central difference in y

@@ -31,8 +31,8 @@ values are logarithms and are non-positive.
 \description{
 Computes \eqn{F(q) = P(Y \le q) = \sum_{k \le \lfloor q \rfloor} P(Y = k)}
 as the cumulative sum of the mass over the whole support
-\eqn{\{0, \dots, n\}}. The support being finite, that sum is exact rather
-than an approximation, and it costs \eqn{n+1} evaluations of the mass for
+\eqn{\{0, \dots, n\}}. Because the support is finite, that sum is exact
+rather than an approximation, and it costs \eqn{n+1} evaluations of the mass for
 each distinct parameter setting. Below the support the probability is 0
 and at or above \eqn{n} it is 1. With \code{lower.tail = FALSE} the upper tail
 \eqn{P(Y > q)} is the sum of the mass above \eqn{q}, accumulated from the
@@ -44,7 +44,7 @@ too. The helper is \code{\link[=betabinom1_cum]{betabinom1_cum()}}.
 d <- betabinom1_distrib(size = 10)
 th <- list(mu = 0.3, sigma = 0.5)
 
-# The cumulative sum of the mass, exactly.
+# The distribution function is the cumulative sum of the mass, exactly.
 all.equal(distrib_cdf(d, 0:10, th), cumsum(distrib_pdf(d, 0:10, th)))
 
 # Below the support it is zero and at the top of it one.

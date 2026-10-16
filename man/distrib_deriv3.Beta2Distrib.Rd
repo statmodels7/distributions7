@@ -12,14 +12,14 @@
 vector of length 1 or of the length of \code{y}. Both must be strictly
 positive.}
 
-\item{expected}{Logical of length 1, and without effect here, the observed
-and expected third derivatives being the same numbers. Defaults to
+\item{expected}{Logical of length 1, without effect here because the
+observed and expected third derivatives are the same numbers. Defaults to
 \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available.}
+\item{approx}{Ignored, because a closed form is available.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -41,8 +41,8 @@ respect to \eqn{\alpha} and \eqn{\beta}, in closed form:
         \psi''(\alpha+\beta), \qquad
       \ell^{(\beta\beta\beta)} = \psi''(\alpha+\beta) - \psi''(\beta),}
 with \eqn{\psi''} the second derivative of the digamma function. The two
-mixed components are equal, every mixed derivative of \eqn{\log
-B(\alpha,\beta)} of a given order being the same polygamma of the sum.
+mixed components are equal because every mixed derivative of \eqn{\log
+B(\alpha,\beta)} of a given order is the same polygamma of the sum.
 
 The values are free of the response, so \code{expected} selects nothing: the same
 computation runs either way and the two results are identical to the bit.

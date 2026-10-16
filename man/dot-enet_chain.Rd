@@ -12,7 +12,7 @@
 \item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, read
 positionally by \code{.enet_parts()}.}
 
-\item{order}{A single integer, 1 to 4: the derivative order wanted.}
+\item{order}{A single integer, 1 to 4: the derivative order to compute.}
 }
 \value{
 A named list of the distinct order-\code{order} components in
@@ -43,7 +43,7 @@ g <- distrib_gradient(d, y, th)
 a1 <- distributions7:::.enet_chain(y, th, 1L)
 max(abs(unlist(a1[names(g)]) - unlist(g)))
 
-# And at order two, the hand-written Hessian.
+# At order two it reproduces the hand-written Hessian.
 h <- distrib_hessian(d, y, th)
 a2 <- distributions7:::.enet_chain(y, th, 2L)
 max(abs(unlist(a2[names(h)]) - unlist(h)))

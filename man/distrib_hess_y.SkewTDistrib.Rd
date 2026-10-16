@@ -24,7 +24,7 @@ Computes \eqn{\partial^2\ell/\partial y^2 = D'/\sigma^2}, with
 enter the density through \eqn{y - \mu} and the sign of the first
 derivative disappears in the second.
 
-Unlike the skew normal's, the value \strong{changes sign}. The Student
+Unlike the skew normal's, the value changes sign. The Student
 \eqn{t}'s curvature is positive wherever \eqn{|z| > \sqrt{\nu}}, so the
 log-density is convex in the far tail. That convexity makes the family's
 score redescend, and its estimates resistant to an outlier.

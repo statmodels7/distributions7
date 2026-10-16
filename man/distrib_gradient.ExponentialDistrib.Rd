@@ -12,13 +12,13 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of one numeric vector, \code{mu}, of length
@@ -43,10 +43,10 @@ d <- exponential_distrib()
 y <- c(0.3, 1.1, 4.0)
 th <- list(mu = 2)
 
-# The closed form, written out.
+# The closed form is written out in R and compared with the method.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 2) / 2^2)
 
-# One component, the family having one parameter.
+# There is one component, because the family has one parameter.
 names(distrib_gradient(d, y, th))
 
 # The summed score vanishes at the sample mean, which is the estimate.

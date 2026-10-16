@@ -24,13 +24,13 @@ each a numeric vector of length \code{length(y)}. A two-parameter parent gives
 ten.
 }
 \description{
-A continuous parent puts \strong{no} mass at zero, so there is nothing to
+A continuous parent puts no mass at zero, so there is nothing to
 truncate away and no normalizing constant to differentiate. Away from the
 atom the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)}: the
 \eqn{\theta} derivatives are the parent's unchanged, and every component
 mixing \code{za} with a parent parameter is exactly zero.
 
-The object is a \strong{mixed} distribution, a density on the positive line plus
+The object is a mixed distribution, a density on the positive line plus
 an atom at zero, and it declares that atom through \code{\link[=distrib_atoms]{distrib_atoms()}}, so
 \code{\link[=check_distrib]{check_distrib()}} tests it correctly: the density integrates to
 \eqn{1 - \pi}, not to 1.

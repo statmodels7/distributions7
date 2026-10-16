@@ -46,9 +46,9 @@ object built by \code{\link[=beta1_distrib]{beta1_distrib()}} they hold \code{"b
 \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the beta family on \eqn{(0, 1)} parametrized by its mean
-\eqn{\mu \in (0, 1)} and a precision \eqn{\phi > 0}, so that the shapes are
-\eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi} and the variance is
+This is the S7 class of the beta family on \eqn{(0, 1)} parametrized by its
+mean \eqn{\mu \in (0, 1)} and a precision \eqn{\phi > 0}, so that the shapes
+are \eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi} and the variance is
 \eqn{\mu(1-\mu)/(\phi+1)}. It inherits from \code{continuous_distrib}, so every
 generic of the \code{distrib} class applies to it; the methods listed below are
 registered on it directly and everything else comes from the parent.
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Beta1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Beta1Distrib]{distrib_cdf()}},
@@ -100,7 +101,8 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- beta1_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These are the properties that a consumer reads to drive the family
+# without any knowledge of which family it is.
 d@params
 d@params_interpretation
 d@params_bounds
@@ -111,7 +113,7 @@ vapply(c(1, 5, 50), function(p) variance(d, list(mu = 0.4, phi = p)),
 }
 \seealso{
 \code{\link[=beta1_distrib]{beta1_distrib()}} to build one;
-\code{\link[=beta2_distrib]{beta2_distrib()}} for the same law in mean and variance;
+\code{\link[=beta2_distrib]{beta2_distrib()}} for the same law in its two shapes;
 \code{\link[=distrib_pdf.Beta1Distrib]{distrib_pdf.Beta1Distrib()}} and \code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the
-closed forms this class supplies.
+closed forms that this class supplies.
 }

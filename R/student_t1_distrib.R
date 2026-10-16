@@ -5,13 +5,13 @@ NULL
 #' @name StudentT1Distrib
 #'
 #' @description
-#' The S7 class of the location-scale Student t family, parametrized by a
-#' location \eqn{\mu}, a scale \eqn{\sigma > 0} and degrees of freedom
-#' \eqn{\nu > 0}, with density proportional to
-#' \eqn{\{1 + (y-\mu)^2/(\nu\sigma^2)\}^{-(\nu+1)/2}} on the whole real line. It
-#' inherits from `continuous_distrib`, so every generic of the `distrib` class
-#' applies to it; the methods listed below are registered on it directly and
-#' everything else comes from the parent.
+#' This is the S7 class of the location-scale Student t family, parametrized by
+#' a location \eqn{\mu}, a scale \eqn{\sigma > 0} and degrees of freedom
+#' \eqn{\nu > 0}, with density proportional to \eqn{\{1 +
+#' (y-\mu)^2/(\nu\sigma^2)\}^{-(\nu+1)/2}} on the whole real line. It inherits
+#' from `continuous_distrib`, so every generic of the `distrib` class applies to
+#' it; the methods listed below are registered on it directly and everything
+#' else comes from the parent.
 #'
 #' Build one with [student_t1_distrib()], which supplies the three link
 #' functions and fills the properties in. This page documents the raw S7
@@ -39,7 +39,8 @@ NULL
 #'   [distrib_gradient.StudentT1Distrib()] for the redescending score.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.StudentT1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.StudentT1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.StudentT1Distrib] and
@@ -82,7 +83,8 @@ NULL
 #' d <- student_t1_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@params_bounds

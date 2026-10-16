@@ -25,7 +25,7 @@ Sums the log-density over the observations, \eqn{\sum_i \log f(y_i;
 read at the same \eqn{\theta}, which is the i.i.d. assumption the fitting
 layer makes.
 
-The value is \strong{not} divided by \eqn{n}. \code{\link[=fit_distrib]{fit_distrib()}} scales it when it
+The value is not divided by \eqn{n}. \code{\link[=fit_distrib]{fit_distrib()}} scales it when it
 hands the objective to an optimizer, and recomputes it unscaled here for the
 \code{loglik}, \code{aic} and \code{bic} a fit reports.
 }

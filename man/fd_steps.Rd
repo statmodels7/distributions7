@@ -39,7 +39,7 @@ nearest finite bound or by scaling it on that distance.
 }
 \details{
 The domain clamp is what allows a finite-difference fallback to be offered at
-all. Parameter domains here are \strong{open}: a scale parameter is positive, not
+all. Parameter domains here are open: a scale parameter is positive, not
 non-negative. A step chosen from the magnitude alone therefore takes a small
 \eqn{\sigma} straight through zero, and the log-density comes back \code{NaN}
 for reasons that look like a bug in the density. Clamping to 49\\% of the

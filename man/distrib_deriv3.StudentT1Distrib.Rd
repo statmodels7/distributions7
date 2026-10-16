@@ -17,7 +17,7 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx, nsim}{Accepted for the generic's signature; the expectations
 are closed forms.}

@@ -20,12 +20,14 @@ parameter, in the parameter order.}
 \item{dF2}{A named list of second derivatives of \eqn{F}, keyed as
 \code{\link[=hess_names]{hess_names()}}, or \code{NULL} (the default) when only the gradient is wanted.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical. \code{TRUE} leaves
-the signs alone and \code{FALSE} flips every one of them.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail. \code{TRUE} leaves the signs alone and \code{FALSE} flips every one
+of them.}
 
-\item{log}{Are derivatives of the log probability wanted? A single logical.
-\code{TRUE} divides by the probability, which returns \code{-Inf} or \code{NaN} in a tail
-where that probability has underflowed to zero.}
+\item{log}{A single logical; \code{TRUE} selects the derivatives of the log
+probability and \code{FALSE} those of the probability. \code{TRUE} divides by the
+probability, which returns \code{-Inf} or \code{NaN} in a tail where that probability
+has underflowed to zero.}
 }
 \value{
 A named list of numeric vectors: one per parameter when \code{dF2} is

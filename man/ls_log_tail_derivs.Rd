@@ -17,7 +17,8 @@ ls_log_tail_derivs(distrib, q, theta, o, spec, lower.tail)
 
 \item{spec}{The entry of \code{log_tail_ls} for the family.}
 
-\item{lower.tail}{Is the lower tail wanted? A single logical.}
+\item{lower.tail}{A single logical; \code{TRUE} selects the lower tail and \code{FALSE}
+the upper tail.}
 }
 \value{
 A named list, one component per multi-index of order \code{o}, in the

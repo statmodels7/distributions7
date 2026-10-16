@@ -17,8 +17,8 @@ parameters. Each parameter must have length 1 or \code{length(y)}.}
 \item{scale}{\code{"parameter"} (the default) for derivatives with respect to
 the parameters, \code{"link"} for derivatives with respect to the
 unconstrained predictors. In the numerical default the link scale is
-obtained by differentiating the order-4 component \strong{already on the link
-scale}, which needs neither the fifth derivative of a link nor an
+obtained by differentiating the order-4 component already on the link
+scale, which needs neither the fifth derivative of a link nor an
 order-5 entry in \code{\link[=bell_partial]{bell_partial()}}. A family with a closed-form fifth
 order composes it with the lower orders through \code{\link[=to_link_scale]{to_link_scale()}}, which
 uses both.}
@@ -53,7 +53,7 @@ The families that register their own method (\code{\link[=cauchy_distrib]{cauchy
 \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}}, \code{\link[=student_t1_distrib]{student_t1_distrib()}},
 \code{\link[=student_t2_distrib]{student_t2_distrib()}} and \code{\link[=weibull3_distrib]{weibull3_distrib()}}) compute the fifth order
 in closed form with compiled kernels. Every other
-family reaches \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which applies \strong{one} central
+family reaches \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which applies one central
 difference to the fourth order. Where the fourth order is analytic this is
 an ordinary numerical derivative; where the fourth order is itself a
 fallback the result is a difference of a difference, with the accuracy

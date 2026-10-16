@@ -29,7 +29,7 @@ inputs.
 \description{
 Computes the same mass as \code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf.Pig1Distrib()}}, at the dispersion
 \eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2} that \eqn{\alpha}
-implies. The parameter \eqn{\alpha} of this parametrization \strong{is} the
+implies. The parameter \eqn{\alpha} of this parametrization is the
 argument \eqn{\sqrt{1 + 2\sigma\mu}/\sigma} at which the Bessel function is
 evaluated, so in this coordinate the mass function's own argument is a
 parameter.

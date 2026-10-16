@@ -208,8 +208,8 @@ sn_cp_to_dp <- function(mu, sigma, gamma1, s) {
 #' @name SkewNormal2Distrib
 #'
 #' @description
-#' The S7 class of the skew normal written in its first three moments: the mean
-#' \eqn{\mu}, the standard deviation \eqn{\sigma} and the skewness
+#' This is the S7 class of the skew normal written in its first three moments:
+#' the mean \eqn{\mu}, the standard deviation \eqn{\sigma} and the skewness
 #' \eqn{\gamma_1}. It is the same law as [SkewNormal1Distrib], reached through
 #' the map of [sn_cp_to_dp()], and the only thing that differs is which three
 #' numbers name a member of it.
@@ -236,7 +236,8 @@ sn_cp_to_dp <- function(mu, sigma, gamma1, s) {
 #'   \eqn{(0,\infty)} and \eqn{(-0.9952717, 0.9952717)}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.SkewNormal2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.SkewNormal2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.SkewNormal2Distrib] and

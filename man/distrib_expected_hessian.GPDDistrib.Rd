@@ -15,8 +15,8 @@ vector of length 1 or of the length of \code{y}.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{Ignored: the expectation is closed form. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored: the expectation is closed form. It is accepted so that
+the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason.}
 
@@ -39,16 +39,16 @@ Returns Smith's (1985) closed form, valid for \eqn{\xi > -1/2}:
       E\!\left[\dfrac{\partial^2\ell}{\partial\xi^2}\right]
         = \dfrac{-2}{(1+2\xi)(1+\xi)}.}
 Every entry is free of the data, so \code{approx} and \code{nsim} are ignored and
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers \code{TRUE}.
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns \code{TRUE}.
 }
 \section{Where it stops existing}{
-At \eqn{\xi \le -1/2} the information does \strong{not exist} and every component
+At \eqn{\xi \le -1/2} the information does not exist and every component
 is \code{NA}. The condition is exactly that the integrand be integrable: written
 on the probability scale, the second derivative grows like
 \eqn{(1-u)^{-2|\xi|}} near the upper endpoint, which is integrable if and
 only if \eqn{|\xi| < 1/2}. Below that point the classical asymptotics of the
-maximum likelihood estimator do not hold either, so the \code{NA} reports a
-quantity that does not exist.
+maximum likelihood estimator do not hold either, so the \code{NA} means that the
+quantity does not exist.
 
 Approaching the boundary the information diverges: the \eqn{\xi}
 component \eqn{-2/\{(1+2\xi)(1+\xi)\}}, which does not depend on
@@ -59,9 +59,9 @@ component \eqn{-2/\{(1+2\xi)(1+\xi)\}}, which does not depend on
 \section{Checking it}{
 A Monte Carlo average of the observed Hessian converges slowly here,
 because the second derivative is unbounded at the upper endpoint when
-\eqn{\xi < 0}. Integrating on the \strong{probability} scale
-instead, \eqn{E[h] = \int_0^1 h(Q(u))\,du}, turns the endpoint into an
-ordinary point and agrees to \eqn{10^{-11}}.
+\eqn{\xi < 0}. If the integral is taken on the probability scale instead,
+\eqn{E[h] = \int_0^1 h(Q(u))\,du}, the endpoint becomes an ordinary point
+and the result agrees to \eqn{10^{-11}}.
 }
 
 \examples{
@@ -69,7 +69,7 @@ d <- gpd_distrib()
 th <- list(sigma = 1.5, xi = 0.3)
 e <- distrib_expected_hessian(d, 0, th)
 
-# Smith's formula written out.
+# The result is compared with Smith's formula written out.
 all.equal(unlist(e[c("sigma_sigma", "sigma_xi", "xi_xi")], use.names = FALSE),
           c(-1 / (1.6 * 1.5^2), -1 / (1.6 * 1.5 * 1.3), -2 / (1.6 * 1.3)))
 
@@ -81,7 +81,7 @@ t(vapply(c(-0.7, -0.5, -0.49, -0.3, 0),
            c(xi = x, sigma_sigma = u$sigma_sigma, xi_xi = u$xi_xi)
          }, numeric(3)))
 
-# The strategy argument is ignored, the expectation being closed form.
+# The strategy arguments are ignored because the expectation is closed form.
 identical(distrib_expected_hessian(d, 0, th),
           distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 10))
 }

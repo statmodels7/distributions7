@@ -17,10 +17,10 @@ recycled. \code{sigma} must be strictly positive.}
 model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both the observed
-and the expected values.}
+\item{approx}{Ignored, because a closed form is available for both the
+observed and the expected values.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -28,7 +28,7 @@ and the expected values.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
@@ -41,14 +41,15 @@ respect to \eqn{\mu} and \eqn{\sigma}, in closed form from a compiled
 kernel. Every component is a rational function of \eqn{r = y - \mu} and
 \eqn{\sigma} with a power of \eqn{d = \sigma^2 + r^2} in the denominator,
 so all of them are bounded in \eqn{y}. Three of the four tend to zero as
-\eqn{|r|} grows; the component in \eqn{\sigma} alone tends to
+\eqn{|r|} grows; the component that is pure in \eqn{\sigma} tends to
 \eqn{2/\sigma^3}. The kernel evaluates them as described in
 \code{\link[=distrib_deriv5.CauchyDistrib]{distrib_deriv5.CauchyDistrib()}}, without forming \eqn{r^2}.
 
-With \code{expected = TRUE} the expectations under the model are returned, also
-in closed form: the two components odd in \eqn{r} vanish by symmetry, and
-the other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes
-are closed form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+With \code{expected = TRUE} the expectations under the model are returned, also in
+closed form: the two components odd in \eqn{r} vanish by symmetry, and the
+other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes are
+closed form, so the method runs no quadrature and ignores \code{approx} and
+\code{nsim}.
 }
 \section{Notation}{
 

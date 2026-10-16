@@ -54,7 +54,7 @@ method is registered on: the base classes carry the approximating method and
 every other registration is, by default, a family that wrote the expectation
 out.
 
-\strong{Reading the owner is not sufficient in general.} A method registered on
+Reading the owner is not sufficient in general. A method registered on
 the class of a family may be a chain onto a parent that approximates, and
 then the owner reads as "written out" although the arithmetic is not. A
 family that chains onto another therefore returns the answer of its parent,

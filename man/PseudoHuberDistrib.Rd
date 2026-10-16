@@ -47,8 +47,8 @@ and the domains \eqn{(-\infty, \infty)}, \eqn{(0, \infty)},
 \eqn{(0, \infty)}.
 }
 \description{
-The S7 class of the pseudo-Huber family, a location-scale family on the
-whole real line whose log-density is the negative pseudo-Huber loss
+This is the S7 class of the pseudo-Huber family, a location-scale family on
+the whole real line whose log-density is the negative pseudo-Huber loss
 \eqn{-\sqrt{\nu + z^2}}, with a shape \eqn{\nu > 0} interpolating between a
 Laplace at \eqn{\nu \to 0} and a Gaussian at \eqn{\nu \to \infty}. It is the
 symmetric hyperbolic distribution, a special case of the generalized
@@ -62,7 +62,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf()}},
@@ -110,7 +111,8 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- pseudohuber_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 

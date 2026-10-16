@@ -5,10 +5,11 @@ NULL
 #' @name PoissonDistrib
 #'
 #' @description
-#' The S7 class of the Poisson family parametrized by its mean \eqn{\mu > 0},
-#' with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative integers. It
-#' inherits from `discrete_distrib`, so expectations over its support are exact
-#' sums and no derivative with respect to the response is defined.
+#' This is the S7 class of the Poisson family parametrized by its mean \eqn{\mu
+#' > 0}, with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative
+#' integers. It inherits from `discrete_distrib`, so expectations over its
+#' support are exact sums and no derivative with respect to the response is
+#' defined.
 #'
 #' The mean and the variance are both \eqn{\mu}, which is the constraint a
 #' count model most often has to relax; [negbin2_distrib()] and
@@ -38,7 +39,8 @@ NULL
 #'   [distrib_expected_hessian.PoissonDistrib()] for the information.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.PoissonDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.PoissonDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.PoissonDistrib] and
@@ -449,8 +451,8 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
-#' @seealso [distrib_hessian.PoissonDistrib()] for the observed quantity this
-#'   is the expectation of, [fisher_scoring()], which inverts it, and
+#' @seealso [distrib_hessian.PoissonDistrib()] for the observed quantity whose
+#'   expectation this is, [fisher_scoring()], which inverts it, and
 #'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples

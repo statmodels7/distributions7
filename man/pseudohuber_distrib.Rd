@@ -62,13 +62,13 @@ avoids the underflow of the unscaled function at large arguments.
 
 \section{The two limits, with their rates}{
 At \eqn{\nu \to 0} the exponent is \eqn{|y-\mu|/\sigma} and the family is
-the \strong{Laplace} with scale \eqn{\sigma}. The normalizing constant satisfies
+the Laplace with scale \eqn{\sigma}. The normalizing constant satisfies
 \eqn{\sqrt{\nu} K_1(\sqrt{\nu}) = 1 + (\nu/4)\log\nu + O(\nu)}, so the
 density approaches the Laplace density at rate \eqn{O(\nu\log(1/\nu))}.
 
 At \eqn{\nu \to \infty} the exponent is
 \eqn{\sqrt{\nu} + (y-\mu)^2/(2\sqrt{\nu}\sigma^2)} and the family is the
-\strong{Gaussian} with standard deviation \eqn{\sigma\nu^{1/4}}: the largest gap
+Gaussian with standard deviation \eqn{\sigma\nu^{1/4}}: the largest gap
 is \code{1.5e-04} at \eqn{\nu = 10^4} and \code{1.5e-07} at \eqn{10^8}. Note that the
 spread grows with \eqn{\nu}, so \eqn{\sigma} alone is not the standard
 deviation.
@@ -111,7 +111,7 @@ the smaller tail. The
 generator does not use either: it draws the family as a normal variance
 mixture with a generalized inverse Gaussian mixing variable.
 
-The \strong{expected information has no elementary form either}, but it depends
+The expected information has no elementary form either, but it depends
 on \eqn{\nu} alone once the location and the scale are factored out, so it
 is one integral over \eqn{z} per distinct \eqn{\nu}, taken by the rule of
 \code{\link[=loc_scale_expected]{loc_scale_expected()}}; see
@@ -183,6 +183,6 @@ Deterministic edge-preserving regularization in computed imaging.
 \code{\link[=student_t1_distrib]{student_t1_distrib()}} for the other robust three-parameter family here,
 whose score redescends to zero where this one flattens to a bound;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
+family of your own against the same battery that this one passes;
 \link{PseudoHuberDistrib} for the class.
 }

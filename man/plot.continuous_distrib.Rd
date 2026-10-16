@@ -23,7 +23,7 @@ plotted. Defaults to \code{TRUE}. A single setting is drawn without a key.}
 over the curves.}
 }
 \value{
-\code{x}, invisibly. Called for the plot it draws.
+\code{x}, invisibly. The function is called for the plot that it draws.
 }
 \description{
 Draws the density of a continuous family over a grid of 1000 points, one
@@ -32,7 +32,7 @@ one curve per element, so \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))}
 draws three densities that share a mean and differ in scale.
 }
 \section{The two keys}{
-Curves are separated by \strong{color and line type together}, so that a printed
+Curves are separated by color and line type together, so that a printed
 copy with no color is still readable. The parameters that vary are named in
 a legend and those held fixed are stated once in the title, so a reader sees
 what the panel is about without counting curves. The legend goes in

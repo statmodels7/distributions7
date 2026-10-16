@@ -36,13 +36,13 @@ NULL
 #' two-variable inner map, which the written-out template of [fdb2()]
 #' covers.
 #'
-#' What keeps the sum from growing is that the two compositions do not share a
+#' The sum does not grow, because the two compositions do not share a
 #' variable pair: \eqn{-\log\Gamma(d/p)} involves \eqn{(d, p)} and
 #' \eqn{-e^{pL}} involves \eqn{(a, p)}. Every component of the three-variable
 #' derivative is therefore one term of one composition plus the elementary
-#' pieces, and no genuinely three-variable expansion is ever formed. A
-#' component naming both \eqn{a} and \eqn{d} comes from the elementary
-#' \eqn{-d\log a} alone.
+#' pieces, and the assembly never forms a genuinely three-variable expansion.
+#' A component that names both \eqn{a} and \eqn{d} comes only from the
+#' elementary term \eqn{-d\log a}.
 #'
 #' The tests compare the assembly at orders one to four with the compiled
 #' kernels of [distrib_gradient.GenGamma1Distrib()],
@@ -62,7 +62,7 @@ NULL
 #'   recycled length of the inputs.
 #'
 #' @seealso [distrib_deriv3.GenGamma1Distrib()] for the compiled kernels
-#'   this assembly is checked against;
+#'   against which this assembly is checked;
 #'   [fdb2()] for the two-variable composition template; and
 #'   [gengamma1_distrib()] for the family.
 #' @keywords internal
@@ -148,8 +148,8 @@ gengamma_components <- function(y, theta, order) {
 #'
 #' @description
 #' Return the third, fourth and fifth derivatives of the log-density in
-#' \eqn{(a, d, p)}, and for orders three and four their expectations, each
-#' from its own compiled kernel.
+#' \eqn{(a, d, p)}, and for orders three and four their expectations. Each of
+#' them is computed by its own compiled kernel.
 #'
 #' @details
 #' With \eqn{k = d/p} and \eqn{U = p\log(y/a)}, the log-density is
@@ -157,7 +157,7 @@ gengamma_components <- function(y, theta, order) {
 #' and \eqn{e^{U} = (y/a)^p} is a gamma variable with shape \eqn{k} and unit
 #' rate. Every component is a closed form derived offline and written out: a
 #' polynomial in \eqn{U} and \eqn{e^{U}} whose coefficients depend
-#' on \eqn{(d, p)} alone, multiplied by \eqn{a^{-r}} for \eqn{r} derivatives
+#' only on \eqn{(d, p)}, multiplied by \eqn{a^{-r}} for \eqn{r} derivatives
 #' in \eqn{a}. The coefficients contain the polygamma functions at
 #' \eqn{k + 1}, through
 #' \eqn{\psi^{(n)}(k) = \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}}, so that the
@@ -202,10 +202,10 @@ gengamma_components <- function(y, theta, order) {
 #' dn <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 - eps))$d_p
 #' all.equal((up - dn) / (2 * eps), d3$d_p_p, tolerance = 1e-6)
 #'
-#' # The expected fourth derivatives, closed form.
+#' # The expected fourth derivatives are closed forms.
 #' distrib_deriv4(d, 1, th, expected = TRUE)$p_p_p_p
 #'
-#' # Order five on the link scale.
+#' # The fifth derivatives are also returned on the link scale.
 #' distrib_deriv5(d, y, th, scale = "link")$p_p_p_p_p
 S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
@@ -250,8 +250,8 @@ S7::method(distrib_deriv5, GenGamma1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Return the derivatives of the log-density in the response to order four,
 #' and the mixed derivatives of orders one and two in the response and one and
-#' two in \eqn{(a, d, p)}, each a closed form from its own compiled kernel,
-#' written as [distrib_deriv3.GenGamma1Distrib()] describes.
+#' two in \eqn{(a, d, p)}. Each of them is a closed form computed by its own
+#' compiled kernel, written as [distrib_deriv3.GenGamma1Distrib()] describes.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param y A numeric vector of strictly positive observations.
@@ -273,7 +273,7 @@ S7::method(distrib_deriv5, GenGamma1Distrib) <- function(distrib, y, theta,
 #' th <- list(a = 2, d = 3, p = 1.5)
 #' y <- c(0.5, 1.5, 4)
 #'
-#' # The score in y written out: ((d - 1) - p (y/a)^p) / y.
+#' # The score in y agrees with the formula ((d - 1) - p (y/a)^p) / y.
 #' all.equal(distrib_grad_y(d, y, th), (2 - 1.5 * (y / 2)^1.5) / y)
 #'
 #' distrib_hess_y_hess(d, y, th)$p_p

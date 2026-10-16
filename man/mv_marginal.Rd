@@ -10,7 +10,7 @@ mv_marginal(distrib, theta, which, ...)
 \item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
 \item{theta}{A named list or vector of parameters, each component a single
-number. Aligned by the generic before dispatch.}
+number. The generic aligns it before dispatch.}
 
 \item{which}{A vector of distinct whole numbers in \code{1:distrib@n_dim}, the
 coordinates to keep. The generic checks it before dispatch and signals an

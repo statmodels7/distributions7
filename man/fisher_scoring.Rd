@@ -57,9 +57,9 @@ optimizer of \pkg{optimizers7} or this:
 
 \tabular{ll}{
 \code{method = fisher_scoring()} \tab Newton's method with the
-\strong{expected} information \cr
+expected information \cr
 \code{method = optimizers7::newton()} \tab Newton's method with the
-\strong{observed} Hessian \cr
+observed Hessian \cr
 \code{method = optimizers7::lbfgs()} \tab whatever that optimizer does
 }
 }

@@ -20,7 +20,7 @@ method always returns the parameter scale.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of six numeric vectors, in the order \code{mu_mu},
@@ -47,7 +47,7 @@ the notation of \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradie
       \qquad
       \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2 R'.}
 
-This is the \strong{observed} curvature at the data. Its expectation has no
+This is the observed curvature at the data. Its expectation has no
 elementary form and is computed by
 \code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}.
 }

@@ -150,8 +150,8 @@ Wiley, Hoboken.
 \code{\link[=dirichlet_distrib]{dirichlet_distrib()}} for the conjugate family on the same simplex;
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the overdispersed two-category count;
 \code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the probabilities ride;
-\code{\link[numericals7:compositions]{numericals7::compositions()}} for the support enumeration;
-\code{\link[=fit_distrib]{fit_distrib()}} to estimate the probabilities; \code{\link[=check_distrib]{check_distrib()}} to validate
-a family of your own against the same battery this one passes;
-\link{MultinomialDistrib} for the class.
+\code{\link[numericals7:compositions]{numericals7::compositions()}} for the support enumeration; \code{\link[=fit_distrib]{fit_distrib()}} to
+estimate the probabilities; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your
+own against the same battery that this one passes; \link{MultinomialDistrib} for
+the class.
 }

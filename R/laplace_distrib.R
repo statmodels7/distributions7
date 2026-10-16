@@ -5,12 +5,12 @@ NULL
 #' @name LaplaceDistrib
 #'
 #' @description
-#' The S7 class of the Laplace (double exponential) family with location
-#' \eqn{\mu} and scale \eqn{\sigma > 0}, with density
-#' \eqn{f(y) = (2\sigma)^{-1}\exp(-|y-\mu|/\sigma)} on the whole real line. It
-#' inherits from `continuous_distrib`, so every generic of the `distrib` class
-#' applies to it; the methods listed below are registered on it directly and
-#' everything else comes from the parent.
+#' This is the S7 class of the Laplace (double exponential) family with location
+#' \eqn{\mu} and scale \eqn{\sigma > 0}, with density \eqn{f(y) =
+#' (2\sigma)^{-1}\exp(-|y-\mu|/\sigma)} on the whole real line. It inherits from
+#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
+#' the methods listed below are registered on it directly and everything else
+#' comes from the parent.
 #'
 #' The density has a kink at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
 #' differentiable. This makes the family non-regular in its location: the
@@ -42,7 +42,8 @@ NULL
 #'   kink; [pseudohuber_distrib()] for a smooth relative.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.LaplaceDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.LaplaceDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.LaplaceDistrib] and

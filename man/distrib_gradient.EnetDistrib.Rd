@@ -19,7 +19,7 @@ method always returns the parameter scale.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu}, \code{lambda} and \code{alpha},
@@ -31,10 +31,10 @@ Computes the three first derivatives of the log-density in closed form. With
 \deqn{\dfrac{\partial\ell}{\partial\mu} = a\,\mathrm{sgn}(z) + cz,}
 and the two rate components are the data terms less the derivatives of
 \eqn{\log Z}, which are \eqn{G/\sqrt c} in \eqn{a} and \eqn{-(1+xG)/(2c)} in
-\eqn{c}. The chain to \eqn{(\lambda, \alpha)} is linear, the map being
+\eqn{c}. The chain to \eqn{(\lambda, \alpha)} is linear, because the map is
 bilinear.
 
-The location component is \strong{undefined at \eqn{y = \mu}}, where
+The location component is undefined at \eqn{y = \mu}, where
 \eqn{\mathrm{sgn}} jumps; \code{sign(0)} is 0 in R, so the value returned there
 is \eqn{cz = 0}, one point of the subdifferential. \code{params_smooth}
 records \code{mu = FALSE}, which \code{\link[=check_distrib]{check_distrib()}} reads to discard the
@@ -53,10 +53,10 @@ y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 g <- distrib_gradient(d, y, th)
 
-# The location component written out.
+# The location component is written out.
 all.equal(g$mu, 1 * sign(y) + 1 * y)
 
-# The two rate components against numerical differentiation.
+# The two rate components are compared with numerical differentiation.
 f <- function(p) sum(distrib_pdf(d, y, list(mu = 0, lambda = p[1],
                                             alpha = p[2]), log = TRUE))
 rbind(analytic = c(sum(g$lambda), sum(g$alpha)),

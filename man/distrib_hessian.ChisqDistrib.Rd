@@ -13,13 +13,13 @@ length 1 or of the length of \code{y}, recycled if of length 1. It must be
 strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list with one numeric vector, \code{mu_mu}, of length
@@ -30,18 +30,19 @@ is.
 Computes the second derivative of the chi-squared log-density with respect
 to \eqn{\mu}, in closed form:
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4},}
-with \eqn{\psi'} the trigamma function. \strong{It does not involve the
-response.} The family is a one-parameter exponential family in
+with \eqn{\psi'} the trigamma function. It does not involve the
+response. The family is a one-parameter exponential family in
 \eqn{\log y}, so the data reach the log-density only through a term linear
 in \eqn{\mu} and the second derivative kills it. The value is constant
 within a parameter setting, is recycled to the length of \code{y}, and equals
 \code{\link[=distrib_expected_hessian.ChisqDistrib]{distrib_expected_hessian.ChisqDistrib()}} exactly.
 
-The coincidence is on the \strong{parameter} scale. On the link scale the two
-differ, the second-order chain rule adding a term
-\eqn{h''(\eta)\,\partial\ell/\partial\mu}, which the expected version
-drops because the score has expectation zero; the score of a sample is not
-zero away from the optimum, and the example below measures the term.
+The coincidence is on the parameter scale. On the link scale the two
+differ, because the second-order chain rule adds a term
+\eqn{h''(\eta)\,\partial\ell/\partial\mu} to the observed version. The
+expected version drops this term since the score has expectation zero,
+whereas the score of a sample is not zero away from the optimum. The
+example below measures the term.
 }
 \section{Notation}{
 
@@ -55,15 +56,16 @@ d <- chisq_distrib()
 y <- c(1, 4, 9)
 th <- list(mu = 4)
 
-# A constant across the observations, written out with the trigamma.
+# The value is constant across the observations and is written out with
+# the trigamma function.
 distrib_hessian(d, y, th)
 -trigamma(2) / 4
 
 # Free of the response, so it equals its own expectation to the bit.
 identical(distrib_hessian(d, y, th), distrib_expected_hessian(d, y, th))
 
-# On the link scale they differ by h''(eta) times the score, which is what
-# makes Fisher scoring and Newton's method take different steps.
+# On the link scale they differ by h''(eta) times the score, so Fisher
+# scoring and Newton's method take different steps.
 obs <- distrib_hessian(d, y, th, scale = "link")$mu_mu
 exp_ <- distrib_expected_hessian(d, y, th, scale = "link")$mu_mu
 rbind(observed = obs, expected = exp_,

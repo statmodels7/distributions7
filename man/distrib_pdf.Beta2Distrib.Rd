@@ -43,7 +43,8 @@ th <- list(alpha = 2, beta = 5)
 # The method is stats::dbeta at these two shapes.
 all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 5))
 
-# The same law as beta1 at mu = alpha/(alpha + beta), phi = alpha + beta.
+# The density equals that of beta1 at mu = alpha/(alpha + beta),
+# phi = alpha + beta.
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(beta1_distrib(), y, list(mu = 2 / 7, phi = 7)))
 

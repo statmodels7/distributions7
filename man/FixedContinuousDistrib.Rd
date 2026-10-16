@@ -76,15 +76,16 @@ by as many, \code{bounds} is the parent's unchanged, and \code{distrib_name} is 
 parent's with the held values in brackets.
 }
 \description{
-The S7 class of a CONTINUOUS distribution in which some parameters of the
-wrapped distribution are held at known values. It is the only wrapper in
-this package that REMOVES parameters: the law is the parent's, evaluated at
-a \code{theta} short by however many were fixed. Build one with \code{\link[=fixed]{fixed()}}, which
+This is the S7 class of a CONTINUOUS distribution in which some parameters of
+the wrapped distribution are held at known values. It is the only wrapper in
+this package that REMOVES parameters: the law is the parent's, evaluated at a
+\code{theta} short by however many were fixed. Build one with \code{\link[=fixed]{fixed()}}, which
 picks this class or one of its two siblings from the parent.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.FixedContinuousDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.FixedContinuousDistrib]{distrib_cdf()}},

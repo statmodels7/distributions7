@@ -10,7 +10,8 @@ beta2_higher(theta, n, order)
 \item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
 vector. Both must be strictly positive.}
 
-\item{n}{The length to recycle each component to, normally \code{length(y)}.}
+\item{n}{The length to which each component is recycled, normally
+\code{length(y)}.}
 
 \item{order}{The derivative order, \code{2L}, \code{3L} or \code{4L}. Any other value falls
 through to the fourth-order branch.}

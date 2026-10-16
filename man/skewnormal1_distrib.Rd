@@ -60,7 +60,7 @@ in \eqn{t} and \eqn{R}; below \eqn{t = -1}, where these polynomials cancel,
 the kernels use the cumulants of the logarithm of the Mills ratio
 instead.
 
-The \strong{expected} information has no elementary form. It depends on
+The expected information has no elementary form. It depends on
 \eqn{\alpha} alone once the location and the scale are factored out, so it
 is one integral over \eqn{z} per distinct \eqn{\alpha}, and so are its first
 and second derivatives; see \code{\link[=distrib_expected_hessian.SkewNormal1Distrib]{distrib_expected_hessian.SkewNormal1Distrib()}}.

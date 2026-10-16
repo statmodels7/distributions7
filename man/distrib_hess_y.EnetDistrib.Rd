@@ -20,14 +20,14 @@ A numeric vector of the length of \code{y}, every entry \eqn{-c}.
 \description{
 Computes \eqn{\partial^2\ell/\partial y^2 = -c}, with
 \eqn{c = \lambda(1-\alpha)}: the absolute value contributes nothing away
-from the location, so the curvature in the response is the Gaussian part
-alone. It is constant, free of the data, and strictly negative.
+from the location, so the curvature in the response comes only from the
+Gaussian part. It is constant, free of the data, and strictly negative.
 
 At the location itself the second derivative carries a point mass
 \eqn{-2a\delta(y-\mu)}, which this value omits, exactly as
 \code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}}'s \code{mu_mu} does.
 
-Every response derivative of \strong{third order and beyond is zero}: the
+Every response derivative of third order and beyond is zero: the
 log-density is quadratic in \eqn{y} away from the kink.
 }
 \section{Notation}{
@@ -41,25 +41,27 @@ d <- enet_distrib()
 y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# Constant, and equal to the curvature in the location.
+# The second derivative is constant, and equal to the curvature in the
+# location.
 c(hess_y = unique(distrib_hess_y(d, y, th)),
   mu_mu = unique(distrib_hessian(d, y, th)$mu_mu),
   minus_c = -(2 * (1 - 0.5)))
 
-# Against a central difference of the response derivative, away from the
-# kink.
+# The analytic value is compared with a central difference of the response
+# derivative, away from the kink.
 eps <- 1e-5
 rbind(analytic = distrib_hess_y(d, y, th),
       numeric = (distrib_grad_y(d, y + eps, th) -
                  distrib_grad_y(d, y - eps, th)) / (2 * eps))
 
-# The Gaussian rate alone, so it goes to zero as alpha approaches one.
+# The value equals minus the Gaussian rate, so it goes to zero as alpha
+# approaches one.
 vapply(c(0.1, 0.5, 0.9, 0.999),
        function(a) distrib_hess_y(d, 1, list(mu = 0, lambda = 2,
                                              alpha = a)), 0)
 }
 \seealso{
 \code{\link[=distrib_grad_y.EnetDistrib]{distrib_grad_y.EnetDistrib()}} for the first derivative,
-\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the parameter curvature it shares an
-expression with, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
+\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the parameter curvature, with which it
+shares an expression, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

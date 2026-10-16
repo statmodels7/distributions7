@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -51,8 +51,8 @@ rule cancel, so for \eqn{\sigma < 0.1} the kernel uses the direct sums of
 Each sum has terms of one sign, so both components keep their accuracy at
 any concentration; the cost is \eqn{O(n)} per observation.
 
-With \code{scale = "link"} the generic applies the chain rule for the links the
-family carries before returning. This method always returns the parameter
+With \code{scale = "link"} the generic applies the chain rule for the links that
+the family carries before returning. This method always returns the parameter
 scale. The arithmetic runs in a compiled kernel decomposed over the elements
 of the output, so the result does not depend on the thread count.
 }

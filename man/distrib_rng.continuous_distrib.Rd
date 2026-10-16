@@ -22,9 +22,9 @@ The fallback for a continuous family that implements no generator of its
 own. It chooses between two routes according to whether the family has a
 quantile method of its own:
 \itemize{
-\item \strong{inverse transform} where \code{\link[=has_analytic_quantile]{has_analytic_quantile()}} is \code{TRUE}, which
+\item inverse transform where \code{\link[=has_analytic_quantile]{has_analytic_quantile()}} is \code{TRUE}, which
 costs one quantile evaluation per draw;
-\item \strong{generalized ratio-of-uniforms} (\code{\link[=rng_grou]{rng_grou()}}) otherwise, which
+\item generalized ratio-of-uniforms (\code{\link[=rng_grou]{rng_grou()}}) otherwise, which
 evaluates only the density.
 }
 
@@ -36,7 +36,7 @@ alone.
 }
 \details{
 The ratio-of-uniforms scheme needs a bounded unimodal density. Where its
-bounding rectangle cannot be built the method \strong{warns and reverts} to
+bounding rectangle cannot be built the method warns and reverts to
 inverse transform sampling, so a draw is always returned. A \code{theta} varying
 by observation is handled by grouping the draws by distinct parameter
 setting, one bounding rectangle per group.

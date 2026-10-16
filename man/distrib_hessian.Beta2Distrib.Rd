@@ -13,7 +13,7 @@ vector of length 1 or of the length of \code{y}. Both must be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -34,9 +34,9 @@ respect to \eqn{\alpha} and \eqn{\beta}, in closed form:
 \deqn{\ell^{(\alpha\alpha)} = \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
       \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad
       \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta),}
-with \eqn{\psi'} the trigamma function. \strong{All three are free of the
-response}, the data entering the log-density only through a term linear in
-the parameters. The values are constant within a parameter setting and are
+with \eqn{\psi'} the trigamma function. All three are free of the
+response, because the data enter the log-density only through a term linear
+in the parameters. The values are constant within a parameter setting and are
 recycled to the length of \code{y}, and they equal
 \code{\link[=distrib_expected_hessian.Beta2Distrib]{distrib_expected_hessian.Beta2Distrib()}} exactly.
 }
@@ -54,7 +54,7 @@ th <- list(alpha = 2, beta = 5)
 h <- distrib_hessian(d, y, th)
 h
 
-# Written out with the trigamma function.
+# The same values are written out with the trigamma function.
 c(trigamma(7) - trigamma(2), trigamma(7) - trigamma(5), trigamma(7))
 
 # Free of the response, so it equals its own expectation to the bit.

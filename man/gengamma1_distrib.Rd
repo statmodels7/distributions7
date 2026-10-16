@@ -28,8 +28,8 @@ An S7 object of class \link{GenGamma1Distrib}, inheriting from
 \description{
 Builds a generalized gamma distribution object in Stacy's form, with a scale
 \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}. The family contains
-the gamma, the Weibull and the exponential as special cases, so the choice
-among them can be made by estimating \eqn{d} and \eqn{p}.
+the gamma, the Weibull and the exponential as special cases, so estimates
+of \eqn{d} and \eqn{p} show which of them the data support.
 }
 \section{Density}{
 \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\,y^{d-1}e^{-(y/a)^{p}},
@@ -48,12 +48,12 @@ Stacy's parametrization is chosen to make these visible:
 scale \eqn{a};
 \item \eqn{d = p = 1} is the \link[=exponential_distrib]{exponential};
 \item \eqn{a = \sqrt2}, \eqn{d = 1}, \eqn{p = 2} is the half-normal;
-\item \eqn{p \to 0} with \eqn{d/p} held large approaches the
+\item \eqn{p \to 0} while \eqn{d/p} is kept large approaches the
 \link[=lognormal1_distrib]{lognormal}.
 }
 
 The first four are exact and are checked in the examples. The fifth is a
-limit, reached at no admissible value.
+limit and is not attained at any admissible parameter value.
 }
 
 \section{Score and information}{
@@ -62,10 +62,10 @@ With \eqn{w = (y/a)^{p}}, \eqn{L = \log(y/a)} and \eqn{k = d/p},
       \dfrac{\partial\ell}{\partial d} = L - \dfrac{\psi(k)}{p}, \qquad
       \dfrac{\partial\ell}{\partial p} = \dfrac{1}{p}
         + \dfrac{d\psi(k)}{p^{2}} - wL,}
-and the expected information is \strong{closed form}, because
+and the expected information is closed form, because
 \eqn{u = (Y/a)^p} is Gamma with
-shape \eqn{k} and unit rate, so every expectation the Hessian needs is one
-of \eqn{E[u] = k}, \eqn{E[u\log u] = k\psi(k+1)} and
+shape \eqn{k} and unit rate, so every expectation that the Hessian needs is
+one of \eqn{E[u] = k}, \eqn{E[u\log u] = k\psi(k+1)} and
 \eqn{E[u(\log u)^2] = k\{\psi(k+1)^2 + \psi'(k+1)\}}. The same
 representation gives the distribution function, the quantile function and
 the generator.
@@ -78,7 +78,7 @@ value.
 }
 
 \section{Identification}{
-The three parameters are \strong{weakly identified together}: \eqn{d} and \eqn{p}
+The three parameters are weakly identified together: \eqn{d} and \eqn{p}
 enter the density largely through their ratio, and the profile likelihood in
 that direction is flat (at \eqn{a = 2, d = 3, p = 1.5} the eigenvalues of
 the information are 4.72, 0.138 and 0.00321, with the flat direction
@@ -103,7 +103,7 @@ th <- list(a = 2, d = 3, p = 1.5)
 
 distrib_pdf(d, c(0.5, 2, 5), th)
 
-# The four exact special cases, at three points each.
+# The four exact special cases are compared at three points each.
 y <- c(0.5, 2, 5)
 c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
                   dgamma(y, shape = 3, scale = 2))),
@@ -114,11 +114,11 @@ c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
   half_normal = max(abs(distrib_pdf(d, y, list(a = sqrt(2), d = 1, p = 2)) -
                         2 * dnorm(y))))
 
-# The moment formula.
+# The moment formula is compared with the mean method.
 c(closed = 2 * gamma((3 + 1) / 1.5) / gamma(3 / 1.5), ours = mean(d, th))
 
-# Two fits at two sizes: the standard errors say how much data the three
-# parameters want.
+# Two fits at two sample sizes show, through the standard errors, how much
+# data a fit of the three parameters requires.
 for (n in c(200, 2000)) {
   set.seed(52)
   f <- fit_distrib(d, distrib_rng(d, n, th))
@@ -132,7 +132,7 @@ Stacy, E. W. (1962). A generalization of the gamma distribution.
 }
 \seealso{
 \code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}},
-\code{\link[=exponential_distrib]{exponential_distrib()}} and \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the families it
-nests or approaches, \code{\link[=fixed]{fixed()}} for holding a shape, and
+\code{\link[=exponential_distrib]{exponential_distrib()}} and \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the families that
+it nests or approaches, \code{\link[=fixed]{fixed()}} for holding a shape, and
 \link{GenGamma1Distrib} for the class and its method list.
 }

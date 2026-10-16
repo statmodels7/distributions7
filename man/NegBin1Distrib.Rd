@@ -46,11 +46,11 @@ object built by \code{\link[=negbin1_distrib]{negbin1_distrib()}} they hold \cod
 \eqn{(0, \infty)} for both parameters, and the two links.
 }
 \description{
-The S7 class of the negative binomial family on the non-negative integers
-whose variance is \strong{linear} in the mean: with a mean \eqn{\mu > 0} and a
-dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, so
-the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits from
-\code{discrete_distrib}.
+This is the S7 class of the negative binomial family on the non-negative
+integers whose variance is linear in the mean: with a mean \eqn{\mu > 0} and
+a dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)},
+so the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits
+from \code{discrete_distrib}.
 
 Build one with \code{\link[=negbin1_distrib]{negbin1_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,
@@ -59,7 +59,8 @@ them, and the constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf()}},
@@ -88,7 +89,8 @@ Every other generic is inherited from \code{\link[=discrete_distrib]{discrete_di
 d <- negbin1_distrib()
 S7::S7_inherits(d, discrete_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 d@bounds

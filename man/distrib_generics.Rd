@@ -55,9 +55,9 @@ rather than a generic.}
 \section{The arguments theta and scale}{
 \code{theta} is normalized before dispatch by \code{align_theta()}, which reorders it
 by name, removes the names carried by the values and validates it against
-\code{params_bounds}, treated as \strong{open} intervals. The derivative generics in
+\code{params_bounds}, treated as open intervals. The derivative generics in
 the parameters of orders one to four also take \code{scale}, which the generic
-applies \strong{after} dispatch, so a method returns the parameter scale and
+applies after dispatch, so a method returns the parameter scale and
 never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. \code{\link[=distrib_deriv5]{distrib_deriv5()}} is the
 exception: its methods read \code{scale} and apply it themselves.
 }

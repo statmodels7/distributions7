@@ -13,10 +13,10 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{lambda} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, the
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, the
 strategy \code{"mc"} of the generic, which averages the observed second
 derivative over simulated draws, would give 0 in the location, while
 \code{"opg"}, \code{"bartlett"} and \code{"integrate"} read the product of scores.}
@@ -27,7 +27,7 @@ derivative over simulated draws, would give 0 in the location, while
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of three numeric vectors, \code{mu_mu}, \code{lambda_lambda} and
@@ -40,7 +40,7 @@ quadrature or simulation:
       -I(\lambda) = -\dfrac{1}{\lambda^2}, \qquad
       -I(\mu, \lambda) = 0.}
 
-For \eqn{\mu} this is the \strong{variance of the score}. It is not the
+For \eqn{\mu} this is the variance of the score. It is not the
 expectation of \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian.Laplace2Distrib()}}, which is identically
 zero: the
 family has a kink at \eqn{y = \mu} and the second Bartlett identity fails
@@ -55,8 +55,8 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is the variance of the score. For a regular
-family it also equals the expectation of the \strong{observed information}, by
+The expected information is the variance of the score. For a regular
+family it also equals the expectation of the observed information, by
 the second Bartlett identity; this family is not regular in \eqn{\mu} and
 the two differ there.
 }

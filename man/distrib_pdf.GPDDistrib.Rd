@@ -50,7 +50,7 @@ d <- gpd_distrib()
 y <- c(0.2, 1, 4)
 th <- list(sigma = 1.5, xi = 0.3)
 
-# The formula written out.
+# The density is compared with the formula written out.
 all.equal(distrib_pdf(d, y, th), (1 + 0.3 * y / 1.5)^(-1 / 0.3 - 1) / 1.5)
 
 # It integrates to one.

@@ -5,9 +5,9 @@ NULL
 #' @name InvGauss1Distrib
 #'
 #' @description
-#' The S7 class of the inverse Gaussian family on \eqn{(0, \infty)} parametrized
-#' by its mean \eqn{\mu > 0} and a dispersion \eqn{\phi > 0}, so that
-#' \eqn{\operatorname{Var}(Y) = \phi\mu^3}. It inherits from
+#' This is the S7 class of the inverse Gaussian family on \eqn{(0, \infty)}
+#' parametrized by its mean \eqn{\mu > 0} and a dispersion \eqn{\phi > 0}, so
+#' that \eqn{\operatorname{Var}(Y) = \phi\mu^3}. It inherits from
 #' `continuous_distrib`, so every generic of the `distrib` class applies to it;
 #' the methods listed below are registered on it directly and everything else
 #' comes from the parent.
@@ -35,7 +35,8 @@ NULL
 #'   [distrib_gradient.InvGauss1Distrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.InvGauss1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.InvGauss1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.InvGauss1Distrib] and
@@ -73,7 +74,8 @@ NULL
 #' d <- invgauss1_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
@@ -832,7 +834,7 @@ S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #' three and four in the response and the parameters come from the numerical
 #' fallbacks of the base class.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
 #' logarithm, because both parameters are positive.
 #'

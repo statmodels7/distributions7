@@ -32,9 +32,9 @@ object
 carries closed-form derivatives of the log-mass to fourth order and
 closed-form moments.
 
-The two arguments choose the links that carry each parameter to the
-unconstrained scale an optimizer works on. Both default to the logarithm,
-both parameters being positive.
+The two arguments set the links that carry each parameter to the
+unconstrained scale on which an optimizer works. Both default to the
+logarithm, because both parameters are positive.
 }
 \section{The parametrization}{
 The mass on \eqn{y = 0, 1, 2, \ldots} is
@@ -50,8 +50,8 @@ generalized inverse. The mean is \eqn{\mu}, the variance
 The law is a Poisson whose rate is gamma distributed with mean \eqn{\mu} and
 shape \eqn{\theta}. Two limits follow: \eqn{\theta = 1} gives the geometric,
 \code{\link[=geometric_distrib]{geometric_distrib()}}, and \eqn{\theta \to \infty} gives the Poisson,
-\code{\link[=poisson_distrib]{poisson_distrib()}}. \strong{The dispersion reads the opposite way round from a
-variance}: a small \eqn{\theta} is heavy overdispersion and a large one is
+\code{\link[=poisson_distrib]{poisson_distrib()}}. The dispersion reads the opposite way round from a
+variance: a small \eqn{\theta} is heavy overdispersion and a large one is
 nearly a Poisson.
 
 The numbering follows Cameron and Trivedi: NB2 has a variance quadratic in
@@ -141,10 +141,9 @@ Data}, 2nd edition, Chapter 3. Cambridge University Press, Cambridge.
 \seealso{
 \code{\link[=negbin1_distrib]{negbin1_distrib()}} for the NB1 parametrization, with a variance linear in
 the mean; \code{\link[=poisson_distrib]{poisson_distrib()}} for the equidispersed limit and
-\code{\link[=geometric_distrib]{geometric_distrib()}} for \eqn{\theta = 1}; \code{\link[=pig1_distrib]{pig1_distrib()}} for the
-Poisson mixed over an inverse Gaussian instead of a gamma;
-\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for counts with excess zeros;
-\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
-\link{NegBin2Distrib} for the class.
+\code{\link[=geometric_distrib]{geometric_distrib()}} for \eqn{\theta = 1}; \code{\link[=pig1_distrib]{pig1_distrib()}} for the Poisson
+mixed over an inverse Gaussian instead of a gamma; \code{\link[=zero_inflated]{zero_inflated()}} and
+\code{\link[=zero_adjusted]{zero_adjusted()}} for counts with excess zeros; \code{\link[=fit_distrib]{fit_distrib()}} to estimate
+the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against
+the same battery that this one passes; \link{NegBin2Distrib} for the class.
 }

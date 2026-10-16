@@ -5,10 +5,10 @@ NULL
 #' @name Lognormal1Distrib
 #'
 #' @description
-#' The S7 class of the lognormal family on \eqn{(0, \infty)}: the law of a
-#' variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
-#' \eqn{\sigma^2 > 0}. Both parameters live on the log scale, so neither is
-#' the mean or the variance of \eqn{Y} itself. It inherits from
+#' This is the S7 class of the lognormal family on \eqn{(0, \infty)}: the law of
+#' a variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
+#' \eqn{\sigma^2 > 0}. Both parameters live on the log scale, so neither is the
+#' mean or the variance of \eqn{Y} itself. It inherits from
 #' `continuous_distrib`, so every generic of the `distrib` class applies to it;
 #' the methods listed below are registered on it directly and everything else
 #' comes from the parent.
@@ -36,7 +36,8 @@ NULL
 #'   [distrib_gradient.Lognormal1Distrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Lognormal1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Lognormal1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Lognormal1Distrib] and
@@ -77,7 +78,8 @@ NULL
 #' d <- lognormal1_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_bounds
 #' d@bounds
@@ -508,10 +510,9 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #' the variance of the score.
 #'
 #' @seealso [distrib_hessian.Lognormal1Distrib()] for the observed quantity
-#'   this is the expectation of,
-#'   [distrib_expected_hessian.Gaussian2Distrib()], which returns the same
-#'   numbers, [fisher_scoring()], which inverts it at each step, and
-#'   [distrib_expected_hessian()] for the generic.
+#'   whose expectation this is, [distrib_expected_hessian.Gaussian2Distrib()],
+#'   which returns the same numbers, [fisher_scoring()], which inverts it at
+#'   each step, and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- lognormal1_distrib()
@@ -804,11 +805,10 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' distribution function, and closed-form moments. The fifth order and
 #' [distrib_cross3_y()] come from the numerical fallbacks of the base class.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. The defaults are the
-#' identity for
-#' \eqn{\mu}, which ranges over the whole line, and the logarithm for
-#' \eqn{\sigma^2}, which keeps it positive at every predictor.
+#' identity for \eqn{\mu}, which ranges over the whole line, and the logarithm
+#' for \eqn{\sigma^2}, which keeps it positive at every predictor.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
 #'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], \eqn{\mu} being

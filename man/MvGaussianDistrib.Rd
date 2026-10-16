@@ -82,7 +82,8 @@ between \code{n_dim} and the parametrization's dimension.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf()}} and
 \code{\link[=distrib_rng.MvGaussianDistrib]{distrib_rng()}};

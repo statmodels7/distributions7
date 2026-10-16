@@ -26,7 +26,7 @@ log-density with respect to the angle, in closed form:
 \deqn{\dfrac{\partial \ell}{\partial y} = -\kappa \sin(y - \mu).}
 The family is a location family on the circle, so this is exactly the
 negative of the direction score
-\code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}}\verb{$mu}. It is \strong{bounded by} \eqn{\kappa}
+\code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}}\verb{$mu}. It is bounded by \eqn{\kappa}
 in absolute value and vanishes at the mode \eqn{y = \mu} and at the
 antimode \eqn{y = \mu \pm \pi}, the stationary points of the density.
 }

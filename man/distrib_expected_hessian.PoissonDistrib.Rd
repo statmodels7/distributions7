@@ -12,10 +12,10 @@
 of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available. Accepted so that the
-signature matches the generic's.}
+\item{approx}{Ignored, because a closed form is available. It is accepted so
+that the signature matches the generic's.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -37,7 +37,7 @@ information for one observation is \eqn{1/\mu}, so the asymptotic standard
 error of \eqn{\hat\mu} is \eqn{\sqrt{\mu/n}}, the standard error of a
 sample mean whose variance is \eqn{\mu}.
 
-On the \strong{link} scale with the default logarithm the value is \eqn{-\mu},
+On the link scale with the default logarithm the value is \eqn{-\mu},
 and so is the observed Hessian in exact arithmetic: the log is the canonical
 link and the observed curvature there carries no data. Fisher scoring and
 Newton's method therefore take the same step on a Poisson model with a log
@@ -52,9 +52,9 @@ ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
 
-The \strong{expected information} is
+The expected information is
 \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-\strong{observed information} under the model. The Poisson is a regular family,
+observed information under the model. The Poisson is a regular family,
 so the second Bartlett identity holds and this equals the variance of the
 score.
 }
@@ -80,7 +80,7 @@ c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 }
 \seealso{
-\code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}} for the observed quantity this
-is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+\code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}} for the observed quantity whose
+expectation this is, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

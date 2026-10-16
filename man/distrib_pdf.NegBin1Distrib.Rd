@@ -38,7 +38,7 @@ stays accurate down to the Poisson limit. The log-mass is exponentiated
 when \code{log} is \code{FALSE}, and \code{log = TRUE} is the accurate route far into the
 tail.
 
-The mean sits \strong{inside} the gamma functions here, through the size. In
+The mean sits inside the gamma functions here, through the size. In
 \code{\link[=negbin2_distrib]{negbin2_distrib()}} the size is \eqn{\theta} and the mean stays outside
 them, which is the concrete difference between the two families.
 }

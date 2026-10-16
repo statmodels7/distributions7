@@ -19,7 +19,7 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
 or \code{"opg"}. Read only when \code{expected = TRUE}.}
@@ -36,7 +36,7 @@ A named list of ten numeric vectors, \code{mu_mu_mu} through
 }
 \description{
 Computes the ten distinct third derivatives of the pseudo-Huber log-density
-in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, \strong{in closed form}, in a compiled
+in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, in closed form, in a compiled
 kernel. Every component but the pure-\eqn{\nu} one is a rational function of
 \eqn{r = y - \mu}, \eqn{\sigma} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
 Bessel functions enter through \eqn{\nu} alone. The derivatives in
@@ -50,7 +50,7 @@ series of \eqn{K_1}, differentiated term by term in powers of
 \eqn{\nu^{-1/2}}. The same routes serve the score, the Hessian and the
 fourth order.
 
-\strong{The expected third derivatives have no closed form.} With
+The expected third derivatives have no closed form. With
 \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates
 the observed derivatives against the density by the strategy \code{approx} names.
 That is the one place on this page where \code{approx} and \code{nsim} are read.

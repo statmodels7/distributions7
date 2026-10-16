@@ -88,7 +88,8 @@ NULL
 #'   the discrete branch, and [trunc_constants()] for \eqn{Z}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution:
 #'   [`distrib_pdf()`][distrib_pdf.TruncatedContinuousDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.TruncatedContinuousDistrib],
@@ -185,7 +186,8 @@ TruncatedContinuousDistrib <- S7::new_class("TruncatedContinuousDistrib",
 #'   the continuous branch, and [trunc_constants()] for \eqn{Z}.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.TruncatedDiscreteDistrib],
 #'   [`distrib_cdf()`][distrib_cdf.TruncatedDiscreteDistrib],
 #'   [`distrib_quantile()`][distrib_quantile.TruncatedDiscreteDistrib] and

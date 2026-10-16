@@ -28,12 +28,12 @@ mean.
 }
 \details{
 The Stacy parametrization of \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} has a scale, a shape and
-a power, and none of them is the mean. Since
+a power as parameters, and the mean is not among them. Since
 \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the scale here is
 \deqn{a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)},}
 and every derivative in \eqn{(m, d, p)} to order five, the expected
 information and its derivatives, and the derivatives in the response are
-closed forms, each order in its own compiled kernel (see
+closed forms, and each order is computed by its own compiled kernel (see
 \code{\link[=distrib_gradient.GenGamma2Distrib]{distrib_gradient.GenGamma2Distrib()}}).
 }
 \section{The distribution}{

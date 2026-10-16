@@ -14,7 +14,7 @@ vector of length 1 or of the length of \code{y}. \code{kappa} must be strictly
 positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
 model is returned in place of the value at the data, computed numerically.
@@ -30,7 +30,7 @@ or \code{"opg"}. Read only when \code{expected = TRUE}.}
 
 \item{threads}{A single positive integer, how many threads the kernel may
 use. Below the measured internal threshold the kernel stays sequential
-whatever the count says. Defaults to \code{1L}.}
+whatever the count is. Defaults to \code{1L}.}
 }
 \value{
 A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_kappa},
@@ -40,9 +40,9 @@ A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_kappa},
 \description{
 Computes the four distinct third derivatives of the von Mises log-density in
 \eqn{\mu} and \eqn{\kappa}, in closed form. The log-density is
-\eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, \strong{linear in}
+\eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in
 \eqn{\kappa} apart from the normalizing constant, so a component naming one
-\eqn{\mu} and two or more \eqn{\kappa} is \strong{exactly zero}. What remains
+\eqn{\mu} and two or more \eqn{\kappa} is exactly zero. What remains
 cycles: the pure-\eqn{\mu} components run through
 \eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)} with the order, the
 \eqn{\mu\mu\kappa} component is \eqn{-\cos(y-\mu)}, and the

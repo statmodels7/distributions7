@@ -51,12 +51,12 @@ th <- list(mu = 0, lambda = 2, alpha = 0.5)
 # It integrates to one.
 integrate(function(u) distrib_pdf(d, u, th), -Inf, Inf)$value
 
-# The kernel written out, up to the constant.
+# The density equals the kernel written out, up to a constant.
 r <- distrib_pdf(d, y, th) /
      exp(-1 * abs(y) - 1 * y^2 / 2)     # a = c = 1 at alpha = 0.5
 all.equal(r, rep(r[1], length(r)))
 
-# The two ends, approached to ten figures.
+# The two ends are approached to ten figures.
 rbind(alpha = c(1 - 1e-10, 1e-10),
       enet = c(distrib_pdf(d, 0.7, list(mu = 0, lambda = 2,
                                         alpha = 1 - 1e-10)),

@@ -13,7 +13,7 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -39,7 +39,7 @@ per observation, in closed form. With \eqn{r = y - \mu} and
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \nu} = \dfrac{r\left(r^2 - \sigma^2\right)}{D^2}, \qquad
       \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu} = \dfrac{r^2\left(r^2 - \sigma^2\right)}{\sigma D^2}.}
 
-The curvature in \eqn{\mu} \strong{turns positive} wherever \eqn{|r| >
+The curvature in \eqn{\mu} turns positive wherever \eqn{|r| >
 \sigma\sqrt{\nu}}, the same point at which the score peaks, so the observed
 information is indefinite in that direction at an outlying observation while
 its expectation is negative definite everywhere.

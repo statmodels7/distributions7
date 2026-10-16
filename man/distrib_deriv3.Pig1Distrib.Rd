@@ -41,7 +41,7 @@ read off columns \code{d30}, \code{d21}, \code{d12} and \code{d03} of the compil
 \code{pig1_deriv3_cpp}, which computes the third order alone.
 
 With \code{expected = TRUE} the value is an expectation instead, and there it is
-\strong{not} closed form: the call routes to \code{expected_derivative()}, so \code{approx}
+not closed form: the call routes to \code{expected_derivative()}, so \code{approx}
 and \code{nsim} are read.
 }
 \examples{

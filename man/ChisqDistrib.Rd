@@ -45,12 +45,13 @@ object built by \code{\link[=chisq_distrib]{chisq_distrib()}} they hold \code{"c
 \eqn{(0, \infty)}, and the one link.
 }
 \description{
-The S7 class of the chi-squared family on \eqn{(0, \infty)}, parametrized by
-its mean \eqn{\mu > 0}, which is the degrees of freedom. They are treated as
-a continuous positive parameter, so the one-parameter family is estimable;
-the variance is then \eqn{2\mu}. It inherits from \code{continuous_distrib}, so
-every generic of the \code{distrib} class applies to it; the methods listed below
-are registered on it directly and everything else comes from the parent.
+This is the S7 class of the chi-squared family on \eqn{(0, \infty)},
+parametrized by its mean \eqn{\mu > 0}, which is the degrees of freedom. They
+are treated as a continuous positive parameter, so the one-parameter family
+is estimable; the variance is then \eqn{2\mu}. It inherits from
+\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
+the methods listed below are registered on it directly and everything else
+comes from the parent.
 
 Build one with \code{\link[=chisq_distrib]{chisq_distrib()}}, which supplies the link function and fills
 the properties in. This page documents the raw S7 constructor, which takes
@@ -59,7 +60,8 @@ constructor adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.ChisqDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.ChisqDistrib]{distrib_cdf()}},

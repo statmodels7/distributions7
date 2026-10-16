@@ -46,7 +46,7 @@ object built by \code{\link[=beta2_distrib]{beta2_distrib()}} they hold \code{"b
 for both parameters, and the two links.
 }
 \description{
-The S7 class of the beta family on \eqn{(0, 1)} in its canonical
+This is the S7 class of the beta family on \eqn{(0, 1)} in its canonical
 parametrization, the two shapes \eqn{\alpha > 0} and \eqn{\beta > 0}, with
 density \eqn{y^{\alpha-1}(1-y)^{\beta-1}/B(\alpha, \beta)}. It inherits from
 \code{continuous_distrib}, so every generic of the \code{distrib} class applies to it;
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Beta2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Beta2Distrib]{distrib_cdf()}},
@@ -100,13 +101,14 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- beta2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 d@bounds
 
-# Both parameters are shapes, so neither is a mean: the mean is
-# alpha / (alpha + beta).
+# Both parameters are shapes, so the mean is not one of the parameters: the
+# mean is alpha / (alpha + beta).
 mean(d, list(alpha = 2, beta = 5))
 }
 \seealso{

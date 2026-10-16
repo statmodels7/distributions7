@@ -70,16 +70,17 @@ An S7 object of class \code{FixedDiscreteDistrib}, inheriting from
 \code{fixed_params} beside the parent's properties.
 }
 \description{
-The S7 class of a DISCRETE distribution in which some parameters of the
-wrapped distribution are held at known values. It behaves exactly as
+This is the S7 class of a DISCRETE distribution in which some parameters of
+the wrapped distribution are held at known values. It behaves exactly as
 \link{FixedContinuousDistrib} does; the split into three classes exists so that
-the wrapper inherits the right base class, and with it the right defaults
-for anything the parent does not register. Build one with \code{\link[=fixed]{fixed()}}, which
-picks the class from the parent.
+the wrapper inherits the right base class, and with it the right defaults for
+anything the parent does not register. Build one with \code{\link[=fixed]{fixed()}}, which picks
+the class from the parent.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.FixedDiscreteDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.FixedDiscreteDistrib]{distrib_cdf()}},

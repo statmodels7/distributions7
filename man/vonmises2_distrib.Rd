@@ -28,7 +28,7 @@ An S7 object of class \code{VonMises2Distrib}, inheriting from
 }
 \description{
 Builds the distribution object for the von Mises family parametrized by its
-mean direction \eqn{\mu} and its \strong{mean resultant length}
+mean direction \eqn{\mu} and its mean resultant length
 \eqn{\rho \in (0, 1)}. The returned object carries closed-form derivatives
 of the log-density to fourth order, a closed-form expected information, and
 the same Bessel-series distribution function the concentration
@@ -48,7 +48,7 @@ with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}, and
 \eqn{\mathbb{E}[\cos(Y-\mu)] = \rho}. The map \eqn{\rho = A(\kappa)} is a
 strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}.
 
-\strong{Its inverse has no closed form}, which is why this is a family of its own
+Its inverse has no closed form, which is why this is a family of its own
 and not a \code{\link[=reparametrize]{reparametrize()}} of the other. numericals7 obtains \eqn{\kappa}
 by Newton's method on \eqn{\kappa}, and its four derivatives come from the
 inverse function rule applied to \eqn{A'} through \eqn{A^{(4)}}, which
@@ -63,7 +63,7 @@ nearly all in one direction is therefore far better conditioned in
 }
 
 \section{Derivatives and information}{
-The map touches the \strong{second parameter only}, so every chain rule is the
+The map touches the second parameter only, so every chain rule is the
 one-variable one and the derivatives are exact at every order. Every
 component carrying at least one \eqn{\mu} collapses to a single term, the
 concentration parametrization's \eqn{\mu}-derivatives being linear in
@@ -82,7 +82,7 @@ Jacobian of the map is that reciprocal.
 \code{\link[=mean.VonMises2Distrib]{mean.VonMises2Distrib()}} returns the ordinary expectation of \eqn{Y} on
 \eqn{[-\pi, \pi)}, which differs from \eqn{\mu} whenever \eqn{\mu \ne 0};
 \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} discusses the same distinction. What this
-parametrization offers is that the \strong{second} parameter can be computed
+parametrization offers is that the second parameter can be computed
 directly from a sample, which is not the case for the concentration.
 }
 
@@ -131,11 +131,11 @@ Mardia, K. V. and Jupp, P. E. (2000). \emph{Directional Statistics}, Chapter 3.
 Wiley, Chichester.
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} for the same law in the concentration, which is
-better conditioned at a nearly deterministic direction;
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} for the same law in the concentration, which is better
+conditioned at a nearly deterministic direction;
 \code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}} for the map and its derivatives;
-\code{\link[=beta1_distrib]{beta1_distrib()}} for another family on \eqn{(0, 1)};
-\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery this one passes;
-\link{VonMises2Distrib} for the class.
+\code{\link[=beta1_distrib]{beta1_distrib()}} for another family on \eqn{(0, 1)}; \code{\link[=fit_distrib]{fit_distrib()}} to
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+against the same battery that this one passes; \link{VonMises2Distrib} for the
+class.
 }

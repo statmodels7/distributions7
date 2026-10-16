@@ -35,8 +35,8 @@ and five.
 }
 \description{
 Return the third, fourth and fifth derivatives of the log-density in
-\eqn{(\sigma, \xi)}, and for orders three and four their expectations, each
-from its own compiled kernel.
+\eqn{(\sigma, \xi)}, and for orders three and four their expectations. Each
+of these comes from its own compiled kernel.
 }
 \details{
 With \eqn{z = y/\sigma}, \eqn{t = 1 + \xi z} and \eqn{u = \xi z}, the
@@ -50,7 +50,7 @@ times a form in \eqn{z}, \eqn{\xi} and \eqn{1/t} for \eqn{r} derivatives in
 \deqn{\phi^{(j)}(u) = \frac{(-1)^j j!}{u^{j+1}} \sum_{i > j}
   \frac{v^i}{i}, \qquad v = \frac{u}{1+u},}
 summed as a series in \eqn{v} for \eqn{|v| \le 3/4} and as \eqn{\log t}
-minus the first \eqn{j} terms elsewhere, so that no form divides by
+minus the first \eqn{j} terms elsewhere, so that the forms do not divide by
 \eqn{\xi} and \eqn{\xi = 0} is an ordinary point. \eqn{t} is formed from
 the exact product \eqn{\xi y}, which keeps its relative accuracy near the
 upper end of the support when \eqn{\xi < 0}.
@@ -80,7 +80,7 @@ all.equal((up - dn) / (2 * eps), d3$xi_xi_xi, tolerance = 1e-6)
 # The shape zero is an ordinary point.
 distrib_deriv4(d, y, list(sigma = 1.5, xi = 0))$xi_xi_xi_xi
 
-# The expected third derivatives, NA where they do not exist.
+# The expected third derivatives are NA where they do not exist.
 distrib_deriv3(d, 1, list(sigma = 1.5, xi = c(0.2, -0.4)),
                expected = TRUE)$xi_xi_xi
 }

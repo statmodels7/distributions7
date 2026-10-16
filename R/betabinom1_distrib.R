@@ -5,9 +5,9 @@ NULL
 #' @name BetaBinom1Distrib
 #'
 #' @description
-#' The S7 class of the beta-binomial family parametrized by a mean proportion
-#' \eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the finite support
-#' \eqn{\{0, 1, \dots, n\}}. It inherits from `discrete_distrib`.
+#' This is the S7 class of the beta-binomial family parametrized by a mean
+#' proportion \eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the
+#' finite support \eqn{\{0, 1, \dots, n\}}. It inherits from `discrete_distrib`.
 #'
 #' The class carries an extra property beyond the parent's, `size`: the number
 #' of trials \eqn{n}, fixed at construction as it is for
@@ -38,7 +38,8 @@ NULL
 #'   [distrib_pdf.BetaBinom1Distrib()] for the mass function.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.BetaBinom1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.BetaBinom1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.BetaBinom1Distrib] and
@@ -69,7 +70,8 @@ NULL
 #' d@size
 #' d@bounds
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #'
@@ -94,9 +96,9 @@ BetaBinom1Distrib <- S7::new_class("BetaBinom1Distrib",
 #' the support too.
 #'
 #' The two beta functions are of magnitude \eqn{(\alpha+\beta)\log(\alpha+\beta)}
-#' while their difference is of order one, so writing the mass as that
+#' while their difference is of order one, so a mass computed as that
 #' difference loses every digit at a small \eqn{\sigma}. The compiled kernel
-#' switches to a sum of logarithms instead, the shifts being integers, and
+#' uses a sum of logarithms instead, because the shifts are integers, and
 #' stays exact to the binomial limit.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
@@ -148,8 +150,8 @@ S7::method(distrib_pdf, BetaBinom1Distrib) <- function(distrib, y, theta, log = 
 #' @description
 #' Computes \eqn{F(q) = P(Y \le q) = \sum_{k \le \lfloor q \rfloor} P(Y = k)}
 #' as the cumulative sum of the mass over the whole support
-#' \eqn{\{0, \dots, n\}}. The support being finite, that sum is exact rather
-#' than an approximation, and it costs \eqn{n+1} evaluations of the mass for
+#' \eqn{\{0, \dots, n\}}. Because the support is finite, that sum is exact
+#' rather than an approximation, and it costs \eqn{n+1} evaluations of the mass for
 #' each distinct parameter setting. Below the support the probability is 0
 #' and at or above \eqn{n} it is 1. With `lower.tail = FALSE` the upper tail
 #' \eqn{P(Y > q)} is the sum of the mass above \eqn{q}, accumulated from the
@@ -183,7 +185,7 @@ S7::method(distrib_pdf, BetaBinom1Distrib) <- function(distrib, y, theta, log = 
 #' d <- betabinom1_distrib(size = 10)
 #' th <- list(mu = 0.3, sigma = 0.5)
 #'
-#' # The cumulative sum of the mass, exactly.
+#' # The distribution function is the cumulative sum of the mass, exactly.
 #' all.equal(distrib_cdf(d, 0:10, th), cumsum(distrib_pdf(d, 0:10, th)))
 #'
 #' # Below the support it is zero and at the top of it one.
@@ -214,13 +216,13 @@ S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
 #' @description
 #' Computes the generalized inverse \eqn{Q(p) = \min\{y : F(y) \ge p\}} by
 #' walking the exact cumulative sum over the support. The result is an integer
-#' count, the distribution function being a step function, so `Q(F(y))` returns
-#' `y` while `F(Q(p))` is at least `p` and generally exceeds it. A relative
-#' tolerance of 64 machine epsilons is allowed on the comparison so that a `p`
-#' obtained from [distrib_cdf.BetaBinom1Distrib()] maps back to the count it
-#' came from. With `lower.tail = FALSE` the upper tail is inverted against
-#' \eqn{P(Y > k)} summed from the top of the support, so a small upper-tail
-#' probability gives the count it belongs to.
+#' count because the distribution function is a step function, so `Q(F(y))`
+#' returns `y` while `F(Q(p))` is at least `p` and generally exceeds it. A
+#' relative tolerance of 64 machine epsilons is allowed on the comparison so
+#' that a `p` obtained from [distrib_cdf.BetaBinom1Distrib()] maps back to the
+#' count from which it came. With `lower.tail = FALSE` the upper tail is
+#' inverted against \eqn{P(Y > k)} summed from the top of the support, so a
+#' small upper-tail probability gives the count to which it belongs.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
@@ -249,13 +251,13 @@ S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
 #' d <- betabinom1_distrib(size = 10)
 #' th <- list(mu = 0.3, sigma = 0.5)
 #'
-#' # The deciles, which are counts.
+#' # The deciles are counts.
 #' distrib_quantile(d, c(0.1, 0.5, 0.9), th)
 #'
 #' # The round trip from a count through F and back is the identity.
 #' all.equal(distrib_quantile(d, distrib_cdf(d, 0:10, th), th), as.numeric(0:10))
 #'
-#' # The other direction only reaches at least p, F being a step function.
+#' # The other direction only reaches at least p, because F is a step function.
 #' rbind(p = c(0.2, 0.45, 0.8),
 #'       F_at_Q = distrib_cdf(d, distrib_quantile(d, c(0.2, 0.45, 0.8), th), th))
 S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
@@ -288,9 +290,9 @@ S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
 #' The Beta-Binomial's Cumulative Mass Over Its Support
 #'
 #' @description
-#' The cumulative mass over \eqn{\{0, \dots, n\}}: a vector where both
+#' Returns the cumulative mass over \eqn{\{0, \dots, n\}}: a vector where both
 #' parameters are scalar, and otherwise a matrix with one row per observation,
-#' each observation's parameters crossed with the support. With
+#' in which each observation's parameters are crossed with the support. With
 #' `upper = TRUE` the entry at \eqn{k} is \eqn{P(Y > k)}, the mass above
 #' \eqn{k} accumulated from the top of the support, in place of
 #' \eqn{P(Y \le k)}.
@@ -303,7 +305,8 @@ S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
 #'
 #' @param n The size.
 #' @param theta A named list with the two parameters.
-#' @param len The length of the quantity the caller evaluates at.
+#' @param len The length of the quantity at which the caller evaluates the
+#'   cumulative mass.
 #' @param upper Logical of length 1. When `TRUE` the upper tail is returned.
 #'   Defaults to `FALSE`.
 #'
@@ -338,8 +341,8 @@ betabinom1_cum <- function(n, theta, len, upper = FALSE) {
 #' @title Beta-Binomial Random Generation
 #' @name distrib_rng.BetaBinom1Distrib
 #' @description
-#' Draws `n` independent beta-binomial counts by the two-stage hierarchy the
-#' family is defined by: a success probability from
+#' Draws `n` independent beta-binomial counts by the two-stage hierarchy that
+#' defines the family: a success probability from
 #' \eqn{\mathrm{Beta}(\alpha, \beta)} with \eqn{\alpha = \mu/\sigma} and
 #' \eqn{\beta = (1-\mu)/\sigma}, then a count from
 #' \eqn{\mathrm{Binomial}(n_{\mathrm{trials}}, p)} at that probability, one
@@ -348,8 +351,8 @@ betabinom1_cum <- function(n, theta, len, upper = FALSE) {
 #' on `.Random.seed` in the usual way.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
-#' @param n A single positive integer, the number of draws. Note that the
-#'   number of trials is the object's `size` property, not this argument.
+#' @param n A single positive integer, the number of draws. The number of
+#'   trials is the object's `size` property, not this argument.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
@@ -475,8 +478,8 @@ S7::method(distrib_gradient, BetaBinom1Distrib) <- function(distrib, y, theta,
 #'       = \psi_1(y+\alpha) - \psi_1(\alpha) - \psi_1(n+S) + \psi_1(S), \qquad
 #'       S = \alpha + \beta,}
 #' and the mixed shape component carries only the \eqn{S} part,
-#' \eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the mass separately
-#' otherwise. The reported components follow by the two-variable chain rule of
+#' \eqn{-\psi_1(n+S) + \psi_1(S)}, because the two shapes otherwise enter the
+#' mass separately. The reported components follow by the two-variable chain rule of
 #' \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}, whose own second
 #' derivatives contribute the rest. This route is taken for
 #' \eqn{\sigma \ge 0.1}; for \eqn{\sigma < 0.1} the components are the direct
@@ -541,10 +544,10 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the expectation of the observed Hessian under the model,
 #' \eqn{\sum_{k=0}^{n} P(Y=k)\, \partial^2\ell/\partial\theta_i\partial\theta_j}
-#' evaluated at \eqn{y = k}. The support being finite, that is an exact
-#' finite sum of \eqn{n+1} terms rather than a quadrature or a sample, and
-#' the summand is the observed Hessian of
-#' [distrib_hessian.BetaBinom1Distrib()], from the direct sums for
+#' evaluated at \eqn{y = k}. Because the support is finite, the expectation is
+#' an exact finite sum of \eqn{n+1} terms rather than a quadrature or a
+#' sample. The summand is the observed Hessian of
+#' [distrib_hessian.BetaBinom1Distrib()], which comes from the direct sums for
 #' \eqn{\sigma < 0.1} and from the shapes above.
 #'
 #' `approx` and `nsim` are therefore ignored; every strategy returns the same
@@ -553,14 +556,14 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' `threads` is ignored.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
-#' @param y A numeric vector of counts. Only its length is read, the
-#'   expectation not depending on the data; the values are ignored.
+#' @param y A numeric vector of counts. Only its length is read, because the
+#'   expectation does not depend on the data; the values are ignored.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, the expectation being an exact sum. It is
+#' @param approx Ignored here, because the expectation is an exact sum. It is
 #'   accepted so that the signature matches the generic's, where it selects
 #'   between `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
@@ -591,7 +594,8 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' # entry does not vanish, so their estimates are asymptotically correlated.
 #' eh$mu_sigma[1]
 #'
-#' # The strategy argument is inert, the expectation being an exact sum.
+#' # The strategy argument has no effect, because the expectation is an exact
+#' # sum.
 #' identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
 #'                                        nsim = 50))
 S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
@@ -611,8 +615,8 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' a mean proportion \eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on
 #' the finite support \eqn{\{0, 1, \dots, n\}}. The returned object carries
 #' closed-form derivatives of the log-mass to fourth order and expectations
-#' that are exact finite sums over the support, so no quadrature is used. The
-#' fifth derivative comes from the numerical fallback of the base class.
+#' that are exact finite sums over the support, so the object does not use
+#' quadrature. The fifth derivative comes from the numerical fallback of the base class.
 #'
 #' The family is the binomial with its success probability drawn from a beta,
 #' which makes it the standard model for a proportion whose trials are not
@@ -693,14 +697,14 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' through the shapes above it (see the next section).
 #'
 #' Every expectation, including those of the third and fourth derivatives, is
-#' an exact finite sum over \eqn{\{0, \dots, n\}}: the support is bounded,
-#' so there is nothing to integrate over.
+#' an exact finite sum over \eqn{\{0, \dots, n\}}, because the support is
+#' bounded.
 #'
 #' # The cancellation at a small dispersion
 #'
 #' The two beta functions of the mass are of magnitude
 #' \eqn{(\alpha+\beta)\log(\alpha+\beta)} while their difference is of order
-#' one, so writing the mass as that difference loses one digit per factor of
+#' one, so a mass computed as that difference loses one digit per factor of
 #' ten in the concentration \eqn{1/\sigma}. The kernel computes the log-mass
 #' as the sum of logarithms above instead. The route through the shapes has
 #' the same defect in its derivatives: the polygamma differences are of order
@@ -714,8 +718,8 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #'
 #' # Estimation
 #'
-#' [fit_distrib()] maximizes the log-likelihood on the link scale. Neither
-#' estimate is available in closed form. For a sample with no extra-binomial
+#' [fit_distrib()] maximizes the log-likelihood on the link scale. Both
+#' estimates lack a closed form. For a sample with no extra-binomial
 #' variation, \eqn{\hat\sigma} tends to zero, the boundary of the parameter
 #' space.
 #'
@@ -754,8 +758,8 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' th <- list(mu = 0.3, sigma = 0.5)
 #' sum(distrib_pdf(d, 0:10, th))
 #'
-#' # Four times the variance of a binomial with the same mean: the intraclass
-#' # correlation is sigma / (1 + sigma) = 1/3, and 1 + 9/3 = 4.
+#' # The variance is four times that of a binomial with the same mean: the
+#' # intraclass correlation is sigma / (1 + sigma) = 1/3, and 1 + 9/3 = 4.
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   binomial_var = variance(binomial_distrib(size = 10), list(mu = 0.3)),
 #'   icc = 0.5 / 1.5)
@@ -765,7 +769,7 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #'   max(abs(distrib_pdf(d, 0:10, list(mu = 0.3, sigma = s)) -
 #'           dbinom(0:10, 10, 0.3))), numeric(1))
 #'
-#' # The same law as betabinom2 at the implied shapes.
+#' # The mass equals that of betabinom2 at the implied shapes.
 #' all.equal(distrib_pdf(d, 0:10, list(mu = 0.4, sigma = 0.2)),
 #'           distrib_pdf(betabinom2_distrib(size = 10), 0:10,
 #'                       list(alpha = 2, beta = 3)))
@@ -779,10 +783,10 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' [betabinom2_distrib()] for the same law in its two beta shapes;
 #' [binomial_distrib()] for the limit at \eqn{\sigma \to 0} and
 #' [beta1_distrib()] for the mixing law; [negbin2_distrib()] for the
-#' unbounded-count analogue, a Poisson mixed over a gamma;
-#' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
-#' [BetaBinom1Distrib] for the class.
+#' unbounded-count analogue, a Poisson mixed over a gamma; [fit_distrib()] to
+#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' against the same battery that this one passes; [BetaBinom1Distrib] for the
+#' class.
 #' @export
 betabinom1_distrib <- function(size, link_mu = logit_link(),
                               link_sigma = log_link()) {

@@ -15,7 +15,7 @@ enters any component.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
-result. The two differ here, \code{nu} carrying a log link by default.}
+result. The two differ here, because \code{nu} carries a log link by default.}
 
 \item{approx}{Ignored: the expectation is exact and no approximation
 strategy is consulted. \code{\link[=fit_distrib]{fit_distrib()}} rejects a \code{fisher_scoring(approx =)}

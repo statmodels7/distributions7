@@ -17,9 +17,9 @@ of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both routes.}
+\item{approx}{Ignored, because a closed form is available for both routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -53,11 +53,11 @@ d <- binomial_distrib(size = 10)
 y <- c(0, 4, 10)
 th <- list(mu = 0.3)
 
-# The closed form, written out; negative at every admissible mu.
+# The closed form is written out, and it is negative at every admissible mu.
 all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
           -6 * y / 0.3^4 - 6 * (10 - y) / 0.7^4)
 
-# The expected value.
+# The expected value is checked against its closed form.
 unique(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_mu_mu)
 -6 * 10 / 0.3^3 - 6 * 10 / 0.7^3
 

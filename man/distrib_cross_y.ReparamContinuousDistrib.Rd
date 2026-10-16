@@ -16,7 +16,7 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter of the \strong{new}
+A named list with one numeric vector per parameter of the new
 parametrization, keyed by \code{distrib@params}, each of length
 \code{length(y)}.
 }

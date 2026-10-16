@@ -18,10 +18,10 @@ Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
-result. The two differ here, \code{nu} carrying a log link by default.}
+result. The two differ here, because \code{nu} carries a log link by default.}
 
 \item{approx}{Not read: \code{expected = TRUE} always takes the expectation by
-sampling. Present so that the signature matches the generic's.}
+sampling. It is present so that the signature matches the generic's.}
 
 \item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
 \code{10000}. Not read otherwise.}

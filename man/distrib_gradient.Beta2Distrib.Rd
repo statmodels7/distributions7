@@ -14,7 +14,7 @@ vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. Both must be strictly positive.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -35,8 +35,8 @@ Computes the first derivatives of the beta log-density with respect to
         + \psi(\alpha+\beta),}
 with \eqn{\psi} the digamma function. The beta is an exponential family in
 the shapes with sufficient statistics \eqn{\log y} and \eqn{\log(1-y)}, so
-each component is the corresponding statistic minus its expectation. That
-is also why every derivative beyond this one is free of the response.
+each component is the corresponding statistic minus its expectation.
+Therefore every derivative beyond this one is also free of the response.
 
 The value is computed by a compiled kernel, and \eqn{\log(1-y)} is formed
 with \code{log1p()} so that it stays accurate at \code{y} near zero.
@@ -58,7 +58,7 @@ y <- c(0.1, 0.3, 0.7)
 th <- list(alpha = 2, beta = 5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out with the digamma function.
+# The two closed forms are written out with the digamma function.
 all.equal(g$alpha, log(y) - digamma(2) + digamma(7))
 all.equal(g$beta, log1p(-y) - digamma(5) + digamma(7))
 

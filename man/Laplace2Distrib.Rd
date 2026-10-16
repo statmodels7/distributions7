@@ -47,12 +47,12 @@ object built by \code{\link[=laplace2_distrib]{laplace2_distrib()}} they hold \c
 \code{c(mu = FALSE, lambda = TRUE)} for \code{params_smooth}.
 }
 \description{
-The S7 class of the Laplace (double exponential) family written by its
-\strong{rate} \eqn{\lambda > 0} in place of its scale, with density
-\eqn{f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is
-the same law as \code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambda = 1/\sigma}; the
-parametrization differs and the derivatives with it. It inherits from
-\code{continuous_distrib}, so every generic of the \code{distrib} class applies to it.
+This is the S7 class of the Laplace (double exponential) family written by
+its rate \eqn{\lambda > 0} in place of its scale, with density \eqn{f(y) =
+(\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is the same law
+as \code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambda = 1/\sigma}; the parametrization
+differs and the derivatives with it. It inherits from \code{continuous_distrib},
+so every generic of the \code{distrib} class applies to it.
 
 The rate form is the one in which a lasso penalty is written: with \eqn{\mu = 0}
 the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
@@ -60,7 +60,7 @@ the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
 harder. \code{penalties7::lasso_penalty()} is this family with the location held
 at zero.
 
-Like \code{\link[=laplace_distrib]{laplace_distrib()}}, this family has a \strong{kink} at \eqn{y = \mu} and is
+Like \code{\link[=laplace_distrib]{laplace_distrib()}}, this family has a kink at \eqn{y = \mu} and is
 non-regular in its location; \code{params_smooth} is \code{c(mu = FALSE, lambda = TRUE)}.
 
 Build one with \code{\link[=laplace2_distrib]{laplace2_distrib()}}. This page documents the raw S7
@@ -69,7 +69,8 @@ constructor, which takes the parent's properties; the validator of
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Laplace2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Laplace2Distrib]{distrib_cdf()}},

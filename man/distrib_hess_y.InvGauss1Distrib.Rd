@@ -27,7 +27,7 @@ respect to the response, in closed form:
 The mean drops out, the log-density depending on \eqn{\mu} only through
 terms linear in \eqn{y} and constant in it. The sign changes at
 \eqn{y = 2/(3\phi)}: the log-density is concave in the response below that
-point and \strong{convex above it}, so an inverse Gaussian log-likelihood is not
+point and convex above it, so an inverse Gaussian log-likelihood is not
 a concave function of an observation over the whole support.
 }
 \examples{

@@ -5,12 +5,12 @@ NULL
 #' @name Weibull1Distrib
 #'
 #' @description
-#' The S7 class of the Weibull family parametrized by a scale \eqn{\mu > 0} and
-#' a shape \eqn{\sigma > 0}, with density
-#' \eqn{f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}} on the
-#' positive half line. It inherits from `continuous_distrib`, so every generic
-#' of the `distrib` class applies to it; the methods listed below are registered
-#' on it directly and everything else comes from the parent.
+#' This is the S7 class of the Weibull family parametrized by a scale \eqn{\mu >
+#' 0} and a shape \eqn{\sigma > 0}, with density \eqn{f(y) =
+#' (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}} on the positive half
+#' line. It inherits from `continuous_distrib`, so every generic of the
+#' `distrib` class applies to it; the methods listed below are registered on it
+#' directly and everything else comes from the parent.
 #'
 #' Build one with [weibull1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -36,7 +36,8 @@ NULL
 #'   [distrib_gradient.Weibull1Distrib()] for the closed forms of this class.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.Weibull1Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.Weibull1Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.Weibull1Distrib] and
@@ -77,7 +78,8 @@ NULL
 #' d <- weibull1_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
@@ -824,7 +826,7 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' the response, and closed-form moments. The fifth order and
 #' [distrib_cross3_y()] come from the numerical fallbacks of the base class.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
 #' logarithm, because both parameters are positive.
 #'

@@ -28,7 +28,7 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 Computes the binomial probability mass
 \deqn{P(Y = y; \mu) = \binom{n}{y}\mu^{y}(1-\mu)^{n-y}, \qquad y = 0, 1, \dots, n,}
 by calling \code{\link[stats:Binomial]{stats::dbinom()}} at \code{size = distrib@size}. The number of trials
-comes from the object rather than from \code{theta}, \code{size} being fixed data and
+comes from the object and not from \code{theta}, because \code{size} is fixed data and
 not a parameter.
 }
 \examples{
@@ -41,8 +41,8 @@ all.equal(distrib_pdf(d, c(0, 4, 10), list(mu = 0.3)),
 # A probability mass: it sums to one over 0:n.
 sum(distrib_pdf(d, 0:10, list(mu = 0.3)))
 
-# size may be one value per observation, which is what grouped binary data
-# with unequal group sizes needs.
+# size may be one value per observation, as grouped binary data with
+# unequal group sizes require.
 g <- binomial_distrib(size = c(5, 10, 20))
 distrib_pdf(g, c(1, 4, 8), list(mu = 0.3))
 }

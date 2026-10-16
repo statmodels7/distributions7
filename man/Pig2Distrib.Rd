@@ -45,8 +45,8 @@ An S7 object of class \code{Pig2Distrib}, inheriting from
 \eqn{(0, \infty)}.
 }
 \description{
-The S7 class of the Poisson-inverse Gaussian in the parametrization whose
-two parameters are orthogonal, gamlss's \code{PIG2}. It is the same law as
+This is the S7 class of the Poisson-inverse Gaussian in the parametrization
+whose two parameters are orthogonal, gamlss's \code{PIG2}. It is the same law as
 \link{Pig1Distrib}; the mean stays \eqn{\mu} and the dispersion is replaced by
 \eqn{\alpha}, the argument the mass function's Bessel function is evaluated
 at.
@@ -62,7 +62,8 @@ adds no check of its own.
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Pig2Distrib]{distrib_pdf()}} and
 \code{\link[=distrib_rng.Pig2Distrib]{distrib_rng()}};

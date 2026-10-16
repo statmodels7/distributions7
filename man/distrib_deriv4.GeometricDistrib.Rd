@@ -16,9 +16,9 @@ of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, a closed form being available for both routes.}
+\item{approx}{Ignored, because a closed form is available for both routes.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -34,10 +34,9 @@ A named list of one numeric vector, \code{mu_mu_mu_mu}, of length
 \description{
 Computes the fourth derivative of the geometric log-mass with respect to the
 mean, in closed form. As at third order it is a combination of
-\eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}} with the data entering linearly
-through \eqn{y}: the value is \eqn{-6(y/\mu^4 - (y+1)/(1+\mu)^4)}, and the
-bracket is computed as at third order
-(see \code{\link[=distrib_deriv3.GeometricDistrib]{distrib_deriv3.GeometricDistrib()}}).
+\eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}}, and the data enter linearly through
+\eqn{y}. The value is \eqn{-6(y/\mu^4 - (y+1)/(1+\mu)^4)}, and the bracket
+is computed as at third order (see \code{\link[=distrib_deriv3.GeometricDistrib]{distrib_deriv3.GeometricDistrib()}}).
 
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-6(1 - q^3)/\mu^3}. Both routes

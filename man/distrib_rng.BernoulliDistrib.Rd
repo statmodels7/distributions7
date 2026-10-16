@@ -10,8 +10,9 @@
 
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of length \code{n}. A value of length 1 is recycled, so a vector
-of length \code{n} draws one variate per probability, the shape a regression
-on a Bernoulli response supplies. \code{mu} must lie in \eqn{(0, 1)}.}
+of length \code{n} draws one variate per probability, which is the shape that
+a regression on a Bernoulli response supplies. \code{mu} must lie in
+\eqn{(0, 1)}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -37,7 +38,7 @@ set.seed(4)
 z <- distrib_rng(d, 2e4, list(mu = 0.3))
 c(proportion = mean(z), variance = var(z), p_times_q = 0.3 * 0.7)
 
-# A probability per observation, which is what a regression supplies.
+# The probability varies by observation, as it does in a regression.
 set.seed(5)
 p <- plogis(seq(-2, 2, length.out = 6))
 rbind(p = round(p, 3), draw = distrib_rng(d, 6, list(mu = p)))

@@ -33,9 +33,9 @@ support \eqn{\{0, \dots, n\}} the mass is 0, and a non-integer \code{y} is off
 the support too.
 
 The two beta functions are of magnitude \eqn{(\alpha+\beta)\log(\alpha+\beta)}
-while their difference is of order one, so writing the mass as that
+while their difference is of order one, so a mass computed as that
 difference loses every digit at a small \eqn{\sigma}. The compiled kernel
-switches to a sum of logarithms instead, the shifts being integers, and
+uses a sum of logarithms instead, because the shifts are integers, and
 stays exact to the binomial limit.
 }
 \examples{

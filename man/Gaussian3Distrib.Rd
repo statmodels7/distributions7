@@ -46,7 +46,7 @@ object built by \code{\link[=gaussian3_distrib]{gaussian3_distrib()}} they hold 
 \eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-The S7 class of the Gaussian (normal) family parametrized by its mean
+This is the S7 class of the Gaussian (normal) family parametrized by its mean
 \eqn{\mu} and its precision \eqn{\tau = 1/\sigma^2 > 0}, with density
 \eqn{f(y) = (\tau/2\pi)^{1/2}\exp\{-\tau(y-\mu)^2/2\}} on the whole real
 line. It inherits from \code{continuous_distrib}, so every generic of the
@@ -61,7 +61,8 @@ parameter, ordered support bounds).
 }
 \section{Methods}{
 
-Registered on this class, each linked to the page that documents it:
+The following methods are registered on this class, and each is linked to
+the page that documents it:
 \itemize{
 \item the distribution: \code{\link[=distrib_pdf.Gaussian3Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.Gaussian3Distrib]{distrib_cdf()}},
@@ -107,7 +108,8 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- gaussian3_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The properties a consumer reads to drive the family without knowing it.
+# These properties let a consumer drive the family with no code specific to
+# it.
 d@params
 d@params_interpretation
 d@params_bounds

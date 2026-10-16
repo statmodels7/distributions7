@@ -19,7 +19,7 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
 or \code{"opg"}. Read only when \code{expected = TRUE}.}
@@ -36,12 +36,12 @@ they carry, from \code{mu_mu_mu_mu} to \code{nu_nu_nu_nu}, each of length
 }
 \description{
 Computes the fifteen distinct fourth derivatives of the pseudo-Huber
-log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, \strong{in closed form}, in
+log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, in closed form, in
 a compiled kernel. The Bessel functions enter through \eqn{\nu} alone, and
 their derivatives come from the three routes described in
 \code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}}.
 
-\strong{The expected fourth derivatives have no closed form.} With
+The expected fourth derivatives have no closed form. With
 \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is the one
 place on this page where \code{approx} and \code{nsim} are read.
 }

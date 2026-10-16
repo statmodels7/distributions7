@@ -18,8 +18,8 @@ recycled. \code{sigma2} must be strictly positive.}
 \eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
-logarithms of probabilities, which is how a quantile deep in a tail is
-requested without the probability underflowing. Defaults to \code{FALSE}.}
+logarithms of probabilities, so that a quantile deep in a tail can be
+requested without underflow in the probability. Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -34,7 +34,7 @@ Computes the lognormal quantile function
 by calling \code{\link[stats:Lognormal]{stats::qlnorm()}}. It is closed form, the log transformation
 being monotone, so the round trip through
 \code{\link[=distrib_cdf.Lognormal1Distrib]{distrib_cdf.Lognormal1Distrib()}} returns \code{p} exactly. The median is
-\eqn{e^{\mu}}, which sits \strong{below} the mean \eqn{e^{\mu + \sigma^2/2}}.
+\eqn{e^{\mu}}, which sits below the mean \eqn{e^{\mu + \sigma^2/2}}.
 }
 \examples{
 d <- lognormal1_distrib()

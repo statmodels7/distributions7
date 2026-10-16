@@ -15,9 +15,9 @@ length when its information is closed form and for its values otherwise.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{Ignored: the delegation is exact. Present so that the
-signature matches the generic's. Note that it is not forwarded, so a
-parent whose OWN expected Hessian is approximate takes its own default.}
+\item{approx}{Ignored: the delegation is exact. It is present so that the
+signature matches the generic's. Note that it is not forwarded, so a parent
+whose OWN expected Hessian is approximate takes its own default.}
 
 \item{nsim}{Ignored, for the same reason.}
 

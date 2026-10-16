@@ -5,8 +5,8 @@ NULL
 #' @name NegBin2Distrib
 #'
 #' @description
-#' The S7 class of the negative binomial family on the non-negative integers in
-#' the NB2 parametrization: the mean \eqn{\mu > 0} and a dispersion
+#' This is the S7 class of the negative binomial family on the non-negative
+#' integers in the NB2 parametrization: the mean \eqn{\mu > 0} and a dispersion
 #' \eqn{\theta > 0}, so that \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}
 #' and the variance is quadratic in the mean. It inherits from
 #' `discrete_distrib`.
@@ -34,7 +34,8 @@ NULL
 #'   the closed forms this class supplies.
 #'
 #' @section Methods:
-#' Registered on this class, each linked to the page that documents it:
+#' The following methods are registered on this class, and each is linked to
+#' the page that documents it:
 #' - the distribution: [`distrib_pdf()`][distrib_pdf.NegBin2Distrib],
 #'   [`distrib_cdf()`][distrib_cdf.NegBin2Distrib],
 #'   [`distrib_quantile()`][distrib_quantile.NegBin2Distrib] and
@@ -62,7 +63,8 @@ NULL
 #' d <- negbin2_distrib()
 #' S7::S7_inherits(d, discrete_distrib)
 #'
-#' # The properties a consumer reads to drive the family without knowing it.
+#' # These properties let a consumer drive the family with no code specific to
+#' # it.
 #' d@params
 #' d@params_interpretation
 #' d@bounds
@@ -556,9 +558,9 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #' binomial is a regular family, so the second Bartlett identity holds and this
 #' equals the variance of the score.
 #'
-#' @seealso [distrib_hessian.NegBin2Distrib()] for the observed quantity this
-#'   is the expectation of, [fisher_scoring()], which inverts it at each step,
-#'   and [distrib_expected_hessian()] for the generic.
+#' @seealso [distrib_hessian.NegBin2Distrib()] for the observed quantity whose
+#'   expectation this is, [fisher_scoring()], which inverts it at each step, and
+#'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- negbin2_distrib()
@@ -821,7 +823,7 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' carries closed-form derivatives of the log-mass to fourth order and
 #' closed-form moments.
 #'
-#' The two arguments choose the links that carry each parameter to the
+#' The two arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
 #' logarithm, because both parameters are positive.
 #'
@@ -909,12 +911,11 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' @seealso
 #' [negbin1_distrib()] for the NB1 parametrization, with a variance linear in
 #' the mean; [poisson_distrib()] for the equidispersed limit and
-#' [geometric_distrib()] for \eqn{\theta = 1}; [pig1_distrib()] for the
-#' Poisson mixed over an inverse Gaussian instead of a gamma;
-#' [zero_inflated()] and [zero_adjusted()] for counts with excess zeros;
-#' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery this one passes;
-#' [NegBin2Distrib] for the class.
+#' [geometric_distrib()] for \eqn{\theta = 1}; [pig1_distrib()] for the Poisson
+#' mixed over an inverse Gaussian instead of a gamma; [zero_inflated()] and
+#' [zero_adjusted()] for counts with excess zeros; [fit_distrib()] to estimate
+#' the parameters; [check_distrib()] to validate a family of your own against
+#' the same battery that this one passes; [NegBin2Distrib] for the class.
 #'
 #' @references
 #' Cameron, A. C. and Trivedi, P. K. (2013). *Regression Analysis of Count
