@@ -114,8 +114,9 @@ safe_check <- function(name, expr) {
 #'   [numerical_gradient()], [numerical_hessian()],
 #'   [numerical_deriv3()] and [numerical_deriv4()].
 #' - **deriv5**, when `5` is among `orders`: [distrib_deriv5()] against
-#'   [numerical_deriv5()] at a higher accuracy, five stencil nodes instead of
-#'   three. For a family that reaches the numerical fifth order the row checks
+#'   [numerical_deriv5()] at a higher accuracy, the sixth-order rule (six
+#'   evaluations of the fourth order per parameter) in place of the default
+#'   fourth-order one. For a family that reaches the numerical fifth order the row checks
 #'   the differencing; for a family that registers its own [distrib_deriv5()]
 #'   it checks that method. It is emitted only where [has_exact_deriv4()] is
 #'   `TRUE`: where the fourth order is itself a fallback the fifth is a
@@ -443,8 +444,8 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # The fifth order has no analytic implementation to compare against: every
   # family reaches numerical_deriv5(), one central difference of the fourth.
   # What can be checked is that difference against a HIGHER-ACCURACY rule from
-  # the same library -- five nodes instead of three, different weights and a
-  # different step -- which catches a mis-keyed component, a wrong grouping or
+  # the same library -- the sixth-order rule instead of the default fourth,
+  # different weights and a different step -- which catches a mis-keyed component, a wrong grouping or
   # a wrong scale, and is the only in-package reference there is. The
   # independent one, Richardson on the analytic fourth, lives in the tests,
   # where numDeriv may be named.
@@ -467,7 +468,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   if (5 %in% orders && has_exact_deriv4(distrib)) {
     res[[length(res) + 1L]] <- safe_check("deriv5 vs a higher-accuracy rule", {
       a <- distrib_deriv5(distrib, y, theta)
-      e <- numerical_deriv5(distrib, y, theta, accuracy = 4L)
+      e <- numerical_deriv5(distrib, y, theta, accuracy = 6L)
       err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
       new_check("deriv5 vs a higher-accuracy rule", err < tol, err)
     })

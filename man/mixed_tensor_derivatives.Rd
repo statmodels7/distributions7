@@ -4,7 +4,7 @@
 \alias{mixed_tensor_derivatives}
 \title{Mixed Derivatives by One Stencil on the Highest Analytical Quantity}
 \usage{
-mixed_tensor_derivatives(distrib, y, theta, ay, ctheta)
+mixed_tensor_derivatives(distrib, y, theta, ay, ctheta, accuracy = 4L)
 }
 \arguments{
 \item{distrib}{A \code{continuous_distrib} object.}
@@ -16,6 +16,9 @@ mixed_tensor_derivatives(distrib, y, theta, ay, ctheta)
 \item{ay}{The order in the response, 1 to 3.}
 
 \item{ctheta}{The order in the parameters, 1 or 2.}
+
+\item{accuracy}{The order of accuracy of the one-dimensional stencils,
+passed to \code{\link[numericals7:fd_tensor]{numericals7::fd_tensor()}}.}
 }
 \value{
 A named list: one vector per parameter, keyed by \code{distrib@params},
@@ -33,24 +36,23 @@ tensor-product central difference of it, never a difference of a
 difference.
 }
 \details{
-A candidate quantity of order \eqn{(a, c)} in the response and the
-parameters can serve where \eqn{a \le} \code{ay} and \eqn{c \le} \code{ctheta}, and it
-leaves \eqn{r = (\mathrm{ay} - a) + (\mathrm{ctheta} - c)} orders to the
-stencil. The log-density always serves; another quantity serves only where
-the family's class registers its method, as \code{\link[=owns_method]{owns_method()}} reads it, so
-that a numerical fallback is never differenced again. The candidate with
-the smallest \eqn{r} is used, and among equal ones the one with more
-derivatives in the parameters.
+The computation is \code{\link[numericals7:fd_tensor]{numericals7::fd_tensor()}} over the coordinates
+\eqn{(y, \theta_1, \dots, \theta_p)}. A candidate quantity of order
+\eqn{(a, c)} in the response and the parameters is declared to it where
+\eqn{a \le} \code{ay}, \eqn{c \le} \code{ctheta}, \eqn{(a, c)} is not the target
+itself, and the family's class registers its method, as \code{\link[=owns_method]{owns_method()}}
+reads it, so that a numerical fallback is never differenced again. The
+log-density is always available. The candidate with the smallest residual
+order \eqn{r = (\mathrm{ay} - a) + (\mathrm{ctheta} - c)} is used, and
+among equal ones the one with more derivatives in the parameters, which
+declares more multi-indices; the candidates are declared in decreasing
+\eqn{c}, so that the order of declaration decides the same way when there
+is a single parameter.
 
-The stencil is the tensor product of one-dimensional central stencils of
-\code{\link[numericals7:fd_weights]{numericals7::fd_weights()}} at second-order accuracy, one in the response
-and one in each parameter that still has to be differenced, with the
-parameters that occur most often taken by the analytical quantity first,
-as \code{\link[=tensor_derivatives]{tensor_derivatives()}} does. The step is
-\eqn{h = \varepsilon^{1/(r+2)}\max(1, |x|)} in every direction, the
-response step clamped inside the support by \code{\link[=fd_steps_y]{fd_steps_y()}} and a
-parameter's step inside its bounds. Values shared by several components
-are computed once.
+The step is \eqn{h = \varepsilon^{1/(r+a)}\max(1, |x|)} in every
+direction, with \eqn{a} the accuracy, reduced so that every node stays
+inside the support in the response and inside the bounds of each
+parameter. Values shared by several components are computed once.
 
 For \code{\link[=transformation]{transformation()}}, which carries the parent's score and Hessian in
 the parameters and no response derivative, the fourth-order
@@ -63,7 +65,7 @@ in the response of the analytical Hessian, so \eqn{r = 2}.
 d <- fixed(transformation(gamma2_distrib(), log_transform()), mu = 1)
 b <- c(-0.4, 0.3)
 k <- 1 / 0.26
-got <- distributions7:::mixed_tensor_derivatives(d, b, list(sigma2 = 0.26), 2, 2)
+got <- distributions7:::mixed_tensor_derivatives(d, b, list(sigma2 = 0.26), 2L, 2L)
 rbind(got$sigma2_sigma2, -2 * k^3 * exp(b))
 }
 \seealso{

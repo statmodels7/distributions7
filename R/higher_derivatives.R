@@ -330,60 +330,42 @@ S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FA
 }
 
 
-#' Fifth-Order Derivatives by One Central Difference
+#' Fifth-Order Derivatives by One Tensor Stencil
 #'
 #' @description
-#' The fifth-order derivative components, obtained by differentiating the
-#' fourth-order ones once in each parameter.
+#' The fifth-order derivative components, each a single tensor-product
+#' central difference of the highest analytic order below it, through
+#' [tensor_derivatives()].
 #'
 #' @details
-#' The fifth order is one central difference of the fourth order, a single
-#' stencil in each parameter, and never a difference of a difference.
-#' [numerical_deriv4()] also uses a single stencil, a second difference of the
-#' analytic Hessian. A fifth order obtained by differencing the analytic third
-#' order three times would be less accurate.
+#' The quantity differenced is the fourth order where it is analytic, as
+#' [has_exact_deriv4()] reads it, and each component is then one central
+#' difference of a fourth-order component in one parameter: the component of
+#' a non-decreasing five-tuple is the four-tuple left when one index is
+#' dropped, and the whole order costs one stencil per parameter. Where the
+#' fourth order is not analytic, a family that registers no wrapper reads
+#' the highest order it implements itself, as [analytic_order()] gives it,
+#' and a wrapper of a parent without an analytic fourth order differences its
+#' log-density, because its lower orders are partition sums over the parent's
+#' fallbacks. A difference of a difference is never formed.
 #'
-#' The component of a non-decreasing five-tuple is the four-tuple that remains
-#' when its last index is dropped, differentiated in the parameter that index
-#' names. The tuple is non-decreasing, so dropping the last index leaves a
-#' valid order-4 key, and mixed partials commute, so which index is dropped
-#' does not matter. Components are grouped by that last index, so the whole
-#' order costs `2p` evaluations of the fourth rather than two per component.
-#'
-#' # The stencil, and the step
-#'
-#' The nodes, the weights and the step are all \pkg{numericals7}'s, so the
-#' rule lives in one place and raising `accuracy` is an argument rather than
-#' new arithmetic. [numericals7::fd_derivative()] is not called directly for
-#' the reason [numDeriv_grad()] already records: its `f` maps a vector of
-#' points to the values at those points, while this one reads a whole named
-#' list at each node and keeps every component that shares the differentiated
-#' index. A node of zero weight is skipped, so the default central rule costs
-#' two evaluations of the fourth order per parameter and not three.
-#'
-#' [numericals7::fd_step()] at order 1 is \eqn{\epsilon^{1/3}} scaled by the
-#' magnitude of the evaluation point and shrunk to keep the stencil inside the
-#' parameter's domain. It is the right rule here because the quantity being
-#' differenced is evaluated to machine precision. The same rule would be too
-#' small for a quantity that is itself a fitted optimum, whose accuracy is
-#' limited by the reproducibility of the fit rather than by the rounding of an
-#' arithmetic expression.
-#'
+#' The step of a difference of order \eqn{r} is
+#' \eqn{\varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with \eqn{a} the
+#' accuracy, reduced so that every node stays inside the parameter's domain.
 #' On the link scale the perturbation is applied to \eqn{\eta} and the
-#' fourth order is evaluated on the link scale as well, so the result is the
-#' derivative of an analytic link-scale quantity. This route requires neither
-#' the fifth derivative of a link nor an order-5 entry in [bell_partial()],
-#' both of which the chain rule route uses.
+#' differenced quantity is read on the link scale as well, so the result is
+#' the derivative of a link-scale quantity. This route requires neither the
+#' fifth derivative of a link nor an order-5 entry in [bell_partial()], both
+#' of which the chain rule route uses.
 #'
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned by the generic.
-#' @param scale `"parameter"` or `"link"`; the scale on which the fourth
-#'   order is read and on which the perturbation is applied.
-#' @param accuracy The order of accuracy of the central rule, passed to
-#'   [numericals7::fd_offsets()] and [numericals7::fd_step()]. The default 2
-#'   is the three-point rule; 4 costs four evaluations of the fourth order per
-#'   parameter instead of two.
+#' @param scale `"parameter"` or `"link"`; the scale on which the
+#'   differenced quantity is read and on which the perturbation is applied.
+#' @param accuracy The order of accuracy of the central rules, passed to
+#'   [numericals7::fd_tensor()]. The default 4 uses four evaluations of the
+#'   fourth order per parameter where it is analytic; 2 uses two.
 #'
 #' @return A named list of fifth-derivative component vectors, each of length
 #'   `length(y)`, keyed lexicographically as
@@ -393,84 +375,36 @@ S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FA
 #' numerical_deriv5(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @seealso [distrib_deriv5()], the generic; [numerical_deriv4()], the order
-#'   below.
+#'   below; [tensor_derivatives()], which does the differencing.
 #' @export
 numerical_deriv5 <- function(distrib, y, theta, scale = c("parameter", "link"),
-                             accuracy = 2L) {
+                             accuracy = 4L) {
   scale <- match.arg(scale)
-  params <- distrib@params
-  p <- length(params)
-  nms <- deriv_names(params, 5)
-  idx_of <- deriv_indices(params, 5)
+  tensor_derivatives(distrib, y, theta, order = 5L, base = deriv5_base(distrib),
+                     scale = scale, accuracy = accuracy)
+}
 
-  # The stencil is numericals7's, nodes and weights together. A zero weight is
-  # dropped rather than evaluated: at the default accuracy the centre node
-  # carries one, so the rule costs two calls per parameter.
-  s <- numericals7::fd_offsets(1L, accuracy = accuracy)$central
-  w <- numericals7::fd_weights(s, 1L)
-  nodes <- which(w != 0)
 
-  # The point the difference is taken at, and the map back to a theta the
-  # fourth-order method can be called with. On the link scale the two differ;
-  # on the parameter scale the map is the identity.
-  if (scale == "link") {
-    links <- distrib@link_params
-    x0 <- lapply(params, function(nm)
-      linkfunctions7::linkfun(links[[nm]], theta[[nm]]))
-    bnds <- lapply(params, function(nm)
-      linkfunctions7::eta_bounds(links[[nm]]))
-    to_theta <- function(x) {
-      th <- theta
-      for (i in seq_len(p)) {
-        th[[params[i]]] <- linkfunctions7::linkinv(links[[params[i]]], x[[i]])
-      }
-      th
-    }
-  } else {
-    x0 <- lapply(params, function(nm) theta[[nm]])
-    bnds <- lapply(params, function(nm) distrib@params_bounds[[nm]])
-    to_theta <- function(x) {
-      th <- theta
-      for (i in seq_len(p)) th[[params[i]]] <- x[[i]]
-      th
-    }
-  }
-
-  D4 <- function(th) distrib_deriv4(distrib, y, th, scale = scale)
-
-  out <- vector("list", length(nms))
-  names(out) <- nms
-
-  # The component of a non-decreasing five-tuple is the four-tuple left when
-  # its last index is dropped, differentiated in the parameter that index
-  # names. Grouping by that index is what makes the whole order cost one
-  # stencil per parameter rather than one per component.
-  last <- vapply(idx_of, function(r) r[5L], integer(1))
-  key4 <- vapply(idx_of, function(r) paste(params[r[1:4]], collapse = "_"),
-                 character(1))
-
-  for (m in seq_len(p)) {
-    who <- which(last == m)
-    if (!length(who)) next
-
-    h <- numericals7::fd_step(x0[[m]], 1L, accuracy = accuracy,
-                              bounds = bnds[[m]])
-
-    acc <- vector("list", length(who))
-    for (j in nodes) {
-      x <- x0
-      x[[m]] <- x0[[m]] + s[j] * h
-      D <- D4(to_theta(x))
-      for (t in seq_along(who)) {
-        term <- w[j] * D[[key4[who[t]]]]
-        acc[[t]] <- if (is.null(acc[[t]])) term else acc[[t]] + term
-      }
-    }
-
-    for (t in seq_along(who)) out[[nms[who[t]]]] <- acc[[t]] / h
-  }
-
-  out
+#' The Order a Fifth Derivative Is Differenced From
+#'
+#' @description
+#' Returns 4 where [has_exact_deriv4()] is `TRUE`; 0 for a wrapper whose
+#' parent has no analytic fourth order, a wrapper being a class that
+#' overrides [has_exact_deriv4()] to read its parent; and otherwise the
+#' highest order the family registers itself, as [analytic_order()] gives it
+#' up to 3.
+#'
+#' @param x A distribution object.
+#'
+#' @return An integer from 0 to 4.
+#'
+#' @seealso [numerical_deriv5()], which passes it to [tensor_derivatives()].
+#' @keywords internal
+deriv5_base <- function(x) {
+  if (has_exact_deriv4(x)) return(4L)
+  m <- S7::method(has_exact_deriv4, S7::S7_class(x))
+  if (!is_class(attr(m, "signature")[[1]], distrib)) return(0L)
+  analytic_order(x, 3L)
 }
 
 
@@ -479,8 +413,8 @@ numerical_deriv5 <- function(distrib, y, theta, scale = c("parameter", "link"),
 #'
 #' @description
 #' The route that a family takes at the fifth order when it registers no
-#' method of its own: one central difference of the fourth, through
-#' [numerical_deriv5()].
+#' method of its own: one tensor-product difference of its highest analytic
+#' order, through [numerical_deriv5()].
 #'
 #' @details
 #' This is registered on the base class. Ten families write the fifth order

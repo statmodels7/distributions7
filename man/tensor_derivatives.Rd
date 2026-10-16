@@ -4,7 +4,17 @@
 \alias{tensor_derivatives}
 \title{Derivatives by One Stencil on the Highest Analytical Order}
 \usage{
-tensor_derivatives(distrib, y, theta, order, base, h_rel = NULL, skip = NULL)
+tensor_derivatives(
+  distrib,
+  y,
+  theta,
+  order,
+  base,
+  h_rel = NULL,
+  skip = NULL,
+  scale = c("parameter", "link"),
+  accuracy = 4L
+)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
@@ -15,12 +25,18 @@ tensor_derivatives(distrib, y, theta, order, base, h_rel = NULL, skip = NULL)
 
 \item{order}{The order of the derivatives, a whole number above \code{base}.}
 
-\item{base}{The highest order the family implements itself, 0 to 3.}
+\item{base}{The highest order the family implements itself, 0 to 4.}
 
 \item{h_rel}{\code{NULL}, the default, for the step above, or a relative step
-that replaces \eqn{\varepsilon^{1/(r+2)}}.}
+that replaces \eqn{\varepsilon^{1/(r+a)}}.}
 
 \item{skip}{Character vector of component names left \code{NULL}, or \code{NULL}.}
+
+\item{scale}{\code{"parameter"} or \code{"link"}, the scale of the coordinates and
+of the result.}
+
+\item{accuracy}{The order of accuracy of the one-dimensional stencils,
+passed to \code{\link[numericals7:fd_tensor]{numericals7::fd_tensor()}}.}
 }
 \value{
 A named list of component vectors, keyed as
@@ -29,38 +45,34 @@ A named list of component vectors, keyed as
 \description{
 Computes the derivative components of order \code{order} of the log-density
 from the highest order the family implements itself: the log-density
-(\code{base = 0}), the score (\code{base = 1}), the Hessian (\code{base = 2}) or the third
-order (\code{base = 3}). Each component is a single central difference of order
-\code{order - base}, never a difference of a difference.
+(\code{base = 0}), the score (\code{base = 1}), the Hessian (\code{base = 2}), the third
+order (\code{base = 3}) or the fourth (\code{base = 4}). Each component is a single
+tensor-product central difference of order \code{order - base}, never a
+difference of a difference.
 }
 \details{
-A component is a multiset of parameters: \eqn{(\mu, \mu, \phi)} is
+The computation is \code{\link[numericals7:fd_tensor]{numericals7::fd_tensor()}} over the coordinates
+\eqn{\theta_1, \dots, \theta_p}, with the log-density as the function and
+the derivatives of order \code{base} declared as the known quantity. A component
+is a multiset of parameters: \eqn{(\mu, \mu, \phi)} is
 \eqn{\partial^3\ell / \partial\mu^2\partial\phi}. \code{base} of its indices
 select the analytical component that is differenced, taken from the
-parameters that occur most often so that no direction carries a high-order
-stencil while another carries none; the remaining multiplicities
-\eqn{r_1, \dots, r_p} are the orders of the difference in each direction.
-The stencil is the tensor product of one-dimensional central stencils, the
-one for direction \eqn{j} being \code{\link[numericals7:fd_weights]{numericals7::fd_weights()}} of order
-\eqn{r_j} at second-order accuracy, so the component is
-\deqn{\sum_{k_1, \dots, k_p} \Bigl(\prod_j w^{(r_j)}_{k_j} / h_j^{r_j}\Bigr)
-  f(\theta_1 + k_1 h_1, \dots, \theta_p + k_p h_p),}
-a single linear combination of values of the base component \eqn{f}. It
-differentiates each parameter only once, however many times that parameter
-occurs, which is what separates it from differencing a Hessian that is
-itself a difference.
+parameters that occur most often, and the remaining multiplicities are the
+orders of the one-dimensional central stencils whose tensor product is
+applied to it. Each parameter is differentiated only once, however many
+times it occurs.
 
-The step is \eqn{h_j = \varepsilon^{1/(r+2)}\max(1, |\theta_j|)}, with
-\eqn{r = \sum_j r_j} the total order of the difference: rounding grows as
-\eqn{\varepsilon/h^r} and the truncation of a second-order stencil as
-\eqn{h^2}, and the two balance there. The step is clamped so that the
-widest stencil of that order stays inside the parameter's bounds. Every
-component of one order uses the same steps, so a point shared by several
-components is evaluated once.
+The step in \eqn{\theta_j} is
+\eqn{h_j = \varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with
+\eqn{r = } \code{order - base} the order of the difference and \eqn{a} the
+accuracy, reduced so that every node stays inside the parameter's bounds.
+On the link scale the coordinates are the linear predictors
+\eqn{\eta_j}, the bounds are those of the links, and the known quantity is
+read on the link scale, so the result is the derivative of a link-scale
+quantity.
 }
 \seealso{
-\code{\link[=analytic_order]{analytic_order()}} for how \code{base} is found; \code{\link[=numerical_deriv3]{numerical_deriv3()}}
-and \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which call this for a family without its own
-Hessian.
+\code{\link[=analytic_order]{analytic_order()}} for how \code{base} is found; \code{\link[=numerical_deriv3]{numerical_deriv3()}},
+\code{\link[=numerical_deriv4]{numerical_deriv4()}} and \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which call this.
 }
 \keyword{internal}

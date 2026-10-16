@@ -22,8 +22,8 @@ A named list of fifth-derivative component vectors, each of length
 }
 \description{
 The route that a family takes at the fifth order when it registers no
-method of its own: one central difference of the fourth, through
-\code{\link[=numerical_deriv5]{numerical_deriv5()}}.
+method of its own: one tensor-product difference of its highest analytic
+order, through \code{\link[=numerical_deriv5]{numerical_deriv5()}}.
 }
 \details{
 This is registered on the base class. Ten families write the fifth order

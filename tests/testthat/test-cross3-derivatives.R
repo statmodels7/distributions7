@@ -54,7 +54,10 @@ test_that("a family with no identity takes the difference and answers", {
   expect_named(got, d@params)
   expect_true(all(vapply(got, function(v) all(is.finite(v)), logical(1))))
   expect_true(all(lengths(got) == length(y)))
-  expect_identical(got, numerical_cross3_y(d, y, th))
+  # the route is the tensor stencil, and it agrees with the separate
+  # first-difference reference
+  expect_identical(got, mixed_tensor_derivatives(d, y, th, 3L, 1L))
+  expect_equal(got, numerical_cross3_y(d, y, th), tolerance = 1e-8)
 })
 
 test_that("the link scale is the first-order diagonal chain rule", {

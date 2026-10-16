@@ -132,14 +132,14 @@ test_that("the components are the order-5 enumeration and nothing else", {
 
 
 test_that("a higher-accuracy rule agrees, which is what check_distrib asks", {
-  # Two rules from numericals7, five nodes against three, sharing only their
-  # centre. This is the reference check_distrib() uses, R/ not being allowed
-  # to name numDeriv.
+  # Two rules from numericals7, the sixth-order one against the default
+  # fourth-order one. This is the reference check_distrib() uses, R/ not
+  # being allowed to name numDeriv.
   for (nm in names(d5_cases())) {
     cs <- d5_cases()[[nm]]
-    a2 <- distrib_deriv5(cs$d, cs$y, cs$th)
-    a4 <- numerical_deriv5(cs$d, cs$y, cs$th, accuracy = 4L)
-    expect_lt(rel5(a2, a4), 1e-6, label = nm)
+    a4 <- distrib_deriv5(cs$d, cs$y, cs$th)
+    a6 <- numerical_deriv5(cs$d, cs$y, cs$th, accuracy = 6L)
+    expect_lt(rel5(a4, a6), 1e-6, label = nm)
   }
 })
 
@@ -147,8 +147,9 @@ test_that("a higher-accuracy rule agrees, which is what check_distrib asks", {
 test_that("the stencil comes from numericals7 and not from a written-out quotient", {
   # The nodes, the weights and the step are the library's, so raising the
   # accuracy is an argument rather than new arithmetic. Reconstructing the
-  # default rule from numericals7 by hand must reproduce numerical_deriv5()
-  # exactly (the gaussian has a closed fifth order of its own since 0.77.0).
+  # second-order rule from numericals7 by hand must reproduce
+  # numerical_deriv5() exactly (the gaussian has a closed fifth order of its
+  # own since 0.77.0).
   d <- gaussian1_distrib()
   th <- list(mu = 0.3, sigma = 1.2)
   y <- c(-1.3, -0.2, 0.4, 1.1)
@@ -163,7 +164,7 @@ test_that("the stencil comes from numericals7 and not from a written-out quotien
     th2$sigma <- th$sigma + s[j] * h
     acc <- acc + w[j] * distrib_deriv4(d, y, th2)[["sigma_sigma_sigma_sigma"]]
   }
-  expect_equal(numerical_deriv5(d, y, th)[["sigma_sigma_sigma_sigma_sigma"]],
+  expect_equal(numerical_deriv5(d, y, th, accuracy = 2L)[["sigma_sigma_sigma_sigma_sigma"]],
                acc / h, tolerance = 1e-14)
 })
 

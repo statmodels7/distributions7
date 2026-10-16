@@ -9,7 +9,7 @@ analytic_order(distrib, upto)
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
 
-\item{upto}{The highest order to look for, 1 to 3.}
+\item{upto}{The highest order to look for, 1 to 4.}
 }
 \value{
 An integer from 0 to \code{upto}.
@@ -17,9 +17,9 @@ An integer from 0 to \code{upto}.
 \description{
 Returns the highest order, up to \code{upto}, at which the family registers its
 own method: 0 for a family with a density alone, 1 with a score, 2 with a
-Hessian, 3 with third derivatives. A method inherited from one of the
-package's base classes is a numerical fallback and does not count; one
-inherited from a family class does.
+Hessian, 3 with third derivatives, 4 with fourth derivatives. A method
+inherited from one of the package's base classes is a numerical fallback
+and does not count; one inherited from a family class does.
 }
 \seealso{
 \code{\link[=tensor_derivatives]{tensor_derivatives()}}, which differences that order.

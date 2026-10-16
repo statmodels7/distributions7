@@ -75,8 +75,9 @@ difference stays below 6).
 \code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}},
 \code{\link[=numerical_deriv3]{numerical_deriv3()}} and \code{\link[=numerical_deriv4]{numerical_deriv4()}}.
 \item \strong{deriv5}, when \code{5} is among \code{orders}: \code{\link[=distrib_deriv5]{distrib_deriv5()}} against
-\code{\link[=numerical_deriv5]{numerical_deriv5()}} at a higher accuracy, five stencil nodes instead of
-three. For a family that reaches the numerical fifth order the row checks
+\code{\link[=numerical_deriv5]{numerical_deriv5()}} at a higher accuracy, the sixth-order rule (six
+evaluations of the fourth order per parameter) in place of the default
+fourth-order one. For a family that reaches the numerical fifth order the row checks
 the differencing; for a family that registers its own \code{\link[=distrib_deriv5]{distrib_deriv5()}}
 it checks that method. It is emitted only where \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} is
 \code{TRUE}: where the fourth order is itself a fallback the fifth is a
