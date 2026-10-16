@@ -333,7 +333,7 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta, ...) {
 #'   + \dfrac{(\nu+1)r^2}{\nu D}
 #'   - \log\!\left(1 + \dfrac{r^2}{\nu\sigma^2}\right)\right].}
 #'
-#' The location component **redescends**: it rises to \eqn{(\nu+1)/(2\sigma\sqrt{\nu})}
+#' The location component redescends: it rises to \eqn{(\nu+1)/(2\sigma\sqrt{\nu})}
 #' at \eqn{|r| = \sigma\sqrt{\nu}} and falls back towards zero beyond it, so a
 #' gross outlier contributes almost nothing to the estimating equation. A
 #' Gaussian's location score \eqn{r/\sigma^2} grows linearly in \eqn{r}.
@@ -350,7 +350,7 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta, ...) {
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -425,7 +425,7 @@ S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, sc
 #'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \nu} = \dfrac{r\left(r^2 - \sigma^2\right)}{D^2}, \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu} = \dfrac{r^2\left(r^2 - \sigma^2\right)}{\sigma D^2}.}
 #'
-#' The curvature in \eqn{\mu} **turns positive** wherever \eqn{|r| >
+#' The curvature in \eqn{\mu} turns positive wherever \eqn{|r| >
 #' \sigma\sqrt{\nu}}, the same point at which the score peaks, so the observed
 #' information is indefinite in that direction at an outlying observation while
 #' its expectation is negative definite everywhere.
@@ -439,7 +439,7 @@ S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, sc
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -498,7 +498,7 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.}
 #'
-#' The location is **orthogonal** to both other parameters: the two mixed
+#' The location is orthogonal to both other parameters: the two mixed
 #' entries containing \eqn{\mu} are exactly zero, the law being symmetric about
 #' \eqn{\mu} while the other two components are even in \eqn{r}. So
 #' \eqn{\hat\mu} is asymptotically independent of \eqn{\hat\sigma} and
@@ -516,9 +516,9 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being exact. Accepted so that
-#'   the signature matches the generic's, where it selects between
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because the expectation is exact. It is accepted
+#'   so that the signature matches the generic's, where it selects between
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -600,7 +600,7 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx,nsim Accepted for the generic's signature; the expectations
 #'   are closed forms.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -676,7 +676,7 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx,nsim Accepted for the generic's signature; the expectations
 #'   are closed forms.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -823,7 +823,7 @@ S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' The family is a location family, so this equals the pure-location entry of
 #' [distrib_hessian.StudentT1Distrib()], with no sign change; two derivatives
 #' in \eqn{\mu} carry two factors of \eqn{-1}. It is negative near the mode and
-#' **positive** beyond \eqn{|r| = \sigma\sqrt{\nu}}, so the log-density is not
+#' positive beyond \eqn{|r| = \sigma\sqrt{\nu}}, so the log-density is not
 #' concave in the response, unlike a Gaussian's.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
@@ -908,7 +908,7 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' quantile function \eqn{Q(p) = \mu + \sigma T_\nu^{-1}(p)}, with \eqn{T_\nu}
 #' the standard Student t distribution function.
 #'
-#' \eqn{\sigma} is the **scale** and not the standard deviation, which is
+#' \eqn{\sigma} is the scale and not the standard deviation, which is
 #' \eqn{\sigma\sqrt{\nu/(\nu-2)}} and exists only above \eqn{\nu = 2}. Keeping
 #' the two apart lets the family be fitted where the second moment does not
 #' exist; [student_t2_distrib()] is the parametrization by the standard
@@ -944,7 +944,7 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' \eqn{(\nu+1)/(2\sigma\sqrt{\nu})} at \eqn{|r| = \sigma\sqrt{\nu}} and falls
 #' back towards zero, so an observation far from the location is downweighted
 #' automatically. The price is that the curvature in \eqn{\mu} turns
-#' **positive** past the same point, so the observed information is indefinite
+#' positive past the same point, so the observed information is indefinite
 #' at an outlying observation. Fisher scoring is unaffected, the expected
 #' information being negative definite everywhere, which is why it is the
 #' default in [fit_distrib()].

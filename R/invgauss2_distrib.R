@@ -308,7 +308,7 @@ S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta, ...) {
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{2\lambda}
 #'         - \dfrac{(y-\mu)^2}{2\mu^2 y}.}
-#' The log-density is **linear in the shape** apart from
+#' The log-density is linear in the shape apart from
 #' \eqn{\tfrac12\log\lambda}. Every derivative of this family is elementary for
 #' that reason, and every expectation reduces to
 #' \eqn{\mathbb{E}[Y] = \mu} and \eqn{\mathbb{E}[(Y-\mu)^2/Y] = \mu^2/\lambda}.
@@ -325,7 +325,7 @@ S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -391,7 +391,7 @@ S7::method(distrib_gradient, InvGauss2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -467,10 +467,10 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's, where it selects between the Bartlett,
-#'   quadrature, Monte Carlo and outer-product routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's, where it selects between the
+#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -483,9 +483,9 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #'   when the parameters are.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The inverse
+#' expectation of the observed information under the model. The inverse
 #' Gaussian is a regular family, so the second Bartlett identity holds and this
 #' equals the variance of the score. \eqn{\lambda} names this family's shape
 #' parameter.
@@ -545,9 +545,9 @@ S7::method(distrib_expected_hessian, InvGauss2Distrib) <- function(distrib, y, t
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -619,9 +619,9 @@ S7::method(distrib_deriv3, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -685,8 +685,7 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #'
 #' The two arguments choose the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
-#' logarithm,
-#' both parameters being positive.
+#' logarithm, because both parameters are positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps
@@ -729,7 +728,7 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #'         -\dfrac{1}{2\lambda^2}.}
 #' The zero off-diagonal makes the mean and the shape orthogonal.
 #'
-#' The log-density is **linear in \eqn{\lambda}** apart from
+#' The log-density is linear in \eqn{\lambda} apart from
 #' \eqn{\tfrac12\log\lambda}, and that shapes every higher order. The pure
 #' shape derivatives are those of the logarithm alone,
 #' \eqn{-1/(2\lambda^2)}, \eqn{1/\lambda^3} and \eqn{-3/\lambda^4}; every

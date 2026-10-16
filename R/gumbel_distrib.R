@@ -6,7 +6,7 @@ NULL
 #'
 #' @description
 #' The S7 class of the Gumbel (type I extreme value) family in the form for
-#' **maxima**, a location-scale family on the whole real line with location
+#' maxima, a location-scale family on the whole real line with location
 #' \eqn{\mu} and scale \eqn{\sigma > 0} and density
 #' \eqn{\sigma^{-1}\exp\{-z - e^{-z}\}} at \eqn{z = (y-\mu)/\sigma}. Its shape
 #' is fixed: the skewness and the excess kurtosis are constants and cannot be
@@ -110,7 +110,7 @@ GumbelDistrib <- S7::new_class("GumbelDistrib", parent = continuous_distrib)
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
-#'   support, so no value is rejected.
+#'   support, so every value is accepted.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
@@ -347,13 +347,13 @@ S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta, ...) {
 #'         \dfrac{z(1 - w) - 1}{\sigma}.}
 #'
 #' The whole family is written in \eqn{w}, and under the model \eqn{w} is
-#' **standard exponential** whatever the parameters. Every expectation of
+#' standard exponential whatever the parameters. Every expectation of
 #' this family is therefore a derivative of \eqn{\Gamma} at 1 or at 2. The
 #' score in \eqn{\mu} is bounded above by \eqn{1/\sigma} and unbounded below,
 #' because a value far to the left makes \eqn{w} large.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries before returning. This method always returns the parameter
 #' scale.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
@@ -362,11 +362,11 @@ S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -429,11 +429,11 @@ S7::method(distrib_gradient, GumbelDistrib) <- function(distrib, y, theta, scale
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, in that order, each of length
@@ -499,7 +499,7 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' \eqn{\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}, with
 #' \eqn{\mathbb{E}[Z] = \gamma}.
 #'
-#' **The mixed entry does not vanish.** The location and the scale are not
+#' The mixed entry does not vanish. The location and the scale are not
 #' orthogonal here, where in a symmetric location-scale family such as the
 #' Gaussian they are, and the reason is that this density is skewed. Their
 #' maximum likelihood estimates are asymptotically correlated.
@@ -513,24 +513,24 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #'   vector of length 1 or of the length of `y`. `mu` is not read. `sigma`
 #'   must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's, where it selects between the Bartlett,
-#'   quadrature, Monte Carlo and outer-product routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's, where it selects between the
+#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, in that order, each of length `length(y)` and constant within
 #'   itself when the parameters are.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The Gumbel is a
+#' expectation of the observed information under the model. The Gumbel is a
 #' regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score. \eqn{\gamma} is the Euler-Mascheroni constant,
 #' \eqn{-\psi(1) \approx 0.5772}.
@@ -592,14 +592,14 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
 #'   `mu_sigma_sigma` and `sigma_sigma_sigma`, each of length
@@ -664,14 +664,14 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_sigma`, `mu_mu_sigma_sigma`, `mu_sigma_sigma_sigma` and
@@ -852,16 +852,16 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' @description
 #' Builds the distribution object for the Gumbel (type I extreme value) family
-#' in the form for **maxima**: a location-scale family on the whole real line
+#' in the form for maxima: a location-scale family on the whole real line
 #' with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
 #' carries closed-form derivatives of the log-density to fifth order in the
 #' parameters and to fourth order in the response, closed-form expectations
 #' to fourth order, and closed-form moments.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. The defaults are the identity for
-#' the location, which ranges over the whole line, and the logarithm for the
-#' scale, which keeps it positive at every predictor.
+#' unconstrained scale on which an optimizer works. The defaults are the
+#' identity for the location, which ranges over the whole line, and the
+#' logarithm for the scale, which keeps it positive at every predictor.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
 #'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
@@ -881,8 +881,8 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' is \eqn{\mu + \gamma\sigma} with \eqn{\gamma} the Euler-Mascheroni
 #' constant, the variance \eqn{\pi^2\sigma^2/6}, the skewness
 #' \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395} and the excess kurtosis
-#' \eqn{12/5}. The last two are constants: **this family has a fixed shape and
-#' only its location and spread can be fitted.** The mode is \eqn{\mu}, the
+#' \eqn{12/5}. The last two are constants: this family has a fixed shape and
+#' only its location and spread can be fitted. The mode is \eqn{\mu}, the
 #' median \eqn{\mu - \sigma\log\log 2}, and the mean is above both.
 #'
 #' The law is the limit of the maximum of a sample from a light-tailed
@@ -909,7 +909,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' Hessian follows in one line, and so do the third and fourth orders, through
 #' \eqn{\mathbb{E}[z^k w] = (-1)^k\Gamma^{(k)}(2)}.
 #'
-#' **The location and the scale are not orthogonal.** The mixed entry of the
+#' The location and the scale are not orthogonal. The mixed entry of the
 #' expected information is \eqn{(1-\gamma)/\sigma^2}, which is about
 #' \eqn{0.4228/\sigma^2} and never zero. In a symmetric location-scale family
 #' such as the Gaussian it vanishes; here the density is skewed and it does
@@ -920,7 +920,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' If \eqn{Y} is Gumbel then \eqn{e^{-Y}} is Weibull, so
 #' [weibull1_distrib()] is this family on the log scale and reversed, and the
 #' two share the expectations that produce their information matrices. For
-#' **minima** the law is the reflection: fit this family to \eqn{-Y}, or use
+#' minima the law is the reflection: fit this family to \eqn{-Y}, or use
 #' [transformation()] with
 #' [`affine_transform(scale = -1)`][affine_transform]. [gpd_distrib()] is the
 #' other limit law of extremes, for exceedances over a threshold in place of

@@ -5,7 +5,7 @@ NULL
 #' @name GeometricDistrib
 #'
 #' @description
-#' The S7 class of the geometric family parametrized by its **mean**
+#' The S7 class of the geometric family parametrized by its mean
 #' \eqn{\mu > 0}: the number of failures before the first success in
 #' independent trials, each succeeding with probability
 #' \eqn{p = 1/(1+\mu)}. It inherits from `discrete_distrib`, so expectations
@@ -218,7 +218,7 @@ S7::method(distrib_cdf, GeometricDistrib) <- function(distrib, q, theta,
 #' \deqn{Q(p; \mu) = \min\{k \in \{0, 1, 2, \dots\} : F(k; \mu) \ge p\},}
 #' by calling [stats::qgeom()] at `prob = 1/(1+mu)`. The distribution function
 #' is a step function, so the round trip through
-#' [distrib_cdf.GeometricDistrib()] returns a probability **at least** `p`.
+#' [distrib_cdf.GeometricDistrib()] returns a probability at least `p`.
 #'
 #' @param distrib A `GeometricDistrib` object, from [geometric_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
@@ -304,7 +304,7 @@ S7::method(distrib_rng, GeometricDistrib) <- function(distrib, n, theta, ...) {
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -365,7 +365,7 @@ S7::method(distrib_gradient, GeometricDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -416,9 +416,9 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -428,9 +428,9 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #'   `max(length(y), length(mu))` and constant at \eqn{-1/(\mu(1+\mu))}.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-#' **observed information** under the model. The geometric is a regular family,
+#' observed information under the model. The geometric is a regular family,
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
@@ -485,8 +485,8 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #'
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2(1 - q^2)/\mu^2} with the same
-#' device. Both routes are closed form, so no quadrature is run and `approx`
-#' and `nsim` are ignored.
+#' device. Both routes are closed form, so the method runs no quadrature and
+#' ignores `approx` and `nsim`.
 #'
 #' The family has one parameter, so there is one component, where a
 #' two-parameter family carries four at this order.
@@ -499,8 +499,8 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -561,8 +561,8 @@ S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expe
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -606,7 +606,7 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #'
 #' @description
 #' Builds the distribution object for the geometric family parametrized by its
-#' **mean** \eqn{\mu > 0}: the number of failures before the first success in
+#' mean \eqn{\mu > 0}: the number of failures before the first success in
 #' independent trials of success probability \eqn{p = 1/(1+\mu)}. The returned
 #' object carries closed-form derivatives of the log-mass to fourth order,
 #' observed and expected, and closed-form moments.
@@ -660,7 +660,7 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #' \eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
 #' with variance \eqn{\mu(1+\mu)}. The success probability is
 #' \eqn{p = 1/(1+\mu)}. Counting starts at zero: \eqn{Y} is the number of
-#' failures **before** the first success, not the number of trials.
+#' failures before the first success, not the number of trials.
 #'
 #' @return An S7 object of class `GeometricDistrib`, inheriting from
 #'   `discrete_distrib`, with `distrib_name` `"geometric"`, `dimension`

@@ -484,8 +484,8 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #'   positive.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx Ignored: the expectation is closed form. Accepted so that the
-#'   signature matches the generic's.
+#' @param approx Ignored: the expectation is closed form. It is accepted so that
+#'   the signature matches the generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
@@ -591,7 +591,7 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'       \dfrac{\partial\ell}{\partial d} = L - \dfrac{\psi(k)}{p}, \qquad
 #'       \dfrac{\partial\ell}{\partial p} = \dfrac{1}{p}
 #'         + \dfrac{d\psi(k)}{p^{2}} - wL,}
-#' and the expected information is **closed form**, because
+#' and the expected information is closed form, because
 #' \eqn{u = (Y/a)^p} is Gamma with
 #' shape \eqn{k} and unit rate, so every expectation the Hessian needs is one
 #' of \eqn{E[u] = k}, \eqn{E[u\log u] = k\psi(k+1)} and
@@ -607,7 +607,7 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'
 #' # Identification
 #'
-#' The three parameters are **weakly identified together**: \eqn{d} and \eqn{p}
+#' The three parameters are weakly identified together: \eqn{d} and \eqn{p}
 #' enter the density largely through their ratio, and the profile likelihood in
 #' that direction is flat (at \eqn{a = 2, d = 3, p = 1.5} the eigenvalues of
 #' the information are 4.72, 0.138 and 0.00321, with the flat direction

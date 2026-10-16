@@ -54,7 +54,7 @@ NULL
 #'       -(a+b+j)\,c_j r^j G^{(a+j)} - c_j r^{j+1} G^{(a+j+1)},}
 #' because \eqn{\mathrm{d}r/\mathrm{d}\theta = -r/\theta} contributes to both
 #' the power of \eqn{r} and the order of \eqn{G}. The coefficients are
-#' integers, and the recursion is **run rather than solved**, so every order is
+#' integers, and the recursion is run rather than solved, so every order is
 #' exact with nothing transcribed beyond this one step.
 #'
 #' # The cancellation the polygamma differences carry
@@ -278,7 +278,7 @@ nb1_components_exact <- function(y, mu, th, order) {
 #' @name distrib_deriv3.NegBin1Distrib
 #' @description
 #' Computes the four distinct third derivatives of the NB1 log-likelihood in
-#' the mean \eqn{\mu} and the dispersion \eqn{\theta}, **in closed form**,
+#' the mean \eqn{\mu} and the dispersion \eqn{\theta}, in closed form,
 #' through [negbin1_components()]. In the size \eqn{r = \mu/\theta} the
 #' log-likelihood is \eqn{G(r) + rB(\theta) + C(\theta)}, so the only composite
 #' piece is \eqn{G(\mu/\theta)}, and its mixed derivatives follow a recursion
@@ -299,7 +299,7 @@ nb1_components_exact <- function(y, mu, th, order) {
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
 #'   or `"opg"`. Read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
@@ -364,7 +364,7 @@ S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
 #' @name distrib_deriv4.NegBin1Distrib
 #' @description
 #' Computes the five distinct fourth derivatives of the NB1 log-likelihood in
-#' \eqn{\mu} and \eqn{\theta}, **in closed form**, by the construction
+#' \eqn{\mu} and \eqn{\theta}, in closed form, by the construction
 #' [distrib_deriv3.NegBin1Distrib()] describes carried one order further: the
 #' same coefficient recursion over the powers of \eqn{r = \mu/\theta} and the
 #' order of \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.
@@ -382,7 +382,7 @@ S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
 #'   or `"opg"`. Read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when

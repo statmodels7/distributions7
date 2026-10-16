@@ -75,7 +75,7 @@ NULL
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, location first and scale second.
 #' @param order `1` for the block of [distrib_grad_y()], `2` for that of
-#'   [distrib_hess_y()]. Default `1`.
+#'   [distrib_hess_y()]. The default is `1`.
 #'
 #' @return A named list of three numeric vectors, keyed `mu_mu`,
 #'   `sigma_sigma` and `mu_sigma` under the family's own parameter names.

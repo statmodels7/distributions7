@@ -1087,9 +1087,9 @@ S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, s
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored: the delegation is exact. Present so that the
-#'   signature matches the generic's. Note that it is not forwarded, so a
-#'   parent whose OWN expected Hessian is approximate takes its own default.
+#' @param approx Ignored: the delegation is exact. It is present so that the
+#'   signature matches the generic's. Note that it is not forwarded, so a parent
+#'   whose OWN expected Hessian is approximate takes its own default.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'

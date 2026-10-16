@@ -94,7 +94,7 @@ BetaBinom2Distrib <- S7::new_class("BetaBinom2Distrib",
 #'       - \log\Gamma(a) - \log\Gamma(b) + \log\Gamma(a+b)}
 #' up to a term free of the parameters. A derivative in \eqn{a} alone
 #' differentiates the first, third, fourth and sixth terms; one in \eqn{b}
-#' alone the second, third, fifth and sixth; a **mixed** one only the two
+#' alone the second, third, fifth and sixth; a mixed one only the two
 #' terms carrying \eqn{a+b}, which is why a mixed component of any order is
 #' \eqn{-\psi^{(k)}(n+a+b) + \psi^{(k)}(a+b)} and free of the data.
 #'
@@ -321,7 +321,7 @@ S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = 
 #' \eqn{\varepsilon} times the larger magnitude. That route is used only while
 #' the error stays below `1e-8`.
 #'
-#' Beyond it the shifts \eqn{y}, \eqn{n-y} and \eqn{n} are **integers**, so
+#' Beyond it the shifts \eqn{y}, \eqn{n-y} and \eqn{n} are integers, so
 #' each log-gamma difference is an exact sum of logarithms,
 #' \deqn{\log\Gamma(\alpha+y) - \log\Gamma(\alpha) =
 #'       \sum_{j=0}^{y-1}\log(\alpha+j),}
@@ -380,7 +380,7 @@ betabinom_log_mass <- function(y, a, b, n) {
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
 #' @param n A single positive integer, the number of draws. Note that the
-#'   number of **trials** is the object's `size` property, not this argument.
+#'   number of trials is the object's `size` property, not this argument.
 #' @param theta A named list with components `alpha` and `beta`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   Both must be strictly positive.
@@ -425,8 +425,8 @@ S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta, ...) {
 #' form [betabinom1_distrib()] uses, so that the score keeps its digits as the
 #' shapes grow.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries before returning. This method always returns the parameter
 #' scale; the transformation happens in the generic.
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
@@ -435,7 +435,7 @@ S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, the number of threads the
 #'   compiled kernel may use. Defaults to `1L`.
@@ -496,7 +496,7 @@ S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' \deqn{\dfrac{\partial^2\ell}{\partial\alpha^2}
 #'         = \psi_1(y+\alpha) - \psi_1(\alpha)
 #'           - \psi_1(n+S) + \psi_1(S), \qquad S = \alpha+\beta,}
-#' and the same with \eqn{n-y} and \eqn{\beta}. The **mixed** component keeps
+#' and the same with \eqn{n-y} and \eqn{\beta}. The mixed component keeps
 #' only the shared term,
 #' \eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the log-mass
 #' separately otherwise, so it does not depend on the data at all and equals
@@ -509,7 +509,7 @@ S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, the number of threads the
 #'   compiled kernel may use. Defaults to `1L`.
@@ -556,7 +556,7 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' Returns the expectation of the observed Hessian under the model,
 #' \eqn{\sum_{k=0}^{n} P(Y=k)\,\partial^2\ell/\partial\theta_i\partial\theta_j}
 #' evaluated at \eqn{y = k}. The family being discrete on
-#' \eqn{\{0, \dots, n\}}, that is an **exact finite sum** of at most \eqn{n+1}
+#' \eqn{\{0, \dots, n\}}, that is an exact finite sum of at most \eqn{n+1}
 #' terms, so the answer is the expectation to machine precision. `approx` and
 #' `nsim` are therefore ignored: every strategy returns the same three
 #' numbers.
@@ -571,10 +571,10 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being an exact sum. Accepted so
-#'   that the signature matches the generic's, where it selects between
-#'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, the expectation being an exact sum. It is
+#'   accepted so that the signature matches the generic's, where it selects
+#'   between `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, the number of threads the
@@ -689,7 +689,7 @@ betabinom2_expected <- function(distrib, y, theta, order,
 #' with \eqn{c_K = (-1)^{K-1}(K-1)!}, whose terms have one sign
 #' ([betabinom_direct()]).
 #'
-#' With `expected = TRUE` the expectation is an **exact finite sum** over the
+#' With `expected = TRUE` the expectation is an exact finite sum over the
 #' support, so `approx` and `nsim` are ignored on both branches.
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
@@ -702,9 +702,9 @@ betabinom2_expected <- function(distrib, y, theta, order,
 #'   the model is returned in place of the value at the data. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, both branches being exact. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because both branches are exact. It is accepted
+#'   so that the signature matches the generic's.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -754,7 +754,7 @@ S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' the same sum of terms with \eqn{\psi_3}, the third polygamma, in place of
 #' \eqn{\log\Gamma}, and the direct sums where \eqn{\alpha+\beta > 10}.
 #'
-#' With `expected = TRUE` the expectation is an **exact finite sum** over the
+#' With `expected = TRUE` the expectation is an exact finite sum over the
 #' support, so `approx` and `nsim` are ignored on both branches.
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
@@ -767,9 +767,9 @@ S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #'   the model is returned in place of the value at the data. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, both branches being exact. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because both branches are exact. It is accepted
+#'   so that the signature matches the generic's.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -858,7 +858,7 @@ S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' [betabinom2_derivs()]. A component naming both shapes keeps only the terms
 #' in \eqn{S} and is therefore free of the data at every order.
 #'
-#' Every expectation is an **exact finite sum** over \eqn{\{0, \dots, n\}}:
+#' Every expectation is an exact finite sum over \eqn{\{0, \dots, n\}}:
 #' the support is bounded, so there is nothing to integrate over.
 #'
 #' # The cancellation at a large concentration

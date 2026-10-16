@@ -43,8 +43,8 @@ NULL
 #' keyed by [dexpected_names()] rather than by the sorted triples
 #' [deriv_names()] uses at order three.
 #'
-#' **The default method differences the family's own expected
-#' information**, one central stencil per parameter, which is a single
+#' The default method differences the family's own expected
+#' information, one central stencil per parameter, which is a single
 #' difference of an analytic quantity wherever that quantity is a written-out
 #' formula. Where it is not, the method signals an error: see
 #' [has_exact_expected_hessian()].
@@ -187,8 +187,8 @@ dexpected_key <- function(params, a, b, k) {
 #' scale the domain is the whole line and no clamp is needed, so the step is
 #' the plain relative one.
 #'
-#' **The method signals an error where the expected information is itself an
-#' approximation.** Where the expected information is obtained by quadrature
+#' The method signals an error where the expected information is itself an
+#' approximation. Where the expected information is obtained by quadrature
 #' or by simulation, the result would be a difference of a difference, which
 #' the package does not compute anywhere, and it would cost 2p of the most
 #' expensive call that the family has.
@@ -298,7 +298,7 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
 #' information; the components are symmetric in \eqn{(a,b)} and in \eqn{(c,d)}
 #' separately, and are keyed by [d2expected_names()].
 #'
-#' **There is no numerical default.** A difference of
+#' There is no numerical default. A difference of
 #' [distrib_dexpected_hessian()], whose own default is already a difference,
 #' would be the nested differencing that the package does not use, so the base
 #' method signals an error and a family that does not register one has no

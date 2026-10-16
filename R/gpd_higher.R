@@ -62,7 +62,7 @@ NULL
 #' \deqn{W = \sum_{k \ge 0} \frac{(-1)^k \xi^k z^{k+1}}{k+1},}
 #' differentiated term by term.
 #'
-#' The threshold is on \eqn{\lvert\xi z\rvert} and **not** on \eqn{\xi}. At
+#' The threshold is on \eqn{\lvert\xi z\rvert} and not on \eqn{\xi}. At
 #' order \eqn{b} the Leibniz terms are of size \eqn{z\xi^{-b}} against an answer
 #' of size \eqn{z^{b+1}}, so the relative cancellation is
 #' \eqn{(\xi z)^{-b}} and the accuracy is \eqn{\varepsilon(\xi z)^{-b}}, which
@@ -75,7 +75,7 @@ NULL
 #'
 #' The two elementwise powers the sum appears to need are algebraically one:
 #' with \eqn{u = \xi z}, \eqn{\xi^{k-b}z^{k+1} = u^{k-b}z^{b+1}}, so
-#' \eqn{z^{b+1}/\sigma^a} leaves the sum and what remains is a **polynomial in**
+#' \eqn{z^{b+1}/\sigma^a} leaves the sum and what remains is a polynomial in
 #' \eqn{u} whose coefficients are scalar in \eqn{k}. `gpd_poly_cpp()` evaluates
 #' it by Horner from the highest power down, which sums a decaying series
 #' smallest first. Each branch also runs on its own elements only, so a sample

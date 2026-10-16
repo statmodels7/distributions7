@@ -1409,7 +1409,7 @@ S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, th
 #' \eqn{\ell} the log-density of one observation.
 #'
 #' @seealso [distrib_grad_y.ZeroAdjustedContinuousDistrib()] and
-#'   [distrib_hess_y.ZeroAdjustedContinuousDistrib()], the two methods it
+#'   [distrib_hess_y.ZeroAdjustedContinuousDistrib()], the two methods that it
 #'   serves.
 #'
 #' @keywords internal

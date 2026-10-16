@@ -14,7 +14,7 @@ NULL
 #' count model most often has to relax; [negbin2_distrib()] and
 #' [negbin1_distrib()] do that, and both contain this family in the limit.
 #'
-#' The default link is the logarithm, which is the **canonical** link here. On
+#' The default link is the logarithm, which is the canonical link here. On
 #' its scale the observed and the expected information coincide in exact
 #' arithmetic, so Fisher scoring and Newton's method take the same step.
 #'
@@ -194,7 +194,7 @@ S7::method(distrib_cdf, PoissonDistrib) <- function(distrib, q, theta, lower.tai
 #' \deqn{Q(p; \mu) = \min\{k \in \{0, 1, 2, \dots\} : F(k; \mu) \ge p\},}
 #' by calling [stats::qpois()]. The distribution function is a step function,
 #' so its inverse is a step function too and the round trip through
-#' [distrib_cdf.PoissonDistrib()] returns a probability **at least** `p`, not
+#' [distrib_cdf.PoissonDistrib()] returns a probability at least `p`, not
 #' `p` itself.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
@@ -287,7 +287,7 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta, ...) {
 #' The log-mass is \eqn{y\log\mu - \mu - \log y!}, so the score is the residual
 #' divided by the mean and its sum vanishes exactly at \eqn{\hat\mu = \bar y}.
 #'
-#' On the **link** scale with the default logarithm the generic's chain rule
+#' On the link scale with the default logarithm the generic's chain rule
 #' gives \eqn{\partial\ell/\partial\eta = y - \mu}, the raw residual: the log
 #' is the canonical link of this family and the score there is the sufficient
 #' statistic minus its mean.
@@ -297,7 +297,7 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta, ...) {
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -309,7 +309,7 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta, ...) {
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
 #' which is also the variance. \eqn{\eta = \log\mu} is the parameter on the
-#' link scale. A **canonical** link is the one for which the log-mass is linear
+#' link scale. A canonical link is the one for which the log-mass is linear
 #' in the sufficient statistic times \eqn{\eta}.
 #'
 #' @seealso [distrib_hessian.PoissonDistrib()] for the second derivative,
@@ -349,7 +349,7 @@ S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scal
 #' once per power, and a zero count contributes zero, so the value at
 #' \eqn{y = 0} stays zero however small \eqn{\mu} is.
 #'
-#' On the **link** scale with the default logarithm the chain rule gives
+#' On the link scale with the default logarithm the chain rule gives
 #' \eqn{\partial^2\ell/\partial\eta^2 = -\mu}, which carries no data; this
 #' is the defining property of a canonical link, and in exact arithmetic it
 #' makes the observed and the expected information the same matrix there (see
@@ -367,7 +367,7 @@ S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scal
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -413,7 +413,7 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' error of \eqn{\hat\mu} is \eqn{\sqrt{\mu/n}}, the standard error of a
 #' sample mean whose variance is \eqn{\mu}.
 #'
-#' On the **link** scale with the default logarithm the value is \eqn{-\mu},
+#' On the link scale with the default logarithm the value is \eqn{-\mu},
 #' and so is the observed Hessian in exact arithmetic: the log is the canonical
 #' link and the observed curvature there carries no data. Fisher scoring and
 #' Newton's method therefore take the same step on a Poisson model with a log
@@ -431,9 +431,9 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -443,9 +443,9 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #'   `max(length(y), length(mu))` and constant at \eqn{-1/\mu}.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-#' **observed information** under the model. The Poisson is a regular family,
+#' observed information under the model. The Poisson is a regular family,
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
@@ -527,9 +527,9 @@ S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, t
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected value.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected value.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -589,9 +589,9 @@ S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expect
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected value.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected value.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -641,7 +641,7 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' integers. The returned object carries closed-form derivatives of the
 #' log-mass to fourth order, observed and expected, and closed-form moments.
 #'
-#' The family is **equidispersed**: its variance equals its mean at every
+#' The family is equidispersed: its variance equals its mean at every
 #' parameter value. Real counts are usually more variable than that, so a
 #' Poisson fit is often the null a count analysis argues against;
 #' [negbin2_distrib()] and [negbin1_distrib()] add a dispersion parameter and
@@ -649,7 +649,7 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps
-#'   \eqn{(0, \infty)} onto the line and is the **canonical** link of this
+#'   \eqn{(0, \infty)} onto the line and is the canonical link of this
 #'   family.
 #'
 #' @details
@@ -694,7 +694,7 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
 #' which is also the variance. \eqn{\eta = \log\mu} is the parameter on the
-#' link scale. The **canonical** link of an exponential family is the one that
+#' link scale. The canonical link of an exponential family is the one that
 #' makes the log-mass linear in the sufficient statistic.
 #'
 #' @return An S7 object of class `PoissonDistrib`, inheriting from

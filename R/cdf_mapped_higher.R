@@ -68,7 +68,7 @@ chain_cdf_deriv_k <- function(parent, q, th_par, maps, new_params, order) {
 #' The body that every mapped family registers at orders 3 and 4, at 2 as well
 #' where its written-out route stops at the gradient, and at every order for
 #' the centered skew normal. It tests whether the parent's cdf derivatives
-#' are exact at **every** order up to the one wanted, takes
+#' are exact at every order up to the one wanted, takes
 #' [chain_cdf_deriv_k()] if they are, and falls back to [cdf_tables()] on the
 #' new family's own cdf if they are not.
 #'
@@ -95,8 +95,10 @@ chain_cdf_deriv_k <- function(parent, q, th_par, maps, new_params, order) {
 #' @param q A numeric vector of quantiles, on the new family's own scale.
 #' @param theta A named list of the new parameters.
 #' @param order The derivative order, 1 to 4.
-#' @param lower.tail Is the lower tail wanted? A single logical.
-#' @param log Are derivatives of the log probability wanted? A single logical.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
+#' @param log A single logical; `TRUE` selects the derivatives of the log
+#'   probability and `FALSE` those of the probability.
 #' @param q_par The quantiles on the parent's scale. `q` by default, and
 #'   `log(q)` for a lognormal.
 #' @param zero `NULL`, the default, or a logical vector along `q` marking the
@@ -235,10 +237,10 @@ register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
 #' @param distrib A `ReparamContinuousDistrib`, from [reparametrize()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the new parameters, on the new parameter scale.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return For `distrib_deriv3_cdf()`, a named list of third-derivative

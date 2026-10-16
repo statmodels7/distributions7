@@ -210,7 +210,7 @@ S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tai
 #'       \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
 #' by calling [stats::qnbinom()] at `size = theta` and `mu = mu`. The support
 #' is discrete, so the round trip through
-#' [distrib_cdf.NegBin2Distrib()] does **not** return `p`: it returns the mass
+#' [distrib_cdf.NegBin2Distrib()] does not return `p`: it returns the mass
 #' up to the smallest integer whose cumulative probability reaches `p`, which
 #' overshoots.
 #'
@@ -323,7 +323,7 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' # The dispersion at large theta
 #'
-#' The dispersion component is **not** computed as written above. As
+#' The dispersion component is not computed as written above. As
 #' \eqn{\theta} grows the family tends to the Poisson and this derivative
 #' vanishes, its three terms canceling to leading order:
 #' \eqn{\psi(y+\theta) - \psi(\theta)} is \eqn{y/\theta},
@@ -331,7 +331,7 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #' \eqn{(\mu-y)/\theta}, and the three sum to zero, so the value is
 #' \eqn{O(\theta^{-2})} computed from terms of size \eqn{\theta^{-1}}. Written
 #' directly it is wrong by about one part in a thousand at \eqn{\theta = 10^6}
-#' and **changes sign** at \eqn{10^8}.
+#' and changes sign at \eqn{10^8}.
 #'
 #' The kernel performs each cancellation symbolically instead. With
 #' \eqn{a = \theta}, \eqn{b = \theta + y}, \eqn{c = \theta + \mu} and
@@ -345,8 +345,8 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #' nearly equidispersed, because the estimate of \eqn{\theta} then grows
 #' without bound.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries before returning. This method always returns the parameter
 #' scale.
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
@@ -355,7 +355,7 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -432,7 +432,7 @@ S7::method(distrib_gradient, NegBin2Distrib) <- function(distrib, y, theta, scal
 #' The dispersion entry cancels at large \eqn{\theta} for the same reason the
 #' score does, and the kernel handles it the same way. Here the collapse is
 #' better than a series: with \eqn{a = \theta}, \eqn{b = \theta + y} and
-#' \eqn{c = \theta + \mu} the three leading terms combine **exactly**,
+#' \eqn{c = \theta + \mu} the three leading terms combine exactly,
 #' \deqn{-\dfrac{y}{ab} + \dfrac{\mu}{ac} + \dfrac{y-\mu}{c^2}
 #'       = \dfrac{(y-\mu)^2}{b\,c^2},}
 #' so what is computed is that quotient plus the remainder
@@ -447,7 +447,7 @@ S7::method(distrib_gradient, NegBin2Distrib) <- function(distrib, y, theta, scal
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -534,10 +534,10 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx Ignored. The mean and mixed entries are closed form and the
-#'   dispersion entry is a truncated exact sum. Accepted so that the signature
-#'   matches the generic's.
+#'   dispersion entry is a truncated exact sum. It is accepted so that the
+#'   signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -550,9 +550,9 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'   when the parameters are.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The negative
+#' expectation of the observed information under the model. The negative
 #' binomial is a regular family, so the second Bartlett identity holds and this
 #' equals the variance of the score.
 #'
@@ -692,7 +692,7 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx Ignored, the expected values being closed form or exact sums.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -763,7 +763,7 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx Ignored, the expected values being closed form or exact sums.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -822,8 +822,8 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' closed-form moments.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. Both default to the logarithm,
-#' both parameters being positive.
+#' unconstrained scale on which an optimizer works. Both default to the
+#' logarithm, because both parameters are positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps
@@ -848,8 +848,8 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' The law is a Poisson whose rate is gamma distributed with mean \eqn{\mu} and
 #' shape \eqn{\theta}. Two limits follow: \eqn{\theta = 1} gives the geometric,
 #' [geometric_distrib()], and \eqn{\theta \to \infty} gives the Poisson,
-#' [poisson_distrib()]. **The dispersion reads the opposite way round from a
-#' variance**: a small \eqn{\theta} is heavy overdispersion and a large one is
+#' [poisson_distrib()]. The dispersion reads the opposite way round from a
+#' variance: a small \eqn{\theta} is heavy overdispersion and a large one is
 #' nearly a Poisson.
 #'
 #' The numbering follows Cameron and Trivedi: NB2 has a variance quadratic in

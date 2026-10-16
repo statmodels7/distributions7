@@ -384,7 +384,7 @@ S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta, ...) 
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu`, `sigma` and `alpha`,
 #'   each of the length of the recycled inputs.
@@ -444,7 +444,7 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #'       \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2 R'.}
 #'
-#' This is the **observed** curvature at the data. Its expectation has no
+#' This is the observed curvature at the data. Its expectation has no
 #' elementary form and is computed by
 #' [distrib_expected_hessian.SkewNormal1Distrib()].
 #'
@@ -474,7 +474,7 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of six numeric vectors, in the order `mu_mu`,
 #'   `sigma_sigma`, `alpha_alpha`, `mu_sigma`, `mu_alpha`, `sigma_alpha`, each
@@ -909,7 +909,7 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' the kernels use the cumulants of the logarithm of the Mills ratio
 #' instead.
 #'
-#' The **expected** information has no elementary form. It depends on
+#' The expected information has no elementary form. It depends on
 #' \eqn{\alpha} alone once the location and the scale are factored out, so it
 #' is one integral over \eqn{z} per distinct \eqn{\alpha}, and so are its first
 #' and second derivatives; see [distrib_expected_hessian.SkewNormal1Distrib()].

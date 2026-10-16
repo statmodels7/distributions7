@@ -65,8 +65,8 @@ NULL
 #' \eqn{-a|z| - cz^{2}/2 - \log 2 - L(x) + \tfrac{1}{2}\log c} with
 #' \eqn{z = y - \mu}, \eqn{x = ac^{-1/2}} and \eqn{L = \log M}, so the data
 #' term is quadratic in \eqn{z} and linear in each rate. Every derivative of
-#' order three or more is therefore a derivative of the **normalizing
-#' constant**, apart from \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}.
+#' order three or more is therefore a derivative of the normalizing
+#' constant, apart from \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}.
 #'
 #' The normalizer is one pass of [chain_assemble()] over \eqn{L(x(a,c))}: the
 #' inner derivatives are \eqn{-G, -G', -G'', -G'''} and the map has
@@ -273,7 +273,7 @@ NULL
 #' \eqn{\mathrm{sgn}(z) - z} per observation. [.enet_chain()] is the same
 #' assembly written in R.
 #'
-#' With `expected = TRUE` the value is an expectation, and there it is **not**
+#' With `expected = TRUE` the value is an expectation, and there it is not
 #' closed form: the call routes to [expected_derivative()], so `approx` and
 #' `nsim` are read.
 #'

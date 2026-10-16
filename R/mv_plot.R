@@ -59,10 +59,10 @@ NULL
 #'   quadratic in it.
 #' @param col_fit Color of the density curves, the contours and the printed
 #'   correlations. Defaults to `"#B22222"`.
-#' @param ... Accepted so that the signature matches the generic's, and not
-#'   used.
+#' @param ... It is accepted so that the signature matches the generic's, and
+#'   not used.
 #'
-#' @return `x`, invisibly. Called for the plot it draws.
+#' @return `x`, invisibly. The function is called for the plot that it draws.
 #'
 #' @seealso [mv_marginal()], which supplies the density panels,
 #'   [plot.distrib_fit()], which draws the same matrix with the data on it,
@@ -162,9 +162,9 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #'   `"which"`; [plot.distrib_fit()] passes `"mv_which"`.
 #' @param ... Unused.
 #'
-#' @return `NULL`, invisibly. Called for the plot it draws. The function sets
-#'   `mfrow`, `mar` and `mgp` for the panel matrix and restores the previous
-#'   values on exit.
+#' @return `NULL`, invisibly. The function is called for the plot that it draws.
+#'   The function sets `mfrow`, `mar` and `mgp` for the panel matrix and
+#'   restores the previous values on exit.
 #'
 #' @seealso [plot.multivariate_distrib()] and [plot.distrib_fit()], its two
 #'   callers, and [mv_marginal()] for the panels.

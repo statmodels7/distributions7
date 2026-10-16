@@ -355,8 +355,8 @@ trans_deriv_k <- function(order) {
 #' @details
 #' At \eqn{y > 0} the likelihood separates, \eqn{\log(1 - \zeta) + \ell(y)}, so a
 #' mixed index gives zero and the pure ones are immediate. At \eqn{y = 0} it is
-#' \eqn{\log L_0} with \eqn{L_0 = \zeta + (1-\zeta) f_0}, which is **affine
-#' in \eqn{\zeta}** -- so any block containing two or more \eqn{\zeta}'s
+#' \eqn{\log L_0} with \eqn{L_0 = \zeta + (1-\zeta) f_0}, which is affine
+#' in \eqn{\zeta} -- so any block containing two or more \eqn{\zeta}'s
 #' contributes nothing, which is what keeps the partition sum small. Writing
 #' \eqn{w_0 = (1-\zeta) f_0 / L_0}, the ratios are \eqn{w_0 (d^A f_0/f_0)} for a
 #' block of parameters alone, and \eqn{-f_0 (d^A f_0/f_0)/L_0} for a block
@@ -644,7 +644,7 @@ trunc_deriv_k <- function(order) {
 #'
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param y A numeric vector of observations on the transformed scale.
-#' @param theta A named list of the **parent's** parameters; a transformation
+#' @param theta A named list of the parent's parameters; a transformation
 #'   adds none.
 #' @param expected Logical of length 1. Passed to the parent, so the parent
 #'   decides whether an expectation is closed or approximated.
@@ -685,7 +685,7 @@ S7::method(distrib_deriv3, TransformedDistrib) <- trans_deriv_k(3L)
 #'
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param y A numeric vector of observations on the transformed scale.
-#' @param theta A named list of the **parent's** parameters; a transformation
+#' @param theta A named list of the parent's parameters; a transformation
 #'   adds none.
 #' @param expected Logical of length 1. Passed to the parent.
 #' @param ... Passed to the parent's method.
@@ -713,7 +713,7 @@ S7::method(distrib_deriv4, TransformedDistrib) <- trans_deriv_k(4L)
 #'
 #' @description
 #' Two regimes, and the observation decides which. At \eqn{y > 0} the
-#' log-likelihood is \eqn{\log(1-\zeta) + \ell(y;\theta)}, which **separates**:
+#' log-likelihood is \eqn{\log(1-\zeta) + \ell(y;\theta)}, which separates:
 #' every mixed component in \eqn{\zeta} and a parent parameter is exactly zero.
 #' At \eqn{y = 0} it is \eqn{\log L_0} with
 #' \eqn{L_0 = \zeta + (1-\zeta) f(0;\theta)}, and the derivatives follow from
@@ -721,7 +721,7 @@ S7::method(distrib_deriv4, TransformedDistrib) <- trans_deriv_k(4L)
 #' \deqn{d^I \log L_0 = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
 #'       \prod_{B \in \pi} \frac{d^B L_0}{L_0}.}
 #'
-#' \eqn{L_0} is **affine** in \eqn{\zeta}, so any block of a partition naming
+#' \eqn{L_0} is affine in \eqn{\zeta}, so any block of a partition naming
 #' \eqn{\zeta} twice contributes nothing and the sum is shorter than it looks.
 #' A whole component may still be non-zero: its partition into singletons
 #' survives.
@@ -799,7 +799,7 @@ S7::method(distrib_deriv4, ZeroInflatedDistrib) <- zi_deriv_k(4L)
 #' @name distrib_deriv3.ZeroAdjustedDiscreteDistrib
 #'
 #' @description
-#' The hurdle likelihood **factorizes** into a binary part and a positive part,
+#' The hurdle likelihood factorizes into a binary part and a positive part,
 #' so at every order the mixed components in `za` and a parent parameter are
 #' exactly zero, and the two halves are differentiated separately. The
 #' \eqn{\theta} part is the parent's derivative less that of the truncation
@@ -885,13 +885,13 @@ S7::method(distrib_deriv4, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(4L)
 #' @name distrib_deriv3.ZeroAdjustedContinuousDistrib
 #'
 #' @description
-#' A continuous parent puts **no** mass at zero, so there is nothing to
+#' A continuous parent puts no mass at zero, so there is nothing to
 #' truncate away and no normalizing constant to differentiate. Away from the
 #' atom the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)}: the
 #' \eqn{\theta} derivatives are the parent's unchanged, and every component
 #' mixing `za` with a parent parameter is exactly zero.
 #'
-#' The object is a **mixed** distribution, a density on the positive line plus
+#' The object is a mixed distribution, a density on the positive line plus
 #' an atom at zero, and it declares that atom through [distrib_atoms()], so
 #' [check_distrib()] tests it correctly: the density integrates to
 #' \eqn{1 - \pi}, not to 1.
@@ -993,7 +993,7 @@ S7::method(distrib_deriv4, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(4L)
 #'
 #' @param distrib A `TruncatedContinuousDistrib` object, from [truncated()].
 #' @param y A numeric vector of observations inside the truncation interval.
-#' @param theta A named list of the **parent's** parameters; truncation adds
+#' @param theta A named list of the parent's parameters; truncation adds
 #'   none, the endpoints being constants.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law.
@@ -1036,7 +1036,7 @@ S7::method(distrib_deriv3, TruncatedContinuousDistrib) <- trunc_deriv_k(3L)
 #'
 #' @param distrib A `TruncatedContinuousDistrib` object, from [truncated()].
 #' @param y A numeric vector of observations inside the truncation interval.
-#' @param theta A named list of the **parent's** parameters; truncation adds
+#' @param theta A named list of the parent's parameters; truncation adds
 #'   none.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law.
@@ -1064,8 +1064,8 @@ S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 #' @description
 #' The same construction as for a continuous parent, \eqn{\ell_T = \ell -
 #' \log Z} with \eqn{d^I \log Z} from the moment-to-cumulant expansion over
-#' set partitions, with every expectation taken by **summation over the
-#' retained support** in place of a quadrature.
+#' set partitions, with every expectation taken by summation over the
+#' retained support in place of a quadrature.
 #'
 #' When both endpoints are finite, the support of a truncated discrete family is
 #' finite, so each block is a finite sum of terms that the parent already
@@ -1074,8 +1074,8 @@ S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 #'
 #' @param distrib A `TruncatedDiscreteDistrib` object, from [truncated()].
 #' @param y A numeric vector of counts inside the truncation interval. Both
-#'   endpoints are **included**.
-#' @param theta A named list of the **parent's** parameters; truncation adds
+#'   endpoints are included.
+#' @param theta A named list of the parent's parameters; truncation adds
 #'   none.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law, itself an exact sum.
@@ -1117,8 +1117,8 @@ S7::method(distrib_deriv3, TruncatedDiscreteDistrib) <- trunc_deriv_k(3L)
 #'
 #' @param distrib A `TruncatedDiscreteDistrib` object, from [truncated()].
 #' @param y A numeric vector of counts inside the truncation interval. Both
-#'   endpoints are **included**.
-#' @param theta A named list of the **parent's** parameters; truncation adds
+#'   endpoints are included.
+#' @param theta A named list of the parent's parameters; truncation adds
 #'   none.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law.

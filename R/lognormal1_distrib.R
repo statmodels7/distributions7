@@ -7,7 +7,7 @@ NULL
 #' @description
 #' The S7 class of the lognormal family on \eqn{(0, \infty)}: the law of a
 #' variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
-#' \eqn{\sigma^2 > 0}. Both parameters live **on the log scale**, so neither is
+#' \eqn{\sigma^2 > 0}. Both parameters live on the log scale, so neither is
 #' the mean or the variance of \eqn{Y} itself. It inherits from
 #' `continuous_distrib`, so every generic of the `distrib` class applies to it;
 #' the methods listed below are registered on it directly and everything else
@@ -222,7 +222,7 @@ S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.
 #' by calling [stats::qlnorm()]. It is closed form, the log transformation
 #' being monotone, so the round trip through
 #' [distrib_cdf.Lognormal1Distrib()] returns `p` exactly. The median is
-#' \eqn{e^{\mu}}, which sits **below** the mean \eqn{e^{\mu + \sigma^2/2}}.
+#' \eqn{e^{\mu}}, which sits below the mean \eqn{e^{\mu + \sigma^2/2}}.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param p A numeric vector of probabilities in \eqn{[0, 1]}, or of their
@@ -234,8 +234,8 @@ S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, `p` is
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
-#'   logarithms of probabilities, which is how a quantile deep in a tail is
-#'   requested without the probability underflowing. Defaults to `FALSE`.
+#'   logarithms of probabilities, so that a quantile deep in a tail can be
+#'   requested without underflow in the probability. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
@@ -329,7 +329,7 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
 #'       \dfrac{\partial \ell}{\partial \sigma^2} =
 #'         \dfrac{r^2 - \sigma^2}{2\sigma^4}.}
 #'
-#' **These are exactly the Gaussian's, read at \eqn{\log y}.** The lognormal
+#' These are exactly the Gaussian's, read at \eqn{\log y}. The lognormal
 #' log-density is the Gaussian's at \eqn{\log y} minus \eqn{\log y}, and that
 #' last term carries no parameter, so it disappears from every derivative in
 #' \eqn{\mu} and \eqn{\sigma^2}. The same holds at all four orders and for the
@@ -349,7 +349,7 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma2` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -360,7 +360,7 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
-#' \eqn{\sigma^2 > 0} the variance **of \eqn{\log Y}**, not of \eqn{Y}.
+#' \eqn{\sigma^2 > 0} the variance of \eqn{\log Y}, not of \eqn{Y}.
 #' \eqn{r = \log y - \mu} is the residual on the log scale.
 #'
 #' @seealso [distrib_hessian.Lognormal1Distrib()] for the second derivatives,
@@ -415,7 +415,7 @@ S7::method(distrib_gradient, Lognormal1Distrib) <- function(distrib, y, theta, s
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma2` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -485,10 +485,10 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma2` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's, where it selects between the Bartlett,
-#'   quadrature, Monte Carlo and outer-product routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's, where it selects between the
+#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -501,9 +501,9 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #'   when the parameters are.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The lognormal
+#' expectation of the observed information under the model. The lognormal
 #' is a regular family, so the second Bartlett identity holds and this equals
 #' the variance of the score.
 #'
@@ -566,9 +566,9 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -641,9 +641,9 @@ S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -750,8 +750,8 @@ S7::method(distrib_grad_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} =
 #'       \dfrac{1}{y^2}\left(1 + \dfrac{r - 1}{\sigma^2}\right).}
 #' The sign changes at \eqn{r = 1 - \sigma^2}, that is at
-#' \eqn{y = e^{\mu + 1 - \sigma^2}}: the log-density is **concave** in the
-#' response below that point and **convex** above it, so a lognormal
+#' \eqn{y = e^{\mu + 1 - \sigma^2}}: the log-density is concave in the
+#' response below that point and convex above it, so a lognormal
 #' log-likelihood is not a concave function of an observation over the whole
 #' support.
 #'
@@ -798,7 +798,7 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' Builds the distribution object for the lognormal family on
 #' \eqn{(0, \infty)}: the law of a variable whose logarithm is Gaussian with
 #' mean \eqn{\mu} and variance \eqn{\sigma^2 > 0}. Both parameters are moments
-#' **of the logarithm**, so neither is the mean or the variance of \eqn{Y}. The
+#' of the logarithm, so neither is the mean or the variance of \eqn{Y}. The
 #' returned object carries closed-form derivatives of the log-density to fourth
 #' order, in the parameters and in the response, closed-form derivatives of the
 #' distribution function, and closed-form moments. The fifth order and
@@ -856,7 +856,7 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' two parameters are orthogonal and the information does not depend on
 #' \eqn{\mu}.
 #'
-#' The derivatives **in the response** are where the two families differ, the
+#' The derivatives in the response are where the two families differ, the
 #' Jacobian being a function of \eqn{y}. They are still closed form; see
 #' [distrib_grad_y.Lognormal1Distrib()] and
 #' [distrib_hess_y.Lognormal1Distrib()], and note that the log-density is
@@ -873,7 +873,7 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
-#' \eqn{\sigma^2 > 0} the variance **of \eqn{\log Y}**. \eqn{\Phi} is the
+#' \eqn{\sigma^2 > 0} the variance of \eqn{\log Y}. \eqn{\Phi} is the
 #' standard normal distribution function and \eqn{r = \log y - \mu} the
 #' residual on the log scale. \eqn{\eta} is a parameter on the unconstrained
 #' scale of its link, with \eqn{\theta = g^{-1}(\eta)}.

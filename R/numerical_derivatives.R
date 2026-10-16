@@ -11,7 +11,7 @@ NULL
 #'
 #' @details
 #' The domain clamp is what allows a finite-difference fallback to be offered at
-#' all. Parameter domains here are **open**: a scale parameter is positive, not
+#' all. Parameter domains here are open: a scale parameter is positive, not
 #' non-negative. A step chosen from the magnitude alone therefore takes a small
 #' \eqn{\sigma} straight through zero, and the log-density comes back `NaN`
 #' for reasons that look like a bug in the density. Clamping to 49\% of the
@@ -508,7 +508,7 @@ analytic_order <- function(distrib, upto) {
 #'
 #' @description
 #' The fallback for a family that implements no analytical score: the gradient
-#' of `distrib_pdf(..., log = TRUE)` by one **central difference** per
+#' of `distrib_pdf(..., log = TRUE)` by one central difference per
 #' parameter, through [numerical_gradient()]. This is why [distrib_pdf()] is
 #' the only compulsory method of the package: a family that defines the density
 #' alone gets a score, an information, five orders of derivative and a fit.
@@ -557,7 +557,7 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #' `distrib_pdf(..., log = TRUE)` through [numerical_hessian()]: a diagonal
 #' component takes the three-point stencil
 #' \eqn{[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)]/h^2} and an
-#' off-diagonal one the four-point mixed stencil, so both are a **single**
+#' off-diagonal one the four-point mixed stencil, so both are a single
 #' difference of the log-density. For a family with its own score it takes
 #' one central difference of that score instead, through
 #' [tensor_derivatives()] with `base = 1`: the component \eqn{(i, j)} is the
@@ -586,7 +586,7 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #'
 #' @return A named list of Hessian component vectors, each of length
 #'   `length(y)`, keyed by [hess_names()], which puts the diagonal first and is
-#'   **not** the lexicographic keying [deriv_names()] uses above order 2.
+#'   not the lexicographic keying [deriv_names()] uses above order 2.
 #'
 #' @seealso [numerical_hessian()] and [tensor_derivatives()], which do the
 #'   differencing; [fd_steps()] for the boundary rule;

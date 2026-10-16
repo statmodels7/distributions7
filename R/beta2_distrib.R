@@ -315,7 +315,7 @@ S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -430,8 +430,8 @@ beta2_higher <- function(theta, n, order) {
 #' \deqn{\ell^{(\alpha\alpha)} = \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
 #'       \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad
 #'       \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta),}
-#' with \eqn{\psi'} the trigamma function. **All three are free of the
-#' response**, the data entering the log-density only through a term linear in
+#' with \eqn{\psi'} the trigamma function. All three are free of the
+#' response, the data entering the log-density only through a term linear in
 #' the parameters. The values are constant within a parameter setting and are
 #' recycled to the length of `y`, and they equal
 #' [distrib_expected_hessian.Beta2Distrib()] exactly.
@@ -442,7 +442,7 @@ beta2_higher <- function(theta, n, order) {
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -506,7 +506,7 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #'
 #' The consequence for fitting is that Fisher scoring and Newton's method take
 #' the same step on the parameter scale, both inverting the same matrix. On the
-#' **link** scale they differ, the chain rule there adding a term in the score,
+#' link scale they differ, the chain rule there adding a term in the score,
 #' which does read the data.
 #'
 #' The mixed entry \eqn{\psi'(\alpha+\beta)} is positive and never zero, so the
@@ -518,9 +518,9 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, the expectation being exact. Accepted so that the
-#'   signature matches the generic's, where it selects between the Bartlett,
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, the expectation being exact. It is accepted so that
+#'   the signature matches the generic's, where it selects between the Bartlett,
 #'   quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -533,9 +533,9 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #'   `max(length(y), length(alpha), length(beta))`.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The beta is a
+#' expectation of the observed information under the model. The beta is a
 #' regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score.
 #'
@@ -596,8 +596,8 @@ S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta
 #'   and expected third derivatives being the same numbers. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -665,8 +665,8 @@ S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected
 #'   and expected fourth derivatives being the same numbers. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'

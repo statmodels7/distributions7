@@ -10,7 +10,7 @@ NULL
 #' expectation has to be approximated. The generics
 #' [distrib_expected_hessian()], [distrib_deriv3()] and
 #' [distrib_deriv4()] therefore accept an `approx` argument
-#' selecting *how* the expectation is taken. The argument is **ignored**
+#' selecting *how* the expectation is taken. The argument is ignored
 #' when the distribution provides an analytical method (which is always preferred).
 #'
 #' @details
@@ -29,8 +29,8 @@ NULL
 #'     index set,
 #'     \deqn{\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,}
 #'     the target term (the single-block partition) is obtained from all the
-#'     others. At order 2 this is exactly the familiar **outer product of
-#'     gradients**, \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]};
+#'     others. At order 2 this is exactly the familiar outer product of
+#'     gradients, \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]};
 #'     at order 3, \eqn{\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
 #'     \mathbb{E}[\ell_{ik}\ell_j] + \mathbb{E}[\ell_{jk}\ell_i] +
 #'     \mathbb{E}[\ell_i\ell_j\ell_k]\right)}, and so on.
@@ -60,7 +60,7 @@ NULL
 #'     but stochastic: the error decreases only as \eqn{1/\sqrt{n_{sim}}}, so
 #'     results are not exactly reproducible unless the seed is fixed. Estimates
 #'     the same quantity as `"integrate"`.
-#'     **Note:** the cost of this option is the cost of simulating from the
+#'     Note: the cost of this option is the cost of simulating from the
 #'     distribution. A native [distrib_rng()] is best; failing that, the
 #'     default generator uses inverse transform when the family has a quantile
 #'     method of its own and [rng_grou()], which only needs the density,
@@ -69,13 +69,13 @@ NULL
 #'     bottleneck; prefer `"bartlett"` or `"integrate"` in that case.}
 #' }
 #'
-#' **Defaults.** `distrib_expected_hessian` defaults to `"opg"`, which needs
+#' Defaults. `distrib_expected_hessian` defaults to `"opg"`, which needs
 #' one score evaluation per observation and no expectation. `distrib_deriv3` and
 #' `distrib_deriv4` default to `"integrate"`, since at those orders
 #' direct integration of the available derivative is usually cheaper and more
 #' accurate.
 #'
-#' **Non-smooth parameters.** Where the log-density has a kink in a
+#' Non-smooth parameters. Where the log-density has a kink in a
 #' parameter, the observed second derivative has a point mass at the kink, and
 #' an average of its pointwise values does not contain that mass. For the
 #' Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its

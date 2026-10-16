@@ -6,7 +6,7 @@ NULL
 #'
 #' @description
 #' The S7 class of the negative binomial family on the non-negative integers
-#' whose variance is **linear** in the mean: with a mean \eqn{\mu > 0} and a
+#' whose variance is linear in the mean: with a mean \eqn{\mu > 0} and a
 #' dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, so
 #' the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits from
 #' `discrete_distrib`.
@@ -144,7 +144,7 @@ nb1_size <- function(mu, theta) mu / theta
 #' when `log` is `FALSE`, and `log = TRUE` is the accurate route far into the
 #' tail.
 #'
-#' The mean sits **inside** the gamma functions here, through the size. In
+#' The mean sits inside the gamma functions here, through the size. In
 #' [negbin2_distrib()] the size is \eqn{\theta} and the mean stays outside
 #' them, which is the concrete difference between the two families.
 #'
@@ -253,7 +253,7 @@ S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
 #' by calling [stats::qnbinom()] at size \eqn{r = \mu/\theta} and mean
 #' \eqn{\mu}, so that the success probability \eqn{1/(1+\theta)} is never
 #' formed. The support is discrete, so the round trip
-#' through [distrib_cdf.NegBin1Distrib()] does **not** return `p`: it returns
+#' through [distrib_cdf.NegBin1Distrib()] does not return `p`: it returns
 #' the mass up to the smallest integer whose cumulative probability reaches
 #' `p`, which overshoots.
 #'
@@ -383,8 +383,8 @@ S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta, ...) {
 #' digamma evaluations. The example below compares the value with this limit
 #' at three settings.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries before returning. This method always returns the parameter
 #' scale.
 #'
 #' @param distrib A `NegBin1Distrib` object, from [negbin1_distrib()].
@@ -393,7 +393,7 @@ S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -479,7 +479,7 @@ S7::method(distrib_gradient, NegBin1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -545,7 +545,7 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
 #' read only for its length.
 #'
-#' **The mixed entry does not vanish**, so the mean and the dispersion are not
+#' The mixed entry does not vanish, so the mean and the dispersion are not
 #' orthogonal in this family; in [negbin2_distrib()] the same entry is exactly
 #' zero. This is a difference between the two families, not between two
 #' parametrizations of one.
@@ -577,9 +577,9 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored. The surviving expectation is a truncated exact sum.
-#'   Accepted so that the signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored. The surviving expectation is a truncated exact sum. It
+#'   is accepted so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -592,9 +592,9 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #'   when the parameters are.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The first
+#' expectation of the observed information under the model. The first
 #' Bartlett identity is \eqn{\mathbb{E}[\partial\ell/\partial\theta] = 0}.
 #'
 #' @seealso [distrib_hessian.NegBin1Distrib()] for the observed quantity this
@@ -637,15 +637,15 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'
 #' @description
 #' Builds the distribution object for the negative binomial family on the
-#' non-negative integers whose variance is **linear** in the mean: with a mean
+#' non-negative integers whose variance is linear in the mean: with a mean
 #' \eqn{\mu > 0} and a dispersion \eqn{\theta > 0},
 #' \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}. The returned object carries
 #' closed-form derivatives of the log-mass to fourth order and closed-form
 #' moments.
 #'
 #' The two arguments choose the links that carry each parameter to the
-#' unconstrained scale an optimizer works on. Both default to the logarithm,
-#' both parameters being positive.
+#' unconstrained scale on which an optimizer works. Both default to the
+#' logarithm, because both parameters are positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps
@@ -657,8 +657,8 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' @details
 #' # Relation to the quadratic-variance negative binomial
 #'
-#' Two negative binomials are in common use and they are **different
-#' families**, not two parametrizations of one. Here the variance is
+#' Two negative binomials are in common use and they are different
+#' families, not two parametrizations of one. Here the variance is
 #' \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 #' relative to a Poisson is the same at every mean; [negbin2_distrib()] has
 #' \eqn{\mu + \mu^2/\theta}, growing quadratically. Fitting one is not fitting
@@ -667,7 +667,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'
 #' The difference is visible in where the mean sits. The size is
 #' \eqn{r = \mu/\theta} and the success probability \eqn{1/(1+\theta)}, so
-#' \eqn{\mu} appears **inside** the gamma functions of the mass; in the
+#' \eqn{\mu} appears inside the gamma functions of the mass; in the
 #' quadratic form the size is \eqn{\theta} and the mean stays outside them.
 #'
 #' # The parametrization
@@ -696,7 +696,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' by the first Bartlett identity, and what remains is two sums over the
 #' support against the exact mass ([distrib_expected_hessian.NegBin1Distrib()]).
 #'
-#' **The mean and the dispersion are not orthogonal here.** The mixed entry of
+#' The mean and the dispersion are not orthogonal here. The mixed entry of
 #' the expected information is non-zero, where [negbin2_distrib()] has exactly
 #' zero.
 #'

@@ -328,7 +328,7 @@ S7::method(distrib_rng, DirichletDistrib) <- function(distrib, n, theta, ...) {
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per parameter, in the order
@@ -405,7 +405,7 @@ S7::method(distrib_gradient, DirichletDistrib) <- function(distrib, y, theta,
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per distinct entry of the
@@ -508,9 +508,9 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being exact. Accepted so that
-#'   the signature matches the generic's, where it selects between
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because the expectation is exact. It is accepted
+#'   so that the signature matches the generic's, where it selects between
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -846,7 +846,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' with
 #' \deqn{\mathbb{E}[Y_j] = \mu_j, \qquad
 #'       \operatorname{Cov}(Y_i, Y_j) = \frac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}.}
-#' So \eqn{\phi} is a **precision**: the larger it is, the tighter the draws
+#' So \eqn{\phi} is a precision: the larger it is, the tighter the draws
 #' sit about the mean. The covariance is singular, the coordinates summing to
 #' one, and every off-diagonal entry is negative.
 #'

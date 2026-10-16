@@ -449,7 +449,7 @@ register_dy_k(VonMises2Distrib, function(distrib, y, theta, k) {
 #'
 #' @param distrib A `ReparamContinuousDistrib` object, from [reparametrize()].
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters of the **new** parametrization,
+#' @param theta A named list of parameters of the new parametrization,
 #'   carried to the parent's by [reparam_theta()] before the call.
 #' @param ... Passed to the parent's method.
 #'

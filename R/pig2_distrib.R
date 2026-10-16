@@ -123,7 +123,7 @@ pig2_sigma <- function(mu, alpha) (mu + sqrt(mu^2 + alpha^2)) / alpha^2
 #' @description
 #' Computes the same mass as [distrib_pdf.Pig1Distrib()], at the dispersion
 #' \eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2} that \eqn{\alpha}
-#' implies. The parameter \eqn{\alpha} of this parametrization **is** the
+#' implies. The parameter \eqn{\alpha} of this parametrization is the
 #' argument \eqn{\sqrt{1 + 2\sigma\mu}/\sigma} at which the Bessel function is
 #' evaluated, so in this coordinate the mass function's own argument is a
 #' parameter.
@@ -187,7 +187,7 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE,
 #' rule through [pig2_sigma()] is composed.
 #'
 #' The property that gives this parametrization its name lives one order up:
-#' the **expected** value of \eqn{\partial^2\ell/\partial\mu\partial\alpha} is
+#' the expected value of \eqn{\partial^2\ell/\partial\mu\partial\alpha} is
 #' zero, so the two scores are uncorrelated and their maximum likelihood
 #' estimates asymptotically independent.
 #'
@@ -243,7 +243,7 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #' \eqn{(\mu, \alpha)}, read off columns `d20`, `d02` and `d11` of the compiled
 #' kernel `pig2_hessian_cpp`.
 #'
-#' The **observed** mixed entry is not zero in general; what vanishes is its
+#' The observed mixed entry is not zero in general; what vanishes is its
 #' expectation. At \eqn{\mu = 3} and \eqn{\alpha = 3.0104} the entry is
 #' proportional to \eqn{y - \mu}, and its expectation is zero to rounding
 #' error.
@@ -300,7 +300,7 @@ S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
 #' compiled kernel `pig2_deriv3_cpp`, which computes the third order alone.
 #'
 #' With `expected = TRUE` the value is an expectation instead, and there it is
-#' **not** closed form: the call routes to `expected_derivative()`, so `approx`
+#' not closed form: the call routes to `expected_derivative()`, so `approx`
 #' and `nsim` are read.
 #'
 #' @param distrib A `Pig2Distrib` object, from [pig2_distrib()].

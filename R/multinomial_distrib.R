@@ -306,7 +306,7 @@ S7::method(mv_support, MultinomialDistrib) <- function(distrib, theta, ...) {
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per free value, in the order
@@ -384,7 +384,7 @@ S7::method(distrib_gradient, MultinomialDistrib) <- function(distrib, y, theta,
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per distinct entry of the
@@ -494,9 +494,9 @@ S7::method(distrib_hessian, MultinomialDistrib) <- function(distrib, y, theta,
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being exact. Accepted so that
-#'   the signature matches the generic's, where it selects between
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because the expectation is exact. It is accepted
+#'   so that the signature matches the generic's, where it selects between
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.

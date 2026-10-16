@@ -115,8 +115,8 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #'
 #' @description
 #' `MvGaussian1Distrib` is the family whose matrix parametrization is the
-#' **covariance** and `MvGaussian2Distrib` the family whose matrix
-#' parametrization is the **precision**. Both inherit from [MvGaussianDistrib],
+#' covariance and `MvGaussian2Distrib` the family whose matrix
+#' parametrization is the precision. Both inherit from [MvGaussianDistrib],
 #' which carries every method; the two differ in what their free values
 #' describe, and the computations are shared.
 #'
@@ -161,7 +161,7 @@ MvGaussian2Distrib <- S7::new_class("MvGaussian2Distrib",
 #' @description
 #' Two families on \eqn{\mathbb{R}^p}, differing in which matrix of the law
 #' their parametrization describes: `mvgaussian1_distrib()` parametrizes the
-#' **covariance** \eqn{\Sigma} and `mvgaussian2_distrib()` the **precision**
+#' covariance \eqn{\Sigma} and `mvgaussian2_distrib()` the precision
 #' \eqn{\Omega = \Sigma^{-1}}. The mean is a vector of \eqn{p} free parameters
 #' and the matrix is carried by a \pkg{parameters7} parametrization whose free
 #' values become ordinary scalar parameters, so every generic of the `distrib`
@@ -176,8 +176,8 @@ MvGaussian2Distrib <- S7::new_class("MvGaussian2Distrib",
 #' [gaussian1_distrib()], [gaussian2_distrib()] and [gaussian3_distrib()]: one
 #' name per parametrization, because in a modeling framework a parametrization
 #' decides what a linear predictor acts on. Here the choice can change the model
-#' as well as the coordinates. A matrix parametrization is **closed under
-#' inversion** when the inverse of every matrix that it produces is one of its
+#' as well as the coordinates. A matrix parametrization is closed under
+#' inversion when the inverse of every matrix that it produces is one of its
 #' own; [parameters7::log_cholesky()], [parameters7::matrix_log()],
 #' [parameters7::diagonal_matrix()], [parameters7::scalar_matrix()],
 #' [parameters7::compound_symmetry()] and [parameters7::dr_prod()] are, and
@@ -193,7 +193,7 @@ MvGaussian2Distrib <- S7::new_class("MvGaussian2Distrib",
 #' Both constructors accept any parametrization of the right dimension and of
 #' full rank. `mvgaussian2_distrib(p, parameters7::ar1(p))` is the model whose
 #' precision has the entries \eqn{\sigma^2\rho^{|i-j|}}, with \eqn{\sigma^2}
-#' the scale of `ar1()`, and it is a valid law. The AR(1) **process** written
+#' the scale of `ar1()`, and it is a valid law. The AR(1) process written
 #' on the precision side is `mvgaussian2_distrib(p, parameters7::ar1_inv(p))`,
 #' whose parametrization is that inverse.
 #'
@@ -1120,8 +1120,8 @@ param_pair_lookup <- function(s) {
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. Every link of this family is the identity, so the two scales
 #'   coincide.
-#' @param approx Ignored: the expectation is exact and no approximation
-#'   strategy is consulted. Present so that the signature matches the generic's.
+#' @param approx Ignored: the expectation is exact and no approximation strategy
+#'   is consulted. It is present so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -1256,7 +1256,7 @@ S7::method(distrib_grad_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #' returned for the whole sample, and not one matrix per row.
 #'
 #' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
-#' @param y An \eqn{n \times p} numeric matrix of observations. Not read.
+#' @param y An \eqn{n \times p} numeric matrix of observations. It is not read.
 #' @param theta A named list of parameters, each component a single number.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -1479,7 +1479,7 @@ S7::method(distrib_cross2_y, MvGaussianDistrib) <-
 #' components do not depend on the observation, so `y` is not read.
 #'
 #' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
-#' @param y An \eqn{n \times p} numeric matrix of observations. Not read.
+#' @param y An \eqn{n \times p} numeric matrix of observations. It is not read.
 #' @param theta A named list of parameters, each component a single number.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
@@ -2100,8 +2100,8 @@ mvg_ptensors <- function(pc, order, inverted = FALSE) {
 #' derivative array over the multiset of free values \eqn{t}.
 #'
 #' @seealso [distrib_deriv3.MvGaussianDistrib()] and
-#'   [distrib_deriv4.MvGaussianDistrib()], the two methods it serves, and
-#'   [mvg_ptensors()] for the arrays it reads.
+#'   [distrib_deriv4.MvGaussianDistrib()], the two methods that it serves, and
+#'   [mvg_ptensors()] for the arrays that it reads.
 #'
 #' @examples
 #' d <- mvgaussian1_distrib(2)

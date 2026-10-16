@@ -98,22 +98,22 @@ safe_check <- function(name, expr) {
 #' @details
 #' The checks performed are:
 #'
-#' - **density**: non-negativity and integration/summation to 1 over the support.
-#' - **cdf**: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
+#' - density: non-negativity and integration/summation to 1 over the support.
+#' - cdf: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
 #'   and its agreement with the density: for a continuous family a central
 #'   difference of the cdf against the density, with the step the response
 #'   derivatives use, and for a discrete one \eqn{F(k) - F(k-1)} against the
 #'   mass.
-#' - **quantile**: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
+#' - quantile: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 #'   distributions, and the generalized-inverse inequalities for discrete ones).
-#' - **rng**: the empirical distribution function of a large draw, at the
+#' - rng: the empirical distribution function of a large draw, at the
 #'   quantiles for the probabilities 0.05, 0.10, ..., 0.95, agrees with
 #'   [distrib_cdf()] within Monte Carlo error (the largest standardized
 #'   difference stays below 6).
-#' - **gradient, hessian, deriv3, deriv4**: analytical values against
+#' - gradient, hessian, deriv3, deriv4: analytical values against
 #'   [numerical_gradient()], [numerical_hessian()],
 #'   [numerical_deriv3()] and [numerical_deriv4()].
-#' - **deriv5**, when `5` is among `orders`: [distrib_deriv5()] against
+#' - deriv5, when `5` is among `orders`: [distrib_deriv5()] against
 #'   [numerical_deriv5()] at a higher accuracy, the sixth-order rule (six
 #'   evaluations of the fourth order per parameter) in place of the default
 #'   fourth-order one. For a family that reaches the numerical fifth order the row checks
@@ -125,7 +125,7 @@ safe_check <- function(name, expr) {
 #'   stencils passes that test and may still fail this row, whose statistic is
 #'   an absolute error for a small component. The row appears only when `5` is
 #'   among `orders`, which default to `1:4`.
-#' - **expected information**: [distrib_expected_hessian()] against a
+#' - expected information: [distrib_expected_hessian()] against a
 #'   Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 #'   product of the score is used as reference because it remains valid when the
 #'   log-likelihood is not differentiable in a parameter (see [laplace_distrib()]).
@@ -133,7 +133,7 @@ safe_check <- function(name, expr) {
 #'   score of a family singular at that bound is infinite, is left out of the
 #'   estimate and counted in the row's `detail`; a score that is not finite at
 #'   an interior point still leaves the row without a statistic.
-#' - **response derivatives** (continuous only): [distrib_grad_y()] and
+#' - response derivatives (continuous only): [distrib_grad_y()] and
 #'   [distrib_hess_y()] against central differences in \eqn{y} whose step is
 #'   chosen observation by observation by [fd_stable_quotient()], between a
 #'   step cut to under half the distance to a bound and one scaled on that
@@ -142,7 +142,7 @@ safe_check <- function(name, expr) {
 #'   bound \eqn{b \ne 0}, where the spacing of doubles is absolute and no
 #'   central difference compares a derivative, is left out and counted in the
 #'   row's `detail`.
-#' - **link scale**: `scale = "link"` derivatives against finite
+#' - link scale: `scale = "link"` derivatives against finite
 #'   differences of the log-likelihood in \eqn{\eta}.
 #'
 #' A parameter-derivative check of an order for which the family registers no
@@ -801,7 +801,7 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' dropped, so the check keeps its full strength: a gradient made 5\% wrong is
 #' still caught.
 #'
-#' The two estimates are compared **relative to their own magnitude** rather
+#' The two estimates are compared relative to their own magnitude rather
 #' than against a denominator floored at one: near a kink both are tiny yet
 #' differ by a factor of two, which a floor of one would hide. If no
 #' observation survives, all are kept, because a systematic disagreement is a

@@ -143,7 +143,7 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #' @name distrib_deriv3.BetaBinom1Distrib
 #' @description
 #' Computes the four distinct third derivatives of the beta-binomial log-mass
-#' in \eqn{\mu} and \eqn{\sigma}, **in closed form**. The shape parametrization
+#' in \eqn{\mu} and \eqn{\sigma}, in closed form. The shape parametrization
 #' carries closed derivatives at every order, each a difference of polygammas,
 #' and this parametrization is that one at \eqn{\alpha = \mu/\sigma} and
 #' \eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
@@ -167,9 +167,9 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, the expectation being an exact finite sum. Accepted
-#'   so that the signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, the expectation being an exact finite sum. It is
+#'   accepted so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -221,7 +221,7 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @name distrib_deriv4.BetaBinom1Distrib
 #' @description
 #' Computes the five distinct fourth derivatives of the beta-binomial log-mass
-#' in \eqn{\mu} and \eqn{\sigma}, **in closed form**, by the construction
+#' in \eqn{\mu} and \eqn{\sigma}, in closed form, by the construction
 #' [distrib_deriv3.BetaBinom1Distrib()] describes carried one order further:
 #' the shape parametrization's fourth derivatives, each a difference of
 #' \eqn{\psi^{(3)}}, carried through the map
@@ -242,9 +242,9 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, the expectation being an exact finite sum. Accepted
-#'   so that the signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, the expectation being an exact finite sum. It is
+#'   accepted so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'

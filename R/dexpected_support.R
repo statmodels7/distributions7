@@ -15,7 +15,7 @@ NULL
 #' over the support.
 #'
 #' @details
-#' **NB1.** The expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
+#' NB1. The expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
 #' G/\mu}, with \eqn{A} and \eqn{G = \mathbb{E}[\ell_{\theta\theta}]} the two
 #' sums over the support of [distrib_expected_hessian.NegBin1Distrib()]; below
 #' \eqn{\theta = 0.02} \eqn{G} is \eqn{-\mathbb{E}[\sum_{j<Y} j^2/(\mu +
@@ -28,7 +28,7 @@ NULL
 #' written so that no term of order \eqn{\mu/\theta^2} is formed. Every
 #' component keeps its accuracy down to the Poisson limit \eqn{\theta \to 0}.
 #'
-#' **Beta-binomial.** The support \eqn{\{0, \dots, n\}} is finite, so the
+#' Beta-binomial. The support \eqn{\{0, \dots, n\}} is finite, so the
 #' identities
 #' \deqn{\partial_c \mathbb{E}[\ell_{ab}] = \mathbb{E}[\ell_{abc} + \ell_{ab}\ell_c]}
 #' and its second-order counterpart,

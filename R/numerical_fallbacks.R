@@ -505,14 +505,14 @@ has_analytic_quantile <- function(distrib) {
 #'
 #' Two devices make this numerically safe for an arbitrary user-supplied density:
 #'
-#' - **Recentering.** The kernel is shifted to its mode,
+#' - Recentering. The kernel is shifted to its mode,
 #'   \eqn{K(z) \propto f(m + z)}, and the mode is added back to the draws. Without
 #'   this a distribution located far from the origin (say \eqn{\mu = 1000}) gives a
 #'   wildly elongated bounding rectangle and an acceptance rate close to zero.
 #'   Recentering also splits the box exactly: \eqn{h(z) = z\,K(z)^{r/(r+1)}} is
 #'   non-positive for \eqn{z \le 0} and non-negative for \eqn{z \ge 0}, so
 #'   \eqn{v_{\min}} and \eqn{v_{\max}} are each found on one side of the mode.
-#' - **Normalization.** The kernel is rescaled by its value at the mode, so
+#' - Normalization. The kernel is rescaled by its value at the mode, so
 #'   that \eqn{\max K = 1} and \eqn{u_{\max} = 1}. Every quantity stays in a safe
 #'   numerical range whatever the height of the density, and all computations are
 #'   carried out on the log scale.
@@ -817,9 +817,9 @@ lp_edge_divergence <- function(lp, b) {
 #' Kept separate from the `distrib` object so that it can also be run on a
 #' reparametrized density, which is how the divergence transforms reuse it.
 #'
-#' Two devices make it safe. The kernel is **recentered at the mode**,
+#' Two devices make it safe. The kernel is recentered at the mode,
 #' without which a density located at \eqn{\mu = 1000} produces a degenerate
-#' bounding box; and it is **normalized to a maximum of one**. With those it
+#' bounding box; and it is normalized to a maximum of one. With those it
 #' accepts a Student t with half a degree of freedom and a Pareto with infinite
 #' mean. A density that diverges at an edge is handled by transforming it away.
 #' The kernel must be unimodal: with two well-separated modes the search for
@@ -950,9 +950,9 @@ grou_core <- function(lp, b, n, r) {
 #' own. It chooses between two routes according to whether the family has a
 #' quantile method of its own:
 #'
-#' - **inverse transform** where [has_analytic_quantile()] is `TRUE`, which
+#' - inverse transform where [has_analytic_quantile()] is `TRUE`, which
 #'   costs one quantile evaluation per draw;
-#' - **generalized ratio-of-uniforms** ([rng_grou()]) otherwise, which
+#' - generalized ratio-of-uniforms ([rng_grou()]) otherwise, which
 #'   evaluates only the density.
 #'
 #' The choice keeps simulation-based tools usable. Inverting a purely
@@ -963,7 +963,7 @@ grou_core <- function(lp, b, n, r) {
 #'
 #' @details
 #' The ratio-of-uniforms scheme needs a bounded unimodal density. Where its
-#' bounding rectangle cannot be built the method **warns and reverts** to
+#' bounding rectangle cannot be built the method warns and reverts to
 #' inverse transform sampling, so a draw is always returned. A `theta` varying
 #' by observation is handled by grouping the draws by distinct parameter
 #' setting, one bounding rectangle per group.
@@ -1145,7 +1145,7 @@ disc_upper_table <- function(distrib, theta, need_p = NULL, need_k = NULL, kmax 
 #' @description
 #' The fallback for a discrete family that implements no analytical
 #' distribution function: it sums the mass from the finite lower bound of the
-#' support up to \eqn{\lfloor q \rfloor}. The sum is **exact**, not
+#' support up to \eqn{\lfloor q \rfloor}. The sum is exact, not
 #' approximate, so on a Poisson defined by its mass alone it agrees with
 #' [stats::ppois()] to \eqn{10^{-16}} absolute, which is the rounding of the
 #' addition itself.
@@ -1221,7 +1221,7 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #' @description
 #' The fallback for a discrete family that implements no analytical quantile
 #' function: the smallest support point \eqn{k} with \eqn{F(k) \ge p}, read off
-#' the cumulative table that [disc_cum_table()] builds. It is **exact**. The
+#' the cumulative table that [disc_cum_table()] builds. It is exact. The
 #' distribution function of a discrete variable is a step function, so
 #' inverting it is a lookup and there is nothing to solve. The probability is
 #' compared with the running sum after a relative reduction of
@@ -1408,7 +1408,7 @@ has_exact_expected_hessian <- function(x) {
 #' every other registration is, by default, a family that wrote the expectation
 #' out.
 #'
-#' **Reading the owner is not sufficient in general.** A method registered on
+#' Reading the owner is not sufficient in general. A method registered on
 #' the class of a family may be a chain onto a parent that approximates, and
 #' then the owner reads as "written out" although the arithmetic is not. A
 #' family that chains onto another therefore returns the answer of its parent,
@@ -1483,7 +1483,7 @@ S7::method(expected_hessian_exact, distrib) <- function(x, ...) {
 #'
 #' A wrapper must not use this reading. Its fourth derivative is registered on
 #' its own class, so the owner test reads it as analytic, while the partition
-#' sum that it evaluates is over the first four derivatives of the **parent**
+#' sum that it evaluates is over the first four derivatives of the parent
 #' and is analytic only when those are. Every wrapper therefore overrides the
 #' generic and takes the answer from
 #' its parent, which is why the test is a generic at all.

@@ -113,8 +113,8 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #'
 #' @description
 #' `MvStudentT1Distrib` is the family whose matrix parametrization is the
-#' **scale matrix** \eqn{\Sigma} and `MvStudentT2Distrib` the family whose
-#' parametrization is its **inverse** \eqn{\Sigma^{-1}}. Both inherit from
+#' scale matrix \eqn{\Sigma} and `MvStudentT2Distrib` the family whose
+#' parametrization is its inverse \eqn{\Sigma^{-1}}. Both inherit from
 #' [MvStudentTDistrib], which carries every method; the two differ in what
 #' their free values describe, and the computations are shared.
 #'
@@ -155,7 +155,7 @@ MvStudentT2Distrib <- S7::new_class("MvStudentT2Distrib",
 #' @description
 #' Two families on \eqn{\mathbb{R}^p}, differing in which matrix their
 #' parametrization describes: `mvstudent_t1_distrib()` parametrizes the
-#' **scale matrix** \eqn{\Sigma} and `mvstudent_t2_distrib()` its **inverse**
+#' scale matrix \eqn{\Sigma} and `mvstudent_t2_distrib()` its inverse
 #' \eqn{\Sigma^{-1}}. Each carries a location vector of \eqn{p} free
 #' parameters, the matrix through a \pkg{parameters7} parametrization, and a
 #' positive degrees-of-freedom parameter. The free values become ordinary
@@ -169,7 +169,7 @@ MvStudentT2Distrib <- S7::new_class("MvStudentT2Distrib",
 #' # The two matrices
 #'
 #' Neither matrix is a covariance, and neither is a precision. \eqn{\Sigma} is
-#' the **scale matrix**, the matrix in the quadratic form of the density, and
+#' the scale matrix, the matrix in the quadratic form of the density, and
 #' the moments are obtained from it by scaling in \eqn{\nu}:
 #'
 #' \deqn{\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\,\Sigma \quad (\nu > 2),
@@ -194,15 +194,15 @@ MvStudentT2Distrib <- S7::new_class("MvStudentT2Distrib",
 #' Two readings carry over from the matrix to the response without a factor,
 #' because a positive multiple cancels out of a ratio:
 #'
-#' * the **correlations** of \eqn{\Sigma} are the correlations of \eqn{Y};
-#' * the **partial correlations** read off \eqn{\Sigma^{-1}}, as
+#' * the correlations of \eqn{\Sigma} are the correlations of \eqn{Y};
+#' * the partial correlations read off \eqn{\Sigma^{-1}}, as
 #'   \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, are the partial
 #'   correlations of \eqn{Y}.
 #'
 #' The conditional variance does not carry over. For a gaussian
 #' \eqn{1/\Omega_{jj}} is the conditional variance of \eqn{Y_j} given the rest;
 #' here it is the Schur complement of the scale matrix, so it is a conditional
-#' **scale**, and the conditional law of a \eqn{t} is itself a \eqn{t} whose
+#' scale, and the conditional law of a \eqn{t} is itself a \eqn{t} whose
 #' scale carries a further factor depending on the conditioning values.
 #' [mv_summary()] names that quantity `cscale_vj` and not `cvar_vj` for this
 #' reason, as it names the diagonal quantities `scale_sd_vj`.
@@ -290,7 +290,7 @@ MvStudentT2Distrib <- S7::new_class("MvStudentT2Distrib",
 #' @param omega A \pkg{parameters7} parametrization of the inverse scale
 #'   matrix, of dimension `n_dim` and of full rank. Defaults to
 #'   `parameters7::log_cholesky(n_dim)`. It is the precision of the response
-#'   only up to the factor \eqn{(\nu-2)/\nu}; see **Details**.
+#'   only up to the factor \eqn{(\nu-2)/\nu}; see Details.
 #' @param link_nu The link carrying the degrees of freedom to the
 #'   unconstrained scale, a `linkfunctions7::link` object. Defaults to
 #'   `linkfunctions7::log_link()`, which keeps \eqn{\nu} strictly positive at
@@ -1536,7 +1536,7 @@ S7::method(mv_reference_draw, MvStudentTDistrib) <- function(distrib, theta, n, 
 #' @param theta A named list of parameters, each component a single number.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
-#'   result. The two differ here, `nu` carrying a log link by default.
+#'   result. The two differ here, because `nu` carries a log link by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length \eqn{n}, one per unordered
@@ -1704,7 +1704,7 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
 #' @param theta A named list of parameters, each component a single number.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
-#'   result. The two differ here, `nu` carrying a log link by default.
+#'   result. The two differ here, because `nu` carries a log link by default.
 #' @param approx Ignored: the expectation is exact and no approximation
 #'   strategy is consulted. [fit_distrib()] rejects a `fisher_scoring(approx =)`
 #'   for this family for that reason.
@@ -2152,7 +2152,7 @@ mv_outer_rows <- function(a, b) {
 #' @param theta A named list of parameters, each component a single number.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
-#'   result. The two differ here, `nu` carrying a log link by default.
+#'   result. The two differ here, because `nu` carries a log link by default.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of \eqn{n \times p} numeric matrices, one per

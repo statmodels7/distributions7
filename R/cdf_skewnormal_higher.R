@@ -273,10 +273,10 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive) and
 #'   `alpha` (any sign), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of the requested order,

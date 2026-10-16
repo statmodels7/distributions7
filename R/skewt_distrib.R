@@ -234,7 +234,7 @@ skewt_pieces <- function(y, mu, sigma, alpha, nu) {
 #' \deqn{f(y; \mu, \sigma, \alpha, \nu) = \dfrac{2}{\sigma}\,
 #'       t_\nu(z)\,T_{\nu+1}(w),}
 #' with \eqn{t_\nu} the standard Student \eqn{t} density and \eqn{T_{\nu+1}}
-#' its distribution function on **one more** degree of freedom. The extra
+#' its distribution function on one more degree of freedom. The extra
 #' degree of freedom is deliberate: without it the tilted density would not
 #' integrate to one.
 #'
@@ -1094,7 +1094,7 @@ S7::method(distrib_grad_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
 #' enter the density through \eqn{y - \mu} and the sign of the first
 #' derivative disappears in the second.
 #'
-#' Unlike the skew normal's, the value **changes sign**. The Student
+#' Unlike the skew normal's, the value changes sign. The Student
 #' \eqn{t}'s curvature is positive wherever \eqn{|z| > \sqrt{\nu}}, so the
 #' log-density is convex in the far tail. That convexity makes the family's
 #' score redescend, and its estimates resistant to an outlier.

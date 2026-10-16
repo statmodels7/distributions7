@@ -5,7 +5,7 @@ NULL
 #' @name ExponentialDistrib
 #'
 #' @description
-#' The S7 class of the exponential family parametrized by its **mean**
+#' The S7 class of the exponential family parametrized by its mean
 #' \eqn{\mu > 0}, with density \eqn{f(y) = \mu^{-1}e^{-y/\mu}} on
 #' \eqn{[0, \infty)}. It inherits from `continuous_distrib`, so every generic of
 #' the `distrib` class applies to it; the methods listed below are registered on
@@ -292,11 +292,11 @@ S7::method(distrib_rng, ExponentialDistrib) <- function(distrib, n, theta, ...) 
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of one numeric vector, `mu`, of length
 #'   `max(length(y), length(mu))`.
@@ -350,7 +350,7 @@ S7::method(distrib_gradient, ExponentialDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -404,9 +404,9 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -416,9 +416,9 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #'   `max(length(y), length(mu))` and constant at \eqn{-1/\mu^2}.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-#' **observed information** under the model. The exponential is a regular
+#' observed information under the model. The exponential is a regular
 #' family, so the second Bartlett identity holds and this equals the variance
 #' of the score.
 #'
@@ -471,9 +471,9 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected value.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected value.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -535,9 +535,9 @@ S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, ex
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected value.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected value.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -620,7 +620,7 @@ S7::method(distrib_deriv5, ExponentialDistrib) <- function(distrib, y, theta,
 #' @name distrib_grad_y.ExponentialDistrib
 #' @description
 #' Returns \eqn{-1/\mu} for every observation. The log-density is
-#' \eqn{-\log\mu - y/\mu}, which is **linear** in \eqn{y}, so its derivative in
+#' \eqn{-\log\mu - y/\mu}, which is linear in \eqn{y}, so its derivative in
 #' the response is the constant slope \eqn{-1/\mu} and carries no information
 #' about where the observation fell.
 #'
@@ -700,7 +700,7 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #'
 #' @description
 #' Builds the distribution object for the exponential family parametrized by
-#' its **mean** \eqn{\mu > 0}, with density \eqn{\mu^{-1}e^{-y/\mu}} on
+#' its mean \eqn{\mu > 0}, with density \eqn{\mu^{-1}e^{-y/\mu}} on
 #' \eqn{[0, \infty)}. The returned object carries closed-form derivatives of
 #' the log-density to fifth order in the mean and to fourth order in the
 #' response, and closed-form moments.
@@ -727,7 +727,7 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' of variation is 1; the skewness is 2 and the excess kurtosis 6, neither
 #' depending on the parameter. The median is \eqn{\mu\log 2}, below the mean.
 #'
-#' R parametrizes its own `dexp` by the **rate**, \eqn{1/\mu}, and the methods
+#' R parametrizes its own `dexp` by the rate, \eqn{1/\mu}, and the methods
 #' convert. [laplace2_distrib()] is the corresponding choice for the Laplace,
 #' where the rate is what the package carries.
 #'
@@ -768,7 +768,7 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation and \eqn{\mu > 0} the mean,
 #' which is also the standard deviation and the reciprocal of the rate. The
-#' **hazard** is \eqn{f(y)/(1 - F(y))}, the instantaneous failure rate given
+#' hazard is \eqn{f(y)/(1 - F(y))}, the instantaneous failure rate given
 #' survival to \eqn{y}.
 #'
 #' @return An S7 object of class `ExponentialDistrib`, inheriting from

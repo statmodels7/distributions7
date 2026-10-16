@@ -50,8 +50,10 @@ NULL
 #' @param q A numeric vector of quantiles, already recycled by the generic.
 #' @param theta A named list of parameters, already aligned by the generic.
 #' @param order The derivative order, 1 to 4.
-#' @param lower.tail Is the lower tail wanted? A single logical.
-#' @param log Are derivatives of the log probability wanted? A single logical.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
+#' @param log A single logical; `TRUE` selects the derivatives of the log
+#'   probability and `FALSE` those of the probability.
 #' @param generic The generic of that order, called back on the quantiles
 #'   that stay with the family's method: those that are not far, and those
 #'   whose tail reaches outside the double range, which
@@ -233,7 +235,8 @@ log_tail_ls <- list(
 #' @param theta A named list with the location and the second parameter.
 #' @param o The derivative order, 1 to 4.
 #' @param spec The entry of `log_tail_ls` for the family.
-#' @param lower.tail Is the lower tail wanted? A single logical.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
 #'
 #' @return A named list, one component per multi-index of order `o`, in the
 #'   order of [hess_names()] at order two.
@@ -321,7 +324,8 @@ ls_log_tail_derivs <- function(distrib, q, theta, o, spec, lower.tail) {
 #' @param q A numeric vector of quantiles inside the support.
 #' @param theta A named list of parameters, each of the length of `q`.
 #' @param o The derivative order, 1 to 4.
-#' @param lower.tail Is the lower tail wanted? A single logical.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
 #'
 #' @param all_orders Return the orders 1 to `o`, as a list of such lists?
 #'

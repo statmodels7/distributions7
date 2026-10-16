@@ -246,8 +246,8 @@ S7::method(distrib_cdf, Gamma1Distrib) <- function(distrib, q, theta,
 #' @param lower.tail Logical of length 1. When `TRUE`, the default, `p` is
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
-#'   logarithms of probabilities, which is how a quantile deep in a tail is
-#'   requested without the probability underflowing. Defaults to `FALSE`.
+#'   logarithms of probabilities, so that a quantile deep in a tail can be
+#'   requested without underflow in the probability. Defaults to `FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
@@ -350,7 +350,7 @@ S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -412,7 +412,7 @@ S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
 #' \eqn{s' = -s^2} and \eqn{s'' = 2s^3}, so each polygamma function is
 #' evaluated once.
 #'
-#' The curvature in \eqn{\mu} turns **positive** wherever \eqn{y < \mu/2}, so
+#' The curvature in \eqn{\mu} turns positive wherever \eqn{y < \mu/2}, so
 #' the observed information of a gamma is not positive definite at every data
 #' point. Its expectation is, which is one reason a gamma model is fitted by
 #' Fisher scoring; see [distrib_expected_hessian.Gamma1Distrib()].
@@ -423,7 +423,7 @@ S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -502,10 +502,10 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's, where it selects between the Bartlett,
-#'   quadrature, Monte Carlo and outer-product routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's, where it selects between the
+#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -517,9 +517,9 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #'   constant within itself when the parameters are.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The gamma is a
+#' expectation of the observed information under the model. The gamma is a
 #' regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score. \eqn{\psi'} is the trigamma function.
 #'
@@ -628,9 +628,9 @@ S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, th
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -718,9 +718,9 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -891,8 +891,7 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #'
 #' The two arguments choose the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
-#' logarithm,
-#' both parameters being positive.
+#' logarithm, because both parameters are positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps

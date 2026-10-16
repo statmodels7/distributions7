@@ -42,7 +42,7 @@ NULL
 #' The scale formula uses only that \eqn{\sigma} is a scale, so it holds when
 #' there is no location at all and \eqn{z = y/\sigma}. That covers the
 #' exponential's mean, the Weibull's scale and the generalized Pareto's. A
-#' **shape** parameter is not covered: it is written out per family, or
+#' shape parameter is not covered: it is written out per family, or
 #' differenced where it has no elementary form.
 #'
 #' Both components are recycled to the length of `y` by the `+ 0 * y` in the
@@ -55,7 +55,7 @@ NULL
 #' @param theta A named list of parameters with the location first and the
 #'   scale second. The order is positional and is not checked.
 #'
-#' @return An **unnamed** list of two numeric vectors, each of length
+#' @return An unnamed list of two numeric vectors, each of length
 #'   `length(y)`: the location component then the scale one. The caller names
 #'   them.
 #'
@@ -75,7 +75,7 @@ loc_scale_cross_block <- function(distrib, y, theta) {
 #'
 #' @description
 #' The [distrib_cross_y()] body shared by every family that is location-scale
-#' in **both** its parameters: it takes the two components of
+#' in both its parameters: it takes the two components of
 #' [loc_scale_cross_block()] and names them after the family's own parameters.
 #' Registered on the logistic, the Cauchy, the Gumbel and the Laplace.
 #'
@@ -186,7 +186,7 @@ S7::method(distrib_cross_y, GumbelDistrib) <- loc_scale_cross_y
 #'   the parameter scale.
 #' @param ... Unused.
 #' @return A named list with components `mu` and `sigma`, each a numeric vector
-#'   of length `length(y)`. The `mu` component is **exactly zero**
+#'   of length `length(y)`. The `mu` component is exactly zero
 #'   everywhere, the second response derivative of a Laplace being zero
 #'   almost everywhere, and the `sigma` component is
 #'   \eqn{\mathrm{sign}(y-\mu)/\sigma^2}, which jumps sign at the kink.
@@ -442,7 +442,7 @@ mapped_cross_y <- function(distrib, parent, th_par, maps, y) {
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with one numeric vector per parameter of the **new**
+#' @return A named list with one numeric vector per parameter of the new
 #'   parametrization, keyed by `distrib@params`, each of length
 #'   `length(y)`.
 #'

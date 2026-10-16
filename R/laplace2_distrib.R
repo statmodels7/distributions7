@@ -6,7 +6,7 @@ NULL
 #'
 #' @description
 #' The S7 class of the Laplace (double exponential) family written by its
-#' **rate** \eqn{\lambda > 0} in place of its scale, with density
+#' rate \eqn{\lambda > 0} in place of its scale, with density
 #' \eqn{f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is
 #' the same law as [laplace_distrib()] at \eqn{\lambda = 1/\sigma}; the
 #' parametrization differs and the derivatives with it. It inherits from
@@ -18,7 +18,7 @@ NULL
 #' harder. `penalties7::lasso_penalty()` is this family with the location held
 #' at zero.
 #'
-#' Like [laplace_distrib()], this family has a **kink** at \eqn{y = \mu} and is
+#' Like [laplace_distrib()], this family has a kink at \eqn{y = \mu} and is
 #' non-regular in its location; `params_smooth` is `c(mu = FALSE,
 #' lambda = TRUE)`.
 #'
@@ -262,7 +262,7 @@ S7::method(distrib_quantile, Laplace2Distrib) <- function(distrib, p, theta, low
 #' @title Laplace Random Number Generator, Rate Parametrization
 #' @name distrib_rng.Laplace2Distrib
 #' @description
-#' Draws `n` independent Laplace variates by **inverse transform**: `n` uniform
+#' Draws `n` independent Laplace variates by inverse transform: `n` uniform
 #' variates from [stats::runif()] are passed through
 #' [distrib_quantile.Laplace2Distrib()]. The base class draws the same way for
 #' a family with its own quantile method, so the method gives the draws that
@@ -321,11 +321,11 @@ S7::method(distrib_rng, Laplace2Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `lambda` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `lambda`, each of
 #'   length `max(length(y), length(mu), length(lambda))`.
@@ -385,11 +385,11 @@ S7::method(distrib_gradient, Laplace2Distrib) <- function(distrib, y, theta, sca
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `lambda` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `lambda_lambda` and
 #'   `mu_lambda`, each of length `length(y)`. `mu_mu` is a vector of zeros and
@@ -429,7 +429,7 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #'       -I(\lambda) = -\dfrac{1}{\lambda^2}, \qquad
 #'       -I(\mu, \lambda) = 0.}
 #'
-#' For \eqn{\mu} this is the **variance of the score**. It is not the
+#' For \eqn{\mu} this is the variance of the score. It is not the
 #' expectation of [distrib_hessian.Laplace2Distrib()], which is identically
 #' zero: the
 #' family has a kink at \eqn{y = \mu} and the second Bartlett identity fails
@@ -448,9 +448,9 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `lambda` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's. As for [laplace_distrib()], the
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's. As for [laplace_distrib()], the
 #'   strategy `"mc"` of the generic, which averages the observed second
 #'   derivative over simulated draws, would give 0 in the location, while
 #'   `"opg"`, `"bartlett"` and `"integrate"` read the product of scores.
@@ -458,14 +458,14 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `lambda_lambda` and
 #'   `mu_lambda`, each of length `length(y)`.
 #'
 #' @section Notation:
-#' The **expected information** is the variance of the score. For a regular
-#' family it also equals the expectation of the **observed information**, by
+#' The expected information is the variance of the score. For a regular
+#' family it also equals the expectation of the observed information, by
 #' the second Bartlett identity; this family is not regular in \eqn{\mu} and
 #' the two differ there.
 #'
@@ -501,8 +501,8 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' @description
 #' Computes the four distinct third derivatives of the Laplace log-density with
 #' respect to \eqn{\mu} and \eqn{\lambda}. In this parametrization the
-#' log-density is \eqn{\log(\lambda/2) - \lambda|y-\mu|}, which is **linear in
-#' \eqn{\lambda}** apart from \eqn{\log\lambda}, and piecewise linear in
+#' log-density is \eqn{\log(\lambda/2) - \lambda|y-\mu|}, which is linear in
+#' \eqn{\lambda} apart from \eqn{\log\lambda}, and piecewise linear in
 #' \eqn{\mu}. Every third derivative involving \eqn{\mu} at all is therefore
 #' zero, and the only surviving component comes from \eqn{\log\lambda}:
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},}
@@ -520,7 +520,7 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' @param expected Ignored: the observed values do not depend on the data, so
 #'   they are already their own expectations. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx Ignored, for the same reason as `expected`.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -582,7 +582,7 @@ S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expec
 #' @param expected Ignored: the observed values do not depend on the data, so
 #'   they are already their own expectations. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx Ignored, for the same reason as `expected`.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -756,7 +756,7 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #'
 #' @description
 #' Builds the distribution object for the Laplace (double exponential) family
-#' written by its **rate** \eqn{\lambda > 0}, with density
+#' written by its rate \eqn{\lambda > 0}, with density
 #' \eqn{(\lambda/2)\exp(-\lambda|y-\mu|)}. It is the same law as
 #' [laplace_distrib()] at \eqn{\lambda = 1/\sigma}, and every quantity that
 #' does not involve the second parameter is identical between them.
@@ -800,7 +800,7 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #'
 #' A second consequence is visible at the higher orders. The log-density is
 #' \eqn{\log(\lambda/2) - \lambda|r|}, linear in \eqn{\lambda} apart from
-#' \eqn{\log\lambda} and piecewise linear in \eqn{\mu}, so **every** third and
+#' \eqn{\log\lambda} and piecewise linear in \eqn{\mu}, so every third and
 #' fourth derivative except the pure-\eqn{\lambda} ones is exactly zero, and
 #' the pure-\eqn{\lambda} ones do not depend on the data. Hence
 #' `expected = TRUE` returns the same values at those orders. The observed

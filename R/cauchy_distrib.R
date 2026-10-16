@@ -108,7 +108,7 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
-#'   support, so no value is rejected.
+#'   support, so every value is accepted.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive; the generic signals an
@@ -320,7 +320,7 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta, ...) {
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{r^2 - \sigma^2}{\sigma d}.}
 #'
-#' The score in \eqn{\mu} is **redescending**: it rises to \eqn{1/\sigma} at
+#' The score in \eqn{\mu} is redescending: it rises to \eqn{1/\sigma} at
 #' \eqn{r = \sigma} and falls back towards zero as \eqn{|r|} grows, so an
 #' observation far from the location contributes almost nothing to the
 #' estimating equation. That is the mechanism behind the robustness of a Cauchy
@@ -333,11 +333,11 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -387,7 +387,7 @@ S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale
 #'       \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{4\sigma r}{d^2}.}
 #'
-#' The curvature in \eqn{\mu} turns **positive** wherever \eqn{|r| > \sigma}, so
+#' The curvature in \eqn{\mu} turns positive wherever \eqn{|r| > \sigma}, so
 #' a single observation beyond one scale unit contributes convexity and the
 #' observed information can fail to be positive definite. The expected values
 #' are well behaved, which is why Fisher scoring is the steadier route on this
@@ -399,11 +399,11 @@ S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
@@ -462,22 +462,22 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The Cauchy is a
+#' expectation of the observed information under the model. The Cauchy is a
 #' regular family in both parameters, so the second Bartlett identity holds and
 #' this equals the variance of the score.
 #'
@@ -518,10 +518,11 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #' \eqn{2/\sigma^3}. The kernel evaluates them as described in
 #' [distrib_deriv5.CauchyDistrib()], without forming \eqn{r^2}.
 #'
-#' With `expected = TRUE` the expectations under the model are returned, also
-#' in closed form: the two components odd in \eqn{r} vanish by symmetry, and
-#' the other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes
-#' are closed form, so no quadrature is run and `approx` and `nsim` are ignored.
+#' With `expected = TRUE` the expectations under the model are returned, also in
+#' closed form: the two components odd in \eqn{r} vanish by symmetry, and the
+#' other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes are
+#' closed form, so the method runs no quadrature and ignores `approx` and
+#' `nsim`.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -532,14 +533,14 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
 #'   `mu_sigma_sigma` and `sigma_sigma_sigma`, each of length
@@ -599,14 +600,14 @@ S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_sigma`, `mu_mu_sigma_sigma`, `mu_sigma_sigma_sigma` and

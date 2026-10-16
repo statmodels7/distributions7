@@ -100,7 +100,7 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #'
 #' @details
 #' # The quantity that is differenced
-#' The quantity differenced is the **response gradient**, not the log-density,
+#' The quantity differenced is the response gradient, not the log-density,
 #' so a family with an analytical `distrib_grad_y` pays for exactly one
 #' finite-difference layer. Where the response gradient is itself the
 #' finite-difference fallback the composition is the four-point mixed stencil
@@ -142,8 +142,8 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' # 'which' costs a pair of evaluations for the named parameter alone.
 #' numerical_cross_y(d, y, th, which = "sigma")
 #'
-#' @seealso [distrib_cross_y()], the generic it serves;
-#'   [numerical_grad_y()] for the quantity it differences;
+#' @seealso [distrib_cross_y()], the generic that it serves;
+#'   [numerical_grad_y()] for the quantity that it differences;
 #'   [numerical_cross2_y()] for the third-order analogue.
 #' @export
 numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3),
@@ -324,7 +324,7 @@ S7::method(distrib_cross_y, StudentT1Distrib) <- function(distrib, y, theta,
 #' @param y A numeric vector of observations inside the truncation interval.
 #'   Outside it the parent's value is returned, because the method performs
 #'   no test.
-#' @param theta A named list of parameters of the **parent**, aligned by the
+#' @param theta A named list of parameters of the parent, aligned by the
 #'   generic. Truncation adds no parameter, the endpoints being constants.
 #' @param scale Handled by the generic after dispatch; this method always
 #'   returns the parameter scale, and passes `"parameter"` down so the chain

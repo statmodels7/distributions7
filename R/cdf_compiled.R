@@ -53,7 +53,8 @@
 #' @param distrib A distribution object of one of the families above.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameter values.
-#' @param lower.tail Is the lower tail wanted? A single logical.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
 #' @param log,log.p Are derivatives of (or values of) the log probability
 #'   wanted? A single logical.
 #' @param ... Unused.

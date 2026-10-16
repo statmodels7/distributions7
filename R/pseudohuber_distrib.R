@@ -106,7 +106,7 @@ PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_di
 #' finite where \eqn{z^2} overflows.
 #'
 #' The normalizing constant is formed on the log scale through the
-#' **exponentially scaled** Bessel function,
+#' exponentially scaled Bessel function,
 #' \eqn{\log K_1(x) = \log\{e^x K_1(x)\} - x}. The identity is exact, and the
 #' scaled function stays finite where \eqn{K_1(\sqrt{\nu})} itself
 #' underflows, which happens beyond \eqn{\sqrt{\nu} \approx 700}.
@@ -114,7 +114,7 @@ PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_di
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
-#'   support, so no value is rejected.
+#'   support, so every value is accepted.
 #' @param theta A named list with components `mu`, `sigma` and `nu`, each a
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
@@ -397,8 +397,8 @@ S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta, ...) 
 #' amount to the estimating equation. Unlike the score of a Student t, it does
 #' not return to zero.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries. This method always returns the parameter scale. The
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries. This method always returns the parameter scale. The
 #' arithmetic runs in a compiled kernel; the Bessel ratio enters only the
 #' \eqn{\nu} component and is formed from the exponentially scaled functions.
 #'
@@ -409,7 +409,7 @@ S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta, ...) 
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors, `mu`, `sigma` and `nu`, each
@@ -489,7 +489,7 @@ S7::method(distrib_gradient, PseudoHuberDistrib) <- function(distrib, y, theta, 
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of six numeric vectors, `mu_mu`, `sigma_sigma`,
@@ -602,7 +602,7 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' @name distrib_deriv3.PseudoHuberDistrib
 #' @description
 #' Computes the ten distinct third derivatives of the pseudo-Huber log-density
-#' in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, **in closed form**, in a compiled
+#' in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, in closed form, in a compiled
 #' kernel. Every component but the pure-\eqn{\nu} one is a rational function of
 #' \eqn{r = y - \mu}, \eqn{\sigma} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
 #' Bessel functions enter through \eqn{\nu} alone. The derivatives in
@@ -616,7 +616,7 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' \eqn{\nu^{-1/2}}. The same routes serve the score, the Hessian and the
 #' fourth order.
 #'
-#' **The expected third derivatives have no closed form.** With
+#' The expected third derivatives have no closed form. With
 #' `expected = TRUE` the method calls [expected_derivative()], which integrates
 #' the observed derivatives against the density by the strategy `approx` names.
 #' That is the one place on this page where `approx` and `nsim` are read.
@@ -632,7 +632,7 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
 #'   or `"opg"`. Read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
@@ -679,12 +679,12 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' @name distrib_deriv4.PseudoHuberDistrib
 #' @description
 #' Computes the fifteen distinct fourth derivatives of the pseudo-Huber
-#' log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, **in closed form**, in
+#' log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, in closed form, in
 #' a compiled kernel. The Bessel functions enter through \eqn{\nu} alone, and
 #' their derivatives come from the three routes described in
 #' [distrib_deriv3.PseudoHuberDistrib()].
 #'
-#' **The expected fourth derivatives have no closed form.** With
+#' The expected fourth derivatives have no closed form. With
 #' `expected = TRUE` the method calls [expected_derivative()], which is the one
 #' place on this page where `approx` and `nsim` are read.
 #'
@@ -699,7 +699,7 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
 #'   or `"opg"`. Read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
@@ -747,7 +747,7 @@ S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' The family is a location family in \eqn{\mu}, so this is exactly the
 #' negative of the location score
 #' [distrib_gradient.PseudoHuberDistrib()]`$mu`, and like it, it is
-#' **bounded**: it tends to \eqn{\mp 1/\sigma} as the residual runs away. This
+#' bounded: it tends to \eqn{\mp 1/\sigma} as the residual runs away. This
 #' quantity is what a quantile residual's delta-method standard error and a
 #' change of variable in the response both need.
 #'
@@ -804,7 +804,7 @@ S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\nu}{\sigma^2 D^3}.}
 #' The family is a location family, so this equals the pure-location entry of
 #' [distrib_hessian.PseudoHuberDistrib()], with no sign change; two derivatives
-#' in \eqn{\mu} carry two factors of \eqn{-1}. It is **negative everywhere**,
+#' in \eqn{\mu} carry two factors of \eqn{-1}. It is negative everywhere,
 #' so the log-density is concave in the response, and it decays like
 #' \eqn{|r|^{-3}} in the tails.
 #'
@@ -899,13 +899,13 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' # The two limits, with their rates
 #'
 #' At \eqn{\nu \to 0} the exponent is \eqn{|y-\mu|/\sigma} and the family is
-#' the **Laplace** with scale \eqn{\sigma}. The normalizing constant satisfies
+#' the Laplace with scale \eqn{\sigma}. The normalizing constant satisfies
 #' \eqn{\sqrt{\nu} K_1(\sqrt{\nu}) = 1 + (\nu/4)\log\nu + O(\nu)}, so the
 #' density approaches the Laplace density at rate \eqn{O(\nu\log(1/\nu))}.
 #'
 #' At \eqn{\nu \to \infty} the exponent is
 #' \eqn{\sqrt{\nu} + (y-\mu)^2/(2\sqrt{\nu}\sigma^2)} and the family is the
-#' **Gaussian** with standard deviation \eqn{\sigma\nu^{1/4}}: the largest gap
+#' Gaussian with standard deviation \eqn{\sigma\nu^{1/4}}: the largest gap
 #' is `1.5e-04` at \eqn{\nu = 10^4} and `1.5e-07` at \eqn{10^8}. Note that the
 #' spread grows with \eqn{\nu}, so \eqn{\sigma} alone is not the standard
 #' deviation.
@@ -948,7 +948,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' generator does not use either: it draws the family as a normal variance
 #' mixture with a generalized inverse Gaussian mixing variable.
 #'
-#' The **expected information has no elementary form either**, but it depends
+#' The expected information has no elementary form either, but it depends
 #' on \eqn{\nu} alone once the location and the scale are factored out, so it
 #' is one integral over \eqn{z} per distinct \eqn{\nu}, taken by the rule of
 #' [loc_scale_expected()]; see

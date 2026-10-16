@@ -13,7 +13,7 @@ NULL
 #'
 #' @description
 #' The S7 class of the von Mises family written in its mean direction
-#' \eqn{\mu} and its **mean resultant length** \eqn{\rho \in (0, 1)}, which is
+#' \eqn{\mu} and its mean resultant length \eqn{\rho \in (0, 1)}, which is
 #' the quantity that is conventionally reported in circular statistics and
 #' equals one minus the circular variance. It inherits from
 #' `continuous_distrib`; the methods listed below are registered on it
@@ -204,15 +204,15 @@ S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
 #' with \eqn{\kappa = A^{-1}(\rho)} and
 #' \eqn{\kappa'(\rho) = 1/A'(\kappa)} from the inverse function rule.
 #'
-#' The map touches the **second parameter only**, so the direction's component
+#' The map touches the second parameter only, so the direction's component
 #' is unchanged from the concentration parametrization. In the second,
 #' \eqn{\partial \log I_0(\kappa(\rho))/\partial\rho = A(\kappa)\kappa'(\rho)
 #' = \rho\,\kappa'(\rho)}, so the difference \eqn{\cos(y-\mu) - \rho} is
 #' formed from \eqn{\rho} itself. The components are computed by a compiled
 #' kernel.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries. This method always returns the parameter scale.
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries. This method always returns the parameter scale.
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}.
@@ -220,11 +220,11 @@ S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. `mu` must lie in
 #'   \eqn{(-\pi, \pi)} and `rho` in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `rho`, each of length
 #'   `max(length(y), length(mu), length(rho))`.
@@ -278,7 +278,7 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #' by a compiled kernel.
 #'
 #' Unlike in the concentration parametrization, the pure second derivative is
-#' **not** free of the data: the term in \eqn{\kappa''}, the curvature of
+#' not free of the data: the term in \eqn{\kappa''}, the curvature of
 #' the map, multiplies \eqn{\cos(y-\mu)}.
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
@@ -287,11 +287,11 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. `mu` must lie in
 #'   \eqn{(-\pi, \pi)} and `rho` in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `rho_rho` and
 #'   `mu_rho`, each of length `max(length(y), length(mu), length(rho))`.
@@ -344,7 +344,7 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' The last equality follows from the transformation rule for the information.
 #' The information in \eqn{\kappa} is \eqn{A'(\kappa)} and
 #' \eqn{\kappa'(\rho) = 1/A'(\kappa)}, so the information in \eqn{\rho} is
-#' \eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}, the **reciprocal** of the
+#' \eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}, the reciprocal of the
 #' information in \eqn{\kappa}. The two parameters remain orthogonal.
 #'
 #' `approx` and `nsim` are ignored, the expectation being exact.
@@ -355,15 +355,15 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu` and `rho`, each a numeric
 #'   vector of length 1. `rho` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being exact. Accepted so that
-#'   the signature matches the generic's, where it selects between
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because the expectation is exact. It is accepted
+#'   so that the signature matches the generic's, where it selects between
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `rho_rho` and
 #'   `mu_rho`, each of length `length(y)` and constant along it. `mu_rho` is
@@ -411,7 +411,7 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #' \eqn{[-\pi, \pi)}, obtained numerically by delegating to
 #' [mean.distrib()] at the implied concentration.
 #'
-#' It is **not** a circular quantity, and neither parameter describes it.
+#' It is not a circular quantity, and neither parameter describes it.
 #' \eqn{\mu} is the mean *direction* and \eqn{\rho} the mean resultant length;
 #' \eqn{\mathbb{E}[Y]} differs from \eqn{\mu} whenever \eqn{\mu \ne 0}, because
 #' the interval is cut at \eqn{\pm\pi} and the density is not symmetric about
@@ -421,8 +421,9 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #' @param x A `VonMises2Distrib` object, from [vonmises2_distrib()]. The
 #'   argument is named `x` because the generic is [base::mean()].
 #' @param theta A named list with components `mu` and `rho`, each a numeric
-#'   vector of length 1. `rho` must lie in \eqn{(0, 1)}. Aligned and
-#'   validated by name, so a missing or out-of-bounds component signals an error.
+#'   vector of length 1. `rho` must lie in \eqn{(0, 1)}. It is aligned and
+#'   validated by name, so a missing or out-of-bounds component signals an
+#'   error.
 #' @param ... Passed on to [mean.distrib()], which reads the quadrature's
 #'   settings.
 #'
@@ -444,7 +445,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #'
 #' @description
 #' Builds the distribution object for the von Mises family parametrized by its
-#' mean direction \eqn{\mu} and its **mean resultant length**
+#' mean direction \eqn{\mu} and its mean resultant length
 #' \eqn{\rho \in (0, 1)}. The returned object carries closed-form derivatives
 #' of the log-density to fourth order, a closed-form expected information, and
 #' the same Bessel-series distribution function the concentration
@@ -474,7 +475,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' \eqn{\mathbb{E}[\cos(Y-\mu)] = \rho}. The map \eqn{\rho = A(\kappa)} is a
 #' strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}.
 #'
-#' **Its inverse has no closed form**, which is why this is a family of its own
+#' Its inverse has no closed form, which is why this is a family of its own
 #' and not a [reparametrize()] of the other. numericals7 obtains \eqn{\kappa}
 #' by Newton's method on \eqn{\kappa}, and its four derivatives come from the
 #' inverse function rule applied to \eqn{A'} through \eqn{A^{(4)}}, which
@@ -489,7 +490,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #'
 #' # Derivatives and information
 #'
-#' The map touches the **second parameter only**, so every chain rule is the
+#' The map touches the second parameter only, so every chain rule is the
 #' one-variable one and the derivatives are exact at every order. Every
 #' component carrying at least one \eqn{\mu} collapses to a single term, the
 #' concentration parametrization's \eqn{\mu}-derivatives being linear in
@@ -508,7 +509,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' [mean.VonMises2Distrib()] returns the ordinary expectation of \eqn{Y} on
 #' \eqn{[-\pi, \pi)}, which differs from \eqn{\mu} whenever \eqn{\mu \ne 0};
 #' [vonmises1_distrib()] discusses the same distinction. What this
-#' parametrization offers is that the **second** parameter can be computed
+#' parametrization offers is that the second parameter can be computed
 #' directly from a sample, which is not the case for the concentration.
 #'
 #' @section Notation:
@@ -590,7 +591,7 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @description
 #' Computes the four distinct third derivatives of the log-density in
 #' \eqn{\mu} and \eqn{\rho}, in closed form. Every component carrying at least
-#' one \eqn{\mu} collapses to a **single term**
+#' one \eqn{\mu} collapses to a single term
 #' \eqn{D_a \kappa^{(b)}(\rho)}, with \eqn{D_a} the \eqn{a}-th
 #' \eqn{\mu}-derivative of \eqn{\cos(y-\mu)} and \eqn{\kappa^{(b)}} the
 #' \eqn{b}-th derivative of \eqn{A^{-1}}: the concentration parametrization's
@@ -612,7 +613,7 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #'   vector of length 1 or of the length of `y`. `rho` must lie in
 #'   \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -623,7 +624,7 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_rho`,
 #'   `mu_rho_rho` and `rho_rho_rho`, each of length `length(y)`.
@@ -689,7 +690,7 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. `rho` must lie in
 #'   \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -700,7 +701,7 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_rho`, `mu_mu_rho_rho`, `mu_rho_rho_rho` and `rho_rho_rho_rho`,

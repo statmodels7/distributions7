@@ -135,8 +135,9 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param order `1` for the block of [distrib_grad_y()], `2` for that of
-#'   [distrib_hess_y()]. Default `1`.
-#' @param at The index of the scale parameter in `distrib@params`. Default `1`.
+#'   [distrib_hess_y()]. The default is `1`.
+#' @param at The index of the scale parameter in `distrib@params`. The default
+#'   is `1`.
 #'
 #' @return A numeric vector as long as `y`: the scale's own pair alone, not a
 #'   list.
@@ -208,7 +209,8 @@ scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
 #' on the Weibull, whose second parameter is a shape. The generalized Pareto has
 #' compiled methods of its own.
 #'
-#' @param at The index of the scale parameter in `distrib@params`. Default `1`.
+#' @param at The index of the scale parameter in `distrib@params`. The default
+#'   is `1`.
 #'
 #' @return A list of two method bodies, named `grad2` and `hess2`, each with
 #'   the generics' signature.
@@ -286,7 +288,8 @@ scale_only_theta2_methods <- function(at = 1L) {
 #' exponential and the Weibull; the generalized Pareto has a compiled method of
 #' its own.
 #'
-#' @param at The index of the scale parameter in `distrib@params`. Default `1`.
+#' @param at The index of the scale parameter in `distrib@params`. The default
+#'   is `1`.
 #'
 #' @return A method body with [distrib_cross2_y()]'s signature, returning a
 #'   named list with one numeric vector per parameter.
@@ -485,9 +488,9 @@ rm(.s)
 #' \eqn{t = \log y}, \eqn{g} is the gaussian's log-density in \eqn{t}, and a
 #' prime denotes a derivative in \eqn{t}.
 #'
-#' @seealso [distrib_cross2_y.Lognormal1Distrib()], the three methods it
-#'   serves, and [mapped_theta2()], the route a family whose transformation
-#'   DOES carry a parameter takes instead.
+#' @seealso [distrib_cross2_y.Lognormal1Distrib()], the three methods that it
+#'   serves, and [mapped_theta2()], the route a family whose transformation DOES
+#'   carry a parameter takes instead.
 #'
 #' @keywords internal
 #'

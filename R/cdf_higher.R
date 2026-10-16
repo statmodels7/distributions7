@@ -63,9 +63,11 @@ NULL
 #'   [`deriv_names(distrib@params, k)`][deriv_names], on the natural scale and
 #'   the lower tail.
 #' @param order The derivative order wanted, 1 to 4.
-#' @param lower.tail Is the lower tail wanted? A single logical.
-#' @param log Are derivatives of the log probability wanted? A single logical.
-#'   `FALSE` reads only `dF[[order]]` and the lower tables are then unused.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
+#' @param log A single logical; `TRUE` selects the derivatives of the log
+#'   probability and `FALSE` those of the probability. `FALSE` reads only
+#'   `dF[[order]]` and the lower tables are then unused.
 #'
 #' @return A named list of numeric vectors of the requested order alone. The
 #'   lower orders are consumed on the way and do not appear in the result.
@@ -110,7 +112,8 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #' @param distrib A distribution object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameter values.
-#' @param lower.tail Is the lower tail wanted? A single logical.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
 #' @param Fq The value of `tail_cdf()`, or a plain numeric vector of
 #'   distribution function values.
 #'
@@ -448,13 +451,14 @@ own_cdf_deriv <- function(distrib, q, theta, k) {
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters on the parameter scale. Components
 #'   may be vectors, in which case one value is returned per setting.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default. With `log = FALSE`, `FALSE` flips the sign of every component;
-#'   with `log = TRUE` it returns the derivatives of \eqn{\log S}, which are
-#'   not the negatives of the lower-tail ones.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default. Far into a tail the probability underflows to zero and
-#'   the result is `-Inf` or `NaN`.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail. With `log = FALSE`, `FALSE` flips
+#'   the sign of every component; with `log = TRUE` it returns the derivatives
+#'   of \eqn{\log S}, which are not the negatives of the lower-tail ones.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
+#'   Far into a tail the probability underflows to zero and the result is `-Inf`
+#'   or `NaN`.
 #' @param ... Passed to methods. No shipped method reads it.
 #'
 #' @return A named list of numeric vectors, keyed as
@@ -529,10 +533,10 @@ distrib_deriv4_cdf <- S7::new_generic(
 #' @param distrib An object inheriting from `distrib`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters on the parameter scale.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return For `distrib_deriv3_cdf()`, a named list of third-derivative

@@ -14,7 +14,7 @@ NULL
 #'
 #' The family is symmetric about \eqn{\mu}, which is therefore both the mean
 #' and the median. Its variance is \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is
-#' **not** the standard deviation, and its excess kurtosis is \eqn{6/5},
+#' not the standard deviation, and its excess kurtosis is \eqn{6/5},
 #' slightly heavier than a Gaussian's.
 #'
 #' Build one with [logistic_distrib()]. This page documents the raw S7
@@ -103,7 +103,7 @@ LogisticDistrib <- S7::new_class("LogisticDistrib", parent = continuous_distrib)
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
-#'   support, so no value is rejected.
+#'   support, so every value is accepted.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive; the generic signals an
@@ -314,11 +314,11 @@ S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -384,11 +384,11 @@ S7::method(distrib_gradient, LogisticDistrib) <- function(distrib, y, theta, sca
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
@@ -447,22 +447,22 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The logistic is
+#' expectation of the observed information under the model. The logistic is
 #' a regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score.
 #'
@@ -519,9 +519,9 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned, in closed form. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`. Ignored, a closed form being available for the expected
+#'   `"opg"`. Ignored, because a closed form is available for the expected
 #'   values; accepted so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -598,9 +598,9 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned, in closed form. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`. Ignored, a closed form being available for the expected
+#'   `"opg"`. Ignored, because a closed form is available for the expected
 #'   values; accepted so that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.

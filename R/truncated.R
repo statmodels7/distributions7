@@ -1490,7 +1490,8 @@ trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored. Present so that the signature matches the generic's.
+#' @param approx Ignored. It is present so that the signature matches the
+#'   generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -2161,7 +2162,8 @@ S7::method(distrib_hessian, TruncatedDiscreteDistrib) <- trunc_hessian
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored. Present so that the signature matches the generic's.
+#' @param approx Ignored. It is present so that the signature matches the
+#'   generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -2235,7 +2237,8 @@ S7::method(expected_hessian_exact, TruncatedContinuousDistrib) <- function(x, ..
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored. Present so that the signature matches the generic's.
+#' @param approx Ignored. It is present so that the signature matches the
+#'   generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -2525,8 +2528,8 @@ S7::method(distrib_hess_y, TruncatedContinuousDistrib) <- function(distrib, y, t
 #' \eqn{\mathbb{E}_T} is expectation under the truncated law.
 #'
 #' @seealso [distrib_grad_y.TruncatedContinuousDistrib()] and
-#'   [distrib_hess_y.TruncatedContinuousDistrib()], the two methods it serves,
-#'   and [trunc_inside()] for the test it applies.
+#'   [distrib_hess_y.TruncatedContinuousDistrib()], the two methods that it
+#'   serves, and [trunc_inside()] for the test that it applies.
 #'
 #' @keywords internal
 #'

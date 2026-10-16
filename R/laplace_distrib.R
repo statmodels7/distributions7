@@ -12,7 +12,7 @@ NULL
 #' applies to it; the methods listed below are registered on it directly and
 #' everything else comes from the parent.
 #'
-#' The density has a **kink** at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
+#' The density has a kink at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
 #' differentiable. This makes the family non-regular in its location: the
 #' observed second derivative in \eqn{\mu} is 0 almost everywhere while the
 #' information is \eqn{1/\sigma^2}. The class records that by setting
@@ -114,7 +114,7 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
-#'   support, so no value is rejected.
+#'   support, so every value is accepted.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive; the generic signals an
@@ -311,7 +311,7 @@ S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lowe
 #' @title Laplace Random Number Generator
 #' @name distrib_rng.LaplaceDistrib
 #' @description
-#' Draws `n` independent Laplace variates by **inverse transform**: `n` uniform
+#' Draws `n` independent Laplace variates by inverse transform: `n` uniform
 #' variates from [stats::runif()] are passed through
 #' [distrib_quantile.LaplaceDistrib()]. The base class draws the same way for
 #' a family with its own quantile method, so the method gives the draws that
@@ -359,7 +359,7 @@ S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta, ...) {
 #'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).}
 #'
 #' The score in \eqn{\mu} takes only the three values \eqn{-1/\sigma}, 0 and
-#' \eqn{+1/\sigma}: it carries the **sign** of the residual and nothing about
+#' \eqn{+1/\sigma}: it carries the sign of the residual and nothing about
 #' its size, which is why the maximum likelihood estimate of \eqn{\mu} is the
 #' sample median. At \eqn{r = 0} exactly, `sign(0)` is 0 and the method returns
 #' 0, the midpoint of the subdifferential \eqn{[-1/\sigma, 1/\sigma]}; the
@@ -371,11 +371,11 @@ S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each of
 #'   length `max(length(y), length(mu), length(sigma))`.
@@ -424,7 +424,7 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #'       \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{\mathrm{sign}(r)}{\sigma^2}.}
 #'
-#' The first entry is **exactly zero for every observation**, and that is the
+#' The first entry is exactly zero for every observation, and that is the
 #' correct value: the log-density is piecewise linear in \eqn{\mu}, so away
 #' from \eqn{r = 0} its second derivative vanishes, and at \eqn{r = 0} the
 #' derivative does not exist. The curvature of the log-likelihood in the
@@ -432,7 +432,7 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' expectation of this second derivative is 0 although the information is
 #' positive.
 #'
-#' The consequence is that the observed information here is **not** the
+#' The consequence is that the observed information here is not the
 #' information. [distrib_expected_hessian.LaplaceDistrib()] returns
 #' \eqn{-1/\sigma^2}, obtained from the variance of the score, and that page
 #' explains which identity holds and which fails.
@@ -443,11 +443,11 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `max(length(y), length(mu), length(sigma))`.
@@ -492,7 +492,7 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #'       -I(\sigma) = -\dfrac{1}{\sigma^2}, \qquad
 #'       -I(\mu, \sigma) = 0.}
 #'
-#' For \eqn{\mu} this is **not** the expectation of
+#' For \eqn{\mu} this is not the expectation of
 #' [distrib_hessian.LaplaceDistrib()], which is identically zero. It is the
 #' variance of the score: \eqn{\partial\ell/\partial\mu = \mathrm{sign}(r)/\sigma}
 #' has mean 0 and square \eqn{1/\sigma^2} almost surely, so
@@ -508,31 +508,30 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's. Of the strategies of the generic,
-#'   `"mc"` averages the observed second derivative over simulated draws
-#'   and would give 0 for the location; `"opg"`, `"bartlett"` and
-#'   `"integrate"` (which uses the Bartlett identity for a family with a
-#'   non-smooth parameter) read the product of scores and give
-#'   \eqn{-1/\sigma^2}.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's. Of the strategies of the generic,
+#'   `"mc"` averages the observed second derivative over simulated draws and
+#'   would give 0 for the location; `"opg"`, `"bartlett"` and `"integrate"`
+#'   (which uses the Bartlett identity for a family with a non-smooth parameter)
+#'   read the product of scores and give \eqn{-1/\sigma^2}.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `sigma_sigma` and
 #'   `mu_sigma`, each of length `length(y)` and constant within itself when the
 #'   parameters are.
 #'
 #' @section Notation:
-#' The **observed information** is \eqn{-\partial^2\ell/\partial\theta\,\partial\theta^\top}
-#' at the data. The **expected information** is usually its expectation, and
+#' The observed information is \eqn{-\partial^2\ell/\partial\theta\,\partial\theta^\top}
+#' at the data. The expected information is usually its expectation, and
 #' for a regular family the two agree with the variance of the score by the
-#' second Bartlett identity. The Laplace is **not** regular in \eqn{\mu}: the
+#' second Bartlett identity. The Laplace is not regular in \eqn{\mu}: the
 #' first identity \eqn{\mathbb{E}[\partial\ell/\partial\mu] = 0} still holds,
-#' the second does not, and the information is **defined** as the variance of
+#' the second does not, and the information is defined as the variance of
 #' the score. That is what this method returns.
 #'
 #' @seealso [distrib_hessian.LaplaceDistrib()], whose `mu_mu` is zero;
@@ -577,8 +576,8 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #'
 #' With `expected = TRUE` the expectations under the model are returned, also in
 #' closed form, using \eqn{\mathbb{E}|r| = \sigma} and
-#' \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form, so no
-#' quadrature is run and `approx` and `nsim` are ignored.
+#' \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form, so the
+#' method runs no quadrature and ignores `approx` and `nsim`.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -589,9 +588,9 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -655,9 +654,9 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 #' @param expected Logical of length 1. When `TRUE` the expectations under the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected values.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected values.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -791,7 +790,7 @@ S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' @name distrib_hess_y.LaplaceDistrib
 #' @description
 #' Returns zero for every observation. The Laplace log-density is
-#' \eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is **linear** in \eqn{y} on
+#' \eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is linear in \eqn{y} on
 #' each side of the location, so its second derivative in the response vanishes
 #' wherever it exists. At \eqn{y = \mu} the first derivative drops from
 #' \eqn{1/\sigma} to \eqn{-1/\sigma} and the second derivative does not exist;
@@ -845,7 +844,7 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' likelihood estimates are the sample median and the mean absolute deviation
 #' about it, both available in closed form.
 #'
-#' This family is **not regular** in \eqn{\mu}: the density has a corner at
+#' This family is not regular in \eqn{\mu}: the density has a corner at
 #' \eqn{y = \mu} and the observed second derivative there is zero almost
 #' everywhere, while the information is \eqn{1/\sigma^2}. The object records
 #' this in `params_smooth`, and the details below say what follows from it.
@@ -881,7 +880,7 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #'   the sign of the residual;
 #' - the observed second derivative in \eqn{\mu} is 0 wherever it exists, so
 #'   [distrib_hessian.LaplaceDistrib()] returns a vector of zeros;
-#' - the second Bartlett identity fails, and the information is **defined** as
+#' - the second Bartlett identity fails, and the information is defined as
 #'   the variance of the score, \eqn{1/\sigma^2}. That is what
 #'   [distrib_expected_hessian.LaplaceDistrib()] returns.
 #'
@@ -903,9 +902,9 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 #' \eqn{\sigma > 0} the scale, with variance \eqn{2\sigma^2}. \eqn{r = y - \mu}
-#' is the residual. The **observed information** is
+#' is the residual. The observed information is
 #' \eqn{-\partial^2\ell/\partial\theta\,\partial\theta^\top} at the data; the
-#' **expected information** is the variance of the score, which for a regular
+#' expected information is the variance of the score, which for a regular
 #' family equals the expectation of the observed one and here does not.
 #'
 #' @return An S7 object of class `LaplaceDistrib`, inheriting from

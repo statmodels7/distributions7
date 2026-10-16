@@ -145,8 +145,10 @@ chain_cdf_deriv <- function(parent, q, th_par, maps, new_params, order) {
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the new parameters.
 #' @param order The derivative order, 1 or 2.
-#' @param lower.tail Is the lower tail wanted? A single logical.
-#' @param log Are derivatives of the log probability wanted? A single logical.
+#' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
+#'   the upper tail.
+#' @param log A single logical; `TRUE` selects the derivatives of the log
+#'   probability and `FALSE` those of the probability.
 #'
 #' @return A named list of numeric vectors on the requested tail and scale: one
 #'   per new parameter at order 1, and one per [hess_names()] component at
@@ -200,10 +202,10 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
 #' @param distrib A `ReparamContinuousDistrib`, from [reparametrize()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the new parameters, on the new parameter scale.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per new parameter, each the
@@ -246,7 +248,7 @@ S7::method(distrib_grad_cdf, ReparamContinuousDistrib) <-
 #' partials are needed as well as its first.
 #'
 #' @details
-#' The test requires the parent to be exact at **both** orders. A parent with a
+#' The test requires the parent to be exact at both orders. A parent with a
 #' closed gradient and a differenced Hessian sends this whole method to
 #' [numerical_cdf_deriv()], because carrying an exact first order onto an
 #' approximate second would not make the second exact.
@@ -254,10 +256,10 @@ S7::method(distrib_grad_cdf, ReparamContinuousDistrib) <-
 #' @param distrib A `ReparamContinuousDistrib`, from [reparametrize()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the new parameters, on the new parameter scale.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as [hess_names()], each the
@@ -317,10 +319,10 @@ S7::method(distrib_hess_cdf, ReparamContinuousDistrib) <-
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu` and `sigma2` (positive), each
 #'   a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma2`, each the
@@ -369,10 +371,10 @@ S7::method(distrib_grad_cdf, Gaussian2Distrib) <-
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu` and `sigma2` (positive), each
 #'   a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors keyed as [hess_names()], each
@@ -416,10 +418,10 @@ S7::method(distrib_hess_cdf, Gaussian2Distrib) <-
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu` and `tau` (positive), each a
 #'   numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors, `mu` and `tau`, each the length
@@ -463,10 +465,10 @@ S7::method(distrib_grad_cdf, Gaussian3Distrib) <-
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu` and `tau` (positive), each a
 #'   numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors keyed as [hess_names()], each
@@ -517,10 +519,10 @@ S7::method(distrib_hess_cdf, Gaussian3Distrib) <-
 #' @param q A numeric vector of quantiles, positive.
 #' @param theta A named list with components `mu` (positive) and `lambda`
 #'   (positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors, `mu` and `lambda`, each the
@@ -576,10 +578,10 @@ S7::method(distrib_grad_cdf, InvGauss2Distrib) <-
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu` and `sigma` (positive), each
 #'   a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma`, each the
 #'   length of `q` recycled against `theta`.
@@ -617,10 +619,10 @@ S7::method(distrib_grad_cdf, GumbelDistrib) <- loc_scale_grad_cdf
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu` and `sigma` (positive), each
 #'   a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #'
 #' @return A named list of three numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
@@ -734,10 +736,10 @@ S7::method(distrib_hess_cdf, GumbelDistrib) <- loc_scale_hess_cdf
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive) and `nu`
 #'   (positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #'
 #' @return A named list of six numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
@@ -775,10 +777,10 @@ S7::method(distrib_hess_cdf, StudentT1Distrib) <- compiled_hess_cdf
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive) and `nu`
 #'   (positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #'
 #' @return A named list of six numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
@@ -816,10 +818,10 @@ S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- compiled_hess_cdf
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive), `alpha`
 #'   (any sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #'
 #' @return A named list of four numeric vectors, `mu`, `sigma`, `alpha` and
 #'   `nu`, each the length of `q` recycled against `theta`.
@@ -859,10 +861,10 @@ S7::method(distrib_grad_cdf, SkewTDistrib) <- compiled_grad_cdf
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive), `alpha`
 #'   (any sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #'
 #' @return A named list of ten numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
@@ -919,10 +921,10 @@ S7::method(distrib_hess_cdf, SkewTDistrib) <- compiled_hess_cdf
 #'   zero, the distribution function being flat there.
 #' @param theta A named list with components `mu` (any real value) and `sigma2`
 #'   (positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors keyed as [hess_names()], each

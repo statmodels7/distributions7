@@ -68,7 +68,7 @@ NULL
 #'   or a multivariate Gaussian or Student t distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list, or named numeric vector, of distribution
-#'   parameters. Aligned by the generic before dispatch.
+#'   parameters. The generic aligns it before dispatch.
 #' @inheritParams distrib_gradient
 #' @param ... Passed to the method.
 #'
@@ -172,7 +172,7 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #'   or a multivariate Gaussian or Student t distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list, or named numeric vector, of distribution
-#'   parameters. Aligned by the generic before dispatch.
+#'   parameters. The generic aligns it before dispatch.
 #' @inheritParams distrib_gradient
 #' @param ... Passed to the method.
 #'

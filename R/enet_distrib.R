@@ -75,8 +75,8 @@ NULL
 #' interval, as every bounded parameter in this package is, so neither end is
 #' a member. Both remain families of their own.
 #'
-#' Like the Laplace, its log-likelihood is **not differentiable in
-#' \eqn{\mu}**: the absolute value carries a kink at the location, and
+#' Like the Laplace, its log-likelihood is not differentiable in
+#' \eqn{\mu}: the absolute value carries a kink at the location, and
 #' `params_smooth` records `mu = FALSE`.
 #'
 #' Build one with [enet_distrib()], which supplies the three link functions.
@@ -329,7 +329,7 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #' The probability is first turned into the logarithms of both tails, without
 #' forming \eqn{1 - p} or exponentiating a logarithm, and each half is
 #' inverted from the logarithm of its own tail. The `qnorm` call is made on
-#' the **log** scale, its argument being \eqn{\log P + \log 2 + \log\Phi(-x)},
+#' the log scale, its argument being \eqn{\log P + \log 2 + \log\Phi(-x)},
 #' because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}. A
 #' probability outside \eqn{[0, 1]} gives `NaN`.
 #'
@@ -451,7 +451,7 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
 #' \eqn{c}. The chain to \eqn{(\lambda, \alpha)} is linear, the map being
 #' bilinear.
 #'
-#' The location component is **undefined at \eqn{y = \mu}**, where
+#' The location component is undefined at \eqn{y = \mu}, where
 #' \eqn{\mathrm{sgn}} jumps; `sign(0)` is 0 in R, so the value returned there
 #' is \eqn{cz = 0}, one point of the subdifferential. `params_smooth`
 #' records `mu = FALSE`, which [check_distrib()] reads to discard the
@@ -467,7 +467,7 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu`, `lambda` and `alpha`,
 #'   each of the length of the recycled inputs.
@@ -514,13 +514,13 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #'
 #' @description
 #' Computes the six second derivatives of the log-density in closed form. The
-#' data term of the log-density is **linear in the two rates**, so every rate
+#' data term of the log-density is linear in the two rates, so every rate
 #' block is a second derivative of \eqn{\log Z} carried through the bilinear
 #' map \eqn{(\lambda,\alpha) \mapsto (a, c)}, whose own cross term contributes
 #' the \eqn{\lambda\alpha} entry. In the location the curvature is simply
 #' \eqn{-c}.
 #'
-#' That \eqn{-c} is the observed curvature and **not** the information. It
+#' That \eqn{-c} is the observed curvature and not the information. It
 #' misses the point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z =
 #' 2\delta(z)} the absolute value carries at the location, exactly as the
 #' Laplace does; see [distrib_expected_hessian.EnetDistrib()] for what the
@@ -535,7 +535,7 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of six numeric vectors in [hess_names()]'s order:
 #'   `mu_mu`, `lambda_lambda`, `alpha_alpha`, `mu_lambda`, `mu_alpha`,
@@ -625,7 +625,7 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' is the Laplace's \eqn{\lambda^2 = 1/\sigma^2}, and exactly 2 as
 #' \eqn{\alpha \to 0}, which is the Gaussian's \eqn{c}.
 #'
-#' The location stays **orthogonal** to both rates, every cross-expectation
+#' The location stays orthogonal to both rates, every cross-expectation
 #' vanishing by symmetry, so `mu_lambda` and `mu_alpha` are exactly zero.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
@@ -634,13 +634,13 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx Ignored: the answer is exact. Accepted so that the signature
-#'   matches the generic's.
+#' @param approx Ignored: the answer is exact. It is accepted so that the
+#'   signature matches the generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of six numeric vectors in [hess_names()]'s order:
 #'   `mu_mu`, `lambda_lambda`, `alpha_alpha`, `mu_lambda`, `mu_alpha`,
@@ -696,7 +696,7 @@ S7::method(distrib_expected_hessian, EnetDistrib) <- function(
 #' the derivative in \eqn{\mu}, the response and the location entering only
 #' through their difference.
 #'
-#' It is **undefined at the location**, where the sign jumps. `sign(0)` is 0 in
+#' It is undefined at the location, where the sign jumps. `sign(0)` is 0 in
 #' R, so the value returned there is \eqn{-c(y-\mu) = 0}, one point of the
 #' subdifferential.
 #'
@@ -759,7 +759,7 @@ S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta, ...) {
 #' \eqn{-2a\delta(y-\mu)}, which this value omits, exactly as
 #' [distrib_hessian.EnetDistrib()]'s `mu_mu` does.
 #'
-#' Every response derivative of **third order and beyond is zero**: the
+#' Every response derivative of third order and beyond is zero: the
 #' log-density is quadratic in \eqn{y} away from the kink.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
@@ -890,9 +890,9 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #' whose components vary by observation gets one mean per observation.
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
-#' @param theta A named list with components `mu`, `lambda` and `alpha`.
-#'   Aligned and validated by name, so a missing or out-of-bounds
-#'   component signals an error.
+#' @param theta A named list with components `mu`, `lambda` and `alpha`. It is
+#'   aligned and validated by name, so a missing or out-of-bounds component
+#'   signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of the length the recycled
@@ -934,9 +934,9 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' \eqn{\alpha \to 1} to \eqn{2/a^2}, the Laplace's.
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
-#' @param theta A named list with components `mu`, `lambda` and `alpha`.
-#'   Aligned and validated by name, so a missing or out-of-bounds
-#'   component signals an error.
+#' @param theta A named list with components `mu`, `lambda` and `alpha`. It is
+#'   aligned and validated by name, so a missing or out-of-bounds component
+#'   signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, strictly positive, of the
@@ -986,15 +986,15 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #' `theta`, so a `theta` whose components vary by observation gets one zero
 #' per observation.
 #'
-#' The **fourth** moment is not zero and is not closed form here: [kurtosis()]
+#' The fourth moment is not zero and is not closed form here: [kurtosis()]
 #' falls to the base class and integrates. Measured at \eqn{\mu = 0},
 #' \eqn{\lambda = 2}, \eqn{\alpha = 0.5} the excess kurtosis is 0.766, between
 #' the Gaussian's 0 and the Laplace's 3.
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
-#' @param theta A named list with components `mu`, `lambda` and `alpha`.
-#'   Aligned and validated by name, so a missing or out-of-bounds
-#'   component signals an error.
+#' @param theta A named list with components `mu`, `lambda` and `alpha`. It is
+#'   aligned and validated by name, so a missing or out-of-bounds component
+#'   signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of the length the recycled
@@ -1057,7 +1057,7 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #'
 #' All four derivative orders in the parameters, the expected information, the
 #' distribution function, the quantile function, the mean, the variance and the
-#' skewness. The **kurtosis** is not, and comes from the base class by
+#' skewness. The kurtosis is not, and comes from the base class by
 #' quadrature.
 #'
 #' The expected information is closed form because, in the two rates, the

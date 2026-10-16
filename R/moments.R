@@ -739,7 +739,7 @@ S7::method(kurtosis, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @param x A `NegBin2Distrib`, from [negbin2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
 #'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
-#'   `n`. Aligned and validated by name, so a missing or out-of-bounds
+#'   `n`. It is aligned and validated by name, so a missing or out-of-bounds
 #'   component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -1469,7 +1469,7 @@ weibull_moment_terms <- function(sigma) {
 #'
 #' @description
 #' Closed form: \eqn{E[Y] = \mu\,\Gamma(1 + 1/\sigma)}. The first parameter of
-#' this parametrization is the **scale**, following `gamlss`'s `WEI`, so it is
+#' this parametrization is the scale, following `gamlss`'s `WEI`, so it is
 #' not the mean; the gamma factor is what separates the two, and it is 1 only
 #' at shape 1, where the family is exponential.
 #'
@@ -2397,9 +2397,9 @@ moment_const <- function(theta, k, value) {
 #' the two parameters imply.
 #'
 #' @param x A `Gaussian1Distrib`, from [gaussian1_distrib()].
-#' @param theta A named list with components `mu` (the mean, any real value)
-#'   and `sigma` (the standard deviation, positive), each a numeric vector of
-#'   length 1 or `n`. Aligned and validated by name, so a missing or
+#' @param theta A named list with components `mu` (the mean, any real value) and
+#'   `sigma` (the standard deviation, positive), each a numeric vector of length
+#'   1 or `n`. It is aligned and validated by name, so a missing or
 #'   out-of-bounds component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -2533,7 +2533,7 @@ S7::method(kurtosis, Gaussian1Distrib) <- function(x, theta, ...) {
 #' quadrature not reaching the requested accuracy.
 #'
 #' @details
-#' What the family does have is a **median**, equal to \eqn{\mu}, and a
+#' What the family does have is a median, equal to \eqn{\mu}, and a
 #' half-interquartile range, equal to \eqn{\sigma}. Both are exact at every
 #' parameter value and both come from [distrib_quantile()]. A Cauchy sample
 #' mean is itself Cauchy with the same scale, so it does not settle as the
@@ -2646,7 +2646,7 @@ S7::method(variance, CauchyDistrib) <- function(x, theta, ...) {
 #' does not converge as \eqn{n} grows, it is itself Cauchy with the same scale,
 #' so no amount of data settles it. The example below shows that.
 #'
-#' The Cauchy has a **median**, equal to \eqn{\mu}, and a half-interquartile
+#' The Cauchy has a median, equal to \eqn{\mu}, and a half-interquartile
 #' range, equal to \eqn{\sigma}. Both are finite at every parameter value and
 #' both are available from [distrib_quantile()]. They serve as a location and a
 #' spread where the mean and the variance do not exist.
@@ -3845,10 +3845,10 @@ S7::method(kurtosis, InvGauss1Distrib) <- function(x, theta, ...) {
 #' \eqn{a = \mu\phi}, \eqn{b = (1-\mu)\phi} the two shapes.
 #'
 #' @param x A `Beta1Distrib`, from [beta1_distrib()].
-#' @param theta A named list with components `mu` (the mean, strictly between
-#'   0 and 1) and `phi` (the precision, positive), each a numeric vector of
-#'   length 1 or `n`. Aligned and validated by name, so a mean at or outside
-#'   the unit interval signals an error.
+#' @param theta A named list with components `mu` (the mean, strictly between 0
+#'   and 1) and `phi` (the precision, positive), each a numeric vector of length
+#'   1 or `n`. It is aligned and validated by name, so a mean at or outside the
+#'   unit interval signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -4477,8 +4477,8 @@ S7::method(kurtosis, GenGamma1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `PoissonDistrib`, from [poisson_distrib()].
 #' @param theta A named list with one component, `mu` (the mean, positive), a
-#'   numeric vector of length 1 or `n`. Aligned and validated by name, so a
-#'   non-positive value signals an error.
+#'   numeric vector of length 1 or `n`. It is aligned and validated by name, so
+#'   a non-positive value signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, the length of `theta$mu`.
@@ -4609,10 +4609,10 @@ S7::method(kurtosis, PoissonDistrib) <- function(x, theta, ...) {
 #' every other moment is a function of \eqn{\mu}.
 #'
 #' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
-#' @param theta A named list with one component, `mu` (the success
-#'   probability, strictly between 0 and 1), a numeric vector of length 1 or
-#'   `n`. Aligned and validated by name, so a value at or outside the unit
-#'   interval signals an error.
+#' @param theta A named list with one component, `mu` (the success probability,
+#'   strictly between 0 and 1), a numeric vector of length 1 or `n`. It is
+#'   aligned and validated by name, so a value at or outside the unit interval
+#'   signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, the length of `theta$mu`, strictly inside

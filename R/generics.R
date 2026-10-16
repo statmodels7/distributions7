@@ -49,9 +49,9 @@
 #' # The arguments theta and scale
 #' `theta` is normalized before dispatch by `align_theta()`, which reorders it
 #' by name, removes the names carried by the values and validates it against
-#' `params_bounds`, treated as **open** intervals. The derivative generics in
+#' `params_bounds`, treated as open intervals. The derivative generics in
 #' the parameters of orders one to four also take `scale`, which the generic
-#' applies **after** dispatch, so a method returns the parameter scale and
+#' applies after dispatch, so a method returns the parameter scale and
 #' never reads it; see [link_scale_derivatives()]. [distrib_deriv5()] is the
 #' exception: its methods read `scale` and apply it themselves.
 #'
@@ -464,8 +464,8 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #' @param theta A named list (or named numeric vector) of distribution parameters.
 #'   Each parameter must have length 1 or `length(y)`.
 #' @inheritParams distrib_gradient
-#' @param approx How the expectation is approximated **when the distribution
-#'   has no closed-form expected Hessian**; ignored otherwise. One of
+#' @param approx How the expectation is approximated when the distribution
+#'   has no closed-form expected Hessian; ignored otherwise. One of
 #'   `"opg"` (the default: the outer product of the score, read at each
 #'   observation without taking an expectation), `"bartlett"` (the second
 #'   Bartlett identity, with the expectation taken by summation or
@@ -623,7 +623,7 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #' [skewnormal2_distrib()], [skewt_distrib()], [student_t1_distrib()],
 #' [student_t2_distrib()] and [weibull3_distrib()]) compute the fifth order
 #' in closed form with compiled kernels. Every other
-#' family reaches [numerical_deriv5()], which applies **one** central
+#' family reaches [numerical_deriv5()], which applies one central
 #' difference to the fourth order. Where the fourth order is analytic this is
 #' an ordinary numerical derivative; where the fourth order is itself a
 #' fallback the result is a difference of a difference, with the accuracy
@@ -643,8 +643,8 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #' @param scale `"parameter"` (the default) for derivatives with respect to
 #'   the parameters, `"link"` for derivatives with respect to the
 #'   unconstrained predictors. In the numerical default the link scale is
-#'   obtained by differentiating the order-4 component **already on the link
-#'   scale**, which needs neither the fifth derivative of a link nor an
+#'   obtained by differentiating the order-4 component already on the link
+#'   scale, which needs neither the fifth derivative of a link nor an
 #'   order-5 entry in [bell_partial()]. A family with a closed-form fifth
 #'   order composes it with the lower orders through [to_link_scale()], which
 #'   uses both.
@@ -772,7 +772,7 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #' \eqn{\log F(q;\theta)} --- or of \eqn{\log(1 - F(q;\theta))} when
 #' `lower.tail = FALSE`.
 #'
-#' These are what a **censored** observation contributes to the score. An
+#' These are what a censored observation contributes to the score. An
 #' observation known only to be at most \eqn{q} contributes \eqn{\log F(q)}, one
 #' known only to exceed \eqn{q} contributes \eqn{\log(1-F(q))}, and an interval
 #' censored one contributes \eqn{\log(F(b) - F(a))}, which is assembled from the

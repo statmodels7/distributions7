@@ -140,8 +140,8 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #' unconstrained scale and \eqn{h_i = g_i^{-1}} the inverse link carrying one
 #' to the other. \eqn{\ell^{(yy)}} is \eqn{\partial^2\ell/\partial y^2}.
 #'
-#' @seealso [distrib_cross2_y()], the generic it serves, [distrib_hess_y()] for
-#'   the quantity it differences, and [fd_steps()] for the step rule.
+#' @seealso [distrib_cross2_y()], the generic that it serves, [distrib_hess_y()]
+#'   for the quantity that it differences, and [fd_steps()] for the step rule.
 #'
 #' @examples
 #' d <- gaussian1_distrib()

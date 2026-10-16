@@ -17,7 +17,7 @@ NULL
 #' @param x An object inheriting from `distrib`.
 #' @param ... Unused, accepted for compatibility with [base::print()].
 #'
-#' @return `x`, invisibly. Called for the output it writes.
+#' @return `x`, invisibly. The function is called for the output that it writes.
 #'
 #' @examples
 #' gaussian1_distrib()
@@ -155,7 +155,7 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 #'
 #' @details
 #' Every component must have length 1 or the same \eqn{k}. A length that only
-#' **divides** \eqn{k} signals an error, because R would recycle such a
+#' divides \eqn{k} signals an error, because R would recycle such a
 #' component without a warning.
 #'
 #' The meaning is available only because a plot has no data to recycle a
@@ -214,7 +214,7 @@ plot_settings <- function(x, theta) {
 #' readable.
 #'
 #' A continuous family draws with the color and the line type; a discrete one
-#' draws with the color and the **symbol**, because dashing a stem is what a
+#' draws with the color and the symbol, because dashing a stem is what a
 #' line type does there and a dashed stem reads as a broken one.
 #'
 #' @param k How many settings are drawn, a single positive integer.
@@ -331,7 +331,7 @@ plot_labels <- function(x, ps) {
 #'
 #' @details
 #' # The two keys
-#' Curves are separated by **color and line type together**, so that a printed
+#' Curves are separated by color and line type together, so that a printed
 #' copy with no color is still readable. The parameters that vary are named in
 #' a legend and those held fixed are stated once in the title, so a reader sees
 #' what the panel is about without counting curves. The legend goes in
@@ -359,7 +359,7 @@ plot_labels <- function(x, ps) {
 #'   `ylim`. A `col` or `lty` given here wins over the palette and is recycled
 #'   over the curves.
 #'
-#' @return `x`, invisibly. Called for the plot it draws.
+#' @return `x`, invisibly. The function is called for the plot that it draws.
 #'
 #' @examples
 #' # One curve per value of the scale, at a shared mean.
@@ -446,7 +446,7 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #'
 #' @details
 #' # The two keys, and why they are not the continuous ones
-#' Settings are separated by **color and symbol together**, the symbol sitting
+#' Settings are separated by color and symbol together, the symbol sitting
 #' at the top of each stem where the point already is. The line type is not
 #' used here: dashing a stem is what it would do, and a dashed stem reads as a
 #' broken one, so at a support of any size the panel fills with fragments that
@@ -470,7 +470,7 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #'   `ylim`. A `col` or `pch` given here wins over the palette and is recycled
 #'   over the settings; an `lty` is accepted and has no effect on the stems.
 #'
-#' @return `x`, invisibly. Called for the plot it draws.
+#' @return `x`, invisibly. The function is called for the plot that it draws.
 #'
 #' @examples
 #' # Three rates, whose masses are countable at every support point because

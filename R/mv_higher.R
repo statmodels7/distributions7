@@ -364,9 +364,10 @@ tuple_indices_upto <- function(d, order) {
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. Present so that
-#'   the signature matches the generic's.
-#' @param nsim Not read. Present so that the signature matches the generic's.
+#' @param approx Not read: the expectation is in closed form. It is present so
+#'   that the signature matches the generic's.
+#' @param nsim Not read. It is present so that the signature matches the
+#'   generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 3} there are ten
@@ -449,9 +450,10 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. Present so that
-#'   the signature matches the generic's.
-#' @param nsim Not read. Present so that the signature matches the generic's.
+#' @param approx Not read: the expectation is in closed form. It is present so
+#'   that the signature matches the generic's.
+#' @param nsim Not read. It is present so that the signature matches the
+#'   generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 3} there are fifteen
@@ -620,9 +622,10 @@ dirichlet_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. Present so that
-#'   the signature matches the generic's.
-#' @param nsim Not read. Present so that the signature matches the generic's.
+#' @param approx Not read: the expectation is in closed form. It is present so
+#'   that the signature matches the generic's.
+#' @param nsim Not read. It is present so that the signature matches the
+#'   generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 3} there are four
@@ -698,9 +701,10 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. Present so that
-#'   the signature matches the generic's.
-#' @param nsim Not read. Present so that the signature matches the generic's.
+#' @param approx Not read: the expectation is in closed form. It is present so
+#'   that the signature matches the generic's.
+#' @param nsim Not read. It is present so that the signature matches the
+#'   generic's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 3} there are five
@@ -1053,9 +1057,9 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
-#'   result. The two differ here, `nu` carrying a log link by default.
+#'   result. The two differ here, because `nu` carries a log link by default.
 #' @param approx Not read: `expected = TRUE` always takes the expectation by
-#'   sampling. Present so that the signature matches the generic's.
+#'   sampling. It is present so that the signature matches the generic's.
 #' @param nsim The number of draws used when `expected = TRUE`. Defaults to
 #'   `10000`. Not read otherwise.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -1140,9 +1144,9 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
-#'   result. The two differ here, `nu` carrying a log link by default.
+#'   result. The two differ here, because `nu` carries a log link by default.
 #' @param approx Not read: `expected = TRUE` always takes the expectation by
-#'   sampling. Present so that the signature matches the generic's.
+#'   sampling. It is present so that the signature matches the generic's.
 #' @param nsim The number of draws used when `expected = TRUE`. Defaults to
 #'   `10000`. Not read otherwise.
 #' @param ... Unused, and accepted so that the signature matches the generic's.

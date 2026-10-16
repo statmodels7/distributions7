@@ -6,7 +6,7 @@ NULL
 #' @description
 #' Returns the starting values that [fit_distrib()] begins from, computed
 #' from the response where the family has a method for it. The result is a
-#' list of named parameter lists on the **parameter** scale. The fit tries
+#' list of named parameter lists on the parameter scale. The fit tries
 #' them in order until two converged runs agree on the best objective, so the
 #' first element is the one tried first.
 #'
@@ -101,7 +101,7 @@ S7::method(distrib_start, distrib) <- function(distrib, y, n_start = 5L, ...) {
 #' @title Starting Values for a Regression's Intercepts, Read Off the Data
 #'
 #' @description
-#' Returns, on the **parameter** scale, a starting value for each parameter
+#' Returns, on the parameter scale, a starting value for each parameter
 #' whose intercept a regression should not take from the intercept-only
 #' maximum likelihood fit. A modeling layer carries each value onto the
 #' parameter's own link and writes it to that equation's intercept. The base
@@ -461,7 +461,7 @@ param_free_or_fit <- function(s, m) {
 #' @description
 #' Returns the sample mean and the sample covariance, carried onto the
 #' distribution's matrix parametrization. For an unstructured covariance those
-#' **are** the maximum likelihood estimate, so the fit begins at the answer
+#' are the maximum likelihood estimate, so the fit begins at the answer
 #' and confirms it in one step. For a structured one the matrix is carried
 #' onto the structure exactly where the structure can represent it, and
 #' otherwise approximated by least squares on the entries (see
@@ -471,7 +471,7 @@ param_free_or_fit <- function(s, m) {
 #' first point is already the estimate.
 #'
 #' @details
-#' Where the object parametrizes the **precision**, the sample covariance is
+#' Where the object parametrizes the precision, the sample covariance is
 #' inverted first: the matrix the structure has to represent is
 #' \eqn{\hat\Sigma^{-1}}, not \eqn{\hat\Sigma}.
 #'
@@ -559,7 +559,7 @@ S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5
 #' directly, with no root to find.
 #'
 #' Both are floored: \eqn{\mu} just above zero, and \eqn{\sigma} at
-#' \eqn{10^{-3}} when the sample is **underdispersed** and the inversion
+#' \eqn{10^{-3}} when the sample is underdispersed and the inversion
 #' returns a negative number. A Poisson sample is the case that produces it,
 #' and \eqn{10^{-3}} is where this family is nearly Poisson, which is the right
 #' place to start from there.
@@ -1006,7 +1006,7 @@ moment_estimates <- function(distrib, y) {
 #' Returns `theta` with every component moved strictly inside its own bounds.
 #' A moment estimate can land exactly on a boundary. A sample of non-negative
 #' counts gives a median of zero and a sample of proportions a maximum of one,
-#' and `align_theta()` treats `params_bounds` as **open**, so such a value is
+#' and `align_theta()` treats `params_bounds` as open, so such a value is
 #' rejected by the first generic that sees it.
 #'
 #' A value at a finite non-zero bound is moved in by 16 machine epsilons

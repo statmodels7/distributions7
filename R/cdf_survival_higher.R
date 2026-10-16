@@ -175,10 +175,10 @@ register_surv_cdf <- function(cls, pieces) {
 #'   lower tail they are `NaN`, \eqn{\log F} being infinite there.
 #' @param theta A named list with one component, `mu` (positive), a numeric
 #'   vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per component of the requested
@@ -252,10 +252,10 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #'   lower tail they are `NaN`, \eqn{\log F} being infinite there.
 #' @param theta A named list with components `mu` (the scale, positive) and
 #'   `sigma` (the shape, positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of the requested order,

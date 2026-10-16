@@ -119,8 +119,8 @@ distrib_cross3_y <- S7::new_generic("distrib_cross3_y", "distrib", function(dist
 #' @return A named list with one numeric vector per requested parameter, each
 #'   as long as `y`.
 #'
-#' @seealso [distrib_cross3_y()], the generic it serves, and
-#'   [distrib_deriv3_y()] for the quantity it differences.
+#' @seealso [distrib_cross3_y()], the generic that it serves, and
+#'   [distrib_deriv3_y()] for the quantity that it differences.
 #'
 #' @examples
 #' d <- student_t1_distrib()

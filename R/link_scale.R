@@ -22,7 +22,7 @@ NULL
 #' @details
 #' Write \eqn{h_i = g_i^{-1}}, so that \eqn{\theta_i = h_i(\eta_i)}. Because each
 #' parameter carries its own link, the Jacobian \eqn{\partial\theta/\partial\eta}
-#' is **diagonal** and the multivariate Faa di Bruno formula factorizes. For a
+#' is diagonal and the multivariate Faa di Bruno formula factorizes. For a
 #' derivative whose multi-index involves the distinct parameters
 #' \eqn{p_1,\dots,p_r} with multiplicities \eqn{m_1,\dots,m_r},
 #' \deqn{\frac{\partial^k \ell}{\partial \eta_{p_1}^{m_1} \cdots \partial \eta_{p_r}^{m_r}}
@@ -38,7 +38,7 @@ NULL
 #' corresponding factors (e.g.
 #' \eqn{\partial^2\ell/\partial\eta_a\partial\eta_b = \ell_{ab} h_a' h_b'}).
 #'
-#' For the **expected** Hessian the first-order term vanishes because the
+#' For the expected Hessian the first-order term vanishes because the
 #' score has zero expectation, so the information transforms as the congruence
 #' \eqn{\mathrm{diag}(h')\,\mathbb{E}[H]\,\mathrm{diag}(h')}.
 #'
@@ -271,7 +271,7 @@ inverse_link_derivs <- function(distrib, theta, order) {
 #'
 #' @details
 #' Faa di Bruno mixes all lower orders into each link-scale component, so they
-#' must all be to hand before the assembly starts. For **expected**
+#' must all be to hand before the assembly starts. For expected
 #' derivatives the first-order slot is filled with zeros rather than with the
 #' score, because \eqn{\mathbb{E}[\ell_i] = 0}. The term is absent from the
 #' expected derivatives, which is also why the expected information transforms

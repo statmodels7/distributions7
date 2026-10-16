@@ -13,7 +13,7 @@ NULL
 #'
 #' The mean is \eqn{\mu} and the variance \eqn{\mu(1-\mu)}, so the two are tied
 #' and the family has no dispersion parameter of its own. The default link is
-#' the logit, which is the **canonical** link here: on its scale the observed
+#' the logit, which is the canonical link here: on its scale the observed
 #' and the expected information coincide.
 #'
 #' A Bernoulli is a binomial on one trial: [binomial_distrib()] with
@@ -288,7 +288,7 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta, ...) {
 #' probability of 0 or 1 that goes the other way contributes an arbitrarily
 #' large score.
 #'
-#' On the **link** scale with the default logit the generic's chain rule gives
+#' On the link scale with the default logit the generic's chain rule gives
 #' \eqn{\partial\ell/\partial\eta = y - \mu}, the raw residual: the logit is
 #' the canonical link of this family.
 #'
@@ -297,7 +297,7 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta, ...) {
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -310,7 +310,7 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta, ...) {
 #' \eqn{\ell} is the log-mass of one observation and \eqn{\mu \in (0,1)} the
 #' success probability, with variance \eqn{\mu(1-\mu)}.
 #' \eqn{\eta = \log(\mu/(1-\mu))} is the parameter on the link scale, the log
-#' odds. A **canonical** link makes the log-mass linear in the sufficient
+#' odds. A canonical link makes the log-mass linear in the sufficient
 #' statistic times \eqn{\eta}.
 #'
 #' @seealso [distrib_hessian.BernoulliDistrib()] for the second derivative,
@@ -349,7 +349,7 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, sc
 #' coefficient contributes zero, so at \eqn{y = 0} the value is
 #' \eqn{-1/(1-\mu)^2} however small \eqn{\mu} is.
 #'
-#' On the **link** scale with the default logit the chain rule gives
+#' On the link scale with the default logit the chain rule gives
 #' \eqn{\partial^2\ell/\partial\eta^2 = -\mu(1-\mu)}, which carries no
 #' data; this is the defining property of a canonical link, and in exact
 #' arithmetic it makes the observed and the expected information the same
@@ -367,7 +367,7 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, sc
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -415,7 +415,7 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #' at \eqn{\mu = 1/2} and grows without bound as the probability approaches
 #' either endpoint.
 #'
-#' On the **link** scale with the default logit the value is
+#' On the link scale with the default logit the value is
 #' \eqn{-\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
 #' logit is the canonical link and the observed curvature there carries no
 #' data. Fisher scoring and Newton's method therefore take the same step on a
@@ -433,9 +433,9 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -445,9 +445,9 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #'   `max(length(y), length(mu))` and constant at \eqn{-1/(\mu(1-\mu))}.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-#' **observed information** under the model. The Bernoulli is a regular family,
+#' observed information under the model. The Bernoulli is a regular family,
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
@@ -498,9 +498,9 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected value.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected value.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -560,9 +560,9 @@ S7::method(distrib_deriv3, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both the observed
-#'   and the expected value.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both the
+#'   observed and the expected value.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -670,7 +670,7 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation and \eqn{\mu \in (0,1)} the
 #' success probability. \eqn{\eta = \log(\mu/(1-\mu))} is the log odds, the
-#' parameter on the link scale. The **canonical** link of an exponential family
+#' parameter on the link scale. The canonical link of an exponential family
 #' is the one that makes the log-mass linear in the sufficient statistic.
 #'
 #' @return An S7 object of class `BernoulliDistrib`, inheriting from

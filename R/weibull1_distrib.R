@@ -360,7 +360,7 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -427,7 +427,7 @@ S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, sca
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -512,9 +512,9 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being exact. Accepted so that
-#'   the signature matches the generic's, where it selects between
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because the expectation is exact. It is accepted
+#'   so that the signature matches the generic's, where it selects between
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -585,9 +585,9 @@ S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, th
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, both branches being exact. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because both branches are exact. It is accepted
+#'   so that the signature matches the generic's.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -658,9 +658,9 @@ S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, both branches being exact. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because both branches are exact. It is accepted
+#'   so that the signature matches the generic's.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -826,8 +826,7 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #'
 #' The two arguments choose the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works. Both default to the
-#' logarithm,
-#' both parameters being positive.
+#' logarithm, because both parameters are positive.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the scale
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps

@@ -284,7 +284,7 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #'
 #' @description
 #' The fallback for a family that registers no fourth-order method. Observed
-#' derivatives come from [numerical_deriv4()]: a **second** difference of the
+#' derivatives come from [numerical_deriv4()]: a second difference of the
 #' family's own [distrib_hessian()] rather than a difference of the third
 #' order, or, for a family without its own Hessian, one tensor-product stencil
 #' on its score or its log-density. On both routes each component is a single

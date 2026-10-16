@@ -12,13 +12,13 @@ NULL
 #'
 #' The class adds one property to the parent's, `size`, and that property is
 #' the reason it is documented separately from [bernoulli_distrib()]:
-#' **`size` is a constant of the object, not a parameter**. It is not
+#' `size` is a constant of the object, not a parameter. It is not
 #' estimated, it carries
 #' no link and no bound, and it does not appear in `params`. It may be a single
 #' number or one value per observation, which is how grouped binary data with
 #' unequal group sizes is described.
 #'
-#' The default link is the logit, the **canonical** link here: on its scale the
+#' The default link is the logit, the canonical link here: on its scale the
 #' observed and the expected information coincide.
 #'
 #' Build one with [binomial_distrib()]. This page documents the raw S7
@@ -209,7 +209,7 @@ S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.ta
 #' \deqn{Q(p; \mu) = \min\{k \in \{0, \dots, n\} : F(k; \mu) \ge p\},}
 #' by calling [stats::qbinom()] at `size = distrib@size`. The distribution
 #' function is a step function, so the round trip through
-#' [distrib_cdf.BinomialDistrib()] returns a probability **at least** `p`.
+#' [distrib_cdf.BinomialDistrib()] returns a probability at least `p`.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
@@ -309,7 +309,7 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta, ...) {
 #' by \eqn{\mu(1-\mu)}. Its sum vanishes at \eqn{\hat\mu = \sum y_i / \sum n_i},
 #' the pooled proportion.
 #'
-#' On the **link** scale with the default logit the generic's chain rule gives
+#' On the link scale with the default logit the generic's chain rule gives
 #' \eqn{\partial\ell/\partial\eta = y - n\mu}, the raw residual: the logit is
 #' the canonical link of this family.
 #'
@@ -319,7 +319,7 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta, ...) {
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -371,7 +371,7 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' zero, so at \eqn{y = 0} the value is \eqn{-n/(1-\mu)^2} however small
 #' \eqn{\mu} is.
 #'
-#' On the **link** scale with the default logit the chain rule gives
+#' On the link scale with the default logit the chain rule gives
 #' \eqn{\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)}, which carries no
 #' data; this is the defining property of a canonical link, and in exact
 #' arithmetic it makes the observed and the expected information the same
@@ -390,7 +390,7 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -440,7 +440,7 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' \eqn{n/(\mu(1-\mu))}, so it grows in proportion to the number of trials and
 #' is smallest at \eqn{\mu = 1/2}.
 #'
-#' On the **link** scale with the default logit the value is
+#' On the link scale with the default logit the value is
 #' \eqn{-n\mu(1-\mu)}, and so is the observed Hessian in exact arithmetic: the
 #' logit is the canonical link, so iteratively reweighted least squares is
 #' Fisher scoring and Newton's method at once. The observed value is composed
@@ -456,9 +456,9 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of the length of `y`. `mu` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -471,9 +471,9 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #'   signals an error.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-#' **observed information** under the model. The binomial is a regular family,
+#' observed information under the model. The binomial is a regular family,
 #' so the second Bartlett identity holds and this equals the variance of the
 #' score.
 #'
@@ -524,8 +524,8 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -589,8 +589,8 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available for both routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available for both routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -670,7 +670,7 @@ binomial_recycle <- function(y, mu, size) {
 #' \eqn{\mu \in (0, 1)}. The returned object carries closed-form derivatives of
 #' the log-mass to fourth order, observed and expected, and closed-form moments.
 #'
-#' **`size` is fixed data, not a parameter.** It is carried on the object, it
+#' `size` is fixed data, not a parameter. It is carried on the object, it
 #' is not estimated, it has no link and no bound, and it does not appear in
 #' `params`. Giving it one value per observation is how grouped binary data
 #' with unequal group sizes is described.
@@ -738,7 +738,7 @@ binomial_recycle <- function(y, mu, size) {
 #' @section Notation:
 #' \eqn{\ell} is the log-mass of one observation, \eqn{n} the number of trials
 #' and \eqn{\mu \in (0,1)} the success probability.
-#' \eqn{\eta = \log(\mu/(1-\mu))} is the log odds. The **canonical** link of an
+#' \eqn{\eta = \log(\mu/(1-\mu))} is the log odds. The canonical link of an
 #' exponential family makes the log-mass linear in the sufficient statistic.
 #'
 #' @return An S7 object of class `BinomialDistrib`, inheriting from

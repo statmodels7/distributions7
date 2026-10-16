@@ -202,7 +202,7 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #' \eqn{(\mu, \sigma)}, read off columns `d20`, `d02` and `d11` of the
 #' compiled kernel `pig1_hessian_cpp`.
 #'
-#' This is the **observed** curvature at the data. The expected information is
+#' This is the observed curvature at the data. The expected information is
 #' computed exactly by one pass over the support; see
 #' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig1Distrib].
 #'
@@ -256,7 +256,7 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #' `pig1_deriv3_cpp`, which computes the third order alone.
 #'
 #' With `expected = TRUE` the value is an expectation instead, and there it is
-#' **not** closed form: the call routes to `expected_derivative()`, so `approx`
+#' not closed form: the call routes to `expected_derivative()`, so `approx`
 #' and `nsim` are read.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
@@ -446,8 +446,8 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #' Builds a Poisson-inverse Gaussian distribution in its mean-dispersion
 #' parametrization: mean \eqn{\mu} and variance \eqn{\mu + \sigma\mu^2}, which
 #' is gamlss's `PIG`. The family is the Poisson mixed over an inverse Gaussian
-#' rate, an overdispersed count model with a **heavier upper tail than the
-#' negative binomial at the same variance**.
+#' rate, an overdispersed count model with a heavier upper tail than the
+#' negative binomial at the same variance.
 #'
 #' @details
 #' # The mass function, and how it is computed
@@ -492,7 +492,7 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' # The expected information
 #'
-#' The **expected information** is computed exactly, with its first and
+#' The expected information is computed exactly, with its first and
 #' second derivatives, by one pass over the support per observation; see
 #' [`distrib_expected_hessian()`][distrib_expected_hessian.Pig1Distrib].
 #'

@@ -44,7 +44,7 @@ fit_eta_from_theta <- function(distrib, theta) {
 #' and returns the parameters as the named list every generic in the package
 #' expects. It is the inverse of [fit_eta_from_theta()].
 #'
-#' Every link maps onto the **open** interior of its parameter's domain, and
+#' Every link maps onto the open interior of its parameter's domain, and
 #' `linkfunctions7` clamps the result strictly inside when the arithmetic
 #' saturates, so a \eqn{\theta} obtained this way is admissible whatever the
 #' optimizer proposed. On a Gaussian scale carried by the logarithm,
@@ -155,7 +155,7 @@ fit_score <- function(distrib, y, theta, threads = 1L) {
 #' \eqn{\bigl(\begin{smallmatrix} 0 & 2\\ 2 & -392\end{smallmatrix}\bigr)}:
 #' \eqn{\partial^2\ell/\partial\mu^2} is zero almost everywhere, so the
 #' determinant is \eqn{-(\sum_i \mathrm{sign}(y_i - \mu))^2/\sigma^2}, which is
-#' negative unless the signs balance exactly, and the matrix is **indefinite**.
+#' negative unless the signs balance exactly, and the matrix is indefinite.
 #' The expected information at the same point is \eqn{-400 I}.
 #'
 #' @param distrib An object inheriting from `distrib`.
@@ -212,7 +212,7 @@ fit_hess_matrix <- function(distrib, y, theta, expected,
 #' read at the same \eqn{\theta}, which is the i.i.d. assumption the fitting
 #' layer makes.
 #'
-#' The value is **not** divided by \eqn{n}. [fit_distrib()] scales it when it
+#' The value is not divided by \eqn{n}. [fit_distrib()] scales it when it
 #' hands the objective to an optimizer, and recomputes it unscaled here for the
 #' `loglik`, `aic` and `bic` a fit reports.
 #'
@@ -282,7 +282,7 @@ fit_loglik <- function(distrib, y, theta) {
 #'   information could not be evaluated or inverted there; the estimates stand
 #'   in that case and only the uncertainty is missing.
 #' @param loglik The maximized log-likelihood, summed over observations and
-#'   **not** divided by \eqn{n}.
+#'   not divided by \eqn{n}.
 #' @param iterations How many iterations the run that was kept took.
 #' @param converged Logical of length 1: whether a stopping rule confirmed
 #'   convergence. A run that exhausted its iteration budget is not converged
@@ -298,7 +298,7 @@ fit_loglik <- function(distrib, y, theta) {
 #' @param counts A named list of evaluation counts with components `f`, `g` and
 #'   `h`: how many times the objective, its gradient and its Hessian were
 #'   evaluated in the run that was kept.
-#' @param score The max-norm of the score **per observation** at the reported
+#' @param score The max-norm of the score per observation at the reported
 #'   optimum. This is the quantity that the stopping rule tested, so it
 #'   measures how close to stationary a run ended, and it is the number to read
 #'   on a fit that did not converge.
@@ -379,8 +379,8 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @description
 #' Fits a `distrib` object to an i.i.d. sample by maximum likelihood and
 #' returns a [distrib_fit()] carrying the estimates, their standard errors and
-#' confidence limits on both scales. The optimization runs on the **link
-#' scale**, where the parameters are unconstrained, driven by the analytical
+#' confidence limits on both scales. The optimization runs on the link
+#' scale, where the parameters are unconstrained, driven by the analytical
 #' score and information the family supplies at `scale = "link"`; the estimates
 #' are then mapped back and reported on the parameter scale.
 #'
@@ -393,8 +393,8 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   multivariate one, or any wrapper of either.
 #' @param y A numeric vector of observations, or an \eqn{n \times p} matrix for
 #'   a multivariate family. Every observation is read at the same \eqn{\theta}.
-#' @param start Optional named list of starting values **on the parameter
-#'   scale**. `NULL`, the default, takes the starting values from
+#' @param start Optional named list of starting values on the parameter
+#'   scale. `NULL`, the default, takes the starting values from
 #'   [distrib_start()], which computes them from the data for a family that
 #'   registers a method and otherwise draws them from the parameter domains,
 #'   with the restarts below. A value that is
@@ -403,13 +403,13 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   positionally lands here.
 #' @param method How to optimize. One argument taking one of three things:
 #'
-#'   - [fisher_scoring()], the default: Newton's method with the **expected**
+#'   - [fisher_scoring()], the default: Newton's method with the expected
 #'     information in place of the observed Hessian, the object carrying how
 #'     that information is to be obtained when the family has no closed form
 #'     for it. Passing an `approx` where the family does have one signals an
 #'     error rather than ignoring it;
 #'   - an optimizer object from \pkg{optimizers7}, used as given and receiving
-#'     the analytical gradient and the **observed** Hessian, so that
+#'     the analytical gradient and the observed Hessian, so that
 #'     `method = lbfgs(criterion = crit_grad(1e-12))` selects the algorithm and
 #'     the stopping rule together. A stopping rule the optimizer cannot
 #'     evaluate is rejected here, where the message can name it;
@@ -465,7 +465,7 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' neither the maximum nor any Newton step, since \eqn{H^{-1}g} is unchanged
 #' when both are divided by \eqn{n}. What it changes is the meaning of a
 #' threshold: a tolerance on the gradient of this objective is a tolerance on
-#' the score **per observation** whatever the sample size, so the same rule
+#' the score per observation whatever the sample size, so the same rule
 #' means the same thing at \eqn{n = 10} and at \eqn{n = 10^7}. `loglik`, the
 #' information and every standard error are recomputed unscaled at the optimum.
 #'
@@ -1007,8 +1007,8 @@ fit_format_elapsed <- function(sec) {
 #' every link is the identity the last block is replaced by a one-line note.
 #'
 #' The optimizer line names the method that produced the estimates, which is
-#' not always the one requested, and the convergence line names the **stopping
-#' rule** that ended the run. Without that rule `converged` says nothing: it
+#' not always the one requested, and the convergence line names the stopping
+#' rule that ended the run. Without that rule `converged` says nothing: it
 #' records that some test was met. A run that did not converge also prints
 #' the score per
 #' observation at the point it stopped at, which is the one number that says
@@ -1029,7 +1029,7 @@ fit_format_elapsed <- function(sec) {
 #'   [base::round()].
 #' @param ... Unused, accepted for compatibility with [base::print()].
 #'
-#' @return `x`, invisibly. Called for the output it writes.
+#' @return `x`, invisibly. The function is called for the output that it writes.
 #'
 #' @examples
 #' set.seed(1)
@@ -1434,7 +1434,7 @@ S7::method(confint, distrib_fit) <- function(object, parm, level = object@level,
 #' Returns the maximized log-likelihood as a `logLik` object, so that
 #' [stats::AIC()], [stats::BIC()] and anything else in \pkg{stats} that reads
 #' one can be applied to a fit. The value is summed over observations and is
-#' **not** divided by \eqn{n}, whatever scaling the optimizer worked with.
+#' not divided by \eqn{n}, whatever scaling the optimizer worked with.
 #'
 #' The `df` attribute is the number of estimated parameters, which for these
 #' fits is every parameter of the family: a fit estimates all of them, so
@@ -1589,7 +1589,7 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' @param ... Further arguments passed to [graphics::plot()], such as `main`,
 #'   `xlab` or `xlim`.
 #'
-#' @return `x`, invisibly. Called for the plot it draws.
+#' @return `x`, invisibly. The function is called for the plot that it draws.
 #'
 #' @examples
 #' set.seed(1)

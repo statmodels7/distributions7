@@ -273,7 +273,7 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad
 #'       \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa),}
 #' with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} the derivative of
-#' \eqn{\log I_0} and also the **mean resultant length** of the family.
+#' \eqn{\log I_0} and also the mean resultant length of the family.
 #'
 #' The components are computed by a compiled kernel. The ratio comes from
 #' numericals7's compiled [numericals7::bessel_i_ratio()], which is finite and
@@ -281,8 +281,8 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
 #' exact zero between \eqn{10^5} and \eqn{10^6}, so forming the ratio from two
 #' calls gives `NaN` over part of that band.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries. This method always returns the parameter scale.
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries. This method always returns the parameter scale.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}.
@@ -291,11 +291,11 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
 #'   recycled. `mu` must lie in \eqn{(-\pi, \pi)} and `kappa` be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of two numeric vectors, `mu` and `kappa`, each of
 #'   length `max(length(y), length(mu), length(kappa))`.
@@ -347,7 +347,7 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #'       \ell^{(\mu\kappa)} = \sin(y-\mu), \qquad
 #'       \ell^{(\kappa\kappa)} = -A'(\kappa),}
 #' with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}. The
-#' pure-concentration entry is **free of the data**: the log-density is
+#' pure-concentration entry is free of the data: the log-density is
 #' \eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in \eqn{\kappa}
 #' apart from the normalizing constant, so its second derivative in
 #' \eqn{\kappa} comes from \eqn{\log I_0} alone. It therefore equals its own
@@ -365,11 +365,11 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #'   recycled. `mu` must lie in \eqn{(-\pi, \pi)} and `kappa` be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `kappa_kappa` and
 #'   `mu_kappa`, in the order of [hess_names()], each of length
@@ -426,7 +426,7 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #' with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 #'
 #' The zero off-diagonal makes the direction and the concentration
-#' **orthogonal**: the expected information is diagonal, their estimates are
+#' orthogonal: the expected information is diagonal, their estimates are
 #' asymptotically independent, and Fisher scoring updates the two
 #' independently. `approx` and `nsim` are ignored, the expectation being exact.
 #'
@@ -436,15 +436,15 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu` and `kappa`, each a numeric
 #'   vector of length 1. `kappa` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being exact. Accepted so that
-#'   the signature matches the generic's, where it selects between
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, because the expectation is exact. It is accepted
+#'   so that the signature matches the generic's, where it selects between
 #'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of three numeric vectors, `mu_mu`, `kappa_kappa` and
 #'   `mu_kappa`, in the order of [hess_names()], each of length `length(y)`
@@ -497,7 +497,7 @@ S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, t
 #' \deqn{\dfrac{\partial \ell}{\partial y} = -\kappa \sin(y - \mu).}
 #' The family is a location family on the circle, so this is exactly the
 #' negative of the direction score
-#' [distrib_gradient.VonMises1Distrib()]`$mu`. It is **bounded by** \eqn{\kappa}
+#' [distrib_gradient.VonMises1Distrib()]`$mu`. It is bounded by \eqn{\kappa}
 #' in absolute value and vanishes at the mode \eqn{y = \mu} and at the
 #' antimode \eqn{y = \mu \pm \pi}, the stationary points of the density.
 #'
@@ -548,7 +548,7 @@ S7::method(distrib_grad_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\kappa \cos(y - \mu).}
 #' The family is a location family on the circle, so this equals the
 #' pure-direction entry of [distrib_hessian.VonMises1Distrib()], with no sign
-#' change. It is negative within a quarter turn of the mode and **positive**
+#' change. It is negative within a quarter turn of the mode and positive
 #' on the other half of the circle, where the density has its minimum at the
 #' antimode.
 #'
@@ -601,8 +601,8 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' distribution for an angle, parametrized by a mean direction \eqn{\mu} and a
 #' concentration \eqn{\kappa > 0}. The returned object carries closed-form
 #' derivatives of the log-density to fourth order in the parameters and in the
-#' response, a closed-form expected information, and a **distribution function
-#' from a Bessel series** in place of the quadrature the base class would use.
+#' response, a closed-form expected information, and a distribution function
+#' from a Bessel series in place of the quadrature the base class would use.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean direction
 #'   \eqn{\mu}. Defaults to `linkfunctions7::bounded_link(lwr = -pi, upr = pi)`,
@@ -638,8 +638,8 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' \eqn{A'} and the higher derivatives of \eqn{A} from a power series for
 #' small \eqn{\kappa}, where that identity cancels, and from the identity in
 #' extended precision or an asymptotic series above. Since
-#' \eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, **the two parameters are
-#' orthogonal**: the expected information is diagonal, and Fisher scoring
+#' \eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, the two parameters are
+#' orthogonal: the expected information is diagonal, and Fisher scoring
 #' updates the direction and the concentration independently.
 #'
 #' \eqn{A(\kappa)} is the mean resultant length, so \eqn{A'(\kappa)} is the
@@ -654,7 +654,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' [mean.distrib()], [variance()], [skewness()] and [kurtosis()] are the
 #' ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
-#' numerically. They are **not** the circular quantities that \eqn{\mu} and
+#' numerically. They are not the circular quantities that \eqn{\mu} and
 #' \eqn{\kappa} describe. \eqn{\mu} is the mean *direction*, and
 #' \eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the interval
 #' is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the density is
@@ -683,7 +683,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' [distrib_cdf.VonMises1Distrib()] instead, a Fourier series integrated term
 #' by term with \eqn{\max\{20, \lceil 8.5\sqrt{\kappa}\rceil + 10\}} terms,
 #' and a quadrature of the tail where the requested tail is below
-#' \eqn{10^{-6}}. The **quantile** comes from [continuous_distrib()], by
+#' \eqn{10^{-6}}. The quantile comes from [continuous_distrib()], by
 #' root finding on the logarithm of the smaller tail.
 #'
 #' @section Notation:
@@ -766,9 +766,9 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @description
 #' Computes the four distinct third derivatives of the von Mises log-density in
 #' \eqn{\mu} and \eqn{\kappa}, in closed form. The log-density is
-#' \eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, **linear in**
+#' \eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in
 #' \eqn{\kappa} apart from the normalizing constant, so a component naming one
-#' \eqn{\mu} and two or more \eqn{\kappa} is **exactly zero**. What remains
+#' \eqn{\mu} and two or more \eqn{\kappa} is exactly zero. What remains
 #' cycles: the pure-\eqn{\mu} components run through
 #' \eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)} with the order, the
 #' \eqn{\mu\mu\kappa} component is \eqn{-\cos(y-\mu)}, and the
@@ -786,7 +786,7 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #'   vector of length 1 or of the length of `y`. `kappa` must be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -797,7 +797,7 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_kappa`,
 #'   `mu_kappa_kappa` and `kappa_kappa_kappa`, each of length `length(y)`.
@@ -850,7 +850,7 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #' in \eqn{\mu} and \eqn{\kappa}, in closed form, by the construction
 #' [distrib_deriv3.VonMises1Distrib()] describes carried one order further. The
 #' log-density is linear in \eqn{\kappa} apart from the normalizing constant,
-#' so **two of the five are exactly zero**: `mu_mu_kappa_kappa` and
+#' so two of the five are exactly zero: `mu_mu_kappa_kappa` and
 #' `mu_kappa_kappa_kappa`. The pure-direction component is
 #' \eqn{\kappa\cos(y-\mu)}, the \eqn{\mu\mu\mu\kappa} one \eqn{-\sin(y-\mu)},
 #' and the pure-concentration one \eqn{-A^{(3)}(\kappa)}.
@@ -865,7 +865,7 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. `kappa` must be strictly
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
@@ -876,7 +876,7 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
 #'   `mu_mu_mu_kappa`, `mu_mu_kappa_kappa`, `mu_kappa_kappa_kappa` and
@@ -940,11 +940,11 @@ S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
 #'   \sum_{j\ge1} \frac{I_j(\kappa)}{j}
 #'   \big[\sin(j(x - \mu)) + \sin(j(\pi + \mu))\big].}
 #' The second sine is the lower limit, and it makes this the distribution
-#' function of the family **as written**: the support is
+#' function of the family as written: the support is
 #' \eqn{[-\pi, \pi)} with the direction inside it, not a variable wrapped
 #' around the circle.
 #'
-#' Only the **ratios** \eqn{I_j/I_0} are needed, and
+#' Only the ratios \eqn{I_j/I_0} are needed, and
 #' [numericals7::bessel_i_ratios()] gives them by a backward recurrence whose
 #' loop runs over the series index and not over the data. The series is cheap
 #' for that reason: \eqn{n} quadratures become a few dozen vectorized steps.
@@ -1113,7 +1113,7 @@ vm_cdf_tail <- function(q, mu, kappa, lower.tail, log.p) {
 #' density has no elementary antiderivative, and the quadrature the base class
 #' would use costs one integration per observation; the series replaces
 #' \eqn{n} quadratures with a few dozen vectorized steps, using only the Bessel
-#' **ratios** \eqn{I_j/I_0} from a backward recurrence.
+#' ratios \eqn{I_j/I_0} from a backward recurrence.
 #'
 #' Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, the
 #' support being the declared interval. Where the requested tail is below

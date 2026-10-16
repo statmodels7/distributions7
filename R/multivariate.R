@@ -314,7 +314,7 @@ mv_refuse <- function(distrib, what, why) {
 #' @param distrib A [multivariate_distrib()] object.
 #' @param q A numeric matrix of quantiles, one row per point. Not read: the
 #'   error is signalled first.
-#' @param theta A named list of parameters. Not read.
+#' @param theta A named list of parameters. It is not read.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return Does not return: it signals an error naming the family.
@@ -365,7 +365,7 @@ S7::method(distrib_cdf, multivariate_distrib) <- function(distrib, q, theta, ...
 #' @param distrib A [multivariate_distrib()] object.
 #' @param p A numeric vector of probabilities. Not read: the error is signalled
 #'   first.
-#' @param theta A named list of parameters. Not read.
+#' @param theta A named list of parameters. It is not read.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return Does not return: it signals an error naming the family.
@@ -412,8 +412,8 @@ S7::method(distrib_quantile, multivariate_distrib) <- function(distrib, p, theta
 #' none.
 #'
 #' @param distrib A [multivariate_distrib()] object with no method of its own.
-#' @param y An \eqn{n \times p} numeric matrix of observations. Not read.
-#' @param theta A named list of parameters. Not read.
+#' @param y An \eqn{n \times p} numeric matrix of observations. It is not read.
+#' @param theta A named list of parameters. It is not read.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return Does not return: it signals an error naming the family. A family
@@ -464,8 +464,8 @@ S7::method(distrib_grad_y, multivariate_distrib) <- function(distrib, y, theta, 
 #' \eqn{p \times p \times n} array.
 #'
 #' @param distrib A [multivariate_distrib()] object with no method of its own.
-#' @param y An \eqn{n \times p} numeric matrix of observations. Not read.
-#' @param theta A named list of parameters. Not read.
+#' @param y An \eqn{n \times p} numeric matrix of observations. It is not read.
+#' @param theta A named list of parameters. It is not read.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return Does not return: it signals an error naming the family.
@@ -507,8 +507,8 @@ S7::method(distrib_hess_y, multivariate_distrib) <- function(distrib, y, theta, 
 #' parameter, as the gaussian and the Student t do.
 #'
 #' @param distrib A [multivariate_distrib()] object with no method of its own.
-#' @param y An \eqn{n \times p} numeric matrix of observations. Not read.
-#' @param theta A named list of parameters. Not read.
+#' @param y An \eqn{n \times p} numeric matrix of observations. It is not read.
+#' @param theta A named list of parameters. It is not read.
 #' @param scale One of `"parameter"` or `"link"`. The generic applies the link
 #'   scale to the result of a method. Not read here.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -1159,7 +1159,7 @@ S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, 
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()].
 #' @param theta A named list or vector of parameters, each component a single
-#'   number. Aligned by the generic before dispatch.
+#'   number. The generic aligns it before dispatch.
 #'
 #' @return A numeric vector of length \eqn{p}. The elliptical families name it
 #'   `v1`, ..., `vp` after the coordinates of the response; the Dirichlet and
@@ -1289,7 +1289,7 @@ mv_leading_location <- function(distrib, theta) {
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()].
 #' @param theta A named list or vector of parameters, each component a single
-#'   number. Aligned by the generic before dispatch.
+#'   number. The generic aligns it before dispatch.
 #'
 #' @return A \eqn{p \times p} symmetric numeric matrix: positive definite, with
 #'   both dimnames `v1`, ..., `vp`, for the gaussian and the Student t; of rank
@@ -1374,7 +1374,7 @@ mv_sigma <- S7::new_generic("mv_sigma", "distrib", function(distrib, theta) {
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()].
 #' @param theta A named list or vector of parameters, each component a single
-#'   number. Aligned by the generic before dispatch.
+#'   number. The generic aligns it before dispatch.
 #' @param which A vector of distinct whole numbers in `1:distrib@n_dim`, the
 #'   coordinates to keep. The generic checks it before dispatch and signals an
 #'   error naming the range for an empty, missing, non-integer, duplicated or
@@ -1452,7 +1452,7 @@ mv_marginal <- S7::new_generic("mv_marginal", "distrib",
 #' @param theta A named list of parameters. Not read: the error is signalled
 #'   first.
 #' @param which An integer vector of coordinates, already validated by the
-#'   generic. Not read.
+#'   generic. It is not read.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return Does not return: it signals an error naming the family.

@@ -68,7 +68,7 @@ align_theta <- function(distrib, theta) {
 #' @description
 #' Verifies that every supplied parameter value lies strictly inside the
 #' distribution's `params_bounds`, and is finite. Domains are treated as
-#' **open** intervals: for instance a Gaussian requires \eqn{\sigma > 0} and a
+#' open intervals: for instance a Gaussian requires \eqn{\sigma > 0} and a
 #' Bernoulli requires \eqn{0 < \mu < 1}, since the log-likelihood and its
 #' derivatives are not defined at the boundary.
 #'
@@ -417,7 +417,7 @@ deriv_names <- function(params, order) {
 #' as well as user-defined ones. Generating the indices and the names from the
 #' same enumeration removes the possibility of disagreement.
 #'
-#' Note that this is **not** interchangeable with
+#' Note that this is not interchangeable with
 #' `deriv_index_list()` in `link_scale.R`: that one is ordered to match
 #' [hess_names()] at order 2, which puts the diagonal first, whereas
 #' this one is lexicographic throughout to match [deriv_names()]. At

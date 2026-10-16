@@ -338,7 +338,7 @@ S7::method(distrib_rng, Beta1Distrib) <- function(distrib, n, theta, ...) {
 #'   recycled. `mu` must lie strictly in \eqn{(0, 1)} and `phi` must be
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -412,7 +412,7 @@ S7::method(distrib_gradient, Beta1Distrib) <- function(distrib, y, theta, scale 
 #'   recycled. `mu` must lie strictly in \eqn{(0, 1)} and `phi` must be
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -492,10 +492,10 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 #'   recycled. `mu` must lie strictly in \eqn{(0, 1)} and `phi` must be
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available. Accepted so that the
-#'   signature matches the generic's, where it selects between the Bartlett,
-#'   quadrature, Monte Carlo and outer-product routes.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available. It is accepted so
+#'   that the signature matches the generic's, where it selects between the
+#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -508,9 +508,9 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 #'   the parameters are.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
-#' expectation of the **observed information** under the model. The beta is a
+#' expectation of the observed information under the model. The beta is a
 #' regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score.
 #'
@@ -613,8 +613,8 @@ S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, the
 #'   and expected third derivatives being the same numbers. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -682,8 +682,8 @@ S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected
 #'   and expected fourth derivatives being the same numbers. Defaults to
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may

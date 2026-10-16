@@ -203,7 +203,7 @@ reparam_tables <- function(distrib, theta, order) {
 #' @description
 #' The numerical fallback behind [reparam_tables()]: every partial of the map
 #' is one central stencil of [numericals7::fd_derivative()] in each direction,
-#' applied to the analytic map, iterated across **distinct** directions. A
+#' applied to the analytic map, iterated across distinct directions. A
 #' cross-variable composition of two first differences is one mixed stencil and
 #' not the same-variable nesting the toolkit forbids.
 #'
@@ -432,7 +432,7 @@ chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
 #' also serves the location-scale cdf derivatives, whose inner coordinate is
 #' the standardized quantile.
 #'
-#' The key into an inner table is **built** from the parameter names and never
+#' The key into an inner table is built from the parameter names and never
 #' parsed out of one, so a parameter whose own name contains an underscore is
 #' safe.
 #'
@@ -776,7 +776,7 @@ S7::method(distrib_gradient, ReparamDiscreteDistrib) <- reparam_gradient
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as [hess_names()], each the
-#'   length of `y` recycled against `theta`. Note the **order**: this route
+#'   length of `y` recycled against `theta`. Note the order: this route
 #'   enumerates as [hess_names()] does, diagonal first, while a family written
 #'   out by hand may enumerate lexicographically. Compare two such results by
 #'   name and not by position.
@@ -1195,7 +1195,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' quantity, and the estimate, the standard error and the confidence interval
 #' describe that quantity.
 #'
-#' **The map is written in ordinary R.** It takes a named list of the new
+#' The map is written in ordinary R. It takes a named list of the new
 #' parameters and returns a named list of the parent's, and nothing in it
 #' mentions derivatives:
 #'
@@ -1204,7 +1204,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'                    sigma = psi$sigma)
 #' }
 #'
-#' **Where the map's derivatives come from.** Two routes, and `map_derivs`
+#' Where the map's derivatives come from. Two routes, and `map_derivs`
 #' chooses between them. Supply it, and the tables are hand-written closed
 #' forms, exact at every order with no chain rule transcribed; the shipped
 #' second parametrizations all do, and their formulas live in
@@ -1216,7 +1216,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' can be wrong in their leading digits), so a family used for anything beyond a
 #' first exploration needs `map_derivs`.
 #'
-#' **What is exact and what is inherited.** The derivatives of the
+#' What is exact and what is inherited. The derivatives of the
 #' log-density are carried by
 #' \deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
 #'       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
@@ -1230,7 +1230,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' distribution function, the quantile function, the generator and the response
 #' derivatives are the parent's at the mapped parameters.
 #'
-#' **Cost.** The density, the distribution function, the quantile function and
+#' Cost. The density, the distribution function, the quantile function and
 #' the generator call the map once per evaluation, on whole vectors. When
 #' `map_derivs` is `NULL`, the derivatives call the map at the points of the
 #' stencil, several times for each observation (more at higher orders), and

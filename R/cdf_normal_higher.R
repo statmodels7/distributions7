@@ -67,7 +67,7 @@ phi_hermite <- function(x, m) {
 #' The Leibniz rule splits the positions of the multi-index \eqn{I} between the
 #' weight and the tail. The weight side is
 #' \eqn{\partial^{S} e^{w} = e^{w} B_{S}(w)}, the complete Bell polynomial in
-#' the partials of the **log** weight; the tail side is one Faa di Bruno pass
+#' the partials of the log weight; the tail side is one Faa di Bruno pass
 #' over \eqn{x}, whose outer derivatives (those of \eqn{\Phi}) are the Hermite
 #' factors of [phi_hermite()] times \eqn{\varphi(x)}. Both sums run on the
 #' partition enumeration of the package, not on a transcribed expansion.
@@ -274,10 +274,10 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #' @param q A numeric vector of quantiles, positive.
 #' @param theta A named list with components `mu` (positive) and `phi`
 #'   (positive), each a numeric vector of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of the requested order,
@@ -411,10 +411,10 @@ dpow_affine <- function(u, p, k, inner) {
 #' @param theta A named list with components `mu` (any real value), `lambda`
 #'   (positive) and `alpha` (strictly between 0 and 1), each a numeric vector
 #'   of length 1 or `n`.
-#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
-#'   default.
-#' @param log Are derivatives of the log probability wanted? A single logical,
-#'   `TRUE` by default.
+#' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
+#'   lower tail and `FALSE` the upper tail.
+#' @param log A single logical, `TRUE` by default; `TRUE` selects the
+#'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of the requested order,

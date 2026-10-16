@@ -349,7 +349,7 @@ betabinom1_cum <- function(n, theta, len, upper = FALSE) {
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
 #' @param n A single positive integer, the number of draws. Note that the
-#'   number of **trials** is the object's `size` property, not this argument.
+#'   number of trials is the object's `size` property, not this argument.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
@@ -408,8 +408,8 @@ S7::method(distrib_rng, BetaBinom1Distrib) <- function(distrib, n, theta, ...) {
 #' Each sum has terms of one sign, so both components keep their accuracy at
 #' any concentration; the cost is \eqn{O(n)} per observation.
 #'
-#' With `scale = "link"` the generic applies the chain rule for the links the
-#' family carries before returning. This method always returns the parameter
+#' With `scale = "link"` the generic applies the chain rule for the links that
+#' the family carries before returning. This method always returns the parameter
 #' scale. The arithmetic runs in a compiled kernel decomposed over the elements
 #' of the output, so the result does not depend on the thread count.
 #'
@@ -419,7 +419,7 @@ S7::method(distrib_rng, BetaBinom1Distrib) <- function(distrib, n, theta, ...) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -474,7 +474,7 @@ S7::method(distrib_gradient, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \alpha^2}
 #'       = \psi_1(y+\alpha) - \psi_1(\alpha) - \psi_1(n+S) + \psi_1(S), \qquad
 #'       S = \alpha + \beta,}
-#' and the **mixed** shape component carries only the \eqn{S} part,
+#' and the mixed shape component carries only the \eqn{S} part,
 #' \eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the mass separately
 #' otherwise. The reported components follow by the two-variable chain rule of
 #' \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}, whose own second
@@ -492,7 +492,7 @@ S7::method(distrib_gradient, BetaBinom1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -541,8 +541,8 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the expectation of the observed Hessian under the model,
 #' \eqn{\sum_{k=0}^{n} P(Y=k)\, \partial^2\ell/\partial\theta_i\partial\theta_j}
-#' evaluated at \eqn{y = k}. The support being finite, that is an **exact
-#' finite sum** of \eqn{n+1} terms rather than a quadrature or a sample, and
+#' evaluated at \eqn{y = k}. The support being finite, that is an exact
+#' finite sum of \eqn{n+1} terms rather than a quadrature or a sample, and
 #' the summand is the observed Hessian of
 #' [distrib_hessian.BetaBinom1Distrib()], from the direct sums for
 #' \eqn{\sigma < 0.1} and from the shapes above.
@@ -559,10 +559,10 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored here, the expectation being an exact sum. Accepted so
-#'   that the signature matches the generic's, where it selects between
-#'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored here, the expectation being an exact sum. It is
+#'   accepted so that the signature matches the generic's, where it selects
+#'   between `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
 #' @param nsim Ignored here, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer. It is accepted so that the
@@ -656,7 +656,7 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' so the inflation over a binomial of the same mean is
 #' \eqn{1 + (n-1)\sigma/(1+\sigma)}, above 1 for \eqn{n > 1} and rising with
 #' both the trial count and the dispersion. The factor \eqn{\sigma/(1+\sigma)} is the
-#' **intraclass correlation** between two trials of the same group. At
+#' intraclass correlation between two trials of the same group. At
 #' \eqn{n = 10} and \eqn{\sigma = 0.5} that correlation is \eqn{1/3} and the
 #' variance is four times a binomial's (8.4 against 2.1 at \eqn{\mu = 0.3}).
 #'
@@ -676,7 +676,7 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' linear in \eqn{\mu} at fixed \eqn{\sigma}, so every partial of the map
 #' carrying two or more \eqn{\mu} is exactly zero and the third and fourth
 #' orders are a short partition sum. Orders three and four are therefore
-#' **closed form** as well, in [distrib_deriv3.BetaBinom1Distrib()], and not
+#' closed form as well, in [distrib_deriv3.BetaBinom1Distrib()], and not
 #' the numerical fallback.
 #'
 #' The shifts of the beta functions are integers, so with
@@ -688,12 +688,12 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' \eqn{\sigma}, of order \eqn{K = a + b}, is
 #' \deqn{c_K\Big[\sum_{i<y}\frac{i^b}{u_i^K} + (-1)^a\sum_{i<n-y}\frac{i^b}{v_i^K}
 #'   - [a = 0]\sum_{i<n}\frac{i^b}{w_i^K}\Big], \qquad c_K = (-1)^{K-1}(K-1)!.}
-#' Each sum has terms of one sign. These **direct sums** are used for
+#' Each sum has terms of one sign. These direct sums are used for
 #' \eqn{\sigma < 0.1} at every order, observed and expected, and the route
 #' through the shapes above it (see the next section).
 #'
 #' Every expectation, including those of the third and fourth derivatives, is
-#' an **exact finite sum** over \eqn{\{0, \dots, n\}}: the support is bounded,
+#' an exact finite sum over \eqn{\{0, \dots, n\}}: the support is bounded,
 #' so there is nothing to integrate over.
 #'
 #' # The cancellation at a small dispersion

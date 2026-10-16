@@ -12,8 +12,8 @@ NULL
 #' \eqn{\xi = 0} it is the exponential, reached by a series, so a fit may move
 #' the shape through zero.
 #'
-#' For \eqn{\xi < 0} the support ends at \eqn{-\sigma/\xi}, so it **moves with
-#' the parameters**. That is what makes the family non-regular, and it is why its expected information exists only
+#' For \eqn{\xi < 0} the support ends at \eqn{-\sigma/\xi}, so it moves with
+#' the parameters. That is what makes the family non-regular, and it is why its expected information exists only
 #' above \eqn{\xi = -1/2}.
 #'
 #' Build one with [gpd_distrib()], which supplies the two link functions. This
@@ -491,7 +491,7 @@ S7::method(distrib_gradient, GPDDistrib) <- function(distrib, y, theta,
 #' terms that individually diverge as \eqn{\xi \to 0} cancel, and the limit
 #' is an ordinary point of the formula.
 #'
-#' This is the **observed** curvature at the data. The expected one is closed
+#' This is the observed curvature at the data. The expected one is closed
 #' form as well, but only above \eqn{\xi = -1/2}; see
 #' [distrib_expected_hessian.GPDDistrib()].
 #'
@@ -558,7 +558,7 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' @details
 #' # Where it stops existing
 #'
-#' At \eqn{\xi \le -1/2} the information does **not exist** and every component
+#' At \eqn{\xi \le -1/2} the information does not exist and every component
 #' is `NA`. The condition is exactly that the integrand be integrable: written
 #' on the probability scale, the second derivative grows like
 #' \eqn{(1-u)^{-2|\xi|}} near the upper endpoint, which is integrable if and
@@ -575,7 +575,7 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'
 #' A Monte Carlo average of the observed Hessian converges slowly here,
 #' because the second derivative is unbounded at the upper endpoint when
-#' \eqn{\xi < 0}. Integrating on the **probability** scale
+#' \eqn{\xi < 0}. Integrating on the probability scale
 #' instead, \eqn{E[h] = \int_0^1 h(Q(u))\,du}, turns the endpoint into an
 #' ordinary point and agrees to \eqn{10^{-11}}.
 #'
@@ -586,8 +586,8 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx Ignored: the expectation is closed form. Accepted so that the
-#'   signature matches the generic's.
+#' @param approx Ignored: the expectation is closed form. It is accepted so that
+#'   the signature matches the generic's.
 #' @param nsim Ignored, for the same reason.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
@@ -642,7 +642,7 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' and the natural companion of [gumbel_distrib()] in an analysis of extremes.
 #'
 #' At \eqn{\xi = 0} it is the exponential, at \eqn{\xi > 0} it has a
-#' polynomial tail, and at \eqn{\xi < 0} it has a **finite upper endpoint** at
+#' polynomial tail, and at \eqn{\xi < 0} it has a finite upper endpoint at
 #' \eqn{-\sigma/\xi}. The last case makes the family non-regular, so the
 #' expected information exists only for \eqn{\xi > -1/2}.
 #'

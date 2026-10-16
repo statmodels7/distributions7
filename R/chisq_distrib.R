@@ -296,8 +296,8 @@ S7::method(distrib_rng, ChisqDistrib) <- function(distrib, n, theta, ...) {
 #'       \dfrac{\log y - \log 2 - \psi(\mu/2)}{2},}
 #' with \eqn{\psi} the digamma function. The family is a one-parameter
 #' exponential family in \eqn{\log y}, so this is the sufficient statistic
-#' minus its expectation, and **it is the only order that involves the
-#' response at all**: every derivative from the second up is a polygamma
+#' minus its expectation, and it is the only order that involves the
+#' response at all: every derivative from the second up is a polygamma
 #' function of \eqn{\mu/2} and nothing else.
 #'
 #' The score has mean zero because
@@ -314,11 +314,11 @@ S7::method(distrib_rng, ChisqDistrib) <- function(distrib, n, theta, ...) {
 #'   length 1 or of the length of `y`, recycled if of length 1. It must be
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list with one numeric vector, `mu`, of length
 #'   `max(length(y), length(mu))`.
@@ -366,14 +366,14 @@ S7::method(distrib_gradient, ChisqDistrib) <- function(distrib, y, theta,
 #' Computes the second derivative of the chi-squared log-density with respect
 #' to \eqn{\mu}, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4},}
-#' with \eqn{\psi'} the trigamma function. **It does not involve the
-#' response.** The family is a one-parameter exponential family in
+#' with \eqn{\psi'} the trigamma function. It does not involve the
+#' response. The family is a one-parameter exponential family in
 #' \eqn{\log y}, so the data reach the log-density only through a term linear
 #' in \eqn{\mu} and the second derivative kills it. The value is constant
 #' within a parameter setting, is recycled to the length of `y`, and equals
 #' [distrib_expected_hessian.ChisqDistrib()] exactly.
 #'
-#' The coincidence is on the **parameter** scale. On the link scale the two
+#' The coincidence is on the parameter scale. On the link scale the two
 #' differ, the second-order chain rule adding a term
 #' \eqn{h''(\eta)\,\partial\ell/\partial\mu}, which the expected version
 #' drops because the score has expectation zero; the score of a sample is not
@@ -385,11 +385,11 @@ S7::method(distrib_gradient, ChisqDistrib) <- function(distrib, y, theta,
 #'   length 1 or of the length of `y`, recycled if of length 1. It must be
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list with one numeric vector, `mu_mu`, of length
 #'   `max(length(y), length(mu))` and constant within itself when the parameter
@@ -442,7 +442,7 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #' value is negative at every \eqn{\mu}, the trigamma function being positive,
 #' so the information is positive throughout.
 #'
-#' The identity holds on the **parameter** scale. On the link scale the
+#' The identity holds on the parameter scale. On the link scale the
 #' second-order chain rule adds \eqn{h''(\eta)\,\partial\ell/\partial\mu} to
 #' the observed Hessian. The expected version drops that term because the score
 #' has expectation zero, whereas the score of a finite sample is not zero away
@@ -456,24 +456,24 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #'   length 1 or of the length of `y`, recycled if of length 1. It must be
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, the expectation being exact. Accepted so that the
-#'   signature matches the generic's, where it selects between the Bartlett,
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, the expectation being exact. It is accepted so that
+#'   the signature matches the generic's, where it selects between the Bartlett,
 #'   quadrature, Monte Carlo and outer-product routes.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list with one numeric vector, `mu_mu`, of length
 #'   `max(length(y), length(mu))` and constant within itself when the parameter
 #'   is.
 #'
 #' @section Notation:
-#' The **expected information** is
+#' The expected information is
 #' \eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
-#' **observed information** under the model. The chi-squared is a regular
+#' observed information under the model. The chi-squared is a regular
 #' family, so the second Bartlett identity holds and this equals the variance
 #' of the score. \eqn{\psi'} is the trigamma function.
 #'
@@ -535,13 +535,13 @@ S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta
 #'   number; on the link scale it selects the expected composition. Defaults
 #'   to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list with one numeric vector, `mu_mu_mu`, of length
 #'   `max(length(y), length(mu))` and constant within itself when the parameter
@@ -606,13 +606,13 @@ S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected
 #'   number; on the link scale it selects the expected composition. Defaults
 #'   to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
-#'   [base::match.arg()]. Read by the generic, not by this method.
-#' @param approx Ignored, a closed form being available.
+#'   [base::match.arg()]. The generic reads it, and this method does not.
+#' @param approx Ignored, because a closed form is available.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
-#'   whatever the count says. Defaults to `1L`.
+#'   whatever the count is. Defaults to `1L`.
 #'
 #' @return A named list with one numeric vector, `mu_mu_mu_mu`, of length
 #'   `max(length(y), length(mu))` and constant within itself when the parameter
@@ -801,7 +801,8 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' function in the parameter come from a compiled quadrature.
 #'
 #' The one argument chooses the link that carries the parameter to the
-#' unconstrained scale an optimizer works on, and defaults to the logarithm.
+#' unconstrained scale on which an optimizer works, and defaults to the
+#' logarithm.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean
 #'   \eqn{\mu}. Defaults to [linkfunctions7::log_link()], which maps

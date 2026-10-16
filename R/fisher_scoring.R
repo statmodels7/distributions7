@@ -70,9 +70,9 @@ FisherScoring <- S7::new_class("FisherScoring",
 #'
 #' \tabular{ll}{
 #'   `method = fisher_scoring()` \tab Newton's method with the
-#'     **expected** information \cr
+#'     expected information \cr
 #'   `method = optimizers7::newton()` \tab Newton's method with the
-#'     **observed** Hessian \cr
+#'     observed Hessian \cr
 #'   `method = optimizers7::lbfgs()` \tab whatever that optimizer does
 #' }
 #'
@@ -193,7 +193,7 @@ fisher_scoring <- function(approx = c("opg", "bartlett", "integrate", "mc"),
 #' @param x A [FisherScoring()] object.
 #' @param ... Unused, accepted for compatibility with [base::print()].
 #'
-#' @return `x`, invisibly. Called for the output it writes.
+#' @return `x`, invisibly. The function is called for the output that it writes.
 #'
 #' @examples
 #' fisher_scoring()

@@ -33,7 +33,7 @@ NULL
 #' With \eqn{L = \log(y/a)} the log-density splits into
 #' \deqn{\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},}
 #' and each piece is either elementary or a univariate function composed with a
-#' **two-variable** inner map, which the written-out template of [fdb2()]
+#' two-variable inner map, which the written-out template of [fdb2()]
 #' covers.
 #'
 #' What keeps the sum from growing is that the two compositions do not share a
