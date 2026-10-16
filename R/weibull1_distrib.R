@@ -191,8 +191,8 @@ S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FA
 #' by calling [stats::pweibull()]. The survival function is elementary,
 #' \eqn{1 - F(q) = \exp\{-(q/\mu)^{\sigma}\}}, so `lower.tail = FALSE` with
 #' `log.p = TRUE` returns \eqn{-(q/\mu)^{\sigma}} exactly and never forms the
-#' difference. That combination is what a right-censored observation far out in
-#' the tail contributes to a log-likelihood. With `lower.tail = TRUE` and
+#' difference. A right-censored observation far out in the tail contributes this
+#' value to a log-likelihood. With `lower.tail = TRUE` and
 #' `log.p = TRUE` the value is taken from \eqn{\log H = \sigma\log(q/\mu)}
 #' ([weibull_log_lower()]), so that it stays finite where \eqn{H} underflows.
 #'
@@ -281,7 +281,8 @@ S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.ta
 #' d <- weibull1_distrib()
 #' th <- list(mu = 2, sigma = 1.5)
 #'
-#' # The quartiles, and the round trip back through the distribution function.
+#' # The quartiles are computed, and then mapped back through the distribution
+#' # function.
 #' q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #' q
 #' all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75))
@@ -388,7 +389,7 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 2, sigma = 1.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out.
 #' u <- (y / 2)^1.5
 #' all.equal(g$mu, 1.5 * (u - 1) / 2)
 #' all.equal(g$sigma, 1 / 1.5 + (1 - u) * log(y / 2))
@@ -399,8 +400,8 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
 #' mle <- coef(fit_distrib(d, z))
 #' vapply(distrib_gradient(d, z, as.list(mle)), sum, numeric(1))
 #'
-#' # On the link scale both components are multiplied by h' = theta, both
-#' # parameters riding a log by default.
+#' # On the link scale both components are multiplied by h' = theta, because
+#' # both parameters ride a log by default.
 #' distrib_gradient(d, y, th, scale = "link")$mu / g$mu
 S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
   weibull1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
@@ -420,7 +421,7 @@ S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, sca
 #'         = -\dfrac{1}{\sigma^2} - u (\log z)^2,}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
 #'         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).}
-#' All three carry the data through \eqn{u}, so none is free of \eqn{y} and the
+#' All three carry the data through \eqn{u}, so each depends on \eqn{y} and the
 #' observed matrix differs from its expectation at every observation.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
@@ -451,7 +452,7 @@ S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, sca
 #' th <- list(mu = 2, sigma = 1.5)
 #' h <- distrib_hessian(d, y, th)
 #'
-#' # The three closed forms, written out.
+#' # The three closed forms are written out.
 #' u <- (y / 2)^1.5; lz <- log(y / 2)
 #' all.equal(h$mu_mu, 1.5 * (1 - 2.5 * u) / 4)
 #' all.equal(h$sigma_sigma, -1 / 1.5^2 - u * lz^2)
@@ -496,7 +497,7 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #' # Why the expectations are gamma derivatives
 #'
 #' Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
-#' the parameters are, so every expectation the Hessian needs is a moment of
+#' the parameters are, so every expectation that the Hessian needs is a moment of
 #' \eqn{u} against a power of \eqn{\log u}, and each of those is a derivative
 #' of \eqn{\Gamma} at 2:
 #' \deqn{\mathbb{E}[u] = 1, \qquad
@@ -508,8 +509,8 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #' [distrib_expected_hessian.GumbelDistrib()] rests on the same three moments.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
-#' @param y A numeric vector of observations. Only its length is read, the
-#'   expectation not depending on the data; the values are ignored.
+#' @param y A numeric vector of observations. Only its length is read, because
+#'   the expectation does not depend on the data; the values are ignored.
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
@@ -545,7 +546,7 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #' eh <- distrib_expected_hessian(d, y, th)
 #' vapply(eh, function(z) z[1], numeric(1))
 #'
-#' # The closed forms, written out.
+#' # The closed forms are written out.
 #' eg <- -digamma(1)
 #' c(mu_mu = -1.5^2 / 4,
 #'   sigma_sigma = -((1 - eg)^2 + pi^2 / 6) / 1.5^2,
@@ -556,7 +557,7 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #' z <- distrib_rng(d, 2e5, th)
 #' vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #'
-#' # The strategy argument is inert, the expectation being exact.
+#' # The strategy argument has no effect, because the expectation is exact.
 #' identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   weibull1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
@@ -612,7 +613,7 @@ S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, th
 #' d3 <- distrib_deriv3(d, y, th)
 #' names(d3)
 #'
-#' # The pure-mu component, written out.
+#' # The pure-mu component is written out.
 #' u <- (y / 2)^1.5
 #' all.equal(d3$mu_mu_mu, 1.5 * (-2 + 2.5 * 3.5 * u) / 8)
 #'
@@ -639,8 +640,8 @@ S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @description
 #' Computes the five distinct fourth derivatives of the Weibull log-density in
 #' \eqn{\mu} and \eqn{\sigma}, in closed form, observed at the data or expected
-#' under the model. The construction is the one
-#' [distrib_deriv3.Weibull1Distrib()] describes carried one order further: with
+#' under the model. The construction is the one that
+#' [distrib_deriv3.Weibull1Distrib()] describes, carried one order further: with
 #' \eqn{z = y/\mu}, \eqn{u = z^{\sigma}} and \eqn{L = \log z}, each component
 #' is a polynomial in \eqn{u L^k} for \eqn{k \le 4}, and the pure-\eqn{\mu}
 #' component is
@@ -685,7 +686,7 @@ S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' d4 <- distrib_deriv4(d, y, th)
 #' names(d4)
 #'
-#' # The pure-mu component, written out.
+#' # The pure-mu component is written out.
 #' u <- (y / 2)^1.5
 #' all.equal(d4$mu_mu_mu_mu, 1.5 * (6 - 2.5 * 3.5 * 4.5 * u) / 16)
 #'
@@ -717,8 +718,8 @@ S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' At \eqn{\sigma > 1} it vanishes at the mode
 #' \eqn{y = \mu\{(\sigma-1)/\sigma\}^{1/\sigma}}; at \eqn{\sigma \le 1} the
 #' density is decreasing on the whole support and the derivative is negative
-#' everywhere. This quantity is what a quantile residual's delta-method
-#' standard error and a change of variable in the response both need.
+#' everywhere. A quantile residual's delta-method standard error and a change
+#' of variable in the response both need this quantity.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
 #' @param y A numeric vector of positive observations. At or below zero the
@@ -742,7 +743,7 @@ S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' y <- c(0.5, 1.2, 3.0)
 #' th <- list(mu = 2, sigma = 1.5)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' u <- (y / 2)^1.5
 #' all.equal(distrib_grad_y(d, y, th), (1.5 - 1 - 1.5 * u) / y)
 #'
@@ -771,8 +772,8 @@ S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #'   = -\dfrac{(\sigma - 1)(1 + \sigma u)}{y^2}.}
 #' The sign is the shape's: at \eqn{\sigma > 1} the log-density is concave on
 #' the whole support, at \eqn{\sigma < 1} convex, and at \eqn{\sigma = 1}, the
-#' exponential case, exactly zero, the log-density being linear in \eqn{y}
-#' there.
+#' exponential case, exactly zero, because the log-density is linear in
+#' \eqn{y} there.
 #'
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
 #' @param y A numeric vector of positive observations. At or below zero the
@@ -794,7 +795,7 @@ S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' y <- c(0.5, 1.2, 3.0)
 #' th <- list(mu = 2, sigma = 1.5)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' u <- (y / 2)^1.5
 #' all.equal(distrib_hess_y(d, y, th), -(1.5 - 1) * (1 + 1.5 * u) / y^2)
 #'
@@ -889,23 +890,23 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' # Why every expectation is elementary
 #'
 #' Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
-#' the parameters are. Every expectation any order needs is therefore a moment
+#' the parameters are. Every expectation that any order needs is therefore a moment
 #' of \eqn{u} against a power of \eqn{\log u}, and each of those is a
 #' derivative of \eqn{\Gamma} at 2: \eqn{\mathbb{E}[u] = 1},
 #' \eqn{\mathbb{E}[u\log u] = 1 - \gamma},
 #' \eqn{\mathbb{E}[u(\log u)^2] = (1-\gamma)^2 + \pi^2/6 - 1}. The Gumbel
-#' family shares the substitution, \eqn{\exp(-\text{Gumbel})} being Weibull, so
-#' [gumbel_distrib()] rests on the same three moments.
+#' family shares the substitution, because \eqn{\exp(-\text{Gumbel})} is
+#' Weibull, so [gumbel_distrib()] rests on the same three moments.
 #'
 #' # Moments and shape
 #'
 #' With \eqn{g_k = \Gamma(1 + k/\sigma)}, the mean is \eqn{\mu g_1} and the
 #' variance \eqn{\mu^2(g_2 - g_1^2)}; the skewness and the excess kurtosis
-#' follow from \eqn{g_3} and \eqn{g_4} and do not depend on \eqn{\mu}, the
-#' scale being a multiplier. The hazard \eqn{f/(1-F)} is
+#' follow from \eqn{g_3} and \eqn{g_4} and do not depend on \eqn{\mu}, because
+#' the scale is a multiplier. The hazard \eqn{f/(1-F)} is
 #' \eqn{(\sigma/\mu)(y/\mu)^{\sigma-1}}, increasing for \eqn{\sigma > 1} and
-#' decreasing for \eqn{\sigma < 1}. That monotone hazard is why the family is
-#' used in survival work.
+#' decreasing for \eqn{\sigma < 1}. The family is used in survival work because
+#' its hazard is monotone.
 #'
 #' Two shapes give named families: \eqn{\sigma = 1} is the exponential with
 #' mean \eqn{\mu}, and \eqn{\sigma = 2} is the Rayleigh distribution with
@@ -982,7 +983,7 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) 
 #' [exponential_distrib()] and [gengamma1_distrib()] for the special case and
 #' the generalization; [gpd_distrib()] for another extreme-value family;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery of checks that this family
+#' user-defined family against the same battery of checks that this family
 #' passes;
 #' [Weibull1Distrib] for the class.
 #' @export

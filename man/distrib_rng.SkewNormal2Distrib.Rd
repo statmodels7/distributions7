@@ -18,7 +18,7 @@ A numeric vector of \code{n} draws, whose first three sample moments
 estimate \code{mu}, \code{sigma^2} and \code{gamma1}.
 }
 \description{
-Draws from the skew normal at the direct parameters the centered triple
+Draws from the skew normal at the direct parameters that the centered triple
 implies, through \code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng.SkewNormal1Distrib()}}'s stochastic
 representation. The draws are exact and cost two \code{rnorm} calls, whatever the
 skewness is.
@@ -30,13 +30,12 @@ th <- list(mu = 3, sigma = 2, gamma1 = 0.6)
 set.seed(2)
 x <- distrib_rng(d, 2e5, th)
 
-# The three parameters are the three sample moments, which is the whole
-# point of this parametrization.
+# The three parameters are the three sample moments.
 rbind(sample = c(mean(x), sd(x), mean((x - mean(x))^3) / sd(x)^3),
       parameter = c(th$mu, th$sigma, th$gamma1))
 }
 \seealso{
 \code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng.SkewNormal1Distrib()}} for the representation,
-\code{\link[=mean.SkewNormal2Distrib]{mean.SkewNormal2Distrib()}} for the moments the draws reproduce, and
+\code{\link[=mean.SkewNormal2Distrib]{mean.SkewNormal2Distrib()}} for the moments that the draws reproduce, and
 \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

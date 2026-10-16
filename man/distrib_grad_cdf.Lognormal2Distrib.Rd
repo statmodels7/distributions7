@@ -21,9 +21,9 @@
 A named list, one component per parameter or per multi-index.
 }
 \description{
-The derivatives of \eqn{F(q) = \Phi\{(\log q - \mu_l)/\sqrt{S}\}} in
-\eqn{(m, v)} to order four, each a closed form from its own compiled
-kernel, carried to the upper tail and the log scale by
+Return the derivatives of \eqn{F(q) = \Phi\{(\log q - \mu_l)/\sqrt{S}\}} in
+\eqn{(m, v)} to order four. Each of them is a closed form computed by its
+own compiled kernel and is carried to the upper tail and the log scale by
 \code{\link[=cdf_tail_scale]{cdf_tail_scale()}} and \code{\link[=cdf_scale_k]{cdf_scale_k()}}.
 }
 \examples{

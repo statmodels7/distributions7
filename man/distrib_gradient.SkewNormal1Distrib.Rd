@@ -69,7 +69,7 @@ y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, sigma = 1, alpha = 3)
 g <- distrib_gradient(d, y, th)
 
-# The shape component written out.
+# The shape component equals its formula written out.
 all.equal(g$alpha, y * numericals7::mills_ratio(3 * y)$r)
 
 # The score sums to nearly zero at the maximum likelihood estimate.

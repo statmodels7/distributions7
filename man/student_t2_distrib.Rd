@@ -35,8 +35,8 @@ differ by \eqn{\sqrt{\nu/(\nu-2)}}. Here the scale is
 which exists only for \eqn{\nu > 2}, so the degrees of freedom are bounded
 below at two. Every derivative in \eqn{(\mu, \sigma, \nu)} to order five,
 the expected information and its derivatives, and the derivatives in the
-response are closed forms, each order in its own compiled kernel (see
-\code{\link[=distrib_gradient.StudentT2Distrib]{distrib_gradient.StudentT2Distrib()}}). This is \code{TF2} in gamlss.
+response are closed forms, and each order is computed by its own compiled
+kernel (see \code{\link[=distrib_gradient.StudentT2Distrib]{distrib_gradient.StudentT2Distrib()}}). This is \code{TF2} in gamlss.
 }
 \section{The distribution}{
 

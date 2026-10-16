@@ -42,12 +42,13 @@ probability (\code{\link[=tail_quantile_refine]{tail_quantile_refine()}}). \code
 d <- student_t1_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 
-# The quartiles, and the round trip back through the distribution function.
+# The quartiles are computed, and the distribution function maps them back
+# to the probabilities.
 q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 q
 all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75))
 
-# The median is the location, the law being symmetric about it.
+# The median is the location, because the law is symmetric about it.
 distrib_quantile(d, 0.5, th)
 
 # Heavy tails put the extreme quantiles far further out than a Gaussian's.

@@ -130,6 +130,6 @@ c(mu = th$mu, mean = mean(d, th))
 \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the same law in Azzalini's centered
 parametrization, whose information is not singular at symmetry;
 \code{\link[=skewt_distrib]{skewt_distrib()}}, which adds degrees of freedom and reaches a skewness
-this family cannot;
+that this family cannot reach;
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the case \eqn{\alpha = 0}.
 }

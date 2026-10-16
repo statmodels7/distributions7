@@ -19,7 +19,8 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, the expected values being closed form or exact sums.}
+\item{approx}{Ignored, because the expected values are closed form or exact
+sums.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -38,7 +39,7 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 \description{
 Computes the five distinct fourth derivatives of the negative binomial
 log-mass with respect to \eqn{\mu} and \eqn{\theta}, in closed form, by the
-same route the third order takes: the components involving the mean are
+same route that the third order takes: the components involving the mean are
 rational in \eqn{(\mu, \theta)} and linear in \eqn{y}, and the pure
 dispersion component carries \eqn{\psi_3(y+\theta) - \psi_3(\theta)}, with
 \eqn{\psi_3} the third derivative of the digamma function.
@@ -48,8 +49,9 @@ The mean component is formed from the same bracket as at third order.
 With \code{expected = TRUE} the expectations are returned. The pure dispersion
 one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support as at
 third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. \code{approx} and
-\code{nsim} are ignored either way. As at third order, the cancellation at large
-\eqn{\theta} is performed symbolically (\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}).
+\code{nsim} are ignored either way. As at third order, the kernel performs the
+cancellation at large \eqn{\theta} symbolically
+(\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}).
 }
 \section{Notation}{
 

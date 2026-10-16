@@ -20,7 +20,7 @@ An integer-valued numeric vector of \code{n} draws.
 }
 \description{
 Draws from the mixture representation of \code{\link[=distrib_rng.Pig1Distrib]{distrib_rng.Pig1Distrib()}}, at the
-dispersion \code{\link[=pig2_sigma]{pig2_sigma()}} implies: \eqn{\lambda} from the inverse Gaussian
+dispersion that \code{\link[=pig2_sigma]{pig2_sigma()}} implies: \eqn{\lambda} from the inverse Gaussian
 with mean \eqn{\mu} and shape \eqn{\mu/\sigma}, then \eqn{Y \mid \lambda}
 from the Poisson. This method and the variance, skewness and kurtosis
 methods compose the map; the mass and the derivative methods take
@@ -34,16 +34,17 @@ th <- list(mu = 3, alpha = al)
 set.seed(64)
 x <- distrib_rng(d, 2e5, th)
 
-# Two moments against their closed forms.
+# Two moments are compared with their closed forms.
 rbind(sample = c(mean(x), var(x)),
       theory = c(mean(d, th), variance(d, th)))
 
-# The empirical mass against the exact one, over the head of the support.
+# The empirical mass is compared with the exact one over the head of the
+# support.
 rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
       exact = distrib_pdf(d, 0:6, th))
 }
 \seealso{
 \code{\link[=distrib_rng.Pig1Distrib]{distrib_rng.Pig1Distrib()}} for the same sampler in mean and
-dispersion, \code{\link[=pig2_sigma]{pig2_sigma()}} for the map it composes, and \code{\link[=distrib_rng]{distrib_rng()}}
+dispersion, \code{\link[=pig2_sigma]{pig2_sigma()}} for the map that it composes, and \code{\link[=distrib_rng]{distrib_rng()}}
 for the generic.
 }

@@ -7,11 +7,11 @@ NULL
 #' @description
 #' This is the S7 class of the pseudo-Huber family, a location-scale family on
 #' the whole real line whose log-density is the negative pseudo-Huber loss
-#' \eqn{-\sqrt{\nu + z^2}}, with a shape \eqn{\nu > 0} interpolating between a
+#' \eqn{-\sqrt{\nu + z^2}}, and whose shape \eqn{\nu > 0} interpolates between a
 #' Laplace at \eqn{\nu \to 0} and a Gaussian at \eqn{\nu \to \infty}. It is the
 #' symmetric hyperbolic distribution, a special case of the generalized
-#' hyperbolic. It inherits from `continuous_distrib`; the eleven methods listed
-#' below are registered on it in this file.
+#' hyperbolic. It inherits from `continuous_distrib`; the methods listed below
+#' are registered on it in this file.
 #'
 #' Build one with [pseudohuber_distrib()], which supplies the three link
 #' functions and fills the properties in. This page documents the raw S7
@@ -143,7 +143,7 @@ PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_di
 #' y <- c(-2.5, 0.3, 1.8)
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The formula written out, with the Bessel constant.
+#' # The density equals the formula written out with the Bessel constant.
 #' D <- sqrt(2 + ((y - 0.4) / 1.2)^2)
 #' all.equal(distrib_pdf(d, y, th),
 #'           exp(-D) / (2 * 1.2 * sqrt(2) * besselK(sqrt(2), 1)))
@@ -180,11 +180,11 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' @name distrib_cdf.PseudoHuberDistrib
 #' @description
 #' Computes \eqn{F(q) = P(Y \le q)} by numerical integration of the density,
-#' the family having no elementary distribution function. The integral is
+#' because the family has no elementary distribution function. The integral is
 #' taken by the compiled rule of [compiled_cdf()], over the tail on the side
 #' of \eqn{q} away from \eqn{\mu}: below the location it is \eqn{F}, above
-#' it the survival function, so that neither tail is a difference of two
-#' numbers near one.
+#' it the survival function, so that the value in each tail is computed
+#' directly and not as a difference of two numbers near one.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -213,11 +213,12 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' d <- pseudohuber_distrib()
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The quadrature, and the symmetry of the law about its location.
+#' # The quadrature gives the distribution function, and the law is symmetric
+#' # about its location.
 #' distrib_cdf(d, c(-1, 0.4, 2), th)
 #' distrib_cdf(d, 0.4 - 1.5, th) + distrib_cdf(d, 0.4 + 1.5, th)
 #'
-#' # At the location it is one half exactly, the law being symmetric.
+#' # At the location it is one half exactly, because the law is symmetric.
 #' distrib_cdf(d, 0.4, th)
 #'
 #' # It agrees with a direct integration of the density.
@@ -228,9 +229,9 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- compiled_cdf
 #' @title Pseudo-Huber Quantile Function
 #' @name distrib_quantile.PseudoHuberDistrib
 #' @description
-#' Computes \eqn{Q(p)} by root-finding on the numerical distribution function,
-#' the family having no elementary quantile, through
-#' [symmetric_log_quantile()]. The probability is turned into the logarithms
+#' Computes \eqn{Q(p)} through [symmetric_log_quantile()] by root-finding on
+#' the numerical distribution function, because the family has no elementary
+#' quantile. The probability is turned into the logarithms
 #' of both tails without forming \eqn{1 - p} or exponentiating a logarithm,
 #' and the root of \eqn{\log F(q) = \log P}, with \eqn{P} the smaller tail, is
 #' found below the location and reflected through \eqn{Q = 2\mu - Q'} when the
@@ -271,7 +272,8 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- compiled_cdf
 #' # The median is the location, returned without a search.
 #' distrib_quantile(d, 0.5, th)
 #'
-#' # The quartiles, and the round trip back through the distribution function.
+#' # The quartiles are computed, and the distribution function maps them back
+#' # to the probabilities.
 #' q <- distrib_quantile(d, c(0.25, 0.75), th)
 #' q
 #' distrib_cdf(d, q, th)
@@ -290,8 +292,8 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #' on the logarithm of the smaller tail: the root of
 #' \eqn{\log F(q) = \log p} is found below the location by [stats::uniroot()]
 #' and reflected about it when the upper tail is the smaller one, so that
-#' neither \eqn{1 - p} nor \eqn{\exp(\log p)} is formed. The two pseudo-Huber
-#' families use it.
+#' the computation forms neither \eqn{1 - p} nor \eqn{\exp(\log p)}. The two
+#' pseudo-Huber families use it.
 #' @param distrib A distribution object symmetric about its first parameter.
 #' @param p A numeric vector of probabilities, or their logarithms.
 #' @param theta A named list of parameter values.
@@ -369,7 +371,8 @@ symmetric_log_quantile <- function(distrib, p, theta, lower.tail, log.p,
 #' d <- pseudohuber_distrib()
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The moments of a sample sit where the sampling error puts them.
+#' # The moments of the sample are close to the theoretical ones, within the
+#' # sampling error.
 #' set.seed(6)
 #' z <- distrib_rng(d, 1e5, th)
 #' rbind(sample = c(mean(z), var(z)),
@@ -433,7 +436,7 @@ S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta, ...) 
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The location and scale components, written out.
+#' # The location and scale components agree with their formulas written out.
 #' r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 #' all.equal(g$mu, r / (1.2^2 * D))
 #' all.equal(g$sigma, (r^2 / (1.2^2 * D) - 1) / 1.2)
@@ -516,7 +519,7 @@ S7::method(distrib_gradient, PseudoHuberDistrib) <- function(distrib, y, theta, 
 #' h <- distrib_hessian(d, y, th)
 #' names(h)
 #'
-#' # The location entry, written out, and its sign.
+#' # The location entry equals its formula written out, and it is negative.
 #' r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 #' all.equal(h$mu_mu, -2 / (1.2^2 * D^3))
 #'
@@ -549,7 +552,7 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #' location and scale is a function of \eqn{\nu} alone and is an integral over
 #' \eqn{z} of the analytic observed derivatives against the density, taken once
 #' for each distinct \eqn{\nu} by the exp-sinh rule of [loc_scale_expected()].
-#' No component has an elementary closed form: the integrands carry
+#' The components have no elementary closed form: the integrands carry
 #' \eqn{(\nu + z^2)^{-1/2}}, which leads to Bickley functions rather than to
 #' the Bessel functions of the normalizing constant.
 #'
@@ -579,8 +582,8 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #'   components keyed as [dexpected_names()] and [d2expected_names()].
 #'
 #' @seealso [loc_scale_expected()] for the construction,
-#'   [distrib_hessian.PseudoHuberDistrib()] for the quantity this is the
-#'   expectation of, and [distrib_expected_hessian()] for the generic.
+#'   [distrib_hessian.PseudoHuberDistrib()] for the quantity of which this is
+#'   the expectation, and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- pseudohuber_distrib()
@@ -609,7 +612,8 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' \eqn{r = y - \mu}, \eqn{\sigma} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
 #' Bessel functions enter through \eqn{\nu} alone. The derivatives in
 #' \eqn{\nu} of \eqn{B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}} come from
-#' three routes, each where it keeps its digits: below \eqn{\nu = 1} the
+#' three routes, and each is used in the range where it keeps its digits:
+#' below \eqn{\nu = 1} the
 #' series of \eqn{K_1} and \eqn{K_2} at the origin; for
 #' \eqn{1 \le \nu < 400} the cumulants of \eqn{1/(4T)} under the generalized
 #' inverse Gaussian law of the integral representation of \eqn{K_1}, by the
@@ -620,8 +624,8 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #'
 #' The expected third derivatives have no closed form. With
 #' `expected = TRUE` the method calls [expected_derivative()], which integrates
-#' the observed derivatives against the density by the strategy `approx` names.
-#' That is the one place on this page where `approx` and `nsim` are read.
+#' the observed derivatives against the density by the strategy specified in
+#' `approx`. The arguments `approx` and `nsim` are read only in this case.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -636,9 +640,10 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. Read only when `expected = TRUE`.
+#'   or `"opg"`. It is read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
+#'   `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of ten numeric vectors, `mu_mu_mu` through
@@ -658,7 +663,7 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' names(d3)
 #'
 #' # A central difference of the Hessian reproduces the pure-location
-#' # component, which is what says the closed form is the right one.
+#' # component, which confirms the closed form.
 #' eps <- 1e-5
 #' up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu
@@ -687,8 +692,8 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' [distrib_deriv3.PseudoHuberDistrib()].
 #'
 #' The expected fourth derivatives have no closed form. With
-#' `expected = TRUE` the method calls [expected_derivative()], which is the one
-#' place on this page where `approx` and `nsim` are read.
+#' `expected = TRUE` the method calls [expected_derivative()]. The arguments
+#' `approx` and `nsim` are read only in this case.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -703,13 +708,14 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. Read only when `expected = TRUE`.
+#'   or `"opg"`. It is read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
+#'   `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of fifteen numeric vectors named for the multi-index
-#'   they carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
+#'   that they carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
 #'   `max(length(y), length(mu), length(sigma), length(nu))`.
 #'
 #' @seealso [distrib_deriv3.PseudoHuberDistrib()] for the order below and the
@@ -749,9 +755,9 @@ S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' The family is a location family in \eqn{\mu}, so this is exactly the
 #' negative of the location score
 #' [distrib_gradient.PseudoHuberDistrib()]`$mu`, and like it, it is
-#' bounded: it tends to \eqn{\mp 1/\sigma} as the residual runs away. This
-#' quantity is what a quantile residual's delta-method standard error and a
-#' change of variable in the response both need.
+#' bounded: it tends to \eqn{\mp 1/\sigma} as the residual runs away. Both a
+#' quantile residual's delta-method standard error and a change of variable in
+#' the response need this quantity.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -775,7 +781,7 @@ S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' y <- c(-2.5, 0.3, 1.8)
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The closed form, written out.
+#' # The derivative equals its closed form written out.
 #' r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 #' all.equal(distrib_grad_y(d, y, th), -r / (1.2^2 * D))
 #'
@@ -788,7 +794,7 @@ S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #'            distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
 #'           distrib_grad_y(d, y, th), tolerance = 1e-6)
 #'
-#' # Bounded by 1 / sigma however far out the response is.
+#' # The derivative is bounded by 1 / sigma however far out the response is.
 #' c(distrib_grad_y(d, 0.4 + c(10, 1000, 1e6), th), bound = -1 / 1.2)
 S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; sigma <- theta[[2]]; nu <- theta[[3]]
@@ -831,7 +837,7 @@ S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' y <- c(-2.5, 0.3, 1.8)
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The closed form, written out.
+#' # The derivative equals its closed form written out.
 #' r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 #' all.equal(distrib_hess_y(d, y, th), -2 / (1.2^2 * D^3))
 #'
@@ -844,7 +850,7 @@ S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #'            distrib_grad_y(d, y - eps, th)) / (2 * eps),
 #'           distrib_hess_y(d, y, th), tolerance = 1e-6)
 #'
-#' # Negative everywhere, decaying like |r|^-3 in the tails.
+#' # The derivative is negative everywhere and decays like |r|^-3 in the tails.
 #' distrib_hess_y(d, 0.4 + c(1, 10, 100), th)
 S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; sigma <- theta[[2]]; nu <- theta[[3]]
@@ -874,8 +880,8 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' information.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
-#'   ranging over the whole line already.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because the
+#'   location already ranges over the whole line.
 #' @param link_sigma A `link` object from `linkfunctions7` for the scale
 #'   \eqn{\sigma}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -908,8 +914,8 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' At \eqn{\nu \to \infty} the exponent is
 #' \eqn{\sqrt{\nu} + (y-\mu)^2/(2\sqrt{\nu}\sigma^2)} and the family is the
 #' Gaussian with standard deviation \eqn{\sigma\nu^{1/4}}: the largest gap
-#' is `1.5e-04` at \eqn{\nu = 10^4} and `1.5e-07` at \eqn{10^8}. Note that the
-#' spread grows with \eqn{\nu}, so \eqn{\sigma} alone is not the standard
+#' is `1.5e-04` at \eqn{\nu = 10^4} and `1.5e-07` at \eqn{10^8}. The spread
+#' grows with \eqn{\nu}, so \eqn{\sigma} by itself is not the standard
 #' deviation.
 #'
 #' # Moments
@@ -940,7 +946,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' [distrib_cross_y.PseudoHuberDistrib()], whose \eqn{\nu} component is
 #' \eqn{r/(2\sigma^2 D^3)}.
 #'
-#' # What is numerical, and what it costs
+#' # Numerical methods and their cost
 #'
 #' The distribution function has no elementary form and is a quadrature,
 #' batched over the quantiles and reflected about \eqn{\mu} so that only the
@@ -955,7 +961,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' is one integral over \eqn{z} per distinct \eqn{\nu}, taken by the rule of
 #' [loc_scale_expected()]; see
 #' [distrib_expected_hessian.PseudoHuberDistrib()]. The components containing
-#' \eqn{\mu} an odd number of times vanish, the law being symmetric, so the
+#' \eqn{\mu} an odd number of times vanish because the law is symmetric, so the
 #' location is orthogonal to the scale and the shape.
 #'
 #' # Estimation
@@ -1028,7 +1034,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #' [student_t1_distrib()] for the other robust three-parameter family here,
 #' whose score redescends to zero where this one flattens to a bound;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery that this one passes;
+#' user-defined family against the same battery that this one passes;
 #' [PseudoHuberDistrib] for the class.
 #' @export
 pseudohuber_distrib <- function(link_mu = identity_link(), link_sigma = log_link(), link_nu = log_link()) {

@@ -37,8 +37,8 @@ These are exactly the Gaussian's, read at \eqn{\log y}. The lognormal
 log-density is the Gaussian's at \eqn{\log y} minus \eqn{\log y}, and that
 last term carries no parameter, so it disappears from every derivative in
 \eqn{\mu} and \eqn{\sigma^2}. The same holds at all four orders and for the
-expected values; what differs from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} is only the
-derivatives in the response, where the Jacobian does enter.
+expected values. Only the derivatives in the response differ from those of
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}, because the Jacobian enters them.
 
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.
@@ -60,12 +60,13 @@ y <- c(0.5, 1.6, 4)
 th <- list(mu = 0.5, sigma2 = 0.36)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out on the log scale.
+# The two closed forms are written out on the log scale.
 r <- log(y) - 0.5
 all.equal(g$mu, r / 0.36)
 all.equal(g$sigma2, (r^2 - 0.36) / (2 * 0.36^2))
 
-# Identical to the Gaussian's score at log y, component for component.
+# The score is identical to the Gaussian's at log y, component for
+# component.
 all.equal(g, distrib_gradient(gaussian2_distrib(), log(y), th))
 
 # The summed score vanishes at the closed-form estimates, which are the

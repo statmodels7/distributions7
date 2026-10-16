@@ -33,7 +33,8 @@ distribution for an angle, parametrized by a mean direction \eqn{\mu} and a
 concentration \eqn{\kappa > 0}. The returned object carries closed-form
 derivatives of the log-density to fourth order in the parameters and in the
 response, a closed-form expected information, and a distribution function
-from a Bessel series in place of the quadrature the base class would use.
+from a Bessel series in place of the quadrature that the base class would
+use.
 }
 \section{The parametrization}{
 The density on \eqn{y \in [-\pi, \pi)} is
@@ -71,7 +72,7 @@ constant, so at orders three and four every component naming one \eqn{\mu}
 and two or more \eqn{\kappa} is exactly zero.
 }
 
-\section{The moments a generic returns are not the circular ones}{
+\section{The moments that a generic returns are not the circular ones}{
 \code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} are the
 ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
 numerically. They are not the circular quantities that \eqn{\mu} and
@@ -82,9 +83,9 @@ not symmetric about \eqn{\mu} on it: at \eqn{\mu = 1.2} and \eqn{\kappa = 2}
 the ordinary mean is 1.079.
 
 The circular mean is \eqn{\mu} and the mean resultant length is
-\eqn{\rho = I_1(\kappa)/I_0(\kappa)}, both closed form. Neither is returned
-by a generic whose name means something else; compute them from a sample as
-\code{atan2(mean(sin(z)), mean(cos(z)))} and
+\eqn{\rho = I_1(\kappa)/I_0(\kappa)}, both closed form. These generics
+do not return either of them, because their names refer to the ordinary
+moments. Compute them from a sample as \code{atan2(mean(sin(z)), mean(cos(z)))} and
 \code{sqrt(mean(cos(z))^2 + mean(sin(z))^2)}.
 }
 
@@ -126,14 +127,15 @@ th <- list(mu = 0.5, kappa = 2)
 integrate(function(v) distrib_pdf(d, v, th), -pi, pi)$value
 
 # The expected information is diagonal: direction and concentration are
-# orthogonal, the sine having mean zero.
+# orthogonal, because the sine has mean zero.
 vapply(distrib_expected_hessian(d, 0, th), function(v) v[1], numeric(1))
 
-# The ordinary mean is not the mean direction, the interval being cut at
-# plus or minus pi.
+# The ordinary mean is not the mean direction, because the interval is cut
+# at plus or minus pi.
 c(ordinary = mean(d, list(mu = 1.2, kappa = 2)), direction = 1.2)
 
-# A sample recovers the circular quantities, which no generic returns.
+# A sample recovers the circular quantities, which the generics do not
+# return.
 set.seed(1)
 z <- distrib_rng(d, 3e5, th)
 c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
@@ -158,7 +160,7 @@ Wiley, Chichester.
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the analogous family on the line, which the von
 Mises approaches at a large concentration; \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} and
 \code{\link[numericals7:bessel_i_ratio]{numericals7::bessel_i_ratio()}} for the Bessel machinery; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family
 against the same battery that this one passes; \link{VonMises1Distrib} for the
 class.
 }

@@ -19,7 +19,7 @@ derivatives at \code{y} are returned from the compiled kernel.}
 transformation is applied in the generic's body.}
 
 \item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, the
-strategy for the expectation. Read only when \code{expected = TRUE}; for a
+strategy for the expectation. It is read only when \code{expected = TRUE}; for a
 discrete family \code{"integrate"} is an exact sum over the support, not a
 quadrature.}
 
@@ -51,7 +51,8 @@ th <- list(mu = 3, sigma = 0.8)
 d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
-# Against a central difference of the analytic Hessian.
+# The third-order entry is compared with a central difference of the
+# analytic Hessian.
 eps <- 1e-5
 rbind(analytic = d3$mu_mu_sigma,
       numeric = (distrib_hessian(d, y, list(mu = 3, sigma = 0.8 + eps))$mu_mu -

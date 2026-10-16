@@ -39,13 +39,13 @@ parameters.
 The components have no elementary form. The family is a location-scale family,
 so every component equals its value at \eqn{\mu = 0}, \eqn{\sigma = 1} times
 \eqn{\sigma^{-k}}, with \eqn{k} the number of indices on \eqn{\mu} or
-\eqn{\sigma}. The value there depends on \eqn{(\alpha, \nu)} alone and is one
+\eqn{\sigma}. The value there depends only on \eqn{(\alpha, \nu)} and is one
 integral over \eqn{z} of the observed derivatives against the density, taken
 once per distinct pair by the exp-sinh rule of \code{\link[=loc_scale_expected]{loc_scale_expected()}}.
 
-The integral is exact to the rule's accuracy, and what it integrates are the
-observed derivatives of \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}, exact in every
-parameter.
+The integral is exact to the accuracy of the rule, and its integrand
+consists of the observed derivatives of \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}},
+which are exact in every parameter.
 
 The tail is integrated to \eqn{|z| = 10^{60}}, which leaves a relative
 \eqn{10^{-60\nu}/\nu} and is negligible for \eqn{\nu \ge 0.3}.
@@ -65,6 +65,6 @@ e$alpha_alpha / e2$alpha_alpha
 }
 \seealso{
 \code{\link[=loc_scale_expected]{loc_scale_expected()}} for the construction,
-\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the quantity this is the expectation
-of, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the quantity whose expectation this
+is, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

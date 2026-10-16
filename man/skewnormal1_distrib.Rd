@@ -69,18 +69,17 @@ come from \code{expected_derivative()}.
 }
 
 \section{Singularity at symmetry}{
-At \eqn{\alpha = 0} the expected information has rank 2 and not 3. The score
-shows why: the shape component is \eqn{z\sqrt{2/\pi}} and the location
-component \eqn{z/\sigma}, so the two are exactly proportional and no data
-can separate them. Measured, the smallest eigenvalue is
+At \eqn{\alpha = 0} the expected information has rank 2 and not 3. The shape
+component of the score is \eqn{z\sqrt{2/\pi}} and the location component is
+\eqn{z/\sigma}, so the two are exactly proportional and a data set cannot
+separate them. Numerically, the smallest eigenvalue is
 \eqn{-2.6\times10^{-27}} against a largest of 2 at \eqn{\alpha = 0}, and it
 grows like \eqn{\alpha^4} thereafter.
 
-The consequence for use is that a fit whose true shape is near zero
-identifies \eqn{\alpha} weakly, and that a variance matrix computed at
-exactly zero is not invertible. Azzalini and Capitanio's centered
-parametrization removes the singularity; it is \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, a
-separate object.
+A fit whose true shape is near zero identifies \eqn{\alpha} weakly, and a
+variance matrix computed at exactly zero is not invertible. Azzalini and
+Capitanio's centered parametrization removes the singularity; it is
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, a separate object.
 }
 
 \section{Moments, and the bound on the skewness}{
@@ -89,9 +88,10 @@ With \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}},
       \mathrm{Var}(Y) = \sigma^2(1 - b^2\delta^2).}
 All four moments are closed form. The skewness is bounded: \eqn{\delta}
 saturates at one as \eqn{|\alpha|\to\infty}, so \eqn{\gamma_1} cannot leave
-\eqn{(-0.9953, 0.9953)} whatever the shape is. Measured, it reaches 0.9556
-at \eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}, and does not move
-after that. A sample skewer than this needs \code{\link[=skewt_distrib]{skewt_distrib()}}.
+\eqn{(-0.9953, 0.9953)} whatever the shape is. Numerically, it reaches
+0.9556 at \eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}, and does
+not move after that. A sample whose skewness exceeds this bound in absolute
+value needs \code{\link[=skewt_distrib]{skewt_distrib()}}.
 }
 
 \section{Parameter domains}{
@@ -117,7 +117,7 @@ th0 <- list(mu = 0, sigma = 1, alpha = 0)
 c(density = max(abs(distrib_pdf(d, y, th0) - dnorm(y))),
   cdf = max(abs(distrib_cdf(d, y, th0) - pnorm(y))))
 
-# The skewness the family can reach is bounded, and saturates early.
+# The skewness that the family can reach is bounded, and saturates early.
 vapply(c(1, 3, 10, 50, 1e4),
        function(a) skewness(d, list(mu = 0, sigma = 1, alpha = a)), 0)
 

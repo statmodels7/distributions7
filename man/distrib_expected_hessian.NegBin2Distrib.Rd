@@ -41,7 +41,7 @@ Returns the expectation of the observed Hessian under the model. With
       \mathbb{E}\left[\ell^{(\mu\theta)}\right] = 0, \qquad
       \mathbb{E}\left[\ell^{(\theta\theta)}\right] =
         \mathbb{E}[\psi_1(Y+\theta)] - \psi_1(\theta) + \dfrac{\mu}{\theta s}.}
-The mean entry and the mixed one are closed form, the latter vanishing
+The mean entry and the mixed one are closed form; the mixed one vanishes
 because the observed mixed entry is \eqn{(y-\mu)/s^2} and
 \eqn{\mathbb{E}[Y] = \mu}. So the mean and the dispersion are orthogonal.
 
@@ -74,7 +74,7 @@ equals the variance of the score.
 d <- negbin2_distrib()
 th <- list(mu = 4, theta = 2)
 
-# The three entries, one value per observation.
+# The three entries have one value per observation.
 lapply(distrib_expected_hessian(d, c(0, 2, 6), th), unique)
 
 # The mean entry is closed form and the mixed one is exactly zero.

@@ -15,8 +15,8 @@ NULL
 #' The rate form is the one in which a lasso penalty is written: with \eqn{\mu = 0}
 #' the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
 #' \eqn{\lambda} is the penalty's own tuning parameter and larger values shrink
-#' harder. `penalties7::lasso_penalty()` is this family with the location held
-#' at zero.
+#' harder. `penalties7::lasso_penalty()` is this family when the location is
+#' held at zero.
 #'
 #' Like [laplace_distrib()], this family has a kink at \eqn{y = \mu} and is
 #' non-regular in its location; `params_smooth` is `c(mu = FALSE,
@@ -91,7 +91,7 @@ NULL
 #' d@params_interpretation
 #' d@params_smooth
 #'
-#' # The same law as laplace_distrib() at lambda = 1/sigma.
+#' # This is the same law as laplace_distrib() at lambda = 1/sigma.
 #' y <- c(-1.2, 0.3, 2.5)
 #' all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
 #'           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
@@ -134,11 +134,11 @@ Laplace2Distrib <- S7::new_class("Laplace2Distrib", parent = continuous_distrib)
 #' d <- laplace2_distrib()
 #' y <- c(-1.2, 0.3, 2.5)
 #'
-#' # The density, written out.
+#' # The density equals its closed form.
 #' all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 2)),
 #'           exp(-2 * abs(y - 0.4)) * 2 / 2)
 #'
-#' # The same law as the scale parametrization at lambda = 1/sigma.
+#' # This is the same law as the scale parametrization at lambda = 1/sigma.
 #' all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
 #'           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
 #'
@@ -193,7 +193,7 @@ S7::method(distrib_pdf, Laplace2Distrib) <- function(distrib, y, theta, log = FA
 #' d <- laplace2_distrib()
 #' th <- list(mu = 0.4, lambda = 2)
 #'
-#' # One half at the location.
+#' # The distribution function equals one half at the location.
 #' distrib_cdf(d, 0.4, th)
 #'
 #' # Each arm is an exponential, written out.
@@ -202,7 +202,8 @@ S7::method(distrib_pdf, Laplace2Distrib) <- function(distrib, y, theta, log = FA
 #'           ifelse(q < 0.4, 0.5 * exp(2 * (q - 0.4)),
 #'                  1 - 0.5 * exp(-2 * (q - 0.4))))
 #'
-#' # The same probabilities as the scale parametrization at sigma = 1/lambda.
+#' # The probabilities equal those of the scale parametrization at
+#' # sigma = 1/lambda.
 #' all.equal(distrib_cdf(d, q, list(mu = 0.4, lambda = 1 / 1.5)),
 #'           distrib_cdf(laplace_distrib(), q, list(mu = 0.4, sigma = 1.5)))
 S7::method(distrib_cdf, Laplace2Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
@@ -251,7 +252,8 @@ S7::method(distrib_cdf, Laplace2Distrib) <- function(distrib, q, theta, lower.ta
 #' distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #' 0.4 + c(-1, 0, 1) * log(2) / 2
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # The inverse is exact: the round trip returns the probabilities that it
+#' # was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 S7::method(distrib_quantile, Laplace2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
@@ -336,7 +338,7 @@ S7::method(distrib_rng, Laplace2Distrib) <- function(distrib, n, theta, ...) {
 #' \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. \eqn{r = y-\mu}
 #' is the residual. Here \eqn{\lambda} is a rate; the same letter names the
 #' tuning parameter of a lasso penalty, and the two coincide because the
-#' lasso is this family with \eqn{\mu} held at zero.
+#' lasso is this family when \eqn{\mu} is held at zero.
 #'
 #' @seealso [distrib_gradient.LaplaceDistrib()] for the scale parametrization,
 #'   [distrib_expected_hessian.Laplace2Distrib()] for the information, and
@@ -348,12 +350,12 @@ S7::method(distrib_rng, Laplace2Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0.4, lambda = 2)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The score equals the two closed forms.
 #' r <- y - 0.4
 #' all.equal(g$mu, 2 * sign(r))
 #' all.equal(g$lambda, 1 / 2 - abs(r))
 #'
-#' # The rate's score vanishes summed at 1/mean|r|, its estimate.
+#' # The rate's score sums to zero at 1/mean|r|, which is its estimate.
 #' set.seed(12)
 #' z <- distrib_rng(d, 2000, list(mu = 3, lambda = 0.5))
 #' lam_hat <- 1 / mean(abs(z - median(z)))
@@ -374,8 +376,8 @@ S7::method(distrib_gradient, Laplace2Distrib) <- function(distrib, y, theta, sca
 #'       \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \lambda} = \mathrm{sign}(r).}
 #'
-#' The first entry is exactly zero for every observation, the log-density being
-#' piecewise linear in \eqn{\mu}; see
+#' The first entry is exactly zero for every observation, because the
+#' log-density is piecewise linear in \eqn{\mu}; see
 #' [distrib_hessian.LaplaceDistrib()] for what that costs. The curvature in
 #' \eqn{\lambda} carries no data at all, so in this parametrization the
 #' observed and expected values agree in that entry.
@@ -407,13 +409,14 @@ S7::method(distrib_gradient, Laplace2Distrib) <- function(distrib, y, theta, sca
 #' th <- list(mu = 0.4, lambda = 2)
 #' h <- distrib_hessian(d, y, th)
 #'
-#' # Zero in the location, constant in the rate, a sign in the mixed entry.
+#' # The entry is zero in the location, constant in the rate and a sign in
+#' # the mixed term.
 #' h$mu_mu
 #' h$lambda_lambda
 #' all.equal(h$mu_lambda, sign(y - 0.4))
 #'
 #' # The rate entry already equals its own expectation; the location one
-#' # does not, and the expected page says why.
+#' # does not, and the expected page gives the reason.
 #' rbind(observed = vapply(h, function(v) v[1], numeric(1)),
 #'       expected = vapply(distrib_expected_hessian(d, y, th),
 #'                         function(v) v[1], numeric(1)))
@@ -432,13 +435,13 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #'
 #' For \eqn{\mu} this is the variance of the score. It is not the
 #' expectation of [distrib_hessian.Laplace2Distrib()], which is identically
-#' zero: the
-#' family has a kink at \eqn{y = \mu} and the second Bartlett identity fails
-#' there, exactly as in [distrib_expected_hessian.LaplaceDistrib()]. With
+#' zero: the family has a kink at \eqn{y = \mu} and the second Bartlett
+#' identity fails there, exactly as in
+#' [distrib_expected_hessian.LaplaceDistrib()]. With
 #' \eqn{\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)} the variance is
 #' \eqn{\lambda^2}. The mixed entry vanishes because
-#' \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0} by symmetry, and the rate entry does
-#' equal its observed counterpart, that one carrying no data.
+#' \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0} by symmetry, and the rate entry
+#' equals its observed counterpart because that one carries no data.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -479,7 +482,8 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #' d <- laplace2_distrib()
 #' th <- list(mu = 0.4, lambda = 2)
 #'
-#' # -lambda^2 in the location, -1/lambda^2 in the rate, 0 mixed.
+#' # The entries are -lambda^2 in the location, -1/lambda^2 in the rate and
+#' # 0 in the mixed term.
 #' lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #' c(-2^2, -1 / 2^2)
 #'
@@ -490,7 +494,7 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #'   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 #'
 #' # It agrees with the scale parametrization once the chain rule is applied:
-#' # I(mu) is the same number, the location being shared.
+#' # I(mu) is the same number, because the location is shared.
 #' -distrib_expected_hessian(laplace_distrib(), 0,
 #'                           list(mu = 0.4, sigma = 1 / 2))$mu_mu
 S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
@@ -507,7 +511,7 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' \eqn{\mu}. Every third derivative involving \eqn{\mu} at all is therefore
 #' zero, and the only surviving component comes from \eqn{\log\lambda}:
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},}
-#' with `mu_mu_mu`, `mu_mu_lambda` and `mu_lambda_lambda` all zero.
+#' where `mu_mu_mu`, `mu_mu_lambda` and `mu_lambda_lambda` are all zero.
 #'
 #' These derivatives do not depend on the data, so the observed and expected
 #' values coincide: `expected`, `approx` and `nsim` are accepted and have no
@@ -549,7 +553,7 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' vapply(d3, function(v) v[1], numeric(1))
 #' 2 / 2^3
 #'
-#' # expected = TRUE changes nothing, the values carrying no data.
+#' # expected = TRUE changes nothing, because the values carry no data.
 #' identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   lam <- theta[[2]]
@@ -679,8 +683,8 @@ S7::method(distrib_deriv5, Laplace2Distrib) <- function(distrib, y, theta,
 #' in closed form. The family is a location family in \eqn{\mu}, so this is the
 #' negative of the score in \eqn{\mu}. It takes only the three values
 #' \eqn{-\lambda}, 0 and \eqn{\lambda}; at \eqn{y = \mu} exactly, `sign(0)` is
-#' 0 and the method returns 0, the midpoint of the subdifferential, the
-#' derivative not existing there.
+#' 0 and the method returns 0, the midpoint of the subdifferential, because the
+#' derivative does not exist there.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param y A numeric vector of observations.
@@ -704,10 +708,11 @@ S7::method(distrib_deriv5, Laplace2Distrib) <- function(distrib, y, theta,
 #'
 #' all.equal(distrib_grad_y(d, y, th), -2 * sign(y - 0.4))
 #'
-#' # A location family: minus the score in the location.
+#' # This is a location family, so the derivative is minus the score in the
+#' # location.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
-#' # Three values only, and 0 at the kink itself.
+#' # The derivative takes three values only, and it is 0 at the kink itself.
 #' distrib_grad_y(d, 0.4 + c(-100, -1e-9, 0, 1e-9, 100), th)
 S7::method(distrib_grad_y, Laplace2Distrib) <- function(distrib, y, theta, ...) {
   -theta[[2]] * sign(y - theta[[1]])
@@ -725,7 +730,8 @@ S7::method(distrib_grad_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
-#' @param theta A named list with components `mu` and `lambda`. Neither is read.
+#' @param theta A named list with components `mu` and `lambda`. The method
+#'   does not read either of them.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of length `length(y)`.
@@ -741,7 +747,8 @@ S7::method(distrib_grad_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #'
 #' distrib_hess_y(d, y, th)
 #'
-#' # A location family: the same as the curvature in the location.
+#' # This is a location family, so the derivative equals the curvature in the
+#' # location.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
 #' # The first derivative drops by 2 lambda across the location.
@@ -765,11 +772,12 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #' The rate form is the one that penalized regression uses: with \eqn{\mu = 0} the
 #' negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so \eqn{\lambda}
 #' is a shrinkage parameter and larger values penalize harder.
-#' `penalties7::lasso_penalty()` is this family with the location held at zero.
+#' `penalties7::lasso_penalty()` is this family when the location is held at
+#' zero.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
-#'   ranging over the whole line already.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because the
+#'   location already ranges over the whole line.
 #' @param link_lambda A `link` object from `linkfunctions7` for the rate
 #'   \eqn{\lambda}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -787,7 +795,7 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #' location is shared, so its score, its information and its derivatives in the
 #' response are the same quantities read at the same point; the second
 #' parameter's are not, and this parametrization's are the simpler of the two,
-#' \eqn{\lambda} being the natural parameter of the exponential family in
+#' because \eqn{\lambda} is the natural parameter of the exponential family in
 #' \eqn{|y - \mu|}.
 #'
 #' # The kink
@@ -820,7 +828,7 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #' \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. Here
 #' \eqn{\lambda} is a distribution parameter; the same letter names the
 #' tuning parameter of a penalty in `penalties7`, and the two coincide in the
-#' lasso, which is this family with \eqn{\mu} held at zero.
+#' lasso, which is this family when \eqn{\mu} is held at zero.
 #'
 #' @return An S7 object of class `Laplace2Distrib`, inheriting from
 #'   `continuous_distrib`, with `distrib_name` `"laplace2"`, `dimension`
@@ -850,7 +858,7 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #' d <- laplace2_distrib()
 #' d
 #'
-#' # The same law as the scale parametrization at lambda = 1/sigma.
+#' # This is the same law as the scale parametrization at lambda = 1/sigma.
 #' y <- c(-1.2, 0.3, 2.5)
 #' all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
 #'           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
@@ -867,8 +875,8 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta, ...) 
 #'       closed = c(mu = median(z),
 #'                  lambda = 1 / mean(abs(z - median(z)))))
 #'
-#' # Holding the location at zero gives the prior a lasso penalty is written
-#' # from: the negative log-density is lambda |y| up to a constant.
+#' # Holding the location at zero gives the prior from which a lasso penalty
+#' # is written: the negative log-density is lambda |y| up to a constant.
 #' prior <- fixed(d, mu = 0)
 #' prior@params
 #' -distrib_pdf(prior, c(-2, 0, 2), list(lambda = 0.5), log = TRUE)
@@ -908,7 +916,7 @@ laplace2_distrib <- function(link_mu = identity_link(), link_lambda = log_link()
 #' \eqn{c(\theta) = -\lambda}.
 #'
 #' @details
-#' The same kink as [laplace_distrib()]'s, carried across the map
+#' The kink is the same as in [laplace_distrib()] and is carried across the map
 #' \eqn{\lambda = 1/\sigma}: a reparametrization moves the coefficient in front
 #' and leaves the argument alone, so the order is unchanged and the location is
 #' again the only non-smooth parameter.

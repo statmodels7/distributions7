@@ -989,7 +989,7 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' [chisq_distrib()] and [gengamma1_distrib()] for relatives;
 #' [invgauss1_distrib()] and [lognormal1_distrib()] for other positive
 #' families with a multiplicative variance function; [fit_distrib()] to
-#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' estimate the parameters; [check_distrib()] to validate a user-defined family
 #' against the same battery of checks that this family passes; [Gamma1Distrib]
 #' for the class.
 #'

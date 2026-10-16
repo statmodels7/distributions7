@@ -85,23 +85,23 @@ and the mixed derivative \code{\link[=distrib_cross_y.Weibull1Distrib]{distrib_c
 
 \section{Why every expectation is elementary}{
 Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
-the parameters are. Every expectation any order needs is therefore a moment
+the parameters are. Every expectation that any order needs is therefore a moment
 of \eqn{u} against a power of \eqn{\log u}, and each of those is a
 derivative of \eqn{\Gamma} at 2: \eqn{\mathbb{E}[u] = 1},
 \eqn{\mathbb{E}[u\log u] = 1 - \gamma},
 \eqn{\mathbb{E}[u(\log u)^2] = (1-\gamma)^2 + \pi^2/6 - 1}. The Gumbel
-family shares the substitution, \eqn{\exp(-\text{Gumbel})} being Weibull, so
-\code{\link[=gumbel_distrib]{gumbel_distrib()}} rests on the same three moments.
+family shares the substitution, because \eqn{\exp(-\text{Gumbel})} is
+Weibull, so \code{\link[=gumbel_distrib]{gumbel_distrib()}} rests on the same three moments.
 }
 
 \section{Moments and shape}{
 With \eqn{g_k = \Gamma(1 + k/\sigma)}, the mean is \eqn{\mu g_1} and the
 variance \eqn{\mu^2(g_2 - g_1^2)}; the skewness and the excess kurtosis
-follow from \eqn{g_3} and \eqn{g_4} and do not depend on \eqn{\mu}, the
-scale being a multiplier. The hazard \eqn{f/(1-F)} is
+follow from \eqn{g_3} and \eqn{g_4} and do not depend on \eqn{\mu}, because
+the scale is a multiplier. The hazard \eqn{f/(1-F)} is
 \eqn{(\sigma/\mu)(y/\mu)^{\sigma-1}}, increasing for \eqn{\sigma > 1} and
-decreasing for \eqn{\sigma < 1}. That monotone hazard is why the family is
-used in survival work.
+decreasing for \eqn{\sigma < 1}. The family is used in survival work because
+its hazard is monotone.
 
 Two shapes give named families: \eqn{\sigma = 1} is the exponential with
 mean \eqn{\mu}, and \eqn{\sigma = 2} is the Rayleigh distribution with
@@ -173,7 +173,7 @@ Generalized additive models for location, scale and shape.
 \code{\link[=exponential_distrib]{exponential_distrib()}} and \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for the special case and
 the generalization; \code{\link[=gpd_distrib]{gpd_distrib()}} for another extreme-value family;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 \link{Weibull1Distrib} for the class.
 }

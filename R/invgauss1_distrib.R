@@ -159,11 +159,10 @@ S7::method(distrib_pdf, InvGauss1Distrib) <- function(distrib, y, theta, log = F
 #' Both tails are available exactly, and `log.p = TRUE` returns a logarithm
 #' that stays finite where the probability itself underflows.
 #'
-#' The exponential factor is the reason this expression is evaluated on the
-#' log scale rather than as written: \eqn{e^{2/(\phi\mu)}} overflows at
-#' ordinary settings, at \eqn{\mu = 0.01} and \eqn{\phi = 0.1} the exponent
-#' already being 2000, and it multiplies a normal tail that underflows by the
-#' same amount.
+#' This expression is evaluated on the log scale rather than as written,
+#' because the exponential factor \eqn{e^{2/(\phi\mu)}} overflows at ordinary
+#' settings and multiplies a normal tail that underflows by the same amount.
+#' At \eqn{\mu = 0.01} and \eqn{\phi = 0.1}, for example, the exponent is 2000.
 #'
 #' @param distrib An `InvGauss1Distrib` object, from [invgauss1_distrib()].
 #' @param q A numeric vector of quantiles. A value at or below zero gives a
@@ -196,7 +195,7 @@ S7::method(distrib_pdf, InvGauss1Distrib) <- function(distrib, y, theta, log = F
 #' all.equal(distrib_cdf(d, q, th),
 #'           statmod::pinvgauss(q, mean = 1, dispersion = 2))
 #'
-#' # The closed form above, evaluated directly at these safe values.
+#' # The closed form above is evaluated directly at these safe values.
 #' a <- sqrt(1 / (2 * q)) * (q / 1 - 1)
 #' b <- -sqrt(1 / (2 * q)) * (q / 1 + 1)
 #' pnorm(a) + exp(2 / (2 * 1)) * pnorm(b)
@@ -258,10 +257,12 @@ S7::method(distrib_cdf, InvGauss1Distrib) <- function(distrib, q, theta, lower.t
 #' d <- invgauss1_distrib()
 #' th <- list(mu = 1, phi = 2)
 #'
-#' # A central 95 percent interval, extremely asymmetric about the mean of 1.
+#' # The central 95 percent interval is extremely asymmetric about the mean
+#' # of 1.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities that it was given.
+#' # The inverse is exact, so the round trip returns the probabilities that it
+#' # was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
@@ -338,7 +339,7 @@ invgauss_quantile <- function(distrib, p, theta, mean, dispersion, lower.tail,
 #' @examples
 #' d <- invgauss1_distrib()
 #'
-#' # Same generator as statmod::rinvgauss at this parametrization.
+#' # The generator is the same as statmod::rinvgauss at this parametrization.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = 1, phi = 2))
 #' set.seed(2)
@@ -407,7 +408,8 @@ S7::method(distrib_rng, InvGauss1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 1, phi = 2)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The generalized linear model score: residual over the variance function.
+#' # The generalized linear model score is the residual over the variance
+#' # function.
 #' all.equal(g$mu, (y - 1) / (2 * 1^3))
 #' all.equal(g$phi, ((y - 1)^2 - y * 1^2 * 2) / (2 * y * 2^2 * 1^2))
 #'
@@ -436,7 +438,7 @@ S7::method(distrib_gradient, InvGauss1Distrib) <- function(distrib, y, theta, sc
 #'         \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad
 #'       \ell^{(\mu\phi)} = -\dfrac{y - \mu}{\phi^2\mu^3}.}
 #'
-#' Neither diagonal entry is negative at every observation. The curvature
+#' Each diagonal entry is positive for some values of \eqn{y}. The curvature
 #' in \eqn{\mu} turns positive wherever \eqn{y < 2\mu/3}, and the curvature in
 #' \eqn{\phi} is negative only where \eqn{\phi < 2(y-\mu)^2/(\mu^2 y)}, so at
 #' \eqn{y = \mu} it is \eqn{+1/(2\phi^2)}. An observation near the mean
@@ -479,12 +481,13 @@ S7::method(distrib_gradient, InvGauss1Distrib) <- function(distrib, y, theta, sc
 #' h <- distrib_hessian(d, y, th)
 #' h
 #'
-#' # The three closed forms, written out.
+#' # The three closed forms are written out.
 #' all.equal(h$mu_mu, -(3 * y - 2 * 1) / (2 * 1^4))
 #' all.equal(h$phi_phi, (2 - 2 * (y - 1)^2 / (1^2 * y)) / (2 * 2^3))
 #' all.equal(h$mu_phi, -(y - 1) / (2^2 * 1^3))
 #'
-#' # Positive curvature in mu below 2 mu/3, and in phi at y = mu.
+#' # The curvature is positive in mu where y is below 2 mu/3, and in phi at
+#' # y = mu.
 #' c(mu_mu_at_half = distrib_hessian(d, 0.5, th)$mu_mu,
 #'   phi_phi_at_mu = distrib_hessian(d, 1, th)$phi_phi,
 #'   one_over_2phi2 = 1 / (2 * 2^2))
@@ -511,15 +514,15 @@ S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, sca
 #'       \qquad
 #'       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.}
 #' They follow from \eqn{\mathbb{E}[Y] = \mu} and
-#' \eqn{\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2}. The second identity is the one
-#' that gives the score in \eqn{\phi} mean zero.
+#' \eqn{\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2}. The second identity implies that
+#' the score in \eqn{\phi} has mean zero.
 #'
 #' Both diagonal entries are negative at every parameter setting, so the
 #' information is positive definite everywhere, where the observed Hessian of
-#' [distrib_hessian.InvGauss1Distrib()] is not. The zero off-diagonal says the
-#' mean and the dispersion are orthogonal, so the mean equation can be fitted
-#' with the dispersion held at any value without biasing it: this is the
-#' generalized linear model parametrization, with variance function
+#' [distrib_hessian.InvGauss1Distrib()] is not. The zero off-diagonal entry
+#' means that the mean and the dispersion are orthogonal, so the mean equation
+#' can be fitted without biasing it while the dispersion is held at any value:
+#' this is the generalized linear model parametrization, with variance function
 #' \eqn{V(\mu) = \mu^3}.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
@@ -562,12 +565,12 @@ S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, sca
 #' d <- invgauss1_distrib()
 #' th <- list(mu = 1, phi = 2)
 #'
-#' # The three constants, one value per observation.
+#' # The three constants are returned with one value per observation.
 #' lapply(distrib_expected_hessian(d, c(0.5, 1, 2), th), unique)
 #' c(-1 / (2 * 1^3), -1 / (2 * 2^2), 0)
 #'
-#' # Negative definite at every setting, where the observed Hessian is
-#' # positive in phi at y = mu.
+#' # The expected Hessian is negative definite at every setting, whereas the
+#' # observed Hessian is positive in phi at y = mu.
 #' c(expected = distrib_expected_hessian(d, 1, th)$phi_phi,
 #'   observed = distrib_hessian(d, 1, th)$phi_phi)
 #'
@@ -638,8 +641,8 @@ S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, t
 #' names(d3)
 #'
 #' # The expected values are constants at a fixed parameter setting, and the
-#' # mixed mu-phi-phi component is exactly zero, the score in mu being linear
-#' # in y and the two parameters entering it as a product.
+#' # mixed mu-phi-phi component is exactly zero, because the score in mu is
+#' # linear in y and the two parameters enter it as a product.
 #' lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #'
 #' # A central difference of the Hessian reproduces the same component.
@@ -752,11 +755,11 @@ S7::method(distrib_deriv4, InvGauss1Distrib) <- function(distrib, y, theta, expe
 #' y <- c(0.5, 1, 2)
 #' th <- list(mu = 1, phi = 2)
 #'
-#' # Written out.
+#' # The closed form is written out.
 #' all.equal(distrib_grad_y(d, y, th),
 #'           -1.5 / y - (y^2 - 1^2) / (2 * 2 * 1^2 * y^2))
 #'
-#' # Zero at the mode, which lies below the mean.
+#' # The derivative is zero at the mode, which lies below the mean.
 #' mode <- 1 * (sqrt(1 + 9 * 2^2 * 1^2 / 4) - 3 * 2 * 1 / 2)
 #' c(mode = mode, mean = 1, at_mode = distrib_grad_y(d, mode, th))
 #'
@@ -777,8 +780,9 @@ S7::method(distrib_grad_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #' respect to the response, in closed form:
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{3}{2y^2}
 #'       - \dfrac{1}{\phi y^3}.}
-#' The mean drops out, the log-density depending on \eqn{\mu} only through
-#' terms linear in \eqn{y} and constant in it. The sign changes at
+#' The mean drops out because the log-density depends on \eqn{\mu} only
+#' through terms that are linear in \eqn{y} and terms that are constant in
+#' \eqn{y}. The sign changes at
 #' \eqn{y = 2/(3\phi)}: the log-density is concave in the response below that
 #' point and convex above it, so an inverse Gaussian log-likelihood is not
 #' a concave function of an observation over the whole support.
@@ -809,7 +813,7 @@ S7::method(distrib_grad_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #' identical(distrib_hess_y(d, y, th),
 #'           distrib_hess_y(d, y, list(mu = 300, phi = 2)))
 #'
-#' # Concave below 2/(3 phi) and convex above it.
+#' # The log-density is concave in y below 2/(3 phi) and convex above it.
 #' cut <- 2 / (3 * 2)
 #' c(below = distrib_hess_y(d, cut / 2, th),
 #'   at = distrib_hess_y(d, cut, th),
@@ -862,8 +866,8 @@ S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #' The law is the distribution of the first-passage time of a Brownian motion
 #' with drift to a fixed level. Its skewness \eqn{3\sqrt{\phi\mu}} tends to
 #' zero with \eqn{\phi\mu}. Compared with a gamma of the same mean and
-#' variance it has less mass near zero, its density vanishing like
-#' \eqn{\exp\{-1/(2\phi y)\}} at the origin, and a right tail that decays at
+#' variance it has less mass near zero (its density vanishes like
+#' \eqn{\exp\{-1/(2\phi y)\}} at the origin) and a right tail that decays at
 #' the rate \eqn{1/(2\phi\mu^2)}, half the gamma's.
 #'
 #' This is the same law as [invgauss2_distrib()], which carries the mean and
@@ -885,8 +889,8 @@ S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #'       \qquad
 #'       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.}
 #' The zero off-diagonal makes the mean and the dispersion orthogonal, so the
-#' mean equation can be fitted with the dispersion held at any value without
-#' biasing it. The expected curvature in \eqn{\phi} is \eqn{-1/(2\phi^2)}
+#' mean equation can be fitted without biasing it while the dispersion is held
+#' at any value. The expected curvature in \eqn{\phi} is \eqn{-1/(2\phi^2)}
 #' for every value of the mean, so the asymptotic variance of the estimated
 #' dispersion, \eqn{2\phi^2/n}, does not depend on the mean.
 #'
@@ -900,7 +904,7 @@ S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #' as are the derivatives in the response,
 #' [distrib_grad_y.InvGauss1Distrib()] and [distrib_hess_y.InvGauss1Distrib()].
 #' The derivatives of the *distribution* function in the parameters are closed
-#' form too, the expression above being elementary.
+#' form too, because the expression above is elementary.
 #'
 #' # Estimation
 #'
@@ -929,7 +933,7 @@ S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #' with variance function \eqn{\mu^2}; [lognormal1_distrib()] for a third;
 #' [pig1_distrib()] for the Poisson mixed over this law;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery of checks that this family
+#' user-defined family against the same battery of checks that this family
 #' passes;
 #' [InvGauss1Distrib] for the class.
 #'
@@ -951,7 +955,8 @@ S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta, ...)
 #' all.equal(distrib_pdf(d, y, th),
 #'           statmod::dinvgauss(y, mean = 1, dispersion = 2))
 #'
-#' # Moments: variance phi mu^3, skewness 3 sqrt(phi mu), kurtosis 15 phi mu.
+#' # The variance is phi mu^3, the skewness 3 sqrt(phi mu) and the kurtosis
+#' # 15 phi mu.
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))
 #' c(2 * 1^3, 3 * sqrt(2 * 1), 15 * 2 * 1)

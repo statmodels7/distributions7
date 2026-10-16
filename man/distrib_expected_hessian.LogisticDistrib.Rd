@@ -42,8 +42,8 @@ The mixed entry vanishes because the family is symmetric about \eqn{\mu},
 so the location and the scale are orthogonal and their estimates are
 asymptotically independent. The information in the location is
 \eqn{1/(3\sigma^2)}, a third of a Gaussian's \eqn{1/\sigma^2} at the same
-\eqn{\sigma}. Compared at equal variance the two are much closer, the
-logistic variance being \eqn{\pi^2\sigma^2/3}.
+\eqn{\sigma}. Compared at equal variance the two are much closer, and the
+logistic variance is \eqn{\pi^2\sigma^2/3}.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
@@ -61,7 +61,7 @@ variance of the score.
 d <- logistic_distrib()
 th <- list(mu = 0.4, sigma = 1.5)
 
-# The three closed forms.
+# The three closed forms are computed.
 lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 c(-1 / (3 * 1.5^2), -(3 + pi^2) / (9 * 1.5^2))
 

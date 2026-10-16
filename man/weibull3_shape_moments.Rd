@@ -14,8 +14,9 @@ A list with components \code{skew} and \code{kurt}.
 }
 \description{
 Returns the skewness and the excess kurtosis of a Weibull of
-shape \eqn{s}, which do not depend on the scale, from the ratios
-\eqn{\Gamma(1 + k/s)/\Gamma(1 + 1/s)^k} formed with \code{lgamma()}.
+shape \eqn{s}, computed from the ratios
+\eqn{\Gamma(1 + k/s)/\Gamma(1 + 1/s)^k} formed with \code{lgamma()}. Both are
+independent of the scale.
 }
 \seealso{
 \code{\link[=skewness.Weibull3Distrib]{skewness.Weibull3Distrib()}}

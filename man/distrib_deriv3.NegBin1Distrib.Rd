@@ -9,9 +9,9 @@
 \item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
 is read.}
 
-\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
-vector of length 1 or of the length of \code{y}, both strictly positive. A
-component of length 1 is recycled.}
+\item{theta}{A named list with components \code{mu} and \code{theta}. Each is a
+numeric vector of length 1 or of the length of \code{y}, and both are strictly
+positive. A component of length 1 is recycled.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
 model is returned in place of the value at the data, computed numerically.
@@ -21,10 +21,11 @@ Defaults to \code{FALSE}.}
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+or \code{"opg"}. It is read only when \code{expected = TRUE}.}
 
 \item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -43,8 +44,8 @@ in the powers of \eqn{r} and the order of \eqn{G} that is run rather than
 solved.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead: the
-expected third derivatives have no closed form. That is the one place on
-this page where \code{approx} and \code{nsim} are read.
+expected third derivatives have no closed form. The method reads \code{approx}
+and \code{nsim} only in this case.
 }
 \section{Notation}{
 
@@ -78,7 +79,7 @@ up <- distrib_hessian(d, y, list(mu = 4 + eps, theta = 1.2))$mu_mu
 dn <- distrib_hessian(d, y, list(mu = 4 - eps, theta = 1.2))$mu_mu
 all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 
-# And a mixed component, which is where the recursion does its work.
+# The same check applies to a mixed component, which exercises the recursion.
 up <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 + eps))$mu_theta
 dn <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 - eps))$mu_theta
 all.equal((up - dn) / (2 * eps), d3$mu_theta_theta, tolerance = 1e-6)

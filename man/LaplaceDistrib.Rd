@@ -57,9 +57,9 @@ comes from the parent.
 The density has a kink at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
 differentiable. This makes the family non-regular in its location: the
 observed second derivative in \eqn{\mu} is 0 almost everywhere while the
-information is \eqn{1/\sigma^2}. The class records that by setting
-\code{params_smooth} to \code{c(mu = FALSE, sigma = TRUE)}, which \code{\link[=check_distrib]{check_distrib()}}
-and the finite-difference guards consult.
+information is \eqn{1/\sigma^2}. The class records this by setting
+\code{params_smooth} to \code{c(mu = FALSE, sigma = TRUE)}, a property that
+\code{\link[=check_distrib]{check_distrib()}} and the finite-difference guards read.
 
 Build one with \code{\link[=laplace_distrib]{laplace_distrib()}}. This page documents the raw S7
 constructor, which takes the parent's properties; the validator of
@@ -123,7 +123,7 @@ d@params_smooth
 th <- list(mu = 0.4, sigma = 1.5)
 c(variance = variance(d, th), two_sigma_sq = 2 * 1.5^2)
 
-# Heavier tailed than a Gaussian: the excess kurtosis is 3.
+# The tails are heavier than a Gaussian's: the excess kurtosis is 3.
 kurtosis(d, th)
 }
 \seealso{

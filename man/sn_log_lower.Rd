@@ -16,10 +16,10 @@ A numeric vector of log probabilities.
 }
 \description{
 Returns \eqn{\log\{\Phi(z) - 2T(z, \alpha)\}} with \eqn{T} Owen's
-function, the shape clamped to \eqn{10^{50}} in absolute value, past which
-\eqn{T(z, \alpha)} equals its limit \eqn{\Phi(-|z|)/2} to double
-precision. A value above one half is formed through \code{log1p()} of the
-other tail.
+function. The shape is clamped to \eqn{10^{50}} in absolute value, because
+beyond that value \eqn{T(z, \alpha)} equals its limit
+\eqn{\Phi(-|z|)/2} to double precision. A value above one half is formed
+through \code{log1p()} of the other tail.
 }
 \examples{
 distributions7:::sn_log_lower(c(-1, 0, 1), 3)

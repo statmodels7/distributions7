@@ -31,8 +31,8 @@ A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 Computes the lognormal quantile function
 \deqn{Q(p; \mu, \sigma^2) = \exp\left\{\mu + \sigma\,\Phi^{-1}(p)\right\},
       \qquad \sigma = \sqrt{\sigma^2},}
-by calling \code{\link[stats:Lognormal]{stats::qlnorm()}}. It is closed form, the log transformation
-being monotone, so the round trip through
+by calling \code{\link[stats:Lognormal]{stats::qlnorm()}}. It is closed form because the log
+transformation is monotone, so the round trip through
 \code{\link[=distrib_cdf.Lognormal1Distrib]{distrib_cdf.Lognormal1Distrib()}} returns \code{p} exactly. The median is
 \eqn{e^{\mu}}, which sits below the mean \eqn{e^{\mu + \sigma^2/2}}.
 }
@@ -40,7 +40,7 @@ being monotone, so the round trip through
 d <- lognormal1_distrib()
 th <- list(mu = 0.5, sigma2 = 0.36)
 
-# A central 95 percent interval, multiplicatively symmetric about exp(mu).
+# A central 95 percent interval is multiplicatively symmetric about exp(mu).
 q <- distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 q
 c(q[2] / q[1], q[3] / q[2])

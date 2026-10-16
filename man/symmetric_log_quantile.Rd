@@ -26,8 +26,8 @@ Returns the quantile of a law symmetric about its first parameter, solved
 on the logarithm of the smaller tail: the root of
 \eqn{\log F(q) = \log p} is found below the location by \code{\link[stats:uniroot]{stats::uniroot()}}
 and reflected about it when the upper tail is the smaller one, so that
-neither \eqn{1 - p} nor \eqn{\exp(\log p)} is formed. The two pseudo-Huber
-families use it.
+the computation forms neither \eqn{1 - p} nor \eqn{\exp(\log p)}. The two
+pseudo-Huber families use it.
 }
 \examples{
 d <- pseudohuber_distrib()

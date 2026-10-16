@@ -52,8 +52,8 @@ and the quantile function is its numerical inverse.
 The law is the distribution of the first-passage time of a Brownian motion
 with drift to a fixed level. Its skewness \eqn{3\sqrt{\phi\mu}} tends to
 zero with \eqn{\phi\mu}. Compared with a gamma of the same mean and
-variance it has less mass near zero, its density vanishing like
-\eqn{\exp\{-1/(2\phi y)\}} at the origin, and a right tail that decays at
+variance it has less mass near zero (its density vanishes like
+\eqn{\exp\{-1/(2\phi y)\}} at the origin) and a right tail that decays at
 the rate \eqn{1/(2\phi\mu^2)}, half the gamma's.
 
 This is the same law as \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, which carries the mean and
@@ -75,8 +75,8 @@ and the expected Hessian is
       \qquad
       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.}
 The zero off-diagonal makes the mean and the dispersion orthogonal, so the
-mean equation can be fitted with the dispersion held at any value without
-biasing it. The expected curvature in \eqn{\phi} is \eqn{-1/(2\phi^2)}
+mean equation can be fitted without biasing it while the dispersion is held
+at any value. The expected curvature in \eqn{\phi} is \eqn{-1/(2\phi^2)}
 for every value of the mean, so the asymptotic variance of the estimated
 dispersion, \eqn{2\phi^2/n}, does not depend on the mean.
 
@@ -90,7 +90,7 @@ Third and fourth orders are closed form as well, observed and expected, in
 as are the derivatives in the response,
 \code{\link[=distrib_grad_y.InvGauss1Distrib]{distrib_grad_y.InvGauss1Distrib()}} and \code{\link[=distrib_hess_y.InvGauss1Distrib]{distrib_hess_y.InvGauss1Distrib()}}.
 The derivatives of the \emph{distribution} function in the parameters are closed
-form too, the expression above being elementary.
+form too, because the expression above is elementary.
 }
 
 \section{Estimation}{
@@ -120,7 +120,8 @@ th <- list(mu = 1, phi = 2)
 all.equal(distrib_pdf(d, y, th),
           statmod::dinvgauss(y, mean = 1, dispersion = 2))
 
-# Moments: variance phi mu^3, skewness 3 sqrt(phi mu), kurtosis 15 phi mu.
+# The variance is phi mu^3, the skewness 3 sqrt(phi mu) and the kurtosis
+# 15 phi mu.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 c(2 * 1^3, 3 * sqrt(2 * 1), 15 * 2 * 1)
@@ -147,7 +148,7 @@ New York.
 with variance function \eqn{\mu^2}; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for a third;
 \code{\link[=pig1_distrib]{pig1_distrib()}} for the Poisson mixed over this law;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 \link{InvGauss1Distrib} for the class.
 }

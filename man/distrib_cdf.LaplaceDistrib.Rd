@@ -38,16 +38,17 @@ The method computes the logarithm of each tail at the standardized
 residual \eqn{r = (q-\mu)/\sigma}: the tail on the far side of the
 location is \eqn{\log(1/2) - |r|}, and the tail on the near side is
 \eqn{\log(1 - e^{-|r|}/2)}, computed with \code{log1p()}. The requested tail is
-returned on the log scale or exponentiated, so neither \code{lower.tail = FALSE}
-nor \code{log.p = TRUE} subtracts from one, and a tail probability far below
-machine epsilon, or its logarithm, is returned accurately. The helper is
+returned on the log scale or exponentiated, so the method does not subtract
+from one when \code{lower.tail = FALSE} or \code{log.p = TRUE}, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately. The helper is
 \code{\link[=laplace_cdf_tails]{laplace_cdf_tails()}}.
 }
 \examples{
 d <- laplace_distrib()
 th <- list(mu = 0.4, sigma = 1.5)
 
-# One half at the location, the two arms meeting there.
+# The value is one half at the location, where the two arms meet.
 distrib_cdf(d, 0.4, th)
 
 # Each arm is an exponential, written out.
@@ -56,7 +57,7 @@ all.equal(distrib_cdf(d, q, th),
           ifelse(q < 0.4, 0.5 * exp((q - 0.4) / 1.5),
                  1 - 0.5 * exp(-(q - 0.4) / 1.5)))
 
-# Symmetric: F(mu - a) + F(mu + a) = 1.
+# The distribution is symmetric: F(mu - a) + F(mu + a) = 1.
 distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 
 # Fifty scale units out, the upper tail is exp(-50)/2, and its logarithm

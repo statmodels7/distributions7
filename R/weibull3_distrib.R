@@ -106,8 +106,8 @@ weibull3_scale_ok <- function(lb) {
 #'   distrib_rng.Weibull3Distrib
 #'
 #' @description
-#' The Weibull with shape \eqn{\sigma} and scale
-#' \eqn{b = m / \Gamma(1 + 1/\sigma)}, so that \eqn{E[Y] = m}. The density,
+#' The methods of this page describe the Weibull with shape \eqn{\sigma} and
+#' scale \eqn{b = m / \Gamma(1 + 1/\sigma)}, so that \eqn{E[Y] = m}. The density,
 #' the distribution function, the quantile function and the generator are
 #' [stats::dweibull()], [stats::pweibull()], [stats::qweibull()] and
 #' [stats::rweibull()] at that scale. At a small shape \eqn{b} underflows to
@@ -115,7 +115,7 @@ weibull3_scale_ok <- function(lb) {
 #' \eqn{\log b} and \eqn{\log(y/b)}. On the log scale of the lower tail the
 #' distribution function and the quantile go through the logarithm of the
 #' cumulative hazard ([weibull_log_lower()], [log_neg_log1mexp()]), so that
-#' neither rounds where the hazard or \eqn{1 - p} would.
+#' they do not round where the hazard or \eqn{1 - p} would.
 #'
 #' @param distrib A `Weibull3Distrib` object, from [weibull3_distrib()].
 #' @param y,q A numeric vector of observations or quantiles.
@@ -214,7 +214,7 @@ S7::method(distrib_rng, Weibull3Distrib) <- function(distrib, n, theta, ...) {
 #' Return the derivatives of the log-density in \eqn{(m, \sigma)} of orders
 #' one to five, the expected information and its expected third and fourth
 #' derivatives, and the first two derivatives of the expected information,
-#' each from its own compiled kernel.
+#' and each of them is computed by its own compiled kernel.
 #'
 #' @details
 #' With \eqn{w = \log(y/m) + \log\Gamma(1 + 1/\sigma) = \log(y/b)} the
@@ -240,8 +240,8 @@ S7::method(distrib_rng, Weibull3Distrib) <- function(distrib, n, theta, ...) {
 #' @param ...,threads Unused.
 #'
 #' @return A named list with one numeric vector per component: 2, 3, 4, 5 and
-#'   6 components at orders one to five, the second order keyed
-#'   `mean_mean`, `sigma_sigma`, `mean_sigma`.
+#'   6 components at orders one to five. At order two the components are keyed
+#'   `mean_mean`, `sigma_sigma` and `mean_sigma`.
 #'
 #' @seealso [distrib_pdf.Weibull3Distrib()].
 #'
@@ -332,9 +332,10 @@ weibull3_dy_at_zero <- function(out, y, theta, k) {
 #'   distrib_hess_y_hess.Weibull3Distrib
 #'
 #' @description
-#' The derivatives of the log-density in the response to order four, and the
-#' mixed derivatives of orders one and two in the response and one and two in
-#' \eqn{(m, \sigma)}, each a closed form from its own compiled kernel.
+#' Computes the derivatives of the log-density in the response to order four,
+#' and the mixed derivatives of orders one and two in the response and one and
+#' two in \eqn{(m, \sigma)}. Each is a closed form computed by its own
+#' compiled kernel.
 #'
 #' @param distrib A `Weibull3Distrib` object.
 #' @param y A numeric vector of strictly positive observations.
@@ -386,9 +387,9 @@ S7::method(distrib_hess_y_hess, Weibull3Distrib) <- function(
 #'   distrib_deriv3_cdf.Weibull3Distrib distrib_deriv4_cdf.Weibull3Distrib
 #'
 #' @description
-#' The derivatives of \eqn{F(q) = 1 - \exp\{-(q/b)^\sigma\}} in
-#' \eqn{(m, \sigma)} to order four, each a closed form from its own compiled
-#' kernel, carried to the upper tail and the log scale by
+#' Computes the derivatives of \eqn{F(q) = 1 - \exp\{-(q/b)^\sigma\}} in
+#' \eqn{(m, \sigma)} to order four. Each is a closed form computed by its own
+#' compiled kernel and carried to the upper tail and the log scale by
 #' [cdf_tail_scale()] and [cdf_scale_k()]. The derivatives of the log
 #' survival function (`lower.tail = FALSE, log = TRUE`) are those of
 #' \eqn{-(q/b)^\sigma} itself, from [weibull3_log_surv_derivs()], so that
@@ -555,8 +556,9 @@ S7::method(variance, Weibull3Distrib) <- function(x, theta, ...) {
 #' @title The Skewness and Excess Kurtosis of a Weibull Shape
 #' @name weibull3_shape_moments
 #' @description Returns the skewness and the excess kurtosis of a Weibull of
-#'   shape \eqn{s}, which do not depend on the scale, from the ratios
-#'   \eqn{\Gamma(1 + k/s)/\Gamma(1 + 1/s)^k} formed with `lgamma()`.
+#'   shape \eqn{s}, computed from the ratios
+#'   \eqn{\Gamma(1 + k/s)/\Gamma(1 + 1/s)^k} formed with `lgamma()`. Both are
+#'   independent of the scale.
 #' @param s A numeric vector of shapes.
 #' @return A list with components `skew` and `kurt`.
 #' @seealso [skewness.Weibull3Distrib()]
@@ -591,12 +593,13 @@ S7::method(kurtosis, Weibull3Distrib) <- function(x, theta, ...) {
 #' \deqn{b = \dfrac{m}{\Gamma(1 + 1/\sigma)},}
 #' and every derivative in \eqn{(m, \sigma)} to order five, the expected
 #' information and its derivatives, the derivatives in the response and the
-#' derivatives of the distribution function are closed forms, each order in
-#' its own compiled kernel (see [distrib_gradient.Weibull3Distrib()]).
+#' derivatives of the distribution function are closed forms, and each order
+#' is computed in its own compiled kernel (see
+#' [distrib_gradient.Weibull3Distrib()]).
 #'
 #' The number follows gamlss, where the Weibull in the mean is `WEI3`.
-#' Leaving `weibull2` unused is deliberate: it names a different
-#' parametrization there.
+#' This package does not use the name `weibull2`, because that name denotes a
+#' different parametrization in gamlss.
 #'
 #' @section The distribution:
 #' \deqn{f(y) = \frac{\sigma}{b}\left(\frac{y}{b}\right)^{\sigma-1}

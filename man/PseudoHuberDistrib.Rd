@@ -49,11 +49,11 @@ and the domains \eqn{(-\infty, \infty)}, \eqn{(0, \infty)},
 \description{
 This is the S7 class of the pseudo-Huber family, a location-scale family on
 the whole real line whose log-density is the negative pseudo-Huber loss
-\eqn{-\sqrt{\nu + z^2}}, with a shape \eqn{\nu > 0} interpolating between a
+\eqn{-\sqrt{\nu + z^2}}, and whose shape \eqn{\nu > 0} interpolates between a
 Laplace at \eqn{\nu \to 0} and a Gaussian at \eqn{\nu \to \infty}. It is the
 symmetric hyperbolic distribution, a special case of the generalized
-hyperbolic. It inherits from \code{continuous_distrib}; the eleven methods listed
-below are registered on it in this file.
+hyperbolic. It inherits from \code{continuous_distrib}; the methods listed below
+are registered on it in this file.
 
 Build one with \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}, which supplies the three link
 functions and fills the properties in. This page documents the raw S7

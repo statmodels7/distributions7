@@ -53,10 +53,10 @@ elementary form and is computed by
 }
 \section{Singularity at symmetry}{
 At \eqn{\alpha = 0} the expected information of this parametrization has rank
-2, not 3. The reason is in the score: the shape and location components are
-exactly proportional there, so no data can separate them. Measured at
-\eqn{\mu = 0}, \eqn{\sigma = 1}, its eigenvalues are 2, 1.637 and
-\eqn{-2.6\times10^{-27}}, and the smallest one grows like
+2, not 3. The shape and location components of the score are exactly
+proportional there, so a data set cannot separate them. At
+\eqn{\mu = 0}, \eqn{\sigma = 1} the numerically computed eigenvalues are 2,
+1.637 and \eqn{-2.6\times10^{-27}}, and the smallest one grows like
 \eqn{\alpha^4} as the shape moves off zero: \eqn{4.4\times10^{-10}} at
 \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at \eqn{\alpha = 0.5}.
 
@@ -77,10 +77,10 @@ y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, sigma = 1, alpha = 3)
 h <- distrib_hessian(d, y, th)
 
-# The shape component written out.
+# The shape component equals its formula written out.
 all.equal(h$alpha_alpha, y^2 * numericals7::mills_ratio(3 * y)$dr)
 
-# Against a central difference of the score.
+# The value is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$mu_alpha,
       numeric = (distrib_gradient(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu -

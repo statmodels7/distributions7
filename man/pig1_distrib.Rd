@@ -28,7 +28,8 @@ negative binomial at the same variance.
 \section{The mass function, and how it is computed}{
 The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
 half-integer order is a finite sum. The kernels evaluate that sum on the log
-scale, after the prefactors have canceled; no Bessel routine is called.
+scale, after the prefactors have canceled, and do not call a Bessel
+routine.
 With \eqn{c = 1 + 2\sigma\mu}, \eqn{\alpha = \sqrt{c}/\sigma} and
 \eqn{w = 1/(2\alpha)},
 \deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c - \dfrac{2\mu}{1+\sqrt c}
@@ -42,7 +43,7 @@ scale, so every piece stays smooth as \eqn{\sigma \to 0}, where \eqn{w}
 tends to \eqn{\sigma/2}. The derivatives of \eqn{\log S_y} in \eqn{w} are
 the weighted factorial moments of \eqn{k} under those terms; everything
 else is elementary. Every partial to fourth order is written out by hand,
-so no order is differenced.
+so every order is computed without differencing.
 }
 
 \section{One kernel per generic}{
@@ -120,7 +121,8 @@ distrib_pdf(d, 0:5, th)
 c(mean = mean(d, th), variance = variance(d, th),
   skewness = skewness(d, th))
 
-# Heavier in the tail than a negative binomial of the same variance.
+# The tail is heavier than that of a negative binomial of the same
+# variance.
 nb <- negbin2_distrib()
 nbth <- list(mu = 3, theta = 1 / 0.8)
 c(variance_pig = variance(d, th), variance_negbin = variance(nb, nbth))

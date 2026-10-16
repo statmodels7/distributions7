@@ -12,8 +12,8 @@ pseudohuber_distrib(
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
-ranging over the whole line already.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the
+location already ranges over the whole line.}
 
 \item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
 \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -69,8 +69,8 @@ density approaches the Laplace density at rate \eqn{O(\nu\log(1/\nu))}.
 At \eqn{\nu \to \infty} the exponent is
 \eqn{\sqrt{\nu} + (y-\mu)^2/(2\sqrt{\nu}\sigma^2)} and the family is the
 Gaussian with standard deviation \eqn{\sigma\nu^{1/4}}: the largest gap
-is \code{1.5e-04} at \eqn{\nu = 10^4} and \code{1.5e-07} at \eqn{10^8}. Note that the
-spread grows with \eqn{\nu}, so \eqn{\sigma} alone is not the standard
+is \code{1.5e-04} at \eqn{\nu = 10^4} and \code{1.5e-07} at \eqn{10^8}. The spread
+grows with \eqn{\nu}, so \eqn{\sigma} by itself is not the standard
 deviation.
 }
 
@@ -102,7 +102,7 @@ are the derivatives in the response and the mixed derivative
 \eqn{r/(2\sigma^2 D^3)}.
 }
 
-\section{What is numerical, and what it costs}{
+\section{Numerical methods and their cost}{
 The distribution function has no elementary form and is a quadrature,
 batched over the quantiles and reflected about \eqn{\mu} so that only the
 lower tail is integrated, and computed on the log scale when the logarithm
@@ -116,7 +116,7 @@ on \eqn{\nu} alone once the location and the scale are factored out, so it
 is one integral over \eqn{z} per distinct \eqn{\nu}, taken by the rule of
 \code{\link[=loc_scale_expected]{loc_scale_expected()}}; see
 \code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}}. The components containing
-\eqn{\mu} an odd number of times vanish, the law being symmetric, so the
+\eqn{\mu} an odd number of times vanish because the law is symmetric, so the
 location is orthogonal to the scale and the shape.
 }
 
@@ -183,6 +183,6 @@ Deterministic edge-preserving regularization in computed imaging.
 \code{\link[=student_t1_distrib]{student_t1_distrib()}} for the other robust three-parameter family here,
 whose score redescends to zero where this one flattens to a bound;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery that this one passes;
+user-defined family against the same battery that this one passes;
 \link{PseudoHuberDistrib} for the class.
 }

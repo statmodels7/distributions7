@@ -37,8 +37,8 @@ A named list with one numeric vector per component: 2, 3, 4, 5 and
 \description{
 Return the derivatives of the log-density in \eqn{(m, v)} of orders one to
 five, the expected information and its expected third and fourth
-derivatives, and the first two derivatives of the expected information,
-each from its own compiled kernel.
+derivatives, and the first two derivatives of the expected information.
+Each of them is computed by its own compiled kernel.
 }
 \details{
 With \eqn{L = \log y}, \eqn{S = \log(1 + v/m^2)} and
@@ -47,7 +47,7 @@ With \eqn{L = \log y}, \eqn{S = \log(1 + v/m^2)} and
       \frac{(L - \mu_l)^2}{2S}.}
 The observed derivatives of orders one and two, and every expected
 derivative, are closed forms in \eqn{(L, S, m, v)}, derived offline and
-written out per component, one kernel per order. \eqn{\ell} is a
+written out per component, with one kernel for each order. \eqn{\ell} is a
 polynomial of degree two in \eqn{L}, so each expected derivative replaces
 \eqn{L} and \eqn{L^2} by \eqn{E[L] = \mu_l} and \eqn{E[L^2] = \mu_l^2 + S}.
 
@@ -55,9 +55,9 @@ The observed derivatives of orders three to five are computed from
 \eqn{\ell = h_1(S) + h_2(S)\,C^2 - C/2 - L - \tfrac12\log 2\pi}, with
 \eqn{C = \log(y/m)}, \eqn{h_1(S) = -\tfrac12\log S - S/8} and
 \eqn{h_2(S) = -1/(2S)}: the derivatives of \eqn{S = \log(1 + v/m^2)} in
-\eqn{(m, v)} and of \eqn{h_1} and \eqn{h_2} of \eqn{S} by the formula of
-Faa di Bruno over the set partitions of the differentiation indices, and
-those of \eqn{C^2} by the Leibniz rule. Each factor keeps the size of the
+\eqn{(m, v)} and of \eqn{h_1} and \eqn{h_2} of \eqn{S} are computed by the
+formula of Faa di Bruno over the set partitions of the differentiation
+indices, and those of \eqn{C^2} are computed by the Leibniz rule. Each factor keeps the size of the
 quantity that it represents when \eqn{v/m^2} is small, where the expanded
 closed forms cancel.
 }

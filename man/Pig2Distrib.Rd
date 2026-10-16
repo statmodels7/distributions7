@@ -48,8 +48,8 @@ An S7 object of class \code{Pig2Distrib}, inheriting from
 This is the S7 class of the Poisson-inverse Gaussian in the parametrization
 whose two parameters are orthogonal, gamlss's \code{PIG2}. It is the same law as
 \link{Pig1Distrib}; the mean stays \eqn{\mu} and the dispersion is replaced by
-\eqn{\alpha}, the argument the mass function's Bessel function is evaluated
-at.
+\eqn{\alpha}, the argument at which the mass function's Bessel function is
+evaluated.
 
 Orthogonal means the expected information is diagonal: at \eqn{\mu = 3} and
 \eqn{\sigma = 0.8} its mixed entry is zero to rounding error here, against
@@ -95,7 +95,7 @@ S7::S7_inherits(d, discrete_distrib)
 d@params
 d@params_interpretation
 
-# The same law as pig1, at the dispersion alpha implies.
+# Pig2 gives the same law as pig1, at the dispersion that alpha implies.
 al <- 3.010399
 d1 <- pig1_distrib()
 rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = al)),

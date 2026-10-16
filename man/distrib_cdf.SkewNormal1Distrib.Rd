@@ -38,11 +38,12 @@ precision.
 
 The method works on the log scale (\code{\link[=sn_log_lower]{sn_log_lower()}}). The upper tail is
 computed as the lower tail of \eqn{-Y}, a skew normal of shape
-\eqn{-\alpha}, so neither tail is a complement. Where the difference
-\eqn{\Phi(z) - 2T(z, \alpha)} cancels, that is where the requested tail is
-below \eqn{10^{-3}\Phi(\pm z)}, the tail is integrated instead by
-\code{\link[=log_tail_integral]{log_tail_integral()}}, so that a small tail probability and its logarithm
-keep their digits on the light side of the family.
+\eqn{-\alpha}, so the method computes each tail directly and not as the
+complement of the other. The difference \eqn{\Phi(z) - 2T(z, \alpha)}
+cancels where the requested tail is below \eqn{10^{-3}\Phi(\pm z)}, and
+there the tail is integrated instead by \code{\link[=log_tail_integral]{log_tail_integral()}}, so that a
+small tail probability and its logarithm keep their digits on the light side
+of the family.
 }
 \section{Notation}{
 
@@ -56,7 +57,7 @@ d <- skewnormal1_distrib()
 q <- c(-2, -0.5, 0.5, 2)
 th <- list(mu = 0, sigma = 1, alpha = 3)
 
-# Owen's identity against a direct quadrature of the density.
+# Owen's identity is compared with a direct quadrature of the density.
 rbind(owen = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
@@ -69,7 +70,7 @@ distrib_cdf(d, q, th) + distrib_cdf(d, q, th, lower.tail = FALSE)
 }
 \seealso{
 \code{\link[numericals7:owen_t]{numericals7::owen_t()}} for the quadrature,
-\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} for the density it integrates,
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} for the density that it integrates,
 \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for its parameter derivatives, and \code{\link[=distrib_cdf]{distrib_cdf()}}
 for the generic.
 }

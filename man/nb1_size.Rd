@@ -13,22 +13,22 @@ nb1_size(mu, theta)
 elementwise, so vectors of different lengths recycle in the usual way.}
 }
 \value{
-A numeric vector of sizes, of the length the division produces.
+A numeric vector of sizes, of the length that the division produces.
 }
 \description{
-Returns \eqn{r = \mu/\theta}, the number of successes the base R negative
-binomial functions take as \code{size}. Requiring the variance to be
+Returns \eqn{r = \mu/\theta}, the number of successes that the base R
+negative binomial functions take as \code{size}. Requiring the variance to be
 \eqn{\mu(1+\theta)} fixes the success probability at \eqn{1/(1+\theta)}, and
-the mean then determines the size. It is this that puts \eqn{\mu} inside the
-gamma functions of the mass and makes NB1 a different family from the
+the mean then determines the size. This puts \eqn{\mu} inside the gamma
+functions of the mass and makes NB1 a different family from the
 quadratic-variance one.
 
-Nothing is validated; a non-positive \code{theta} gives an infinite or negative
-size. The methods are reached through the generics, which signal an error
-for a non-positive parameter first.
+The function does not validate its arguments; a non-positive \code{theta} gives
+an infinite or negative size. The methods are reached through the generics,
+which signal an error for a non-positive parameter first.
 }
 \seealso{
 \code{\link[=negbin1_distrib]{negbin1_distrib()}} for the family, and
-\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the mass it feeds.
+\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the mass that it feeds.
 }
 \keyword{internal}

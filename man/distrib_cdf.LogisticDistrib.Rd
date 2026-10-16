@@ -41,7 +41,7 @@ th <- list(mu = 0.4, sigma = 1.5)
 all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
           plogis(c(-1.2, 0.3, 2.5), location = 0.4, scale = 1.5))
 
-# Symmetric: F(mu - a) + F(mu + a) = 1.
+# The distribution is symmetric, so F(mu - a) + F(mu + a) = 1.
 distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 
 # It is the inverse logit link, so the two agree exactly.

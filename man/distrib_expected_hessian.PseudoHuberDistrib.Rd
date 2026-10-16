@@ -43,7 +43,7 @@ number of indices on \eqn{\mu} or \eqn{\sigma}. The value at the standard
 location and scale is a function of \eqn{\nu} alone and is an integral over
 \eqn{z} of the analytic observed derivatives against the density, taken once
 for each distinct \eqn{\nu} by the exp-sinh rule of \code{\link[=loc_scale_expected]{loc_scale_expected()}}.
-No component has an elementary closed form: the integrands carry
+The components have no elementary closed form: the integrands carry
 \eqn{(\nu + z^2)^{-1/2}}, which leads to Bickley functions rather than to
 the Bessel functions of the normalizing constant.
 
@@ -71,6 +71,6 @@ eh$mu_mu[1] / e2$mu_mu[1]
 }
 \seealso{
 \code{\link[=loc_scale_expected]{loc_scale_expected()}} for the construction,
-\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the quantity this is the
-expectation of, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the quantity of which this is
+the expectation, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

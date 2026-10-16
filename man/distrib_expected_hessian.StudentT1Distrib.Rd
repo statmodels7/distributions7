@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{y}{A numeric vector of observations. Only its length is read, the
-expectation not depending on the data; the values are ignored.}
+\item{y}{A numeric vector of observations. Only its length is read, because
+the expectation does not depend on the data; the values are ignored.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
 numeric vector of length 1 or of the length of \code{y}. A component of length
@@ -43,11 +43,11 @@ form and with no quadrature or simulation:
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.}
 
 The location is orthogonal to both other parameters: the two mixed
-entries containing \eqn{\mu} are exactly zero, the law being symmetric about
-\eqn{\mu} while the other two components are even in \eqn{r}. So
+entries containing \eqn{\mu} are exactly zero, because the law is symmetric
+about \eqn{\mu} while the other two components are even in \eqn{r}. So
 \eqn{\hat\mu} is asymptotically independent of \eqn{\hat\sigma} and
-\eqn{\hat\nu}, which the scale and the degrees of freedom are not of each
-other.
+\eqn{\hat\nu}, whereas \eqn{\hat\sigma} and \eqn{\hat\nu} are not
+asymptotically independent of each other.
 
 Because a closed form exists, \code{approx} and \code{nsim} are ignored: every
 strategy returns the same six numbers. The arithmetic runs in a compiled
@@ -78,19 +78,19 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 eh <- distrib_expected_hessian(d, y, th)
 vapply(eh, function(z) z[1], numeric(1))
 
-# The four non-zero closed forms, written out.
+# The four non-zero closed forms are written out.
 c(mu_mu = -6 / (1.2^2 * 8),
   sigma_sigma = -10 / (1.2^2 * 8),
   nu_nu = (trigamma(3) - trigamma(2.5)) / 4 + 10 / (2 * 5 * 6 * 8),
   sigma_nu = 2 / (1.2 * 6 * 8))
 
 # Averaging the observed Hessian over draws reaches the same six numbers,
-# the two containing mu going to zero.
+# and the two entries containing mu go to zero.
 set.seed(1)
 z <- distrib_rng(d, 4e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument has no effect, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 }
 \seealso{

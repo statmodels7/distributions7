@@ -125,8 +125,8 @@ S7::S7_inherits(d, continuous_distrib)
 d@params
 d@params_interpretation
 
-# Two parameters for two departures from the Gaussian, which is why the
-# family exists.
+# The family has one parameter for each of its two departures from the
+# Gaussian, and it exists for that reason.
 vapply(d@link_params, function(l) l@link_name, character(1))
 
 # It passes the skew normal's ceiling of 0.9953.

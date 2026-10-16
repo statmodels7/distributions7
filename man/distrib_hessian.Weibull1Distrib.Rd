@@ -39,7 +39,7 @@ per observation, in closed form. With \eqn{z = y/\mu} and
         = -\dfrac{1}{\sigma^2} - u (\log z)^2,}
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).}
-All three carry the data through \eqn{u}, so none is free of \eqn{y} and the
+All three carry the data through \eqn{u}, so each depends on \eqn{y} and the
 observed matrix differs from its expectation at every observation.
 }
 \examples{
@@ -48,7 +48,7 @@ y <- c(0.5, 1.2, 3.0)
 th <- list(mu = 2, sigma = 1.5)
 h <- distrib_hessian(d, y, th)
 
-# The three closed forms, written out.
+# The three closed forms are written out.
 u <- (y / 2)^1.5; lz <- log(y / 2)
 all.equal(h$mu_mu, 1.5 * (1 - 2.5 * u) / 4)
 all.equal(h$sigma_sigma, -1 / 1.5^2 - u * lz^2)

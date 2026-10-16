@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{y}{A numeric vector of angles. Only its length is read, the
-expectation not depending on the data; the values are ignored.}
+\item{y}{A numeric vector of angles. Only its length is read, because the
+expectation does not depend on the data; the values are ignored.}
 
 \item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
 vector of length 1. \code{kappa} must be strictly positive.}
@@ -46,7 +46,8 @@ with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 The zero off-diagonal makes the direction and the concentration
 orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
-independently. \code{approx} and \code{nsim} are ignored, the expectation being exact.
+independently. \code{approx} and \code{nsim} are ignored because the expectation is
+exact.
 }
 \section{Notation}{
 
@@ -61,7 +62,7 @@ th <- list(mu = 0.5, kappa = 2)
 eh <- distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th)
 vapply(eh, function(v) v[1], numeric(1))
 
-# The closed forms, written out; the off-diagonal is exactly zero, so the
+# The closed forms are written out; the off-diagonal is exactly zero, so the
 # two parameters are orthogonal.
 A <- numericals7::bessel_i_ratio(2)
 c(mu_mu = -2 * A, mu_kappa = 0,
@@ -72,12 +73,12 @@ set.seed(1)
 z <- distrib_rng(d, 3e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument is inert because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th,
                                        approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the quantity this is the
-expectation of, \code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}} for the score, and
+\code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the quantity of which this
+is the expectation, \code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}} for the score, and
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

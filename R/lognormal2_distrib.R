@@ -94,8 +94,8 @@ lognormal2_log_params <- function(theta) {
 #'   distrib_rng.Lognormal2Distrib
 #'
 #' @description
-#' The lognormal with \eqn{\log Y \sim N(\mu_l, S)}, where
-#' \eqn{S = \log(1 + v/m^2)} and \eqn{\mu_l = \log m - S/2}, so that
+#' These methods describe the lognormal with \eqn{\log Y \sim N(\mu_l, S)},
+#' where \eqn{S = \log(1 + v/m^2)} and \eqn{\mu_l = \log m - S/2}, so that
 #' \eqn{E[Y] = m} and \eqn{\operatorname{Var}(Y) = v}. The density, the
 #' distribution function, the quantile function and the generator are
 #' [stats::dlnorm()], [stats::plnorm()], [stats::qlnorm()] and
@@ -158,8 +158,8 @@ S7::method(distrib_rng, Lognormal2Distrib) <- function(distrib, n, theta, ...) {
 #' @description
 #' Return the derivatives of the log-density in \eqn{(m, v)} of orders one to
 #' five, the expected information and its expected third and fourth
-#' derivatives, and the first two derivatives of the expected information,
-#' each from its own compiled kernel.
+#' derivatives, and the first two derivatives of the expected information.
+#' Each of them is computed by its own compiled kernel.
 #'
 #' @details
 #' With \eqn{L = \log y}, \eqn{S = \log(1 + v/m^2)} and
@@ -168,7 +168,7 @@ S7::method(distrib_rng, Lognormal2Distrib) <- function(distrib, n, theta, ...) {
 #'       \frac{(L - \mu_l)^2}{2S}.}
 #' The observed derivatives of orders one and two, and every expected
 #' derivative, are closed forms in \eqn{(L, S, m, v)}, derived offline and
-#' written out per component, one kernel per order. \eqn{\ell} is a
+#' written out per component, with one kernel for each order. \eqn{\ell} is a
 #' polynomial of degree two in \eqn{L}, so each expected derivative replaces
 #' \eqn{L} and \eqn{L^2} by \eqn{E[L] = \mu_l} and \eqn{E[L^2] = \mu_l^2 + S}.
 #'
@@ -176,9 +176,9 @@ S7::method(distrib_rng, Lognormal2Distrib) <- function(distrib, n, theta, ...) {
 #' \eqn{\ell = h_1(S) + h_2(S)\,C^2 - C/2 - L - \tfrac12\log 2\pi}, with
 #' \eqn{C = \log(y/m)}, \eqn{h_1(S) = -\tfrac12\log S - S/8} and
 #' \eqn{h_2(S) = -1/(2S)}: the derivatives of \eqn{S = \log(1 + v/m^2)} in
-#' \eqn{(m, v)} and of \eqn{h_1} and \eqn{h_2} of \eqn{S} by the formula of
-#' Faa di Bruno over the set partitions of the differentiation indices, and
-#' those of \eqn{C^2} by the Leibniz rule. Each factor keeps the size of the
+#' \eqn{(m, v)} and of \eqn{h_1} and \eqn{h_2} of \eqn{S} are computed by the
+#' formula of Faa di Bruno over the set partitions of the differentiation
+#' indices, and those of \eqn{C^2} are computed by the Leibniz rule. Each factor keeps the size of the
 #' quantity that it represents when \eqn{v/m^2} is small, where the expanded
 #' closed forms cancel.
 #'
@@ -260,9 +260,10 @@ register_dexpected(Lognormal2Distrib, function(d, y, th, k, t) {
 #'   distrib_hess_y_hess.Lognormal2Distrib
 #'
 #' @description
-#' The derivatives of the log-density in the response to order four, and the
-#' mixed derivatives of orders one and two in the response and one and two in
-#' \eqn{(m, v)}, each a closed form from its own compiled kernel.
+#' Return the derivatives of the log-density in the response to order four and
+#' the mixed derivatives of orders one and two in the response and one and two
+#' in \eqn{(m, v)}. Each of them is a closed form computed by its own compiled
+#' kernel.
 #'
 #' @param distrib A `Lognormal2Distrib` object.
 #' @param y A numeric vector of strictly positive observations.
@@ -315,9 +316,9 @@ S7::method(distrib_hess_y_hess, Lognormal2Distrib) <- function(
 #'   distrib_deriv3_cdf.Lognormal2Distrib distrib_deriv4_cdf.Lognormal2Distrib
 #'
 #' @description
-#' The derivatives of \eqn{F(q) = \Phi\{(\log q - \mu_l)/\sqrt{S}\}} in
-#' \eqn{(m, v)} to order four, each a closed form from its own compiled
-#' kernel, carried to the upper tail and the log scale by
+#' Return the derivatives of \eqn{F(q) = \Phi\{(\log q - \mu_l)/\sqrt{S}\}} in
+#' \eqn{(m, v)} to order four. Each of them is a closed form computed by its
+#' own compiled kernel and is carried to the upper tail and the log scale by
 #' [cdf_tail_scale()] and [cdf_scale_k()].
 #'
 #' @param distrib A `Lognormal2Distrib` object.
@@ -420,21 +421,23 @@ S7::method(kurtosis, Lognormal2Distrib) <- function(x, theta, ...) {
 #' variance of \eqn{Y} itself, rather than of \eqn{\log Y}.
 #'
 #' @details
-#' The parameters of [lognormal1_distrib()] describe \eqn{\log Y}, so neither
-#' of them is a moment of \eqn{Y}. Here they are, through
+#' The parameters of [lognormal1_distrib()] describe \eqn{\log Y}, so they are
+#' not moments of \eqn{Y}. Here the parameters are moments of \eqn{Y}, and the
+#' parameters of [lognormal1_distrib()] follow from them through
 #' \deqn{\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
 #'       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right).}
 #' Every derivative of the log-density in \eqn{(m, v)} to order five, the
 #' expected information and its derivatives, the derivatives in the response
-#' and the derivatives of the distribution function are closed forms, each
-#' order in its own compiled kernel (see
+#' and the derivatives of the distribution function are closed forms, and each
+#' order has its own compiled kernel (see
 #' [distrib_gradient.Lognormal2Distrib()]).
 #'
 #' @section The distribution:
+#' The density is
 #' \deqn{f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y -
 #'   \mu_l)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{m^{2}}
 #'   \right)\!, \; \mu_l = \log m - \frac{s^{2}}{2}}
-#' on \eqn{y \in (0, \infty)}, with \eqn{E[Y] = m} and
+#' on \eqn{y \in (0, \infty)}, and the family has \eqn{E[Y] = m} and
 #' \eqn{\operatorname{Var}(Y) = v}.
 #'
 #' @param link_mean Link function for the mean. Defaults to the log.

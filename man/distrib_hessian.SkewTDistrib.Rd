@@ -65,8 +65,8 @@ th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
 h <- distrib_hessian(d, y, th)
 names(h)
 
-# Against numerical differentiation of the log-likelihood: one component
-# of the closed-form block, and two involving nu.
+# Three components are compared with numerical differentiation of the
+# log-likelihood: one of the closed-form block, and two involving nu.
 f <- function(v) sum(distrib_pdf(d, y, list(mu = v[1], sigma = v[2],
                                             alpha = v[3], nu = v[4]),
                                  log = TRUE))

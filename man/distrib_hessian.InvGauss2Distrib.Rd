@@ -55,7 +55,7 @@ th <- list(mu = 2, lambda = 3)
 h <- distrib_hessian(d, y, th)
 h
 
-# The three closed forms, written out.
+# The three closed forms are written out.
 all.equal(h$mu_mu, 3 * (2 * 2 - 3 * y) / 2^4)
 all.equal(h$mu_lambda, (y - 2) / 2^3)
 all.equal(h$lambda_lambda, rep(-1 / (2 * 3^2), 3))

@@ -20,10 +20,11 @@ laplace_std_quantile(p, lower.tail, log.p)
 A numeric vector.
 }
 \description{
-Internal helpers of the two Laplace families. \code{laplace_cdf_tails()}
+These are internal helpers of the two Laplace families. \code{laplace_cdf_tails()}
 returns the probability that \code{lower.tail} and \code{log.p} select at the
-standardized residual \code{r}, each tail from its own arm: \eqn{\log(1/2) - |r|}
-for the far tail and \verb{log1p(-exp(-|r|)/2)} for the near one.
+standardized residual \code{r}, and computes each tail from its own arm:
+\eqn{\log(1/2) - |r|} for the far tail and \verb{log1p(-exp(-|r|)/2)} for the
+near one.
 \code{laplace_std_quantile()} returns the standard Laplace quantile from the
 logarithm of the smaller tail, \eqn{\pm(\log P + \log 2)}.
 }

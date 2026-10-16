@@ -57,7 +57,7 @@ th <- list(mu = 2, sigma = 1.5)
 d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
-# The pure-mu component, written out.
+# The pure-mu component is written out.
 u <- (y / 2)^1.5
 all.equal(d3$mu_mu_mu, 1.5 * (-2 + 2.5 * 3.5 * u) / 8)
 

@@ -31,7 +31,7 @@ The response enters the log-density only through \eqn{r = y - \mu}, so
 \eqn{\partial_y = -\partial_\mu}. \code{distrib_grad_y()} returns
 \eqn{-R(\nu)\, r/(\sigma^2 D)} and \code{distrib_hess_y()} returns
 \eqn{-R(\nu)\, \nu/(\sigma^2 D^3)}; \code{distrib_cross_y()} returns the
-\eqn{\mu} row of the Hessian with its sign changed; the third and fourth
+negative of the \eqn{\mu} row of the Hessian; the third and fourth
 response derivatives are the pure-\eqn{\mu} components of the third and
 fourth parameter derivatives, with the sign \eqn{(-1)^k}. The derivatives
 of the response derivatives in the parameters are the location-scale ones

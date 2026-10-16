@@ -27,15 +27,15 @@ Weibull log-density with respect to the response, in closed form. With
   = -\dfrac{(\sigma - 1)(1 + \sigma u)}{y^2}.}
 The sign is the shape's: at \eqn{\sigma > 1} the log-density is concave on
 the whole support, at \eqn{\sigma < 1} convex, and at \eqn{\sigma = 1}, the
-exponential case, exactly zero, the log-density being linear in \eqn{y}
-there.
+exponential case, exactly zero, because the log-density is linear in
+\eqn{y} there.
 }
 \examples{
 d <- weibull1_distrib()
 y <- c(0.5, 1.2, 3.0)
 th <- list(mu = 2, sigma = 1.5)
 
-# The closed form, written out.
+# The closed form is written out.
 u <- (y / 2)^1.5
 all.equal(distrib_hess_y(d, y, th), -(1.5 - 1) * (1 + 1.5 * u) / y^2)
 

@@ -23,11 +23,11 @@ A named list, one component per parameter (first order) or per
 pair (second order).
 }
 \description{
-The derivatives of the distribution function in the parameters, by
-\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} and \code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} and, at orders three and
-four, \code{\link[=partial_loc_scale_deriv_cdf_k]{partial_loc_scale_deriv_cdf_k()}}: the location and scale components
-are closed in the density, and the components in \eqn{\nu} are integrals
-of the density's own derivatives, taken by the compiled rule.
+Return the derivatives of the distribution function in the parameters,
+using \code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} and \code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} and, at orders three
+and four, \code{\link[=partial_loc_scale_deriv_cdf_k]{partial_loc_scale_deriv_cdf_k()}}. The location and scale
+components are closed in the density, and the components in \eqn{\nu} are
+integrals of the density's own derivatives, taken by the compiled rule.
 }
 \examples{
 d <- pseudohuber2_distrib()

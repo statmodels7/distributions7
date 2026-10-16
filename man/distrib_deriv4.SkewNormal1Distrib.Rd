@@ -43,8 +43,8 @@ inverse Mills ratio, so the fourth order uses the same two functions as
 the third, and the same cumulant route below \eqn{t = -1}.
 
 With \code{expected = TRUE} the value is a numerical expectation, for the reason
-it is at third order: the integrals are the ones that block the expected
-information.
+that applies at third order: the integrals are the ones that block the
+expected information.
 }
 \section{Notation}{
 
@@ -59,7 +59,7 @@ th <- list(mu = 0, sigma = 1, alpha = 3)
 d4 <- distrib_deriv4(d, y, th)
 length(d4)
 
-# Against a central difference of the third order.
+# The value is compared with a central difference of the third order.
 eps <- 1e-4
 rbind(analytic = d4$mu_mu_alpha_alpha,
       numeric = (distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu_alpha -

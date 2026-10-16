@@ -38,8 +38,8 @@ negative number instead of \code{-Inf}.
 \section{Notation}{
 
 \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
-shape and \eqn{\nu > 0} the degrees of freedom. Neither \eqn{\mu} nor
-\eqn{\sigma} is a moment.
+shape and \eqn{\nu > 0} the degrees of freedom. \eqn{\mu} and
+\eqn{\sigma} are not moments.
 }
 
 \examples{
@@ -47,7 +47,7 @@ d <- skewt_distrib()
 y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
 
-# The formula written out.
+# The formula is written out and compared with the function.
 w <- 3 * y * sqrt(7 / (6 + y^2))
 all.equal(distrib_pdf(d, y, th), 2 * dt(y, 6) * pt(w, 7))
 

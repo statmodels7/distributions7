@@ -8,8 +8,8 @@ laplace_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
-ranging over the whole line already.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the
+location already ranges over the whole line.}
 
 \item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
 \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -33,12 +33,12 @@ moments.
 The family is symmetric about \eqn{\mu} with variance \eqn{2\sigma^2} and
 excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
 likelihood estimates are the sample median and the mean absolute deviation
-about it, both available in closed form.
+about it, and both are available in closed form.
 
 This family is not regular in \eqn{\mu}: the density has a corner at
 \eqn{y = \mu} and the observed second derivative there is zero almost
 everywhere, while the information is \eqn{1/\sigma^2}. The object records
-this in \code{params_smooth}, and the details below say what follows from it.
+this in \code{params_smooth}, and the details below describe the consequences.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (-\infty, \infty)} is
@@ -55,15 +55,15 @@ lasso penalty uses.
 
 \section{The kink, and what it costs}{
 \eqn{|y - \mu|} is not differentiable at \eqn{y = \mu}, so the log-density
-is piecewise linear in \eqn{\mu} with a corner. Three consequences, all
-visible in the methods:
+is piecewise linear in \eqn{\mu} with a corner. Three consequences follow,
+and all of them appear in the methods:
 \itemize{
 \item the score in \eqn{\mu} is \eqn{\mathrm{sign}(r)/\sigma}, carrying only
 the sign of the residual;
 \item the observed second derivative in \eqn{\mu} is 0 wherever it exists, so
 \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} returns a vector of zeros;
 \item the second Bartlett identity fails, and the information is defined as
-the variance of the score, \eqn{1/\sigma^2}. That is what
+the variance of the score, \eqn{1/\sigma^2}, which
 \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns.
 }
 
@@ -71,7 +71,7 @@ the variance of the score, \eqn{1/\sigma^2}. That is what
 \code{\link[=check_distrib]{check_distrib()}} recomputes each finite-difference reference with half
 the step and drops the observations at which the two disagree, because a
 central difference that straddles the corner is not a derivative there;
-the comparison still covers every parameter, \eqn{\mu} included.
+the comparison still covers every parameter, including \eqn{\mu}.
 }
 
 \section{Estimation}{
@@ -79,7 +79,7 @@ Both estimates are closed form: \eqn{\hat\mu} is the sample median and
 \eqn{\hat\sigma} the mean absolute deviation about it,
 \eqn{n^{-1}\sum|y_i - \hat\mu|}. \code{\link[=fit_distrib]{fit_distrib()}} reaches them by Fisher
 scoring, which inverts the information above; a Newton step could not,
-the observed Hessian being singular in \eqn{\mu}. The example below checks
+because the observed Hessian is singular in \eqn{\mu}. The example below checks
 the fitted values against both closed forms.
 }
 
@@ -97,7 +97,7 @@ family equals the expectation of the observed one and here does not.
 d <- laplace_distrib()
 d
 
-# The density, written out.
+# The density is compared with its formula.
 y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 all.equal(distrib_pdf(d, y, th), exp(-abs(y - 0.4) / 1.5) / (2 * 1.5))

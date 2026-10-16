@@ -29,8 +29,8 @@ length of the recycled inputs.
 \description{
 Returns the exact first derivatives of the log-mass in \eqn{(\mu, \sigma)},
 read off columns \code{d10} and \code{d01} of the compiled kernel of
-\code{pig1_gradient_cpp}. Nothing is differenced: the kernel writes every partial
-out in closed form from the finite Bessel sum.
+\code{pig1_gradient_cpp}. The kernel writes every partial out in closed form from
+the finite Bessel sum, so the derivatives are not obtained by differencing.
 }
 \section{Notation}{
 
@@ -44,7 +44,8 @@ y <- 0:6
 th <- list(mu = 3, sigma = 0.8)
 g <- distrib_gradient(d, y, th)
 
-# Against numerical differentiation of the log-likelihood.
+# The score is compared with numerical differentiation of the
+# log-likelihood.
 f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], sigma = p[2]),
                                  log = TRUE))
 rbind(analytic = vapply(g, sum, 0),
@@ -55,7 +56,8 @@ rbind(analytic = vapply(g, sum, 0),
 distrib_expected_hessian(d, 0, th)$mu_sigma
 }
 \seealso{
-\code{pig1_gradient_cpp} for the kernel and the closed form it evaluates,
+\code{pig1_gradient_cpp} for the kernel and the closed form that it
+evaluates,
 \code{\link[=distrib_hessian.Pig1Distrib]{distrib_hessian.Pig1Distrib()}} for the second derivatives, and
 \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

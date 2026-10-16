@@ -23,8 +23,8 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of the expected information in
-\eqn{(\mu, \theta)}, from a compiled kernel. \eqn{\mathbb{E}[\ell_{\mu\mu}]
+Computes the first and second derivatives of the expected information in
+\eqn{(\mu, \theta)} with a compiled kernel. \eqn{\mathbb{E}[\ell_{\mu\mu}]
 = -\theta/(\mu(\theta+\mu))} is differentiated in closed form and
 \eqn{\mathbb{E}[\ell_{\mu\theta}] = 0}. \eqn{\mathbb{E}[\ell_{\theta\theta}]
 = S = \sum_k p_k U_k} is a sum over the support whose mass depends on the
@@ -34,7 +34,7 @@ parameters, so a derivative moves the mass as well as the summand:
   + U_k (s_{xy} + s_x s_y)\big),}
 with \eqn{s} the score of the log-mass at \eqn{k}. Every piece is an exact
 polynomial in \eqn{k} or a sum \eqn{\sum_{j<k}(\theta+j)^{-r}} accumulated
-beside the mass, over the recurrence and stopping rule the expected
+beside the mass, over the recurrence and stopping rule that the expected
 information itself uses. On the link scale the result is carried across by
 \code{\link[=dexpected_link]{dexpected_link()}}.
 }

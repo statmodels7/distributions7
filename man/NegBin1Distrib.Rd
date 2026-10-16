@@ -95,8 +95,8 @@ d@params
 d@params_interpretation
 d@bounds
 
-# The variance-to-mean ratio is 1 + theta at every mean, which is what
-# separates this family from the quadratic one.
+# The variance-to-mean ratio is 1 + theta at every mean, and the quadratic
+# family does not have this property.
 vapply(c(1, 10, 100),
        function(m) variance(d, list(mu = m, theta = 4)) / m, numeric(1))
 }
@@ -106,5 +106,5 @@ vapply(c(1, 10, 100),
 different family and not a reparametrization of this one;
 \code{\link[=poisson_distrib]{poisson_distrib()}} for the limit as \eqn{\theta} goes to zero;
 \code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} and \code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} for
-the closed forms this class supplies.
+the closed forms that this class supplies.
 }

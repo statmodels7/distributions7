@@ -28,7 +28,8 @@ Computes the inverse Gaussian density
       \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\},
       \qquad y > 0,}
 by calling \code{\link[statmod:invgauss]{statmod::dinvgauss()}} at \code{mean = mu} and
-\code{dispersion = 1/lambda}, that package writing the family in the dispersion.
+\code{dispersion = 1/lambda}, because that package writes the family in the
+dispersion.
 With \code{log = TRUE} the logarithm is formed inside \code{dinvgauss()} and stays
 finite where the density itself underflows.
 }
@@ -41,7 +42,7 @@ th <- list(mu = 2, lambda = 3)
 all.equal(distrib_pdf(d, y, th),
           statmod::dinvgauss(y, mean = 2, dispersion = 1 / 3))
 
-# The same law as invgauss1 at phi = 1/lambda.
+# The density is the same as that of invgauss1 at phi = 1/lambda.
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(invgauss1_distrib(), y, list(mu = 2, phi = 1 / 3)))
 

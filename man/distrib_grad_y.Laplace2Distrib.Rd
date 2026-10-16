@@ -26,8 +26,8 @@ response,
 in closed form. The family is a location family in \eqn{\mu}, so this is the
 negative of the score in \eqn{\mu}. It takes only the three values
 \eqn{-\lambda}, 0 and \eqn{\lambda}; at \eqn{y = \mu} exactly, \code{sign(0)} is
-0 and the method returns 0, the midpoint of the subdifferential, the
-derivative not existing there.
+0 and the method returns 0, the midpoint of the subdifferential, because the
+derivative does not exist there.
 }
 \examples{
 d <- laplace2_distrib()
@@ -36,10 +36,11 @@ th <- list(mu = 0.4, lambda = 2)
 
 all.equal(distrib_grad_y(d, y, th), -2 * sign(y - 0.4))
 
-# A location family: minus the score in the location.
+# This is a location family, so the derivative is minus the score in the
+# location.
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 
-# Three values only, and 0 at the kink itself.
+# The derivative takes three values only, and it is 0 at the kink itself.
 distrib_grad_y(d, 0.4 + c(-100, -1e-9, 0, 1e-9, 100), th)
 }
 \seealso{

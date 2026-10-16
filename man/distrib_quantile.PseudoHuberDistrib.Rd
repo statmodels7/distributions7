@@ -28,9 +28,9 @@ A numeric vector of quantiles on \eqn{[-\infty, \infty]}, of length
 \code{max(length(p), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Computes \eqn{Q(p)} by root-finding on the numerical distribution function,
-the family having no elementary quantile, through
-\code{\link[=symmetric_log_quantile]{symmetric_log_quantile()}}. The probability is turned into the logarithms
+Computes \eqn{Q(p)} through \code{\link[=symmetric_log_quantile]{symmetric_log_quantile()}} by root-finding on
+the numerical distribution function, because the family has no elementary
+quantile. The probability is turned into the logarithms
 of both tails without forming \eqn{1 - p} or exponentiating a logarithm,
 and the root of \eqn{\log F(q) = \log P}, with \eqn{P} the smaller tail, is
 found below the location and reflected through \eqn{Q = 2\mu - Q'} when the
@@ -50,7 +50,8 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 # The median is the location, returned without a search.
 distrib_quantile(d, 0.5, th)
 
-# The quartiles, and the round trip back through the distribution function.
+# The quartiles are computed, and the distribution function maps them back
+# to the probabilities.
 q <- distrib_quantile(d, c(0.25, 0.75), th)
 q
 distrib_cdf(d, q, th)

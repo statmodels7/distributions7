@@ -145,7 +145,7 @@ edition, Chapter 8. Chapman and Hall, London.
 \code{\link[=chisq_distrib]{chisq_distrib()}} and \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for relatives;
 \code{\link[=invgauss1_distrib]{invgauss1_distrib()}} and \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for other positive
 families with a multiplicative variance function; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family
 against the same battery of checks that this family passes; \link{Gamma1Distrib}
 for the class.
 }

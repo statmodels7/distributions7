@@ -21,10 +21,11 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+or \code{"opg"}. It is read only when \code{expected = TRUE}.}
 
 \item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -75,7 +76,7 @@ up <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 + eps))$rho_rho
 dn <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 - eps))$rho_rho
 all.equal((up - dn) / (2 * eps), d3$rho_rho_rho, tolerance = 1e-5)
 
-# Unlike the concentration parametrization, no component is exactly zero,
+# Unlike the concentration parametrization, every component is nonzero,
 # because kappa is a nonlinear function of rho.
 vapply(d3, function(v) v[1], numeric(1))
 }

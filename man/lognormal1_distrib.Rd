@@ -8,8 +8,8 @@ lognormal1_distrib(link_mu = identity_link(), link_sigma2 = log_link())
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, \eqn{\mu} being
-a mean on the log scale and so already free.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because \eqn{\mu}
+is a mean on the log scale and so already free.}
 
 \item{link_sigma2}{A \code{link} object from \code{linkfunctions7} for the variance
 \eqn{\sigma^2} of the logarithm. Defaults to
@@ -26,7 +26,8 @@ An S7 object of class \code{Lognormal1Distrib}, inheriting from
 Builds the distribution object for the lognormal family on
 \eqn{(0, \infty)}: the law of a variable whose logarithm is Gaussian with
 mean \eqn{\mu} and variance \eqn{\sigma^2 > 0}. Both parameters are moments
-of the logarithm, so neither is the mean or the variance of \eqn{Y}. The
+of the logarithm, so \eqn{\mu} is not the mean of \eqn{Y} and
+\eqn{\sigma^2} is not the variance of \eqn{Y}. The
 returned object carries closed-form derivatives of the log-density to fourth
 order, in the parameters and in the response, closed-form derivatives of the
 distribution function, and closed-form moments. The fifth order and
@@ -74,8 +75,8 @@ component for component and at all four orders, observed and expected. The
 two parameters are orthogonal and the information does not depend on
 \eqn{\mu}.
 
-The derivatives in the response are where the two families differ, the
-Jacobian being a function of \eqn{y}. They are still closed form; see
+The derivatives in the response differ between the two families, because the
+Jacobian is a function of \eqn{y}. They are still closed form; see
 \code{\link[=distrib_grad_y.Lognormal1Distrib]{distrib_grad_y.Lognormal1Distrib()}} and
 \code{\link[=distrib_hess_y.Lognormal1Distrib]{distrib_hess_y.Lognormal1Distrib()}}, and note that the log-density is
 convex in the response above \eqn{e^{\mu+1-\sigma^2}}.
@@ -108,10 +109,10 @@ y <- c(0.5, 1.6, 4)
 th <- list(mu = 0.5, sigma2 = 0.36)
 all.equal(distrib_pdf(d, y, th), dlnorm(y, 0.5, sqrt(0.36)))
 
-# Mode, median and mean, in that order.
+# The mode, the median and the mean are listed in increasing order.
 c(mode = exp(0.5 - 0.36), median = exp(0.5), mean = mean(d, th))
 
-# Moments on the original scale, all exponential in sigma2.
+# The moments on the original scale are all exponential in sigma2.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 
@@ -139,8 +140,8 @@ Wiley, New York.
 \eqn{Y}; \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} for the law of its logarithm;
 \code{\link[=gamma1_distrib]{gamma1_distrib()}} and \code{\link[=invgauss1_distrib]{invgauss1_distrib()}} for other positive families
 with a multiplicative variance function; \code{\link[=transformation]{transformation()}} for the general
-wrapper this family is a named instance of; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
-parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
+wrapper of which this family is a named instance; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family against the
 same battery of checks that this family passes; \link{Lognormal1Distrib} for the
 class.
 }

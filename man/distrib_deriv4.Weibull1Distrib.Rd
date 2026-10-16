@@ -39,8 +39,8 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 \description{
 Computes the five distinct fourth derivatives of the Weibull log-density in
 \eqn{\mu} and \eqn{\sigma}, in closed form, observed at the data or expected
-under the model. The construction is the one
-\code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3.Weibull1Distrib()}} describes carried one order further: with
+under the model. The construction is the one that
+\code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3.Weibull1Distrib()}} describes, carried one order further: with
 \eqn{z = y/\mu}, \eqn{u = z^{\sigma}} and \eqn{L = \log z}, each component
 is a polynomial in \eqn{u L^k} for \eqn{k \le 4}, and the pure-\eqn{\mu}
 component is
@@ -58,7 +58,7 @@ th <- list(mu = 2, sigma = 1.5)
 d4 <- distrib_deriv4(d, y, th)
 names(d4)
 
-# The pure-mu component, written out.
+# The pure-mu component is written out.
 u <- (y / 2)^1.5
 all.equal(d4$mu_mu_mu_mu, 1.5 * (6 - 2.5 * 3.5 * 4.5 * u) / 16)
 

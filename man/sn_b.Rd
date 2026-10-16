@@ -11,8 +11,8 @@ A single number.
 }
 \description{
 Returns \eqn{b = \sqrt{2/\pi} \approx 0.7978846}, which is
-\eqn{E[|Z|]} for a standard Gaussian \eqn{Z}. It is the one constant the
-skew normal's first moment introduces, and it appears in every quantity of
+\eqn{E[|Z|]} for a standard Gaussian \eqn{Z}. It is the one constant that
+the skew normal's first moment introduces, and it appears in every quantity of
 the centered parametrization: the mean is \eqn{\xi + \omega b\delta}, the
 variance \eqn{\omega^2(1-b^2\delta^2)}, and the largest reachable skewness
 is built from \eqn{b/\sqrt{1-b^2}}.

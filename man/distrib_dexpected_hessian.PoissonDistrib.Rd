@@ -23,9 +23,10 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of \eqn{\mathbb{E}[\ell_{\mu\mu}] =
--1/\mu}, \eqn{1/\mu^2} and \eqn{-2/\mu^3}, from a compiled kernel. On the
-link scale the result is carried across by \code{\link[=dexpected_link]{dexpected_link()}}.
+Computes the first and second derivatives of
+\eqn{\mathbb{E}[\ell_{\mu\mu}] = -1/\mu}, which are \eqn{1/\mu^2} and
+\eqn{-2/\mu^3}, with a compiled kernel. On the link scale the result is
+carried across by \code{\link[=dexpected_link]{dexpected_link()}}.
 }
 \seealso{
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}

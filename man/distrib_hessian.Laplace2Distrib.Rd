@@ -36,8 +36,8 @@ closed form. Writing \eqn{r = y - \mu},
       \qquad
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \lambda} = \mathrm{sign}(r).}
 
-The first entry is exactly zero for every observation, the log-density being
-piecewise linear in \eqn{\mu}; see
+The first entry is exactly zero for every observation, because the
+log-density is piecewise linear in \eqn{\mu}; see
 \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} for what that costs. The curvature in
 \eqn{\lambda} carries no data at all, so in this parametrization the
 observed and expected values agree in that entry.
@@ -48,13 +48,14 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, lambda = 2)
 h <- distrib_hessian(d, y, th)
 
-# Zero in the location, constant in the rate, a sign in the mixed entry.
+# The entry is zero in the location, constant in the rate and a sign in
+# the mixed term.
 h$mu_mu
 h$lambda_lambda
 all.equal(h$mu_lambda, sign(y - 0.4))
 
 # The rate entry already equals its own expectation; the location one
-# does not, and the expected page says why.
+# does not, and the expected page gives the reason.
 rbind(observed = vapply(h, function(v) v[1], numeric(1)),
       expected = vapply(distrib_expected_hessian(d, y, th),
                         function(v) v[1], numeric(1)))

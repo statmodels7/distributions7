@@ -43,7 +43,8 @@ around the circle.
 Only the ratios \eqn{I_j/I_0} are needed, and
 \code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}} gives them by a backward recurrence whose
 loop runs over the series index and not over the data. The series is cheap
-for that reason: \eqn{n} quadratures become a few dozen vectorized steps.
+for that reason: the \eqn{n} quadratures are replaced by a few dozen
+vectorized steps.
 }
 
 \section{Number of terms}{

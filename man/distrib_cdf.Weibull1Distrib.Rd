@@ -32,8 +32,8 @@ Computes the Weibull distribution function
 by calling \code{\link[stats:Weibull]{stats::pweibull()}}. The survival function is elementary,
 \eqn{1 - F(q) = \exp\{-(q/\mu)^{\sigma}\}}, so \code{lower.tail = FALSE} with
 \code{log.p = TRUE} returns \eqn{-(q/\mu)^{\sigma}} exactly and never forms the
-difference. That combination is what a right-censored observation far out in
-the tail contributes to a log-likelihood. With \code{lower.tail = TRUE} and
+difference. A right-censored observation far out in the tail contributes this
+value to a log-likelihood. With \code{lower.tail = TRUE} and
 \code{log.p = TRUE} the value is taken from \eqn{\log H = \sigma\log(q/\mu)}
 (\code{\link[=weibull_log_lower]{weibull_log_lower()}}), so that it stays finite where \eqn{H} underflows.
 }

@@ -102,7 +102,7 @@ Every other generic is inherited from \code{\link[=continuous_distrib]{continuou
 d <- vonmises2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 
-# The resultant length is bounded, which is what makes it readable.
+# The resultant length is bounded, so it is readable directly.
 d@params
 d@params_bounds$rho
 d@params_interpretation

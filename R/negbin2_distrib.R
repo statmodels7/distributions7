@@ -31,7 +31,7 @@ NULL
 #'   [negbin1_distrib()] for the NB1 parametrization, whose variance is linear
 #'   in the mean; [poisson_distrib()] for the limit as \eqn{\theta} grows;
 #'   [distrib_pdf.NegBin2Distrib()] and [distrib_gradient.NegBin2Distrib()] for
-#'   the closed forms this class supplies.
+#'   the closed forms that this class supplies.
 #'
 #' @section Methods:
 #' The following methods are registered on this class, and each is linked to
@@ -90,8 +90,8 @@ NegBin2Distrib <- S7::new_class("NegBin2Distrib", parent = discrete_distrib)
 #' `dnbinom()` and stays finite far into the tail.
 #'
 #' The mass is that of a Poisson whose rate is itself gamma distributed with
-#' mean \eqn{\mu} and shape \eqn{\theta}, which is where the overdispersion
-#' comes from. As \eqn{\theta} grows the gamma concentrates and the mass tends
+#' mean \eqn{\mu} and shape \eqn{\theta}, and this mixing produces the
+#' overdispersion. As \eqn{\theta} grows the gamma concentrates and the mass tends
 #' to the Poisson's; at \eqn{\theta = 1} it is the geometric.
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
@@ -240,7 +240,8 @@ S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tai
 #' d <- negbin2_distrib()
 #' th <- list(mu = 4, theta = 2)
 #'
-#' # A nominal central 95 percent interval on the counts.
+#' # These quantiles give the median and a nominal central 95 percent
+#' # interval on the counts.
 #' p <- c(0.025, 0.5, 0.975)
 #' q <- distrib_quantile(d, p, th)
 #' q
@@ -268,8 +269,8 @@ S7::method(distrib_quantile, NegBin2Distrib) <- function(distrib, p, theta, lowe
 #' Draws `n` independent negative binomial counts by calling
 #' [stats::rnbinom()] at `size = theta` and `mu = mu`, so the draws come from
 #' R's own generator and depend on `.Random.seed` in the usual way. The
-#' cumulative-table fallback the base class supplies for a discrete family is
-#' bypassed.
+#' cumulative-table fallback that the base class supplies for a discrete family
+#' is bypassed.
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -288,7 +289,8 @@ S7::method(distrib_quantile, NegBin2Distrib) <- function(distrib, p, theta, lowe
 #' @examples
 #' d <- negbin2_distrib()
 #'
-#' # Same generator as stats::rnbinom at size = theta, mu = mu.
+#' # The method uses the same generator as stats::rnbinom at size = theta,
+#' # mu = mu.
 #' set.seed(2)
 #' a <- distrib_rng(d, 5, list(mu = 4, theta = 2))
 #' set.seed(2)
@@ -300,7 +302,7 @@ S7::method(distrib_quantile, NegBin2Distrib) <- function(distrib, p, theta, lowe
 #' z <- distrib_rng(d, 2e4, list(mu = 4, theta = 2))
 #' c(mu = mean(z), theta = mean(z)^2 / (var(z) - mean(z)))
 #'
-#' # Overdispersion is the point: the variance is three times the mean here.
+#' # The counts are overdispersed: the variance is three times the mean here.
 #' c(mean = mean(z), var = var(z))
 S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
   stats::rnbinom(
@@ -327,7 +329,7 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' The dispersion component is not computed as written above. As
 #' \eqn{\theta} grows the family tends to the Poisson and this derivative
-#' vanishes, its three terms canceling to leading order:
+#' vanishes, because its three terms cancel to leading order:
 #' \eqn{\psi(y+\theta) - \psi(\theta)} is \eqn{y/\theta},
 #' \eqn{\log\{\theta/s\}} is \eqn{-\mu/\theta} and \eqn{(\mu-y)/s} is
 #' \eqn{(\mu-y)/\theta}, and the three sum to zero, so the value is
@@ -341,8 +343,8 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #' \deqn{\dfrac{\partial \ell}{\partial \theta} =
 #'       \left\{\psi(b) - \psi(a) - \log(1 + y/a)\right\}
 #'       + \left\{\log(1 + w) - w\right\},}
-#' each bracket evaluated by its own series where the arguments are large. To
-#' leading order the result is \eqn{\{y - (y-\mu)^2\}/(2\theta^2)}, which the
+#' and each bracket is evaluated by its own series where the arguments are
+#' large. To leading order the result is \eqn{\{y - (y-\mu)^2\}/(2\theta^2)}, which the
 #' example below reproduces. A fit reaches that regime when the sample is
 #' nearly equidispersed, because the estimate of \eqn{\theta} then grows
 #' without bound.
@@ -383,7 +385,7 @@ S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 4, theta = 2)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out at a dispersion where the direct
+#' # We write out the two closed forms at a dispersion where the direct
 #' # expression still has its digits.
 #' s <- 2 + 4
 #' all.equal(g$mu, (2 / s) * (y / 4 - 1))
@@ -431,17 +433,17 @@ S7::method(distrib_gradient, NegBin2Distrib) <- function(distrib, y, theta, scal
 #' dispersion or a large mean; in this form the value keeps full relative
 #' accuracy, and a term with a zero coefficient contributes zero.
 #'
-#' The dispersion entry cancels at large \eqn{\theta} for the same reason the
-#' score does, and the kernel handles it the same way. Here the collapse is
+#' The dispersion entry cancels at large \eqn{\theta} for the same reason that
+#' the score does, and the kernel handles it the same way. Here the collapse is
 #' better than a series: with \eqn{a = \theta}, \eqn{b = \theta + y} and
 #' \eqn{c = \theta + \mu} the three leading terms combine exactly,
 #' \deqn{-\dfrac{y}{ab} + \dfrac{\mu}{ac} + \dfrac{y-\mu}{c^2}
 #'       = \dfrac{(y-\mu)^2}{b\,c^2},}
-#' so what is computed is that quotient plus the remainder
+#' so the kernel computes that quotient plus the remainder
 #' \eqn{\psi_1(b) - \psi_1(a) + y/(ab)}, and only the remainder needs a series.
 #' To leading order the result is \eqn{\{(y-\mu)^2 - y\}/\theta^3}, which is
-#' the derivative of the score's leading term and is how the two derivations
-#' check each other.
+#' the derivative of the score's leading term, so the two derivations check
+#' each other.
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
 #' @param y A numeric vector of counts.
@@ -477,7 +479,7 @@ S7::method(distrib_gradient, NegBin2Distrib) <- function(distrib, y, theta, scal
 #' h <- distrib_hessian(d, y, th)
 #' h
 #'
-#' # The three closed forms, written out at a dispersion where the direct
+#' # We write out the three closed forms at a dispersion where the direct
 #' # expression still has its digits.
 #' s <- 2 + 4
 #' all.equal(h$mu_mu, (y + 2) / s^2 - y / 4^2)
@@ -510,7 +512,7 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'       \mathbb{E}\left[\ell^{(\mu\theta)}\right] = 0, \qquad
 #'       \mathbb{E}\left[\ell^{(\theta\theta)}\right] =
 #'         \mathbb{E}[\psi_1(Y+\theta)] - \psi_1(\theta) + \dfrac{\mu}{\theta s}.}
-#' The mean entry and the mixed one are closed form, the latter vanishing
+#' The mean entry and the mixed one are closed form; the mixed one vanishes
 #' because the observed mixed entry is \eqn{(y-\mu)/s^2} and
 #' \eqn{\mathbb{E}[Y] = \mu}. So the mean and the dispersion are orthogonal.
 #'
@@ -566,7 +568,7 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #' d <- negbin2_distrib()
 #' th <- list(mu = 4, theta = 2)
 #'
-#' # The three entries, one value per observation.
+#' # The three entries have one value per observation.
 #' lapply(distrib_expected_hessian(d, c(0, 2, 6), th), unique)
 #'
 #' # The mean entry is closed form and the mixed one is exactly zero.
@@ -594,8 +596,8 @@ S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, the
 
 #' @title A Constant Parameter Vector as One Number
 #' @description
-#' Returns `x[1]` when `x` has several elements that are all equal and none
-#' missing, and `x` unchanged otherwise. A compiled kernel that sums a series
+#' Returns `x[1]` when `x` has several elements that are all equal and all
+#' non-missing, and returns `x` unchanged otherwise. A compiled kernel that sums a series
 #' for each observation computes it once for a scalar parameter and copies the
 #' result, but repeats the same sum `length(x)` times for a vector of equal
 #' values. A fit with no covariates on the parameters is this case, and at a
@@ -616,8 +618,8 @@ constant_to_scalar <- function(x) {
 #' @name distrib_dexpected_hessian.NegBin2Distrib
 #' @aliases distrib_d2expected_hessian.NegBin2Distrib
 #' @description
-#' The first and second derivatives of the expected information in
-#' \eqn{(\mu, \theta)}, from a compiled kernel. \eqn{\mathbb{E}[\ell_{\mu\mu}]
+#' Computes the first and second derivatives of the expected information in
+#' \eqn{(\mu, \theta)} with a compiled kernel. \eqn{\mathbb{E}[\ell_{\mu\mu}]
 #' = -\theta/(\mu(\theta+\mu))} is differentiated in closed form and
 #' \eqn{\mathbb{E}[\ell_{\mu\theta}] = 0}. \eqn{\mathbb{E}[\ell_{\theta\theta}]
 #' = S = \sum_k p_k U_k} is a sum over the support whose mass depends on the
@@ -627,7 +629,7 @@ constant_to_scalar <- function(x) {
 #'   + U_k (s_{xy} + s_x s_y)\big),}
 #' with \eqn{s} the score of the log-mass at \eqn{k}. Every piece is an exact
 #' polynomial in \eqn{k} or a sum \eqn{\sum_{j<k}(\theta+j)^{-r}} accumulated
-#' beside the mass, over the recurrence and stopping rule the expected
+#' beside the mass, over the recurrence and stopping rule that the expected
 #' information itself uses. On the link scale the result is carried across by
 #' [dexpected_link()].
 #' @param distrib A `NegBin2Distrib` object.
@@ -679,7 +681,7 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #' of [distrib_expected_hessian.NegBin2Distrib()]. `approx` and `nsim` are
 #' ignored either way.
 #'
-#' The cancellation of [distrib_gradient.NegBin2Distrib()] is performed
+#' The kernel performs the cancellation of [distrib_gradient.NegBin2Distrib()]
 #' symbolically at this order too: the observed pure dispersion component is
 #' a sum over \eqn{j < y} when \eqn{\theta > 100\max(y, 1)}, and the expected
 #' one is a single merged sum, so both keep their accuracy at large
@@ -695,7 +697,8 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, the expected values being closed form or exact sums.
+#' @param approx Ignored, because the expected values are closed form or exact
+#'   sums.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -743,7 +746,7 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' @description
 #' Computes the five distinct fourth derivatives of the negative binomial
 #' log-mass with respect to \eqn{\mu} and \eqn{\theta}, in closed form, by the
-#' same route the third order takes: the components involving the mean are
+#' same route that the third order takes: the components involving the mean are
 #' rational in \eqn{(\mu, \theta)} and linear in \eqn{y}, and the pure
 #' dispersion component carries \eqn{\psi_3(y+\theta) - \psi_3(\theta)}, with
 #' \eqn{\psi_3} the third derivative of the digamma function.
@@ -753,8 +756,9 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' With `expected = TRUE` the expectations are returned. The pure dispersion
 #' one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support as at
 #' third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. `approx` and
-#' `nsim` are ignored either way. As at third order, the cancellation at large
-#' \eqn{\theta} is performed symbolically ([distrib_deriv3.NegBin2Distrib()]).
+#' `nsim` are ignored either way. As at third order, the kernel performs the
+#' cancellation at large \eqn{\theta} symbolically
+#' ([distrib_deriv3.NegBin2Distrib()]).
 #'
 #' @param distrib A `NegBin2Distrib` object, from [negbin2_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -766,7 +770,8 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, the expected values being closed form or exact sums.
+#' @param approx Ignored, because the expected values are closed form or exact
+#'   sums.
 #' @param nsim Ignored, for the same reason. Defaults to `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -819,8 +824,7 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' a dispersion \eqn{\theta > 0}, so that
 #' \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. It is a standard count
 #' model for data that are overdispersed relative to a Poisson. The returned
-#' object
-#' carries closed-form derivatives of the log-mass to fourth order and
+#' object carries closed-form derivatives of the log-mass to fourth order and
 #' closed-form moments.
 #'
 #' The two arguments set the links that carry each parameter to the
@@ -914,7 +918,7 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' [geometric_distrib()] for \eqn{\theta = 1}; [pig1_distrib()] for the Poisson
 #' mixed over an inverse Gaussian instead of a gamma; [zero_inflated()] and
 #' [zero_adjusted()] for counts with excess zeros; [fit_distrib()] to estimate
-#' the parameters; [check_distrib()] to validate a family of your own against
+#' the parameters; [check_distrib()] to validate a user-defined family against
 #' the same battery that this one passes; [NegBin2Distrib] for the class.
 #'
 #' @references

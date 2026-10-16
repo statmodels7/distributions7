@@ -28,15 +28,15 @@ The family is a location family in \eqn{\mu}, so this is exactly the
 negative of the location score
 \code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}}\verb{$mu}, and it redescends with it: it is
 largest in size at \eqn{|r| = \sigma\sqrt{\nu}} and falls back towards zero
-beyond that. This quantity is what a quantile residual's delta-method
-standard error and a change of variable in the response both need.
+beyond that. A quantile residual's delta-method standard error and a change
+of variable in the response both need this quantity.
 }
 \examples{
 d <- student_t1_distrib()
 y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 
-# The closed form, written out.
+# The closed form is written out.
 r <- y - 0.4
 all.equal(distrib_grad_y(d, y, th), -6 * r / (5 * 1.2^2 + r^2))
 

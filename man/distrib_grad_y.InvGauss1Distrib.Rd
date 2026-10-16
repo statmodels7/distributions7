@@ -34,11 +34,11 @@ d <- invgauss1_distrib()
 y <- c(0.5, 1, 2)
 th <- list(mu = 1, phi = 2)
 
-# Written out.
+# The closed form is written out.
 all.equal(distrib_grad_y(d, y, th),
           -1.5 / y - (y^2 - 1^2) / (2 * 2 * 1^2 * y^2))
 
-# Zero at the mode, which lies below the mean.
+# The derivative is zero at the mode, which lies below the mean.
 mode <- 1 * (sqrt(1 + 9 * 2^2 * 1^2 / 4) - 3 * 2 * 1 / 2)
 c(mode = mode, mean = 1, at_mode = distrib_grad_y(d, mode, th))
 

@@ -42,8 +42,8 @@ Three families sit inside it. \eqn{\alpha = 0} is
 }
 \section{Range of the skewness and the kurtosis}{
 The skew normal of \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} reaches a skewness of at most
-0.99527 and an excess kurtosis of at most 0.86918, both approached only as
-\eqn{|\alpha| \to \infty}. Adding \eqn{\nu} removes both ceilings: at
+0.99527 and an excess kurtosis of at most 0.86918, and both bounds are
+approached only as \eqn{|\alpha| \to \infty}. Adding \eqn{\nu} removes both ceilings: at
 \eqn{\alpha = 50} the skewness is 1.12 at \eqn{\nu = 30}, 2.05 at
 \eqn{\nu = 6} and 4.00 at \eqn{\nu = 4}, and it grows without bound as
 \eqn{\nu} decreases to 3.
@@ -60,8 +60,8 @@ that quadrature; see \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradien
 
 \section{Fitting}{
 The expected information has no closed form and is computed by one
-quadrature over \eqn{z} per distinct \eqn{(\alpha, \nu)}, so Fisher scoring
-on an intercept-only fit pays for one integral per iteration.
+quadrature over \eqn{z} per distinct \eqn{(\alpha, \nu)}, so each iteration
+of Fisher scoring on an intercept-only fit computes one integral.
 
 The distribution function and the quantile function likewise have no
 elementary form. The distribution function integrates the density by the
@@ -87,7 +87,7 @@ to \eqn{\sqrt{(\nu+z^2)/(\nu+1)}}, which depends on the observation through
 variation of the ratio over \eqn{z} is of order \eqn{z^2/\nu}, so the
 information becomes singular only as \eqn{\nu \to \infty}.
 
-The parameter that is weakly identified is \eqn{\nu}. At
+Only \eqn{\nu} is weakly identified. At
 \eqn{\alpha = 0} the smallest eigenvalue of the expected information
 corresponds to the direction of \eqn{\nu} and decreases as \eqn{\nu} grows,
 because a tail close to the Gaussian one carries little information about
@@ -143,6 +143,6 @@ perturbation of symmetry with emphasis on a multivariate skew t distribution.
 \seealso{
 \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the \eqn{\nu \to \infty} limit,
 \code{\link[=student_t1_distrib]{student_t1_distrib()}} for the \eqn{\alpha = 0} case,
-\code{\link[=skewt_pieces]{skewt_pieces()}} for the scalar functions the derivatives are built from,
-and \link{SkewTDistrib} for the class and its method list.
+\code{\link[=skewt_pieces]{skewt_pieces()}} for the scalar functions from which the derivatives are
+built, and \link{SkewTDistrib} for the class and its method list.
 }

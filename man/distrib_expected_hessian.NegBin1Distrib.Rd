@@ -34,22 +34,22 @@ when the parameters are.
 }
 \description{
 Returns the expectation of the observed Hessian under the model. Every term
-carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, its
-expectation vanishing by the first Bartlett identity. With
+carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, because
+its expectation vanishes by the first Bartlett identity. With
 \eqn{u_j = \mu + \theta j}, the entries are \eqn{-A},
 \eqn{W/\theta^2} and \eqn{-W/(\mu\theta)}, where
 \deqn{A = \mathbb{E}\Big[\sum_{j<Y} u_j^{-2}\Big], \qquad
   W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta} -
   \frac{\mu^2}{u_j^2}\Big)\Big].}
-Neither has a closed form. Each is summed against the exact mass until the
-terms fall below a tolerance, so this is a truncated exact sum and not a
-quadrature or a simulation. \code{approx} and \code{nsim} are ignored, and \code{y} is
+\eqn{A} and \eqn{W} are not available in closed form. Each is summed
+against the exact mass until the terms fall below a tolerance, so this is a
+truncated exact sum and not a quadrature or a simulation. \code{approx} and \code{nsim} are ignored, and \code{y} is
 read only for its length.
 
 The mixed entry does not vanish, so the mean and the dispersion are not
 orthogonal in this family; in \code{\link[=negbin2_distrib]{negbin2_distrib()}} the same entry is exactly
-zero. This is a difference between the two families, not between two
-parametrizations of one.
+zero. The two negative binomials are different families, so this difference
+does not come from the parametrization.
 }
 \section{Accuracy at small theta}{
 The summand of \eqn{W} is a rational function of \eqn{(\mu, \theta)},
@@ -86,7 +86,8 @@ th <- list(mu = 4, theta = 4)
 e <- distrib_expected_hessian(d, c(0, 2, 6), th)
 lapply(e, unique)
 
-# Negative definite at a moderate dispersion.
+# The eigenvalues show that the matrix is negative definite at a moderate
+# dispersion.
 M <- matrix(c(e$mu_mu[1], e$mu_theta[1], e$mu_theta[1], e$theta_theta[1]), 2)
 eigen(M, only.values = TRUE)$values
 

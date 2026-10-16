@@ -12,8 +12,8 @@ student_t1_distrib(
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
-ranging over the whole line already.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the
+location already ranges over the whole line.}
 
 \item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
 \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -45,9 +45,10 @@ come from a compiled quadrature of the derivatives of the density.
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
 the estimating equation, and \eqn{\nu} is estimated from the data rather
-than set: a large fitted \eqn{\nu} reports that the sample looks Gaussian.
+than set: a large fitted \eqn{\nu} indicates that the sample is close to
+Gaussian.
 
-The three arguments choose the links that carry each parameter to the
+The three arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works.
 }
 \section{The parametrization}{
@@ -58,10 +59,10 @@ quantile function \eqn{Q(p) = \mu + \sigma T_\nu^{-1}(p)}, with \eqn{T_\nu}
 the standard Student t distribution function.
 
 \eqn{\sigma} is the scale and not the standard deviation, which is
-\eqn{\sigma\sqrt{\nu/(\nu-2)}} and exists only above \eqn{\nu = 2}. Keeping
-the two apart lets the family be fitted where the second moment does not
-exist; \code{\link[=student_t2_distrib]{student_t2_distrib()}} is the parametrization by the standard
-deviation.
+\eqn{\sigma\sqrt{\nu/(\nu-2)}} and exists only above \eqn{\nu = 2}. Because
+the two are kept apart, the family can be fitted where the second moment
+does not exist; \code{\link[=student_t2_distrib]{student_t2_distrib()}} is the parametrization by the
+standard deviation.
 
 Two shapes are named families: \eqn{\nu = 1} is the Cauchy, and
 \eqn{\nu \to \infty} the Gaussian with standard deviation \eqn{\sigma}. The
@@ -82,8 +83,8 @@ with \eqn{\psi} the digamma function. The observed Hessian is in
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)},}
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)},}
-with the two entries containing \eqn{\mu} exactly zero. The location is
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.}
+The two entries containing \eqn{\mu} are exactly zero. The location is
 therefore orthogonal to the other two, whose estimates are asymptotically
 correlated with each other.
 }
@@ -94,8 +95,8 @@ The location score \eqn{(\nu+1)r/D} rises to
 back towards zero, so an observation far from the location is downweighted
 automatically. The price is that the curvature in \eqn{\mu} turns
 positive past the same point, so the observed information is indefinite
-at an outlying observation. Fisher scoring is unaffected, the expected
-information being negative definite everywhere, which is why it is the
+at an outlying observation. Fisher scoring is unaffected because the
+expected information is negative definite everywhere, which is why it is the
 default in \code{\link[=fit_distrib]{fit_distrib()}}.
 }
 
@@ -110,8 +111,8 @@ variance \eqn{\sigma^2\nu/(\nu-2)} for \eqn{\nu > 2}, the skewness 0 for
 
 \section{Estimation}{
 \code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale by Fisher
-scoring. No estimate is closed form, the three estimating equations being
-coupled through \eqn{D}. On Gaussian data the likelihood has no finite
+scoring. The estimates have no closed form, because the three estimating
+equations are coupled through \eqn{D}. On Gaussian data the likelihood has no finite
 maximizer in \eqn{\nu}: \eqn{\hat\nu} diverges, and the fit returns a large
 finite value.
 }
@@ -138,7 +139,8 @@ all.equal(distrib_pdf(d, y, th), dt((y - 0.4) / 1.2, df = 5) / 1.2)
 c(scale = th$sigma, mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 
-# Below its own threshold each moment reports that it does not exist.
+# Below its own threshold each moment is returned as NaN or Inf, which
+# means that the moment does not exist.
 t(vapply(c(0.8, 1.5, 2.5, 3.5),
          function(v) {
            p <- list(mu = 0.4, sigma = 1.2, nu = v)
@@ -174,7 +176,7 @@ limit; \code{\link[=skewt_distrib]{skewt_distrib()}} to add a shape parameter;
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for other robust families;
 \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for the multivariate version;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 \link{StudentT1Distrib} for the class.
 }

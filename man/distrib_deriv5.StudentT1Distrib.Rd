@@ -20,7 +20,7 @@ use. Defaults to \code{1L}.}
 }
 \value{
 A named list of twenty-one numeric vectors named for the
-multi-index they carry.
+multi-index that each of them carries.
 }
 \description{
 Computes the twenty-one distinct fifth derivatives of the location-scale

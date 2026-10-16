@@ -31,7 +31,7 @@ Builds the distribution object for the von Mises family parametrized by its
 mean direction \eqn{\mu} and its mean resultant length
 \eqn{\rho \in (0, 1)}. The returned object carries closed-form derivatives
 of the log-density to fourth order, a closed-form expected information, and
-the same Bessel-series distribution function the concentration
+the same Bessel-series distribution function that the concentration
 parametrization uses.
 
 The concentration \eqn{\kappa} of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is unbounded and
@@ -65,25 +65,25 @@ nearly all in one direction is therefore far better conditioned in
 \section{Derivatives and information}{
 The map touches the second parameter only, so every chain rule is the
 one-variable one and the derivatives are exact at every order. Every
-component carrying at least one \eqn{\mu} collapses to a single term, the
-concentration parametrization's \eqn{\mu}-derivatives being linear in
-\eqn{\kappa}.
+component carrying at least one \eqn{\mu} collapses to a single term,
+because the concentration parametrization's \eqn{\mu}-derivatives are linear
+in \eqn{\kappa}.
 
-The expected information is closed form and the two parameters are
-orthogonal, as in the concentration parametrization, with
+The expected information is closed form, and the two parameters are
+orthogonal as in the concentration parametrization:
 \deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa\rho, \qquad
       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
-      \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)},}
-the last being the reciprocal of the information in \eqn{\kappa}, since the
-Jacobian of the map is that reciprocal.
+      \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)}.}
+The last of these is the reciprocal of the information in \eqn{\kappa}, since
+the Jacobian of the map is that reciprocal.
 }
 
 \section{The moments are not the parameters}{
 \code{\link[=mean.VonMises2Distrib]{mean.VonMises2Distrib()}} returns the ordinary expectation of \eqn{Y} on
 \eqn{[-\pi, \pi)}, which differs from \eqn{\mu} whenever \eqn{\mu \ne 0};
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} discusses the same distinction. What this
-parametrization offers is that the second parameter can be computed
-directly from a sample, which is not the case for the concentration.
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} discusses the same distinction. In this
+parametrization the second parameter can be computed directly from a
+sample, which is not the case for the concentration.
 }
 
 \section{Notation}{
@@ -100,17 +100,18 @@ a parameter on the unconstrained scale of its link, with
 d <- vonmises2_distrib()
 d
 
-# The resultant length is bounded, which is what makes it readable.
+# The resultant length is bounded, so it is readable directly.
 d@params_bounds$rho
 
-# The same law as the concentration parametrization at the implied kappa.
+# This is the same law as the concentration parametrization at the implied
+# kappa.
 th <- list(mu = 0.5, rho = 0.7)
 k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(distrib_pdf(d, c(-1, 0, 1), th),
           distrib_pdf(vonmises1_distrib(), c(-1, 0, 1),
                       list(mu = 0.5, kappa = k)))
 
-# A sample reads the second parameter back directly, which is the point.
+# The second parameter can be computed directly from a sample.
 set.seed(1)
 z <- distrib_rng(d, 3e5, th)
 c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
@@ -135,7 +136,7 @@ Wiley, Chichester.
 conditioned at a nearly deterministic direction;
 \code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}} for the map and its derivatives;
 \code{\link[=beta1_distrib]{beta1_distrib()}} for another family on \eqn{(0, 1)}; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family
 against the same battery that this one passes; \link{VonMises2Distrib} for the
 class.
 }

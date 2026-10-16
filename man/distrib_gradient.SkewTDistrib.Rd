@@ -99,11 +99,12 @@ y <- c(-1.5, -0.3, 0.4, 2.1)
 th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
 g <- distrib_gradient(d, y, th)
 
-# The location component written out in skewt_pieces()' terms.
+# The location component is written out in skewt_pieces()' terms.
 p <- distributions7:::skewt_pieces(y, 0, 1, 3, 6)
 all.equal(g$mu, -(p$a + p$q * p$b))
 
-# All four against numerical differentiation of the log-likelihood.
+# All four components are compared with numerical differentiation of the
+# log-likelihood.
 f <- function(v) sum(distrib_pdf(d, y, list(mu = v[1], sigma = v[2],
                                             alpha = v[3], nu = v[4]),
                                  log = TRUE))

@@ -22,7 +22,7 @@ An integer-valued numeric vector of \code{n} draws.
 Draws from the family's own mixture representation, exactly: \eqn{\lambda}
 from the inverse Gaussian with mean \eqn{\mu} and shape \eqn{\mu/\sigma},
 then \eqn{Y \mid \lambda} from the Poisson with that rate. The inverse
-Gaussian's variance is then \eqn{\sigma\mu^2}, the value the mixing
+Gaussian's variance is then \eqn{\sigma\mu^2}, the value that the mixing
 construction requires, and the marginal variance comes out as
 \eqn{\mu + \sigma\mu^2}.
 
@@ -36,16 +36,17 @@ th <- list(mu = 3, sigma = 0.8)
 set.seed(61)
 x <- distrib_rng(d, 2e5, th)
 
-# Two moments against their closed forms.
+# Two moments are compared with their closed forms.
 rbind(sample = c(mean(x), var(x)),
       theory = c(mean(d, th), variance(d, th)))
 
-# The empirical mass against the exact one, over the head of the support.
+# The empirical mass is compared with the exact one over the head of the
+# support.
 rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
       exact = distrib_pdf(d, 0:6, th))
 }
 \seealso{
-\code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf.Pig1Distrib()}} for the mass the draws follow,
+\code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf.Pig1Distrib()}} for the mass that the draws follow,
 \code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} for the same sampler in orthogonal
 coordinates, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

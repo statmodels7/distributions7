@@ -116,7 +116,7 @@ PseudoHuber2Distrib <- S7::new_class("PseudoHuber2Distrib",
 #' th <- list(mu = 0.4, sigma = 1.5, nu = 2)
 #' integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value
 #'
-#' # the same density as pseudohuber_distrib() at sigma1 = sigma / sqrt(R)
+#' # The density equals that of pseudohuber_distrib() at sigma1 = sigma / sqrt(R).
 #' R <- sqrt(2) * besselK(sqrt(2), 2) / besselK(sqrt(2), 1)
 #' y <- c(-2, 0, 3)
 #' all.equal(distrib_pdf(d, y, th),
@@ -174,8 +174,8 @@ S7::method(distrib_cdf, PseudoHuber2Distrib) <- compiled_cdf
 #' \eqn{P} the smaller tail, is found below \eqn{\mu} in a bracket that starts
 #' ten standard deviations below it and is doubled until it contains the
 #' quantile, and an upper quantile is the reflection of the lower one about
-#' \eqn{\mu}. Neither \eqn{1 - p} nor the exponential of a logarithm is
-#' formed, so a probability far below machine epsilon gives an accurate
+#' \eqn{\mu}. The computation forms neither \eqn{1 - p} nor the exponential of
+#' a logarithm, so a probability far below machine epsilon gives an accurate
 #' quantile.
 #'
 #' @param distrib A `PseudoHuber2Distrib` object.
@@ -243,8 +243,8 @@ S7::method(distrib_rng, PseudoHuber2Distrib) <- function(distrib, n, theta,
 #'
 #' @description
 #' Return the derivatives of the log-density in \eqn{(\mu, \sigma, \nu)} of
-#' orders one to five, in closed form, each order by its own compiled
-#' kernel.
+#' orders one to five, in closed form; a compiled kernel of its own computes
+#' each order.
 #'
 #' @details
 #' With \eqn{r = y - \mu} the log-density is
@@ -296,7 +296,7 @@ S7::method(distrib_rng, PseudoHuber2Distrib) <- function(distrib, n, theta,
 #' th <- list(mu = 0.4, sigma = 1.5, nu = 2)
 #' y <- c(-1, 0.5, 3)
 #' g <- distrib_gradient(d, y, th)
-#' # against a central difference in sigma
+#' # The score in sigma is compared with a central difference.
 #' h <- 1e-6
 #' up <- distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5 + h, nu = 2), log = TRUE)
 #' dn <- distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5 - h, nu = 2), log = TRUE)
@@ -358,7 +358,7 @@ register_loc_scale_expected(PseudoHuber2Distrib)
 #' \eqn{\partial_y = -\partial_\mu}. `distrib_grad_y()` returns
 #' \eqn{-R(\nu)\, r/(\sigma^2 D)} and `distrib_hess_y()` returns
 #' \eqn{-R(\nu)\, \nu/(\sigma^2 D^3)}; `distrib_cross_y()` returns the
-#' \eqn{\mu} row of the Hessian with its sign changed; the third and fourth
+#' negative of the \eqn{\mu} row of the Hessian; the third and fourth
 #' response derivatives are the pure-\eqn{\mu} components of the third and
 #' fourth parameter derivatives, with the sign \eqn{(-1)^k}. The derivatives
 #' of the response derivatives in the parameters are the location-scale ones
@@ -423,11 +423,11 @@ S7::method(distrib_hess_y_hess, PseudoHuber2Distrib) <-
 #'   distrib_deriv4_cdf.PseudoHuber2Distrib
 #'
 #' @description
-#' The derivatives of the distribution function in the parameters, by
-#' [compiled_grad_cdf()] and [compiled_hess_cdf()] and, at orders three and
-#' four, [partial_loc_scale_deriv_cdf_k()]: the location and scale components
-#' are closed in the density, and the components in \eqn{\nu} are integrals
-#' of the density's own derivatives, taken by the compiled rule.
+#' Return the derivatives of the distribution function in the parameters,
+#' using [compiled_grad_cdf()] and [compiled_hess_cdf()] and, at orders three
+#' and four, [partial_loc_scale_deriv_cdf_k()]. The location and scale
+#' components are closed in the density, and the components in \eqn{\nu} are
+#' integrals of the density's own derivatives, taken by the compiled rule.
 #'
 #' @param distrib A `PseudoHuber2Distrib` object.
 #' @param q A numeric vector of quantiles.

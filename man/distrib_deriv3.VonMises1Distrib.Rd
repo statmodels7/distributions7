@@ -21,10 +21,11 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+or \code{"opg"}. It is read only when \code{expected = TRUE}.}
 
 \item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -42,16 +43,16 @@ Computes the four distinct third derivatives of the von Mises log-density in
 \eqn{\mu} and \eqn{\kappa}, in closed form. The log-density is
 \eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in
 \eqn{\kappa} apart from the normalizing constant, so a component naming one
-\eqn{\mu} and two or more \eqn{\kappa} is exactly zero. What remains
-cycles: the pure-\eqn{\mu} components run through
+\eqn{\mu} and two or more \eqn{\kappa} is exactly zero. The remaining
+components cycle: the pure-\eqn{\mu} components run through
 \eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)} with the order, the
 \eqn{\mu\mu\kappa} component is \eqn{-\cos(y-\mu)}, and the
 pure-\eqn{\kappa} one is \eqn{-A''(\kappa)}, which
 \code{\link[numericals7:bessel_i_ratio_d1]{numericals7::bessel_i_ratio_d2()}} supplies. The components are computed
 by a compiled kernel.
 
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
-the one place on this page where \code{approx} and \code{nsim} are read.
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, and only in
+this case are \code{approx} and \code{nsim} read.
 }
 \section{Notation}{
 
@@ -68,8 +69,8 @@ th <- list(mu = 0.5, kappa = 2)
 d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
-# The component with one mu and two kappa is exactly zero, the log-density
-# being linear in kappa apart from the constant.
+# The component with one mu and two kappa is exactly zero, because the
+# log-density is linear in kappa apart from the constant.
 d3$mu_kappa_kappa
 
 # A central difference of the Hessian reproduces the pure-direction one.

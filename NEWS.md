@@ -1,3 +1,13 @@
+# distributions7 0.79.2
+
+* Documentation, second part: the pages of the families from inverse
+  Gaussian to Weibull rewritten without relative clauses lacking their
+  pronoun, stranded prepositions, absolute constructions, sentences without
+  a verb (example captions included) and personified descriptions of the
+  code. "A family of your own" reads "a user-defined family" throughout.
+  The error message for a skewness beyond the bound of the skew normal
+  (centered parametrization) is reworded.
+
 # distributions7 0.79.1
 
 * Documentation, first part: the argument descriptions and other sentences

@@ -39,7 +39,7 @@ th <- list(mu = 3)
 # The method is stats::ppois.
 all.equal(distrib_cdf(d, c(0, 2, 7), th), ppois(c(0, 2, 7), lambda = 3))
 
-# A step function: constant between integers.
+# The distribution function is a step function, constant between integers.
 distrib_cdf(d, c(2, 2.5, 2.9), th)
 
 # The jump at an integer is exactly the mass there.

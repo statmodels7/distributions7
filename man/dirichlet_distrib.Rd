@@ -152,7 +152,7 @@ Chapman and Hall, London.
 seen on the line; \code{\link[=multinomial_distrib]{multinomial_distrib()}} for the discrete family on the same
 simplex; \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for the elliptical multivariate family;
 \code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the mean rides; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family
 against the same battery that this one passes; \link{DirichletDistrib} for the
 class.
 }

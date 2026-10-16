@@ -107,5 +107,5 @@ vapply(c(0.5, 2, 1e6), function(t) variance(d, list(mu = 4, theta = t)),
 \code{\link[=negbin1_distrib]{negbin1_distrib()}} for the NB1 parametrization, whose variance is linear
 in the mean; \code{\link[=poisson_distrib]{poisson_distrib()}} for the limit as \eqn{\theta} grows;
 \code{\link[=distrib_pdf.NegBin2Distrib]{distrib_pdf.NegBin2Distrib()}} and \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} for
-the closed forms this class supplies.
+the closed forms that this class supplies.
 }

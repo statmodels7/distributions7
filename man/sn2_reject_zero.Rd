@@ -12,7 +12,7 @@ sn2_reject_zero(theta, what)
 \item{what}{A short description of the quantity, for the message.}
 }
 \value{
-\code{NULL}, invisibly, when no skewness is zero.
+\code{NULL}, invisibly, when every skewness differs from zero.
 }
 \description{
 Signals an error when any skewness is exactly zero. The

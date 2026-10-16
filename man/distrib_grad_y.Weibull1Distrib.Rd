@@ -27,15 +27,15 @@ log-density with respect to the response, in closed form. With
 At \eqn{\sigma > 1} it vanishes at the mode
 \eqn{y = \mu\{(\sigma-1)/\sigma\}^{1/\sigma}}; at \eqn{\sigma \le 1} the
 density is decreasing on the whole support and the derivative is negative
-everywhere. This quantity is what a quantile residual's delta-method
-standard error and a change of variable in the response both need.
+everywhere. A quantile residual's delta-method standard error and a change
+of variable in the response both need this quantity.
 }
 \examples{
 d <- weibull1_distrib()
 y <- c(0.5, 1.2, 3.0)
 th <- list(mu = 2, sigma = 1.5)
 
-# The closed form, written out.
+# The closed form is written out.
 u <- (y / 2)^1.5
 all.equal(distrib_grad_y(d, y, th), (1.5 - 1 - 1.5 * u) / y)
 

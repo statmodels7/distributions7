@@ -36,8 +36,8 @@ Computes the four distinct third derivatives of the Laplace log-density with
 respect to \eqn{\mu} and \eqn{\sigma}, in closed form. The log-density is
 \eqn{-\log\sigma - \log 2 - |r|/\sigma} with \eqn{r = y - \mu}, so it is
 linear in \eqn{\mu} on each side of the kink and every component that
-differentiates twice or more in \eqn{\mu} is zero. What survives comes from
-\eqn{-\log\sigma} and from \eqn{|r|/\sigma}.
+differentiates twice or more in \eqn{\mu} is zero. The remaining components
+come from \eqn{-\log\sigma} and from \eqn{|r|/\sigma}.
 
 With \code{expected = TRUE} the expectations under the model are returned, also in
 closed form, using \eqn{\mathbb{E}|r| = \sigma} and
@@ -63,7 +63,7 @@ names(d3)
 # differentiates twice in mu is zero.
 c(d3$mu_mu_mu[1], d3$mu_mu_sigma[1])
 
-# The expected values, in closed form.
+# The expected values are also in closed form.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 
 # A central difference of the Hessian reproduces the observed component,

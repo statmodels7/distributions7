@@ -40,7 +40,7 @@ d <- pseudohuber2_distrib()
 th <- list(mu = 0.4, sigma = 1.5, nu = 2)
 integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value
 
-# the same density as pseudohuber_distrib() at sigma1 = sigma / sqrt(R)
+# The density equals that of pseudohuber_distrib() at sigma1 = sigma / sqrt(R).
 R <- sqrt(2) * besselK(sqrt(2), 2) / besselK(sqrt(2), 1)
 y <- c(-2, 0, 3)
 all.equal(distrib_pdf(d, y, th),

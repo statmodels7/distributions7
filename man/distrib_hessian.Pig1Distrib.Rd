@@ -41,7 +41,7 @@ th <- list(mu = 3, sigma = 0.8)
 h <- distrib_hessian(d, y, th)
 names(h)
 
-# Against a central difference of the score.
+# The mixed entry is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$mu_sigma,
       numeric = (distrib_gradient(d, y, list(mu = 3, sigma = 0.8 + eps))$mu -

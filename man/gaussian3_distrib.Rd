@@ -129,7 +129,7 @@ Chapman and Hall/CRC, Boca Raton.
 standard deviation and in the variance; \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the conjugate
 prior of \eqn{\tau} at known \eqn{\mu}; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and
 \code{\link[=laplace_distrib]{laplace_distrib()}} for heavier tails; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
-parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
+parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family against the
 same battery of checks that this family passes; \link{Gaussian3Distrib} for the
 class.
 }

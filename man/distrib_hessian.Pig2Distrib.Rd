@@ -30,8 +30,8 @@ Returns the exact second derivatives of the log-mass in
 \eqn{(\mu, \alpha)}, read off columns \code{d20}, \code{d02} and \code{d11} of the compiled
 kernel \code{pig2_hessian_cpp}.
 
-The observed mixed entry is not zero in general; what vanishes is its
-expectation. At \eqn{\mu = 3} and \eqn{\alpha = 3.0104} the entry is
+The observed mixed entry is not zero in general, but its expectation is
+zero. At \eqn{\mu = 3} and \eqn{\alpha = 3.0104} the entry is
 proportional to \eqn{y - \mu}, and its expectation is zero to rounding
 error.
 }
@@ -43,7 +43,7 @@ th <- list(mu = 3, alpha = al)
 h <- distrib_hessian(d, y, th)
 names(h)
 
-# Against a central difference of the score.
+# The mixed entry is compared with a central difference of the score.
 eps <- 1e-5
 rbind(analytic = h$mu_alpha,
       numeric = (distrib_gradient(d, y, list(mu = 3, alpha = al + eps))$mu -

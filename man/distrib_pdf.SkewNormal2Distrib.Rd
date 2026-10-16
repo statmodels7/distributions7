@@ -30,9 +30,9 @@ triple implies. With
 \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} and \eqn{z = (y-\xi)/\omega},
 \deqn{f(y; \mu, \sigma, \gamma_1)
       = \dfrac{2}{\omega}\,\phi(z)\,\Phi(\alpha z).}
-The density is the same function of \eqn{y} as
-\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}}'s; only the three numbers naming it
-differ.
+The density is the same function of \eqn{y} as the one that
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} computes; only the three numbers that
+name it differ.
 
 Unlike the derivatives, the density is defined at \eqn{\gamma_1 = 0} and
 equals the Gaussian's there: the map itself is continuous through zero, and
@@ -41,9 +41,9 @@ only its derivative is not.
 \section{Notation}{
 
 \eqn{\mu}, \eqn{\sigma} and \eqn{\gamma_1} are the mean, the standard
-deviation and the skewness; \eqn{\xi}, \eqn{\omega} and \eqn{\alpha} the
-location, scale and shape they imply; \eqn{\phi} and \eqn{\Phi} the standard
-Gaussian density and distribution function.
+deviation and the skewness; \eqn{\xi}, \eqn{\omega} and \eqn{\alpha} are the
+location, scale and shape that they imply; \eqn{\phi} and \eqn{\Phi} are the
+standard Gaussian density and distribution function.
 }
 
 \examples{
@@ -52,7 +52,7 @@ d1 <- skewnormal1_distrib()
 y <- c(-1, 0.3, 1.7)
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# The same law, reached through the map.
+# The same law is reached through the map.
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(d1, y, distributions7:::sn2_theta(th)))
 

@@ -55,7 +55,7 @@ y <- c(0.5, 1.2, 3.0)
 th <- list(mu = 2, sigma = 1.5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 u <- (y / 2)^1.5
 all.equal(g$mu, 1.5 * (u - 1) / 2)
 all.equal(g$sigma, 1 / 1.5 + (1 - u) * log(y / 2))
@@ -66,8 +66,8 @@ z <- distrib_rng(d, 500, th)
 mle <- coef(fit_distrib(d, z))
 vapply(distrib_gradient(d, z, as.list(mle)), sum, numeric(1))
 
-# On the link scale both components are multiplied by h' = theta, both
-# parameters riding a log by default.
+# On the link scale both components are multiplied by h' = theta, because
+# both parameters ride a log by default.
 distrib_gradient(d, y, th, scale = "link")$mu / g$mu
 }
 \seealso{

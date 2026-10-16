@@ -61,7 +61,7 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 h <- distrib_hessian(d, y, th)
 names(h)
 
-# The location and mixed location-scale components, written out.
+# The location and mixed location-scale components are written out.
 r <- y - 0.4; D <- 5 * 1.2^2 + r^2
 all.equal(h$mu_mu, 6 * (r^2 - 5 * 1.2^2) / D^2)
 all.equal(h$mu_sigma, -2 * 5 * 6 * 1.2 * r / D^2)

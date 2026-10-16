@@ -40,11 +40,11 @@ mode, so the integrand decreases from each end of the interval to the
 antimode. The interval is split at the antimode when it contains it, and
 each piece is integrated from its end on the scale
 \eqn{1/\max\{\kappa|\sin(e - \mu)|, \sqrt\kappa\}} at that end \eqn{e},
-relative to the value there and with the difference of the cosines written
-as a product of sines, over panels of growing width until the remainder is
-below \eqn{10^{-17}} of the sum. The pieces are added on the log scale, and
-the normalizing constant comes from \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}, so no
-factor underflows at any concentration.
+relative to the value there, over panels of growing width until the
+remainder is below \eqn{10^{-17}} of the sum. The difference of the cosines
+is written as a product of sines. The pieces are added on the log scale, and
+the normalizing constant comes from \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}, so that
+the factors do not underflow at any concentration.
 }
 \examples{
 distributions7:::vm_cdf_tail(-1, 0, 100, TRUE, FALSE)

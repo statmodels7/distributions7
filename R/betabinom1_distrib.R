@@ -784,7 +784,7 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' [binomial_distrib()] for the limit at \eqn{\sigma \to 0} and
 #' [beta1_distrib()] for the mixing law; [negbin2_distrib()] for the
 #' unbounded-count analogue, a Poisson mixed over a gamma; [fit_distrib()] to
-#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' estimate the parameters; [check_distrib()] to validate a user-defined family
 #' against the same battery that this one passes; [BetaBinom1Distrib] for the
 #' class.
 #' @export

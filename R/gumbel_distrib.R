@@ -961,7 +961,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' [gpd_distrib()] for exceedances over a threshold; [transformation()] for
 #' the reflection that gives minima; [gaussian1_distrib()] for the symmetric
 #' location-scale family whose parameters are orthogonal; [fit_distrib()] to
-#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' estimate the parameters; [check_distrib()] to validate a user-defined family
 #' against the same battery that this one passes; [GumbelDistrib] for the
 #' class.
 #'

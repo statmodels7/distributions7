@@ -31,14 +31,14 @@ are closed.}
 }
 \value{
 A named list with one numeric vector per component: 2, 3, 4, 5 and
-6 components at orders one to five, the second order keyed
-\code{mean_mean}, \code{sigma_sigma}, \code{mean_sigma}.
+6 components at orders one to five. At order two the components are keyed
+\code{mean_mean}, \code{sigma_sigma} and \code{mean_sigma}.
 }
 \description{
 Return the derivatives of the log-density in \eqn{(m, \sigma)} of orders
 one to five, the expected information and its expected third and fourth
 derivatives, and the first two derivatives of the expected information,
-each from its own compiled kernel.
+and each of them is computed by its own compiled kernel.
 }
 \details{
 With \eqn{w = \log(y/m) + \log\Gamma(1 + 1/\sigma) = \log(y/b)} the

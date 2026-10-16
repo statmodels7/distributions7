@@ -47,9 +47,10 @@ the dispersion of \code{PIG} is obtained from it as
 }
 
 \section{How the derivatives are computed}{
-By compiled kernels of the same form as those of \code{\link[=pig1_distrib]{pig1_distrib()}}
-(\code{pig2_pdf_cpp}, \code{pig2_gradient_cpp}, \code{pig2_hessian_cpp}, \code{pig2_deriv3_cpp}
-and \code{pig2_deriv4_cpp}), with \eqn{\alpha} as a variable of its own, so the
+The derivatives are computed by compiled kernels of the same form as those
+of \code{\link[=pig1_distrib]{pig1_distrib()}} (\code{pig2_pdf_cpp}, \code{pig2_gradient_cpp},
+\code{pig2_hessian_cpp}, \code{pig2_deriv3_cpp} and \code{pig2_deriv4_cpp}). In these
+kernels \eqn{\alpha} is a variable of its own, so the
 Bessel argument needs no chain rule. Every partial to fourth order is
 written out in closed form, and each order has its own kernel. The
 expected information is computed exactly, with
@@ -84,11 +85,11 @@ th <- list(mu = 3, alpha = al)
 distrib_pdf(d, 0:5, th)
 c(mean = mean(d, th), variance = variance(d, th))
 
-# The same law as pig1 at the dispersion alpha implies.
+# Pig2 gives the same law as pig1 at the dispersion that alpha implies.
 all.equal(distrib_pdf(d, 0:5, th),
           distrib_pdf(pig1_distrib(), 0:5, list(mu = 3, sigma = 0.8)))
 
-# The property the parametrization exists for.
+# This property is the reason for the parametrization.
 c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
   pig1 = distrib_expected_hessian(pig1_distrib(), 0,
                                   list(mu = 3, sigma = 0.8))$mu_sigma)

@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}.}
 
-\item{y}{A numeric vector of angles. Only its length is read, the
-expectation not depending on the data; the values are ignored.}
+\item{y}{A numeric vector of angles. Only its length is read, because
+the expectation does not depend on the data; the values are ignored.}
 
 \item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
 vector of length 1. \code{rho} must lie in \eqn{(0, 1)}.}
@@ -48,7 +48,7 @@ The information in \eqn{\kappa} is \eqn{A'(\kappa)} and
 \eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}, the reciprocal of the
 information in \eqn{\kappa}. The two parameters remain orthogonal.
 
-\code{approx} and \code{nsim} are ignored, the expectation being exact.
+\code{approx} and \code{nsim} are ignored because the expectation is exact.
 }
 \section{Notation}{
 
@@ -75,8 +75,8 @@ z <- distrib_rng(d2, 3e5, th)
 vapply(distrib_hessian(d2, z, th), mean, numeric(1))
 }
 \seealso{
-\code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian.VonMises2Distrib()}} for the quantity this is the
-expectation of, \code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian.VonMises1Distrib()}} for the same
+\code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian.VonMises2Distrib()}} for the quantity of which this
+is the expectation, \code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian.VonMises1Distrib()}} for the same
 quantity in the concentration, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
 generic.
 }

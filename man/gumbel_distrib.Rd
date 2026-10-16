@@ -159,7 +159,7 @@ Values}, Chapter 3. Springer, London.
 \code{\link[=gpd_distrib]{gpd_distrib()}} for exceedances over a threshold; \code{\link[=transformation]{transformation()}} for
 the reflection that gives minima; \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the symmetric
 location-scale family whose parameters are orthogonal; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family
 against the same battery that this one passes; \link{GumbelDistrib} for the
 class.
 }

@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations. Only its length is read, the
-expectation not depending on the data; the values are ignored.}
+\item{y}{A numeric vector of observations. Only its length is read, because
+the expectation does not depend on the data; the values are ignored.}
 
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of the length of \code{y}. A component of length 1 is
@@ -53,7 +53,7 @@ strategy returns the same three numbers.
 }
 \section{Why the expectations are gamma derivatives}{
 Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
-the parameters are, so every expectation the Hessian needs is a moment of
+the parameters are, so every expectation that the Hessian needs is a moment of
 \eqn{u} against a power of \eqn{\log u}, and each of those is a derivative
 of \eqn{\Gamma} at 2:
 \deqn{\mathbb{E}[u] = 1, \qquad
@@ -79,7 +79,7 @@ th <- list(mu = 2, sigma = 1.5)
 eh <- distrib_expected_hessian(d, y, th)
 vapply(eh, function(z) z[1], numeric(1))
 
-# The closed forms, written out.
+# The closed forms are written out.
 eg <- -digamma(1)
 c(mu_mu = -1.5^2 / 4,
   sigma_sigma = -((1 - eg)^2 + pi^2 / 6) / 1.5^2,
@@ -90,7 +90,7 @@ set.seed(4)
 z <- distrib_rng(d, 2e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument has no effect, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 }
 \seealso{

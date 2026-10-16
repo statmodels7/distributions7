@@ -69,7 +69,7 @@ d3 <- distrib_deriv3(d, y, th)
 # Quadratic in mu, so the third derivative there is 0.
 d3$mu_mu_mu
 
-# The other three, written out on the log scale.
+# The other three are written out on the log scale.
 r <- log(y) - 0.5
 all.equal(d3$mu_mu_sigma2, rep(1 / 0.36^2, 3))
 all.equal(d3$mu_sigma2_sigma2, 2 * r / 0.36^3)
@@ -78,7 +78,7 @@ all.equal(d3$mu_sigma2_sigma2, 2 * r / 0.36^3)
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 2 / 0.36^3
 
-# Identical to the Gaussian's at log y.
+# The third derivatives are identical to the Gaussian's at log y.
 all.equal(d3, distrib_deriv3(gaussian2_distrib(), log(y), th))
 }
 \seealso{

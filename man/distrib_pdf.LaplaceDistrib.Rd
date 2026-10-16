@@ -38,14 +38,14 @@ d <- laplace_distrib()
 y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 
-# The density, written out.
+# The density is compared with its formula.
 all.equal(distrib_pdf(d, y, th), exp(-abs(y - 0.4) / 1.5) / (2 * 1.5))
 
 # The log-density is exactly linear in |y - mu|, so it is a pair of
 # straight lines meeting at mu.
 round(distrib_pdf(d, 0.4 + c(-3, -1.5, 0, 1.5, 3), th, log = TRUE), 6)
 
-# Symmetric about mu, and at its maximum there.
+# The density is symmetric about mu and has its maximum there.
 distrib_pdf(d, 0.4 + c(-2, 2), th)
 c(at_mu = distrib_pdf(d, 0.4, th), one_over_2sigma = 1 / (2 * 1.5))
 }

@@ -65,7 +65,7 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 h <- distrib_hessian(d, y, th)
 names(h)
 
-# The location entry, written out, and its sign.
+# The location entry equals its formula written out, and it is negative.
 r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 all.equal(h$mu_mu, -2 / (1.2^2 * D^3))
 

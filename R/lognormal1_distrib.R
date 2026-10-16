@@ -7,11 +7,11 @@ NULL
 #' @description
 #' This is the S7 class of the lognormal family on \eqn{(0, \infty)}: the law of
 #' a variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
-#' \eqn{\sigma^2 > 0}. Both parameters live on the log scale, so neither is the
-#' mean or the variance of \eqn{Y} itself. It inherits from
-#' `continuous_distrib`, so every generic of the `distrib` class applies to it;
-#' the methods listed below are registered on it directly and everything else
-#' comes from the parent.
+#' \eqn{\sigma^2 > 0}. Both parameters live on the log scale, so \eqn{\mu} is
+#' not the mean of \eqn{Y} and \eqn{\sigma^2} is not the variance of
+#' \eqn{Y}. It inherits from `continuous_distrib`, so every generic of the
+#' `distrib` class applies to it; the methods listed below are registered on it
+#' directly and everything else comes from the parent.
 #'
 #' Build one with [lognormal1_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -221,8 +221,8 @@ S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.
 #' Computes the lognormal quantile function
 #' \deqn{Q(p; \mu, \sigma^2) = \exp\left\{\mu + \sigma\,\Phi^{-1}(p)\right\},
 #'       \qquad \sigma = \sqrt{\sigma^2},}
-#' by calling [stats::qlnorm()]. It is closed form, the log transformation
-#' being monotone, so the round trip through
+#' by calling [stats::qlnorm()]. It is closed form because the log
+#' transformation is monotone, so the round trip through
 #' [distrib_cdf.Lognormal1Distrib()] returns `p` exactly. The median is
 #' \eqn{e^{\mu}}, which sits below the mean \eqn{e^{\mu + \sigma^2/2}}.
 #'
@@ -251,7 +251,7 @@ S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.
 #' d <- lognormal1_distrib()
 #' th <- list(mu = 0.5, sigma2 = 0.36)
 #'
-#' # A central 95 percent interval, multiplicatively symmetric about exp(mu).
+#' # A central 95 percent interval is multiplicatively symmetric about exp(mu).
 #' q <- distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #' q
 #' c(q[2] / q[1], q[3] / q[2])
@@ -299,14 +299,15 @@ S7::method(distrib_quantile, Lognormal1Distrib) <- function(distrib, p, theta, l
 #' @examples
 #' d <- lognormal1_distrib()
 #'
-#' # Same generator as stats::rlnorm at this parametrization.
+#' # The method uses the same generator as stats::rlnorm at this
+#' # parametrization.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = 0.5, sigma2 = 0.36))
 #' set.seed(2)
 #' identical(a, rlnorm(3, 0.5, sqrt(0.36)))
 #'
-#' # The parameters are moments of the LOGARITHM, so that is where the sample
-#' # recovers them.
+#' # The parameters are moments of the logarithm, so the sample recovers them
+#' # from log(z).
 #' set.seed(6)
 #' z <- distrib_rng(d, 2e4, list(mu = 0.5, sigma2 = 0.36))
 #' c(mu = mean(log(z)), sigma2 = var(log(z)))
@@ -335,8 +336,8 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
 #' log-density is the Gaussian's at \eqn{\log y} minus \eqn{\log y}, and that
 #' last term carries no parameter, so it disappears from every derivative in
 #' \eqn{\mu} and \eqn{\sigma^2}. The same holds at all four orders and for the
-#' expected values; what differs from [gaussian2_distrib()] is only the
-#' derivatives in the response, where the Jacobian does enter.
+#' expected values. Only the derivatives in the response differ from those of
+#' [gaussian2_distrib()], because the Jacobian enters them.
 #'
 #' The arithmetic runs in a compiled kernel decomposed over the elements of the
 #' output, so the result does not depend on the thread count.
@@ -376,12 +377,13 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0.5, sigma2 = 0.36)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out on the log scale.
+#' # The two closed forms are written out on the log scale.
 #' r <- log(y) - 0.5
 #' all.equal(g$mu, r / 0.36)
 #' all.equal(g$sigma2, (r^2 - 0.36) / (2 * 0.36^2))
 #'
-#' # Identical to the Gaussian's score at log y, component for component.
+#' # The score is identical to the Gaussian's at log y, component for
+#' # component.
 #' all.equal(g, distrib_gradient(gaussian2_distrib(), log(y), th))
 #'
 #' # The summed score vanishes at the closed-form estimates, which are the
@@ -405,8 +407,8 @@ S7::method(distrib_gradient, Lognormal1Distrib) <- function(distrib, y, theta, s
 #'       \ell^{(\mu\sigma^2)} = -\dfrac{r}{\sigma^4}, \qquad
 #'       \ell^{(\sigma^2\sigma^2)} = \dfrac{1}{2\sigma^4}
 #'         - \dfrac{r^2}{\sigma^6}.}
-#' These are the Gaussian's at \eqn{\log y}, the Jacobian of the log
-#' transformation carrying no parameter. Only the curvature in \eqn{\mu} is
+#' These are the Gaussian's at \eqn{\log y}, because the Jacobian of the log
+#' transformation carries no parameter. Only the curvature in \eqn{\mu} is
 #' free of the data; the other two vary with the residual on the log scale, and
 #' their expectations are
 #' [distrib_expected_hessian.Lognormal1Distrib()].
@@ -450,7 +452,7 @@ S7::method(distrib_gradient, Lognormal1Distrib) <- function(distrib, y, theta, s
 #' all.equal(h$mu_sigma2, -r / 0.36^2)
 #' all.equal(h$sigma2_sigma2, 1 / (2 * 0.36^2) - r^2 / 0.36^3)
 #'
-#' # Identical to the Gaussian's at log y.
+#' # The Hessian is identical to the Gaussian's at log y.
 #' all.equal(h, distrib_hessian(gaussian2_distrib(), log(y), th))
 #'
 #' # It is the second derivative of the log-density, so a central difference
@@ -473,9 +475,10 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #'         -\dfrac{1}{2\sigma^4}, \qquad
 #'       \mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] = 0.}
 #' They follow from \eqn{\mathbb{E}[\log Y] = \mu} and
-#' \eqn{\mathbb{E}[(\log Y - \mu)^2] = \sigma^2}, \eqn{\log Y} being Gaussian
-#' by construction. The zero off-diagonal says the two parameters are
-#' orthogonal, so their estimates are asymptotically independent.
+#' \eqn{\mathbb{E}[(\log Y - \mu)^2] = \sigma^2}, because \eqn{\log Y} is
+#' Gaussian by construction. The zero off-diagonal entry means that the two
+#' parameters are orthogonal, so their estimates are asymptotically
+#' independent.
 #'
 #' The information does not depend on \eqn{\mu}, only on \eqn{\sigma^2}, the
 #' variance of \eqn{\log Y}. Because the values do not depend on the data,
@@ -518,7 +521,7 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #' d <- lognormal1_distrib()
 #' th <- list(mu = 0.5, sigma2 = 0.36)
 #'
-#' # The three constants, one value per observation.
+#' # The three constants are returned, one value per observation.
 #' lapply(distrib_expected_hessian(d, c(0.5, 1.6, 4), th), unique)
 #' c(-1 / 0.36, -1 / (2 * 0.36^2), 0)
 #'
@@ -599,7 +602,7 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #' # Quadratic in mu, so the third derivative there is 0.
 #' d3$mu_mu_mu
 #'
-#' # The other three, written out on the log scale.
+#' # The other three are written out on the log scale.
 #' r <- log(y) - 0.5
 #' all.equal(d3$mu_mu_sigma2, rep(1 / 0.36^2, 3))
 #' all.equal(d3$mu_sigma2_sigma2, 2 * r / 0.36^3)
@@ -608,7 +611,7 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #' lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #' 2 / 0.36^3
 #'
-#' # Identical to the Gaussian's at log y.
+#' # The third derivatives are identical to the Gaussian's at log y.
 #' all.equal(d3, distrib_deriv3(gaussian2_distrib(), log(y), th))
 S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) lognormal_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
@@ -678,7 +681,7 @@ S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' # The mixed second-second component is constant at -2/sigma2^3.
 #' all.equal(d4$mu_mu_sigma2_sigma2, rep(-2 / 0.36^3, 3))
 #'
-#' # Expected values: -9/sigma2^4 in the pure variance component.
+#' # The expected value of the pure variance component is -9/sigma2^4.
 #' lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #' -9 / 0.36^4
 S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
@@ -693,10 +696,10 @@ S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' the response, in closed form. With \eqn{r = \log y - \mu},
 #' \deqn{\dfrac{\partial \ell}{\partial y} =
 #'       -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right).}
-#' This is where the family differs from the Gaussian: the Jacobian
+#' The family differs from the Gaussian in this derivative. The Jacobian
 #' \eqn{1/y} of the log transformation carries no parameter and so leaves every
-#' derivative in \eqn{\mu} and \eqn{\sigma^2} alone, but it is a function of
-#' the response and does enter here.
+#' derivative in \eqn{\mu} and \eqn{\sigma^2} unchanged, but it is a function
+#' of the response and therefore enters here.
 #'
 #' The derivative vanishes at \eqn{r = -\sigma^2}, that is at
 #' \eqn{y = e^{\mu - \sigma^2}}, which is the mode of the density and lies
@@ -724,11 +727,12 @@ S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' y <- c(0.5, 1.6, 4)
 #' th <- list(mu = 0.5, sigma2 = 0.36)
 #'
-#' # Written out.
+#' # The method equals the closed form written out.
 #' r <- log(y) - 0.5
 #' all.equal(distrib_grad_y(d, y, th), -(1 + r / 0.36) / y)
 #'
-#' # Zero at the mode exp(mu - sigma2), which lies below the median exp(mu).
+#' # The derivative is zero at the mode exp(mu - sigma2), which lies below the
+#' # median exp(mu).
 #' mode <- exp(0.5 - 0.36)
 #' c(mode = mode, median = exp(0.5), at_mode = distrib_grad_y(d, mode, th))
 #'
@@ -779,7 +783,7 @@ S7::method(distrib_grad_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' r <- log(y) - 0.5
 #' all.equal(distrib_hess_y(d, y, th), (1 + (r - 1) / 0.36) / y^2)
 #'
-#' # Concave below exp(mu + 1 - sigma2) and convex above it.
+#' # The log-density is concave below exp(mu + 1 - sigma2) and convex above it.
 #' cut <- exp(0.5 + 1 - 0.36)
 #' c(cut = cut,
 #'   below = distrib_hess_y(d, cut / 2, th),
@@ -799,7 +803,8 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' Builds the distribution object for the lognormal family on
 #' \eqn{(0, \infty)}: the law of a variable whose logarithm is Gaussian with
 #' mean \eqn{\mu} and variance \eqn{\sigma^2 > 0}. Both parameters are moments
-#' of the logarithm, so neither is the mean or the variance of \eqn{Y}. The
+#' of the logarithm, so \eqn{\mu} is not the mean of \eqn{Y} and
+#' \eqn{\sigma^2} is not the variance of \eqn{Y}. The
 #' returned object carries closed-form derivatives of the log-density to fourth
 #' order, in the parameters and in the response, closed-form derivatives of the
 #' distribution function, and closed-form moments. The fifth order and
@@ -811,8 +816,8 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' for \eqn{\sigma^2}, which keeps it positive at every predictor.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], \eqn{\mu} being
-#'   a mean on the log scale and so already free.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because \eqn{\mu}
+#'   is a mean on the log scale and so already free.
 #' @param link_sigma2 A `link` object from `linkfunctions7` for the variance
 #'   \eqn{\sigma^2} of the logarithm. Defaults to
 #'   [linkfunctions7::log_link()], which maps \eqn{(0, \infty)} onto the line.
@@ -856,8 +861,8 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' two parameters are orthogonal and the information does not depend on
 #' \eqn{\mu}.
 #'
-#' The derivatives in the response are where the two families differ, the
-#' Jacobian being a function of \eqn{y}. They are still closed form; see
+#' The derivatives in the response differ between the two families, because the
+#' Jacobian is a function of \eqn{y}. They are still closed form; see
 #' [distrib_grad_y.Lognormal1Distrib()] and
 #' [distrib_hess_y.Lognormal1Distrib()], and note that the log-density is
 #' convex in the response above \eqn{e^{\mu+1-\sigma^2}}.
@@ -889,8 +894,8 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' \eqn{Y}; [gaussian2_distrib()] for the law of its logarithm;
 #' [gamma1_distrib()] and [invgauss1_distrib()] for other positive families
 #' with a multiplicative variance function; [transformation()] for the general
-#' wrapper this family is a named instance of; [fit_distrib()] to estimate the
-#' parameters; [check_distrib()] to validate a family of your own against the
+#' wrapper of which this family is a named instance; [fit_distrib()] to estimate the
+#' parameters; [check_distrib()] to validate a user-defined family against the
 #' same battery of checks that this family passes; [Lognormal1Distrib] for the
 #' class.
 #'
@@ -911,10 +916,10 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...
 #' th <- list(mu = 0.5, sigma2 = 0.36)
 #' all.equal(distrib_pdf(d, y, th), dlnorm(y, 0.5, sqrt(0.36)))
 #'
-#' # Mode, median and mean, in that order.
+#' # The mode, the median and the mean are listed in increasing order.
 #' c(mode = exp(0.5 - 0.36), median = exp(0.5), mean = mean(d, th))
 #'
-#' # Moments on the original scale, all exponential in sigma2.
+#' # The moments on the original scale are all exponential in sigma2.
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))
 #'

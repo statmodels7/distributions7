@@ -26,7 +26,7 @@ with \eqn{Z} standard skew normal of shape \eqn{\alpha} and
 representation, so the whole draw is three \code{rnorm}/\code{rchisq} calls and no
 inversion or rejection.
 
-The representation reads off both limits. As \eqn{\nu \to \infty} the mixing
+Both limits can be read off the representation. As \eqn{\nu \to \infty} the mixing
 factor tends to one and \eqn{Y} is skew normal; at \eqn{\alpha = 0} the
 numerator is Gaussian and \eqn{Y} is Student \eqn{t}.
 }
@@ -44,19 +44,19 @@ th <- list(mu = 1, sigma = 2, alpha = 3, nu = 8)
 set.seed(21)
 x <- distrib_rng(d, 1e5, th)
 
-# Two moments against their closed forms. Both exist here; at nu <= 2 the
-# variance does not.
+# Two sample moments are compared with their closed forms. Both exist here;
+# at nu <= 2 the variance does not.
 rbind(sample = c(mean(x), var(x)),
       theory = c(mean(d, th), variance(d, th)))
 
-# The mixture, written out at the same seed.
+# The mixture is written out and run at the same seed.
 set.seed(21)
 delta <- 3 / sqrt(1 + 9)
 z <- delta * abs(rnorm(1e5)) + sqrt(1 - delta^2) * rnorm(1e5)
 all.equal(x, 1 + 2 * z / sqrt(rchisq(1e5, df = 8) / 8))
 }
 \seealso{
-\code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf.SkewTDistrib()}} for the density the draws follow,
+\code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf.SkewTDistrib()}} for the density that the draws follow,
 \code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng.SkewNormal1Distrib()}} for the inner representation, and
 \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

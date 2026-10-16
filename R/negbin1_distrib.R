@@ -32,7 +32,7 @@ NULL
 #'   different family and not a reparametrization of this one;
 #'   [poisson_distrib()] for the limit as \eqn{\theta} goes to zero;
 #'   [distrib_pdf.NegBin1Distrib()] and [distrib_gradient.NegBin1Distrib()] for
-#'   the closed forms this class supplies.
+#'   the closed forms that this class supplies.
 #'
 #' @section Methods:
 #' The following methods are registered on this class, and each is linked to
@@ -68,8 +68,8 @@ NULL
 #' d@params_interpretation
 #' d@bounds
 #'
-#' # The variance-to-mean ratio is 1 + theta at every mean, which is what
-#' # separates this family from the quadratic one.
+#' # The variance-to-mean ratio is 1 + theta at every mean, and the quadratic
+#' # family does not have this property.
 #' vapply(c(1, 10, 100),
 #'        function(m) variance(d, list(mu = m, theta = 4)) / m, numeric(1))
 NegBin1Distrib <- S7::new_class("NegBin1Distrib", parent = discrete_distrib)
@@ -77,25 +77,25 @@ NegBin1Distrib <- S7::new_class("NegBin1Distrib", parent = discrete_distrib)
 #' The Size Behind an NB1 Mean
 #'
 #' @description
-#' Returns \eqn{r = \mu/\theta}, the number of successes the base R negative
-#' binomial functions take as `size`. Requiring the variance to be
+#' Returns \eqn{r = \mu/\theta}, the number of successes that the base R
+#' negative binomial functions take as `size`. Requiring the variance to be
 #' \eqn{\mu(1+\theta)} fixes the success probability at \eqn{1/(1+\theta)}, and
-#' the mean then determines the size. It is this that puts \eqn{\mu} inside the
-#' gamma functions of the mass and makes NB1 a different family from the
+#' the mean then determines the size. This puts \eqn{\mu} inside the gamma
+#' functions of the mass and makes NB1 a different family from the
 #' quadratic-variance one.
 #'
-#' Nothing is validated; a non-positive `theta` gives an infinite or negative
-#' size. The methods are reached through the generics, which signal an error
-#' for a non-positive parameter first.
+#' The function does not validate its arguments; a non-positive `theta` gives
+#' an infinite or negative size. The methods are reached through the generics,
+#' which signal an error for a non-positive parameter first.
 #'
 #' @param mu The mean, a positive numeric vector.
 #' @param theta The dispersion, a positive numeric vector. The two are used
 #'   elementwise, so vectors of different lengths recycle in the usual way.
 #'
-#' @return A numeric vector of sizes, of the length the division produces.
+#' @return A numeric vector of sizes, of the length that the division produces.
 #'
 #' @seealso [negbin1_distrib()] for the family, and
-#'   [distrib_pdf.NegBin1Distrib()] for the mass it feeds.
+#'   [distrib_pdf.NegBin1Distrib()] for the mass that it feeds.
 #'
 #' @keywords internal
 nb1_size <- function(mu, theta) mu / theta
@@ -137,7 +137,7 @@ nb1_size <- function(mu, theta) mu / theta
 #'       \left(\dfrac{1}{1+\theta}\right)^{r}
 #'       \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad
 #'       y = 0, 1, 2, \ldots,}
-#' which is the pairing that makes the variance \eqn{\mu(1+\theta)}. A
+#' and this pairing gives the variance \eqn{\mu(1+\theta)}. A
 #' compiled kernel forms the log-mass by R's negative binomial in its mean
 #' parametrization (size \eqn{r} and mean \eqn{\mu}), which never forms the
 #' success probability \eqn{1/(1+\theta)}; that probability rounds to 1 below
@@ -195,9 +195,9 @@ S7::method(distrib_pdf, NegBin1Distrib) <- function(distrib, y, theta, log = FAL
 #' Computes the negative binomial distribution function, the partial sum of the
 #' mass, by calling [stats::pnbinom()] at size \eqn{r = \mu/\theta} and mean
 #' \eqn{\mu}, so that the success probability \eqn{1/(1+\theta)} is never
-#' formed. That function evaluates it through the incomplete beta function,
-#' so nothing is summed. The result is a step
-#' function, constant between consecutive integers. Both tails are available
+#' formed. That function evaluates it through the incomplete beta function
+#' and does not sum the mass. The result is a step function, constant between
+#' consecutive integers. Both tails are available
 #' exactly, and `log.p = TRUE` returns a logarithm that stays finite where the
 #' probability itself underflows.
 #'
@@ -283,7 +283,8 @@ S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
 #' d <- negbin1_distrib()
 #' th <- list(mu = 4, theta = 4)
 #'
-#' # A nominal central 95 percent interval on the counts.
+#' # The first and last quantiles bound a nominal central 95 percent interval
+#' # on the counts.
 #' p <- c(0.025, 0.5, 0.975)
 #' q <- distrib_quantile(d, p, th)
 #' q
@@ -310,9 +311,9 @@ S7::method(distrib_quantile, NegBin1Distrib) <- function(distrib, p, theta,
 #' @description
 #' Draws `n` independent counts by calling [stats::rnbinom()] at size
 #' \eqn{r = \mu/\theta} and mean \eqn{\mu}, so the success probability
-#' \eqn{1/(1+\theta)} is never formed and the draws come from R's own generator and depend on `.Random.seed` in the usual
-#' way. The cumulative-table fallback the base class supplies for a discrete
-#' family is bypassed.
+#' \eqn{1/(1+\theta)} is never formed. The draws come from R's own generator
+#' and depend on `.Random.seed` in the usual way. The cumulative-table
+#' fallback that the base class supplies for a discrete family is bypassed.
 #'
 #' @param distrib A `NegBin1Distrib` object, from [negbin1_distrib()].
 #' @param n A single positive integer, the number of draws.
@@ -331,7 +332,7 @@ S7::method(distrib_quantile, NegBin1Distrib) <- function(distrib, p, theta,
 #' @examples
 #' d <- negbin1_distrib()
 #'
-#' # Same generator as stats::rnbinom at size mu/theta and mean mu.
+#' # The generator is the same as stats::rnbinom at size mu/theta and mean mu.
 #' set.seed(2)
 #' a <- distrib_rng(d, 5, list(mu = 4, theta = 4))
 #' set.seed(2)
@@ -360,7 +361,7 @@ S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta, ...) {
 #'         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.}
 #' The arithmetic runs in a compiled kernel decomposed over the elements of the
 #' output, so the result does not depend on the thread count. These are the
-#' formulas the kernel evaluates for \eqn{\theta \ge 1}.
+#' formulas that the kernel evaluates for \eqn{\theta \ge 1}.
 #'
 #' # The dispersion below one
 #'
@@ -376,9 +377,9 @@ S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta, ...) {
 #'         - \dfrac{\theta}{\mu}B + \theta q, \qquad
 #'       \dfrac{\partial \ell}{\partial \theta} = B - \dfrac{y-\mu}{1+\theta}
 #'         - \mu q,}
-#' with \eqn{q} from its power series below \eqn{\theta = 1/4}. No term of
-#' order \eqn{\mu/\theta^2} is formed, so both components keep their accuracy
-#' as \eqn{\theta} goes to zero, where the dispersion component tends to
+#' with \eqn{q} from its power series below \eqn{\theta = 1/4}. The kernel does
+#' not form any term of order \eqn{\mu/\theta^2}, so both components keep their
+#' accuracy as \eqn{\theta} goes to zero, where the dispersion component tends to
 #' \deqn{\lim_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
 #'       = \dfrac{(y-\mu)^2 - y}{2\mu}.}
 #' The cost is \eqn{y} terms per observation in place of a fixed number of
@@ -422,7 +423,7 @@ S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 4, theta = 4)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out below.
 #' r <- 4 / 4
 #' P <- digamma(y + r) - digamma(r) - log(1 + 4)
 #' all.equal(g$mu, P / 4)
@@ -521,7 +522,7 @@ S7::method(distrib_gradient, NegBin1Distrib) <- function(distrib, y, theta,
 #' dn <- distrib_gradient(d, y, list(mu = 4 - eps, theta = 4))$mu
 #' all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-5)
 #'
-#' # And the mixed entry against a difference of the other component.
+#' # The mixed entry is also compared with a difference of the other component.
 #' up <- distrib_gradient(d, y, list(mu = 4, theta = 4 + eps))$mu
 #' dn <- distrib_gradient(d, y, list(mu = 4, theta = 4 - eps))$mu
 #' all.equal((up - dn) / (2 * eps), h$mu_theta, tolerance = 1e-5)
@@ -535,22 +536,22 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' @name distrib_expected_hessian.NegBin1Distrib
 #' @description
 #' Returns the expectation of the observed Hessian under the model. Every term
-#' carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, its
-#' expectation vanishing by the first Bartlett identity. With
+#' carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, because
+#' its expectation vanishes by the first Bartlett identity. With
 #' \eqn{u_j = \mu + \theta j}, the entries are \eqn{-A},
 #' \eqn{W/\theta^2} and \eqn{-W/(\mu\theta)}, where
 #' \deqn{A = \mathbb{E}\Big[\sum_{j<Y} u_j^{-2}\Big], \qquad
 #'   W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta} -
 #'   \frac{\mu^2}{u_j^2}\Big)\Big].}
-#' Neither has a closed form. Each is summed against the exact mass until the
-#' terms fall below a tolerance, so this is a truncated exact sum and not a
-#' quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
+#' \eqn{A} and \eqn{W} are not available in closed form. Each is summed
+#' against the exact mass until the terms fall below a tolerance, so this is a
+#' truncated exact sum and not a quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
 #' read only for its length.
 #'
 #' The mixed entry does not vanish, so the mean and the dispersion are not
 #' orthogonal in this family; in [negbin2_distrib()] the same entry is exactly
-#' zero. This is a difference between the two families, not between two
-#' parametrizations of one.
+#' zero. The two negative binomials are different families, so this difference
+#' does not come from the parametrization.
 #'
 #' # Accuracy at small theta
 #'
@@ -611,7 +612,8 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' e <- distrib_expected_hessian(d, c(0, 2, 6), th)
 #' lapply(e, unique)
 #'
-#' # Negative definite at a moderate dispersion.
+#' # The eigenvalues show that the matrix is negative definite at a moderate
+#' # dispersion.
 #' M <- matrix(c(e$mu_mu[1], e$mu_theta[1], e$mu_theta[1], e$theta_theta[1]), 2)
 #' eigen(M, only.values = TRUE)$values
 #'
@@ -663,11 +665,12 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' families, not two parametrizations of one. Here the variance is
 #' \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 #' relative to a Poisson is the same at every mean; [negbin2_distrib()] has
-#' \eqn{\mu + \mu^2/\theta}, growing quadratically. Fitting one is not fitting
-#' the other, and a likelihood ratio between them is not a test of nested
-#' models.
+#' \eqn{\mu + \mu^2/\theta}, growing quadratically. Because they are different
+#' families, fitting one is not fitting the other, and a likelihood ratio
+#' between them is not a test of nested models.
 #'
-#' The difference is visible in where the mean sits. The size is
+#' The two families differ in whether the mean appears inside the gamma
+#' functions of the mass. The size is
 #' \eqn{r = \mu/\theta} and the success probability \eqn{1/(1+\theta)}, so
 #' \eqn{\mu} appears inside the gamma functions of the mass; in the
 #' quadratic form the size is \eqn{\theta} and the mean stays outside them.
@@ -694,9 +697,9 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'       \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
 #'         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta},}
 #' and the Hessian is the same chain rule at second order. In the expected
-#' information every term carrying \eqn{P} drops out, its expectation vanishing
-#' by the first Bartlett identity, and what remains is two sums over the
-#' support against the exact mass ([distrib_expected_hessian.NegBin1Distrib()]).
+#' information every term carrying \eqn{P} drops out, because its expectation
+#' vanishes by the first Bartlett identity, and two sums over the support
+#' against the exact mass remain ([distrib_expected_hessian.NegBin1Distrib()]).
 #'
 #' The mean and the dispersion are not orthogonal here. The mixed entry of
 #' the expected information is non-zero, where [negbin2_distrib()] has exactly
@@ -726,8 +729,8 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'
 #' # Estimation
 #'
-#' [fit_distrib()] maximizes the log-likelihood on the link scale. Neither
-#' estimate is closed form. The method of moments supplies the starting values
+#' [fit_distrib()] maximizes the log-likelihood on the link scale. Both
+#' estimates lack a closed form. The method of moments supplies the starting values
 #' \eqn{\hat\mu = \bar y} and \eqn{\hat\theta = s^2/\bar y - 1}, with \eqn{s^2}
 #' the sample variance.
 #'
@@ -749,7 +752,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' case \eqn{\mu = \theta}; [pig1_distrib()] for a Poisson mixed over an inverse
 #' Gaussian; [zero_inflated()] and [zero_adjusted()] for counts with excess
 #' zeros; [fit_distrib()] to estimate the parameters; [check_distrib()] to
-#' validate a family of your own against the same battery that this one passes;
+#' validate a user-defined family against the same battery that this one passes;
 #' [NegBin1Distrib] for the class.
 #'
 #' @references
@@ -788,7 +791,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'       moments = c(mu = mean(z), theta = var(z) / mean(z) - 1))
 #'
 #' # On an equidispersed sample the dispersion runs to its boundary, which is
-#' # the regime the expected information page warns about.
+#' # the regime against which the expected information page warns.
 #' set.seed(4)
 #' coef(fit_distrib(d, rpois(2000, 4)))
 #'

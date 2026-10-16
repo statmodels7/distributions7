@@ -36,8 +36,9 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 Computes the five distinct fourth derivatives of the Laplace log-density
 with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. As at third
 order, the log-density is linear in \eqn{\mu} on each side of the kink, so
-every component differentiating twice or more in \eqn{\mu} is zero and what
-survives comes from the \eqn{-\log\sigma} term and from \eqn{|r|/\sigma}.
+every component differentiating twice or more in \eqn{\mu} is zero and the
+remaining components come from the \eqn{-\log\sigma} term and from
+\eqn{|r|/\sigma}.
 
 With \code{expected = TRUE} the expectations under the model are returned, also in
 closed form. Both routes are closed form, so \code{approx} and \code{nsim} are ignored.
@@ -59,7 +60,7 @@ names(distrib_deriv4(d, y, th))
 # contribution of |r|/sigma.
 distrib_deriv4(d, y, th)$sigma_sigma_sigma_sigma
 
-# The expected values, in closed form.
+# The expected values are also in closed form.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 
 # A central difference of the third order reproduces the fourth.

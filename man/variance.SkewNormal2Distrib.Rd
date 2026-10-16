@@ -12,13 +12,13 @@ order; it is aligned here.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, of the length the recycled parameters
-imply.
+A numeric vector of variances, of the length that the recycled
+parameters imply.
 }
 \description{
 Returns \eqn{\sigma^2}, the square of the second parameter, which in this
 parametrization is the variance by construction. \code{\link[=moment_const]{moment_const()}} recycles
-the result to the length the three parameters imply.
+the result to the length that the three parameters imply.
 }
 \examples{
 d <- skewnormal2_distrib()

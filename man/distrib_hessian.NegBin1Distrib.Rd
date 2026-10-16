@@ -76,7 +76,7 @@ up <- distrib_gradient(d, y, list(mu = 4 + eps, theta = 4))$mu
 dn <- distrib_gradient(d, y, list(mu = 4 - eps, theta = 4))$mu
 all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-5)
 
-# And the mixed entry against a difference of the other component.
+# The mixed entry is also compared with a difference of the other component.
 up <- distrib_gradient(d, y, list(mu = 4, theta = 4 + eps))$mu
 dn <- distrib_gradient(d, y, list(mu = 4, theta = 4 - eps))$mu
 all.equal((up - dn) / (2 * eps), h$mu_theta, tolerance = 1e-5)

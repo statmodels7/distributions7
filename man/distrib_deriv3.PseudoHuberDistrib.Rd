@@ -22,10 +22,11 @@ Defaults to \code{FALSE}.}
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+or \code{"opg"}. It is read only when \code{expected = TRUE}.}
 
 \item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -41,7 +42,8 @@ kernel. Every component but the pure-\eqn{\nu} one is a rational function of
 \eqn{r = y - \mu}, \eqn{\sigma} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
 Bessel functions enter through \eqn{\nu} alone. The derivatives in
 \eqn{\nu} of \eqn{B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}} come from
-three routes, each where it keeps its digits: below \eqn{\nu = 1} the
+three routes, and each is used in the range where it keeps its digits:
+below \eqn{\nu = 1} the
 series of \eqn{K_1} and \eqn{K_2} at the origin; for
 \eqn{1 \le \nu < 400} the cumulants of \eqn{1/(4T)} under the generalized
 inverse Gaussian law of the integral representation of \eqn{K_1}, by the
@@ -52,8 +54,8 @@ fourth order.
 
 The expected third derivatives have no closed form. With
 \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates
-the observed derivatives against the density by the strategy \code{approx} names.
-That is the one place on this page where \code{approx} and \code{nsim} are read.
+the observed derivatives against the density by the strategy specified in
+\code{approx}. The arguments \code{approx} and \code{nsim} are read only in this case.
 }
 \examples{
 d <- pseudohuber_distrib()
@@ -63,7 +65,7 @@ d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
 # A central difference of the Hessian reproduces the pure-location
-# component, which is what says the closed form is the right one.
+# component, which confirms the closed form.
 eps <- 1e-5
 up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu
 dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu

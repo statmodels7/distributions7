@@ -29,7 +29,7 @@ NULL
 #' @description
 #' Returns the components of
 #' \eqn{\partial^{a+b}\ell/\partial\mu^a\partial\theta^b} at any order from one
-#' to four, from the sparse form the NB1 log-likelihood takes in the size
+#' to four, from the sparse form that the NB1 log-likelihood takes in the size
 #' \eqn{r = \mu/\theta}.
 #'
 #' @details
@@ -55,9 +55,9 @@ NULL
 #' because \eqn{\mathrm{d}r/\mathrm{d}\theta = -r/\theta} contributes to both
 #' the power of \eqn{r} and the order of \eqn{G}. The coefficients are
 #' integers, and the recursion is run rather than solved, so every order is
-#' exact with nothing transcribed beyond this one step.
+#' exact and only this one step is transcribed by hand.
 #'
-#' # The cancellation the polygamma differences carry
+#' # The cancellation that the polygamma differences carry
 #'
 #' Each \eqn{G^{(m)}(r)} is a polygamma differenced at the shift \eqn{y}, which
 #' is a count. As \eqn{\theta \to 0} the family tends to the Poisson,
@@ -76,20 +76,20 @@ NULL
 #' The size need not appear at all, and the form without it has no such
 #' cancellation. Since
 #' \eqn{\log\Gamma(y+r) - \log\Gamma(r) = \sum_{i<y}\log(r+i)} and
-#' \eqn{r = \mu/\theta}, the \eqn{y\log\theta} each such term carries cancels
-#' EXACTLY against \eqn{C(\theta)}, leaving
+#' \eqn{r = \mu/\theta}, the \eqn{y\log\theta} that each such term carries
+#' cancels exactly against \eqn{C(\theta)}, leaving
 #' \deqn{\ell = \sum_{i<y}\log(\mu + i\theta) - \log(y!)
 #'   - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),}
 #' whose variable does not run away and whose every derivative is elementary.
-#' Below [nb1_exact_cut()] that is the route taken, through
+#' Below [nb1_exact_cut()] the function uses that form, through
 #' [nb1_components_exact()]; above it the recursion is accurate and costs
 #' \eqn{O(1)} per observation, where the sum costs \eqn{y} terms.
 #'
 #' @param y A numeric vector of counts.
-#' @param theta A named list with components `mu` and `theta`, each a numeric
-#'   vector of length 1 or of the length of `y`, both strictly positive.
-#'   Shorter components are recycled. Note that `theta` names both the list and
-#'   its second component, the dispersion.
+#' @param theta A named list with components `mu` and `theta`. Each is a
+#'   numeric vector of length 1 or of the length of `y`, and both are strictly
+#'   positive. Shorter components are recycled. Note that `theta` names both
+#'   the list and its second component, the dispersion.
 #' @param order The derivative order, an integer from 1 to 4.
 #'
 #' @return A named list of component vectors, one per distinct multi-index of
@@ -286,24 +286,25 @@ nb1_components_exact <- function(y, mu, th, order) {
 #' solved.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()] instead: the
-#' expected third derivatives have no closed form. That is the one place on
-#' this page where `approx` and `nsim` are read.
+#' expected third derivatives have no closed form. The method reads `approx`
+#' and `nsim` only in this case.
 #'
 #' @param distrib A `NegBin1Distrib` object, from [negbin1_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
 #'   is read.
-#' @param theta A named list with components `mu` and `theta`, each a numeric
-#'   vector of length 1 or of the length of `y`, both strictly positive. A
-#'   component of length 1 is recycled.
+#' @param theta A named list with components `mu` and `theta`. Each is a
+#'   numeric vector of length 1 or of the length of `y`, and both are strictly
+#'   positive. A component of length 1 is recycled.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. Read only when `expected = TRUE`.
+#'   or `"opg"`. It is read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
+#'   `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_theta`,
@@ -344,7 +345,7 @@ nb1_components_exact <- function(y, mu, th, order) {
 #' dn <- distrib_hessian(d, y, list(mu = 4 - eps, theta = 1.2))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #'
-#' # And a mixed component, which is where the recursion does its work.
+#' # The same check applies to a mixed component, which exercises the recursion.
 #' up <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 + eps))$mu_theta
 #' dn <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 - eps))$mu_theta
 #' all.equal((up - dn) / (2 * eps), d3$mu_theta_theta, tolerance = 1e-6)
@@ -364,8 +365,8 @@ S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
 #' @name distrib_deriv4.NegBin1Distrib
 #' @description
 #' Computes the five distinct fourth derivatives of the NB1 log-likelihood in
-#' \eqn{\mu} and \eqn{\theta}, in closed form, by the construction
-#' [distrib_deriv3.NegBin1Distrib()] describes carried one order further: the
+#' \eqn{\mu} and \eqn{\theta}, in closed form, by the construction that
+#' [distrib_deriv3.NegBin1Distrib()] describes, carried one order further: the
 #' same coefficient recursion over the powers of \eqn{r = \mu/\theta} and the
 #' order of \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.
 #'
@@ -375,18 +376,19 @@ S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
 #' @param distrib A `NegBin1Distrib` object, from [negbin1_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
 #'   is read.
-#' @param theta A named list with components `mu` and `theta`, each a numeric
-#'   vector of length 1 or of the length of `y`, both strictly positive. A
-#'   component of length 1 is recycled.
+#' @param theta A named list with components `mu` and `theta`. Each is a
+#'   numeric vector of length 1 or of the length of `y`, and both are strictly
+#'   positive. A component of length 1 is recycled.
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. Read only when `expected = TRUE`.
+#'   or `"opg"`. It is read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
+#'   `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,

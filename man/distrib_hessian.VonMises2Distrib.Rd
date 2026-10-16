@@ -32,7 +32,7 @@ Computes the three distinct second derivatives of the log-density in
       \ell^{(\mu\rho)} = \sin(y-\mu)\,\kappa'(\rho), \qquad
       \ell^{(\rho\rho)} = \{\cos(y-\mu) - \rho\}\kappa''(\rho)
                          - \kappa'(\rho),}
-the last from differentiating the score's
+where the last component comes from differentiating the score's
 \eqn{\{\cos(y-\mu) - \rho\}\kappa'(\rho)}. The components are computed
 by a compiled kernel.
 

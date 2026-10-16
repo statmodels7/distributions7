@@ -30,9 +30,9 @@ values are logarithms and are non-positive.
 Computes the negative binomial distribution function, the partial sum of the
 mass, by calling \code{\link[stats:NegBinomial]{stats::pnbinom()}} at size \eqn{r = \mu/\theta} and mean
 \eqn{\mu}, so that the success probability \eqn{1/(1+\theta)} is never
-formed. That function evaluates it through the incomplete beta function,
-so nothing is summed. The result is a step
-function, constant between consecutive integers. Both tails are available
+formed. That function evaluates it through the incomplete beta function
+and does not sum the mass. The result is a step function, constant between
+consecutive integers. Both tails are available
 exactly, and \code{log.p = TRUE} returns a logarithm that stays finite where the
 probability itself underflows.
 }

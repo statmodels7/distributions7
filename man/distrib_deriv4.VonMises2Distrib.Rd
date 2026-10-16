@@ -21,10 +21,11 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+or \code{"opg"}. It is read only when \code{expected = TRUE}.}
 
 \item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -40,7 +41,7 @@ each of length \code{length(y)}.
 \description{
 Computes the five distinct fourth derivatives of the log-density in
 \eqn{\mu} and \eqn{\rho}, in closed form, by the construction
-\code{\link[=distrib_deriv3.VonMises2Distrib]{distrib_deriv3.VonMises2Distrib()}} describes carried one order further: a
+that \code{\link[=distrib_deriv3.VonMises2Distrib]{distrib_deriv3.VonMises2Distrib()}} describes, carried one order further: a
 single term \eqn{D_a \kappa^{(b)}(\rho)} for every component carrying a
 \eqn{\mu}, and
 \eqn{\{\cos(y-\mu) - \rho\}\kappa^{(4)}(\rho) - 3\kappa'''(\rho)} for

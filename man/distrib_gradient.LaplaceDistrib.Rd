@@ -34,8 +34,8 @@ Writing \eqn{r = y - \mu},
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).}
 
 The score in \eqn{\mu} takes only the three values \eqn{-1/\sigma}, 0 and
-\eqn{+1/\sigma}: it carries the sign of the residual and nothing about
-its size, which is why the maximum likelihood estimate of \eqn{\mu} is the
+\eqn{+1/\sigma}: it carries the sign of the residual but not its
+size, which is why the maximum likelihood estimate of \eqn{\mu} is the
 sample median. At \eqn{r = 0} exactly, \code{sign(0)} is 0 and the method returns
 0, the midpoint of the subdifferential \eqn{[-1/\sigma, 1/\sigma]}; the
 derivative does not exist there.
@@ -53,7 +53,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out and compared.
 r <- y - 0.4
 all.equal(g$mu, sign(r) / 1.5)
 all.equal(g$sigma, (abs(r) / 1.5 - 1) / 1.5)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{sn_max_skew}
 \alias{sn_max_skew}
-\title{The Largest Skewness a Skew Normal Can Reach}
+\title{The Largest Skewness That a Skew Normal Can Reach}
 \usage{
 sn_max_skew()
 }
@@ -23,9 +23,9 @@ A skewness beyond it belongs to no skew normal, so
 the centered-to-direct map would return \code{NaN} without any indication of the
 cause.
 
-The ceiling is approached slowly: measured, the skewness is 0.9556 at
-\eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}. Data skewer than this
-needs \code{\link[=skewt_distrib]{skewt_distrib()}}.
+The ceiling is approached slowly: numerically, the skewness is 0.9556 at
+\eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}. Data whose absolute
+skewness exceeds this value need \code{\link[=skewt_distrib]{skewt_distrib()}}.
 }
 \examples{
 distributions7:::sn_max_skew()
@@ -40,8 +40,8 @@ skewnormal2_distrib()@params_bounds$gamma1
 
 }
 \seealso{
-\code{\link[=sn_b]{sn_b()}} for the constant it is built from,
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the parameter it bounds, and
+\code{\link[=sn_b]{sn_b()}} for the constant from which it is built,
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the parameter that it bounds, and
 \code{\link[=skewt_distrib]{skewt_distrib()}} for the family that goes further.
 }
 \keyword{internal}

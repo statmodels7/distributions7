@@ -128,6 +128,6 @@ Series C} \strong{54}, 507-554.
 standard deviation and in the precision; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the
 Gaussian on a log scale; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for
 heavier tails; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
-\code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the same battery
+\code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family against the same battery
 of checks that this family passes; \link{Gaussian2Distrib} for the class.
 }

@@ -33,17 +33,17 @@ use. Defaults to \code{1L}.}
 }
 \value{
 A named list with one numeric vector per component: 3, 6, 10, 15
-and 21 components at orders one to five, the second order keyed
-\code{mu_mu}, \code{sigma_sigma}, \code{nu_nu}, \code{mu_sigma}, \code{mu_nu}, \code{sigma_nu}. The
-expected information has the same six components, the expected third
-and fourth derivatives 10 and 15, \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} 18 and
-\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} 36.
+and 21 components at orders one to five. At order two the components are
+keyed \code{mu_mu}, \code{sigma_sigma}, \code{nu_nu}, \code{mu_sigma}, \code{mu_nu}, \code{sigma_nu}.
+The expected information has the same six components, the expected third
+and fourth derivatives have 10 and 15, \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} has
+18 and \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} has 36.
 }
 \description{
 Return the derivatives of the log-density in \eqn{(\mu, \sigma, \nu)} of
 orders one to five, the expected information and its expected third and
 fourth derivatives, and the first two derivatives of the expected
-information, each from its own compiled kernel.
+information, and each of them is computed by its own compiled kernel.
 }
 \details{
 With \eqn{z = (y - \mu)/\sigma}, \eqn{k = \nu - 2} and \eqn{q = z^2/k}, the

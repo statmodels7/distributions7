@@ -13,8 +13,8 @@ constant_to_scalar(x)
 A numeric vector, of length one when \code{x} is constant.
 }
 \description{
-Returns \code{x[1]} when \code{x} has several elements that are all equal and none
-missing, and \code{x} unchanged otherwise. A compiled kernel that sums a series
+Returns \code{x[1]} when \code{x} has several elements that are all equal and all
+non-missing, and returns \code{x} unchanged otherwise. A compiled kernel that sums a series
 for each observation computes it once for a scalar parameter and copies the
 result, but repeats the same sum \code{length(x)} times for a vector of equal
 values. A fit with no covariates on the parameters is this case, and at a

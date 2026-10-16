@@ -952,7 +952,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' seen on the line; [multinomial_distrib()] for the discrete family on the same
 #' simplex; [mvgaussian1_distrib()] for the elliptical multivariate family;
 #' [parameters7::simplex()] for the chart the mean rides; [fit_distrib()] to
-#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' estimate the parameters; [check_distrib()] to validate a user-defined family
 #' against the same battery that this one passes; [DirichletDistrib] for the
 #' class.
 #' @export

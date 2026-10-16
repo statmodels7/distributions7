@@ -42,15 +42,15 @@ form and with no quadrature or simulation:
       \qquad
       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.}
 They follow from \eqn{\mathbb{E}[Y] = \mu} and
-\eqn{\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2}. The second identity is the one
-that gives the score in \eqn{\phi} mean zero.
+\eqn{\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2}. The second identity implies that
+the score in \eqn{\phi} has mean zero.
 
 Both diagonal entries are negative at every parameter setting, so the
 information is positive definite everywhere, where the observed Hessian of
-\code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} is not. The zero off-diagonal says the
-mean and the dispersion are orthogonal, so the mean equation can be fitted
-with the dispersion held at any value without biasing it: this is the
-generalized linear model parametrization, with variance function
+\code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} is not. The zero off-diagonal entry
+means that the mean and the dispersion are orthogonal, so the mean equation
+can be fitted without biasing it while the dispersion is held at any value:
+this is the generalized linear model parametrization, with variance function
 \eqn{V(\mu) = \mu^3}.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
@@ -69,12 +69,12 @@ equals the variance of the score.
 d <- invgauss1_distrib()
 th <- list(mu = 1, phi = 2)
 
-# The three constants, one value per observation.
+# The three constants are returned with one value per observation.
 lapply(distrib_expected_hessian(d, c(0.5, 1, 2), th), unique)
 c(-1 / (2 * 1^3), -1 / (2 * 2^2), 0)
 
-# Negative definite at every setting, where the observed Hessian is
-# positive in phi at y = mu.
+# The expected Hessian is negative definite at every setting, whereas the
+# observed Hessian is positive in phi at y = mu.
 c(expected = distrib_expected_hessian(d, 1, th)$phi_phi,
   observed = distrib_hessian(d, 1, th)$phi_phi)
 

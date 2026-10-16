@@ -31,7 +31,7 @@ fourth order in the response, and closed-form moments.
 The family is symmetric about \eqn{\mu} with variance
 \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale, not a standard
 deviation. Its distribution function is the logistic sigmoid, the same curve
-\code{linkfunctions7} uses as the inverse logit link.
+that \code{linkfunctions7} uses as the inverse logit link.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (-\infty, \infty)} is
@@ -63,7 +63,7 @@ and four are closed form as well.
 }
 
 \section{Estimation}{
-There is no closed-form estimate; \code{\link[=fit_distrib]{fit_distrib()}} maximizes the
+The estimate has no closed form; \code{\link[=fit_distrib]{fit_distrib()}} maximizes the
 log-likelihood on the link scale. The log-likelihood is concave in
 \eqn{\mu} for a fixed \eqn{\sigma}, so the location is well determined.
 }

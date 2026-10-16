@@ -21,14 +21,14 @@ A numeric vector of \code{n} non-negative integers.
 \description{
 Draws \code{n} independent counts by calling \code{\link[stats:NegBinomial]{stats::rnbinom()}} at size
 \eqn{r = \mu/\theta} and mean \eqn{\mu}, so the success probability
-\eqn{1/(1+\theta)} is never formed and the draws come from R's own generator and depend on \code{.Random.seed} in the usual
-way. The cumulative-table fallback the base class supplies for a discrete
-family is bypassed.
+\eqn{1/(1+\theta)} is never formed. The draws come from R's own generator
+and depend on \code{.Random.seed} in the usual way. The cumulative-table
+fallback that the base class supplies for a discrete family is bypassed.
 }
 \examples{
 d <- negbin1_distrib()
 
-# Same generator as stats::rnbinom at size mu/theta and mean mu.
+# The generator is the same as stats::rnbinom at size mu/theta and mean mu.
 set.seed(2)
 a <- distrib_rng(d, 5, list(mu = 4, theta = 4))
 set.seed(2)

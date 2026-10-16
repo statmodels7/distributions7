@@ -56,7 +56,8 @@ th <- list(mu = 3, alpha = al)
 d4 <- distrib_deriv4(d, y, th)
 names(d4)
 
-# Against a central difference of the third order.
+# The fourth-order entry is compared with a central difference of the
+# third order.
 eps <- 1e-5
 rbind(analytic = d4$mu_mu_mu_alpha,
       numeric = (distrib_deriv3(d, y,

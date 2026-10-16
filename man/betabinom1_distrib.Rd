@@ -183,7 +183,7 @@ Wiley, Hoboken.
 \code{\link[=binomial_distrib]{binomial_distrib()}} for the limit at \eqn{\sigma \to 0} and
 \code{\link[=beta1_distrib]{beta1_distrib()}} for the mixing law; \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the
 unbounded-count analogue, a Poisson mixed over a gamma; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family
 against the same battery that this one passes; \link{BetaBinom1Distrib} for the
 class.
 }

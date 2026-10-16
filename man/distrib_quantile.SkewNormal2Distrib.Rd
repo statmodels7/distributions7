@@ -25,7 +25,7 @@ use them.}
 A numeric vector of quantiles, of the length of the recycled inputs.
 }
 \description{
-Computes the quantiles of the skew normal at the direct parameters the
+Computes the quantiles of the skew normal at the direct parameters that the
 centered triple implies. The skew normal has no closed-form quantile
 function, so the value comes from \code{\link[=continuous_distrib]{continuous_distrib()}}'s root finding on
 the distribution function, reached through
@@ -35,7 +35,7 @@ the distribution function, reached through
 d <- skewnormal2_distrib()
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# The round trip through the distribution function.
+# A round trip through the distribution function recovers the probabilities.
 p <- c(0.05, 0.25, 0.5, 0.75, 0.95)
 q <- distrib_quantile(d, p, th)
 rbind(quantile = q, back = distrib_cdf(d, q, th))

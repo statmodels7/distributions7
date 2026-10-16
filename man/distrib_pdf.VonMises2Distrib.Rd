@@ -50,7 +50,7 @@ y <- c(-1, 0, 0.5, 2)
 distrib_pdf(d2, y, th)
 
 # It is the same law as the concentration parametrization, at the
-# concentration this resultant length implies.
+# concentration that this resultant length implies.
 k <- numericals7::bessel_i_ratio_inverse(0.7)
 k
 all.equal(distrib_pdf(d2, y, th),

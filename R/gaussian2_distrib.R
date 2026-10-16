@@ -889,7 +889,7 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #' standard deviation and in the precision; [lognormal1_distrib()] for the
 #' Gaussian on a log scale; [student_t1_distrib()] and [laplace_distrib()] for
 #' heavier tails; [fit_distrib()] to estimate the parameters;
-#' [check_distrib()] to validate a family of your own against the same battery
+#' [check_distrib()] to validate a user-defined family against the same battery
 #' of checks that this family passes; [Gaussian2Distrib] for the class.
 #'
 #' @references

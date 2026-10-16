@@ -75,7 +75,7 @@ up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu_mu
 dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
 all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 
-# The expected values, in closed form; the components odd in z are zero.
+# The expected values are in closed form; the components odd in z are zero.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 c(1 / (2 * 1.5^3), (2 + pi^2) / (2 * 1.5^3))
 }

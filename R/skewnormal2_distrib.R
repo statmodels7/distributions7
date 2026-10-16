@@ -17,8 +17,8 @@ NULL
 #'
 #' @description
 #' Returns \eqn{b = \sqrt{2/\pi} \approx 0.7978846}, which is
-#' \eqn{E[|Z|]} for a standard Gaussian \eqn{Z}. It is the one constant the
-#' skew normal's first moment introduces, and it appears in every quantity of
+#' \eqn{E[|Z|]} for a standard Gaussian \eqn{Z}. It is the one constant that
+#' the skew normal's first moment introduces, and it appears in every quantity of
 #' the centered parametrization: the mean is \eqn{\xi + \omega b\delta}, the
 #' variance \eqn{\omega^2(1-b^2\delta^2)}, and the largest reachable skewness
 #' is built from \eqn{b/\sqrt{1-b^2}}.
@@ -38,7 +38,7 @@ NULL
 #' @keywords internal
 sn_b <- function() sqrt(2 / pi)
 
-#' @title The Largest Skewness a Skew Normal Can Reach
+#' @title The Largest Skewness That a Skew Normal Can Reach
 #'
 #' @description
 #' Returns \eqn{\sup|\gamma_1|} over the skew normal family,
@@ -54,14 +54,14 @@ sn_b <- function() sqrt(2 / pi)
 #' the centered-to-direct map would return `NaN` without any indication of the
 #' cause.
 #'
-#' The ceiling is approached slowly: measured, the skewness is 0.9556 at
-#' \eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}. Data skewer than this
-#' needs [skewt_distrib()].
+#' The ceiling is approached slowly: numerically, the skewness is 0.9556 at
+#' \eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}. Data whose absolute
+#' skewness exceeds this value need [skewt_distrib()].
 #'
 #' @return A single number.
 #'
-#' @seealso [sn_b()] for the constant it is built from,
-#'   [skewnormal2_distrib()] for the parameter it bounds, and
+#' @seealso [sn_b()] for the constant from which it is built,
+#'   [skewnormal2_distrib()] for the parameter that it bounds, and
 #'   [skewt_distrib()] for the family that goes further.
 #'
 #' @examples
@@ -100,16 +100,16 @@ sn_max_skew <- function() {
 #' equals \eqn{(\lvert\gamma_1\rvert/\gamma_{\max})^{2/3}\,b^2/(1-b^2)}, so the
 #' ratio to the ceiling carries the whole of the degeneracy.
 #'
-#' The two forms this replaces differ from it only at the top of the range,
-#' and both subtract two nearly equal numbers there. `1 - (mu_z/b)^2` reaches
-#' exactly zero at the largest skewness [linkfunctions7::bounded_link()] can
-#' produce, and the difference \eqn{b^2 + (b^2-1)c^2} reaches
-#' \eqn{-1.11\times 10^{-16}}. At that skewness, one unit in the last place
+#' The two forms that this function replaces differ from it only at the top of
+#' the range, and both subtract two nearly equal numbers there.
+#' `1 - (mu_z/b)^2` reaches exactly zero at the largest skewness that
+#' [linkfunctions7::bounded_link()] can produce, and the difference
+#' \eqn{b^2 + (b^2-1)c^2} reaches \eqn{-1.11\times 10^{-16}}. At that skewness, one unit in the last place
 #' inside the bound, this function returns \eqn{1.48\times 10^{-16}}, and the
 #' shape that follows from it is \eqn{1.36\times 10^{8}} and finite.
 #'
-#' @param gamma1 The skewness, a numeric vector. Nothing is validated here:
-#'   the result is positive strictly inside
+#' @param gamma1 The skewness, a numeric vector. The function does not
+#'   validate it: the result is positive strictly inside
 #'   \eqn{(-\gamma_{\max}, \gamma_{\max})}, zero at either bound and negative
 #'   outside them.
 #' @param s The sign of `gamma1`, \eqn{\pm 1}, taken by the caller from its
@@ -118,7 +118,7 @@ sn_max_skew <- function() {
 #' @return A numeric vector of the length of `gamma1`.
 #'
 #' @seealso [sn_cp_to_dp()] and [md_skewnormal2()], the two places that divide
-#'   by it, and [sn_max_skew()] for the ceiling it is written against.
+#'   by it, and [sn_max_skew()] for the ceiling against which it is written.
 #'
 #' @examples
 #' g <- distributions7:::sn_max_skew() * c(0.5, 0.9, 0.999, 1 - 1e-15)
@@ -161,7 +161,7 @@ sn_one_minus_delta2 <- function(gamma1, s) {
 #' @param mu,sigma,gamma1 The centered parameters: the mean, the standard
 #'   deviation and the skewness, each a numeric vector. `sigma` must be
 #'   positive and `gamma1` must lie strictly inside
-#'   \eqn{(-0.9952717, 0.9952717)}; nothing is validated here.
+#'   \eqn{(-0.9952717, 0.9952717)}; the function does not validate them.
 #' @param s The sign of `gamma1`, \eqn{\pm 1}, taken by the caller from its
 #'   plain value.
 #'
@@ -211,11 +211,12 @@ sn_cp_to_dp <- function(mu, sigma, gamma1, s) {
 #' This is the S7 class of the skew normal written in its first three moments:
 #' the mean \eqn{\mu}, the standard deviation \eqn{\sigma} and the skewness
 #' \eqn{\gamma_1}. It is the same law as [SkewNormal1Distrib], reached through
-#' the map of [sn_cp_to_dp()], and the only thing that differs is which three
-#' numbers name a member of it.
+#' the map of [sn_cp_to_dp()]; the two classes differ only in which three
+#' numbers name a member of the family.
 #'
 #' The expected information of this parametrization is non-singular at
-#' \eqn{\gamma_1 = 0}, where the direct parametrization's loses a rank; at
+#' \eqn{\gamma_1 = 0}, where the expected information of the direct
+#' parametrization loses a rank; at
 #' \eqn{\sigma = 1} its eigenvalues tend to 2, 1 and \eqn{1/6} as the skewness
 #' goes to zero.
 #'
@@ -301,13 +302,13 @@ sn_cp_to_dp <- function(mu, sigma, gamma1, s) {
 #' # The skewness is bounded, which the direct parametrization's shape is not.
 #' d@params_bounds$gamma1
 #'
-#' # All three parameters are moments, which is what "centered" names.
+#' # All three parameters are moments, which is why it is called "centered".
 #' th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 #' c(mean = mean(d, th), sd = sqrt(variance(d, th)), skewness = skewness(d, th))
 SkewNormal2Distrib <- S7::new_class("SkewNormal2Distrib",
                                     parent = continuous_distrib)
 
-#' @title The Direct Parameters a Centered Triple Implies
+#' @title The Direct Parameters That a Centered Triple Implies
 #'
 #' @description
 #' Takes the sign of the skewness off its plain value and runs
@@ -341,19 +342,20 @@ sn2_theta <- function(theta) {
   dp
 }
 
-#' @title Reject Centered Parameters the Map Cannot Carry
+#' @title Reject Centered Parameters That the Map Cannot Carry
 #'
 #' @description
-#' Checks that the direct parameters [sn_cp_to_dp()] has produced are usable,
-#' and raises in the centered family's own terms when they are not.
+#' Checks that the direct parameters produced by [sn_cp_to_dp()] are usable,
+#' and signals an error in the centered family's own terms when they are not.
 #'
 #' @details
 #' Every probability function of [skewnormal2_distrib()] evaluates the parent
 #' at the mapped parameters, and the parent validates what it is handed
 #' against its own domains. Without this check a caller who wrote `gamma1`
-#' reads an error about `alpha`, a parameter the model does not have, and
-#' about `"skew normal1"`, a family the call does not name. The message here
-#' reports the centered parameter responsible and the value it holds.
+#' reads an error about `alpha`, a parameter that the model does not have, and
+#' about `"skew normal1"`, a family that the call does not name. The message
+#' reports the centered parameter that is responsible and the value that it
+#' holds.
 #'
 #' The check covers the failures of the delegation itself.
 #' [skewnormal2_distrib()] bounds `gamma1`, and every generic checks the
@@ -363,7 +365,7 @@ sn2_theta <- function(theta) {
 #' scale or location is not finite.
 #'
 #' @param dp The direct parameters, as returned by [sn_cp_to_dp()].
-#' @param theta The centered parameters the caller supplied, ordered as
+#' @param theta The centered parameters that the caller supplied, ordered as
 #'   `c("mu", "sigma", "gamma1")`.
 #'
 #' @return Invisibly `NULL`; raises an error naming `"skew normal2"` if any
@@ -376,8 +378,8 @@ sn2_theta <- function(theta) {
 #' th <- list(mu = 0, sigma = 1, gamma1 = distributions7:::sn_max_skew())
 #' try(distributions7:::sn2_theta(th))
 #'
-#' # A scale and a skewness each inside its own domain whose implied scale
-#' # is not.
+#' # A scale and a skewness that each lie inside their own domains can still
+#' # imply a scale that is not finite.
 #' th2 <- list(mu = 0, sigma = 1.1e308, gamma1 = 0.99)
 #' try(distributions7:::sn2_theta(th2))
 #'
@@ -397,8 +399,8 @@ sn2_reject_unmappable <- function(dp, theta) {
 
   cause <- if (!is.finite(al[i])) {
     paste0("  'gamma1' = ", at(3L), " is at the ceiling ",
-           format(sn_max_skew()), " of the skewness a skew normal\n",
-           "  can carry, where the shape it maps to is not finite")
+           format(sn_max_skew()), " of the skewness that a skew normal\n",
+           "  can carry, where the shape to which it maps is not finite")
   } else if (!is.finite(sg[i]) || sg[i] <= 0) {
     paste0("  'sigma' = ", at(2L), " and 'gamma1' = ", at(3L),
            " imply a scale that is not finite")
@@ -421,9 +423,9 @@ sn2_reject_unmappable <- function(dp, theta) {
 #' [sn_cp_to_dp()] and \eqn{z = (y-\xi)/\omega},
 #' \deqn{f(y; \mu, \sigma, \gamma_1)
 #'       = \dfrac{2}{\omega}\,\phi(z)\,\Phi(\alpha z).}
-#' The density is the same function of \eqn{y} as
-#' [distrib_pdf.SkewNormal1Distrib()]'s; only the three numbers naming it
-#' differ.
+#' The density is the same function of \eqn{y} as the one that
+#' [distrib_pdf.SkewNormal1Distrib()] computes; only the three numbers that
+#' name it differ.
 #'
 #' Unlike the derivatives, the density is defined at \eqn{\gamma_1 = 0} and
 #' equals the Gaussian's there: the map itself is continuous through zero, and
@@ -445,9 +447,9 @@ sn2_reject_unmappable <- function(dp, theta) {
 #'
 #' @section Notation:
 #' \eqn{\mu}, \eqn{\sigma} and \eqn{\gamma_1} are the mean, the standard
-#' deviation and the skewness; \eqn{\xi}, \eqn{\omega} and \eqn{\alpha} the
-#' location, scale and shape they imply; \eqn{\phi} and \eqn{\Phi} the standard
-#' Gaussian density and distribution function.
+#' deviation and the skewness; \eqn{\xi}, \eqn{\omega} and \eqn{\alpha} are the
+#' location, scale and shape that they imply; \eqn{\phi} and \eqn{\Phi} are the
+#' standard Gaussian density and distribution function.
 #'
 #' @seealso [distrib_pdf.SkewNormal1Distrib()] for the same density in the
 #'   direct parametrization, [sn_cp_to_dp()] for the map, and [distrib_pdf()]
@@ -459,7 +461,7 @@ sn2_reject_unmappable <- function(dp, theta) {
 #' y <- c(-1, 0.3, 1.7)
 #' th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 #'
-#' # The same law, reached through the map.
+#' # The same law is reached through the map.
 #' all.equal(distrib_pdf(d, y, th),
 #'           distrib_pdf(d1, y, distributions7:::sn2_theta(th)))
 #'
@@ -478,11 +480,11 @@ S7::method(distrib_pdf, SkewNormal2Distrib) <- function(distrib, y, theta, log =
 #' @name distrib_cdf.SkewNormal2Distrib
 #'
 #' @description
-#' Computes the skew normal distribution function at the direct parameters the
-#' centered triple implies, through Azzalini's Owen's T identity
+#' Computes the skew normal distribution function at the direct parameters that
+#' the centered triple implies, through Azzalini's Owen's T identity
 #' \eqn{F(q) = \Phi(z) - 2T(z, \alpha)} with \eqn{z = (q-\xi)/\omega}. The
-#' arithmetic is [distrib_cdf.SkewNormal1Distrib()]'s; this method supplies the
-#' translated parameters.
+#' arithmetic is that of [distrib_cdf.SkewNormal1Distrib()]; this method
+#' supplies the translated parameters.
 #'
 #' @param distrib A `SkewNormal2Distrib` object, from [skewnormal2_distrib()].
 #' @param q A numeric vector of quantiles.
@@ -498,8 +500,8 @@ S7::method(distrib_pdf, SkewNormal2Distrib) <- function(distrib, y, theta, log =
 #'   logarithms with `log.p = TRUE`.
 #'
 #' @section Notation:
-#' \eqn{\gamma_1} is the skewness, \eqn{(\xi, \omega, \alpha)} the implied
-#' location, scale and shape, and \eqn{T} Owen's T function.
+#' \eqn{\gamma_1} is the skewness, \eqn{(\xi, \omega, \alpha)} are the implied
+#' location, scale and shape, and \eqn{T} is Owen's T function.
 #'
 #' @seealso [distrib_cdf.SkewNormal1Distrib()] for the identity,
 #'   [distrib_quantile.SkewNormal2Distrib()] for its inverse, and
@@ -510,7 +512,8 @@ S7::method(distrib_pdf, SkewNormal2Distrib) <- function(distrib, y, theta, log =
 #' q <- c(-2, -0.5, 0.5, 2)
 #' th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 #'
-#' # Against a direct quadrature of the density.
+#' # The distribution function is compared with a direct quadrature of the
+#' # density.
 #' rbind(owen = distrib_cdf(d, q, th),
 #'       quadrature = vapply(q, function(u)
 #'         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
@@ -531,7 +534,7 @@ S7::method(distrib_cdf, SkewNormal2Distrib) <- function(distrib, q, theta,
 #' @name distrib_quantile.SkewNormal2Distrib
 #'
 #' @description
-#' Computes the quantiles of the skew normal at the direct parameters the
+#' Computes the quantiles of the skew normal at the direct parameters that the
 #' centered triple implies. The skew normal has no closed-form quantile
 #' function, so the value comes from [continuous_distrib()]'s root finding on
 #' the distribution function, reached through
@@ -559,7 +562,7 @@ S7::method(distrib_cdf, SkewNormal2Distrib) <- function(distrib, q, theta,
 #' d <- skewnormal2_distrib()
 #' th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 #'
-#' # The round trip through the distribution function.
+#' # A round trip through the distribution function recovers the probabilities.
 #' p <- c(0.05, 0.25, 0.5, 0.75, 0.95)
 #' q <- distrib_quantile(d, p, th)
 #' rbind(quantile = q, back = distrib_cdf(d, q, th))
@@ -577,7 +580,7 @@ S7::method(distrib_quantile, SkewNormal2Distrib) <- function(distrib, p, theta,
 #' @name distrib_rng.SkewNormal2Distrib
 #'
 #' @description
-#' Draws from the skew normal at the direct parameters the centered triple
+#' Draws from the skew normal at the direct parameters that the centered triple
 #' implies, through [distrib_rng.SkewNormal1Distrib()]'s stochastic
 #' representation. The draws are exact and cost two `rnorm` calls, whatever the
 #' skewness is.
@@ -592,7 +595,7 @@ S7::method(distrib_quantile, SkewNormal2Distrib) <- function(distrib, p, theta,
 #'   estimate `mu`, `sigma^2` and `gamma1`.
 #'
 #' @seealso [distrib_rng.SkewNormal1Distrib()] for the representation,
-#'   [mean.SkewNormal2Distrib()] for the moments the draws reproduce, and
+#'   [mean.SkewNormal2Distrib()] for the moments that the draws reproduce, and
 #'   [distrib_rng()] for the generic.
 #'
 #' @examples
@@ -602,8 +605,7 @@ S7::method(distrib_quantile, SkewNormal2Distrib) <- function(distrib, p, theta,
 #' set.seed(2)
 #' x <- distrib_rng(d, 2e5, th)
 #'
-#' # The three parameters are the three sample moments, which is the whole
-#' # point of this parametrization.
+#' # The three parameters are the three sample moments.
 #' rbind(sample = c(mean(x), sd(x), mean((x - mean(x))^3) / sd(x)^3),
 #'       parameter = c(th$mu, th$sigma, th$gamma1))
 S7::method(distrib_rng, SkewNormal2Distrib) <- function(distrib, n, theta, ...) {
@@ -629,7 +631,7 @@ sn2_ge <- function() 3e-3
 #'   negative power of \eqn{\gamma_1} and are infinite at zero.
 #' @param theta An aligned parameter list.
 #' @param what A short description of the quantity, for the message.
-#' @return `NULL`, invisibly, when no skewness is zero.
+#' @return `NULL`, invisibly, when every skewness differs from zero.
 #' @keywords internal
 sn2_reject_zero <- function(theta, what) {
   if (any(theta[[3L]] == 0)) {
@@ -654,7 +656,7 @@ sn2_reject_zero <- function(theta, what) {
 #'
 #' @description
 #' Return the derivatives of the log-density in \eqn{(\mu, \sigma, \gamma_1)}
-#' of orders one to five, each from its own compiled kernel.
+#' of orders one to five. Each order is computed by its own compiled kernel.
 #'
 #' @details
 #' With \eqn{w = (y - \mu)/\sigma}, \eqn{c = (4 - \pi)/2} and
@@ -765,11 +767,11 @@ S7::method(distrib_deriv5, SkewNormal2Distrib) <- function(
 #'   distrib_d2expected_hessian.SkewNormal2Distrib
 #'
 #' @description
-#' The expected information and its first two derivatives in the parameters.
-#' For \eqn{|\gamma_1| <} [sn2_ge()] they come from their series in
-#' \eqn{r = (\gamma_1/c)^{1/3}}; elsewhere from the quadrature of
-#' [loc_scale_expected()] over the family's own observed derivatives, the
-#' family being location-scale in \eqn{(\mu, \sigma)} at fixed
+#' Return the expected information and its first two derivatives in the
+#' parameters. For \eqn{|\gamma_1| <} [sn2_ge()] they come from their series in
+#' \eqn{r = (\gamma_1/c)^{1/3}}; elsewhere they come from the quadrature of
+#' [loc_scale_expected()] over the family's own observed derivatives, because
+#' the family is location-scale in \eqn{(\mu, \sigma)} at fixed
 #' \eqn{\gamma_1}. The quadrature is centered at the step of the skewing
 #' function, \eqn{w = -r} ([loc_scale_center()]), which at a skewness near the
 #' ceiling is too sharp for nodes clustered at zero.
@@ -804,7 +806,8 @@ S7::method(distrib_deriv5, SkewNormal2Distrib) <- function(
 #'
 #' @examples
 #' d <- skewnormal2_distrib()
-#' # finite at zero skewness, where the direct parametrization's is singular
+#' # The information is finite at zero skewness, where that of the direct
+#' # parametrization is singular.
 #' distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = 0))
 S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
@@ -835,10 +838,10 @@ S7::method(distrib_d2expected_hessian, SkewNormal2Distrib) <- function(
 
 #' @title The Expected Information of the Centered Skew Normal, by Region
 #' @name sn2_expected_parts
-#' @description The expected information (`k = 0`) or its derivatives
-#'   (`k = 1, 2`): from the series kernels where \eqn{|\gamma_1| <}
-#'   [sn2_ge()], from [loc_scale_expected()] elsewhere, each observation by
-#'   its own skewness.
+#' @description Returns the expected information (`k = 0`) or its derivatives
+#'   (`k = 1, 2`), from the series kernels where \eqn{|\gamma_1| <}
+#'   [sn2_ge()] and from [loc_scale_expected()] elsewhere. The region is chosen
+#'   for each observation from its own skewness.
 #' @param distrib A `SkewNormal2Distrib` object.
 #' @param theta The parameters.
 #' @param k The order: 0, 1 or 2.
@@ -878,10 +881,10 @@ S7::method(expected_hessian_costly, SkewNormal2Distrib) <- function(x, ...) TRUE
 #'   distrib_grad_y_hess.SkewNormal2Distrib distrib_hess_y_hess.SkewNormal2Distrib
 #'
 #' @description
-#' The first and second derivatives of the log-density in the response, and
-#' the mixed derivatives of orders one and two in the response and one and two
-#' in \eqn{(\mu, \sigma, \gamma_1)}, each from its own compiled kernel, written
-#' as the parameter derivatives are (see
+#' Return the first and second derivatives of the log-density in the response,
+#' and the mixed derivatives of orders one and two in the response and one and
+#' two in \eqn{(\mu, \sigma, \gamma_1)}. Each derivative comes from its own
+#' compiled kernel, written in the same way as the parameter derivatives (see
 #' [distrib_gradient.SkewNormal2Distrib()]).
 #'
 #' @param distrib A `SkewNormal2Distrib` object.
@@ -916,17 +919,17 @@ S7::method(distrib_hess_y, SkewNormal2Distrib) <- function(distrib, y, theta, ..
 #'
 #' @description
 #' Returns \eqn{\mu}, the first parameter, which in this parametrization is the
-#' mean by construction. The addition of [moment_const()] recycles the value to
-#' the length the three parameters imply, so a `theta` whose components vary by
-#' observation gets one mean per observation.
+#' mean by construction. The method adds [moment_const()] to it, which recycles
+#' the value to the length that the three parameters imply, so a `theta` whose
+#' components vary by observation yields one mean per observation.
 #'
 #' @param x A `SkewNormal2Distrib` object, from [skewnormal2_distrib()].
 #' @param theta A named list with components `mu`, `sigma` and `gamma1`, in any
 #'   order; it is aligned here.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of means, of the length the recycled parameters
-#'   imply.
+#' @return A numeric vector of means, of the length that the recycled
+#'   parameters imply.
 #'
 #' @seealso [variance.SkewNormal2Distrib()] and
 #'   [skewness.SkewNormal2Distrib()], the other two parameters read back;
@@ -938,7 +941,7 @@ S7::method(distrib_hess_y, SkewNormal2Distrib) <- function(distrib, y, theta, ..
 #' d <- skewnormal2_distrib()
 #' mean(d, list(mu = 3, sigma = 2, gamma1 = 0.6))
 #'
-#' # One value per observation when a parameter varies.
+#' # The result has one value per observation when a parameter varies.
 #' mean(d, list(mu = c(0, 3, 7), sigma = 2, gamma1 = 0.6))
 #'
 #' @keywords internal
@@ -953,15 +956,15 @@ S7::method(mean, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @description
 #' Returns \eqn{\sigma^2}, the square of the second parameter, which in this
 #' parametrization is the variance by construction. [moment_const()] recycles
-#' the result to the length the three parameters imply.
+#' the result to the length that the three parameters imply.
 #'
 #' @param x A `SkewNormal2Distrib` object, from [skewnormal2_distrib()].
 #' @param theta A named list with components `mu`, `sigma` and `gamma1`, in any
 #'   order; it is aligned here.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, of the length the recycled parameters
-#'   imply.
+#' @return A numeric vector of variances, of the length that the recycled
+#'   parameters imply.
 #'
 #' @seealso [mean.SkewNormal2Distrib()] and [skewness.SkewNormal2Distrib()],
 #'   and [variance.SkewNormal1Distrib()], where the scale is not the standard
@@ -989,18 +992,18 @@ S7::method(variance, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @description
 #' Returns \eqn{\gamma_1}, the third parameter, which in this parametrization
 #' is the standardized third central moment by construction. [moment_const()]
-#' recycles the result to the length the three parameters imply.
+#' recycles the result to the length that the three parameters imply.
 #'
-#' The value cannot leave \eqn{(-0.9952717, 0.9952717)}, the constructor having
-#' bounded the parameter at the supremum the family reaches; see
-#' [sn_max_skew()].
+#' The value cannot leave \eqn{(-0.9952717, 0.9952717)}, because the
+#' constructor bounds the parameter at the supremum that the family reaches;
+#' see [sn_max_skew()].
 #'
 #' @param x A `SkewNormal2Distrib` object, from [skewnormal2_distrib()].
 #' @param theta A named list with components `mu`, `sigma` and `gamma1`, in any
 #'   order; it is aligned here.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of skewnesses, of the length the recycled
+#' @return A numeric vector of skewnesses, of the length that the recycled
 #'   parameters imply.
 #'
 #' @seealso [sn_max_skew()] for the bound,
@@ -1029,8 +1032,9 @@ S7::method(skewness, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @description
 #' Returns the excess kurtosis, computed from
 #' [kurtosis.SkewNormal1Distrib()] at the implied direct parameters. It is the
-#' one moment this parametrization does not name: fixing the first three uses
-#' up all three parameters, so the fourth follows from them.
+#' one moment that this parametrization does not name: once the first three
+#' moments are fixed, all three parameters are used up, so the fourth follows
+#' from them.
 #'
 #' The consequence for use is that a skew normal cannot match an arbitrary
 #' first four moments. At \eqn{\gamma_1 = 0.5} the excess kurtosis is 0.347,
@@ -1041,7 +1045,7 @@ S7::method(skewness, SkewNormal2Distrib) <- function(x, theta, ...) {
 #'   order; it is aligned here.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, of the length the recycled
+#' @return A numeric vector of excess kurtoses, of the length that the recycled
 #'   parameters imply.
 #'
 #' @seealso [skewness.SkewNormal2Distrib()], which does name a parameter;
@@ -1052,8 +1056,8 @@ S7::method(skewness, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- skewnormal2_distrib()
 #'
-#' # The kurtosis follows from the skewness and from nothing else: changing
-#' # the mean and the standard deviation leaves it alone.
+#' # The kurtosis depends on the skewness only: it does not change when the
+#' # mean and the standard deviation change.
 #' c(a = kurtosis(d, list(mu = 0, sigma = 1, gamma1 = 0.5)),
 #'   b = kurtosis(d, list(mu = 9, sigma = 4, gamma1 = 0.5)))
 #'
@@ -1076,11 +1080,11 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' three moments instead of by a location, a scale and a shape.
 #'
 #' The parametrization is Azzalini's. Its expected information stays
-#' non-singular at \eqn{\gamma_1 = 0}, where the direct parametrization's
-#' loses a rank. The map between the two runs through a cube root, so the
-#' derivative of the shape in \eqn{\gamma_1} is unbounded at zero skewness and
-#' the log-density has no derivative of order two or more in \eqn{\gamma_1}
-#' there.
+#' non-singular at \eqn{\gamma_1 = 0}, where the expected information of the
+#' direct parametrization loses a rank. The map between the two runs through a
+#' cube root, so the derivative of the shape in \eqn{\gamma_1} is unbounded at
+#' zero skewness and the log-density has no derivative of order two or more in
+#' \eqn{\gamma_1} there.
 #'
 #' @param link_mu A `linkfunctions7` link object for the mean, which is
 #'   unconstrained. Defaults to [linkfunctions7::identity_link()].
@@ -1089,17 +1093,16 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @param link_gamma1 A link object for the skewness, which must lie strictly
 #'   inside \eqn{(-0.9952717, 0.9952717)}. Defaults to
 #'   [linkfunctions7::bounded_link()] over exactly that interval, so any real
-#'   linear predictor maps to a skewness the family can reach.
+#'   linear predictor maps to a skewness that the family can reach.
 #'
 #' @details
 #' # Relation to reparametrize()
 #'
 #' The map passes through
-#' \eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, and two things
-#' follow from it. It carries a sign, so [sn2_theta()] takes the sign from the
-#' plain value of `gamma1` and passes it to [sn_cp_to_dp()] as an argument,
-#' and the body of the map contains no `abs()`. The derivatives of the
-#' log-density in
+#' \eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, which carries
+#' a sign. For this reason [sn2_theta()] takes the sign from the plain value of
+#' `gamma1` and passes it to [sn_cp_to_dp()] as an argument, and the body of
+#' the map contains no `abs()`. The derivatives of the log-density in
 #' the centered parameters are written out per order in compiled kernels (see
 #' [distrib_gradient.SkewNormal2Distrib()]); near \eqn{\gamma_1 = 0}, where
 #' their closed forms cancel, they come from the series of the log-density in
@@ -1114,7 +1117,7 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' contributions cancel, so the information in \eqn{\gamma_1} tends to
 #' \eqn{1/6} and the whole matrix stays positive definite at symmetry.
 #'
-#' The observed curvature does diverge, at the rate the cube root sets:
+#' The observed curvature does diverge, at the rate that the cube root sets:
 #' \eqn{\gamma_1^{-2/3}}. The derivatives of order two and more are
 #' therefore rejected at \eqn{\gamma_1 = 0} exactly, with a message naming the
 #' cause; the score and the expected information are returned there. The density,
@@ -1165,7 +1168,7 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' d <- skewnormal2_distrib()
 #' th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 #'
-#' # All three parameters are moments, which is what "centered" names.
+#' # All three parameters are moments, which is why it is called "centered".
 #' c(mean = mean(d, th), sd = sqrt(variance(d, th)),
 #'   skewness = skewness(d, th))
 #'

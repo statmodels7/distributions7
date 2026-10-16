@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma}. Neither is read.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}. The method does not read either component.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -24,7 +24,8 @@ wherever it exists. At \eqn{y = \mu} the first derivative drops from
 the returned zero is the value away from that single point.
 
 The same fact appears in the parameters as the zero \code{mu_mu} component of
-\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}}, the family being a location family.
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}}, because the family is a location
+family.
 }
 \examples{
 d <- laplace_distrib()
@@ -33,11 +34,12 @@ th <- list(mu = 0.4, sigma = 1.5)
 
 distrib_hess_y(d, y, th)
 
-# A location family: the same as the curvature in the location.
+# This is a location family, so the second derivative equals the
+# curvature in the location.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 
 # The first derivative drops by 2/sigma across the location, which is the
-# curvature the zero above does not see.
+# curvature that the zero above does not capture.
 diff(distrib_grad_y(d, 0.4 + c(-1e-9, 1e-9), th))
 -2 / 1.5
 }

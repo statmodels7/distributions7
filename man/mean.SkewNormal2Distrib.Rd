@@ -12,20 +12,20 @@ order; it is aligned here.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means, of the length the recycled parameters
-imply.
+A numeric vector of means, of the length that the recycled
+parameters imply.
 }
 \description{
 Returns \eqn{\mu}, the first parameter, which in this parametrization is the
-mean by construction. The addition of \code{\link[=moment_const]{moment_const()}} recycles the value to
-the length the three parameters imply, so a \code{theta} whose components vary by
-observation gets one mean per observation.
+mean by construction. The method adds \code{\link[=moment_const]{moment_const()}} to it, which recycles
+the value to the length that the three parameters imply, so a \code{theta} whose
+components vary by observation yields one mean per observation.
 }
 \examples{
 d <- skewnormal2_distrib()
 mean(d, list(mu = 3, sigma = 2, gamma1 = 0.6))
 
-# One value per observation when a parameter varies.
+# The result has one value per observation when a parameter varies.
 mean(d, list(mu = c(0, 3, 7), sigma = 2, gamma1 = 0.6))
 
 }

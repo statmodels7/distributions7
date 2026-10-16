@@ -12,17 +12,17 @@ order; it is aligned here.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of skewnesses, of the length the recycled
+A numeric vector of skewnesses, of the length that the recycled
 parameters imply.
 }
 \description{
 Returns \eqn{\gamma_1}, the third parameter, which in this parametrization
 is the standardized third central moment by construction. \code{\link[=moment_const]{moment_const()}}
-recycles the result to the length the three parameters imply.
+recycles the result to the length that the three parameters imply.
 
-The value cannot leave \eqn{(-0.9952717, 0.9952717)}, the constructor having
-bounded the parameter at the supremum the family reaches; see
-\code{\link[=sn_max_skew]{sn_max_skew()}}.
+The value cannot leave \eqn{(-0.9952717, 0.9952717)}, because the
+constructor bounds the parameter at the supremum that the family reaches;
+see \code{\link[=sn_max_skew]{sn_max_skew()}}.
 }
 \examples{
 d <- skewnormal2_distrib()

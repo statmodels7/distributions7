@@ -36,7 +36,7 @@ function,
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.}
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count. These are the
-formulas the kernel evaluates for \eqn{\theta \ge 1}.
+formulas that the kernel evaluates for \eqn{\theta \ge 1}.
 }
 \section{The dispersion below one}{
 As \eqn{\theta} goes to zero the family tends to the Poisson, so the
@@ -51,9 +51,9 @@ instead the form of the log-mass in which the size does not appear,
         - \dfrac{\theta}{\mu}B + \theta q, \qquad
       \dfrac{\partial \ell}{\partial \theta} = B - \dfrac{y-\mu}{1+\theta}
         - \mu q,}
-with \eqn{q} from its power series below \eqn{\theta = 1/4}. No term of
-order \eqn{\mu/\theta^2} is formed, so both components keep their accuracy
-as \eqn{\theta} goes to zero, where the dispersion component tends to
+with \eqn{q} from its power series below \eqn{\theta = 1/4}. The kernel does
+not form any term of order \eqn{\mu/\theta^2}, so both components keep their
+accuracy as \eqn{\theta} goes to zero, where the dispersion component tends to
 \deqn{\lim_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
       = \dfrac{(y-\mu)^2 - y}{2\mu}.}
 The cost is \eqn{y} terms per observation in place of a fixed number of
@@ -79,7 +79,7 @@ y <- c(0, 2, 6)
 th <- list(mu = 4, theta = 4)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out below.
 r <- 4 / 4
 P <- digamma(y + r) - digamma(r) - log(1 + 4)
 all.equal(g$mu, P / 4)

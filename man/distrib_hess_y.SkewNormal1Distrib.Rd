@@ -24,7 +24,7 @@ in the response. With \eqn{R' = -R(t+R)} at \eqn{t = \alpha z},
       = \dfrac{\alpha^2 R' - 1}{\sigma^2},}
 which is the same expression as \eqn{\partial^2\ell/\partial\mu^2}. The
 first derivative in \eqn{y} is minus the first derivative in \eqn{\mu}, and
-a second differentiation changes the sign again, so the response curvature
+differentiating a second time changes the sign again, so the response curvature
 equals the location curvature instead of being its negative.
 
 Since \eqn{R'} is negative for every \eqn{t}, the value is strictly negative
@@ -45,19 +45,20 @@ th <- list(mu = 0, sigma = 1, alpha = 3)
 # It equals the curvature in the location, without a sign change.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 
-# Against a central difference of the response derivative.
+# The value is compared with a central difference of the response
+# derivative.
 eps <- 1e-5
 rbind(analytic = distrib_hess_y(d, y, th),
       numeric = (distrib_grad_y(d, y + eps, th) -
                  distrib_grad_y(d, y - eps, th)) / (2 * eps))
 
-# Concave in the response at every shape, and bounded above by
-# -1/sigma^2, which is the Gaussian's own curvature.
+# The log-density is concave in the response at every shape, and the
+# curvature is bounded above by -1/sigma^2, which is the Gaussian's own.
 vapply(c(-20, -1, 0, 1, 20), function(a)
   max(distrib_hess_y(d, seq(-6, 6, by = 0.5), list(mu = 0, sigma = 1, alpha = a))), 0)
 }
 \seealso{
 \code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}} for the first derivative,
-\code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for the parameter curvature it
-shares an expression with, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
+\code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for the parameter curvature with
+which it shares an expression, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

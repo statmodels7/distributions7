@@ -30,9 +30,10 @@ A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 }
 \description{
 Computes the inverse Gaussian quantile function by calling
-\code{\link[statmod:invgauss]{statmod::qinvgauss()}} at \code{mean = mu} and \code{dispersion = 1/lambda}. There is
-no closed form: the distribution function is elementary but not invertible
-in elementary terms, so \code{qinvgauss()} inverts it numerically, with the
+\code{\link[statmod:invgauss]{statmod::qinvgauss()}} at \code{mean = mu} and \code{dispersion = 1/lambda}. The
+quantile function has no closed form: the distribution function is
+elementary but cannot be inverted in elementary terms, so \code{qinvgauss()}
+inverts it numerically, with the
 far-tail correction of \code{\link[=invgauss_quantile]{invgauss_quantile()}}. The
 distribution function is strictly increasing on \eqn{(0, \infty)}, so the
 round trip through \code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf.InvGauss2Distrib()}} returns \code{p}.
@@ -41,7 +42,8 @@ round trip through \code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf.InvGau
 d <- invgauss2_distrib()
 th <- list(mu = 2, lambda = 3)
 
-# A central 95 percent interval, strongly asymmetric about the mean of 2.
+# These quantiles bound a central 95 percent interval, which is strongly
+# asymmetric about the mean of 2.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 
 # Exact inverse: the round trip returns the probabilities that it was given.

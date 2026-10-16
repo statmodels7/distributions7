@@ -37,7 +37,7 @@ log-density is \eqn{\log(\lambda/2) - \lambda|y-\mu|}, which is linear in
 \eqn{\mu}. Every third derivative involving \eqn{\mu} at all is therefore
 zero, and the only surviving component comes from \eqn{\log\lambda}:
 \deqn{\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},}
-with \code{mu_mu_mu}, \code{mu_mu_lambda} and \code{mu_lambda_lambda} all zero.
+where \code{mu_mu_mu}, \code{mu_mu_lambda} and \code{mu_lambda_lambda} are all zero.
 
 These derivatives do not depend on the data, so the observed and expected
 values coincide: \code{expected}, \code{approx} and \code{nsim} are accepted and have no
@@ -60,7 +60,7 @@ d3 <- distrib_deriv3(d, y, th)
 vapply(d3, function(v) v[1], numeric(1))
 2 / 2^3
 
-# expected = TRUE changes nothing, the values carrying no data.
+# expected = TRUE changes nothing, because the values carry no data.
 identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 }
 \seealso{

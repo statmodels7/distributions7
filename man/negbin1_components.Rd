@@ -18,10 +18,10 @@ nb1_components_exact(y, mu, th, order)
 \arguments{
 \item{y}{A numeric vector of counts.}
 
-\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
-vector of length 1 or of the length of \code{y}, both strictly positive.
-Shorter components are recycled. Note that \code{theta} names both the list and
-its second component, the dispersion.}
+\item{theta}{A named list with components \code{mu} and \code{theta}. Each is a
+numeric vector of length 1 or of the length of \code{y}, and both are strictly
+positive. Shorter components are recycled. Note that \code{theta} names both
+the list and its second component, the dispersion.}
 
 \item{order}{The derivative order, an integer from 1 to 4.}
 }
@@ -34,7 +34,7 @@ recycled length of the inputs.
 \description{
 Returns the components of
 \eqn{\partial^{a+b}\ell/\partial\mu^a\partial\theta^b} at any order from one
-to four, from the sparse form the NB1 log-likelihood takes in the size
+to four, from the sparse form that the NB1 log-likelihood takes in the size
 \eqn{r = \mu/\theta}.
 
 \code{nb1_exact_cut()} returns the dispersion, 1, below which the
@@ -76,10 +76,10 @@ and one further \eqn{\theta}-derivative sends
 because \eqn{\mathrm{d}r/\mathrm{d}\theta = -r/\theta} contributes to both
 the power of \eqn{r} and the order of \eqn{G}. The coefficients are
 integers, and the recursion is run rather than solved, so every order is
-exact with nothing transcribed beyond this one step.
+exact and only this one step is transcribed by hand.
 }
 
-\section{The cancellation the polygamma differences carry}{
+\section{The cancellation that the polygamma differences carry}{
 Each \eqn{G^{(m)}(r)} is a polygamma differenced at the shift \eqn{y}, which
 is a count. As \eqn{\theta \to 0} the family tends to the Poisson,
 \eqn{r = \mu/\theta} runs away, and the two terms of the difference agree to
@@ -97,12 +97,12 @@ recursion loses every significant digit.
 The size need not appear at all, and the form without it has no such
 cancellation. Since
 \eqn{\log\Gamma(y+r) - \log\Gamma(r) = \sum_{i<y}\log(r+i)} and
-\eqn{r = \mu/\theta}, the \eqn{y\log\theta} each such term carries cancels
-EXACTLY against \eqn{C(\theta)}, leaving
+\eqn{r = \mu/\theta}, the \eqn{y\log\theta} that each such term carries
+cancels exactly against \eqn{C(\theta)}, leaving
 \deqn{\ell = \sum_{i<y}\log(\mu + i\theta) - \log(y!)
   - \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),}
 whose variable does not run away and whose every derivative is elementary.
-Below \code{\link[=nb1_exact_cut]{nb1_exact_cut()}} that is the route taken, through
+Below \code{\link[=nb1_exact_cut]{nb1_exact_cut()}} the function uses that form, through
 \code{\link[=nb1_components_exact]{nb1_components_exact()}}; above it the recursion is accurate and costs
 \eqn{O(1)} per observation, where the sum costs \eqn{y} terms.
 }

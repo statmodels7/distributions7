@@ -28,8 +28,7 @@ non-negative integers in the NB2 parametrization: the mean \eqn{\mu > 0} and
 a dispersion \eqn{\theta > 0}, so that
 \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. It is a standard count
 model for data that are overdispersed relative to a Poisson. The returned
-object
-carries closed-form derivatives of the log-mass to fourth order and
+object carries closed-form derivatives of the log-mass to fourth order and
 closed-form moments.
 
 The two arguments set the links that carry each parameter to the
@@ -144,6 +143,6 @@ the mean; \code{\link[=poisson_distrib]{poisson_distrib()}} for the equidisperse
 \code{\link[=geometric_distrib]{geometric_distrib()}} for \eqn{\theta = 1}; \code{\link[=pig1_distrib]{pig1_distrib()}} for the Poisson
 mixed over an inverse Gaussian instead of a gamma; \code{\link[=zero_inflated]{zero_inflated()}} and
 \code{\link[=zero_adjusted]{zero_adjusted()}} for counts with excess zeros; \code{\link[=fit_distrib]{fit_distrib()}} to estimate
-the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against
+the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family against
 the same battery that this one passes; \link{NegBin2Distrib} for the class.
 }

@@ -7,8 +7,8 @@
 \item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{y}{A numeric vector of observations. With \code{expected = TRUE} its values
-are ignored and only its length matters, the result being one expectation
-repeated.}
+are ignored and only its length matters, and the result is one
+expectation repeated.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
 numeric vector of length 1 or of the length of \code{y}.}
@@ -22,11 +22,13 @@ transformation is applied in the generic's body, so this method always
 returns the parameter scale.}
 
 \item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, the
-strategy for the expectation. Read only when \code{expected = TRUE}; the first
-is the default and quadratures the observed kernel against the density.}
+strategy for the expectation. It is read only when \code{expected = TRUE}; the first
+is the default and integrates the observed kernel against the density by
+quadrature.}
 
 \item{nsim}{A single positive integer, the Monte Carlo sample size used when
-\code{approx = "mc"}. Ignored by every other strategy. Defaults to \code{10000}.}
+\code{approx = "mc"}. The other strategies do not read it. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -52,7 +54,8 @@ and \eqn{R} are of size \eqn{|t|}), and the derivatives of
 \eqn{\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)}, with \eqn{L} the
 logarithm of the Mills ratio, whose derivatives are, with alternating
 signs, the cumulants of the density proportional to \eqn{e^{ts - s^2/2}}
-on \eqn{s > 0}; no difference of large numbers is formed.
+on \eqn{s > 0}, so that the kernel never forms a difference of large
+numbers.
 
 With \code{expected = TRUE} the value is an expectation, computed numerically by
 \code{\link[=expected_derivative]{expected_derivative()}} from the same kind of integrals as the expected
@@ -71,7 +74,7 @@ th <- list(mu = 0, sigma = 1, alpha = 3)
 d3 <- distrib_deriv3(d, y, th)
 names(d3)
 
-# Against a central difference of the analytic Hessian.
+# The value is compared with a central difference of the analytic Hessian.
 eps <- 1e-4
 rbind(analytic = d3$mu_mu_alpha,
       numeric = (distrib_hessian(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu -

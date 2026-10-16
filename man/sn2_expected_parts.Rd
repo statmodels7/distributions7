@@ -21,9 +21,9 @@ sn2_expected_parts(distrib, theta, k, n, threads = 1L)
 A named list of numeric vectors of length \code{n}.
 }
 \description{
-The expected information (\code{k = 0}) or its derivatives
-(\verb{k = 1, 2}): from the series kernels where \eqn{|\gamma_1| <}
-\code{\link[=sn2_ge]{sn2_ge()}}, from \code{\link[=loc_scale_expected]{loc_scale_expected()}} elsewhere, each observation by
-its own skewness.
+Returns the expected information (\code{k = 0}) or its derivatives
+(\verb{k = 1, 2}), from the series kernels where \eqn{|\gamma_1| <}
+\code{\link[=sn2_ge]{sn2_ge()}} and from \code{\link[=loc_scale_expected]{loc_scale_expected()}} elsewhere. The region is chosen
+for each observation from its own skewness.
 }
 \keyword{internal}

@@ -26,8 +26,8 @@ Inverts \code{\link[=distrib_cdf.PseudoHuber2Distrib]{distrib_cdf.PseudoHuber2Di
 \eqn{P} the smaller tail, is found below \eqn{\mu} in a bracket that starts
 ten standard deviations below it and is doubled until it contains the
 quantile, and an upper quantile is the reflection of the lower one about
-\eqn{\mu}. Neither \eqn{1 - p} nor the exponential of a logarithm is
-formed, so a probability far below machine epsilon gives an accurate
+\eqn{\mu}. The computation forms neither \eqn{1 - p} nor the exponential of
+a logarithm, so a probability far below machine epsilon gives an accurate
 quantile.
 }
 \examples{

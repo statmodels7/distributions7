@@ -44,7 +44,7 @@ location is concentrated at the single point \eqn{r = 0}, so the
 expectation of this second derivative is 0 although the information is
 positive.
 
-The consequence is that the observed information here is not the
+Hence the observed information here is not the
 information. \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns
 \eqn{-1/\sigma^2}, obtained from the variance of the score, and that page
 explains which identity holds and which fails.
@@ -58,7 +58,7 @@ h <- distrib_hessian(d, y, th)
 # The curvature in the location is exactly zero at every observation.
 h$mu_mu
 
-# The other two, written out.
+# The other two components are compared with their formulas.
 r <- y - 0.4
 all.equal(h$sigma_sigma, (1.5 - 2 * abs(r)) / 1.5^3)
 all.equal(h$mu_sigma, -sign(r) / 1.5^2)
@@ -74,6 +74,6 @@ c(observed_mean = mean(distrib_hessian(d, z, th)$mu_mu),
 \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}}, which returns the
 information and is not the expectation of this;
 \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient.LaplaceDistrib()}} for the score;
-\code{\link[=fisher_scoring]{fisher_scoring()}}, the estimation route this family needs; and
+\code{\link[=fisher_scoring]{fisher_scoring()}}, the estimation route that this family needs; and
 \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

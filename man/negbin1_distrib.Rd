@@ -39,11 +39,12 @@ Two negative binomials are in common use and they are different
 families, not two parametrizations of one. Here the variance is
 \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean; \code{\link[=negbin2_distrib]{negbin2_distrib()}} has
-\eqn{\mu + \mu^2/\theta}, growing quadratically. Fitting one is not fitting
-the other, and a likelihood ratio between them is not a test of nested
-models.
+\eqn{\mu + \mu^2/\theta}, growing quadratically. Because they are different
+families, fitting one is not fitting the other, and a likelihood ratio
+between them is not a test of nested models.
 
-The difference is visible in where the mean sits. The size is
+The two families differ in whether the mean appears inside the gamma
+functions of the mass. The size is
 \eqn{r = \mu/\theta} and the success probability \eqn{1/(1+\theta)}, so
 \eqn{\mu} appears inside the gamma functions of the mass; in the
 quadratic form the size is \eqn{\theta} and the mean stays outside them.
@@ -70,9 +71,9 @@ function, the score is
       \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta},}
 and the Hessian is the same chain rule at second order. In the expected
-information every term carrying \eqn{P} drops out, its expectation vanishing
-by the first Bartlett identity, and what remains is two sums over the
-support against the exact mass (\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}).
+information every term carrying \eqn{P} drops out, because its expectation
+vanishes by the first Bartlett identity, and two sums over the support
+against the exact mass remain (\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}).
 
 The mean and the dispersion are not orthogonal here. The mixed entry of
 the expected information is non-zero, where \code{\link[=negbin2_distrib]{negbin2_distrib()}} has exactly
@@ -102,8 +103,8 @@ domain.
 }
 
 \section{Estimation}{
-\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
-estimate is closed form. The method of moments supplies the starting values
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Both
+estimates lack a closed form. The method of moments supplies the starting values
 \eqn{\hat\mu = \bar y} and \eqn{\hat\theta = s^2/\bar y - 1}, with \eqn{s^2}
 the sample variance.
 }
@@ -144,7 +145,7 @@ rbind(fitted  = coef(fit),
       moments = c(mu = mean(z), theta = var(z) / mean(z) - 1))
 
 # On an equidispersed sample the dispersion runs to its boundary, which is
-# the regime the expected information page warns about.
+# the regime against which the expected information page warns.
 set.seed(4)
 coef(fit_distrib(d, rpois(2000, 4)))
 
@@ -160,6 +161,6 @@ for the limit as \eqn{\theta} goes to zero and \code{\link[=geometric_distrib]{g
 case \eqn{\mu = \theta}; \code{\link[=pig1_distrib]{pig1_distrib()}} for a Poisson mixed over an inverse
 Gaussian; \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for counts with excess
 zeros; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to
-validate a family of your own against the same battery that this one passes;
+validate a user-defined family against the same battery that this one passes;
 \link{NegBin1Distrib} for the class.
 }

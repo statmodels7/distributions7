@@ -20,7 +20,7 @@ An integer vector of \code{n} non-negative counts.
 \description{
 Draws \code{n} independent Poisson counts by calling \code{\link[stats:Poisson]{stats::rpois()}}, so the
 draws come from R's own generator and depend on \code{.Random.seed} in the usual
-way. The cumulative-table fallback the discrete base class supplies is
+way. The cumulative-table fallback that the discrete base class supplies is
 bypassed.
 }
 \examples{
@@ -32,7 +32,7 @@ a <- distrib_rng(d, 5, list(mu = 3))
 set.seed(2)
 identical(a, rpois(5, lambda = 3))
 
-# The sample mean and variance both estimate mu, this family being
+# The sample mean and variance both estimate mu because this family is
 # equidispersed.
 set.seed(4)
 z <- distrib_rng(d, 2e4, list(mu = 4.2))

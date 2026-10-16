@@ -35,7 +35,8 @@ draws depend on \code{.Random.seed} in the usual way.
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The moments of a sample sit where the sampling error puts them.
+# The moments of the sample are close to the theoretical ones, within the
+# sampling error.
 set.seed(6)
 z <- distrib_rng(d, 1e5, th)
 rbind(sample = c(mean(z), var(z)),

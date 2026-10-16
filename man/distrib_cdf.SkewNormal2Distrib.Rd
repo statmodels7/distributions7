@@ -24,16 +24,16 @@ A numeric vector of probabilities in \eqn{[0, 1]}, or their
 logarithms with \code{log.p = TRUE}.
 }
 \description{
-Computes the skew normal distribution function at the direct parameters the
-centered triple implies, through Azzalini's Owen's T identity
+Computes the skew normal distribution function at the direct parameters that
+the centered triple implies, through Azzalini's Owen's T identity
 \eqn{F(q) = \Phi(z) - 2T(z, \alpha)} with \eqn{z = (q-\xi)/\omega}. The
-arithmetic is \code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf.SkewNormal1Distrib()}}'s; this method supplies the
-translated parameters.
+arithmetic is that of \code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf.SkewNormal1Distrib()}}; this method
+supplies the translated parameters.
 }
 \section{Notation}{
 
-\eqn{\gamma_1} is the skewness, \eqn{(\xi, \omega, \alpha)} the implied
-location, scale and shape, and \eqn{T} Owen's T function.
+\eqn{\gamma_1} is the skewness, \eqn{(\xi, \omega, \alpha)} are the implied
+location, scale and shape, and \eqn{T} is Owen's T function.
 }
 
 \examples{
@@ -41,7 +41,8 @@ d <- skewnormal2_distrib()
 q <- c(-2, -0.5, 0.5, 2)
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# Against a direct quadrature of the density.
+# The distribution function is compared with a direct quadrature of the
+# density.
 rbind(owen = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))

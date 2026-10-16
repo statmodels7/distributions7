@@ -29,9 +29,10 @@ A numeric vector for the derivatives in the response; a named list,
 keyed by parameter or by parameter pair, for the mixed derivatives.
 }
 \description{
-The derivatives of the log-density in the response to order four, and the
-mixed derivatives of orders one and two in the response and one and two in
-\eqn{(\mu, \sigma, \nu)}, each a closed form from its own compiled kernel.
+Return the derivatives of the log-density in the response to order four, and
+the mixed derivatives of orders one and two in the response and one and two
+in \eqn{(\mu, \sigma, \nu)}; each is a closed form computed by its own
+compiled kernel.
 }
 \examples{
 d <- student_t2_distrib()

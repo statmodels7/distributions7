@@ -48,7 +48,7 @@ th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
 d3 <- distrib_deriv3(d, y, th)
 c(components = length(d3), involving_nu = sum(grepl("nu", names(d3))))
 
-# A closed-form-block component against a difference of the Hessian.
+# A closed-form-block component is compared with a difference of the Hessian.
 eps <- 1e-5
 rbind(analytic = d3$mu_mu_alpha,
       numeric = (distrib_hessian(d, y, list(mu = 0, sigma = 1,
@@ -57,7 +57,7 @@ rbind(analytic = d3$mu_mu_alpha,
                                             alpha = 3 - eps, nu = 6))$mu_mu) /
                 (2 * eps))
 
-# The pure-nu component against a single stencil on the log-density.
+# The pure-nu component is compared with a single stencil on the log-density.
 ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, sigma = 1,
                                              alpha = 3, nu = v), log = TRUE))
 c(ours = sum(d3$nu_nu_nu),

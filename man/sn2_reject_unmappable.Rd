@@ -2,14 +2,14 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{sn2_reject_unmappable}
 \alias{sn2_reject_unmappable}
-\title{Reject Centered Parameters the Map Cannot Carry}
+\title{Reject Centered Parameters That the Map Cannot Carry}
 \usage{
 sn2_reject_unmappable(dp, theta)
 }
 \arguments{
 \item{dp}{The direct parameters, as returned by \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}.}
 
-\item{theta}{The centered parameters the caller supplied, ordered as
+\item{theta}{The centered parameters that the caller supplied, ordered as
 \code{c("mu", "sigma", "gamma1")}.}
 }
 \value{
@@ -17,16 +17,17 @@ Invisibly \code{NULL}; raises an error naming \code{"skew normal2"} if any
 mapped parameter is not finite or the mapped scale is not positive.
 }
 \description{
-Checks that the direct parameters \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} has produced are usable,
-and raises in the centered family's own terms when they are not.
+Checks that the direct parameters produced by \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} are usable,
+and signals an error in the centered family's own terms when they are not.
 }
 \details{
 Every probability function of \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} evaluates the parent
 at the mapped parameters, and the parent validates what it is handed
 against its own domains. Without this check a caller who wrote \code{gamma1}
-reads an error about \code{alpha}, a parameter the model does not have, and
-about \code{"skew normal1"}, a family the call does not name. The message here
-reports the centered parameter responsible and the value it holds.
+reads an error about \code{alpha}, a parameter that the model does not have, and
+about \code{"skew normal1"}, a family that the call does not name. The message
+reports the centered parameter that is responsible and the value that it
+holds.
 
 The check covers the failures of the delegation itself.
 \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} bounds \code{gamma1}, and every generic checks the
@@ -40,8 +41,8 @@ scale or location is not finite.
 th <- list(mu = 0, sigma = 1, gamma1 = distributions7:::sn_max_skew())
 try(distributions7:::sn2_theta(th))
 
-# A scale and a skewness each inside its own domain whose implied scale
-# is not.
+# A scale and a skewness that each lie inside their own domains can still
+# imply a scale that is not finite.
 th2 <- list(mu = 0, sigma = 1.1e308, gamma1 = 0.99)
 try(distributions7:::sn2_theta(th2))
 

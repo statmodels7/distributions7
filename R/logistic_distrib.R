@@ -86,7 +86,8 @@ NULL
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' c(variance = variance(d, th), pi_sq_over_3 = pi^2 * 1.5^2 / 3)
 #'
-#' # Symmetric, so the mean is the median; the excess kurtosis is 6/5.
+#' # The family is symmetric, so the mean is the median; the excess kurtosis
+#' # is 6/5.
 #' c(mean = mean(d, th), median = distrib_quantile(d, 0.5, th),
 #'   excess_kurtosis = kurtosis(d, th))
 LogisticDistrib <- S7::new_class("LogisticDistrib", parent = continuous_distrib)
@@ -128,7 +129,8 @@ LogisticDistrib <- S7::new_class("LogisticDistrib", parent = continuous_distrib)
 #' all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
 #'           dlogis(y, location = 0.4, scale = 1.5))
 #'
-#' # Symmetric about mu: equal densities at equal distances either side.
+#' # The density is symmetric about mu, so equal distances on either side give
+#' # equal densities.
 #' distrib_pdf(d, 0.4 + c(-2, 2), list(mu = 0.4, sigma = 1.5))
 #'
 #' # The density and the distribution function are linked by
@@ -182,7 +184,7 @@ S7::method(distrib_pdf, LogisticDistrib) <- function(distrib, y, theta, log = FA
 #' all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
 #'           plogis(c(-1.2, 0.3, 2.5), location = 0.4, scale = 1.5))
 #'
-#' # Symmetric: F(mu - a) + F(mu + a) = 1.
+#' # The distribution is symmetric, so F(mu - a) + F(mu + a) = 1.
 #' distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 #'
 #' # It is the inverse logit link, so the two agree exactly.
@@ -232,10 +234,10 @@ S7::method(distrib_cdf, LogisticDistrib) <- function(distrib, q, theta, lower.ta
 #' d <- logistic_distrib()
 #' th <- list(mu = 0.4, sigma = 1.5)
 #'
-#' # The median is mu, the family being symmetric.
+#' # The median is mu, because the family is symmetric.
 #' distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # Exact inverse: the round trip returns the probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
@@ -342,7 +344,7 @@ S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out.
 #' z <- (y - 0.4) / 1.5
 #' all.equal(g$mu, tanh(z / 2) / 1.5)
 #' all.equal(g$sigma, -(1 - z * tanh(z / 2)) / 1.5)
@@ -406,11 +408,12 @@ S7::method(distrib_gradient, LogisticDistrib) <- function(distrib, y, theta, sca
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' h <- distrib_hessian(d, y, th)
 #'
-#' # The closed form for the location, written out.
+#' # The closed form for the location is written out.
 #' z <- (y - 0.4) / 1.5
 #' all.equal(h$mu_mu, -(1 - tanh(z / 2)^2) / (2 * 1.5^2))
 #'
-#' # Concave in mu everywhere, and flattening as the residual grows.
+#' # The log-density is concave in mu everywhere, and the curvature flattens
+#' # as the residual grows.
 #' round(distrib_hessian(d, 0.4 + c(0, 1.5, 3, 6, 12), th)$mu_mu, 6)
 #'
 #' # A central difference of the score reproduces it.
@@ -436,8 +439,8 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' so the location and the scale are orthogonal and their estimates are
 #' asymptotically independent. The information in the location is
 #' \eqn{1/(3\sigma^2)}, a third of a Gaussian's \eqn{1/\sigma^2} at the same
-#' \eqn{\sigma}. Compared at equal variance the two are much closer, the
-#' logistic variance being \eqn{\pi^2\sigma^2/3}.
+#' \eqn{\sigma}. Compared at equal variance the two are much closer, and the
+#' logistic variance is \eqn{\pi^2\sigma^2/3}.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -475,7 +478,7 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' d <- logistic_distrib()
 #' th <- list(mu = 0.4, sigma = 1.5)
 #'
-#' # The three closed forms.
+#' # The three closed forms are computed.
 #' lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 #' c(-1 / (3 * 1.5^2), -(3 + pi^2) / (9 * 1.5^2))
 #'
@@ -555,7 +558,7 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #'
-#' # The expected values, in closed form; the components odd in z are zero.
+#' # The expected values are in closed form; the components odd in z are zero.
 #' lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #' c(1 / (2 * 1.5^3), (2 + pi^2) / (2 * 1.5^3))
 S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
@@ -730,7 +733,7 @@ S7::method(distrib_deriv5, LogisticDistrib) <- function(distrib, y, theta,
 #' # the location.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
-#' # Bounded by 1/sigma however far out the observation is.
+#' # The derivative is bounded by 1/sigma however far out the observation is.
 #' max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
 #' 1 / 1.5
 S7::method(distrib_grad_y, LogisticDistrib) <- function(distrib, y, theta, ...) {
@@ -746,9 +749,9 @@ S7::method(distrib_grad_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{2\sigma^2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right),
 #'       \qquad z = \dfrac{y-\mu}{\sigma},}
 #' in closed form. It is negative everywhere, so the log-density is concave in
-#' the response throughout, and it decays to zero in either tail. Being a
-#' location family, the logistic has the same curvature in the response as in
-#' its location, so this equals the `mu_mu` component of
+#' the response throughout, and it decays to zero in either tail. Because the
+#' logistic is a location family, it has the same curvature in the response as
+#' in its location, so this equals the `mu_mu` component of
 #' [distrib_hessian.LogisticDistrib()].
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
@@ -773,10 +776,12 @@ S7::method(distrib_grad_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #'
 #' distrib_hess_y(d, y, th)
 #'
-#' # A location family: the same curvature as in the location.
+#' # The logistic is a location family, so the curvature is the same as in the
+#' # location.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
-#' # Concave everywhere, unlike the Cauchy, which turns convex in its tails.
+#' # The logistic is concave everywhere, unlike the Cauchy, which turns convex
+#' # in its tails.
 #' all(distrib_hess_y(d, seq(-50, 50, length.out = 1e3), th) < 0)
 #' any(distrib_hess_y(cauchy_distrib(), seq(-50, 50, length.out = 1e3), th) > 0)
 S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) {
@@ -799,7 +804,7 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #' The family is symmetric about \eqn{\mu} with variance
 #' \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale, not a standard
 #' deviation. Its distribution function is the logistic sigmoid, the same curve
-#' `linkfunctions7` uses as the inverse logit link.
+#' that `linkfunctions7` uses as the inverse logit link.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the mean \eqn{\mu}.
 #'   Defaults to [linkfunctions7::identity_link()], because the mean already
@@ -840,7 +845,7 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) 
 #'
 #' # Estimation
 #'
-#' There is no closed-form estimate; [fit_distrib()] maximizes the
+#' The estimate has no closed form; [fit_distrib()] maximizes the
 #' log-likelihood on the link scale. The log-likelihood is concave in
 #' \eqn{\mu} for a fixed \eqn{\sigma}, so the location is well determined.
 #'

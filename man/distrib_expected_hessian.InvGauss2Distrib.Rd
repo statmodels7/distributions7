@@ -43,12 +43,13 @@ most linear in the response, so the expectations need only
       \mathbb{E}\left[\ell^{(\mu\lambda)}\right] = 0, \qquad
       \mathbb{E}\left[\ell^{(\lambda\lambda)}\right] =
         -\dfrac{1}{2\lambda^2}.}
-The pure shape entry is the observed value itself, being free of the data.
+The pure shape entry equals the observed value itself, because it is free of
+the data.
 
 Both diagonal entries are negative at every parameter setting, so the
-information is positive definite everywhere. The zero off-diagonal says the
-mean and the shape are orthogonal, so the mean equation can be fitted with
-the shape held at any value without biasing it.
+information is positive definite everywhere. The zero off-diagonal entry
+shows that the mean and the shape are orthogonal, so the mean equation can
+be fitted without bias when the shape is held at any value.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
@@ -67,7 +68,7 @@ parameter.
 d <- invgauss2_distrib()
 th <- list(mu = 2, lambda = 3)
 
-# The three constants, one value per observation.
+# Each of the three constants has one value per observation.
 lapply(distrib_expected_hessian(d, c(1, 2, 3), th), unique)
 c(-3 / 2^3, 0, -1 / (2 * 3^2))
 

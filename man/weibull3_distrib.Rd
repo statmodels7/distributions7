@@ -26,12 +26,13 @@ the mean is \eqn{b\,\Gamma(1 + 1/\sigma)}. Here the scale is
 \deqn{b = \dfrac{m}{\Gamma(1 + 1/\sigma)},}
 and every derivative in \eqn{(m, \sigma)} to order five, the expected
 information and its derivatives, the derivatives in the response and the
-derivatives of the distribution function are closed forms, each order in
-its own compiled kernel (see \code{\link[=distrib_gradient.Weibull3Distrib]{distrib_gradient.Weibull3Distrib()}}).
+derivatives of the distribution function are closed forms, and each order
+is computed in its own compiled kernel (see
+\code{\link[=distrib_gradient.Weibull3Distrib]{distrib_gradient.Weibull3Distrib()}}).
 
 The number follows gamlss, where the Weibull in the mean is \code{WEI3}.
-Leaving \code{weibull2} unused is deliberate: it names a different
-parametrization there.
+This package does not use the name \code{weibull2}, because that name denotes a
+different parametrization in gamlss.
 }
 \section{The distribution}{
 

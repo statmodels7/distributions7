@@ -24,9 +24,9 @@ the response,
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{2\sigma^2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right),
       \qquad z = \dfrac{y-\mu}{\sigma},}
 in closed form. It is negative everywhere, so the log-density is concave in
-the response throughout, and it decays to zero in either tail. Being a
-location family, the logistic has the same curvature in the response as in
-its location, so this equals the \code{mu_mu} component of
+the response throughout, and it decays to zero in either tail. Because the
+logistic is a location family, it has the same curvature in the response as
+in its location, so this equals the \code{mu_mu} component of
 \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}}.
 }
 \examples{
@@ -36,10 +36,12 @@ th <- list(mu = 0.4, sigma = 1.5)
 
 distrib_hess_y(d, y, th)
 
-# A location family: the same curvature as in the location.
+# The logistic is a location family, so the curvature is the same as in the
+# location.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 
-# Concave everywhere, unlike the Cauchy, which turns convex in its tails.
+# The logistic is concave everywhere, unlike the Cauchy, which turns convex
+# in its tails.
 all(distrib_hess_y(d, seq(-50, 50, length.out = 1e3), th) < 0)
 any(distrib_hess_y(cauchy_distrib(), seq(-50, 50, length.out = 1e3), th) > 0)
 }

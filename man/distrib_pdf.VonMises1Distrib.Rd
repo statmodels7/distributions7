@@ -53,7 +53,7 @@ d <- vonmises1_distrib()
 th <- list(mu = 0.5, kappa = 2)
 y <- c(-1, 0, 0.5, 2)
 
-# The formula written out.
+# The density equals the formula written out.
 all.equal(distrib_pdf(d, y, th),
           exp(2 * cos(y - 0.5)) / (2 * pi * besselI(2, 0)))
 

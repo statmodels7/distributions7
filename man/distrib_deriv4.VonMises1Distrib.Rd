@@ -21,10 +21,11 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+or \code{"opg"}. It is read only when \code{expected = TRUE}.}
 
 \item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -41,15 +42,16 @@ exactly zero.
 \description{
 Computes the five distinct fourth derivatives of the von Mises log-density
 in \eqn{\mu} and \eqn{\kappa}, in closed form, by the construction
-\code{\link[=distrib_deriv3.VonMises1Distrib]{distrib_deriv3.VonMises1Distrib()}} describes carried one order further. The
+that \code{\link[=distrib_deriv3.VonMises1Distrib]{distrib_deriv3.VonMises1Distrib()}} describes, carried one order
+further. The
 log-density is linear in \eqn{\kappa} apart from the normalizing constant,
 so two of the five are exactly zero: \code{mu_mu_kappa_kappa} and
 \code{mu_kappa_kappa_kappa}. The pure-direction component is
 \eqn{\kappa\cos(y-\mu)}, the \eqn{\mu\mu\mu\kappa} one \eqn{-\sin(y-\mu)},
 and the pure-concentration one \eqn{-A^{(3)}(\kappa)}.
 
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
-the one place on this page where \code{approx} and \code{nsim} are read.
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, and only in
+this case are \code{approx} and \code{nsim} read.
 }
 \section{Notation}{
 

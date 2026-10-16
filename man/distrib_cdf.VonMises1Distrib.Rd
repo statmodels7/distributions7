@@ -29,13 +29,13 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 \description{
 Computes \eqn{F(q) = P(Y \le q)} on \eqn{[-\pi, \pi)} from the Fourier
 series of the density integrated term by term, through \code{\link[=vm_cdf]{vm_cdf()}}. The
-density has no elementary antiderivative, and the quadrature the base class
-would use costs one integration per observation; the series replaces
-\eqn{n} quadratures with a few dozen vectorized steps, using only the Bessel
-ratios \eqn{I_j/I_0} from a backward recurrence.
+density has no elementary antiderivative, and the quadrature that the base
+class would use costs one integration per observation; the series replaces
+the \eqn{n} quadratures with a few dozen vectorized steps,
+using only the Bessel ratios \eqn{I_j/I_0} from a backward recurrence.
 
-Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, the
-support being the declared interval. Where the requested tail is below
+Below \eqn{-\pi} the value is 0 and at or above \eqn{\pi} it is 1, because
+the support is the declared interval. Where the requested tail is below
 \eqn{10^{-6}}, where the absolute error of the series would cost relative
 accuracy, it comes from a quadrature
 of the tail instead, on the log scale (\code{\link[=vm_cdf_tail]{vm_cdf_tail()}}), so that a small

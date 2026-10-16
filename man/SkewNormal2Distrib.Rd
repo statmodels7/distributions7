@@ -47,11 +47,12 @@ interpretations \code{c(mu = "mean", sigma = "standard deviation", gamma1 = "ske
 This is the S7 class of the skew normal written in its first three moments:
 the mean \eqn{\mu}, the standard deviation \eqn{\sigma} and the skewness
 \eqn{\gamma_1}. It is the same law as \link{SkewNormal1Distrib}, reached through
-the map of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, and the only thing that differs is which three
-numbers name a member of it.
+the map of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}; the two classes differ only in which three
+numbers name a member of the family.
 
 The expected information of this parametrization is non-singular at
-\eqn{\gamma_1 = 0}, where the direct parametrization's loses a rank; at
+\eqn{\gamma_1 = 0}, where the expected information of the direct
+parametrization loses a rank; at
 \eqn{\sigma = 1} its eigenvalues tend to 2, 1 and \eqn{1/6} as the skewness
 goes to zero.
 
@@ -129,7 +130,7 @@ d@params_interpretation
 # The skewness is bounded, which the direct parametrization's shape is not.
 d@params_bounds$gamma1
 
-# All three parameters are moments, which is what "centered" names.
+# All three parameters are moments, which is why it is called "centered".
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 c(mean = mean(d, th), sd = sqrt(variance(d, th)), skewness = skewness(d, th))
 }

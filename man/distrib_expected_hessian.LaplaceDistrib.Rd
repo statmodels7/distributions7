@@ -60,7 +60,7 @@ for a regular family the two agree with the variance of the score by the
 second Bartlett identity. The Laplace is not regular in \eqn{\mu}: the
 first identity \eqn{\mathbb{E}[\partial\ell/\partial\mu] = 0} still holds,
 the second does not, and the information is defined as the variance of
-the score. That is what this method returns.
+the score, which this method returns.
 }
 
 \examples{
@@ -89,5 +89,6 @@ coef(fit_distrib(d, z))
 \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient.LaplaceDistrib()}}, whose variance this is;
 \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts this matrix and so fits this family
 where a Newton step could not; and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
-generic and the strategies it offers a family with no closed form.
+generic and the strategies that it offers for a family with no closed
+form.
 }

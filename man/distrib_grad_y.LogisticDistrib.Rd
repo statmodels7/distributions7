@@ -38,7 +38,7 @@ all.equal(distrib_grad_y(d, y, th), -tanh((y - 0.4) / (2 * 1.5)) / 1.5)
 # the location.
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 
-# Bounded by 1/sigma however far out the observation is.
+# The derivative is bounded by 1/sigma however far out the observation is.
 max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
 1 / 1.5
 }

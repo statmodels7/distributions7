@@ -8,8 +8,8 @@ laplace2_distrib(link_mu = identity_link(), link_lambda = log_link())
 }
 \arguments{
 \item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
-\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
-ranging over the whole line already.}
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, because the
+location already ranges over the whole line.}
 
 \item{link_lambda}{A \code{link} object from \code{linkfunctions7} for the rate
 \eqn{\lambda}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
@@ -33,7 +33,8 @@ does not involve the second parameter is identical between them.
 The rate form is the one that penalized regression uses: with \eqn{\mu = 0} the
 negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so \eqn{\lambda}
 is a shrinkage parameter and larger values penalize harder.
-\code{penalties7::lasso_penalty()} is this family with the location held at zero.
+\code{penalties7::lasso_penalty()} is this family when the location is held at
+zero.
 }
 \section{The parametrization}{
 The density on \eqn{y \in (-\infty, \infty)} is
@@ -46,7 +47,7 @@ Against \code{\link[=laplace_distrib]{laplace_distrib()}} the map is \eqn{\lambd
 location is shared, so its score, its information and its derivatives in the
 response are the same quantities read at the same point; the second
 parameter's are not, and this parametrization's are the simpler of the two,
-\eqn{\lambda} being the natural parameter of the exponential family in
+because \eqn{\lambda} is the natural parameter of the exponential family in
 \eqn{|y - \mu|}.
 }
 
@@ -81,14 +82,14 @@ information above.
 \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. Here
 \eqn{\lambda} is a distribution parameter; the same letter names the
 tuning parameter of a penalty in \code{penalties7}, and the two coincide in the
-lasso, which is this family with \eqn{\mu} held at zero.
+lasso, which is this family when \eqn{\mu} is held at zero.
 }
 
 \examples{
 d <- laplace2_distrib()
 d
 
-# The same law as the scale parametrization at lambda = 1/sigma.
+# This is the same law as the scale parametrization at lambda = 1/sigma.
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
@@ -105,8 +106,8 @@ rbind(fitted = coef(fit),
       closed = c(mu = median(z),
                  lambda = 1 / mean(abs(z - median(z)))))
 
-# Holding the location at zero gives the prior a lasso penalty is written
-# from: the negative log-density is lambda |y| up to a constant.
+# Holding the location at zero gives the prior from which a lasso penalty
+# is written: the negative log-density is lambda |y| up to a constant.
 prior <- fixed(d, mu = 0)
 prior@params
 -distrib_pdf(prior, c(-2, 0, 2), list(lambda = 0.5), log = TRUE)

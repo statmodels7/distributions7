@@ -7,8 +7,8 @@
 sn_one_minus_delta2(gamma1, s)
 }
 \arguments{
-\item{gamma1}{The skewness, a numeric vector. Nothing is validated here:
-the result is positive strictly inside
+\item{gamma1}{The skewness, a numeric vector. The function does not
+validate it: the result is positive strictly inside
 \eqn{(-\gamma_{\max}, \gamma_{\max})}, zero at either bound and negative
 outside them.}
 
@@ -35,11 +35,11 @@ The identity is exact rather than an expansion near the ceiling. With
 equals \eqn{(\lvert\gamma_1\rvert/\gamma_{\max})^{2/3}\,b^2/(1-b^2)}, so the
 ratio to the ceiling carries the whole of the degeneracy.
 
-The two forms this replaces differ from it only at the top of the range,
-and both subtract two nearly equal numbers there. \code{1 - (mu_z/b)^2} reaches
-exactly zero at the largest skewness \code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} can
-produce, and the difference \eqn{b^2 + (b^2-1)c^2} reaches
-\eqn{-1.11\times 10^{-16}}. At that skewness, one unit in the last place
+The two forms that this function replaces differ from it only at the top of
+the range, and both subtract two nearly equal numbers there.
+\code{1 - (mu_z/b)^2} reaches exactly zero at the largest skewness that
+\code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} can produce, and the difference
+\eqn{b^2 + (b^2-1)c^2} reaches \eqn{-1.11\times 10^{-16}}. At that skewness, one unit in the last place
 inside the bound, this function returns \eqn{1.48\times 10^{-16}}, and the
 shape that follows from it is \eqn{1.36\times 10^{8}} and finite.
 }
@@ -55,6 +55,6 @@ cc <- (2 * g / (4 - pi))^(1 / 3)
 }
 \seealso{
 \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} and \code{\link[=md_skewnormal2]{md_skewnormal2()}}, the two places that divide
-by it, and \code{\link[=sn_max_skew]{sn_max_skew()}} for the ceiling it is written against.
+by it, and \code{\link[=sn_max_skew]{sn_max_skew()}} for the ceiling against which it is written.
 }
 \keyword{internal}

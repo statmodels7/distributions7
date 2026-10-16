@@ -33,8 +33,8 @@ series of the concentration parametrization, read at
 the response not at all, so the distribution function is the other family's
 at that concentration.
 
-What it replaces is the base class's quadrature, one integration per
-observation. See \code{\link[=vm_cdf]{vm_cdf()}} for the series, its number of terms and the
+This replaces the base class's quadrature, which performs one integration
+per observation. See \code{\link[=vm_cdf]{vm_cdf()}} for the series, its number of terms and the
 blocking that keeps the intermediate small. Where the requested tail is
 below \eqn{10^{-6}}, where the absolute error of the series would cost
 relative accuracy, it comes from a quadrature of the tail on the log
@@ -51,7 +51,8 @@ rbind(series = distrib_cdf(d2, y, th),
         integrate(function(u) distrib_pdf(d2, u, th), -pi, v)$value,
         numeric(1)))
 
-# And with the concentration parametrization at the implied concentration.
+# It also agrees with the concentration parametrization at the implied
+# concentration.
 k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(distrib_cdf(d2, y, th),
           distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))

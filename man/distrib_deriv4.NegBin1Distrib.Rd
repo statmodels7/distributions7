@@ -9,9 +9,9 @@
 \item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
 is read.}
 
-\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
-vector of length 1 or of the length of \code{y}, both strictly positive. A
-component of length 1 is recycled.}
+\item{theta}{A named list with components \code{mu} and \code{theta}. Each is a
+numeric vector of length 1 or of the length of \code{y}, and both are strictly
+positive. A component of length 1 is recycled.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
 model is returned in place of the value at the data, computed numerically.
@@ -21,10 +21,11 @@ Defaults to \code{FALSE}.}
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
 \item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. Read only when \code{expected = TRUE}.}
+or \code{"opg"}. It is read only when \code{expected = TRUE}.}
 
 \item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
+\code{10000}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -36,8 +37,8 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 }
 \description{
 Computes the five distinct fourth derivatives of the NB1 log-likelihood in
-\eqn{\mu} and \eqn{\theta}, in closed form, by the construction
-\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}} describes carried one order further: the
+\eqn{\mu} and \eqn{\theta}, in closed form, by the construction that
+\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}} describes, carried one order further: the
 same coefficient recursion over the powers of \eqn{r = \mu/\theta} and the
 order of \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.
 

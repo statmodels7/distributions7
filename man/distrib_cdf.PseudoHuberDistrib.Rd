@@ -29,21 +29,22 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 }
 \description{
 Computes \eqn{F(q) = P(Y \le q)} by numerical integration of the density,
-the family having no elementary distribution function. The integral is
+because the family has no elementary distribution function. The integral is
 taken by the compiled rule of \code{\link[=compiled_cdf]{compiled_cdf()}}, over the tail on the side
 of \eqn{q} away from \eqn{\mu}: below the location it is \eqn{F}, above
-it the survival function, so that neither tail is a difference of two
-numbers near one.
+it the survival function, so that the value in each tail is computed
+directly and not as a difference of two numbers near one.
 }
 \examples{
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The quadrature, and the symmetry of the law about its location.
+# The quadrature gives the distribution function, and the law is symmetric
+# about its location.
 distrib_cdf(d, c(-1, 0.4, 2), th)
 distrib_cdf(d, 0.4 - 1.5, th) + distrib_cdf(d, 0.4 + 1.5, th)
 
-# At the location it is one half exactly, the law being symmetric.
+# At the location it is one half exactly, because the law is symmetric.
 distrib_cdf(d, 0.4, th)
 
 # It agrees with a direct integration of the density.

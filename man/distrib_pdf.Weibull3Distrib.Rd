@@ -25,8 +25,8 @@
 A numeric vector.
 }
 \description{
-The Weibull with shape \eqn{\sigma} and scale
-\eqn{b = m / \Gamma(1 + 1/\sigma)}, so that \eqn{E[Y] = m}. The density,
+The methods of this page describe the Weibull with shape \eqn{\sigma} and
+scale \eqn{b = m / \Gamma(1 + 1/\sigma)}, so that \eqn{E[Y] = m}. The density,
 the distribution function, the quantile function and the generator are
 \code{\link[stats:Weibull]{stats::dweibull()}}, \code{\link[stats:Weibull]{stats::pweibull()}}, \code{\link[stats:Weibull]{stats::qweibull()}} and
 \code{\link[stats:Weibull]{stats::rweibull()}} at that scale. At a small shape \eqn{b} underflows to
@@ -34,7 +34,7 @@ the distribution function, the quantile function and the generator are
 \eqn{\log b} and \eqn{\log(y/b)}. On the log scale of the lower tail the
 distribution function and the quantile go through the logarithm of the
 cumulative hazard (\code{\link[=weibull_log_lower]{weibull_log_lower()}}, \code{\link[=log_neg_log1mexp]{log_neg_log1mexp()}}), so that
-neither rounds where the hazard or \eqn{1 - p} would.
+they do not round where the hazard or \eqn{1 - p} would.
 }
 \examples{
 d <- weibull3_distrib()

@@ -80,7 +80,7 @@ NULL
 #' d <- vonmises2_distrib()
 #' S7::S7_inherits(d, continuous_distrib)
 #'
-#' # The resultant length is bounded, which is what makes it readable.
+#' # The resultant length is bounded, so it is readable directly.
 #' d@params
 #' d@params_bounds$rho
 #' d@params_interpretation
@@ -135,7 +135,7 @@ VonMises2Distrib <- S7::new_class("VonMises2Distrib", parent = continuous_distri
 #' distrib_pdf(d2, y, th)
 #'
 #' # It is the same law as the concentration parametrization, at the
-#' # concentration this resultant length implies.
+#' # concentration that this resultant length implies.
 #' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' k
 #' all.equal(distrib_pdf(d2, y, th),
@@ -163,9 +163,9 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param n A single positive integer, the number of draws.
-#' @param theta A named list with components `mu` and `rho`, each a numeric
-#'   vector of length 1 or `n`, recycled to `n` otherwise as by the generic.
-#'   `mu` must lie in \eqn{(-\pi, \pi)} and `rho` in \eqn{(0, 1)}. Draw `i` is
+#' @param theta A named list with components `mu` and `rho`, each of which is
+#'   a numeric vector of length 1 or `n`. As in the generic, a component of
+#'   length 1 is recycled to `n`. `mu` must lie in \eqn{(-\pi, \pi)} and `rho` in \eqn{(0, 1)}. Draw `i` is
 #'   generated at `mu[i]` and `rho[i]`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -253,7 +253,7 @@ S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
 #'       closed = vapply(g, sum, numeric(1)))
 #'
 #' # The direction component is unchanged from the concentration
-#' # parametrization, the map touching the second parameter only.
+#' # parametrization, because the map touches the second parameter only.
 #' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' all.equal(g$mu,
 #'           distrib_gradient(vonmises1_distrib(), y,
@@ -273,7 +273,7 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #'       \ell^{(\mu\rho)} = \sin(y-\mu)\,\kappa'(\rho), \qquad
 #'       \ell^{(\rho\rho)} = \{\cos(y-\mu) - \rho\}\kappa''(\rho)
 #'                          - \kappa'(\rho),}
-#' the last from differentiating the score's
+#' where the last component comes from differentiating the score's
 #' \eqn{\{\cos(y-\mu) - \rho\}\kappa'(\rho)}. The components are computed
 #' by a compiled kernel.
 #'
@@ -347,11 +347,11 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' \eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}, the reciprocal of the
 #' information in \eqn{\kappa}. The two parameters remain orthogonal.
 #'
-#' `approx` and `nsim` are ignored, the expectation being exact.
+#' `approx` and `nsim` are ignored because the expectation is exact.
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
-#' @param y A numeric vector of angles. Only its length is read, the
-#'   expectation not depending on the data; the values are ignored.
+#' @param y A numeric vector of angles. Only its length is read, because
+#'   the expectation does not depend on the data; the values are ignored.
 #' @param theta A named list with components `mu` and `rho`, each a numeric
 #'   vector of length 1. `rho` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
@@ -374,8 +374,8 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' direction, \eqn{\rho \in (0,1)} the mean resultant length, \eqn{\kappa} the
 #' concentration and \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 #'
-#' @seealso [distrib_hessian.VonMises2Distrib()] for the quantity this is the
-#'   expectation of, [distrib_expected_hessian.VonMises1Distrib()] for the same
+#' @seealso [distrib_hessian.VonMises2Distrib()] for the quantity of which this
+#'   is the expectation, [distrib_expected_hessian.VonMises1Distrib()] for the same
 #'   quantity in the concentration, and [distrib_expected_hessian()] for the
 #'   generic.
 #'
@@ -411,7 +411,7 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #' \eqn{[-\pi, \pi)}, obtained numerically by delegating to
 #' [mean.distrib()] at the implied concentration.
 #'
-#' It is not a circular quantity, and neither parameter describes it.
+#' It is not a circular quantity, and the two parameters do not describe it.
 #' \eqn{\mu} is the mean *direction* and \eqn{\rho} the mean resultant length;
 #' \eqn{\mathbb{E}[Y]} differs from \eqn{\mu} whenever \eqn{\mu \ne 0}, because
 #' the interval is cut at \eqn{\pm\pi} and the density is not symmetric about
@@ -448,7 +448,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' mean direction \eqn{\mu} and its mean resultant length
 #' \eqn{\rho \in (0, 1)}. The returned object carries closed-form derivatives
 #' of the log-density to fourth order, a closed-form expected information, and
-#' the same Bessel-series distribution function the concentration
+#' the same Bessel-series distribution function that the concentration
 #' parametrization uses.
 #'
 #' The concentration \eqn{\kappa} of [vonmises1_distrib()] is unbounded and
@@ -492,25 +492,25 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #'
 #' The map touches the second parameter only, so every chain rule is the
 #' one-variable one and the derivatives are exact at every order. Every
-#' component carrying at least one \eqn{\mu} collapses to a single term, the
-#' concentration parametrization's \eqn{\mu}-derivatives being linear in
-#' \eqn{\kappa}.
+#' component carrying at least one \eqn{\mu} collapses to a single term,
+#' because the concentration parametrization's \eqn{\mu}-derivatives are linear
+#' in \eqn{\kappa}.
 #'
-#' The expected information is closed form and the two parameters are
-#' orthogonal, as in the concentration parametrization, with
+#' The expected information is closed form, and the two parameters are
+#' orthogonal as in the concentration parametrization:
 #' \deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa\rho, \qquad
 #'       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
-#'       \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)},}
-#' the last being the reciprocal of the information in \eqn{\kappa}, since the
-#' Jacobian of the map is that reciprocal.
+#'       \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)}.}
+#' The last of these is the reciprocal of the information in \eqn{\kappa}, since
+#' the Jacobian of the map is that reciprocal.
 #'
 #' # The moments are not the parameters
 #'
 #' [mean.VonMises2Distrib()] returns the ordinary expectation of \eqn{Y} on
 #' \eqn{[-\pi, \pi)}, which differs from \eqn{\mu} whenever \eqn{\mu \ne 0};
-#' [vonmises1_distrib()] discusses the same distinction. What this
-#' parametrization offers is that the second parameter can be computed
-#' directly from a sample, which is not the case for the concentration.
+#' [vonmises1_distrib()] discusses the same distinction. In this
+#' parametrization the second parameter can be computed directly from a
+#' sample, which is not the case for the concentration.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
@@ -536,17 +536,18 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' d <- vonmises2_distrib()
 #' d
 #'
-#' # The resultant length is bounded, which is what makes it readable.
+#' # The resultant length is bounded, so it is readable directly.
 #' d@params_bounds$rho
 #'
-#' # The same law as the concentration parametrization at the implied kappa.
+#' # This is the same law as the concentration parametrization at the implied
+#' # kappa.
 #' th <- list(mu = 0.5, rho = 0.7)
 #' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' all.equal(distrib_pdf(d, c(-1, 0, 1), th),
 #'           distrib_pdf(vonmises1_distrib(), c(-1, 0, 1),
 #'                       list(mu = 0.5, kappa = k)))
 #'
-#' # A sample reads the second parameter back directly, which is the point.
+#' # The second parameter can be computed directly from a sample.
 #' set.seed(1)
 #' z <- distrib_rng(d, 3e5, th)
 #' c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
@@ -566,7 +567,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' conditioned at a nearly deterministic direction;
 #' [numericals7::bessel_i_ratio_inverse()] for the map and its derivatives;
 #' [beta1_distrib()] for another family on \eqn{(0, 1)}; [fit_distrib()] to
-#' estimate the parameters; [check_distrib()] to validate a family of your own
+#' estimate the parameters; [check_distrib()] to validate a user-defined family
 #' against the same battery that this one passes; [VonMises2Distrib] for the
 #' class.
 #' @export
@@ -618,9 +619,10 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. Read only when `expected = TRUE`.
+#'   or `"opg"`. It is read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
+#'   `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -653,7 +655,7 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' dn <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 - eps))$rho_rho
 #' all.equal((up - dn) / (2 * eps), d3$rho_rho_rho, tolerance = 1e-5)
 #'
-#' # Unlike the concentration parametrization, no component is exactly zero,
+#' # Unlike the concentration parametrization, every component is nonzero,
 #' # because kappa is a nonlinear function of rho.
 #' vapply(d3, function(v) v[1], numeric(1))
 S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
@@ -674,7 +676,7 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #' @description
 #' Computes the five distinct fourth derivatives of the log-density in
 #' \eqn{\mu} and \eqn{\rho}, in closed form, by the construction
-#' [distrib_deriv3.VonMises2Distrib()] describes carried one order further: a
+#' that [distrib_deriv3.VonMises2Distrib()] describes, carried one order further: a
 #' single term \eqn{D_a \kappa^{(b)}(\rho)} for every component carrying a
 #' \eqn{\mu}, and
 #' \eqn{\{\cos(y-\mu) - \rho\}\kappa^{(4)}(\rho) - 3\kappa'''(\rho)} for
@@ -695,9 +697,10 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
 #' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. Read only when `expected = TRUE`.
+#'   or `"opg"`. It is read only when `expected = TRUE`.
 #' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
+#'   `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -752,8 +755,8 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #' the response not at all, so the distribution function is the other family's
 #' at that concentration.
 #'
-#' What it replaces is the base class's quadrature, one integration per
-#' observation. See [vm_cdf()] for the series, its number of terms and the
+#' This replaces the base class's quadrature, which performs one integration
+#' per observation. See [vm_cdf()] for the series, its number of terms and the
 #' blocking that keeps the intermediate small. Where the requested tail is
 #' below \eqn{10^{-6}}, where the absolute error of the series would cost
 #' relative accuracy, it comes from a quadrature of the tail on the log
@@ -790,7 +793,8 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #'         integrate(function(u) distrib_pdf(d2, u, th), -pi, v)$value,
 #'         numeric(1)))
 #'
-#' # And with the concentration parametrization at the implied concentration.
+#' # It also agrees with the concentration parametrization at the implied
+#' # concentration.
 #' k <- numericals7::bessel_i_ratio_inverse(0.7)
 #' all.equal(distrib_cdf(d2, y, th),
 #'           distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))

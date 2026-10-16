@@ -87,8 +87,9 @@ Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 #'   + \log S_y - \log y!} with \eqn{S_y} a sum of \eqn{y} positive terms
 #' taken on the log scale. The compiled kernel evaluates
 #' \eqn{(1-\sqrt c)/\sigma} as \eqn{-2\mu/(1+\sqrt c)} and \eqn{S_y} in
-#' \eqn{w = 1/(2\alpha)}, so nothing cancels as \eqn{\sigma \to 0}, and no
-#' Bessel routine is called.
+#' \eqn{w = 1/(2\alpha)}, so the evaluation involves no subtraction of nearly
+#' equal terms as \eqn{\sigma \to 0}, and the kernel does not call a Bessel
+#' routine.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
 #' @param y A numeric vector of counts. A negative, non-integer or infinite
@@ -120,7 +121,8 @@ Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 #' y <- 0:6
 #' th <- list(mu = 3, sigma = 0.8)
 #'
-#' # Against the Bessel formula written out, which the kernel does not use.
+#' # The mass is compared with the Bessel formula written out, which the
+#' # kernel does not use.
 #' al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
 #' all.equal(distrib_pdf(d, y, th),
 #'           sqrt(2 * al / pi) * 3^y * exp(1 / 0.8) /
@@ -135,7 +137,7 @@ Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 #' rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
 #'       negbin = distrib_pdf(nb, c(20, 40, 60), list(mu = 3, theta = 1 / 0.8)))
 #'
-#' # Off the support.
+#' # A value off the support has probability zero.
 #' distrib_pdf(d, c(-1, 1.5), th)
 S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
   out <- pig1_pdf_cpp(y, theta[[1]], theta[[2]], threads)
@@ -148,8 +150,8 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #' @description
 #' Returns the exact first derivatives of the log-mass in \eqn{(\mu, \sigma)},
 #' read off columns `d10` and `d01` of the compiled kernel of
-#' `pig1_gradient_cpp`. Nothing is differenced: the kernel writes every partial
-#' out in closed form from the finite Bessel sum.
+#' `pig1_gradient_cpp`. The kernel writes every partial out in closed form from
+#' the finite Bessel sum, so the derivatives are not obtained by differencing.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
 #' @param y A numeric vector of counts. A value off the support, or a missing
@@ -171,7 +173,8 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #' \eqn{\ell} is the log-mass of one observation, \eqn{\mu} the mean and
 #' \eqn{\sigma} the dispersion.
 #'
-#' @seealso `pig1_gradient_cpp` for the kernel and the closed form it evaluates,
+#' @seealso `pig1_gradient_cpp` for the kernel and the closed form that it
+#'   evaluates,
 #'   [distrib_hessian.Pig1Distrib()] for the second derivatives, and
 #'   [distrib_gradient()] for the generic.
 #'
@@ -181,7 +184,8 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #' th <- list(mu = 3, sigma = 0.8)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # Against numerical differentiation of the log-likelihood.
+#' # The score is compared with numerical differentiation of the
+#' # log-likelihood.
 #' f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], sigma = p[2]),
 #'                                  log = TRUE))
 #' rbind(analytic = vapply(g, sum, 0),
@@ -233,7 +237,7 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #' h <- distrib_hessian(d, y, th)
 #' names(h)
 #'
-#' # Against a central difference of the score.
+#' # The mixed entry is compared with a central difference of the score.
 #' eps <- 1e-5
 #' rbind(analytic = h$mu_sigma,
 #'       numeric = (distrib_gradient(d, y, list(mu = 3, sigma = 0.8 + eps))$mu -
@@ -270,7 +274,7 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
 #' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, the
-#'   strategy for the expectation. Read only when `expected = TRUE`; for a
+#'   strategy for the expectation. It is read only when `expected = TRUE`; for a
 #'   discrete family `"integrate"` is an exact sum over the support, not a
 #'   quadrature.
 #' @param nsim A single positive integer, the Monte Carlo sample size used when
@@ -293,7 +297,8 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #' d3 <- distrib_deriv3(d, y, th)
 #' names(d3)
 #'
-#' # Against a central difference of the analytic Hessian.
+#' # The third-order entry is compared with a central difference of the
+#' # analytic Hessian.
 #' eps <- 1e-5
 #' rbind(analytic = d3$mu_mu_sigma,
 #'       numeric = (distrib_hessian(d, y, list(mu = 3, sigma = 0.8 + eps))$mu_mu -
@@ -323,7 +328,7 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #' kernel `pig1_deriv4_cpp`, which computes the fourth order alone.
 #'
 #' At a very small dispersion and a large count this order loses relative
-#' accuracy: the tables it is formed from are moments of the finite sum
+#' accuracy: the tables from which it is formed are moments of the finite sum
 #' \eqn{S_y}, which has \eqn{y} terms, and their combination cancels as
 #' \eqn{\sigma} goes to zero. At \eqn{\sigma = 10^{-7}} and counts of 100 and
 #' more the component in \eqn{\sigma} alone has a relative error between
@@ -365,7 +370,8 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, th)
 #' names(d4)
 #'
-#' # Against a central difference of the third order.
+#' # The fourth-order entry is compared with a central difference of the
+#' # third order.
 #' eps <- 1e-5
 #' rbind(analytic = d4$mu_mu_mu_sigma,
 #'       numeric = (distrib_deriv3(d, y, list(mu = 3, sigma = 0.8 + eps))$mu_mu_mu -
@@ -398,7 +404,7 @@ S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
 #' Draws from the family's own mixture representation, exactly: \eqn{\lambda}
 #' from the inverse Gaussian with mean \eqn{\mu} and shape \eqn{\mu/\sigma},
 #' then \eqn{Y \mid \lambda} from the Poisson with that rate. The inverse
-#' Gaussian's variance is then \eqn{\sigma\mu^2}, the value the mixing
+#' Gaussian's variance is then \eqn{\sigma\mu^2}, the value that the mixing
 #' construction requires, and the marginal variance comes out as
 #' \eqn{\mu + \sigma\mu^2}.
 #'
@@ -415,7 +421,7 @@ S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
 #'
 #' @return An integer-valued numeric vector of `n` draws.
 #'
-#' @seealso [distrib_pdf.Pig1Distrib()] for the mass the draws follow,
+#' @seealso [distrib_pdf.Pig1Distrib()] for the mass that the draws follow,
 #'   [distrib_rng.Pig2Distrib()] for the same sampler in orthogonal
 #'   coordinates, and [distrib_rng()] for the generic.
 #'
@@ -426,11 +432,12 @@ S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
 #' set.seed(61)
 #' x <- distrib_rng(d, 2e5, th)
 #'
-#' # Two moments against their closed forms.
+#' # Two moments are compared with their closed forms.
 #' rbind(sample = c(mean(x), var(x)),
 #'       theory = c(mean(d, th), variance(d, th)))
 #'
-#' # The empirical mass against the exact one, over the head of the support.
+#' # The empirical mass is compared with the exact one over the head of the
+#' # support.
 #' rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
 #'       exact = distrib_pdf(d, 0:6, th))
 S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
@@ -455,7 +462,8 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
 #' half-integer order is a finite sum. The kernels evaluate that sum on the log
-#' scale, after the prefactors have canceled; no Bessel routine is called.
+#' scale, after the prefactors have canceled, and do not call a Bessel
+#' routine.
 #' With \eqn{c = 1 + 2\sigma\mu}, \eqn{\alpha = \sqrt{c}/\sigma} and
 #' \eqn{w = 1/(2\alpha)},
 #' \deqn{\ell(y) = y\log\mu - \tfrac{y}{2}\log c - \dfrac{2\mu}{1+\sqrt c}
@@ -469,7 +477,7 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #' tends to \eqn{\sigma/2}. The derivatives of \eqn{\log S_y} in \eqn{w} are
 #' the weighted factorial moments of \eqn{k} under those terms; everything
 #' else is elementary. Every partial to fourth order is written out by hand,
-#' so no order is differenced.
+#' so every order is computed without differencing.
 #'
 #' # One kernel per generic
 #'
@@ -562,7 +570,8 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta, ...) {
 #' c(mean = mean(d, th), variance = variance(d, th),
 #'   skewness = skewness(d, th))
 #'
-#' # Heavier in the tail than a negative binomial of the same variance.
+#' # The tail is heavier than that of a negative binomial of the same
+#' # variance.
 #' nb <- negbin2_distrib()
 #' nbth <- list(mu = 3, theta = 1 / 0.8)
 #' c(variance_pig = variance(d, th), variance_negbin = variance(nb, nbth))

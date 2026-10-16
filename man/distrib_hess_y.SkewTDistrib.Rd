@@ -43,13 +43,15 @@ th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
 # It equals the curvature in the location, without a sign change.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 
-# Against a central difference of the response derivative.
+# The second derivative is compared with a central difference of the
+# response derivative.
 eps <- 1e-5
 rbind(analytic = distrib_hess_y(d, y, th),
       numeric = (distrib_grad_y(d, y + eps, th) -
                  distrib_grad_y(d, y - eps, th)) / (2 * eps))
 
-# Convex in the far tail, where the skew normal is concave everywhere.
+# The skew t is convex in the far tail, where the skew normal is concave
+# everywhere.
 sn <- skewnormal1_distrib()
 far <- c(-20, -8, 8, 20)
 rbind(skew_t = distrib_hess_y(d, far, th),
@@ -57,7 +59,7 @@ rbind(skew_t = distrib_hess_y(d, far, th),
 }
 \seealso{
 \code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y.SkewTDistrib()}} for the first derivative,
-\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the parameter curvature it shares an
-expression with, \code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y.SkewNormal1Distrib()}} for the case that
+\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the parameter curvature with which it
+shares an expression, \code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y.SkewNormal1Distrib()}} for the case that
 does not change sign, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

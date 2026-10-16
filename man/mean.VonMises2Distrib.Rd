@@ -23,7 +23,7 @@ Returns the ordinary expectation of \eqn{Y} as a number on
 \eqn{[-\pi, \pi)}, obtained numerically by delegating to
 \code{\link[=mean.distrib]{mean.distrib()}} at the implied concentration.
 
-It is not a circular quantity, and neither parameter describes it.
+It is not a circular quantity, and the two parameters do not describe it.
 \eqn{\mu} is the mean \emph{direction} and \eqn{\rho} the mean resultant length;
 \eqn{\mathbb{E}[Y]} differs from \eqn{\mu} whenever \eqn{\mu \ne 0}, because
 the interval is cut at \eqn{\pm\pi} and the density is not symmetric about

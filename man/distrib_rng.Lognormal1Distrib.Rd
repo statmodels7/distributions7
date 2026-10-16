@@ -28,14 +28,15 @@ inverse-transform fallback of the base class is not used.
 \examples{
 d <- lognormal1_distrib()
 
-# Same generator as stats::rlnorm at this parametrization.
+# The method uses the same generator as stats::rlnorm at this
+# parametrization.
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = 0.5, sigma2 = 0.36))
 set.seed(2)
 identical(a, rlnorm(3, 0.5, sqrt(0.36)))
 
-# The parameters are moments of the LOGARITHM, so that is where the sample
-# recovers them.
+# The parameters are moments of the logarithm, so the sample recovers them
+# from log(z).
 set.seed(6)
 z <- distrib_rng(d, 2e4, list(mu = 0.5, sigma2 = 0.36))
 c(mu = mean(log(z)), sigma2 = var(log(z)))

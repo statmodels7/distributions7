@@ -15,7 +15,7 @@ the composition is the absolute value at \eqn{v = y - \mu} with
 \eqn{c(\theta) = -\lambda}.
 }
 \details{
-The same kink as \code{\link[=laplace_distrib]{laplace_distrib()}}'s, carried across the map
+The kink is the same as in \code{\link[=laplace_distrib]{laplace_distrib()}} and is carried across the map
 \eqn{\lambda = 1/\sigma}: a reparametrization moves the coefficient in front
 and leaves the argument alone, so the order is unchanged and the location is
 again the only non-smooth parameter.

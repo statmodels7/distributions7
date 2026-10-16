@@ -24,7 +24,7 @@ representation: with \eqn{U_0} and \eqn{U_1} independent standard Gaussians
 and \eqn{\delta = \alpha/\sqrt{1+\alpha^2}},
 \deqn{Z = \delta\,|U_0| + \sqrt{1-\delta^2}\;U_1}
 is standard skew normal with shape \eqn{\alpha}, and \eqn{Y = \mu + \sigma Z}.
-No inversion and no rejection is involved. The cost is two \code{rnorm} calls
+The method uses neither inversion nor rejection. The cost is two \code{rnorm} calls
 whatever the shape is, and the draws follow the density exactly.
 
 The representation also reads off why the family cannot be very skewed: the
@@ -50,18 +50,19 @@ th <- list(mu = 0, sigma = 1, alpha = 3)
 set.seed(1)
 x <- distrib_rng(d, 2e5, th)
 
-# Three moments against their closed forms.
+# Three sample moments are compared with their closed forms.
 rbind(sample = c(mean(x), var(x), mean((x - mean(x))^3) / sd(x)^3),
       theory = c(mean(d, th), variance(d, th), skewness(d, th)))
 
-# The representation, written out at the same seed.
+# The representation is written out at the same seed.
 delta <- 3 / sqrt(1 + 9)
 set.seed(1)
 z <- delta * abs(rnorm(2e5)) + sqrt(1 - delta^2) * rnorm(2e5)
 all.equal(x, z)
 }
 \seealso{
-\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} for the density the draws follow,
-\code{\link[=mean.SkewNormal1Distrib]{mean.SkewNormal1Distrib()}} and \code{\link[=variance.SkewNormal1Distrib]{variance.SkewNormal1Distrib()}} for the
-moments they should reproduce, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} for the density that the draws
+follow, \code{\link[=mean.SkewNormal1Distrib]{mean.SkewNormal1Distrib()}} and \code{\link[=variance.SkewNormal1Distrib]{variance.SkewNormal1Distrib()}} for
+the moments that they should reproduce, and \code{\link[=distrib_rng]{distrib_rng()}} for the
+generic.
 }

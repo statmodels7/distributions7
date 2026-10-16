@@ -72,7 +72,7 @@ c(d4$mu_mu_mu_mu[1], d4$mu_mu_mu_sigma2[1])
 # The mixed second-second component is constant at -2/sigma2^3.
 all.equal(d4$mu_mu_sigma2_sigma2, rep(-2 / 0.36^3, 3))
 
-# Expected values: -9/sigma2^4 in the pure variance component.
+# The expected value of the pure variance component is -9/sigma2^4.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 -9 / 0.36^4
 }

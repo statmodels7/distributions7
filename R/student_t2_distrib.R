@@ -91,9 +91,9 @@ student_t2_scale <- function(theta) {
 #'   distrib_rng.StudentT2Distrib
 #'
 #' @description
-#' The Student t with \eqn{\nu} degrees of freedom, location \eqn{\mu} and
-#' scale \eqn{s_0 = \sigma\sqrt{1 - 2/\nu}}, so that the standard deviation is
-#' \eqn{\sigma}. The density, the distribution function, the quantile function
+#' These methods implement the Student t with \eqn{\nu} degrees of freedom,
+#' location \eqn{\mu} and scale \eqn{s_0 = \sigma\sqrt{1 - 2/\nu}}, so that the
+#' standard deviation is \eqn{\sigma}. The density, the distribution function, the quantile function
 #' and the generator are [stats::dt()], [stats::pt()], [stats::qt()] and
 #' [stats::rt()] at that scale. Where the requested tail probability is below
 #' \eqn{e^{-5}} the value of `qt()` is corrected by Newton steps on the log
@@ -155,7 +155,7 @@ S7::method(distrib_rng, StudentT2Distrib) <- function(distrib, n, theta, ...) {
 #' Return the derivatives of the log-density in \eqn{(\mu, \sigma, \nu)} of
 #' orders one to five, the expected information and its expected third and
 #' fourth derivatives, and the first two derivatives of the expected
-#' information, each from its own compiled kernel.
+#' information, and each of them is computed by its own compiled kernel.
 #'
 #' @details
 #' With \eqn{z = (y - \mu)/\sigma}, \eqn{k = \nu - 2} and \eqn{q = z^2/k}, the
@@ -189,11 +189,11 @@ S7::method(distrib_rng, StudentT2Distrib) <- function(distrib, n, theta, ...) {
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list with one numeric vector per component: 3, 6, 10, 15
-#'   and 21 components at orders one to five, the second order keyed
-#'   `mu_mu`, `sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`. The
-#'   expected information has the same six components, the expected third
-#'   and fourth derivatives 10 and 15, [distrib_dexpected_hessian()] 18 and
-#'   [distrib_d2expected_hessian()] 36.
+#'   and 21 components at orders one to five. At order two the components are
+#'   keyed `mu_mu`, `sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`.
+#'   The expected information has the same six components, the expected third
+#'   and fourth derivatives have 10 and 15, [distrib_dexpected_hessian()] has
+#'   18 and [distrib_d2expected_hessian()] has 36.
 #'
 #' @seealso [distrib_pdf.StudentT2Distrib()].
 #'
@@ -257,9 +257,10 @@ register_dexpected(StudentT2Distrib, function(d, y, th, k, t) {
 #'   distrib_hess_y_hess.StudentT2Distrib
 #'
 #' @description
-#' The derivatives of the log-density in the response to order four, and the
-#' mixed derivatives of orders one and two in the response and one and two in
-#' \eqn{(\mu, \sigma, \nu)}, each a closed form from its own compiled kernel.
+#' Return the derivatives of the log-density in the response to order four, and
+#' the mixed derivatives of orders one and two in the response and one and two
+#' in \eqn{(\mu, \sigma, \nu)}; each is a closed form computed by its own
+#' compiled kernel.
 #'
 #' @param distrib A `StudentT2Distrib` object.
 #' @param y A numeric vector of observations.
@@ -313,7 +314,8 @@ S7::method(distrib_hess_y_hess, StudentT2Distrib) <- function(
 #'   distrib_deriv3_cdf.StudentT2Distrib distrib_deriv4_cdf.StudentT2Distrib
 #'
 #' @description
-#' The derivatives of \eqn{F(q)} in \eqn{(\mu, \sigma, \nu)} to order four.
+#' Return the derivatives of \eqn{F(q)} in \eqn{(\mu, \sigma, \nu)} to order
+#' four.
 #' The family is location-scale in \eqn{(\mu, \sigma)} at fixed \eqn{\nu}, so
 #' those components are closed forms in the density and its derivatives; the
 #' components in \eqn{\nu}, derivatives of an incomplete beta function in its
@@ -399,8 +401,8 @@ S7::method(kurtosis, StudentT2Distrib) <- function(x, theta, ...) {
 #' which exists only for \eqn{\nu > 2}, so the degrees of freedom are bounded
 #' below at two. Every derivative in \eqn{(\mu, \sigma, \nu)} to order five,
 #' the expected information and its derivatives, and the derivatives in the
-#' response are closed forms, each order in its own compiled kernel (see
-#' [distrib_gradient.StudentT2Distrib()]). This is `TF2` in gamlss.
+#' response are closed forms, and each order is computed by its own compiled
+#' kernel (see [distrib_gradient.StudentT2Distrib()]). This is `TF2` in gamlss.
 #'
 #' @section The distribution:
 #' \deqn{f(y) = \frac{1}{s_0}\,t_{\nu}\!\left(\frac{y-\mu}{s_0}\right), \qquad s_0 = \sigma\sqrt{\frac{\nu-2}{\nu}}}

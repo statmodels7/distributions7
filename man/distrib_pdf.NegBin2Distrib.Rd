@@ -33,8 +33,8 @@ accuracy is R's own. With \code{log = TRUE} the logarithm is formed inside
 \code{dnbinom()} and stays finite far into the tail.
 
 The mass is that of a Poisson whose rate is itself gamma distributed with
-mean \eqn{\mu} and shape \eqn{\theta}, which is where the overdispersion
-comes from. As \eqn{\theta} grows the gamma concentrates and the mass tends
+mean \eqn{\mu} and shape \eqn{\theta}, and this mixing produces the
+overdispersion. As \eqn{\theta} grows the gamma concentrates and the mass tends
 to the Poisson's; at \eqn{\theta = 1} it is the geometric.
 }
 \examples{

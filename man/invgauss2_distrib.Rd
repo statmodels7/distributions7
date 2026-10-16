@@ -46,7 +46,8 @@ quantile function is its numerical inverse.
 
 This is the same law as \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}, which carries a dispersion
 \eqn{\phi = 1/\lambda}. The map between the two moves one coordinate at a
-time, the mean being untouched, so both sets of derivatives stay elementary.
+time and leaves the mean untouched, so both sets of derivatives stay
+elementary.
 The family is usually written in the shape parametrization. In it the law is
 the distribution of the first-passage time to a level \eqn{a > 0} of a
 Brownian motion with drift \eqn{\nu > 0} and variance parameter
@@ -107,13 +108,13 @@ parameter on the unconstrained scale of its link, with
 d <- invgauss2_distrib()
 d
 
-# The same law as invgauss1 at phi = 1/lambda.
+# The density is the same as that of invgauss1 at phi = 1/lambda.
 y <- c(1, 2, 3)
 th <- list(mu = 2, lambda = 3)
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(invgauss1_distrib(), y, list(mu = 2, phi = 1 / 3)))
 
-# Moments: variance mu^3/lambda, skewness 3 sqrt(mu/lambda).
+# The variance is mu^3/lambda and the skewness is 3 sqrt(mu/lambda).
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 c(2^3 / 3, 3 * sqrt(2 / 3), 15 * 2 / 3)
@@ -141,7 +142,7 @@ is the generalized linear model parametrization; \code{\link[=gamma1_distrib]{ga
 \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for other positive families;
 \code{\link[=pig1_distrib]{pig1_distrib()}} for the Poisson mixed over this law;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 \link{InvGauss2Distrib} for the class.
 }

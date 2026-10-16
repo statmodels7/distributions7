@@ -35,7 +35,7 @@ and 21 components at orders one to five.
 }
 \description{
 Return the derivatives of the log-density in \eqn{(\mu, \sigma, \gamma_1)}
-of orders one to five, each from its own compiled kernel.
+of orders one to five. Each order is computed by its own compiled kernel.
 }
 \details{
 With \eqn{w = (y - \mu)/\sigma}, \eqn{c = (4 - \pi)/2} and

@@ -8,8 +8,8 @@ NULL
 #' This is the S7 class of the Poisson-inverse Gaussian in the parametrization
 #' whose two parameters are orthogonal, gamlss's `PIG2`. It is the same law as
 #' [Pig1Distrib]; the mean stays \eqn{\mu} and the dispersion is replaced by
-#' \eqn{\alpha}, the argument the mass function's Bessel function is evaluated
-#' at.
+#' \eqn{\alpha}, the argument at which the mass function's Bessel function is
+#' evaluated.
 #'
 #' Orthogonal means the expected information is diagonal: at \eqn{\mu = 3} and
 #' \eqn{\sigma = 0.8} its mixed entry is zero to rounding error here, against
@@ -65,7 +65,7 @@ NULL
 #' d@params
 #' d@params_interpretation
 #'
-#' # The same law as pig1, at the dispersion alpha implies.
+#' # Pig2 gives the same law as pig1, at the dispersion that alpha implies.
 #' al <- 3.010399
 #' d1 <- pig1_distrib()
 #' rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = al)),
@@ -74,7 +74,7 @@ NULL
 #'                               sigma = distributions7:::pig2_sigma(3, al))))
 Pig2Distrib <- S7::new_class("Pig2Distrib", parent = discrete_distrib)
 
-#' @title The Dispersion a Poisson-Inverse Gaussian Alpha Implies
+#' @title The Dispersion Implied by a Poisson-Inverse Gaussian Alpha
 #'
 #' @description
 #' Converts the orthogonal parametrization's \eqn{\alpha} into the dispersion
@@ -84,7 +84,7 @@ Pig2Distrib <- S7::new_class("Pig2Distrib", parent = discrete_distrib)
 #'
 #' @details
 #' The relation is the inverse of \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
-#' Written this way there is no cancellation anywhere in the domain: both
+#' Written this way the expression does not cancel anywhere in the domain: both
 #' \eqn{\mu} and \eqn{\sqrt{\mu^2 + \alpha^2}} are positive, so the numerator
 #' is a sum of positive terms. The other root of the quadratic is negative and
 #' is discarded.
@@ -94,8 +94,8 @@ Pig2Distrib <- S7::new_class("Pig2Distrib", parent = discrete_distrib)
 #' takes \eqn{\alpha} as a variable of its own, so the map is never
 #' differentiated.
 #'
-#' @param mu A numeric vector of means, strictly positive. Nothing is
-#'   validated.
+#' @param mu A numeric vector of means, strictly positive. The function
+#'   does not validate the values.
 #' @param alpha A numeric vector of Bessel arguments, strictly positive.
 #'
 #' @return A numeric vector of dispersions, of the length of the recycled
@@ -106,7 +106,8 @@ Pig2Distrib <- S7::new_class("Pig2Distrib", parent = discrete_distrib)
 #'   [variance.Pig2Distrib()] for two of its callers.
 #'
 #' @examples
-#' # The map, and the round trip back through alpha = sqrt(1 + 2 sigma mu)/sigma.
+#' # The map is applied, and alpha is recovered by the round trip through
+#' # alpha = sqrt(1 + 2 sigma mu)/sigma.
 #' sg <- distributions7:::pig2_sigma(3, 3.010399)
 #' c(sigma = sg, alpha_back = sqrt(1 + 2 * sg * 3) / sg)
 #'
@@ -129,8 +130,8 @@ pig2_sigma <- function(mu, alpha) (mu + sqrt(mu^2 + alpha^2)) / alpha^2
 #' evaluated, so in this coordinate the mass function's own argument is a
 #' parameter.
 #'
-#' The compiled kernel takes \eqn{\alpha} directly, so [pig2_sigma()] is not
-#' called here and no map is composed.
+#' The compiled kernel takes \eqn{\alpha} directly, so this method does not call
+#' [pig2_sigma()] and does not compose a map.
 #'
 #' @param distrib A `Pig2Distrib` object, from [pig2_distrib()].
 #' @param y A numeric vector of counts. A negative, non-integer or infinite
@@ -162,7 +163,7 @@ pig2_sigma <- function(mu, alpha) (mu + sqrt(mu^2 + alpha^2)) / alpha^2
 #' y <- 0:6
 #' al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
 #'
-#' # The same law, reached through the map.
+#' # Pig2 gives the same law as pig1, reached through the map.
 #' all.equal(distrib_pdf(d, y, list(mu = 3, alpha = al)),
 #'           distrib_pdf(d1, y, list(mu = 3, sigma = 0.8)))
 #'
@@ -184,8 +185,8 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE,
 #' Returns the exact first derivatives of the log-mass in \eqn{(\mu, \alpha)},
 #' read off columns `d10` and `d01` of the compiled kernel of
 #' `pig2_gradient_cpp`. The kernel takes \eqn{\alpha} as a variable of its own, so
-#' these are derivatives in the orthogonal coordinates directly and no chain
-#' rule through [pig2_sigma()] is composed.
+#' these are derivatives in the orthogonal coordinates directly, and the method
+#' does not compose a chain rule through [pig2_sigma()].
 #'
 #' The property that gives this parametrization its name lives one order up:
 #' the expected value of \eqn{\partial^2\ell/\partial\mu\partial\alpha} is
@@ -220,14 +221,15 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE,
 #' th <- list(mu = 3, alpha = al)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # Against numerical differentiation of the log-likelihood.
+#' # The score is compared with numerical differentiation of the
+#' # log-likelihood.
 #' f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], alpha = p[2]),
 #'                                  log = TRUE))
 #' rbind(analytic = vapply(g, sum, 0),
 #'       numeric = numDeriv::grad(f, c(3, al)))
 #'
-#' # The two scores are uncorrelated under the model, which is what
-#' # orthogonality means and what pig1 does not have.
+#' # The two scores are uncorrelated under the model, which is orthogonality;
+#' # pig1 does not have this property.
 #' c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
 #'   pig1 = distrib_expected_hessian(pig1_distrib(), 0,
 #'                                   list(mu = 3, sigma = 0.8))$mu_sigma)
@@ -244,8 +246,8 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #' \eqn{(\mu, \alpha)}, read off columns `d20`, `d02` and `d11` of the compiled
 #' kernel `pig2_hessian_cpp`.
 #'
-#' The observed mixed entry is not zero in general; what vanishes is its
-#' expectation. At \eqn{\mu = 3} and \eqn{\alpha = 3.0104} the entry is
+#' The observed mixed entry is not zero in general, but its expectation is
+#' zero. At \eqn{\mu = 3} and \eqn{\alpha = 3.0104} the entry is
 #' proportional to \eqn{y - \mu}, and its expectation is zero to rounding
 #' error.
 #'
@@ -276,7 +278,7 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #' h <- distrib_hessian(d, y, th)
 #' names(h)
 #'
-#' # Against a central difference of the score.
+#' # The mixed entry is compared with a central difference of the score.
 #' eps <- 1e-5
 #' rbind(analytic = h$mu_alpha,
 #'       numeric = (distrib_gradient(d, y, list(mu = 3, alpha = al + eps))$mu -
@@ -337,7 +339,8 @@ S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
 #' d3 <- distrib_deriv3(d, y, th)
 #' names(d3)
 #'
-#' # Against a central difference of the analytic Hessian.
+#' # The third-order entry is compared with a central difference of the
+#' # analytic Hessian.
 #' eps <- 1e-5
 #' rbind(analytic = d3$mu_mu_alpha,
 #'       numeric = (distrib_hessian(d, y, list(mu = 3, alpha = al + eps))$mu_mu -
@@ -404,7 +407,8 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, th)
 #' names(d4)
 #'
-#' # Against a central difference of the third order.
+#' # The fourth-order entry is compared with a central difference of the
+#' # third order.
 #' eps <- 1e-5
 #' rbind(analytic = d4$mu_mu_mu_alpha,
 #'       numeric = (distrib_deriv3(d, y,
@@ -428,7 +432,7 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
 #'
 #' @description
 #' Draws from the mixture representation of [distrib_rng.Pig1Distrib()], at the
-#' dispersion [pig2_sigma()] implies: \eqn{\lambda} from the inverse Gaussian
+#' dispersion that [pig2_sigma()] implies: \eqn{\lambda} from the inverse Gaussian
 #' with mean \eqn{\mu} and shape \eqn{\mu/\sigma}, then \eqn{Y \mid \lambda}
 #' from the Poisson. This method and the variance, skewness and kurtosis
 #' methods compose the map; the mass and the derivative methods take
@@ -445,7 +449,7 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
 #' @return An integer-valued numeric vector of `n` draws.
 #'
 #' @seealso [distrib_rng.Pig1Distrib()] for the same sampler in mean and
-#'   dispersion, [pig2_sigma()] for the map it composes, and [distrib_rng()]
+#'   dispersion, [pig2_sigma()] for the map that it composes, and [distrib_rng()]
 #'   for the generic.
 #'
 #' @examples
@@ -456,11 +460,12 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
 #' set.seed(64)
 #' x <- distrib_rng(d, 2e5, th)
 #'
-#' # Two moments against their closed forms.
+#' # Two moments are compared with their closed forms.
 #' rbind(sample = c(mean(x), var(x)),
 #'       theory = c(mean(d, th), variance(d, th)))
 #'
-#' # The empirical mass against the exact one, over the head of the support.
+#' # The empirical mass is compared with the exact one over the head of the
+#' # support.
 #' rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
 #'       exact = distrib_pdf(d, 0:6, th))
 S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta, ...) {
@@ -505,9 +510,10 @@ S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta, ...) {
 #'
 #' # How the derivatives are computed
 #'
-#' By compiled kernels of the same form as those of [pig1_distrib()]
-#' (`pig2_pdf_cpp`, `pig2_gradient_cpp`, `pig2_hessian_cpp`, `pig2_deriv3_cpp`
-#' and `pig2_deriv4_cpp`), with \eqn{\alpha} as a variable of its own, so the
+#' The derivatives are computed by compiled kernels of the same form as those
+#' of [pig1_distrib()] (`pig2_pdf_cpp`, `pig2_gradient_cpp`,
+#' `pig2_hessian_cpp`, `pig2_deriv3_cpp` and `pig2_deriv4_cpp`). In these
+#' kernels \eqn{\alpha} is a variable of its own, so the
 #' Bessel argument needs no chain rule. Every partial to fourth order is
 #' written out in closed form, and each order has its own kernel. The
 #' expected information is computed exactly, with
@@ -558,11 +564,11 @@ S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta, ...) {
 #' distrib_pdf(d, 0:5, th)
 #' c(mean = mean(d, th), variance = variance(d, th))
 #'
-#' # The same law as pig1 at the dispersion alpha implies.
+#' # Pig2 gives the same law as pig1 at the dispersion that alpha implies.
 #' all.equal(distrib_pdf(d, 0:5, th),
 #'           distrib_pdf(pig1_distrib(), 0:5, list(mu = 3, sigma = 0.8)))
 #'
-#' # The property the parametrization exists for.
+#' # This property is the reason for the parametrization.
 #' c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
 #'   pig1 = distrib_expected_hessian(pig1_distrib(), 0,
 #'                                   list(mu = 3, sigma = 0.8))$mu_sigma)

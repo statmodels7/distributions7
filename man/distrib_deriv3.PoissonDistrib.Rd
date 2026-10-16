@@ -38,7 +38,7 @@ mean, in closed form:
 \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}.}
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2/\mu^2}. Both routes are closed
-form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+form, so the method runs no quadrature and ignores \code{approx} and \code{nsim}.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.
@@ -55,7 +55,8 @@ d <- poisson_distrib()
 y <- c(0, 2, 7)
 th <- list(mu = 3)
 
-# The closed form, written out; zero at an observed zero.
+# The third derivative is compared with its closed form, which is zero at
+# an observed zero.
 all.equal(distrib_deriv3(d, y, th)$mu_mu_mu, 2 * y / 3^3)
 
 # The expected value is 2/mu^2.

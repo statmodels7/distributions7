@@ -90,7 +90,7 @@ NULL
 #' d@params_bounds
 #'
 #' # The location is already free; the scale and the degrees of freedom ride
-#' # a log, both being positive.
+#' # a log, because both are positive.
 #' vapply(d@link_params, function(l) l@link_name, character(1))
 StudentT1Distrib <- S7::new_class("StudentT1Distrib", parent = continuous_distrib)
 
@@ -255,12 +255,13 @@ S7::method(distrib_cdf, StudentT1Distrib) <- function(distrib, q, theta, lower.t
 #' d <- student_t1_distrib()
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 #'
-#' # The quartiles, and the round trip back through the distribution function.
+#' # The quartiles are computed, and the distribution function maps them back
+#' # to the probabilities.
 #' q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #' q
 #' all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75))
 #'
-#' # The median is the location, the law being symmetric about it.
+#' # The median is the location, because the law is symmetric about it.
 #' distrib_quantile(d, 0.5, th)
 #'
 #' # Heavy tails put the extreme quantiles far further out than a Gaussian's.
@@ -377,7 +378,7 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta, ...) {
 #' \eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2) - \tfrac12\log\nu} come from
 #' the polygamma functions below \eqn{\nu = 20} and from their asymptotic series
 #' in \eqn{1/\nu} above it. All three components keep their digits and stay
-#' finite at every \eqn{\nu} the chart can produce, up to
+#' finite at every \eqn{\nu} that the chart can produce, up to
 #' `.Machine$double.xmax`.
 #'
 #' @seealso [distrib_hessian.StudentT1Distrib()] for the second derivatives,
@@ -391,7 +392,7 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The location and scale components, written out.
+#' # The location and scale components are written out.
 #' r <- y - 0.4; D <- 5 * 1.2^2 + r^2
 #' all.equal(g$mu, 6 * r / D)
 #' all.equal(g$sigma, 5 * (r^2 - 1.2^2) / (1.2 * D))
@@ -469,7 +470,7 @@ S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, sc
 #' h <- distrib_hessian(d, y, th)
 #' names(h)
 #'
-#' # The location and mixed location-scale components, written out.
+#' # The location and mixed location-scale components are written out.
 #' r <- y - 0.4; D <- 5 * 1.2^2 + r^2
 #' all.equal(h$mu_mu, 6 * (r^2 - 5 * 1.2^2) / D^2)
 #' all.equal(h$mu_sigma, -2 * 5 * 6 * 1.2 * r / D^2)
@@ -501,19 +502,19 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.}
 #'
 #' The location is orthogonal to both other parameters: the two mixed
-#' entries containing \eqn{\mu} are exactly zero, the law being symmetric about
-#' \eqn{\mu} while the other two components are even in \eqn{r}. So
+#' entries containing \eqn{\mu} are exactly zero, because the law is symmetric
+#' about \eqn{\mu} while the other two components are even in \eqn{r}. So
 #' \eqn{\hat\mu} is asymptotically independent of \eqn{\hat\sigma} and
-#' \eqn{\hat\nu}, which the scale and the degrees of freedom are not of each
-#' other.
+#' \eqn{\hat\nu}, whereas \eqn{\hat\sigma} and \eqn{\hat\nu} are not
+#' asymptotically independent of each other.
 #'
 #' Because a closed form exists, `approx` and `nsim` are ignored: every
 #' strategy returns the same six numbers. The arithmetic runs in a compiled
 #' kernel, so the result does not depend on the thread count.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
-#' @param y A numeric vector of observations. Only its length is read, the
-#'   expectation not depending on the data; the values are ignored.
+#' @param y A numeric vector of observations. Only its length is read, because
+#'   the expectation does not depend on the data; the values are ignored.
 #' @param theta A named list with components `mu`, `sigma` and `nu`, each a
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
@@ -559,19 +560,19 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #' eh <- distrib_expected_hessian(d, y, th)
 #' vapply(eh, function(z) z[1], numeric(1))
 #'
-#' # The four non-zero closed forms, written out.
+#' # The four non-zero closed forms are written out.
 #' c(mu_mu = -6 / (1.2^2 * 8),
 #'   sigma_sigma = -10 / (1.2^2 * 8),
 #'   nu_nu = (trigamma(3) - trigamma(2.5)) / 4 + 10 / (2 * 5 * 6 * 8),
 #'   sigma_nu = 2 / (1.2 * 6 * 8))
 #'
 #' # Averaging the observed Hessian over draws reaches the same six numbers,
-#' # the two containing mu going to zero.
+#' # and the two entries containing mu go to zero.
 #' set.seed(1)
 #' z <- distrib_rng(d, 4e5, th)
 #' vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #'
-#' # The strategy argument is inert, the expectation being exact.
+#' # The strategy argument has no effect, because the expectation is exact.
 #' identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
                                        threads = 1L) {
@@ -686,14 +687,15 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list of fifteen numeric vectors named for the multi-index
-#'   they carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
+#'   that each of them carries, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
 #'   `max(length(y), length(mu), length(sigma), length(nu))`.
 #'
 #' @section Large degrees of freedom:
-#' Written like the third order, in \eqn{z}, \eqn{q = z^2/\nu} and
-#' \eqn{t = 1/(1+q)}, with the quantities of \eqn{\nu} alone on their
-#' asymptotic series above \eqn{\nu = 20}: on the parameter scale all fifteen
-#' components stay finite to `.Machine$double.xmax`. On the link scale the
+#' The components are written as in the third order, in \eqn{z},
+#' \eqn{q = z^2/\nu} and \eqn{t = 1/(1+q)}, with the quantities of \eqn{\nu}
+#' alone on their asymptotic series above \eqn{\nu = 20}, so on the parameter
+#' scale all fifteen components stay finite to `.Machine$double.xmax`. On the
+#' link scale the
 #' factors \eqn{(h')^k} of the chain rule make some components non-finite from
 #' \eqn{\nu = 10^{150}}.
 #'
@@ -716,7 +718,7 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 #'
-#' # At a degrees of freedom the log link can produce, every component is
+#' # At a degrees of freedom that the log link can produce, every component is
 #' # finite.
 #' big <- distrib_deriv4(d, y, list(mu = 0.4, sigma = 1.2, nu = 1e300))
 #' all(vapply(big, function(v) all(is.finite(v)), logical(1)))
@@ -747,7 +749,7 @@ S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expe
 #'   use. Defaults to `1L`.
 #'
 #' @return A named list of twenty-one numeric vectors named for the
-#'   multi-index they carry.
+#'   multi-index that each of them carries.
 #'
 #' @seealso [distrib_deriv4.StudentT1Distrib()] for the order below and
 #'   [distrib_deriv5()] for the generic.
@@ -772,8 +774,8 @@ S7::method(distrib_deriv5, StudentT1Distrib) <- function(
 #' negative of the location score
 #' [distrib_gradient.StudentT1Distrib()]`$mu`, and it redescends with it: it is
 #' largest in size at \eqn{|r| = \sigma\sqrt{\nu}} and falls back towards zero
-#' beyond that. This quantity is what a quantile residual's delta-method
-#' standard error and a change of variable in the response both need.
+#' beyond that. A quantile residual's delta-method standard error and a change
+#' of variable in the response both need this quantity.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param y A numeric vector of observations.
@@ -797,7 +799,7 @@ S7::method(distrib_deriv5, StudentT1Distrib) <- function(
 #' y <- c(-2.5, 0.3, 1.8)
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' r <- y - 0.4
 #' all.equal(distrib_grad_y(d, y, th), -6 * r / (5 * 1.2^2 + r^2))
 #'
@@ -848,7 +850,7 @@ S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' y <- c(-2.5, 0.3, 1.8)
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 #'
-#' # The closed form, written out.
+#' # The closed form is written out.
 #' r <- y - 0.4; D <- 5 * 1.2^2 + r^2
 #' all.equal(distrib_hess_y(d, y, th), 6 * (r^2 - 5 * 1.2^2) / D^2)
 #'
@@ -886,14 +888,15 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' The family is the standard heavy-tailed alternative to a Gaussian. Its
 #' location score redescends, so a gross outlier contributes almost nothing to
 #' the estimating equation, and \eqn{\nu} is estimated from the data rather
-#' than set: a large fitted \eqn{\nu} reports that the sample looks Gaussian.
+#' than set: a large fitted \eqn{\nu} indicates that the sample is close to
+#' Gaussian.
 #'
-#' The three arguments choose the links that carry each parameter to the
+#' The three arguments set the links that carry each parameter to the
 #' unconstrained scale on which an optimizer works.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
-#'   ranging over the whole line already.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because the
+#'   location already ranges over the whole line.
 #' @param link_sigma A `link` object from `linkfunctions7` for the scale
 #'   \eqn{\sigma}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -911,10 +914,10 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' the standard Student t distribution function.
 #'
 #' \eqn{\sigma} is the scale and not the standard deviation, which is
-#' \eqn{\sigma\sqrt{\nu/(\nu-2)}} and exists only above \eqn{\nu = 2}. Keeping
-#' the two apart lets the family be fitted where the second moment does not
-#' exist; [student_t2_distrib()] is the parametrization by the standard
-#' deviation.
+#' \eqn{\sigma\sqrt{\nu/(\nu-2)}} and exists only above \eqn{\nu = 2}. Because
+#' the two are kept apart, the family can be fitted where the second moment
+#' does not exist; [student_t2_distrib()] is the parametrization by the
+#' standard deviation.
 #'
 #' Two shapes are named families: \eqn{\nu = 1} is the Cauchy, and
 #' \eqn{\nu \to \infty} the Gaussian with standard deviation \eqn{\sigma}. The
@@ -935,8 +938,8 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}, \qquad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)},}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
-#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)},}
-#' with the two entries containing \eqn{\mu} exactly zero. The location is
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.}
+#' The two entries containing \eqn{\mu} are exactly zero. The location is
 #' therefore orthogonal to the other two, whose estimates are asymptotically
 #' correlated with each other.
 #'
@@ -947,8 +950,8 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' back towards zero, so an observation far from the location is downweighted
 #' automatically. The price is that the curvature in \eqn{\mu} turns
 #' positive past the same point, so the observed information is indefinite
-#' at an outlying observation. Fisher scoring is unaffected, the expected
-#' information being negative definite everywhere, which is why it is the
+#' at an outlying observation. Fisher scoring is unaffected because the
+#' expected information is negative definite everywhere, which is why it is the
 #' default in [fit_distrib()].
 #'
 #' # Moments
@@ -963,8 +966,8 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' # Estimation
 #'
 #' [fit_distrib()] maximizes the log-likelihood on the link scale by Fisher
-#' scoring. No estimate is closed form, the three estimating equations being
-#' coupled through \eqn{D}. On Gaussian data the likelihood has no finite
+#' scoring. The estimates have no closed form, because the three estimating
+#' equations are coupled through \eqn{D}. On Gaussian data the likelihood has no finite
 #' maximizer in \eqn{\nu}: \eqn{\hat\nu} diverges, and the fit returns a large
 #' finite value.
 #'
@@ -1007,7 +1010,8 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' c(scale = th$sigma, mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))
 #'
-#' # Below its own threshold each moment reports that it does not exist.
+#' # Below its own threshold each moment is returned as NaN or Inf, which
+#' # means that the moment does not exist.
 #' t(vapply(c(0.8, 1.5, 2.5, 3.5),
 #'          function(v) {
 #'            p <- list(mu = 0.4, sigma = 1.2, nu = v)
@@ -1033,7 +1037,7 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' [pseudohuber_distrib()] and [laplace_distrib()] for other robust families;
 #' [mvstudent_t1_distrib()] for the multivariate version;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery of checks that this family
+#' user-defined family against the same battery of checks that this family
 #' passes;
 #' [StudentT1Distrib] for the class.
 #' @export

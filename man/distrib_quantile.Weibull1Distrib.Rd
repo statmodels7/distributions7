@@ -41,7 +41,8 @@ root-finding fallback of the base class is not used. \code{Q(0)} is 0 and
 d <- weibull1_distrib()
 th <- list(mu = 2, sigma = 1.5)
 
-# The quartiles, and the round trip back through the distribution function.
+# The quartiles are computed, and then mapped back through the distribution
+# function.
 q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 q
 all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75))

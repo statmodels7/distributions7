@@ -22,13 +22,14 @@ A numeric vector of \code{n} non-negative integers.
 Draws \code{n} independent negative binomial counts by calling
 \code{\link[stats:NegBinomial]{stats::rnbinom()}} at \code{size = theta} and \code{mu = mu}, so the draws come from
 R's own generator and depend on \code{.Random.seed} in the usual way. The
-cumulative-table fallback the base class supplies for a discrete family is
-bypassed.
+cumulative-table fallback that the base class supplies for a discrete family
+is bypassed.
 }
 \examples{
 d <- negbin2_distrib()
 
-# Same generator as stats::rnbinom at size = theta, mu = mu.
+# The method uses the same generator as stats::rnbinom at size = theta,
+# mu = mu.
 set.seed(2)
 a <- distrib_rng(d, 5, list(mu = 4, theta = 2))
 set.seed(2)
@@ -40,7 +41,7 @@ set.seed(7)
 z <- distrib_rng(d, 2e4, list(mu = 4, theta = 2))
 c(mu = mean(z), theta = mean(z)^2 / (var(z) - mean(z)))
 
-# Overdispersion is the point: the variance is three times the mean here.
+# The counts are overdispersed: the variance is three times the mean here.
 c(mean = mean(z), var = var(z))
 }
 \seealso{

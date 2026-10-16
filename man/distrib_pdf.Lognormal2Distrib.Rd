@@ -26,8 +26,8 @@ Variance of Y}
 A numeric vector.
 }
 \description{
-The lognormal with \eqn{\log Y \sim N(\mu_l, S)}, where
-\eqn{S = \log(1 + v/m^2)} and \eqn{\mu_l = \log m - S/2}, so that
+These methods describe the lognormal with \eqn{\log Y \sim N(\mu_l, S)},
+where \eqn{S = \log(1 + v/m^2)} and \eqn{\mu_l = \log m - S/2}, so that
 \eqn{E[Y] = m} and \eqn{\operatorname{Var}(Y) = v}. The density, the
 distribution function, the quantile function and the generator are
 \code{\link[stats:Lognormal]{stats::dlnorm()}}, \code{\link[stats:Lognormal]{stats::plnorm()}}, \code{\link[stats:Lognormal]{stats::qlnorm()}} and

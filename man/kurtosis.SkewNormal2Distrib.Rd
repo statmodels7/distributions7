@@ -12,14 +12,15 @@ order; it is aligned here.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, of the length the recycled
+A numeric vector of excess kurtoses, of the length that the recycled
 parameters imply.
 }
 \description{
 Returns the excess kurtosis, computed from
 \code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis.SkewNormal1Distrib()}} at the implied direct parameters. It is the
-one moment this parametrization does not name: fixing the first three uses
-up all three parameters, so the fourth follows from them.
+one moment that this parametrization does not name: once the first three
+moments are fixed, all three parameters are used up, so the fourth follows
+from them.
 
 The consequence for use is that a skew normal cannot match an arbitrary
 first four moments. At \eqn{\gamma_1 = 0.5} the excess kurtosis is 0.347,
@@ -28,8 +29,8 @@ and it is determined by the skewness alone.
 \examples{
 d <- skewnormal2_distrib()
 
-# The kurtosis follows from the skewness and from nothing else: changing
-# the mean and the standard deviation leaves it alone.
+# The kurtosis depends on the skewness only: it does not change when the
+# mean and the standard deviation change.
 c(a = kurtosis(d, list(mu = 0, sigma = 1, gamma1 = 0.5)),
   b = kurtosis(d, list(mu = 9, sigma = 4, gamma1 = 0.5)))
 

@@ -20,8 +20,8 @@ A numeric vector, one value per observation.
 }
 \description{
 Reads \eqn{\partial^a_\mu \partial^b_\sigma \partial^c_\alpha \ell} off the
-table \code{\link[=skewt_msa_tower]{skewt_msa_tower()}} builds, by the \eqn{P_{a,b}} sum that function's
-page derives.
+table that \code{\link[=skewt_msa_tower]{skewt_msa_tower()}} builds, by the \eqn{P_{a,b}} sum that the page
+of that function derives.
 }
 \details{
 A term whose coefficient \eqn{\prod_{k=i}^{b-1}(a+k)} vanishes is dropped

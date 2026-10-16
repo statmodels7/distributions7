@@ -99,7 +99,8 @@ InvGauss2Distrib <- S7::new_class("InvGauss2Distrib", parent = continuous_distri
 #'       \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\},
 #'       \qquad y > 0,}
 #' by calling [statmod::dinvgauss()] at `mean = mu` and
-#' `dispersion = 1/lambda`, that package writing the family in the dispersion.
+#' `dispersion = 1/lambda`, because that package writes the family in the
+#' dispersion.
 #' With `log = TRUE` the logarithm is formed inside `dinvgauss()` and stays
 #' finite where the density itself underflows.
 #'
@@ -130,7 +131,7 @@ InvGauss2Distrib <- S7::new_class("InvGauss2Distrib", parent = continuous_distri
 #' all.equal(distrib_pdf(d, y, th),
 #'           statmod::dinvgauss(y, mean = 2, dispersion = 1 / 3))
 #'
-#' # The same law as invgauss1 at phi = 1/lambda.
+#' # The density is the same as that of invgauss1 at phi = 1/lambda.
 #' all.equal(distrib_pdf(d, y, th),
 #'           distrib_pdf(invgauss1_distrib(), y, list(mu = 2, phi = 1 / 3)))
 #'
@@ -211,9 +212,10 @@ S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
 #' @name distrib_quantile.InvGauss2Distrib
 #' @description
 #' Computes the inverse Gaussian quantile function by calling
-#' [statmod::qinvgauss()] at `mean = mu` and `dispersion = 1/lambda`. There is
-#' no closed form: the distribution function is elementary but not invertible
-#' in elementary terms, so `qinvgauss()` inverts it numerically, with the
+#' [statmod::qinvgauss()] at `mean = mu` and `dispersion = 1/lambda`. The
+#' quantile function has no closed form: the distribution function is
+#' elementary but cannot be inverted in elementary terms, so `qinvgauss()`
+#' inverts it numerically, with the
 #' far-tail correction of [invgauss_quantile()]. The
 #' distribution function is strictly increasing on \eqn{(0, \infty)}, so the
 #' round trip through [distrib_cdf.InvGauss2Distrib()] returns `p`.
@@ -244,7 +246,8 @@ S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
 #' d <- invgauss2_distrib()
 #' th <- list(mu = 2, lambda = 3)
 #'
-#' # A central 95 percent interval, strongly asymmetric about the mean of 2.
+#' # These quantiles bound a central 95 percent interval, which is strongly
+#' # asymmetric about the mean of 2.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
 #' # Exact inverse: the round trip returns the probabilities that it was given.
@@ -285,7 +288,8 @@ S7::method(distrib_quantile, InvGauss2Distrib) <- function(distrib, p, theta,
 #' @examples
 #' d <- invgauss2_distrib()
 #'
-#' # Same generator as statmod::rinvgauss at dispersion 1/lambda.
+#' # The method uses the same generator as statmod::rinvgauss at dispersion
+#' # 1/lambda.
 #' set.seed(2)
 #' a <- distrib_rng(d, 3, list(mu = 2, lambda = 3))
 #' set.seed(2)
@@ -353,7 +357,7 @@ S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 2, lambda = 3)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out.
 #' all.equal(g$mu, 3 * (y - 2) / 2^3)
 #' all.equal(g$lambda, 1 / (2 * 3) - (y - 2)^2 / (2 * 2^2 * y))
 #'
@@ -421,7 +425,7 @@ S7::method(distrib_gradient, InvGauss2Distrib) <- function(distrib, y, theta,
 #' h <- distrib_hessian(d, y, th)
 #' h
 #'
-#' # The three closed forms, written out.
+#' # The three closed forms are written out.
 #' all.equal(h$mu_mu, 3 * (2 * 2 - 3 * y) / 2^4)
 #' all.equal(h$mu_lambda, (y - 2) / 2^3)
 #' all.equal(h$lambda_lambda, rep(-1 / (2 * 3^2), 3))
@@ -453,12 +457,13 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}\left[\ell^{(\mu\lambda)}\right] = 0, \qquad
 #'       \mathbb{E}\left[\ell^{(\lambda\lambda)}\right] =
 #'         -\dfrac{1}{2\lambda^2}.}
-#' The pure shape entry is the observed value itself, being free of the data.
+#' The pure shape entry equals the observed value itself, because it is free of
+#' the data.
 #'
 #' Both diagonal entries are negative at every parameter setting, so the
-#' information is positive definite everywhere. The zero off-diagonal says the
-#' mean and the shape are orthogonal, so the mean equation can be fitted with
-#' the shape held at any value without biasing it.
+#' information is positive definite everywhere. The zero off-diagonal entry
+#' shows that the mean and the shape are orthogonal, so the mean equation can
+#' be fitted without bias when the shape is held at any value.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -501,7 +506,7 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #' d <- invgauss2_distrib()
 #' th <- list(mu = 2, lambda = 3)
 #'
-#' # The three constants, one value per observation.
+#' # Each of the three constants has one value per observation.
 #' lapply(distrib_expected_hessian(d, c(1, 2, 3), th), unique)
 #' c(-3 / 2^3, 0, -1 / (2 * 3^2))
 #'
@@ -709,7 +714,8 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #'
 #' This is the same law as [invgauss1_distrib()], which carries a dispersion
 #' \eqn{\phi = 1/\lambda}. The map between the two moves one coordinate at a
-#' time, the mean being untouched, so both sets of derivatives stay elementary.
+#' time and leaves the mean untouched, so both sets of derivatives stay
+#' elementary.
 #' The family is usually written in the shape parametrization. In it the law is
 #' the distribution of the first-passage time to a level \eqn{a > 0} of a
 #' Brownian motion with drift \eqn{\nu > 0} and variance parameter
@@ -775,7 +781,7 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' [lognormal1_distrib()] for other positive families;
 #' [pig1_distrib()] for the Poisson mixed over this law;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
-#' family of your own against the same battery of checks that this family
+#' user-defined family against the same battery of checks that this family
 #' passes;
 #' [InvGauss2Distrib] for the class.
 #'
@@ -788,13 +794,13 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' d <- invgauss2_distrib()
 #' d
 #'
-#' # The same law as invgauss1 at phi = 1/lambda.
+#' # The density is the same as that of invgauss1 at phi = 1/lambda.
 #' y <- c(1, 2, 3)
 #' th <- list(mu = 2, lambda = 3)
 #' all.equal(distrib_pdf(d, y, th),
 #'           distrib_pdf(invgauss1_distrib(), y, list(mu = 2, phi = 1 / 3)))
 #'
-#' # Moments: variance mu^3/lambda, skewness 3 sqrt(mu/lambda).
+#' # The variance is mu^3/lambda and the skewness is 3 sqrt(mu/lambda).
 #' c(mean = mean(d, th), var = variance(d, th),
 #'   skew = skewness(d, th), kurt = kurtosis(d, th))
 #' c(2^3 / 3, 3 * sqrt(2 / 3), 15 * 2 / 3)

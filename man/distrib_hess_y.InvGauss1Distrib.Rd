@@ -24,8 +24,9 @@ Computes the second derivative of the inverse Gaussian log-density with
 respect to the response, in closed form:
 \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{3}{2y^2}
       - \dfrac{1}{\phi y^3}.}
-The mean drops out, the log-density depending on \eqn{\mu} only through
-terms linear in \eqn{y} and constant in it. The sign changes at
+The mean drops out because the log-density depends on \eqn{\mu} only
+through terms that are linear in \eqn{y} and terms that are constant in
+\eqn{y}. The sign changes at
 \eqn{y = 2/(3\phi)}: the log-density is concave in the response below that
 point and convex above it, so an inverse Gaussian log-likelihood is not
 a concave function of an observation over the whole support.
@@ -41,7 +42,7 @@ all.equal(distrib_hess_y(d, y, th), 1.5 / y^2 - 1 / (2 * y^3))
 identical(distrib_hess_y(d, y, th),
           distrib_hess_y(d, y, list(mu = 300, phi = 2)))
 
-# Concave below 2/(3 phi) and convex above it.
+# The log-density is concave in y below 2/(3 phi) and convex above it.
 cut <- 2 / (3 * 2)
 c(below = distrib_hess_y(d, cut / 2, th),
   at = distrib_hess_y(d, cut, th),

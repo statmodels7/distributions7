@@ -37,10 +37,10 @@ location and scale.
 d <- logistic_distrib()
 th <- list(mu = 0.4, sigma = 1.5)
 
-# The median is mu, the family being symmetric.
+# The median is mu, because the family is symmetric.
 distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# Exact inverse: the round trip returns the probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 

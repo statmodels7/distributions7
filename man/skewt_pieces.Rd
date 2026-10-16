@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{skewt_pieces}
 \alias{skewt_pieces}
-\title{The Pieces a Skew t Evaluates From}
+\title{The Pieces from Which a Skew t Is Evaluated}
 \usage{
 skewt_pieces(y, mu, sigma, alpha, nu)
 }
@@ -49,8 +49,8 @@ quotient.
 their ratio stays finite. The direct quotient is \code{NaN} there, in particular
 when the degrees of freedom are large and the \eqn{t} tail is close to the
 Gaussian one. Where \eqn{|z| > 10^{20}} the functions are written in
-\eqn{\sqrt{s}}, \eqn{z/\sqrt{s}} and \eqn{\nu/s}, so that no power of
-\eqn{s} overflows.
+\eqn{\sqrt{s}}, \eqn{z/\sqrt{s}} and \eqn{\nu/s}, so that the powers of
+\eqn{s} do not overflow.
 
 This function does not differentiate in \eqn{\nu}. The derivative kernels evaluate
 the same quantities in bounded variables; see

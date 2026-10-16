@@ -26,11 +26,11 @@ A named list keyed as \code{\link[=hess_names]{hess_names()}}, \code{\link[=dexp
 \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The expected information and its first two derivatives in the parameters.
-For \eqn{|\gamma_1| <} \code{\link[=sn2_ge]{sn2_ge()}} they come from their series in
-\eqn{r = (\gamma_1/c)^{1/3}}; elsewhere from the quadrature of
-\code{\link[=loc_scale_expected]{loc_scale_expected()}} over the family's own observed derivatives, the
-family being location-scale in \eqn{(\mu, \sigma)} at fixed
+Return the expected information and its first two derivatives in the
+parameters. For \eqn{|\gamma_1| <} \code{\link[=sn2_ge]{sn2_ge()}} they come from their series in
+\eqn{r = (\gamma_1/c)^{1/3}}; elsewhere they come from the quadrature of
+\code{\link[=loc_scale_expected]{loc_scale_expected()}} over the family's own observed derivatives, because
+the family is location-scale in \eqn{(\mu, \sigma)} at fixed
 \eqn{\gamma_1}. The quadrature is centered at the step of the skewing
 function, \eqn{w = -r} (\code{\link[=loc_scale_center]{loc_scale_center()}}), which at a skewness near the
 ceiling is too sharp for nodes clustered at zero.
@@ -51,7 +51,8 @@ error.
 }
 \examples{
 d <- skewnormal2_distrib()
-# finite at zero skewness, where the direct parametrization's is singular
+# The information is finite at zero skewness, where that of the direct
+# parametrization is singular.
 distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = 0))
 }
 \seealso{

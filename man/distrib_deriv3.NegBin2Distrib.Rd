@@ -19,7 +19,8 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, the expected values being closed form or exact sums.}
+\item{approx}{Ignored, because the expected values are closed form or exact
+sums.}
 
 \item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
@@ -60,7 +61,7 @@ is summed over the support with the mass recurrence and the stopping rule
 of \code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}}. \code{approx} and \code{nsim} are
 ignored either way.
 
-The cancellation of \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} is performed
+The kernel performs the cancellation of \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}}
 symbolically at this order too: the observed pure dispersion component is
 a sum over \eqn{j < y} when \eqn{\theta > 100\max(y, 1)}, and the expected
 one is a single merged sum, so both keep their accuracy at large

@@ -80,7 +80,7 @@ NULL
 #'   [skewnormal2_distrib()] for the same law in Azzalini's centered
 #'   parametrization, whose information is not singular at symmetry;
 #'   [skewt_distrib()], which adds degrees of freedom and reaches a skewness
-#'   this family cannot;
+#'   that this family cannot reach;
 #'   [gaussian1_distrib()] for the case \eqn{\alpha = 0}.
 #'
 #' @examples
@@ -146,7 +146,7 @@ SkewNormal1Distrib <- S7::new_class("SkewNormal1Distrib", parent = continuous_di
 #' y <- c(-2, -0.5, 0.5, 2)
 #' th <- list(mu = 0, sigma = 1, alpha = 3)
 #'
-#' # The formula written out.
+#' # The density equals its formula written out.
 #' all.equal(distrib_pdf(d, y, th),
 #'           2 * dnorm(y) * pnorm(3 * y))
 #'
@@ -188,11 +188,12 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #'
 #' The method works on the log scale ([sn_log_lower()]). The upper tail is
 #' computed as the lower tail of \eqn{-Y}, a skew normal of shape
-#' \eqn{-\alpha}, so neither tail is a complement. Where the difference
-#' \eqn{\Phi(z) - 2T(z, \alpha)} cancels, that is where the requested tail is
-#' below \eqn{10^{-3}\Phi(\pm z)}, the tail is integrated instead by
-#' [log_tail_integral()], so that a small tail probability and its logarithm
-#' keep their digits on the light side of the family.
+#' \eqn{-\alpha}, so the method computes each tail directly and not as the
+#' complement of the other. The difference \eqn{\Phi(z) - 2T(z, \alpha)}
+#' cancels where the requested tail is below \eqn{10^{-3}\Phi(\pm z)}, and
+#' there the tail is integrated instead by [log_tail_integral()], so that a
+#' small tail probability and its logarithm keep their digits on the light side
+#' of the family.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param q A numeric vector of quantiles, anywhere on the real line.
@@ -215,7 +216,7 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #' Owen's T. \eqn{\alpha} is the shape.
 #'
 #' @seealso [numericals7::owen_t()] for the quadrature,
-#'   [distrib_pdf.SkewNormal1Distrib()] for the density it integrates,
+#'   [distrib_pdf.SkewNormal1Distrib()] for the density that it integrates,
 #'   [distrib_grad_cdf()] for its parameter derivatives, and [distrib_cdf()]
 #'   for the generic.
 #'
@@ -224,7 +225,7 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #' q <- c(-2, -0.5, 0.5, 2)
 #' th <- list(mu = 0, sigma = 1, alpha = 3)
 #'
-#' # Owen's identity against a direct quadrature of the density.
+#' # Owen's identity is compared with a direct quadrature of the density.
 #' rbind(owen = distrib_cdf(d, q, th),
 #'       quadrature = vapply(q, function(u)
 #'         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
@@ -255,10 +256,10 @@ S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower
 #' @name sn_log_lower
 #' @description
 #' Returns \eqn{\log\{\Phi(z) - 2T(z, \alpha)\}} with \eqn{T} Owen's
-#' function, the shape clamped to \eqn{10^{50}} in absolute value, past which
-#' \eqn{T(z, \alpha)} equals its limit \eqn{\Phi(-|z|)/2} to double
-#' precision. A value above one half is formed through `log1p()` of the
-#' other tail.
+#' function. The shape is clamped to \eqn{10^{50}} in absolute value, because
+#' beyond that value \eqn{T(z, \alpha)} equals its limit
+#' \eqn{\Phi(-|z|)/2} to double precision. A value above one half is formed
+#' through `log1p()` of the other tail.
 #' @param z A numeric vector of standardized quantiles.
 #' @param alpha A numeric vector of shapes.
 #' @return A numeric vector of log probabilities.
@@ -282,7 +283,7 @@ sn_log_lower <- function(z, alpha) {
 #' and \eqn{\delta = \alpha/\sqrt{1+\alpha^2}},
 #' \deqn{Z = \delta\,|U_0| + \sqrt{1-\delta^2}\;U_1}
 #' is standard skew normal with shape \eqn{\alpha}, and \eqn{Y = \mu + \sigma Z}.
-#' No inversion and no rejection is involved. The cost is two `rnorm` calls
+#' The method uses neither inversion nor rejection. The cost is two `rnorm` calls
 #' whatever the shape is, and the draws follow the density exactly.
 #'
 #' The representation also reads off why the family cannot be very skewed: the
@@ -309,9 +310,10 @@ sn_log_lower <- function(z, alpha) {
 #' \eqn{\alpha^2} overflows. \eqn{\mu} is the location and \eqn{\sigma} the
 #' scale.
 #'
-#' @seealso [distrib_pdf.SkewNormal1Distrib()] for the density the draws follow,
-#'   [mean.SkewNormal1Distrib()] and [variance.SkewNormal1Distrib()] for the
-#'   moments they should reproduce, and [distrib_rng()] for the generic.
+#' @seealso [distrib_pdf.SkewNormal1Distrib()] for the density that the draws
+#'   follow, [mean.SkewNormal1Distrib()] and [variance.SkewNormal1Distrib()] for
+#'   the moments that they should reproduce, and [distrib_rng()] for the
+#'   generic.
 #'
 #' @examples
 #' d <- skewnormal1_distrib()
@@ -320,11 +322,11 @@ sn_log_lower <- function(z, alpha) {
 #' set.seed(1)
 #' x <- distrib_rng(d, 2e5, th)
 #'
-#' # Three moments against their closed forms.
+#' # Three sample moments are compared with their closed forms.
 #' rbind(sample = c(mean(x), var(x), mean((x - mean(x))^3) / sd(x)^3),
 #'       theory = c(mean(d, th), variance(d, th), skewness(d, th)))
 #'
-#' # The representation, written out at the same seed.
+#' # The representation is written out at the same seed.
 #' delta <- 3 / sqrt(1 + 9)
 #' set.seed(1)
 #' z <- delta * abs(rnorm(2e5)) + sqrt(1 - delta^2) * rnorm(2e5)
@@ -406,7 +408,7 @@ S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta, ...) 
 #' th <- list(mu = 0, sigma = 1, alpha = 3)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The shape component written out.
+#' # The shape component equals its formula written out.
 #' all.equal(g$alpha, y * numericals7::mills_ratio(3 * y)$r)
 #'
 #' # The score sums to nearly zero at the maximum likelihood estimate.
@@ -453,10 +455,10 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #' # Singularity at symmetry
 #'
 #' At \eqn{\alpha = 0} the expected information of this parametrization has rank
-#' 2, not 3. The reason is in the score: the shape and location components are
-#' exactly proportional there, so no data can separate them. Measured at
-#' \eqn{\mu = 0}, \eqn{\sigma = 1}, its eigenvalues are 2, 1.637 and
-#' \eqn{-2.6\times10^{-27}}, and the smallest one grows like
+#' 2, not 3. The shape and location components of the score are exactly
+#' proportional there, so a data set cannot separate them. At
+#' \eqn{\mu = 0}, \eqn{\sigma = 1} the numerically computed eigenvalues are 2,
+#' 1.637 and \eqn{-2.6\times10^{-27}}, and the smallest one grows like
 #' \eqn{\alpha^4} as the shape moves off zero: \eqn{4.4\times10^{-10}} at
 #' \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at \eqn{\alpha = 0.5}.
 #'
@@ -497,10 +499,10 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
 #' th <- list(mu = 0, sigma = 1, alpha = 3)
 #' h <- distrib_hessian(d, y, th)
 #'
-#' # The shape component written out.
+#' # The shape component equals its formula written out.
 #' all.equal(h$alpha_alpha, y^2 * numericals7::mills_ratio(3 * y)$dr)
 #'
-#' # Against a central difference of the score.
+#' # The value is compared with a central difference of the score.
 #' eps <- 1e-5
 #' rbind(analytic = h$mu_alpha,
 #'       numeric = (distrib_gradient(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu -
@@ -573,15 +575,16 @@ S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, s
 #'   [d2expected_names()].
 #'
 #' @seealso [loc_scale_expected()] for the construction,
-#'   [distrib_hessian.SkewNormal1Distrib()] for the quantity this is the
-#'   expectation of, and [distrib_expected_hessian()] for the generic.
+#'   [distrib_hessian.SkewNormal1Distrib()] for the quantity of which this is
+#'   the expectation, and [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
 #' d <- skewnormal1_distrib()
 #' a <- 2
 #' e <- distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, alpha = a))
 #'
-#' # Azzalini's form, with the a_k computed by an independent quadrature.
+#' # Azzalini's form is evaluated with the a_k computed by an independent
+#' # quadrature.
 #' ak <- sapply(c(0, 2), function(k) integrate(function(z)
 #'   2 * z^k * exp(dnorm(z, log = TRUE) + 2 * dnorm(a * z, log = TRUE) -
 #'                 pnorm(a * z, log.p = TRUE)), -Inf, Inf, rel.tol = 1e-12)$value)
@@ -606,7 +609,8 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #' \eqn{\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)}, with \eqn{L} the
 #' logarithm of the Mills ratio, whose derivatives are, with alternating
 #' signs, the cumulants of the density proportional to \eqn{e^{ts - s^2/2}}
-#' on \eqn{s > 0}; no difference of large numbers is formed.
+#' on \eqn{s > 0}, so that the kernel never forms a difference of large
+#' numbers.
 #'
 #' With `expected = TRUE` the value is an expectation, computed numerically by
 #' [expected_derivative()] from the same kind of integrals as the expected
@@ -614,8 +618,8 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` its values
-#'   are ignored and only its length matters, the result being one expectation
-#'   repeated.
+#'   are ignored and only its length matters, and the result is one
+#'   expectation repeated.
 #' @param theta A named list with components `mu`, `sigma` and `alpha`, each a
 #'   numeric vector of length 1 or of the length of `y`.
 #' @param expected Logical of length 1. When `FALSE`, the default, the observed
@@ -625,10 +629,12 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #'   transformation is applied in the generic's body, so this method always
 #'   returns the parameter scale.
 #' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, the
-#'   strategy for the expectation. Read only when `expected = TRUE`; the first
-#'   is the default and quadratures the observed kernel against the density.
+#'   strategy for the expectation. It is read only when `expected = TRUE`; the first
+#'   is the default and integrates the observed kernel against the density by
+#'   quadrature.
 #' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Ignored by every other strategy. Defaults to `10000`.
+#'   `approx = "mc"`. The other strategies do not read it. Defaults to
+#'   `10000`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`. The result does not depend on the count.
@@ -654,7 +660,7 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #' d3 <- distrib_deriv3(d, y, th)
 #' names(d3)
 #'
-#' # Against a central difference of the analytic Hessian.
+#' # The value is compared with a central difference of the analytic Hessian.
 #' eps <- 1e-4
 #' rbind(analytic = d3$mu_mu_alpha,
 #'       numeric = (distrib_hessian(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu -
@@ -691,8 +697,8 @@ S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' the third, and the same cumulant route below \eqn{t = -1}.
 #'
 #' With `expected = TRUE` the value is a numerical expectation, for the reason
-#' it is at third order: the integrals are the ones that block the expected
-#' information.
+#' that applies at third order: the integrals are the ones that block the
+#' expected information.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -730,7 +736,7 @@ S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' d4 <- distrib_deriv4(d, y, th)
 #' length(d4)
 #'
-#' # Against a central difference of the third order.
+#' # The value is compared with a central difference of the third order.
 #' eps <- 1e-4
 #' rbind(analytic = d4$mu_mu_alpha_alpha,
 #'       numeric = (distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu_alpha -
@@ -791,7 +797,7 @@ S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' # It is minus the score in the location, exactly.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
-#' # Against a central difference of the log-density.
+#' # The value is compared with a central difference of the log-density.
 #' eps <- 1e-6
 #' rbind(analytic = distrib_grad_y(d, y, th),
 #'       numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
@@ -813,7 +819,7 @@ S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #'       = \dfrac{\alpha^2 R' - 1}{\sigma^2},}
 #' which is the same expression as \eqn{\partial^2\ell/\partial\mu^2}. The
 #' first derivative in \eqn{y} is minus the first derivative in \eqn{\mu}, and
-#' a second differentiation changes the sign again, so the response curvature
+#' differentiating a second time changes the sign again, so the response curvature
 #' equals the location curvature instead of being its negative.
 #'
 #' Since \eqn{R'} is negative for every \eqn{t}, the value is strictly negative
@@ -834,8 +840,8 @@ S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' ratio and \eqn{R' = -R(t+R)} its derivative.
 #'
 #' @seealso [distrib_grad_y.SkewNormal1Distrib()] for the first derivative,
-#'   [distrib_hessian.SkewNormal1Distrib()] for the parameter curvature it
-#'   shares an expression with, and [distrib_hess_y()] for the generic.
+#'   [distrib_hessian.SkewNormal1Distrib()] for the parameter curvature with
+#'   which it shares an expression, and [distrib_hess_y()] for the generic.
 #'
 #' @examples
 #' d <- skewnormal1_distrib()
@@ -845,14 +851,15 @@ S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' # It equals the curvature in the location, without a sign change.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
-#' # Against a central difference of the response derivative.
+#' # The value is compared with a central difference of the response
+#' # derivative.
 #' eps <- 1e-5
 #' rbind(analytic = distrib_hess_y(d, y, th),
 #'       numeric = (distrib_grad_y(d, y + eps, th) -
 #'                  distrib_grad_y(d, y - eps, th)) / (2 * eps))
 #'
-#' # Concave in the response at every shape, and bounded above by
-#' # -1/sigma^2, which is the Gaussian's own curvature.
+#' # The log-density is concave in the response at every shape, and the
+#' # curvature is bounded above by -1/sigma^2, which is the Gaussian's own.
 #' vapply(c(-20, -1, 0, 1, 20), function(a)
 #'   max(distrib_hess_y(d, seq(-6, 6, by = 0.5), list(mu = 0, sigma = 1, alpha = a))), 0)
 S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ...) {
@@ -919,18 +926,17 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #'
 #' # Singularity at symmetry
 #'
-#' At \eqn{\alpha = 0} the expected information has rank 2 and not 3. The score
-#' shows why: the shape component is \eqn{z\sqrt{2/\pi}} and the location
-#' component \eqn{z/\sigma}, so the two are exactly proportional and no data
-#' can separate them. Measured, the smallest eigenvalue is
+#' At \eqn{\alpha = 0} the expected information has rank 2 and not 3. The shape
+#' component of the score is \eqn{z\sqrt{2/\pi}} and the location component is
+#' \eqn{z/\sigma}, so the two are exactly proportional and a data set cannot
+#' separate them. Numerically, the smallest eigenvalue is
 #' \eqn{-2.6\times10^{-27}} against a largest of 2 at \eqn{\alpha = 0}, and it
 #' grows like \eqn{\alpha^4} thereafter.
 #'
-#' The consequence for use is that a fit whose true shape is near zero
-#' identifies \eqn{\alpha} weakly, and that a variance matrix computed at
-#' exactly zero is not invertible. Azzalini and Capitanio's centered
-#' parametrization removes the singularity; it is [skewnormal2_distrib()], a
-#' separate object.
+#' A fit whose true shape is near zero identifies \eqn{\alpha} weakly, and a
+#' variance matrix computed at exactly zero is not invertible. Azzalini and
+#' Capitanio's centered parametrization removes the singularity; it is
+#' [skewnormal2_distrib()], a separate object.
 #'
 #' # Moments, and the bound on the skewness
 #'
@@ -939,9 +945,10 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #'       \mathrm{Var}(Y) = \sigma^2(1 - b^2\delta^2).}
 #' All four moments are closed form. The skewness is bounded: \eqn{\delta}
 #' saturates at one as \eqn{|\alpha|\to\infty}, so \eqn{\gamma_1} cannot leave
-#' \eqn{(-0.9953, 0.9953)} whatever the shape is. Measured, it reaches 0.9556
-#' at \eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}, and does not move
-#' after that. A sample skewer than this needs [skewt_distrib()].
+#' \eqn{(-0.9953, 0.9953)} whatever the shape is. Numerically, it reaches
+#' 0.9556 at \eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}, and does
+#' not move after that. A sample whose skewness exceeds this bound in absolute
+#' value needs [skewt_distrib()].
 #'
 #' # Parameter domains
 #'
@@ -978,7 +985,7 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ..
 #' c(density = max(abs(distrib_pdf(d, y, th0) - dnorm(y))),
 #'   cdf = max(abs(distrib_cdf(d, y, th0) - pnorm(y))))
 #'
-#' # The skewness the family can reach is bounded, and saturates early.
+#' # The skewness that the family can reach is bounded, and saturates early.
 #' vapply(c(1, 3, 10, 50, 1e4),
 #'        function(a) skewness(d, list(mu = 0, sigma = 1, alpha = a)), 0)
 #'

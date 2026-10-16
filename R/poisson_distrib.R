@@ -8,10 +8,10 @@ NULL
 #' This is the S7 class of the Poisson family parametrized by its mean \eqn{\mu
 #' > 0}, with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative
 #' integers. It inherits from `discrete_distrib`, so expectations over its
-#' support are exact sums and no derivative with respect to the response is
-#' defined.
+#' support are exact sums, and it defines no derivative with respect to the
+#' response.
 #'
-#' The mean and the variance are both \eqn{\mu}, which is the constraint a
+#' The mean and the variance are both \eqn{\mu}, which is the constraint that a
 #' count model most often has to relax; [negbin2_distrib()] and
 #' [negbin1_distrib()] do that, and both contain this family in the limit.
 #'
@@ -91,9 +91,9 @@ PoissonDistrib <- S7::new_class("PoissonDistrib", parent = discrete_distrib)
 #' @description
 #' Computes the Poisson probability mass
 #' \deqn{P(Y = y; \mu) = \dfrac{e^{-\mu}\mu^{y}}{y!}, \qquad y = 0, 1, 2, \dots}
-#' by calling [stats::dpois()]. The `pdf` in the generic's name is the density
-#' with respect to counting measure, so what this returns is a probability and
-#' is at most 1.
+#' by calling [stats::dpois()]. The `pdf` in the generic's name denotes the
+#' density with respect to counting measure, so the returned value is a
+#' probability and is at most 1.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
 #' @param y A numeric vector of counts. A negative value gives 0, and a
@@ -171,7 +171,7 @@ S7::method(distrib_pdf, PoissonDistrib) <- function(distrib, y, theta, log = FAL
 #' # The method is stats::ppois.
 #' all.equal(distrib_cdf(d, c(0, 2, 7), th), ppois(c(0, 2, 7), lambda = 3))
 #'
-#' # A step function: constant between integers.
+#' # The distribution function is a step function, constant between integers.
 #' distrib_cdf(d, c(2, 2.5, 2.9), th)
 #'
 #' # The jump at an integer is exactly the mass there.
@@ -220,10 +220,11 @@ S7::method(distrib_cdf, PoissonDistrib) <- function(distrib, q, theta, lower.tai
 #' d <- poisson_distrib()
 #' th <- list(mu = 3)
 #'
-#' # Integers, being the smallest count whose cumulative mass reaches p.
+#' # Each quantile is an integer, the smallest count whose cumulative mass
+#' # reaches p.
 #' distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #'
-#' # The round trip overshoots, the support being discrete.
+#' # The round trip overshoots because the support is discrete.
 #' p <- c(0.025, 0.5, 0.975)
 #' rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 #'
@@ -244,7 +245,7 @@ S7::method(distrib_quantile, PoissonDistrib) <- function(distrib, p, theta, lowe
 #' @description
 #' Draws `n` independent Poisson counts by calling [stats::rpois()], so the
 #' draws come from R's own generator and depend on `.Random.seed` in the usual
-#' way. The cumulative-table fallback the discrete base class supplies is
+#' way. The cumulative-table fallback that the discrete base class supplies is
 #' bypassed.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
@@ -268,7 +269,7 @@ S7::method(distrib_quantile, PoissonDistrib) <- function(distrib, p, theta, lowe
 #' set.seed(2)
 #' identical(a, rpois(5, lambda = 3))
 #'
-#' # The sample mean and variance both estimate mu, this family being
+#' # The sample mean and variance both estimate mu because this family is
 #' # equidispersed.
 #' set.seed(4)
 #' z <- distrib_rng(d, 2e4, list(mu = 4.2))
@@ -323,7 +324,7 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta, ...) {
 #' y <- c(0, 2, 7)
 #' th <- list(mu = 3)
 #'
-#' # The closed form, written out.
+#' # The score is compared with its closed form.
 #' all.equal(distrib_gradient(d, y, th)$mu, (y - 3) / 3)
 #'
 #' # On the canonical log link the score is the raw residual.
@@ -386,7 +387,8 @@ S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scal
 #' y <- c(0, 2, 7)
 #' th <- list(mu = 3)
 #'
-#' # The closed form, written out; zero at an observed zero.
+#' # The Hessian is compared with its closed form, which is zero at an
+#' # observed zero.
 #' all.equal(distrib_hessian(d, y, th)$mu_mu, -y / 3^2)
 #'
 #' # On the canonical log link the curvature carries no data: one value,
@@ -459,7 +461,7 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' d <- poisson_distrib()
 #' th <- list(mu = 3)
 #'
-#' # A single number, -1/mu.
+#' # The value is a single number, -1/mu.
 #' unique(distrib_expected_hessian(d, c(0, 2, 7), th)$mu_mu)
 #' -1 / 3
 #'
@@ -469,7 +471,7 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #'       expected = distrib_expected_hessian(d, c(0, 2, 7), th,
 #'                                           scale = "link")$mu_mu)
 #'
-#' # It is the variance of the score, this family being regular.
+#' # It is the variance of the score because this family is regular.
 #' set.seed(4)
 #' z <- distrib_rng(d, 2e5, th)
 #' c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
@@ -483,9 +485,10 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #' @name distrib_dexpected_hessian.PoissonDistrib
 #' @aliases distrib_d2expected_hessian.PoissonDistrib
 #' @description
-#' The first and second derivatives of \eqn{\mathbb{E}[\ell_{\mu\mu}] =
-#' -1/\mu}, \eqn{1/\mu^2} and \eqn{-2/\mu^3}, from a compiled kernel. On the
-#' link scale the result is carried across by [dexpected_link()].
+#' Computes the first and second derivatives of
+#' \eqn{\mathbb{E}[\ell_{\mu\mu}] = -1/\mu}, which are \eqn{1/\mu^2} and
+#' \eqn{-2/\mu^3}, with a compiled kernel. On the link scale the result is
+#' carried across by [dexpected_link()].
 #' @param distrib A `PoissonDistrib` object.
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list with `mu`.
@@ -516,7 +519,7 @@ S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, t
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}.}
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2/\mu^2}. Both routes are closed
-#' form, so no quadrature is run and `approx` and `nsim` are ignored.
+#' form, so the method runs no quadrature and ignores `approx` and `nsim`.
 #'
 #' The family has one parameter, so there is one component, where a
 #' two-parameter family carries four at this order.
@@ -554,7 +557,8 @@ S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, t
 #' y <- c(0, 2, 7)
 #' th <- list(mu = 3)
 #'
-#' # The closed form, written out; zero at an observed zero.
+#' # The third derivative is compared with its closed form, which is zero at
+#' # an observed zero.
 #' all.equal(distrib_deriv3(d, y, th)$mu_mu_mu, 2 * y / 3^3)
 #'
 #' # The expected value is 2/mu^2.
@@ -614,7 +618,7 @@ S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expect
 #' y <- c(0, 2, 7)
 #' th <- list(mu = 3)
 #'
-#' # The closed form, written out.
+#' # The fourth derivative is compared with its closed form.
 #' all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu, -6 * y / 3^4)
 #'
 #' # The expected value is -6/mu^3.
@@ -645,7 +649,7 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #'
 #' The family is equidispersed: its variance equals its mean at every
 #' parameter value. Real counts are usually more variable than that, so a
-#' Poisson fit is often the null a count analysis argues against;
+#' Poisson fit is often the null against which a count analysis argues;
 #' [negbin2_distrib()] and [negbin1_distrib()] add a dispersion parameter and
 #' both contain this family in a limit.
 #'
@@ -672,9 +676,10 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' \deqn{\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu.}
 #' The second of these carries no data, so the observed and the expected
-#' information coincide in exact arithmetic: Fisher scoring and Newton's method take the same step,
-#' and the iteratively reweighted least squares of a Poisson log-linear model
-#' is both at once. Under any other link the two differ and the choice matters.
+#' information coincide in exact arithmetic: Fisher scoring and Newton's
+#' method take the same step, and the iteratively reweighted least squares of a
+#' Poisson log-linear model is both at once. Under any other link the two
+#' differ, so Fisher scoring and Newton's method take different steps.
 #'
 #' # Derivatives
 #'
@@ -729,7 +734,7 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' all.equal(distrib_pdf(d, y, list(mu = 3)), dpois(y, 3))
 #' sum(distrib_pdf(d, 0:200, list(mu = 3)))
 #'
-#' # Equidispersed, and closer to symmetric as the mean grows.
+#' # The family is equidispersed and closer to symmetric as the mean grows.
 #' vapply(c(0.5, 3, 20), function(m) {
 #'   th <- list(mu = m)
 #'   c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))
@@ -740,9 +745,10 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' z <- distrib_rng(d, 1000, list(mu = 4.2))
 #' c(fitted = unname(coef(fit_distrib(d, z))), sample_mean = mean(z))
 #'
-#' # Equidispersion is a testable assumption. Drawn from the family the
-#' # sample variance matches the mean; drawn with extra variability it does
-#' # not, and a negative binomial is the family to reach for.
+#' # Equidispersion is a testable assumption. A sample drawn from the family
+#' # has a variance that matches its mean; a sample drawn with extra
+#' # variability does not, and then a negative binomial is the appropriate
+#' # family.
 #' set.seed(6)
 #' over <- rpois(1000, lambda = rgamma(1000, shape = 2, rate = 2 / 4.2))
 #' rbind(poisson = c(mean = mean(z), var = var(z)),

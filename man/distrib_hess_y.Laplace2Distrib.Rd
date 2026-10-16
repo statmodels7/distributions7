@@ -8,7 +8,8 @@
 
 \item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A named list with components \code{mu} and \code{lambda}. Neither is read.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}. The method
+does not read either of them.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -30,7 +31,8 @@ th <- list(mu = 0.4, lambda = 2)
 
 distrib_hess_y(d, y, th)
 
-# A location family: the same as the curvature in the location.
+# This is a location family, so the derivative equals the curvature in the
+# location.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 
 # The first derivative drops by 2 lambda across the location.

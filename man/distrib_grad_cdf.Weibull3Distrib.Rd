@@ -21,9 +21,9 @@
 A named list, one component per parameter or per multi-index.
 }
 \description{
-The derivatives of \eqn{F(q) = 1 - \exp\{-(q/b)^\sigma\}} in
-\eqn{(m, \sigma)} to order four, each a closed form from its own compiled
-kernel, carried to the upper tail and the log scale by
+Computes the derivatives of \eqn{F(q) = 1 - \exp\{-(q/b)^\sigma\}} in
+\eqn{(m, \sigma)} to order four. Each is a closed form computed by its own
+compiled kernel and carried to the upper tail and the log scale by
 \code{\link[=cdf_tail_scale]{cdf_tail_scale()}} and \code{\link[=cdf_scale_k]{cdf_scale_k()}}. The derivatives of the log
 survival function (\verb{lower.tail = FALSE, log = TRUE}) are those of
 \eqn{-(q/b)^\sigma} itself, from \code{\link[=weibull3_log_surv_derivs]{weibull3_log_surv_derivs()}}, so that

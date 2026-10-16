@@ -33,9 +33,9 @@ of \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}
 With \eqn{z = (y-\mu)/\sigma} and \eqn{u(z) = z\sqrt{(\nu+1)/(\nu+z^2)}},
 the log-density is
 \deqn{\ell = \log 2 - \log\sigma + g(z) + \Lambda(\alpha\,u(z)),}
-where \eqn{g = \log t_\nu} and \eqn{\Lambda = \log T_{\nu+1}}. Neither
-\eqn{\mu} nor \eqn{\sigma} appears anywhere but inside \eqn{z}, and
-\eqn{\alpha} nowhere but inside \eqn{w = \alpha u}, so every derivative in
+where \eqn{g = \log t_\nu} and \eqn{\Lambda = \log T_{\nu+1}}. The
+parameters \eqn{\mu} and \eqn{\sigma} appear only inside \eqn{z}, and
+\eqn{\alpha} appears only inside \eqn{w = \alpha u}, so every derivative in
 \eqn{(\mu, \sigma, \alpha)} reduces to derivatives in \eqn{z} and in the
 argument \eqn{w} of \eqn{\Lambda}.
 
@@ -65,8 +65,8 @@ skew normal's inverse Mills ratio is handled. The two chain rules that
 remain, \eqn{(u^c)^{(j)}} and \eqn{\partial_z^p \Lambda^{(c)}(\alpha u)},
 are Faa di Bruno sums over the partial Bell polynomials of \eqn{u}.
 
-What is left outside the table is \eqn{\nu}, which enters the degrees of
-freedom of \eqn{T_{\nu+1}} and therefore carries the obstruction
+The parameter \eqn{\nu} is outside the table: it enters the degrees of
+freedom of \eqn{T_{\nu+1}} and therefore carries the obstruction that
 \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}} records.
 }
 

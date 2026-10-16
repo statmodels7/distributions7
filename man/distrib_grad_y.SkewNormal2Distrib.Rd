@@ -26,10 +26,10 @@ A numeric vector for the derivatives in the response; a named list
 for the mixed derivatives.
 }
 \description{
-The first and second derivatives of the log-density in the response, and
-the mixed derivatives of orders one and two in the response and one and two
-in \eqn{(\mu, \sigma, \gamma_1)}, each from its own compiled kernel, written
-as the parameter derivatives are (see
+Return the first and second derivatives of the log-density in the response,
+and the mixed derivatives of orders one and two in the response and one and
+two in \eqn{(\mu, \sigma, \gamma_1)}. Each derivative comes from its own
+compiled kernel, written in the same way as the parameter derivatives (see
 \code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}).
 }
 \examples{

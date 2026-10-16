@@ -30,8 +30,8 @@ length of the recycled inputs.
 Returns the exact first derivatives of the log-mass in \eqn{(\mu, \alpha)},
 read off columns \code{d10} and \code{d01} of the compiled kernel of
 \code{pig2_gradient_cpp}. The kernel takes \eqn{\alpha} as a variable of its own, so
-these are derivatives in the orthogonal coordinates directly and no chain
-rule through \code{\link[=pig2_sigma]{pig2_sigma()}} is composed.
+these are derivatives in the orthogonal coordinates directly, and the method
+does not compose a chain rule through \code{\link[=pig2_sigma]{pig2_sigma()}}.
 
 The property that gives this parametrization its name lives one order up:
 the expected value of \eqn{\partial^2\ell/\partial\mu\partial\alpha} is
@@ -45,14 +45,15 @@ al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
 th <- list(mu = 3, alpha = al)
 g <- distrib_gradient(d, y, th)
 
-# Against numerical differentiation of the log-likelihood.
+# The score is compared with numerical differentiation of the
+# log-likelihood.
 f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], alpha = p[2]),
                                  log = TRUE))
 rbind(analytic = vapply(g, sum, 0),
       numeric = numDeriv::grad(f, c(3, al)))
 
-# The two scores are uncorrelated under the model, which is what
-# orthogonality means and what pig1 does not have.
+# The two scores are uncorrelated under the model, which is orthogonality;
+# pig1 does not have this property.
 c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
   pig1 = distrib_expected_hessian(pig1_distrib(), 0,
                                   list(mu = 3, sigma = 0.8))$mu_sigma)

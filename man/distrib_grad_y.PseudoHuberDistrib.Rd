@@ -27,16 +27,16 @@ Computes \eqn{\partial \ell / \partial y} in closed form. With
 The family is a location family in \eqn{\mu}, so this is exactly the
 negative of the location score
 \code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}}\verb{$mu}, and like it, it is
-bounded: it tends to \eqn{\mp 1/\sigma} as the residual runs away. This
-quantity is what a quantile residual's delta-method standard error and a
-change of variable in the response both need.
+bounded: it tends to \eqn{\mp 1/\sigma} as the residual runs away. Both a
+quantile residual's delta-method standard error and a change of variable in
+the response need this quantity.
 }
 \examples{
 d <- pseudohuber_distrib()
 y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The closed form, written out.
+# The derivative equals its closed form written out.
 r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 all.equal(distrib_grad_y(d, y, th), -r / (1.2^2 * D))
 
@@ -49,7 +49,7 @@ all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
            distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
           distrib_grad_y(d, y, th), tolerance = 1e-6)
 
-# Bounded by 1 / sigma however far out the response is.
+# The derivative is bounded by 1 / sigma however far out the response is.
 c(distrib_grad_y(d, 0.4 + c(10, 1000, 1e6), th), bound = -1 / 1.2)
 }
 \seealso{

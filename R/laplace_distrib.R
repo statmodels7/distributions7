@@ -15,9 +15,9 @@ NULL
 #' The density has a kink at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
 #' differentiable. This makes the family non-regular in its location: the
 #' observed second derivative in \eqn{\mu} is 0 almost everywhere while the
-#' information is \eqn{1/\sigma^2}. The class records that by setting
-#' `params_smooth` to `c(mu = FALSE, sigma = TRUE)`, which [check_distrib()]
-#' and the finite-difference guards consult.
+#' information is \eqn{1/\sigma^2}. The class records this by setting
+#' `params_smooth` to `c(mu = FALSE, sigma = TRUE)`, a property that
+#' [check_distrib()] and the finite-difference guards read.
 #'
 #' Build one with [laplace_distrib()]. This page documents the raw S7
 #' constructor, which takes the parent's properties; the validator of
@@ -95,7 +95,7 @@ NULL
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' c(variance = variance(d, th), two_sigma_sq = 2 * 1.5^2)
 #'
-#' # Heavier tailed than a Gaussian: the excess kurtosis is 3.
+#' # The tails are heavier than a Gaussian's: the excess kurtosis is 3.
 #' kurtosis(d, th)
 LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 
@@ -137,14 +137,14 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 #' y <- c(-1.2, 0.3, 2.5)
 #' th <- list(mu = 0.4, sigma = 1.5)
 #'
-#' # The density, written out.
+#' # The density is compared with its formula.
 #' all.equal(distrib_pdf(d, y, th), exp(-abs(y - 0.4) / 1.5) / (2 * 1.5))
 #'
 #' # The log-density is exactly linear in |y - mu|, so it is a pair of
 #' # straight lines meeting at mu.
 #' round(distrib_pdf(d, 0.4 + c(-3, -1.5, 0, 1.5, 3), th, log = TRUE), 6)
 #'
-#' # Symmetric about mu, and at its maximum there.
+#' # The density is symmetric about mu and has its maximum there.
 #' distrib_pdf(d, 0.4 + c(-2, 2), th)
 #' c(at_mu = distrib_pdf(d, 0.4, th), one_over_2sigma = 1 / (2 * 1.5))
 S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
@@ -168,9 +168,10 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #' residual \eqn{r = (q-\mu)/\sigma}: the tail on the far side of the
 #' location is \eqn{\log(1/2) - |r|}, and the tail on the near side is
 #' \eqn{\log(1 - e^{-|r|}/2)}, computed with `log1p()`. The requested tail is
-#' returned on the log scale or exponentiated, so neither `lower.tail = FALSE`
-#' nor `log.p = TRUE` subtracts from one, and a tail probability far below
-#' machine epsilon, or its logarithm, is returned accurately. The helper is
+#' returned on the log scale or exponentiated, so the method does not subtract
+#' from one when `lower.tail = FALSE` or `log.p = TRUE`, and a tail
+#' probability far below machine epsilon, or its logarithm, is returned
+#' accurately. The helper is
 #' [laplace_cdf_tails()].
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
@@ -197,7 +198,7 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #' d <- laplace_distrib()
 #' th <- list(mu = 0.4, sigma = 1.5)
 #'
-#' # One half at the location, the two arms meeting there.
+#' # The value is one half at the location, where the two arms meet.
 #' distrib_cdf(d, 0.4, th)
 #'
 #' # Each arm is an exponential, written out.
@@ -206,7 +207,7 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #'           ifelse(q < 0.4, 0.5 * exp((q - 0.4) / 1.5),
 #'                  1 - 0.5 * exp(-(q - 0.4) / 1.5)))
 #'
-#' # Symmetric: F(mu - a) + F(mu + a) = 1.
+#' # The distribution is symmetric: F(mu - a) + F(mu + a) = 1.
 #' distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 #'
 #' # Fifty scale units out, the upper tail is exp(-50)/2, and its logarithm
@@ -222,10 +223,11 @@ S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tai
 #' @title The Laplace Tails on the Log Scale
 #' @name laplace_cdf_tails
 #' @description
-#' Internal helpers of the two Laplace families. `laplace_cdf_tails()`
+#' These are internal helpers of the two Laplace families. `laplace_cdf_tails()`
 #' returns the probability that `lower.tail` and `log.p` select at the
-#' standardized residual `r`, each tail from its own arm: \eqn{\log(1/2) - |r|}
-#' for the far tail and `log1p(-exp(-|r|)/2)` for the near one.
+#' standardized residual `r`, and computes each tail from its own arm:
+#' \eqn{\log(1/2) - |r|} for the far tail and `log1p(-exp(-|r|)/2)` for the
+#' near one.
 #' `laplace_std_quantile()` returns the standard Laplace quantile from the
 #' logarithm of the smaller tail, \eqn{\pm(\log P + \log 2)}.
 #' @param r A numeric vector of standardized residuals.
@@ -296,11 +298,12 @@ laplace_std_quantile <- function(p, lower.tail, log.p) {
 #' distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 #' 0.4 + c(-1, 0, 1) * 1.5 * log(2)
 #'
-#' # Exact inverse: the round trip returns the probabilities it was given.
+#' # The quantile is an exact inverse: the round trip returns the
+#' # probabilities that it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #'
-#' # A far tail, given as a logarithm, against mu + sigma (log p + log 2).
+#' # A far tail given as a logarithm is compared with mu + sigma (log p + log 2).
 #' distrib_quantile(d, -800, th, log.p = TRUE)
 #' 0.4 + 1.5 * (-800 + log(2))
 S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
@@ -360,8 +363,8 @@ S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta, ...) {
 #'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).}
 #'
 #' The score in \eqn{\mu} takes only the three values \eqn{-1/\sigma}, 0 and
-#' \eqn{+1/\sigma}: it carries the sign of the residual and nothing about
-#' its size, which is why the maximum likelihood estimate of \eqn{\mu} is the
+#' \eqn{+1/\sigma}: it carries the sign of the residual but not its
+#' size, which is why the maximum likelihood estimate of \eqn{\mu} is the
 #' sample median. At \eqn{r = 0} exactly, `sign(0)` is 0 and the method returns
 #' 0, the midpoint of the subdifferential \eqn{[-1/\sigma, 1/\sigma]}; the
 #' derivative does not exist there.
@@ -397,7 +400,7 @@ S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta, ...) {
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' g <- distrib_gradient(d, y, th)
 #'
-#' # The two closed forms, written out.
+#' # The two closed forms are written out and compared.
 #' r <- y - 0.4
 #' all.equal(g$mu, sign(r) / 1.5)
 #' all.equal(g$sigma, (abs(r) / 1.5 - 1) / 1.5)
@@ -433,7 +436,7 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' expectation of this second derivative is 0 although the information is
 #' positive.
 #'
-#' The consequence is that the observed information here is not the
+#' Hence the observed information here is not the
 #' information. [distrib_expected_hessian.LaplaceDistrib()] returns
 #' \eqn{-1/\sigma^2}, obtained from the variance of the score, and that page
 #' explains which identity holds and which fails.
@@ -457,7 +460,7 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' @seealso [distrib_expected_hessian.LaplaceDistrib()], which returns the
 #'   information and is not the expectation of this;
 #'   [distrib_gradient.LaplaceDistrib()] for the score;
-#'   [fisher_scoring()], the estimation route this family needs; and
+#'   [fisher_scoring()], the estimation route that this family needs; and
 #'   [distrib_hessian()] for the generic.
 #'
 #' @examples
@@ -469,7 +472,7 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' # The curvature in the location is exactly zero at every observation.
 #' h$mu_mu
 #'
-#' # The other two, written out.
+#' # The other two components are compared with their formulas.
 #' r <- y - 0.4
 #' all.equal(h$sigma_sigma, (1.5 - 2 * abs(r)) / 1.5^3)
 #' all.equal(h$mu_sigma, -sign(r) / 1.5^2)
@@ -533,13 +536,14 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' second Bartlett identity. The Laplace is not regular in \eqn{\mu}: the
 #' first identity \eqn{\mathbb{E}[\partial\ell/\partial\mu] = 0} still holds,
 #' the second does not, and the information is defined as the variance of
-#' the score. That is what this method returns.
+#' the score, which this method returns.
 #'
 #' @seealso [distrib_hessian.LaplaceDistrib()], whose `mu_mu` is zero;
 #'   [distrib_gradient.LaplaceDistrib()], whose variance this is;
 #'   [fisher_scoring()], which inverts this matrix and so fits this family
 #'   where a Newton step could not; and [distrib_expected_hessian()] for the
-#'   generic and the strategies it offers a family with no closed form.
+#'   generic and the strategies that it offers for a family with no closed
+#'   form.
 #'
 #' @examples
 #' d <- laplace_distrib()
@@ -572,8 +576,8 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #' respect to \eqn{\mu} and \eqn{\sigma}, in closed form. The log-density is
 #' \eqn{-\log\sigma - \log 2 - |r|/\sigma} with \eqn{r = y - \mu}, so it is
 #' linear in \eqn{\mu} on each side of the kink and every component that
-#' differentiates twice or more in \eqn{\mu} is zero. What survives comes from
-#' \eqn{-\log\sigma} and from \eqn{|r|/\sigma}.
+#' differentiates twice or more in \eqn{\mu} is zero. The remaining components
+#' come from \eqn{-\log\sigma} and from \eqn{|r|/\sigma}.
 #'
 #' With `expected = TRUE` the expectations under the model are returned, also in
 #' closed form, using \eqn{\mathbb{E}|r| = \sigma} and
@@ -620,7 +624,7 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #' # differentiates twice in mu is zero.
 #' c(d3$mu_mu_mu[1], d3$mu_mu_sigma[1])
 #'
-#' # The expected values, in closed form.
+#' # The expected values are also in closed form.
 #' lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #'
 #' # A central difference of the Hessian reproduces the observed component,
@@ -640,8 +644,9 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 #' Computes the five distinct fourth derivatives of the Laplace log-density
 #' with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. As at third
 #' order, the log-density is linear in \eqn{\mu} on each side of the kink, so
-#' every component differentiating twice or more in \eqn{\mu} is zero and what
-#' survives comes from the \eqn{-\log\sigma} term and from \eqn{|r|/\sigma}.
+#' every component differentiating twice or more in \eqn{\mu} is zero and the
+#' remaining components come from the \eqn{-\log\sigma} term and from
+#' \eqn{|r|/\sigma}.
 #'
 #' With `expected = TRUE` the expectations under the model are returned, also in
 #' closed form. Both routes are closed form, so `approx` and `nsim` are ignored.
@@ -684,7 +689,7 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 #' # contribution of |r|/sigma.
 #' distrib_deriv4(d, y, th)$sigma_sigma_sigma_sigma
 #'
-#' # The expected values, in closed form.
+#' # The expected values are also in closed form.
 #' lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #'
 #' # A central difference of the third order reproduces the fourth.
@@ -753,8 +758,8 @@ S7::method(distrib_deriv5, LaplaceDistrib) <- function(distrib, y, theta,
 #' in closed form. The Laplace is a location family in \eqn{\mu}, so this is
 #' the negative of the score in \eqn{\mu}. It takes only three values, and at
 #' \eqn{y = \mu} exactly the method returns 0, the midpoint of the
-#' subdifferential; the derivative does not exist there, the log-density having
-#' a corner.
+#' subdifferential; the derivative does not exist there, because the
+#' log-density has a corner.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations.
@@ -778,10 +783,11 @@ S7::method(distrib_deriv5, LaplaceDistrib) <- function(distrib, y, theta,
 #'
 #' all.equal(distrib_grad_y(d, y, th), -sign(y - 0.4) / 1.5)
 #'
-#' # A location family: minus the score in the location.
+#' # This is a location family, so the derivative is minus the score in the
+#' # location.
 #' all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #'
-#' # Three values only, and 0 at the kink itself.
+#' # The derivative takes three values only, and it is 0 at the kink itself.
 #' distrib_grad_y(d, 0.4 + c(-100, -1e-9, 0, 1e-9, 100), th)
 S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
   -sign(y - theta[[1]]) / theta[[2]]
@@ -798,11 +804,12 @@ S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' the returned zero is the value away from that single point.
 #'
 #' The same fact appears in the parameters as the zero `mu_mu` component of
-#' [distrib_hessian.LaplaceDistrib()], the family being a location family.
+#' [distrib_hessian.LaplaceDistrib()], because the family is a location
+#' family.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
-#' @param theta A named list with components `mu` and `sigma`. Neither is read.
+#' @param theta A named list with components `mu` and `sigma`. The method does not read either component.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of length `length(y)`.
@@ -818,11 +825,12 @@ S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' distrib_hess_y(d, y, th)
 #'
-#' # A location family: the same as the curvature in the location.
+#' # This is a location family, so the second derivative equals the
+#' # curvature in the location.
 #' all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #'
 #' # The first derivative drops by 2/sigma across the location, which is the
-#' # curvature the zero above does not see.
+#' # curvature that the zero above does not capture.
 #' diff(distrib_grad_y(d, 0.4 + c(-1e-9, 1e-9), th))
 #' -2 / 1.5
 S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
@@ -843,16 +851,16 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' The family is symmetric about \eqn{\mu} with variance \eqn{2\sigma^2} and
 #' excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
 #' likelihood estimates are the sample median and the mean absolute deviation
-#' about it, both available in closed form.
+#' about it, and both are available in closed form.
 #'
 #' This family is not regular in \eqn{\mu}: the density has a corner at
 #' \eqn{y = \mu} and the observed second derivative there is zero almost
 #' everywhere, while the information is \eqn{1/\sigma^2}. The object records
-#' this in `params_smooth`, and the details below say what follows from it.
+#' this in `params_smooth`, and the details below describe the consequences.
 #'
 #' @param link_mu A `link` object from `linkfunctions7` for the location
-#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], the location
-#'   ranging over the whole line already.
+#'   \eqn{\mu}. Defaults to [linkfunctions7::identity_link()], because the
+#'   location already ranges over the whole line.
 #' @param link_sigma A `link` object from `linkfunctions7` for the scale
 #'   \eqn{\sigma}. Defaults to [linkfunctions7::log_link()], which maps
 #'   \eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
@@ -874,22 +882,22 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' # The kink, and what it costs
 #'
 #' \eqn{|y - \mu|} is not differentiable at \eqn{y = \mu}, so the log-density
-#' is piecewise linear in \eqn{\mu} with a corner. Three consequences, all
-#' visible in the methods:
+#' is piecewise linear in \eqn{\mu} with a corner. Three consequences follow,
+#' and all of them appear in the methods:
 #'
 #' - the score in \eqn{\mu} is \eqn{\mathrm{sign}(r)/\sigma}, carrying only
 #'   the sign of the residual;
 #' - the observed second derivative in \eqn{\mu} is 0 wherever it exists, so
 #'   [distrib_hessian.LaplaceDistrib()] returns a vector of zeros;
 #' - the second Bartlett identity fails, and the information is defined as
-#'   the variance of the score, \eqn{1/\sigma^2}. That is what
+#'   the variance of the score, \eqn{1/\sigma^2}, which
 #'   [distrib_expected_hessian.LaplaceDistrib()] returns.
 #'
 #' `params_smooth` is `c(mu = FALSE, sigma = TRUE)`. When an entry is `FALSE`,
 #' [check_distrib()] recomputes each finite-difference reference with half
 #' the step and drops the observations at which the two disagree, because a
 #' central difference that straddles the corner is not a derivative there;
-#' the comparison still covers every parameter, \eqn{\mu} included.
+#' the comparison still covers every parameter, including \eqn{\mu}.
 #'
 #' # Estimation
 #'
@@ -897,7 +905,7 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' \eqn{\hat\sigma} the mean absolute deviation about it,
 #' \eqn{n^{-1}\sum|y_i - \hat\mu|}. [fit_distrib()] reaches them by Fisher
 #' scoring, which inverts the information above; a Newton step could not,
-#' the observed Hessian being singular in \eqn{\mu}. The example below checks
+#' because the observed Hessian is singular in \eqn{\mu}. The example below checks
 #' the fitted values against both closed forms.
 #'
 #' @section Notation:
@@ -936,7 +944,7 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
 #' d <- laplace_distrib()
 #' d
 #'
-#' # The density, written out.
+#' # The density is compared with its formula.
 #' y <- c(-1.2, 0.3, 2.5)
 #' th <- list(mu = 0.4, sigma = 1.5)
 #' all.equal(distrib_pdf(d, y, th), exp(-abs(y - 0.4) / 1.5) / (2 * 1.5))
@@ -994,7 +1002,7 @@ laplace_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) 
 #' Only the location moves the kink: \eqn{\partial v/\partial \mu = -1} and
 #' \eqn{\partial v/\partial \sigma = 0}, so [params_order()] reports
 #' \eqn{m_\mu = 0} and \eqn{m_\sigma = \infty}, which agrees with
-#' `params_smooth` being `c(mu = FALSE, sigma = TRUE)`.
+#' the value `c(mu = FALSE, sigma = TRUE)` of `params_smooth`.
 #'
 #' The scale is smooth although it multiplies the absolute value: the
 #' derivative in \eqn{\sigma} of \eqn{c(\theta)\phi(v)} is

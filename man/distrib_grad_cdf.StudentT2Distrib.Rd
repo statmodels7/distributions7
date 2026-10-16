@@ -21,7 +21,8 @@
 A named list, one component per parameter or per multi-index.
 }
 \description{
-The derivatives of \eqn{F(q)} in \eqn{(\mu, \sigma, \nu)} to order four.
+Return the derivatives of \eqn{F(q)} in \eqn{(\mu, \sigma, \nu)} to order
+four.
 The family is location-scale in \eqn{(\mu, \sigma)} at fixed \eqn{\nu}, so
 those components are closed forms in the density and its derivatives; the
 components in \eqn{\nu}, derivatives of an incomplete beta function in its

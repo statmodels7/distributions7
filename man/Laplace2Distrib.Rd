@@ -57,8 +57,8 @@ so every generic of the \code{distrib} class applies to it.
 The rate form is the one in which a lasso penalty is written: with \eqn{\mu = 0}
 the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
 \eqn{\lambda} is the penalty's own tuning parameter and larger values shrink
-harder. \code{penalties7::lasso_penalty()} is this family with the location held
-at zero.
+harder. \code{penalties7::lasso_penalty()} is this family when the location is
+held at zero.
 
 Like \code{\link[=laplace_distrib]{laplace_distrib()}}, this family has a kink at \eqn{y = \mu} and is
 non-regular in its location; \code{params_smooth} is \code{c(mu = FALSE, lambda = TRUE)}.
@@ -120,7 +120,7 @@ d@params
 d@params_interpretation
 d@params_smooth
 
-# The same law as laplace_distrib() at lambda = 1/sigma.
+# This is the same law as laplace_distrib() at lambda = 1/sigma.
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))

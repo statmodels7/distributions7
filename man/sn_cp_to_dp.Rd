@@ -10,7 +10,7 @@ sn_cp_to_dp(mu, sigma, gamma1, s)
 \item{mu, sigma, gamma1}{The centered parameters: the mean, the standard
 deviation and the skewness, each a numeric vector. \code{sigma} must be
 positive and \code{gamma1} must lie strictly inside
-\eqn{(-0.9952717, 0.9952717)}; nothing is validated here.}
+\eqn{(-0.9952717, 0.9952717)}; the function does not validate them.}
 
 \item{s}{The sign of \code{gamma1}, \eqn{\pm 1}, taken by the caller from its
 plain value.}

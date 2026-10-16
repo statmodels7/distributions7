@@ -26,9 +26,10 @@ A numeric vector for the derivatives in the response; a named list,
 keyed by parameter or by parameter pair, for the mixed derivatives.
 }
 \description{
-The derivatives of the log-density in the response to order four, and the
-mixed derivatives of orders one and two in the response and one and two in
-\eqn{(m, \sigma)}, each a closed form from its own compiled kernel.
+Computes the derivatives of the log-density in the response to order four,
+and the mixed derivatives of orders one and two in the response and one and
+two in \eqn{(m, \sigma)}. Each is a closed form computed by its own
+compiled kernel.
 }
 \examples{
 d <- weibull3_distrib()

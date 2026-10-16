@@ -42,13 +42,13 @@ quadrature or simulation:
 
 For \eqn{\mu} this is the variance of the score. It is not the
 expectation of \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian.Laplace2Distrib()}}, which is identically
-zero: the
-family has a kink at \eqn{y = \mu} and the second Bartlett identity fails
-there, exactly as in \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}}. With
+zero: the family has a kink at \eqn{y = \mu} and the second Bartlett
+identity fails there, exactly as in
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}}. With
 \eqn{\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)} the variance is
 \eqn{\lambda^2}. The mixed entry vanishes because
-\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0} by symmetry, and the rate entry does
-equal its observed counterpart, that one carrying no data.
+\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0} by symmetry, and the rate entry
+equals its observed counterpart because that one carries no data.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.
@@ -65,7 +65,8 @@ the two differ there.
 d <- laplace2_distrib()
 th <- list(mu = 0.4, lambda = 2)
 
-# -lambda^2 in the location, -1/lambda^2 in the rate, 0 mixed.
+# The entries are -lambda^2 in the location, -1/lambda^2 in the rate and
+# 0 in the mixed term.
 lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
 c(-2^2, -1 / 2^2)
 
@@ -76,7 +77,7 @@ c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 
 # It agrees with the scale parametrization once the chain rule is applied:
-# I(mu) is the same number, the location being shared.
+# I(mu) is the same number, because the location is shared.
 -distrib_expected_hessian(laplace_distrib(), 0,
                           list(mu = 0.4, sigma = 1 / 2))$mu_mu
 }

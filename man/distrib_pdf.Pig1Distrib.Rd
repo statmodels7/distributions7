@@ -38,8 +38,9 @@ function is a finite sum and the prefactors cancel, which gives
   + \log S_y - \log y!} with \eqn{S_y} a sum of \eqn{y} positive terms
 taken on the log scale. The compiled kernel evaluates
 \eqn{(1-\sqrt c)/\sigma} as \eqn{-2\mu/(1+\sqrt c)} and \eqn{S_y} in
-\eqn{w = 1/(2\alpha)}, so nothing cancels as \eqn{\sigma \to 0}, and no
-Bessel routine is called.
+\eqn{w = 1/(2\alpha)}, so the evaluation involves no subtraction of nearly
+equal terms as \eqn{\sigma \to 0}, and the kernel does not call a Bessel
+routine.
 }
 \section{Notation}{
 
@@ -53,7 +54,8 @@ d <- pig1_distrib()
 y <- 0:6
 th <- list(mu = 3, sigma = 0.8)
 
-# Against the Bessel formula written out, which the kernel does not use.
+# The mass is compared with the Bessel formula written out, which the
+# kernel does not use.
 al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
 all.equal(distrib_pdf(d, y, th),
           sqrt(2 * al / pi) * 3^y * exp(1 / 0.8) /
@@ -68,7 +70,7 @@ nb <- negbin2_distrib()
 rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
       negbin = distrib_pdf(nb, c(20, 40, 60), list(mu = 3, theta = 1 / 0.8)))
 
-# Off the support.
+# A value off the support has probability zero.
 distrib_pdf(d, c(-1, 1.5), th)
 }
 \seealso{

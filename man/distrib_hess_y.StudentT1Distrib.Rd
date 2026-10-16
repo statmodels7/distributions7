@@ -36,7 +36,7 @@ d <- student_t1_distrib()
 y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 
-# The closed form, written out.
+# The closed form is written out.
 r <- y - 0.4; D <- 5 * 1.2^2 + r^2
 all.equal(distrib_hess_y(d, y, th), 6 * (r^2 - 5 * 1.2^2) / D^2)
 

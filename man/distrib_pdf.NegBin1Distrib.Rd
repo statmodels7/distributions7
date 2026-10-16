@@ -29,7 +29,7 @@ probability \eqn{1/(1+\theta)},
       \left(\dfrac{1}{1+\theta}\right)^{r}
       \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad
       y = 0, 1, 2, \ldots,}
-which is the pairing that makes the variance \eqn{\mu(1+\theta)}. A
+and this pairing gives the variance \eqn{\mu(1+\theta)}. A
 compiled kernel forms the log-mass by R's negative binomial in its mean
 parametrization (size \eqn{r} and mean \eqn{\mu}), which never forms the
 success probability \eqn{1/(1+\theta)}; that probability rounds to 1 below

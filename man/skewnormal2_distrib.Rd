@@ -20,7 +20,7 @@ strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunction
 \item{link_gamma1}{A link object for the skewness, which must lie strictly
 inside \eqn{(-0.9952717, 0.9952717)}. Defaults to
 \code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} over exactly that interval, so any real
-linear predictor maps to a skewness the family can reach.}
+linear predictor maps to a skewness that the family can reach.}
 }
 \value{
 An S7 object of class \link{SkewNormal2Distrib}, inheriting from
@@ -34,19 +34,18 @@ Builds a skew normal distribution object parametrized by its mean
 three moments instead of by a location, a scale and a shape.
 
 The parametrization is Azzalini's. Its expected information stays
-non-singular at \eqn{\gamma_1 = 0}, where the direct parametrization's
-loses a rank. The map between the two runs through a cube root, so the
-derivative of the shape in \eqn{\gamma_1} is unbounded at zero skewness and
-the log-density has no derivative of order two or more in \eqn{\gamma_1}
-there.
+non-singular at \eqn{\gamma_1 = 0}, where the expected information of the
+direct parametrization loses a rank. The map between the two runs through a
+cube root, so the derivative of the shape in \eqn{\gamma_1} is unbounded at
+zero skewness and the log-density has no derivative of order two or more in
+\eqn{\gamma_1} there.
 }
 \section{Relation to reparametrize()}{
 The map passes through
-\eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, and two things
-follow from it. It carries a sign, so \code{\link[=sn2_theta]{sn2_theta()}} takes the sign from the
-plain value of \code{gamma1} and passes it to \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} as an argument,
-and the body of the map contains no \code{abs()}. The derivatives of the
-log-density in
+\eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, which carries
+a sign. For this reason \code{\link[=sn2_theta]{sn2_theta()}} takes the sign from the plain value of
+\code{gamma1} and passes it to \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} as an argument, and the body of
+the map contains no \code{abs()}. The derivatives of the log-density in
 the centered parameters are written out per order in compiled kernels (see
 \code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}); near \eqn{\gamma_1 = 0}, where
 their closed forms cancel, they come from the series of the log-density in
@@ -61,7 +60,7 @@ it: the divergent
 contributions cancel, so the information in \eqn{\gamma_1} tends to
 \eqn{1/6} and the whole matrix stays positive definite at symmetry.
 
-The observed curvature does diverge, at the rate the cube root sets:
+The observed curvature does diverge, at the rate that the cube root sets:
 \eqn{\gamma_1^{-2/3}}. The derivatives of order two and more are
 therefore rejected at \eqn{\gamma_1 = 0} exactly, with a message naming the
 cause; the score and the expected information are returned there. The density,
@@ -103,7 +102,7 @@ on \eqn{y \in \mathbb{R}}, with \eqn{\mathrm{DP}} the map of
 d <- skewnormal2_distrib()
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# All three parameters are moments, which is what "centered" names.
+# All three parameters are moments, which is why it is called "centered".
 c(mean = mean(d, th), sd = sqrt(variance(d, th)),
   skewness = skewness(d, th))
 

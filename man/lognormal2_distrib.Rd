@@ -21,22 +21,24 @@ Creates a lognormal distribution object parametrized by the mean and the
 variance of \eqn{Y} itself, rather than of \eqn{\log Y}.
 }
 \details{
-The parameters of \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} describe \eqn{\log Y}, so neither
-of them is a moment of \eqn{Y}. Here they are, through
+The parameters of \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} describe \eqn{\log Y}, so they are
+not moments of \eqn{Y}. Here the parameters are moments of \eqn{Y}, and the
+parameters of \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} follow from them through
 \deqn{\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right).}
 Every derivative of the log-density in \eqn{(m, v)} to order five, the
 expected information and its derivatives, the derivatives in the response
-and the derivatives of the distribution function are closed forms, each
-order in its own compiled kernel (see
+and the derivatives of the distribution function are closed forms, and each
+order has its own compiled kernel (see
 \code{\link[=distrib_gradient.Lognormal2Distrib]{distrib_gradient.Lognormal2Distrib()}}).
 }
 \section{The distribution}{
 
+The density is
 \deqn{f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y -
   \mu_l)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{m^{2}}
   \right)\!, \; \mu_l = \log m - \frac{s^{2}}{2}}
-on \eqn{y \in (0, \infty)}, with \eqn{E[Y] = m} and
+on \eqn{y \in (0, \infty)}, and the family has \eqn{E[Y] = m} and
 \eqn{\operatorname{Var}(Y) = v}.
 }
 

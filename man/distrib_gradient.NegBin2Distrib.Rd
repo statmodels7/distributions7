@@ -39,7 +39,7 @@ quadratic variance function.
 \section{The dispersion at large theta}{
 The dispersion component is not computed as written above. As
 \eqn{\theta} grows the family tends to the Poisson and this derivative
-vanishes, its three terms canceling to leading order:
+vanishes, because its three terms cancel to leading order:
 \eqn{\psi(y+\theta) - \psi(\theta)} is \eqn{y/\theta},
 \eqn{\log\{\theta/s\}} is \eqn{-\mu/\theta} and \eqn{(\mu-y)/s} is
 \eqn{(\mu-y)/\theta}, and the three sum to zero, so the value is
@@ -53,8 +53,8 @@ The kernel performs each cancellation symbolically instead. With
 \deqn{\dfrac{\partial \ell}{\partial \theta} =
       \left\{\psi(b) - \psi(a) - \log(1 + y/a)\right\}
       + \left\{\log(1 + w) - w\right\},}
-each bracket evaluated by its own series where the arguments are large. To
-leading order the result is \eqn{\{y - (y-\mu)^2\}/(2\theta^2)}, which the
+and each bracket is evaluated by its own series where the arguments are
+large. To leading order the result is \eqn{\{y - (y-\mu)^2\}/(2\theta^2)}, which the
 example below reproduces. A fit reaches that regime when the sample is
 nearly equidispersed, because the estimate of \eqn{\theta} then grows
 without bound.
@@ -78,7 +78,7 @@ y <- c(0, 2, 6)
 th <- list(mu = 4, theta = 2)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out at a dispersion where the direct
+# We write out the two closed forms at a dispersion where the direct
 # expression still has its digits.
 s <- 2 + 4
 all.equal(g$mu, (2 / s) * (y / 4 - 1))

@@ -18,7 +18,7 @@ the composition is the absolute value at \eqn{v = y - \mu} with
 Only the location moves the kink: \eqn{\partial v/\partial \mu = -1} and
 \eqn{\partial v/\partial \sigma = 0}, so \code{\link[=params_order]{params_order()}} reports
 \eqn{m_\mu = 0} and \eqn{m_\sigma = \infty}, which agrees with
-\code{params_smooth} being \code{c(mu = FALSE, sigma = TRUE)}.
+the value \code{c(mu = FALSE, sigma = TRUE)} of \code{params_smooth}.
 
 The scale is smooth although it multiplies the absolute value: the
 derivative in \eqn{\sigma} of \eqn{c(\theta)\phi(v)} is

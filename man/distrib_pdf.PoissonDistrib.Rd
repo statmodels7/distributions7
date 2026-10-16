@@ -28,9 +28,9 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 \description{
 Computes the Poisson probability mass
 \deqn{P(Y = y; \mu) = \dfrac{e^{-\mu}\mu^{y}}{y!}, \qquad y = 0, 1, 2, \dots}
-by calling \code{\link[stats:Poisson]{stats::dpois()}}. The \code{pdf} in the generic's name is the density
-with respect to counting measure, so what this returns is a probability and
-is at most 1.
+by calling \code{\link[stats:Poisson]{stats::dpois()}}. The \code{pdf} in the generic's name denotes the
+density with respect to counting measure, so the returned value is a
+probability and is at most 1.
 }
 \examples{
 d <- poisson_distrib()
