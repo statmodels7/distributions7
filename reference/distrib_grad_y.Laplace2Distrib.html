@@ -5,15 +5,15 @@ $$\dfrac{\partial \ell}{\partial y} = -\lambda\,\mathrm{sign}(y - \mu),$$
 in closed form. The family is a location family in \(\mu\), so this is the
 negative of the score in \(\mu\). It takes only the three values
 \(-\lambda\), 0 and \(\lambda\); at \(y = \mu\) exactly, sign(0) is
-0 and the method returns 0, the midpoint of the subdifferential, the
-derivative not existing there."><meta property="og:description" content="Computes the first derivative of the Laplace log-density with respect to the
+0 and the method returns 0, the midpoint of the subdifferential, because the
+derivative does not exist there."><meta property="og:description" content="Computes the first derivative of the Laplace log-density with respect to the
 response,
 $$\dfrac{\partial \ell}{\partial y} = -\lambda\,\mathrm{sign}(y - \mu),$$
 in closed form. The family is a location family in \(\mu\), so this is the
 negative of the score in \(\mu\). It takes only the three values
 \(-\lambda\), 0 and \(\lambda\); at \(y = \mu\) exactly, sign(0) is
-0 and the method returns 0, the midpoint of the subdifferential, the
-derivative not existing there."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+0 and the method returns 0, the midpoint of the subdifferential, because the
+derivative does not exist there."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ derivative not existing there."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +60,8 @@ $$\dfrac{\partial \ell}{\partial y} = -\lambda\,\mathrm{sign}(y - \mu),$$
 in closed form. The family is a location family in \(\mu\), so this is the
 negative of the score in \(\mu\). It takes only the three values
 \(-\lambda\), 0 and \(\lambda\); at \(y = \mu\) exactly, <code>sign(0)</code> is
-0 and the method returns 0, the midpoint of the subdifferential, the
-derivative not existing there.</p>
+0 and the method returns 0, the midpoint of the subdifferential, because the
+derivative does not exist there.</p>
     </div>
 
 
@@ -109,11 +109,12 @@ is zero; <code><a href="distrib_grad_y.LaplaceDistrib.html">distrib_grad_y.Lapla
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="op">-</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fl">0.4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A location family: minus the score in the location.</span></span></span>
+<span class="r-in"><span><span class="co"># This is a location family, so the derivative is minus the score in the</span></span></span>
+<span class="r-in"><span><span class="co"># location.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="op">-</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Three values only, and 0 at the kink itself.</span></span></span>
+<span class="r-in"><span><span class="co"># The derivative takes three values only, and it is 0 at the kink itself.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">100</span>, <span class="op">-</span><span class="fl">1e-9</span>, <span class="fl">0</span>, <span class="fl">1e-9</span>, <span class="fl">100</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2  2  0 -2 -2</span>
 </code></pre></div>

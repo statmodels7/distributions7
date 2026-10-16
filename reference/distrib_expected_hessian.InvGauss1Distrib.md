@@ -6,17 +6,18 @@ closed form and with no quadrature or simulation:
 \qquad \mathbb{E}\left\[\ell^{(\phi\phi)}\right\] = -\dfrac{1}{2\phi^2},
 \qquad \mathbb{E}\left\[\ell^{(\mu\phi)}\right\] = 0.\$\$ They follow
 from \\\mathbb{E}\[Y\] = \mu\\ and \\\mathbb{E}\[(Y-\mu)^2/Y\] =
-\phi\mu^2\\. The second identity is the one that gives the score in
-\\\phi\\ mean zero.
+\phi\mu^2\\. The second identity implies that the score in \\\phi\\ has
+mean zero.
 
 Both diagonal entries are negative at every parameter setting, so the
 information is positive definite everywhere, where the observed Hessian
 of
 [`distrib_hessian.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss1Distrib.md)
-is not. The zero off-diagonal says the mean and the dispersion are
-orthogonal, so the mean equation can be fitted with the dispersion held
-at any value without biasing it: this is the generalized linear model
-parametrization, with variance function \\V(\mu) = \mu^3\\.
+is not. The zero off-diagonal entry means that the mean and the
+dispersion are orthogonal, so the mean equation can be fitted without
+biasing it while the dispersion is held at any value: this is the
+generalized linear model parametrization, with variance function
+\\V(\mu) = \mu^3\\.
 
 Because the values do not depend on the data, `approx` and `nsim` are
 ignored. `y` is read only for its length.
@@ -93,7 +94,7 @@ for the generic.
 d <- invgauss1_distrib()
 th <- list(mu = 1, phi = 2)
 
-# The three constants, one value per observation.
+# The three constants are returned with one value per observation.
 lapply(distrib_expected_hessian(d, c(0.5, 1, 2), th), unique)
 #> $mu_mu
 #> [1] -0.5
@@ -107,8 +108,8 @@ lapply(distrib_expected_hessian(d, c(0.5, 1, 2), th), unique)
 c(-1 / (2 * 1^3), -1 / (2 * 2^2), 0)
 #> [1] -0.500 -0.125  0.000
 
-# Negative definite at every setting, where the observed Hessian is
-# positive in phi at y = mu.
+# The expected Hessian is negative definite at every setting, whereas the
+# observed Hessian is positive in phi at y = mu.
 c(expected = distrib_expected_hessian(d, 1, th)$phi_phi,
   observed = distrib_hessian(d, 1, th)$phi_phi)
 #> expected observed 

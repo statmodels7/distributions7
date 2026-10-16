@@ -29,21 +29,25 @@ the two links given here.
 
 The parameters of
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
-describe \\\log Y\\, so neither of them is a moment of \\Y\\. Here they
-are, through \$\$\mu\_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
-\sigma^2\_{\log} = \log\left(1 + \dfrac{v}{m^2}\right).\$\$ Every
-derivative of the log-density in \\(m, v)\\ to order five, the expected
-information and its derivatives, the derivatives in the response and the
-derivatives of the distribution function are closed forms, each order in
-its own compiled kernel (see
+describe \\\log Y\\, so they are not moments of \\Y\\. Here the
+parameters are moments of \\Y\\, and the parameters of
+[`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
+follow from them through \$\$\mu\_{\log} = \log\dfrac{m^2}{\sqrt{v +
+m^2}}, \qquad \sigma^2\_{\log} = \log\left(1 +
+\dfrac{v}{m^2}\right).\$\$ Every derivative of the log-density in \\(m,
+v)\\ to order five, the expected information and its derivatives, the
+derivatives in the response and the derivatives of the distribution
+function are closed forms, and each order has its own compiled kernel
+(see
 [`distrib_gradient.Lognormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal2Distrib.md)).
 
 ## The distribution
 
-\$\$f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\\\left\\-\frac{(\log y -
-\mu_l)^{2}}{2s^{2}}\right\\, \quad s^{2} = \log\\\left(1+\frac{v}{m^{2}}
-\right)\\, \\ \mu_l = \log m - \frac{s^{2}}{2}\$\$ on \\y \in (0,
-\infty)\\, with \\E\[Y\] = m\\ and \\\operatorname{Var}(Y) = v\\.
+The density is \$\$f(y) = \frac{1}{y\sqrt{2\pi
+s^{2}}}\exp\\\left\\-\frac{(\log y - \mu_l)^{2}}{2s^{2}}\right\\, \quad
+s^{2} = \log\\\left(1+\frac{v}{m^{2}} \right)\\, \\ \mu_l = \log m -
+\frac{s^{2}}{2}\$\$ on \\y \in (0, \infty)\\, and the family has
+\\E\[Y\] = m\\ and \\\operatorname{Var}(Y) = v\\.
 
 ## See also
 

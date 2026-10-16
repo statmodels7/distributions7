@@ -77,7 +77,8 @@ y <- c(0.5, 1, 2)
 th <- list(mu = 1, phi = 2)
 g <- distrib_gradient(d, y, th)
 
-# The generalized linear model score: residual over the variance function.
+# The generalized linear model score is the residual over the variance
+# function.
 all.equal(g$mu, (y - 1) / (2 * 1^3))
 #> [1] TRUE
 all.equal(g$phi, ((y - 1)^2 - y * 1^2 * 2) / (2 * y * 2^2 * 1^2))

@@ -71,7 +71,7 @@ distrib_pdf(d2, y, th)
 #> [1] 0.07974218 0.40483719 0.51800669 0.07974218
 
 # It is the same law as the concentration parametrization, at the
-# concentration this resultant length implies.
+# concentration that this resultant length implies.
 k <- numericals7::bessel_i_ratio_inverse(0.7)
 k
 #> [1] 2.013628

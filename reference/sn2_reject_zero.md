@@ -24,4 +24,4 @@ sn2_reject_zero(theta, what)
 
 ## Value
 
-`NULL`, invisibly, when no skewness is zero.
+`NULL`, invisibly, when every skewness differs from zero.

@@ -2,8 +2,8 @@
 
 Returns the components of
 \\\partial^{a+b}\ell/\partial\mu^a\partial\theta^b\\ at any order from
-one to four, from the sparse form the NB1 log-likelihood takes in the
-size \\r = \mu/\theta\\.
+one to four, from the sparse form that the NB1 log-likelihood takes in
+the size \\r = \mu/\theta\\.
 
 `nb1_exact_cut()` returns the dispersion, 1, below which the
 cancellation-free assembly is used in place of the recursion in the
@@ -43,10 +43,10 @@ nb1_components_exact(y, mu, th, order)
 
 - theta:
 
-  A named list with components `mu` and `theta`, each a numeric vector
-  of length 1 or of the length of `y`, both strictly positive. Shorter
-  components are recycled. Note that `theta` names both the list and its
-  second component, the dispersion.
+  A named list with components `mu` and `theta`. Each is a numeric
+  vector of length 1 or of the length of `y`, and both are strictly
+  positive. Shorter components are recycled. Note that `theta` names
+  both the list and its second component, the dispersion.
 
 - order:
 
@@ -79,10 +79,10 @@ Its mixed derivatives take the form
 -(a+b+j)\\c_j r^j G^{(a+j)} - c_j r^{j+1} G^{(a+j+1)},\$\$ because
 \\\mathrm{d}r/\mathrm{d}\theta = -r/\theta\\ contributes to both the
 power of \\r\\ and the order of \\G\\. The coefficients are integers,
-and the recursion is run rather than solved, so every order is exact
-with nothing transcribed beyond this one step.
+and the recursion is run rather than solved, so every order is exact and
+only this one step is transcribed by hand.
 
-## The cancellation the polygamma differences carry
+## The cancellation that the polygamma differences carry
 
 Each \\G^{(m)}(r)\\ is a polygamma differenced at the shift \\y\\, which
 is a count. As \\\theta \to 0\\ the family tends to the Poisson, \\r =
@@ -102,12 +102,12 @@ the recursion loses every significant digit.
 
 The size need not appear at all, and the form without it has no such
 cancellation. Since \\\log\Gamma(y+r) - \log\Gamma(r) =
-\sum\_{i\<y}\log(r+i)\\ and \\r = \mu/\theta\\, the \\y\log\theta\\ each
-such term carries cancels EXACTLY against \\C(\theta)\\, leaving
+\sum\_{i\<y}\log(r+i)\\ and \\r = \mu/\theta\\, the \\y\log\theta\\ that
+each such term carries cancels exactly against \\C(\theta)\\, leaving
 \$\$\ell = \sum\_{i\<y}\log(\mu + i\theta) - \log(y!) -
 \frac{\mu}{\theta}\log(1+\theta) - y\log(1+\theta),\$\$ whose variable
 does not run away and whose every derivative is elementary. Below
-`nb1_exact_cut()` that is the route taken, through
+`nb1_exact_cut()` the function uses that form, through
 `nb1_components_exact()`; above it the recursion is accurate and costs
 \\O(1)\\ per observation, where the sum costs \\y\\ terms.
 

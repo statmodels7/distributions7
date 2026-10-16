@@ -3,27 +3,27 @@
 \(\mu\) and \(\kappa\), in closed form. The log-density is
 \(\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}\), linear in
 \(\kappa\) apart from the normalizing constant, so a component naming one
-\(\mu\) and two or more \(\kappa\) is exactly zero. What remains
-cycles: the pure-\(\mu\) components run through
+\(\mu\) and two or more \(\kappa\) is exactly zero. The remaining
+components cycle: the pure-\(\mu\) components run through
 \(\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)\) with the order, the
 \(\mu\mu\kappa\) component is \(-\cos(y-\mu)\), and the
 pure-\(\kappa\) one is \(-A''(\kappa)\), which
 numericals7::bessel_i_ratio_d2() supplies. The components are computed
 by a compiled kernel.
-With expected = TRUE the method calls expected_derivative(), which is
-the one place on this page where approx and nsim are read."><meta property="og:description" content="Computes the four distinct third derivatives of the von Mises log-density in
+With expected = TRUE the method calls expected_derivative(), and only in
+this case are approx and nsim read."><meta property="og:description" content="Computes the four distinct third derivatives of the von Mises log-density in
 \(\mu\) and \(\kappa\), in closed form. The log-density is
 \(\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}\), linear in
 \(\kappa\) apart from the normalizing constant, so a component naming one
-\(\mu\) and two or more \(\kappa\) is exactly zero. What remains
-cycles: the pure-\(\mu\) components run through
+\(\mu\) and two or more \(\kappa\) is exactly zero. The remaining
+components cycle: the pure-\(\mu\) components run through
 \(\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)\) with the order, the
 \(\mu\mu\kappa\) component is \(-\cos(y-\mu)\), and the
 pure-\(\kappa\) one is \(-A''(\kappa)\), which
 numericals7::bessel_i_ratio_d2() supplies. The components are computed
 by a compiled kernel.
-With expected = TRUE the method calls expected_derivative(), which is
-the one place on this page where approx and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+With expected = TRUE the method calls expected_derivative(), and only in
+this case are approx and nsim read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +31,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,15 +68,15 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 \(\mu\) and \(\kappa\), in closed form. The log-density is
 \(\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}\), linear in
 \(\kappa\) apart from the normalizing constant, so a component naming one
-\(\mu\) and two or more \(\kappa\) is exactly zero. What remains
-cycles: the pure-\(\mu\) components run through
+\(\mu\) and two or more \(\kappa\) is exactly zero. The remaining
+components cycle: the pure-\(\mu\) components run through
 \(\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)\) with the order, the
 \(\mu\mu\kappa\) component is \(-\cos(y-\mu)\), and the
 pure-\(\kappa\) one is \(-A''(\kappa)\), which
 <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html" class="external-link">numericals7::bessel_i_ratio_d2()</a></code> supplies. The components are computed
 by a compiled kernel.</p>
-<p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which is
-the one place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
+<p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, and only in
+this case are <code>approx</code> and <code>nsim</code> read.</p>
     </div>
 
 
@@ -112,12 +112,13 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
 <dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
+or <code>"opg"</code>. It is read only when <code>expected = TRUE</code>.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
 <dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. Read only when <code>expected = TRUE</code>. Defaults to <code>10000</code>.</p></dd>
+<code>approx = "mc"</code>. It is read only when <code>expected = TRUE</code>. Defaults to
+<code>10000</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -163,8 +164,8 @@ function of the first kind of order \(m\), and
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu_mu"          "mu_mu_kappa"       "mu_kappa_kappa"   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4] "kappa_kappa_kappa"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The component with one mu and two kappa is exactly zero, the log-density</span></span></span>
-<span class="r-in"><span><span class="co"># being linear in kappa apart from the constant.</span></span></span>
+<span class="r-in"><span><span class="co"># The component with one mu and two kappa is exactly zero, because the</span></span></span>
+<span class="r-in"><span><span class="co"># log-density is linear in kappa apart from the constant.</span></span></span>
 <span class="r-in"><span><span class="va">d3</span><span class="op">$</span><span class="va">mu_kappa_kappa</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0 0</span>
 <span class="r-in"><span></span></span>

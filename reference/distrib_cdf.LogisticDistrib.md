@@ -67,7 +67,7 @@ all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
           plogis(c(-1.2, 0.3, 2.5), location = 0.4, scale = 1.5))
 #> [1] TRUE
 
-# Symmetric: F(mu - a) + F(mu + a) = 1.
+# The distribution is symmetric, so F(mu - a) + F(mu + a) = 1.
 distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 #> [1] 1
 

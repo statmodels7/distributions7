@@ -1,4 +1,4 @@
-# The Direct Parameters a Centered Triple Implies
+# The Direct Parameters That a Centered Triple Implies
 
 Takes the sign of the skewness off its plain value and runs
 [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md),

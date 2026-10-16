@@ -10,7 +10,8 @@ and the derivatives of \\\log\Phi(t)\\ are taken instead from
 \\\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)\\, with \\L\\ the
 logarithm of the Mills ratio, whose derivatives are, with alternating
 signs, the cumulants of the density proportional to \\e^{ts - s^2/2}\\
-on \\s \> 0\\; no difference of large numbers is formed.
+on \\s \> 0\\, so that the kernel never forms a difference of large
+numbers.
 
 With `expected = TRUE` the value is an expectation, computed numerically
 by
@@ -28,7 +29,7 @@ arguments `approx` and `nsim` are used only in this case.
 - y:
 
   A numeric vector of observations. With `expected = TRUE` its values
-  are ignored and only its length matters, the result being one
+  are ignored and only its length matters, and the result is one
   expectation repeated.
 
 - theta:
@@ -51,13 +52,15 @@ arguments `approx` and `nsim` are used only in this case.
 - approx:
 
   One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, the strategy
-  for the expectation. Read only when `expected = TRUE`; the first is
-  the default and quadratures the observed kernel against the density.
+  for the expectation. It is read only when `expected = TRUE`; the first
+  is the default and integrates the observed kernel against the density
+  by quadrature.
 
 - nsim:
 
   A single positive integer, the Monte Carlo sample size used when
-  `approx = "mc"`. Ignored by every other strategy. Defaults to `10000`.
+  `approx = "mc"`. The other strategies do not read it. Defaults to
+  `10000`.
 
 - ...:
 
@@ -104,7 +107,7 @@ names(d3)
 #>  [7] "sigma_sigma_sigma" "sigma_sigma_alpha" "sigma_alpha_alpha"
 #> [10] "alpha_alpha_alpha"
 
-# Against a central difference of the analytic Hessian.
+# The value is compared with a central difference of the analytic Hessian.
 eps <- 1e-4
 rbind(analytic = d3$mu_mu_alpha,
       numeric = (distrib_hessian(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu -

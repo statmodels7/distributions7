@@ -4,16 +4,17 @@ Computes the four distinct third derivatives of the von Mises
 log-density in \\\mu\\ and \\\kappa\\, in closed form. The log-density
 is \\\kappa\cos(y-\mu) - \log\\2\pi I_0(\kappa)\\\\, linear in
 \\\kappa\\ apart from the normalizing constant, so a component naming
-one \\\mu\\ and two or more \\\kappa\\ is exactly zero. What remains
-cycles: the pure-\\\mu\\ components run through \\\kappa\\\sin, -\cos,
--\sin, \cos\\(y-\mu)\\ with the order, the \\\mu\mu\kappa\\ component is
-\\-\cos(y-\mu)\\, and the pure-\\\kappa\\ one is \\-A''(\kappa)\\, which
+one \\\mu\\ and two or more \\\kappa\\ is exactly zero. The remaining
+components cycle: the pure-\\\mu\\ components run through
+\\\kappa\\\sin, -\cos, -\sin, \cos\\(y-\mu)\\ with the order, the
+\\\mu\mu\kappa\\ component is \\-\cos(y-\mu)\\, and the pure-\\\kappa\\
+one is \\-A''(\kappa)\\, which
 [`numericals7::bessel_i_ratio_d2()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_d1.html)
 supplies. The components are computed by a compiled kernel.
 
 With `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-which is the one place on this page where `approx` and `nsim` are read.
+and only in this case are `approx` and `nsim` read.
 
 ## Arguments
 
@@ -48,12 +49,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 
@@ -100,8 +101,8 @@ names(d3)
 #> [1] "mu_mu_mu"          "mu_mu_kappa"       "mu_kappa_kappa"   
 #> [4] "kappa_kappa_kappa"
 
-# The component with one mu and two kappa is exactly zero, the log-density
-# being linear in kappa apart from the constant.
+# The component with one mu and two kappa is exactly zero, because the
+# log-density is linear in kappa apart from the constant.
 d3$mu_kappa_kappa
 #> [1] 0 0 0 0
 

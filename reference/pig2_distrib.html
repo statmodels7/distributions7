@@ -23,7 +23,7 @@ Orthogonal means the expected information is diagonal: at \(\mu = 3\) and
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,9 +109,10 @@ the dispersion of <code>PIG</code> is obtained from it as
     </div>
     <div class="section level2">
     <h2 id="how-the-derivatives-are-computed">How the derivatives are computed<a class="anchor" aria-label="anchor" href="#how-the-derivatives-are-computed"></a></h2>
-    <p>By compiled kernels of the same form as those of <code><a href="pig1_distrib.html">pig1_distrib()</a></code>
-(<code>pig2_pdf_cpp</code>, <code>pig2_gradient_cpp</code>, <code>pig2_hessian_cpp</code>, <code>pig2_deriv3_cpp</code>
-and <code>pig2_deriv4_cpp</code>), with \(\alpha\) as a variable of its own, so the
+    <p>The derivatives are computed by compiled kernels of the same form as those
+of <code><a href="pig1_distrib.html">pig1_distrib()</a></code> (<code>pig2_pdf_cpp</code>, <code>pig2_gradient_cpp</code>,
+<code>pig2_hessian_cpp</code>, <code>pig2_deriv3_cpp</code> and <code>pig2_deriv4_cpp</code>). In these
+kernels \(\alpha\) is a variable of its own, so the
 Bessel argument needs no chain rule. Every partial to fourth order is
 written out in closed form, and each order has its own kernel. The
 expected information is computed exactly, with
@@ -162,12 +163,12 @@ overdispersed count family, and <a href="Pig2Distrib.html">Pig2Distrib</a> for t
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mean variance </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      3.0     10.2 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law as pig1 at the dispersion alpha implies.</span></span></span>
+<span class="r-in"><span><span class="co"># Pig2 gives the same law as pig1 at the dispersion that alpha implies.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="fu"><a href="pig1_distrib.html">pig1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The property the parametrization exists for.</span></span></span>
+<span class="r-in"><span><span class="co"># This property is the reason for the parametrization.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>pig2 <span class="op">=</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_alpha</span>,</span></span>
 <span class="r-in"><span>  pig1 <span class="op">=</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="fu"><a href="pig1_distrib.html">pig1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                                  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">)</span></span></span>

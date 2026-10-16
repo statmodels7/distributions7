@@ -9,7 +9,7 @@ variance of \(Y\) itself, rather than of \(\log Y\)."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,24 +71,26 @@ the two links given here.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The parameters of <code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code> describe \(\log Y\), so neither
-of them is a moment of \(Y\). Here they are, through
+    <p>The parameters of <code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code> describe \(\log Y\), so they are
+not moments of \(Y\). Here the parameters are moments of \(Y\), and the
+parameters of <code><a href="lognormal1_distrib.html">lognormal1_distrib()</a></code> follow from them through
 $$\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right).$$
 Every derivative of the log-density in \((m, v)\) to order five, the
 expected information and its derivatives, the derivatives in the response
-and the derivatives of the distribution function are closed forms, each
-order in its own compiled kernel (see
+and the derivatives of the distribution function are closed forms, and each
+order has its own compiled kernel (see
 <code><a href="distrib_gradient.Lognormal2Distrib.html">distrib_gradient.Lognormal2Distrib()</a></code>).</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
 
 
-<p>$$f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y -
+<p>The density is
+$$f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y -
   \mu_l)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{m^{2}}
   \right)\!, \; \mu_l = \log m - \frac{s^{2}}{2}$$
-on \(y \in (0, \infty)\), with \(E[Y] = m\) and
+on \(y \in (0, \infty)\), and the family has \(E[Y] = m\) and
 \(\operatorname{Var}(Y) = v\).</p>
     </div>
     <div class="section level2">

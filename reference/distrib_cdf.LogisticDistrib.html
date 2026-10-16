@@ -15,7 +15,7 @@ and in linkfunctions7 as an inverse link."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,7 +113,7 @@ values are logarithms and are non-positive.</p>
 <span class="r-in"><span>          <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">plogis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.3</span>, <span class="fl">2.5</span><span class="op">)</span>, location <span class="op">=</span> <span class="fl">0.4</span>, scale <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Symmetric: F(mu - a) + F(mu + a) = 1.</span></span></span>
+<span class="r-in"><span><span class="co"># The distribution is symmetric, so F(mu - a) + F(mu + a) = 1.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">-</span> <span class="fl">2</span>, <span class="va">th</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>

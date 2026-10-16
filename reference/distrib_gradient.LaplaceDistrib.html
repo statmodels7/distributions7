@@ -6,8 +6,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(r)}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).$$
 The score in \(\mu\) takes only the three values \(-1/\sigma\), 0 and
-\(+1/\sigma\): it carries the sign of the residual and nothing about
-its size, which is why the maximum likelihood estimate of \(\mu\) is the
+\(+1/\sigma\): it carries the sign of the residual but not its
+size, which is why the maximum likelihood estimate of \(\mu\) is the
 sample median. At \(r = 0\) exactly, sign(0) is 0 and the method returns
 0, the midpoint of the subdifferential \([-1/\sigma, 1/\sigma]\); the
 derivative does not exist there."><meta property="og:description" content="Computes the first derivatives of the Laplace log-density with respect to
@@ -17,8 +17,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(r)}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).$$
 The score in \(\mu\) takes only the three values \(-1/\sigma\), 0 and
-\(+1/\sigma\): it carries the sign of the residual and nothing about
-its size, which is why the maximum likelihood estimate of \(\mu\) is the
+\(+1/\sigma\): it carries the sign of the residual but not its
+size, which is why the maximum likelihood estimate of \(\mu\) is the
 sample median. At \(r = 0\) exactly, sign(0) is 0 and the method returns
 0, the midpoint of the subdifferential \([-1/\sigma, 1/\sigma]\); the
 derivative does not exist there."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -29,7 +29,7 @@ derivative does not exist there."><meta property="og:image" content="https://sta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(r)}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).$$</p>
 <p>The score in \(\mu\) takes only the three values \(-1/\sigma\), 0 and
-\(+1/\sigma\): it carries the sign of the residual and nothing about
-its size, which is why the maximum likelihood estimate of \(\mu\) is the
+\(+1/\sigma\): it carries the sign of the residual but not its
+size, which is why the maximum likelihood estimate of \(\mu\) is the
 sample median. At \(r = 0\) exactly, <code>sign(0)</code> is 0 and the method returns
 0, the midpoint of the subdifferential \([-1/\sigma, 1/\sigma]\); the
 derivative does not exist there.</p>
@@ -138,7 +138,7 @@ does not; and <code><a href="distrib_gradient.html">distrib_gradient()</a></code
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two closed forms, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The two closed forms are written out and compared.</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="fl">0.4</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>, <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

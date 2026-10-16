@@ -15,7 +15,7 @@ negative binomial at the same variance."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,8 @@ strictly positive. Defaults to <code><a href="https://statmodels7.github.io/link
     <h2 id="the-mass-function-and-how-it-is-computed">The mass function, and how it is computed<a class="anchor" aria-label="anchor" href="#the-mass-function-and-how-it-is-computed"></a></h2>
     <p>The mass carries the modified Bessel function \(K_{y-1/2}\), which at
 half-integer order is a finite sum. The kernels evaluate that sum on the log
-scale, after the prefactors have canceled; no Bessel routine is called.
+scale, after the prefactors have canceled, and do not call a Bessel
+routine.
 With \(c = 1 + 2\sigma\mu\), \(\alpha = \sqrt{c}/\sigma\) and
 \(w = 1/(2\alpha)\),
 $$\ell(y) = y\log\mu - \tfrac{y}{2}\log c - \dfrac{2\mu}{1+\sqrt c}
@@ -98,7 +99,7 @@ scale, so every piece stays smooth as \(\sigma \to 0\), where \(w\)
 tends to \(\sigma/2\). The derivatives of \(\log S_y\) in \(w\) are
 the weighted factorial moments of \(k\) under those terms; everything
 else is elementary. Every partial to fourth order is written out by hand,
-so no order is differenced.</p>
+so every order is computed without differencing.</p>
     </div>
     <div class="section level2">
     <h2 id="one-kernel-per-generic">One kernel per generic<a class="anchor" aria-label="anchor" href="#one-kernel-per-generic"></a></h2>
@@ -193,7 +194,8 @@ Statistics</em> 17(2), 171–181.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      mean  variance  skewness </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3.000000 10.200000  2.346499 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Heavier in the tail than a negative binomial of the same variance.</span></span></span>
+<span class="r-in"><span><span class="co"># The tail is heavier than that of a negative binomial of the same</span></span></span>
+<span class="r-in"><span><span class="co"># variance.</span></span></span>
 <span class="r-in"><span><span class="va">nb</span> <span class="op">&lt;-</span> <span class="fu"><a href="negbin2_distrib.html">negbin2_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nbth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, theta <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>variance_pig <span class="op">=</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, variance_negbin <span class="op">=</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">nb</span>, <span class="va">nbth</span><span class="op">)</span><span class="op">)</span></span></span>

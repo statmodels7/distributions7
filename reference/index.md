@@ -913,11 +913,11 @@ Rarely called directly; they show what the default methods compute.
 - [`sn_b()`](https://statmodels7.github.io/distributions7/reference/sn_b.md)
   : The Constant Behind the Centered Parametrization
 - [`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md)
-  : The Largest Skewness a Skew Normal Can Reach
+  : The Largest Skewness That a Skew Normal Can Reach
 - [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
   : From the Centered Parameters to the Direct Ones
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
-  : The Direct Parameters a Centered Triple Implies
+  : The Direct Parameters That a Centered Triple Implies
 
 ## Skew t
 
@@ -1668,7 +1668,7 @@ Rarely called directly; they show what the default methods compute.
 - [`distrib_start.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.Pig2Distrib.md)
   : Orthogonal Poisson-Inverse Gaussian Starting Values
 - [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
-  : The Dispersion a Poisson-Inverse Gaussian Alpha Implies
+  : The Dispersion Implied by a Poisson-Inverse Gaussian Alpha
 
 ## NB1 negative binomial
 
@@ -3823,7 +3823,7 @@ transforms that make it work on a divergent density.
   : CDF Derivatives of a Sum of Weighted Normal Tails
 
 - [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
-  : The Dispersion a Poisson-Inverse Gaussian Alpha Implies
+  : The Dispersion Implied by a Poisson-Inverse Gaussian Alpha
 
 - [`plot.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
   : Plot Method for Continuous Distributions
@@ -4084,7 +4084,7 @@ transforms that make it work on a divergent density.
   : The Skew t Tower in the Location, Scale and Shape
 
 - [`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md)
-  : The Pieces a Skew t Evaluates From
+  : The Pieces from Which a Skew t Is Evaluated
 
 - [`sn2_expected_parts()`](https://statmodels7.github.io/distributions7/reference/sn2_expected_parts.md)
   : The Expected Information of the Centered Skew Normal, by Region
@@ -4096,13 +4096,13 @@ transforms that make it work on a divergent density.
   : The Skew Normal's CDF Gradient at Zero Skewness
 
 - [`sn2_reject_unmappable()`](https://statmodels7.github.io/distributions7/reference/sn2_reject_unmappable.md)
-  : Reject Centered Parameters the Map Cannot Carry
+  : Reject Centered Parameters That the Map Cannot Carry
 
 - [`sn2_reject_zero()`](https://statmodels7.github.io/distributions7/reference/sn2_reject_zero.md)
   : Reject the Zero Skewness Where a Derivative Diverges
 
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
-  : The Direct Parameters a Centered Triple Implies
+  : The Direct Parameters That a Centered Triple Implies
 
 - [`sn_b()`](https://statmodels7.github.io/distributions7/reference/sn_b.md)
   : The Constant Behind the Centered Parametrization
@@ -4120,7 +4120,7 @@ transforms that make it work on a divergent density.
   : The Skew Normal's Lower Tail on the Log Scale
 
 - [`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md)
-  : The Largest Skewness a Skew Normal Can Reach
+  : The Largest Skewness That a Skew Normal Can Reach
 
 - [`sn_one_minus_delta2()`](https://statmodels7.github.io/distributions7/reference/sn_one_minus_delta2.md)
   : One Minus the Squared Skewness Parameter

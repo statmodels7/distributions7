@@ -7,7 +7,7 @@ It is minus the derivative in \\\mu\\, exactly, because the response and
 the location enter the density only through their difference; the
 identity holds for every location family.
 
-It is closed form at every parameter value, \\\nu\\ included, because
+It is closed form at every parameter value, including \\\nu\\, because
 the formula does not differentiate in the degrees of freedom.
 
 ## Arguments
@@ -61,7 +61,7 @@ th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #> [1] TRUE
 
-# Against a central difference of the log-density.
+# The derivative is compared with a central difference of the log-density.
 eps <- 1e-6
 rbind(analytic = distrib_grad_y(d, y, th),
       numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -

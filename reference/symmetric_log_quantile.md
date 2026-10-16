@@ -4,9 +4,9 @@ Returns the quantile of a law symmetric about its first parameter,
 solved on the logarithm of the smaller tail: the root of \\\log F(q) =
 \log p\\ is found below the location by
 [`stats::uniroot()`](https://rdrr.io/r/stats/uniroot.html) and reflected
-about it when the upper tail is the smaller one, so that neither \\1 -
-p\\ nor \\\exp(\log p)\\ is formed. The two pseudo-Huber families use
-it.
+about it when the upper tail is the smaller one, so that the computation
+forms neither \\1 - p\\ nor \\\exp(\log p)\\. The two pseudo-Huber
+families use it.
 
 ## Usage
 

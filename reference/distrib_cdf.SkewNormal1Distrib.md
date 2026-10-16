@@ -13,9 +13,10 @@ double precision.
 The method works on the log scale
 ([`sn_log_lower()`](https://statmodels7.github.io/distributions7/reference/sn_log_lower.md)).
 The upper tail is computed as the lower tail of \\-Y\\, a skew normal of
-shape \\-\alpha\\, so neither tail is a complement. Where the difference
-\\\Phi(z) - 2T(z, \alpha)\\ cancels, that is where the requested tail is
-below \\10^{-3}\Phi(\pm z)\\, the tail is integrated instead by
+shape \\-\alpha\\, so the method computes each tail directly and not as
+the complement of the other. The difference \\\Phi(z) - 2T(z, \alpha)\\
+cancels where the requested tail is below \\10^{-3}\Phi(\pm z)\\, and
+there the tail is integrated instead by
 [`log_tail_integral()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md),
 so that a small tail probability and its logarithm keep their digits on
 the light side of the family.
@@ -68,7 +69,7 @@ with `log.p = TRUE`, of length
 [`numericals7::owen_t()`](https://statmodels7.github.io/numericals7/reference/owen_t.html)
 for the quadrature,
 [`distrib_pdf.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormal1Distrib.md)
-for the density it integrates,
+for the density that it integrates,
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
 for its parameter derivatives, and
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
@@ -81,7 +82,7 @@ d <- skewnormal1_distrib()
 q <- c(-2, -0.5, 0.5, 2)
 th <- list(mu = 0, sigma = 1, alpha = 3)
 
-# Owen's identity against a direct quadrature of the density.
+# Owen's identity is compared with a direct quadrature of the density.
 rbind(owen = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))

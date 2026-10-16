@@ -60,8 +60,8 @@ is its numerical inverse.
 The law is the distribution of the first-passage time of a Brownian
 motion with drift to a fixed level. Its skewness \\3\sqrt{\phi\mu}\\
 tends to zero with \\\phi\mu\\. Compared with a gamma of the same mean
-and variance it has less mass near zero, its density vanishing like
-\\\exp\\-1/(2\phi y)\\\\ at the origin, and a right tail that decays at
+and variance it has less mass near zero (its density vanishes like
+\\\exp\\-1/(2\phi y)\\\\ at the origin) and a right tail that decays at
 the rate \\1/(2\phi\mu^2)\\, half the gamma's.
 
 This is the same law as
@@ -79,10 +79,11 @@ Hessian is \$\$\mathbb{E}\left\[\ell^{(\mu\mu)}\right\] =
 -\dfrac{1}{\phi\mu^3}, \qquad \mathbb{E}\left\[\ell^{(\phi\phi)}\right\]
 = -\dfrac{1}{2\phi^2}, \qquad \mathbb{E}\left\[\ell^{(\mu\phi)}\right\]
 = 0.\$\$ The zero off-diagonal makes the mean and the dispersion
-orthogonal, so the mean equation can be fitted with the dispersion held
-at any value without biasing it. The expected curvature in \\\phi\\ is
-\\-1/(2\phi^2)\\ for every value of the mean, so the asymptotic variance
-of the estimated dispersion, \\2\phi^2/n\\, does not depend on the mean.
+orthogonal, so the mean equation can be fitted without biasing it while
+the dispersion is held at any value. The expected curvature in \\\phi\\
+is \\-1/(2\phi^2)\\ for every value of the mean, so the asymptotic
+variance of the estimated dispersion, \\2\phi^2/n\\, does not depend on
+the mean.
 
 The diagonal entries of the observed Hessian,
 [`distrib_hessian.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss1Distrib.md),
@@ -100,7 +101,7 @@ as are the derivatives in the response,
 and
 [`distrib_hess_y.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.InvGauss1Distrib.md).
 The derivatives of the *distribution* function in the parameters are
-closed form too, the expression above being elementary.
+closed form too, because the expression above is elementary.
 
 ## Estimation
 
@@ -139,8 +140,8 @@ for the Poisson mixed over this law;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [InvGauss1Distrib](https://statmodels7.github.io/distributions7/reference/InvGauss1Distrib.md)
 for the class.
 
@@ -164,7 +165,8 @@ all.equal(distrib_pdf(d, y, th),
           statmod::dinvgauss(y, mean = 1, dispersion = 2))
 #> [1] TRUE
 
-# Moments: variance phi mu^3, skewness 3 sqrt(phi mu), kurtosis 15 phi mu.
+# The variance is phi mu^3, the skewness 3 sqrt(phi mu) and the kurtosis
+# 15 phi mu.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 #>      mean       var      skew      kurt 

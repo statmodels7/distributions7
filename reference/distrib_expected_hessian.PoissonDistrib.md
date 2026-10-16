@@ -90,7 +90,7 @@ for the generic.
 d <- poisson_distrib()
 th <- list(mu = 3)
 
-# A single number, -1/mu.
+# The value is a single number, -1/mu.
 unique(distrib_expected_hessian(d, c(0, 2, 7), th)$mu_mu)
 #> [1] -0.3333333
 -1 / 3
@@ -105,7 +105,7 @@ rbind(observed = distrib_hessian(d, c(0, 2, 7), th, scale = "link")$mu_mu,
 #> observed   -3   -3   -3
 #> expected   -3   -3   -3
 
-# It is the variance of the score, this family being regular.
+# It is the variance of the score because this family is regular.
 set.seed(4)
 z <- distrib_rng(d, 2e5, th)
 c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),

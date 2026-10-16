@@ -65,7 +65,7 @@ for the generic.
 d <- laplace2_distrib()
 th <- list(mu = 0.4, lambda = 2)
 
-# One half at the location.
+# The distribution function equals one half at the location.
 distrib_cdf(d, 0.4, th)
 #> [1] 0.5
 
@@ -76,7 +76,8 @@ all.equal(distrib_cdf(d, q, th),
                  1 - 0.5 * exp(-2 * (q - 0.4))))
 #> [1] TRUE
 
-# The same probabilities as the scale parametrization at sigma = 1/lambda.
+# The probabilities equal those of the scale parametrization at
+# sigma = 1/lambda.
 all.equal(distrib_cdf(d, q, list(mu = 0.4, lambda = 1 / 1.5)),
           distrib_cdf(laplace_distrib(), q, list(mu = 0.4, sigma = 1.5)))
 #> [1] TRUE

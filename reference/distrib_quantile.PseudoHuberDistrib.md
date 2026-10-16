@@ -1,13 +1,14 @@
 # Pseudo-Huber Quantile Function
 
-Computes \\Q(p)\\ by root-finding on the numerical distribution
-function, the family having no elementary quantile, through
-[`symmetric_log_quantile()`](https://statmodels7.github.io/distributions7/reference/symmetric_log_quantile.md).
-The probability is turned into the logarithms of both tails without
-forming \\1 - p\\ or exponentiating a logarithm, and the root of \\\log
-F(q) = \log P\\, with \\P\\ the smaller tail, is found below the
-location and reflected through \\Q = 2\mu - Q'\\ when the upper tail is
-the smaller one. \\Q(1/2) = \mu\\ exactly and without a search.
+Computes \\Q(p)\\ through
+[`symmetric_log_quantile()`](https://statmodels7.github.io/distributions7/reference/symmetric_log_quantile.md)
+by root-finding on the numerical distribution function, because the
+family has no elementary quantile. The probability is turned into the
+logarithms of both tails without forming \\1 - p\\ or exponentiating a
+logarithm, and the root of \\\log F(q) = \log P\\, with \\P\\ the
+smaller tail, is found below the location and reflected through \\Q =
+2\mu - Q'\\ when the upper tail is the smaller one. \\Q(1/2) = \mu\\
+exactly and without a search.
 
 The bracket starts at ten standard deviations below the location and
 doubles its width until it contains the root, at most 2000 times.
@@ -72,7 +73,8 @@ th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 distrib_quantile(d, 0.5, th)
 #> [1] 0.4
 
-# The quartiles, and the round trip back through the distribution function.
+# The quartiles are computed, and the distribution function maps them back
+# to the probabilities.
 q <- distrib_quantile(d, c(0.25, 0.75), th)
 q
 #> [1] -0.8235709  1.6235709

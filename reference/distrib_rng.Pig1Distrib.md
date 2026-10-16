@@ -3,7 +3,7 @@
 Draws from the family's own mixture representation, exactly: \\\lambda\\
 from the inverse Gaussian with mean \\\mu\\ and shape \\\mu/\sigma\\,
 then \\Y \mid \lambda\\ from the Poisson with that rate. The inverse
-Gaussian's variance is then \\\sigma\mu^2\\, the value the mixing
+Gaussian's variance is then \\\sigma\mu^2\\, the value that the mixing
 construction requires, and the marginal variance comes out as \\\mu +
 \sigma\mu^2\\.
 
@@ -40,7 +40,7 @@ An integer-valued numeric vector of `n` draws.
 ## See also
 
 [`distrib_pdf.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig1Distrib.md)
-for the mass the draws follow,
+for the mass that the draws follow,
 [`distrib_rng.Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig2Distrib.md)
 for the same sampler in orthogonal coordinates, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
@@ -55,14 +55,15 @@ th <- list(mu = 3, sigma = 0.8)
 set.seed(61)
 x <- distrib_rng(d, 2e5, th)
 
-# Two moments against their closed forms.
+# Two moments are compared with their closed forms.
 rbind(sample = c(mean(x), var(x)),
       theory = c(mean(d, th), variance(d, th)))
 #>            [,1]    [,2]
 #> sample 2.996995 10.1801
 #> theory 3.000000 10.2000
 
-# The empirical mass against the exact one, over the head of the support.
+# The empirical mass is compared with the exact one over the head of the
+# support.
 rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
       exact = distrib_pdf(d, 0:6, th))
 #>             [,1]      [,2]      [,3]      [,4]       [,5]       [,6]       [,7]

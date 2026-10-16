@@ -57,9 +57,9 @@ quantile function is its numerical inverse.
 This is the same law as
 [`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md),
 which carries a dispersion \\\phi = 1/\lambda\\. The map between the two
-moves one coordinate at a time, the mean being untouched, so both sets
-of derivatives stay elementary. The family is usually written in the
-shape parametrization. In it the law is the distribution of the
+moves one coordinate at a time and leaves the mean untouched, so both
+sets of derivatives stay elementary. The family is usually written in
+the shape parametrization. In it the law is the distribution of the
 first-passage time to a level \\a \> 0\\ of a Brownian motion with drift
 \\\nu \> 0\\ and variance parameter \\s^2\\, with \\\mu = a/\nu\\ and
 \\\lambda = a^2/s^2\\.
@@ -132,8 +132,8 @@ for the Poisson mixed over this law;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [InvGauss2Distrib](https://statmodels7.github.io/distributions7/reference/InvGauss2Distrib.md)
 for the class.
 
@@ -150,14 +150,14 @@ d
 #>   mu     (mean)               | Link: log        | Domain: (0, Inf)
 #>   lambda (shape)              | Link: log        | Domain: (0, Inf)
 
-# The same law as invgauss1 at phi = 1/lambda.
+# The density is the same as that of invgauss1 at phi = 1/lambda.
 y <- c(1, 2, 3)
 th <- list(mu = 2, lambda = 3)
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(invgauss1_distrib(), y, list(mu = 2, phi = 1 / 3)))
 #> [1] TRUE
 
-# Moments: variance mu^3/lambda, skewness 3 sqrt(mu/lambda).
+# The variance is mu^3/lambda and the skewness is 3 sqrt(mu/lambda).
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 #>      mean       var      skew      kurt 

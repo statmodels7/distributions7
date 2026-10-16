@@ -6,8 +6,8 @@ compiled kernel `pig1_deriv4_cpp`, which computes the fourth order
 alone.
 
 At a very small dispersion and a large count this order loses relative
-accuracy: the tables it is formed from are moments of the finite sum
-\\S_y\\, which has \\y\\ terms, and their combination cancels as
+accuracy: the tables from which it is formed are moments of the finite
+sum \\S_y\\, which has \\y\\ terms, and their combination cancels as
 \\\sigma\\ goes to zero. At \\\sigma = 10^{-7}\\ and counts of 100 and
 more the component in \\\sigma\\ alone has a relative error between
 \\10^{-7}\\ and \\2\times10^{-3}\\, growing with the count and with
@@ -88,7 +88,8 @@ names(d4)
 #> [3] "mu_mu_sigma_sigma"       "mu_sigma_sigma_sigma"   
 #> [5] "sigma_sigma_sigma_sigma"
 
-# Against a central difference of the third order.
+# The fourth-order entry is compared with a central difference of the
+# third order.
 eps <- 1e-5
 rbind(analytic = d4$mu_mu_mu_sigma,
       numeric = (distrib_deriv3(d, y, list(mu = 3, sigma = 0.8 + eps))$mu_mu_mu -
@@ -109,6 +110,6 @@ x <- distrib_rng(d, n, th)
 rbind(score = system.time(distrib_gradient(d, x, th))[["elapsed"]],
       fourth = system.time(distrib_deriv4(d, x, th))[["elapsed"]])
 #>         [,1]
-#> score  0.016
-#> fourth 0.016
+#> score  0.011
+#> fourth 0.009
 ```

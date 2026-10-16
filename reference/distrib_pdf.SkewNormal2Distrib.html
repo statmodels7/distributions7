@@ -5,9 +5,9 @@ triple implies. With
 sn_cp_to_dp() and \(z = (y-\xi)/\omega\),
 $$f(y; \mu, \sigma, \gamma_1)
       = \dfrac{2}{\omega}\,\phi(z)\,\Phi(\alpha z).$$
-The density is the same function of \(y\) as
-distrib_pdf.SkewNormal1Distrib()'s; only the three numbers naming it
-differ.
+The density is the same function of \(y\) as the one that
+distrib_pdf.SkewNormal1Distrib() computes; only the three numbers that
+name it differ.
 Unlike the derivatives, the density is defined at \(\gamma_1 = 0\) and
 equals the Gaussian's there: the map itself is continuous through zero, and
 only its derivative is not."><meta property="og:description" content="Computes the skew normal density at the direct parameters that the centered
@@ -16,9 +16,9 @@ triple implies. With
 sn_cp_to_dp() and \(z = (y-\xi)/\omega\),
 $$f(y; \mu, \sigma, \gamma_1)
       = \dfrac{2}{\omega}\,\phi(z)\,\Phi(\alpha z).$$
-The density is the same function of \(y\) as
-distrib_pdf.SkewNormal1Distrib()'s; only the three numbers naming it
-differ.
+The density is the same function of \(y\) as the one that
+distrib_pdf.SkewNormal1Distrib() computes; only the three numbers that
+name it differ.
 Unlike the derivatives, the density is defined at \(\gamma_1 = 0\) and
 equals the Gaussian's there: the map itself is continuous through zero, and
 only its derivative is not."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -29,7 +29,7 @@ only its derivative is not."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,9 +68,9 @@ triple implies. With
 <code><a href="sn_cp_to_dp.html">sn_cp_to_dp()</a></code> and \(z = (y-\xi)/\omega\),
 $$f(y; \mu, \sigma, \gamma_1)
       = \dfrac{2}{\omega}\,\phi(z)\,\Phi(\alpha z).$$
-The density is the same function of \(y\) as
-<code><a href="distrib_pdf.SkewNormal1Distrib.html">distrib_pdf.SkewNormal1Distrib()</a></code>'s; only the three numbers naming it
-differ.</p>
+The density is the same function of \(y\) as the one that
+<code><a href="distrib_pdf.SkewNormal1Distrib.html">distrib_pdf.SkewNormal1Distrib()</a></code> computes; only the three numbers that
+name it differ.</p>
 <p>Unlike the derivatives, the density is defined at \(\gamma_1 = 0\) and
 equals the Gaussian's there: the map itself is continuous through zero, and
 only its derivative is not.</p>
@@ -116,9 +116,9 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 
 <p>\(\mu\), \(\sigma\) and \(\gamma_1\) are the mean, the standard
-deviation and the skewness; \(\xi\), \(\omega\) and \(\alpha\) the
-location, scale and shape they imply; \(\phi\) and \(\Phi\) the standard
-Gaussian density and distribution function.</p>
+deviation and the skewness; \(\xi\), \(\omega\) and \(\alpha\) are the
+location, scale and shape that they imply; \(\phi\) and \(\Phi\) are the
+standard Gaussian density and distribution function.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -134,7 +134,7 @@ for the generic.</p></div>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">1.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, gamma1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law, reached through the map.</span></span></span>
+<span class="r-in"><span><span class="co"># The same law is reached through the map.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">y</span>, <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="sn2_theta.html">sn2_theta</a></span><span class="op">(</span><span class="va">th</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

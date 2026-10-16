@@ -55,12 +55,12 @@ for the generic.
 d <- laplace2_distrib()
 y <- c(-1.2, 0.3, 2.5)
 
-# The density, written out.
+# The density equals its closed form.
 all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 2)),
           exp(-2 * abs(y - 0.4)) * 2 / 2)
 #> [1] TRUE
 
-# The same law as the scale parametrization at lambda = 1/sigma.
+# This is the same law as the scale parametrization at lambda = 1/sigma.
 all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
 #> [1] TRUE

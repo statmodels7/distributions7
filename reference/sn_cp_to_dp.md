@@ -19,8 +19,8 @@ sn_cp_to_dp(mu, sigma, gamma1, s)
 
   The centered parameters: the mean, the standard deviation and the
   skewness, each a numeric vector. `sigma` must be positive and `gamma1`
-  must lie strictly inside \\(-0.9952717, 0.9952717)\\; nothing is
-  validated here.
+  must lie strictly inside \\(-0.9952717, 0.9952717)\\; the function
+  does not validate them.
 
 - s:
 

@@ -7,11 +7,11 @@ Builds a skew normal distribution object parametrized by its mean
 named by three moments instead of by a location, a scale and a shape.
 
 The parametrization is Azzalini's. Its expected information stays
-non-singular at \\\gamma_1 = 0\\, where the direct parametrization's
-loses a rank. The map between the two runs through a cube root, so the
-derivative of the shape in \\\gamma_1\\ is unbounded at zero skewness
-and the log-density has no derivative of order two or more in
-\\\gamma_1\\ there.
+non-singular at \\\gamma_1 = 0\\, where the expected information of the
+direct parametrization loses a rank. The map between the two runs
+through a cube root, so the derivative of the shape in \\\gamma_1\\ is
+unbounded at zero skewness and the log-density has no derivative of
+order two or more in \\\gamma_1\\ there.
 
 ## Usage
 
@@ -43,7 +43,7 @@ skewnormal2_distrib(
   \\(-0.9952717, 0.9952717)\\. Defaults to
   [`linkfunctions7::bounded_link()`](https://statmodels7.github.io/linkfunctions7/reference/bounded_link.html)
   over exactly that interval, so any real linear predictor maps to a
-  skewness the family can reach.
+  skewness that the family can reach.
 
 ## Value
 
@@ -56,8 +56,8 @@ inheriting from `continuous_distrib`. Its `params` are
 ## Relation to reparametrize()
 
 The map passes through \\c =
-\mathrm{sign}(\gamma_1)(2\|\gamma_1\|/(4-\pi))^{1/3}\\, and two things
-follow from it. It carries a sign, so
+\mathrm{sign}(\gamma_1)(2\|\gamma_1\|/(4-\pi))^{1/3}\\, which carries a
+sign. For this reason
 [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
 takes the sign from the plain value of `gamma1` and passes it to
 [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
@@ -77,12 +77,13 @@ step of the skewing function from a composition that does not cancel.
 divergent contributions cancel, so the information in \\\gamma_1\\ tends
 to \\1/6\\ and the whole matrix stays positive definite at symmetry.
 
-The observed curvature does diverge, at the rate the cube root sets:
-\\\gamma_1^{-2/3}\\. The derivatives of order two and more are therefore
-rejected at \\\gamma_1 = 0\\ exactly, with a message naming the cause;
-the score and the expected information are returned there. The density,
-the distribution function, the quantile function, the generator and both
-response derivatives are fine there and equal the Gaussian's.
+The observed curvature does diverge, at the rate that the cube root
+sets: \\\gamma_1^{-2/3}\\. The derivatives of order two and more are
+therefore rejected at \\\gamma_1 = 0\\ exactly, with a message naming
+the cause; the score and the expected information are returned there.
+The density, the distribution function, the quantile function, the
+generator and both response derivatives are fine there and equal the
+Gaussian's.
 
 For \\\|\gamma_1\|\\ below
 [`sn2_ge()`](https://statmodels7.github.io/distributions7/reference/sn2_ge.md)
@@ -142,7 +143,7 @@ for the class and its method list.
 d <- skewnormal2_distrib()
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# All three parameters are moments, which is what "centered" names.
+# All three parameters are moments, which is why it is called "centered".
 c(mean = mean(d, th), sd = sqrt(variance(d, th)),
   skewness = skewness(d, th))
 #>     mean       sd skewness 

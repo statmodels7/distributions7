@@ -73,12 +73,13 @@ distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 0.4 + c(-1, 0, 1) * 1.5 * log(2)
 #> [1] -0.6397208  0.4000000  1.4397208
 
-# Exact inverse: the round trip returns the probabilities it was given.
+# The quantile is an exact inverse: the round trip returns the
+# probabilities that it was given.
 p <- c(0.025, 0.5, 0.975)
 all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 #> [1] TRUE
 
-# A far tail, given as a logarithm, against mu + sigma (log p + log 2).
+# A far tail given as a logarithm is compared with mu + sigma (log p + log 2).
 distrib_quantile(d, -800, th, log.p = TRUE)
 #> [1] -1198.56
 0.4 + 1.5 * (-800 + log(2))

@@ -53,7 +53,7 @@ d <- vonmises1_distrib()
 y <- c(-1, 0, 0.5, 2)
 th <- list(mu = 0.5, kappa = 2)
 
-# The closed form, written out.
+# The closed form is written out.
 all.equal(distrib_hess_y(d, y, th), -2 * cos(y - 0.5))
 #> [1] TRUE
 
@@ -68,8 +68,8 @@ all.equal((distrib_grad_y(d, y + eps, th) -
           distrib_hess_y(d, y, th), tolerance = 1e-6)
 #> [1] TRUE
 
-# Negative at the mode and positive at the antimode: a periodic density is
-# not concave everywhere.
+# The value is negative at the mode and positive at the antimode, because
+# a periodic density is not concave everywhere.
 distrib_hess_y(d, c(0.5, 0.5 - pi), th)
 #> [1] -2  2
 ```

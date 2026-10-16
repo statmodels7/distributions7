@@ -23,7 +23,7 @@ quadratic variance function."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,7 +110,7 @@ length <code>max(length(y), length(mu), length(theta))</code>.</p>
     <h2 id="the-dispersion-at-large-theta">The dispersion at large theta<a class="anchor" aria-label="anchor" href="#the-dispersion-at-large-theta"></a></h2>
     <p>The dispersion component is not computed as written above. As
 \(\theta\) grows the family tends to the Poisson and this derivative
-vanishes, its three terms canceling to leading order:
+vanishes, because its three terms cancel to leading order:
 \(\psi(y+\theta) - \psi(\theta)\) is \(y/\theta\),
 \(\log\{\theta/s\}\) is \(-\mu/\theta\) and \((\mu-y)/s\) is
 \((\mu-y)/\theta\), and the three sum to zero, so the value is
@@ -123,8 +123,8 @@ and changes sign at \(10^8\).</p>
 $$\dfrac{\partial \ell}{\partial \theta} =
       \left\{\psi(b) - \psi(a) - \log(1 + y/a)\right\}
       + \left\{\log(1 + w) - w\right\},$$
-each bracket evaluated by its own series where the arguments are large. To
-leading order the result is \(\{y - (y-\mu)^2\}/(2\theta^2)\), which the
+and each bracket is evaluated by its own series where the arguments are
+large. To leading order the result is \(\{y - (y-\mu)^2\}/(2\theta^2)\), which the
 example below reproduces. A fit reaches that regime when the sample is
 nearly equidispersed, because the estimate of \(\theta\) then grows
 without bound.</p>
@@ -156,7 +156,7 @@ generic.</p></div>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, theta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two closed forms, written out at a dispersion where the direct</span></span></span>
+<span class="r-in"><span><span class="co"># We write out the two closed forms at a dispersion where the direct</span></span></span>
 <span class="r-in"><span><span class="co"># expression still has its digits.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">+</span> <span class="fl">4</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>, <span class="op">(</span><span class="fl">2</span> <span class="op">/</span> <span class="va">s</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">y</span> <span class="op">/</span> <span class="fl">4</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>

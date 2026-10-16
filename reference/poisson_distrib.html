@@ -5,7 +5,7 @@ integers. The returned object carries closed-form derivatives of the
 log-mass to fourth order, observed and expected, and closed-form moments.
 The family is equidispersed: its variance equals its mean at every
 parameter value. Real counts are usually more variable than that, so a
-Poisson fit is often the null a count analysis argues against;
+Poisson fit is often the null against which a count analysis argues;
 negbin2_distrib() and negbin1_distrib() add a dispersion parameter and
 both contain this family in a limit."><meta property="og:description" content="Builds the distribution object for the Poisson family parametrized by its
 mean \(\mu &amp;gt; 0\), with mass \(e^{-\mu}\mu^y/y!\) on the non-negative
@@ -13,7 +13,7 @@ integers. The returned object carries closed-form derivatives of the
 log-mass to fourth order, observed and expected, and closed-form moments.
 The family is equidispersed: its variance equals its mean at every
 parameter value. Real counts are usually more variable than that, so a
-Poisson fit is often the null a count analysis argues against;
+Poisson fit is often the null against which a count analysis argues;
 negbin2_distrib() and negbin1_distrib() add a dispersion parameter and
 both contain this family in a limit."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@ both contain this family in a limit."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ integers. The returned object carries closed-form derivatives of the
 log-mass to fourth order, observed and expected, and closed-form moments.</p>
 <p>The family is equidispersed: its variance equals its mean at every
 parameter value. Real counts are usually more variable than that, so a
-Poisson fit is often the null a count analysis argues against;
+Poisson fit is often the null against which a count analysis argues;
 <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code> and <code><a href="negbin1_distrib.html">negbin1_distrib()</a></code> add a dispersion parameter and
 both contain this family in a limit.</p>
     </div>
@@ -108,9 +108,10 @@ canonical link, and on its scale
 $$\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
       \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu.$$
 The second of these carries no data, so the observed and the expected
-information coincide in exact arithmetic: Fisher scoring and Newton's method take the same step,
-and the iteratively reweighted least squares of a Poisson log-linear model
-is both at once. Under any other link the two differ and the choice matters.</p>
+information coincide in exact arithmetic: Fisher scoring and Newton's
+method take the same step, and the iteratively reweighted least squares of a
+Poisson log-linear model is both at once. Under any other link the two
+differ, so Fisher scoring and Newton's method take different steps.</p>
     </div>
     <div class="section level2">
     <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a></h2>
@@ -171,7 +172,7 @@ zeros; <code><a href="geometric_distrib.html">geometric_distrib()</a></code> for
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">200</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Equidispersed, and closer to symmetric as the mean grows.</span></span></span>
+<span class="r-in"><span><span class="co"># The family is equidispersed and closer to symmetric as the mean grows.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">3</span>, <span class="fl">20</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, var <span class="op">=</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, skew <span class="op">=</span> <span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -188,9 +189,10 @@ zeros; <code><a href="geometric_distrib.html">geometric_distrib()</a></code> for
 <span class="r-out co"><span class="r-pr">#&gt;</span>      fitted sample_mean </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       4.087       4.087 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Equidispersion is a testable assumption. Drawn from the family the</span></span></span>
-<span class="r-in"><span><span class="co"># sample variance matches the mean; drawn with extra variability it does</span></span></span>
-<span class="r-in"><span><span class="co"># not, and a negative binomial is the family to reach for.</span></span></span>
+<span class="r-in"><span><span class="co"># Equidispersion is a testable assumption. A sample drawn from the family</span></span></span>
+<span class="r-in"><span><span class="co"># has a variance that matches its mean; a sample drawn with extra</span></span></span>
+<span class="r-in"><span><span class="co"># variability does not, and then a negative binomial is the appropriate</span></span></span>
+<span class="r-in"><span><span class="co"># family.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">over</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">1000</span>, lambda <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="fl">1000</span>, shape <span class="op">=</span> <span class="fl">2</span>, rate <span class="op">=</span> <span class="fl">2</span> <span class="op">/</span> <span class="fl">4.2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>poisson <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">)</span>,</span></span>

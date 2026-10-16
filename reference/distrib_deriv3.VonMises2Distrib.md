@@ -49,12 +49,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 
@@ -106,7 +106,7 @@ dn <- distrib_hessian(d2, y, list(mu = 0.5, rho = 0.7 - eps))$rho_rho
 all.equal((up - dn) / (2 * eps), d3$rho_rho_rho, tolerance = 1e-5)
 #> [1] TRUE
 
-# Unlike the concentration parametrization, no component is exactly zero,
+# Unlike the concentration parametrization, every component is nonzero,
 # because kappa is a nonlinear function of rho.
 vapply(d3, function(v) v[1], numeric(1))
 #>     mu_mu_mu    mu_mu_rho   mu_rho_rho  rho_rho_rho 

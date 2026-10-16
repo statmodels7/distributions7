@@ -1,11 +1,12 @@
 # The Expected Information of the Centered Skew Normal, by Region
 
-The expected information (`k = 0`) or its derivatives (`k = 1, 2`): from
-the series kernels where \\\|\gamma_1\| \<\\
-[`sn2_ge()`](https://statmodels7.github.io/distributions7/reference/sn2_ge.md),
-from
+Returns the expected information (`k = 0`) or its derivatives
+(`k = 1, 2`), from the series kernels where \\\|\gamma_1\| \<\\
+[`sn2_ge()`](https://statmodels7.github.io/distributions7/reference/sn2_ge.md)
+and from
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
-elsewhere, each observation by its own skewness.
+elsewhere. The region is chosen for each observation from its own
+skewness.
 
 ## Usage
 

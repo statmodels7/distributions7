@@ -1,10 +1,10 @@
 # NB1 Fourth-Order Derivatives
 
 Computes the five distinct fourth derivatives of the NB1 log-likelihood
-in \\\mu\\ and \\\theta\\, in closed form, by the construction
+in \\\mu\\ and \\\theta\\, in closed form, by the construction that
 [`distrib_deriv3.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
-describes carried one order further: the same coefficient recursion over
-the powers of \\r = \mu/\theta\\ and the order of \\G(r) =
+describes, carried one order further: the same coefficient recursion
+over the powers of \\r = \mu/\theta\\ and the order of \\G(r) =
 \log\Gamma(y+r) - \log\Gamma(r)\\.
 
 With `expected = TRUE` the method calls
@@ -25,9 +25,9 @@ instead: the expected fourth derivatives have no closed form.
 
 - theta:
 
-  A named list with components `mu` and `theta`, each a numeric vector
-  of length 1 or of the length of `y`, both strictly positive. A
-  component of length 1 is recycled.
+  A named list with components `mu` and `theta`. Each is a numeric
+  vector of length 1 or of the length of `y`, and both are strictly
+  positive. A component of length 1 is recycled.
 
 - expected:
 
@@ -44,12 +44,12 @@ instead: the expected fourth derivatives have no closed form.
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 

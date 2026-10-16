@@ -6,14 +6,14 @@ fourth order in the response, and closed-form moments.
 The family is symmetric about \(\mu\) with variance
 \(\pi^2\sigma^2/3\), so \(\sigma\) is a scale, not a standard
 deviation. Its distribution function is the logistic sigmoid, the same curve
-linkfunctions7 uses as the inverse logit link."><meta property="og:description" content="Builds the distribution object for the logistic family with mean \(\mu\)
+that linkfunctions7 uses as the inverse logit link."><meta property="og:description" content="Builds the distribution object for the logistic family with mean \(\mu\)
 and scale \(\sigma &amp;gt; 0\). The returned object carries closed-form
 derivatives of the log-density to fifth order in the parameters and to
 fourth order in the response, and closed-form moments.
 The family is symmetric about \(\mu\) with variance
 \(\pi^2\sigma^2/3\), so \(\sigma\) is a scale, not a standard
 deviation. Its distribution function is the logistic sigmoid, the same curve
-linkfunctions7 uses as the inverse logit link."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+that linkfunctions7 uses as the inverse logit link."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ linkfunctions7 uses as the inverse logit link."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@ fourth order in the response, and closed-form moments.</p>
 <p>The family is symmetric about \(\mu\) with variance
 \(\pi^2\sigma^2/3\), so \(\sigma\) is a scale, not a standard
 deviation. Its distribution function is the logistic sigmoid, the same curve
-<code>linkfunctions7</code> uses as the inverse logit link.</p>
+that <code>linkfunctions7</code> uses as the inverse logit link.</p>
     </div>
 
     <div class="section level2">
@@ -122,7 +122,7 @@ and four are closed form as well.</p>
     </div>
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
-    <p>There is no closed-form estimate; <code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the
+    <p>The estimate has no closed form; <code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the
 log-likelihood on the link scale. The log-likelihood is concave in
 \(\mu\) for a fixed \(\sigma\), so the location is well determined.</p>
     </div>

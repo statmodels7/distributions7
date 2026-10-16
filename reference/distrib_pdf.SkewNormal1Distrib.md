@@ -69,7 +69,7 @@ d <- skewnormal1_distrib()
 y <- c(-2, -0.5, 0.5, 2)
 th <- list(mu = 0, sigma = 1, alpha = 3)
 
-# The formula written out.
+# The density equals its formula written out.
 all.equal(distrib_pdf(d, y, th),
           2 * dnorm(y) * pnorm(3 * y))
 #> [1] TRUE

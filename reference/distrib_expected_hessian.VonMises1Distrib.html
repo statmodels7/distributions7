@@ -10,7 +10,8 @@ with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\).
 The zero off-diagonal makes the direction and the concentration
 orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
-independently. approx and nsim are ignored, the expectation being exact."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
+independently. approx and nsim are ignored because the expectation is
+exact."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation. Under the model
 \(\mathbb{E}[\cos(Y-\mu)] = A(\kappa)\) and
 \(\mathbb{E}[\sin(Y-\mu)] = 0\) by symmetry, so
@@ -21,7 +22,8 @@ with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\).
 The zero off-diagonal makes the direction and the concentration
 orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
-independently. approx and nsim are ignored, the expectation being exact."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+independently. approx and nsim are ignored because the expectation is
+exact."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +31,7 @@ independently. approx and nsim are ignored, the expectation being exact."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +75,8 @@ with \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\).</p>
 <p>The zero off-diagonal makes the direction and the concentration
 orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
-independently. <code>approx</code> and <code>nsim</code> are ignored, the expectation being exact.</p>
+independently. <code>approx</code> and <code>nsim</code> are ignored because the expectation is
+exact.</p>
     </div>
 
 
@@ -86,8 +89,8 @@ independently. <code>approx</code> and <code>nsim</code> are ignored, the expect
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of angles. Only its length is read, the
-expectation not depending on the data; the values are ignored.</p></dd>
+<dd><p>A numeric vector of angles. Only its length is read, because the
+expectation does not depend on the data; the values are ignored.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -137,8 +140,8 @@ direction, \(\kappa &gt; 0\) the concentration, and
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.VonMises1Distrib.html">distrib_hessian.VonMises1Distrib()</a></code> for the quantity this is the
-expectation of, <code><a href="distrib_gradient.VonMises1Distrib.html">distrib_gradient.VonMises1Distrib()</a></code> for the score, and
+    <div class="dont-index"><p><code><a href="distrib_hessian.VonMises1Distrib.html">distrib_hessian.VonMises1Distrib()</a></code> for the quantity of which this
+is the expectation, <code><a href="distrib_gradient.VonMises1Distrib.html">distrib_gradient.VonMises1Distrib()</a></code> for the score, and
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
@@ -151,7 +154,7 @@ expectation of, <code><a href="distrib_gradient.VonMises1Distrib.html">distrib_g
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu kappa_kappa    mu_kappa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -1.3955493  -0.1642232   0.0000000 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed forms, written out; the off-diagonal is exactly zero, so the</span></span></span>
+<span class="r-in"><span><span class="co"># The closed forms are written out; the off-diagonal is exactly zero, so the</span></span></span>
 <span class="r-in"><span><span class="co"># two parameters are orthogonal.</span></span></span>
 <span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio.html" class="external-link">bessel_i_ratio</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu_mu <span class="op">=</span> <span class="op">-</span><span class="fl">2</span> <span class="op">*</span> <span class="va">A</span>, mu_kappa <span class="op">=</span> <span class="fl">0</span>,</span></span>
@@ -166,7 +169,7 @@ expectation of, <code><a href="distrib_gradient.VonMises1Distrib.html">distrib_g
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu_mu   kappa_kappa      mu_kappa </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -1.3964000867 -0.1642231977 -0.0006979838 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The strategy argument is inert, the expectation being exact.</span></span></span>
+<span class="r-in"><span><span class="co"># The strategy argument is inert because the expectation is exact.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">th</span>,</span></span>
 <span class="r-in"><span>                                       approx <span class="op">=</span> <span class="st">"mc"</span>, nsim <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

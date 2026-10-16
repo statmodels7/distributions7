@@ -3,7 +3,7 @@
 Return the derivatives of the log-density in \\(\mu, \sigma, \nu)\\ of
 orders one to five, the expected information and its expected third and
 fourth derivatives, and the first two derivatives of the expected
-information, each from its own compiled kernel.
+information, and each of them is computed by its own compiled kernel.
 
 ## Arguments
 
@@ -44,14 +44,14 @@ information, each from its own compiled kernel.
 ## Value
 
 A named list with one numeric vector per component: 3, 6, 10, 15 and 21
-components at orders one to five, the second order keyed `mu_mu`,
-`sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`. The expected
-information has the same six components, the expected third and fourth
-derivatives 10 and 15,
+components at orders one to five. At order two the components are keyed
+`mu_mu`, `sigma_sigma`, `nu_nu`, `mu_sigma`, `mu_nu`, `sigma_nu`. The
+expected information has the same six components, the expected third and
+fourth derivatives have 10 and 15,
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
-18 and
+has 18 and
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
-36.
+has 36.
 
 ## Details
 

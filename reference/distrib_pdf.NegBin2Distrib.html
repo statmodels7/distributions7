@@ -8,8 +8,8 @@ by calling stats::dnbinom() at size = theta and mu = mu, so the
 accuracy is R's own. With log = TRUE the logarithm is formed inside
 dnbinom() and stays finite far into the tail.
 The mass is that of a Poisson whose rate is itself gamma distributed with
-mean \(\mu\) and shape \(\theta\), which is where the overdispersion
-comes from. As \(\theta\) grows the gamma concentrates and the mass tends
+mean \(\mu\) and shape \(\theta\), and this mixing produces the
+overdispersion. As \(\theta\) grows the gamma concentrates and the mass tends
 to the Poisson's; at \(\theta = 1\) it is the geometric."><meta property="og:description" content="Computes the negative binomial mass
 $$P(Y = y; \mu, \theta) = \dfrac{\Gamma(y+\theta)}{y!\,\Gamma(\theta)}
       \left(\dfrac{\theta}{\theta+\mu}\right)^{\theta}
@@ -19,8 +19,8 @@ by calling stats::dnbinom() at size = theta and mu = mu, so the
 accuracy is R's own. With log = TRUE the logarithm is formed inside
 dnbinom() and stays finite far into the tail.
 The mass is that of a Poisson whose rate is itself gamma distributed with
-mean \(\mu\) and shape \(\theta\), which is where the overdispersion
-comes from. As \(\theta\) grows the gamma concentrates and the mass tends
+mean \(\mu\) and shape \(\theta\), and this mixing produces the
+overdispersion. As \(\theta\) grows the gamma concentrates and the mass tends
 to the Poisson's; at \(\theta = 1\) it is the geometric."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -29,7 +29,7 @@ to the Poisson's; at \(\theta = 1\) it is the geometric."><meta property="og:ima
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +71,8 @@ by calling <code><a href="https://rdrr.io/r/stats/NegBinomial.html" class="exter
 accuracy is R's own. With <code>log = TRUE</code> the logarithm is formed inside
 <code><a href="https://rdrr.io/r/stats/NegBinomial.html" class="external-link">dnbinom()</a></code> and stays finite far into the tail.</p>
 <p>The mass is that of a Poisson whose rate is itself gamma distributed with
-mean \(\mu\) and shape \(\theta\), which is where the overdispersion
-comes from. As \(\theta\) grows the gamma concentrates and the mass tends
+mean \(\mu\) and shape \(\theta\), and this mixing produces the
+overdispersion. As \(\theta\) grows the gamma concentrates and the mass tends
 to the Poisson's; at \(\theta = 1\) it is the geometric.</p>
     </div>
 

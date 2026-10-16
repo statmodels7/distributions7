@@ -17,7 +17,7 @@ and nsim are read."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@ transformation is applied in the generic's body.</p></dd>
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
 <dd><p>One of <code>"integrate"</code>, <code>"bartlett"</code>, <code>"mc"</code> or <code>"opg"</code>, the
-strategy for the expectation. Read only when <code>expected = TRUE</code>; for a
+strategy for the expectation. It is read only when <code>expected = TRUE</code>; for a
 discrete family <code>"integrate"</code> is an exact sum over the support, not a
 quadrature.</p></dd>
 
@@ -130,7 +130,8 @@ the kernel, and <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> 
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu_mu_mu"          "mu_mu_sigma"       "mu_sigma_sigma"   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4] "sigma_sigma_sigma"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the analytic Hessian.</span></span></span>
+<span class="r-in"><span><span class="co"># The third-order entry is compared with a central difference of the</span></span></span>
+<span class="r-in"><span><span class="co"># analytic Hessian.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">d3</span><span class="op">$</span><span class="va">mu_mu_sigma</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma <span class="op">=</span> <span class="fl">0.8</span> <span class="op">+</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span> <span class="op">-</span></span></span>

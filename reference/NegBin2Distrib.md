@@ -143,7 +143,7 @@ for the limit as \\\theta\\ grows;
 [`distrib_pdf.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin2Distrib.md)
 and
 [`distrib_gradient.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin2Distrib.md)
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 
 ## Examples
 

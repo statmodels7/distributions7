@@ -96,12 +96,12 @@ and the mixed derivative
 ## Why every expectation is elementary
 
 Under the model \\u = (Y/\mu)^{\sigma}\\ is standard exponential
-whatever the parameters are. Every expectation any order needs is
+whatever the parameters are. Every expectation that any order needs is
 therefore a moment of \\u\\ against a power of \\\log u\\, and each of
 those is a derivative of \\\Gamma\\ at 2: \\\mathbb{E}\[u\] = 1\\,
 \\\mathbb{E}\[u\log u\] = 1 - \gamma\\, \\\mathbb{E}\[u(\log u)^2\] =
 (1-\gamma)^2 + \pi^2/6 - 1\\. The Gumbel family shares the substitution,
-\\\exp(-\text{Gumbel})\\ being Weibull, so
+because \\\exp(-\text{Gumbel})\\ is Weibull, so
 [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
 rests on the same three moments.
 
@@ -109,11 +109,11 @@ rests on the same three moments.
 
 With \\g_k = \Gamma(1 + k/\sigma)\\, the mean is \\\mu g_1\\ and the
 variance \\\mu^2(g_2 - g_1^2)\\; the skewness and the excess kurtosis
-follow from \\g_3\\ and \\g_4\\ and do not depend on \\\mu\\, the scale
-being a multiplier. The hazard \\f/(1-F)\\ is
+follow from \\g_3\\ and \\g_4\\ and do not depend on \\\mu\\, because
+the scale is a multiplier. The hazard \\f/(1-F)\\ is
 \\(\sigma/\mu)(y/\mu)^{\sigma-1}\\, increasing for \\\sigma \> 1\\ and
-decreasing for \\\sigma \< 1\\. That monotone hazard is why the family
-is used in survival work.
+decreasing for \\\sigma \< 1\\. The family is used in survival work
+because its hazard is monotone.
 
 Two shapes give named families: \\\sigma = 1\\ is the exponential with
 mean \\\mu\\, and \\\sigma = 2\\ is the Rayleigh distribution with scale
@@ -161,8 +161,8 @@ for another extreme-value family;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [Weibull1Distrib](https://statmodels7.github.io/distributions7/reference/Weibull1Distrib.md)
 for the class.
 

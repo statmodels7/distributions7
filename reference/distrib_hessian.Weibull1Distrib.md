@@ -8,7 +8,7 @@ z^{\sigma}\\, \$\$\dfrac{\partial^2 \ell}{\partial \mu^2} =
 \dfrac{\partial^2 \ell}{\partial \sigma^2} = -\dfrac{1}{\sigma^2} - u
 (\log z)^2,\$\$ \$\$\dfrac{\partial^2 \ell}{\partial \mu \\ \partial
 \sigma} = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).\$\$ All
-three carry the data through \\u\\, so none is free of \\y\\ and the
+three carry the data through \\u\\, so each depends on \\y\\ and the
 observed matrix differs from its expectation at every observation.
 
 ## Arguments
@@ -70,7 +70,7 @@ y <- c(0.5, 1.2, 3.0)
 th <- list(mu = 2, sigma = 1.5)
 h <- distrib_hessian(d, y, th)
 
-# The three closed forms, written out.
+# The three closed forms are written out.
 u <- (y / 2)^1.5; lz <- log(y / 2)
 all.equal(h$mu_mu, 1.5 * (1 - 2.5 * u) / 4)
 #> [1] TRUE

@@ -13,7 +13,7 @@ parameters."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,12 +100,12 @@ the two derivatives those keyed as <code><a href="dexpected_names.html">dexpecte
     <p>The components have no elementary form. The family is a location-scale family,
 so every component equals its value at \(\mu = 0\), \(\sigma = 1\) times
 \(\sigma^{-k}\), with \(k\) the number of indices on \(\mu\) or
-\(\sigma\). The value there depends on \((\alpha, \nu)\) alone and is one
+\(\sigma\). The value there depends only on \((\alpha, \nu)\) and is one
 integral over \(z\) of the observed derivatives against the density, taken
 once per distinct pair by the exp-sinh rule of <code><a href="loc_scale_expected.html">loc_scale_expected()</a></code>.</p>
-<p>The integral is exact to the rule's accuracy, and what it integrates are the
-observed derivatives of <code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>, exact in every
-parameter.</p>
+<p>The integral is exact to the accuracy of the rule, and its integrand
+consists of the observed derivatives of <code><a href="distrib_gradient.SkewTDistrib.html">distrib_gradient.SkewTDistrib()</a></code>,
+which are exact in every parameter.</p>
 <p>The tail is integrated to \(|z| = 10^{60}\), which leaves a relative
 \(10^{-60\nu}/\nu\) and is negligible for \(\nu \ge 0.3\).</p>
 <p><code>approx</code> and <code>nsim</code> are accepted for the generic's sake and ignored.</p>
@@ -113,8 +113,8 @@ parameter.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="loc_scale_expected.html">loc_scale_expected()</a></code> for the construction,
-<code><a href="distrib_hessian.SkewTDistrib.html">distrib_hessian.SkewTDistrib()</a></code> for the quantity this is the expectation
-of, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
+<code><a href="distrib_hessian.SkewTDistrib.html">distrib_hessian.SkewTDistrib()</a></code> for the quantity whose expectation this
+is, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

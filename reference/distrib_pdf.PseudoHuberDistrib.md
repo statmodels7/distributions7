@@ -75,7 +75,7 @@ d <- pseudohuber_distrib()
 y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The formula written out, with the Bessel constant.
+# The density equals the formula written out with the Bessel constant.
 D <- sqrt(2 + ((y - 0.4) / 1.2)^2)
 all.equal(distrib_pdf(d, y, th),
           exp(-D) / (2 * 1.2 * sqrt(2) * besselK(sqrt(2), 1)))

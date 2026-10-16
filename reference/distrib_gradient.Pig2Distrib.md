@@ -3,10 +3,9 @@
 Returns the exact first derivatives of the log-mass in \\(\mu,
 \alpha)\\, read off columns `d10` and `d01` of the compiled kernel of
 `pig2_gradient_cpp`. The kernel takes \\\alpha\\ as a variable of its
-own, so these are derivatives in the orthogonal coordinates directly and
-no chain rule through
-[`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
-is composed.
+own, so these are derivatives in the orthogonal coordinates directly,
+and the method does not compose a chain rule through
+[`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md).
 
 The property that gives this parametrization its name lives one order
 up: the expected value of \\\partial^2\ell/\partial\mu\partial\alpha\\
@@ -69,7 +68,8 @@ al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
 th <- list(mu = 3, alpha = al)
 g <- distrib_gradient(d, y, th)
 
-# Against numerical differentiation of the log-likelihood.
+# The score is compared with numerical differentiation of the
+# log-likelihood.
 f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], alpha = p[2]),
                                  log = TRUE))
 rbind(analytic = vapply(g, sum, 0),
@@ -78,8 +78,8 @@ rbind(analytic = vapply(g, sum, 0),
 #> analytic -6.661338e-16 0.4698132
 #> numeric   5.625652e-12 0.4698132
 
-# The two scores are uncorrelated under the model, which is what
-# orthogonality means and what pig1 does not have.
+# The two scores are uncorrelated under the model, which is orthogonality;
+# pig1 does not have this property.
 c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
   pig1 = distrib_expected_hessian(pig1_distrib(), 0,
                                   list(mu = 3, sigma = 0.8))$mu_sigma)

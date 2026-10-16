@@ -1,13 +1,13 @@
 # A Constant Parameter Vector as One Number
 
-Returns `x[1]` when `x` has several elements that are all equal and none
-missing, and `x` unchanged otherwise. A compiled kernel that sums a
-series for each observation computes it once for a scalar parameter and
-copies the result, but repeats the same sum `length(x)` times for a
-vector of equal values. A fit with no covariates on the parameters is
-this case, and at a dispersion near \\10^{-13}\\ one sum of the negative
-binomial expected information runs to millions of terms. The values
-returned by the kernel are the same either way.
+Returns `x[1]` when `x` has several elements that are all equal and all
+non-missing, and returns `x` unchanged otherwise. A compiled kernel that
+sums a series for each observation computes it once for a scalar
+parameter and copies the result, but repeats the same sum `length(x)`
+times for a vector of equal values. A fit with no covariates on the
+parameters is this case, and at a dispersion near \\10^{-13}\\ one sum
+of the negative binomial expected information runs to millions of terms.
+The values returned by the kernel are the same either way.
 
 ## Usage
 

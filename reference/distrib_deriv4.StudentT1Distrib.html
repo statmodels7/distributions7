@@ -19,7 +19,7 @@ the generic's signature and ignored."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,17 +108,18 @@ use. Defaults to <code>1L</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of fifteen numeric vectors named for the multi-index
-they carry, from <code>mu_mu_mu_mu</code> to <code>nu_nu_nu_nu</code>, each of length
+that each of them carries, from <code>mu_mu_mu_mu</code> to <code>nu_nu_nu_nu</code>, each of length
 <code>max(length(y), length(mu), length(sigma), length(nu))</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="large-degrees-of-freedom">Large degrees of freedom<a class="anchor" aria-label="anchor" href="#large-degrees-of-freedom"></a></h2>
 
 
-<p>Written like the third order, in \(z\), \(q = z^2/\nu\) and
-\(t = 1/(1+q)\), with the quantities of \(\nu\) alone on their
-asymptotic series above \(\nu = 20\): on the parameter scale all fifteen
-components stay finite to <code>.Machine$double.xmax</code>. On the link scale the
+<p>The components are written as in the third order, in \(z\),
+\(q = z^2/\nu\) and \(t = 1/(1+q)\), with the quantities of \(\nu\)
+alone on their asymptotic series above \(\nu = 20\), so on the parameter
+scale all fifteen components stay finite to <code>.Machine$double.xmax</code>. On the
+link scale the
 factors \((h')^k\) of the chain rule make some components non-finite from
 \(\nu = 10^{150}\).</p>
     </div>
@@ -149,7 +150,7 @@ factors \((h')^k\) of the chain rule make some components non-finite from
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="op">(</span><span class="va">up</span> <span class="op">-</span> <span class="va">dn</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">eps</span><span class="op">)</span>, <span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_mu_mu</span>, tolerance <span class="op">=</span> <span class="fl">1e-5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># At a degrees of freedom the log link can produce, every component is</span></span></span>
+<span class="r-in"><span><span class="co"># At a degrees of freedom that the log link can produce, every component is</span></span></span>
 <span class="r-in"><span><span class="co"># finite.</span></span></span>
 <span class="r-in"><span><span class="va">big</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, nu <span class="op">=</span> <span class="fl">1e300</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">big</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.finite</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

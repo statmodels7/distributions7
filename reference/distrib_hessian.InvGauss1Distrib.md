@@ -7,7 +7,7 @@ observation, in closed form: \$\$\ell^{(\mu\mu)} = -\dfrac{3y -
 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad \ell^{(\mu\phi)} = -\dfrac{y -
 \mu}{\phi^2\mu^3}.\$\$
 
-Neither diagonal entry is negative at every observation. The curvature
+Each diagonal entry is positive for some values of \\y\\. The curvature
 in \\\mu\\ turns positive wherever \\y \< 2\mu/3\\, and the curvature in
 \\\phi\\ is negative only where \\\phi \< 2(y-\mu)^2/(\mu^2 y)\\, so at
 \\y = \mu\\ it is \\+1/(2\phi^2)\\. An observation near the mean
@@ -92,7 +92,7 @@ h
 #> [1]  0.125  0.000 -0.250
 #> 
 
-# The three closed forms, written out.
+# The three closed forms are written out.
 all.equal(h$mu_mu, -(3 * y - 2 * 1) / (2 * 1^4))
 #> [1] TRUE
 all.equal(h$phi_phi, (2 - 2 * (y - 1)^2 / (1^2 * y)) / (2 * 2^3))
@@ -100,7 +100,8 @@ all.equal(h$phi_phi, (2 - 2 * (y - 1)^2 / (1^2 * y)) / (2 * 2^3))
 all.equal(h$mu_phi, -(y - 1) / (2^2 * 1^3))
 #> [1] TRUE
 
-# Positive curvature in mu below 2 mu/3, and in phi at y = mu.
+# The curvature is positive in mu where y is below 2 mu/3, and in phi at
+# y = mu.
 c(mu_mu_at_half = distrib_hessian(d, 0.5, th)$mu_mu,
   phi_phi_at_mu = distrib_hessian(d, 1, th)$phi_phi,
   one_over_2phi2 = 1 / (2 * 2^2))

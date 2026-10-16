@@ -10,11 +10,11 @@ at `mean = mu` and `dispersion = phi`. Both tails are available exactly,
 and `log.p = TRUE` returns a logarithm that stays finite where the
 probability itself underflows.
 
-The exponential factor is the reason this expression is evaluated on the
-log scale rather than as written: \\e^{2/(\phi\mu)}\\ overflows at
-ordinary settings, at \\\mu = 0.01\\ and \\\phi = 0.1\\ the exponent
-already being 2000, and it multiplies a normal tail that underflows by
-the same amount.
+This expression is evaluated on the log scale rather than as written,
+because the exponential factor \\e^{2/(\phi\mu)}\\ overflows at ordinary
+settings and multiplies a normal tail that underflows by the same
+amount. At \\\mu = 0.01\\ and \\\phi = 0.1\\, for example, the exponent
+is 2000.
 
 ## Arguments
 
@@ -78,7 +78,7 @@ all.equal(distrib_cdf(d, q, th),
           statmod::pinvgauss(q, mean = 1, dispersion = 2))
 #> [1] TRUE
 
-# The closed form above, evaluated directly at these safe values.
+# The closed form above is evaluated directly at these safe values.
 a <- sqrt(1 / (2 * q)) * (q / 1 - 1)
 b <- -sqrt(1 / (2 * q)) * (q / 1 + 1)
 pnorm(a) + exp(2 / (2 * 1)) * pnorm(b)

@@ -15,7 +15,7 @@ information. The information in \\\kappa\\ is \\A'(\kappa)\\ and
 \\A'(\kappa)\\\kappa'(\rho)\\^2 = 1/A'(\kappa)\\, the reciprocal of the
 information in \\\kappa\\. The two parameters remain orthogonal.
 
-`approx` and `nsim` are ignored, the expectation being exact.
+`approx` and `nsim` are ignored because the expectation is exact.
 
 ## Arguments
 
@@ -26,8 +26,8 @@ information in \\\kappa\\. The two parameters remain orthogonal.
 
 - y:
 
-  A numeric vector of angles. Only its length is read, the expectation
-  not depending on the data; the values are ignored.
+  A numeric vector of angles. Only its length is read, because the
+  expectation does not depend on the data; the values are ignored.
 
 - theta:
 
@@ -75,7 +75,7 @@ concentration and \\A(\kappa) = I_1(\kappa)/I_0(\kappa)\\.
 ## See also
 
 [`distrib_hessian.VonMises2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMises2Distrib.md)
-for the quantity this is the expectation of,
+for the quantity of which this is the expectation,
 [`distrib_expected_hessian.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises1Distrib.md)
 for the same quantity in the concentration, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)

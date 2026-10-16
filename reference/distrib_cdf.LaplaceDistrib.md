@@ -10,10 +10,10 @@ tail at the standardized residual \\r = (q-\mu)/\sigma\\: the tail on
 the far side of the location is \\\log(1/2) - \|r\|\\, and the tail on
 the near side is \\\log(1 - e^{-\|r\|}/2)\\, computed with
 [`log1p()`](https://rdrr.io/r/base/Log.html). The requested tail is
-returned on the log scale or exponentiated, so neither
-`lower.tail = FALSE` nor `log.p = TRUE` subtracts from one, and a tail
-probability far below machine epsilon, or its logarithm, is returned
-accurately. The helper is
+returned on the log scale or exponentiated, so the method does not
+subtract from one when `lower.tail = FALSE` or `log.p = TRUE`, and a
+tail probability far below machine epsilon, or its logarithm, is
+returned accurately. The helper is
 [`laplace_cdf_tails()`](https://statmodels7.github.io/distributions7/reference/laplace_cdf_tails.md).
 
 ## Arguments
@@ -68,7 +68,7 @@ for the generic.
 d <- laplace_distrib()
 th <- list(mu = 0.4, sigma = 1.5)
 
-# One half at the location, the two arms meeting there.
+# The value is one half at the location, where the two arms meet.
 distrib_cdf(d, 0.4, th)
 #> [1] 0.5
 
@@ -79,7 +79,7 @@ all.equal(distrib_cdf(d, q, th),
                  1 - 0.5 * exp(-(q - 0.4) / 1.5)))
 #> [1] TRUE
 
-# Symmetric: F(mu - a) + F(mu + a) = 1.
+# The distribution is symmetric: F(mu - a) + F(mu + a) = 1.
 distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 #> [1] 1
 

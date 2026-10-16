@@ -3,8 +3,8 @@
 Computes the Poisson probability mass \$\$P(Y = y; \mu) =
 \dfrac{e^{-\mu}\mu^{y}}{y!}, \qquad y = 0, 1, 2, \dots\$\$ by calling
 [`stats::dpois()`](https://rdrr.io/r/stats/Poisson.html). The `pdf` in
-the generic's name is the density with respect to counting measure, so
-what this returns is a probability and is at most 1.
+the generic's name denotes the density with respect to counting measure,
+so the returned value is a probability and is at most 1.
 
 ## Arguments
 

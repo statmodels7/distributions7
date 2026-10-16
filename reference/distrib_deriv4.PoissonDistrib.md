@@ -77,7 +77,7 @@ d <- poisson_distrib()
 y <- c(0, 2, 7)
 th <- list(mu = 3)
 
-# The closed form, written out.
+# The fourth derivative is compared with its closed form.
 all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu, -6 * y / 3^4)
 #> [1] TRUE
 

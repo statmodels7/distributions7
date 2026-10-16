@@ -7,9 +7,9 @@ returns \\-R(\nu)\\ r/(\sigma^2 D)\\ and
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
 returns \\-R(\nu)\\ \nu/(\sigma^2 D^3)\\;
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-returns the \\\mu\\ row of the Hessian with its sign changed; the third
-and fourth response derivatives are the pure-\\\mu\\ components of the
-third and fourth parameter derivatives, with the sign \\(-1)^k\\. The
+returns the negative of the \\\mu\\ row of the Hessian; the third and
+fourth response derivatives are the pure-\\\mu\\ components of the third
+and fourth parameter derivatives, with the sign \\(-1)^k\\. The
 derivatives of the response derivatives in the parameters are the
 location-scale ones of
 [`partial_loc_scale_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)

@@ -1,9 +1,9 @@
 # The Skew Normal's Lower Tail on the Log Scale
 
-Returns \\\log\\\Phi(z) - 2T(z, \alpha)\\\\ with \\T\\ Owen's function,
-the shape clamped to \\10^{50}\\ in absolute value, past which \\T(z,
-\alpha)\\ equals its limit \\\Phi(-\|z\|)/2\\ to double precision. A
-value above one half is formed through
+Returns \\\log\\\Phi(z) - 2T(z, \alpha)\\\\ with \\T\\ Owen's function.
+The shape is clamped to \\10^{50}\\ in absolute value, because beyond
+that value \\T(z, \alpha)\\ equals its limit \\\Phi(-\|z\|)/2\\ to
+double precision. A value above one half is formed through
 [`log1p()`](https://rdrr.io/r/base/Log.html) of the other tail.
 
 ## Usage

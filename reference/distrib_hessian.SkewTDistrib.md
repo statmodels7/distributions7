@@ -85,8 +85,8 @@ names(h)
 #>  [1] "mu_mu"       "sigma_sigma" "alpha_alpha" "nu_nu"       "mu_sigma"   
 #>  [6] "mu_alpha"    "mu_nu"       "sigma_alpha" "sigma_nu"    "alpha_nu"   
 
-# Against numerical differentiation of the log-likelihood: one component
-# of the closed-form block, and two involving nu.
+# Three components are compared with numerical differentiation of the
+# log-likelihood: one of the closed-form block, and two involving nu.
 f <- function(v) sum(distrib_pdf(d, y, list(mu = v[1], sigma = v[2],
                                             alpha = v[3], nu = v[4]),
                                  log = TRUE))

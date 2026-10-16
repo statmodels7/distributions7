@@ -1,4 +1,4 @@
-# The Pieces a Skew t Evaluates From
+# The Pieces from Which a Skew t Is Evaluated
 
 Assembles the standardized variable, the argument of the tilting
 distribution function and the seven scalar functions \\A\\, \\A'\\,
@@ -54,8 +54,8 @@ the quotient.
 their ratio stays finite. The direct quotient is `NaN` there, in
 particular when the degrees of freedom are large and the \\t\\ tail is
 close to the Gaussian one. Where \\\|z\| \> 10^{20}\\ the functions are
-written in \\\sqrt{s}\\, \\z/\sqrt{s}\\ and \\\nu/s\\, so that no power
-of \\s\\ overflows.
+written in \\\sqrt{s}\\, \\z/\sqrt{s}\\ and \\\nu/s\\, so that the
+powers of \\s\\ do not overflow.
 
 This function does not differentiate in \\\nu\\. The derivative kernels
 evaluate the same quantities in bounded variables; see

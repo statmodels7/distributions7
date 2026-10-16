@@ -31,7 +31,7 @@ distrib checks them, and the constructor adds no check of its own."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -209,7 +209,8 @@ and
 <span class="r-out co"><span class="r-pr">#&gt;</span>     variance pi_sq_over_3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     7.402203     7.402203 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Symmetric, so the mean is the median; the excess kurtosis is 6/5.</span></span></span>
+<span class="r-in"><span><span class="co"># The family is symmetric, so the mean is the median; the excess kurtosis</span></span></span>
+<span class="r-in"><span><span class="co"># is 6/5.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, median <span class="op">=</span> <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.5</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  excess_kurtosis <span class="op">=</span> <span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            mean          median excess_kurtosis </span>

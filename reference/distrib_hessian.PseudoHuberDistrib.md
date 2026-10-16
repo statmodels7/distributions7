@@ -84,7 +84,7 @@ names(h)
 #> [1] "mu_mu"       "sigma_sigma" "nu_nu"       "mu_sigma"    "mu_nu"      
 #> [6] "sigma_nu"   
 
-# The location entry, written out, and its sign.
+# The location entry equals its formula written out, and it is negative.
 r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 all.equal(h$mu_mu, -2 / (1.2^2 * D^3))
 #> [1] TRUE

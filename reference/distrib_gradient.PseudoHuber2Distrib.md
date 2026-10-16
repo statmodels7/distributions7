@@ -1,8 +1,8 @@
 # Pseudo-Huber Derivatives in the Parameters, Standard-Deviation Parametrization
 
 Return the derivatives of the log-density in \\(\mu, \sigma, \nu)\\ of
-orders one to five, in closed form, each order by its own compiled
-kernel.
+orders one to five, in closed form; a compiled kernel of its own
+computes each order.
 
 ## Arguments
 
@@ -85,7 +85,7 @@ d <- pseudohuber2_distrib()
 th <- list(mu = 0.4, sigma = 1.5, nu = 2)
 y <- c(-1, 0.5, 3)
 g <- distrib_gradient(d, y, th)
-# against a central difference in sigma
+# The score in sigma is compared with a central difference.
 h <- 1e-6
 up <- distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5 + h, nu = 2), log = TRUE)
 dn <- distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5 - h, nu = 2), log = TRUE)

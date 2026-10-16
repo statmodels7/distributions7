@@ -13,10 +13,10 @@ double precision, and the draws are uniform on \\\[-\pi, \pi)\\.
 The accepted angles are drawn about zero and then shifted by \\\mu\\ and
 wrapped back into \\\[-\pi, \pi)\\, so every draw lies in the declared
 support. With a scalar `kappa` the envelope's constants are built once
-and the loop over-proposes and repeats until `n` draws have been
-accepted. With a `kappa` that varies by observation each draw has its
-own envelope, and the loop proposes once for every draw not yet
-accepted, so that draw `i` is generated at `kappa[i]` and shifted by
+and the loop proposes more candidates than needed and repeats until `n`
+draws have been accepted. With a `kappa` that varies by observation each
+draw has its own envelope, and the loop proposes once for every draw not
+yet accepted, so that draw `i` is generated at `kappa[i]` and shifted by
 `mu[i]`. Either way the number of uniform variates consumed depends on
 the draws.
 
@@ -34,8 +34,9 @@ the draws.
 - theta:
 
   A named list with components `mu` and `kappa`, each a numeric vector
-  of length 1 or `n`, recycled to `n` otherwise as by the generic. `mu`
-  must lie in \\(-\pi, \pi)\\ and `kappa` be strictly positive.
+  of length 1 or `n`. As in the generic, a component of length 1 is
+  recycled to `n`. `mu` must lie in \\(-\pi, \pi)\\ and `kappa` be
+  strictly positive.
 
 - ...:
 

@@ -47,8 +47,8 @@ wrapped around the circle.
 Only the ratios \\I_j/I_0\\ are needed, and
 [`numericals7::bessel_i_ratios()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratios.html)
 gives them by a backward recurrence whose loop runs over the series
-index and not over the data. The series is cheap for that reason: \\n\\
-quadratures become a few dozen vectorized steps.
+index and not over the data. The series is cheap for that reason: the
+\\n\\ quadratures are replaced by a few dozen vectorized steps.
 
 ## Number of terms
 

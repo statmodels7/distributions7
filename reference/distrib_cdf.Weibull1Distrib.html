@@ -4,16 +4,16 @@ $$F(q; \mu, \sigma) = 1 - \exp\left\{-(q/\mu)^{\sigma}\right\}$$
 by calling stats::pweibull(). The survival function is elementary,
 \(1 - F(q) = \exp\{-(q/\mu)^{\sigma}\}\), so lower.tail = FALSE with
 log.p = TRUE returns \(-(q/\mu)^{\sigma}\) exactly and never forms the
-difference. That combination is what a right-censored observation far out in
-the tail contributes to a log-likelihood. With lower.tail = TRUE and
+difference. A right-censored observation far out in the tail contributes this
+value to a log-likelihood. With lower.tail = TRUE and
 log.p = TRUE the value is taken from \(\log H = \sigma\log(q/\mu)\)
 (weibull_log_lower()), so that it stays finite where \(H\) underflows."><meta property="og:description" content="Computes the Weibull distribution function
 $$F(q; \mu, \sigma) = 1 - \exp\left\{-(q/\mu)^{\sigma}\right\}$$
 by calling stats::pweibull(). The survival function is elementary,
 \(1 - F(q) = \exp\{-(q/\mu)^{\sigma}\}\), so lower.tail = FALSE with
 log.p = TRUE returns \(-(q/\mu)^{\sigma}\) exactly and never forms the
-difference. That combination is what a right-censored observation far out in
-the tail contributes to a log-likelihood. With lower.tail = TRUE and
+difference. A right-censored observation far out in the tail contributes this
+value to a log-likelihood. With lower.tail = TRUE and
 log.p = TRUE the value is taken from \(\log H = \sigma\log(q/\mu)\)
 (weibull_log_lower()), so that it stays finite where \(H\) underflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@ log.p = TRUE the value is taken from \(\log H = \sigma\log(q/\mu)\)
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,8 @@ $$F(q; \mu, \sigma) = 1 - \exp\left\{-(q/\mu)^{\sigma}\right\}$$
 by calling <code><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">stats::pweibull()</a></code>. The survival function is elementary,
 \(1 - F(q) = \exp\{-(q/\mu)^{\sigma}\}\), so <code>lower.tail = FALSE</code> with
 <code>log.p = TRUE</code> returns \(-(q/\mu)^{\sigma}\) exactly and never forms the
-difference. That combination is what a right-censored observation far out in
-the tail contributes to a log-likelihood. With <code>lower.tail = TRUE</code> and
+difference. A right-censored observation far out in the tail contributes this
+value to a log-likelihood. With <code>lower.tail = TRUE</code> and
 <code>log.p = TRUE</code> the value is taken from \(\log H = \sigma\log(q/\mu)\)
 (<code><a href="weibull_log_lower.html">weibull_log_lower()</a></code>), so that it stays finite where \(H\) underflows.</p>
     </div>

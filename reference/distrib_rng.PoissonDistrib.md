@@ -3,8 +3,8 @@
 Draws `n` independent Poisson counts by calling
 [`stats::rpois()`](https://rdrr.io/r/stats/Poisson.html), so the draws
 come from R's own generator and depend on `.Random.seed` in the usual
-way. The cumulative-table fallback the discrete base class supplies is
-bypassed.
+way. The cumulative-table fallback that the discrete base class supplies
+is bypassed.
 
 ## Arguments
 
@@ -51,7 +51,7 @@ set.seed(2)
 identical(a, rpois(5, lambda = 3))
 #> [1] TRUE
 
-# The sample mean and variance both estimate mu, this family being
+# The sample mean and variance both estimate mu because this family is
 # equidispersed.
 set.seed(4)
 z <- distrib_rng(d, 2e4, list(mu = 4.2))

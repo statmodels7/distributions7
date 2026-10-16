@@ -10,7 +10,8 @@ and \(R\) are of size \(|t|\)), and the derivatives of
 \(\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)\), with \(L\) the
 logarithm of the Mills ratio, whose derivatives are, with alternating
 signs, the cumulants of the density proportional to \(e^{ts - s^2/2}\)
-on \(s &amp;gt; 0\); no difference of large numbers is formed.
+on \(s &amp;gt; 0\), so that the kernel never forms a difference of large
+numbers.
 With expected = TRUE the value is an expectation, computed numerically by
 expected_derivative() from the same kind of integrals as the expected
 information. The arguments approx and nsim are used only in this case."><meta property="og:description" content="Computes the ten third derivatives of the log-density in closed form, in a
@@ -24,7 +25,8 @@ and \(R\) are of size \(|t|\)), and the derivatives of
 \(\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)\), with \(L\) the
 logarithm of the Mills ratio, whose derivatives are, with alternating
 signs, the cumulants of the density proportional to \(e^{ts - s^2/2}\)
-on \(s &amp;gt; 0\); no difference of large numbers is formed.
+on \(s &amp;gt; 0\), so that the kernel never forms a difference of large
+numbers.
 With expected = TRUE the value is an expectation, computed numerically by
 expected_derivative() from the same kind of integrals as the expected
 information. The arguments approx and nsim are used only in this case."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -35,7 +37,7 @@ information. The arguments approx and nsim are used only in this case."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +81,8 @@ and \(R\) are of size \(|t|\)), and the derivatives of
 \(\log\Phi(t) = -t^2/2 - \log(2\pi)/2 + L(-t)\), with \(L\) the
 logarithm of the Mills ratio, whose derivatives are, with alternating
 signs, the cumulants of the density proportional to \(e^{ts - s^2/2}\)
-on \(s &gt; 0\); no difference of large numbers is formed.</p>
+on \(s &gt; 0\), so that the kernel never forms a difference of large
+numbers.</p>
 <p>With <code>expected = TRUE</code> the value is an expectation, computed numerically by
 <code><a href="expected_derivative.html">expected_derivative()</a></code> from the same kind of integrals as the expected
 information. The arguments <code>approx</code> and <code>nsim</code> are used only in this case.</p>
@@ -96,8 +99,8 @@ information. The arguments <code>approx</code> and <code>nsim</code> are used on
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric vector of observations. With <code>expected = TRUE</code> its values
-are ignored and only its length matters, the result being one expectation
-repeated.</p></dd>
+are ignored and only its length matters, and the result is one
+expectation repeated.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -119,13 +122,15 @@ returns the parameter scale.</p></dd>
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
 <dd><p>One of <code>"integrate"</code>, <code>"bartlett"</code>, <code>"mc"</code> or <code>"opg"</code>, the
-strategy for the expectation. Read only when <code>expected = TRUE</code>; the first
-is the default and quadratures the observed kernel against the density.</p></dd>
+strategy for the expectation. It is read only when <code>expected = TRUE</code>; the first
+is the default and integrates the observed kernel against the density by
+quadrature.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
 <dd><p>A single positive integer, the Monte Carlo sample size used when
-<code>approx = "mc"</code>. Ignored by every other strategy. Defaults to <code>10000</code>.</p></dd>
+<code>approx = "mc"</code>. The other strategies do not read it. Defaults to
+<code>10000</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -171,7 +176,7 @@ ratio and \(\ell\) the log-density of one observation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "sigma_sigma_sigma" "sigma_sigma_alpha" "sigma_alpha_alpha"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10] "alpha_alpha_alpha"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the analytic Hessian.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is compared with a central difference of the analytic Hessian.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">d3</span><span class="op">$</span><span class="va">mu_mu_alpha</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span> <span class="op">+</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span> <span class="op">-</span></span></span>

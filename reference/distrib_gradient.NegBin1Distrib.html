@@ -9,7 +9,7 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.$$
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count. These are the
-formulas the kernel evaluates for \(\theta \ge 1\)."><meta property="og:description" content="Computes the first derivatives of the NB1 log-mass with respect to
+formulas that the kernel evaluates for \(\theta \ge 1\)."><meta property="og:description" content="Computes the first derivatives of the NB1 log-mass with respect to
 \(\mu\) and \(\theta\), one value per observation, in closed form. Both
 come from the chain rule through the size \(r = \mu/\theta\). Writing
 \(P = \psi(y+r) - \psi(r) - \log(1+\theta)\) with \(\psi\) the digamma
@@ -19,7 +19,7 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.$$
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count. These are the
-formulas the kernel evaluates for \(\theta \ge 1\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+formulas that the kernel evaluates for \(\theta \ge 1\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +27,7 @@ formulas the kernel evaluates for \(\theta \ge 1\)."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
         - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.$$
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count. These are the
-formulas the kernel evaluates for \(\theta \ge 1\).</p>
+formulas that the kernel evaluates for \(\theta \ge 1\).</p>
     </div>
 
 
@@ -126,9 +126,9 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\mu}
         - \dfrac{\theta}{\mu}B + \theta q, \qquad
       \dfrac{\partial \ell}{\partial \theta} = B - \dfrac{y-\mu}{1+\theta}
         - \mu q,$$
-with \(q\) from its power series below \(\theta = 1/4\). No term of
-order \(\mu/\theta^2\) is formed, so both components keep their accuracy
-as \(\theta\) goes to zero, where the dispersion component tends to
+with \(q\) from its power series below \(\theta = 1/4\). The kernel does
+not form any term of order \(\mu/\theta^2\), so both components keep their
+accuracy as \(\theta\) goes to zero, where the dispersion component tends to
 $$\lim_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
       = \dfrac{(y-\mu)^2 - y}{2\mu}.$$
 The cost is \(y\) terms per observation in place of a fixed number of
@@ -163,7 +163,7 @@ generic.</p></div>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, theta <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two closed forms, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The two closed forms are written out below.</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fl">4</span> <span class="op">/</span> <span class="fl">4</span></span></span>
 <span class="r-in"><span><span class="va">P</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">y</span> <span class="op">+</span> <span class="va">r</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>, <span class="va">P</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span></span></span>

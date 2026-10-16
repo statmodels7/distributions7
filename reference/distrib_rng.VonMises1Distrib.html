@@ -11,7 +11,8 @@ double precision, and the draws are uniform on \([-\pi, \pi)\).
 The accepted angles are drawn about zero and then shifted by \(\mu\) and
 wrapped back into \([-\pi, \pi)\), so every draw lies in the declared
 support. With a scalar kappa the envelope's constants are built once and
-the loop over-proposes and repeats until n draws have been accepted. With
+the loop proposes more candidates than needed and repeats until n draws
+have been accepted. With
 a kappa that varies by observation each draw has its own envelope, and the
 loop proposes once for every draw not yet accepted, so that draw i is
 generated at kappa[i] and shifted by mu[i]. Either way the number of
@@ -27,7 +28,8 @@ double precision, and the draws are uniform on \([-\pi, \pi)\).
 The accepted angles are drawn about zero and then shifted by \(\mu\) and
 wrapped back into \([-\pi, \pi)\), so every draw lies in the declared
 support. With a scalar kappa the envelope's constants are built once and
-the loop over-proposes and repeats until n draws have been accepted. With
+the loop proposes more candidates than needed and repeats until n draws
+have been accepted. With
 a kappa that varies by observation each draw has its own envelope, and the
 loop proposes once for every draw not yet accepted, so that draw i is
 generated at kappa[i] and shifted by mu[i]. Either way the number of
@@ -39,7 +41,7 @@ uniform variates consumed depends on the draws."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +86,8 @@ double precision, and the draws are uniform on \([-\pi, \pi)\).</p>
 <p>The accepted angles are drawn about zero and then shifted by \(\mu\) and
 wrapped back into \([-\pi, \pi)\), so every draw lies in the declared
 support. With a scalar <code>kappa</code> the envelope's constants are built once and
-the loop over-proposes and repeats until <code>n</code> draws have been accepted. With
+the loop proposes more candidates than needed and repeats until <code>n</code> draws
+have been accepted. With
 a <code>kappa</code> that varies by observation each draw has its own envelope, and the
 loop proposes once for every draw not yet accepted, so that draw <code>i</code> is
 generated at <code>kappa[i]</code> and shifted by <code>mu[i]</code>. Either way the number of
@@ -106,8 +109,8 @@ uniform variates consumed depends on the draws.</p>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list with components <code>mu</code> and <code>kappa</code>, each a numeric
-vector of length 1 or <code>n</code>, recycled to <code>n</code> otherwise as by the generic.
-<code>mu</code> must lie in \((-\pi, \pi)\) and <code>kappa</code> be strictly positive.</p></dd>
+vector of length 1 or <code>n</code>. As in the generic, a component of length 1 is
+recycled to <code>n</code>. <code>mu</code> must lie in \((-\pi, \pi)\) and <code>kappa</code> be strictly positive.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

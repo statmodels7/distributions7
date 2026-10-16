@@ -41,7 +41,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -162,7 +162,7 @@ expectation this is, <code><a href="fisher_scoring.html">fisher_scoring()</a></c
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A single number, -1/mu.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is a single number, -1/mu.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">7</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.3333333</span>
 <span class="r-in"><span><span class="op">-</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span></span></span>
@@ -177,7 +177,7 @@ expectation this is, <code><a href="fisher_scoring.html">fisher_scoring()</a></c
 <span class="r-out co"><span class="r-pr">#&gt;</span> observed   -3   -3   -3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected   -3   -3   -3</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># It is the variance of the score, this family being regular.</span></span></span>
+<span class="r-in"><span><span class="co"># It is the variance of the score because this family is regular.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>var_of_score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span></span>

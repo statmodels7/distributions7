@@ -10,9 +10,10 @@ The method computes the logarithm of each tail at the standardized
 residual \(r = (q-\mu)/\sigma\): the tail on the far side of the
 location is \(\log(1/2) - |r|\), and the tail on the near side is
 \(\log(1 - e^{-|r|}/2)\), computed with log1p(). The requested tail is
-returned on the log scale or exponentiated, so neither lower.tail = FALSE
-nor log.p = TRUE subtracts from one, and a tail probability far below
-machine epsilon, or its logarithm, is returned accurately. The helper is
+returned on the log scale or exponentiated, so the method does not subtract
+from one when lower.tail = FALSE or log.p = TRUE, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately. The helper is
 laplace_cdf_tails()."><meta property="og:description" content="Computes the Laplace distribution function, which is one exponential on each
 side of the location:
 $$F(q; \mu, \sigma) = \begin{cases}
@@ -24,9 +25,10 @@ The method computes the logarithm of each tail at the standardized
 residual \(r = (q-\mu)/\sigma\): the tail on the far side of the
 location is \(\log(1/2) - |r|\), and the tail on the near side is
 \(\log(1 - e^{-|r|}/2)\), computed with log1p(). The requested tail is
-returned on the log scale or exponentiated, so neither lower.tail = FALSE
-nor log.p = TRUE subtracts from one, and a tail probability far below
-machine epsilon, or its logarithm, is returned accurately. The helper is
+returned on the log scale or exponentiated, so the method does not subtract
+from one when lower.tail = FALSE or log.p = TRUE, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately. The helper is
 laplace_cdf_tails()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -35,7 +37,7 @@ laplace_cdf_tails()."><meta property="og:image" content="https://statmodels7.git
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,9 +81,10 @@ The method computes the logarithm of each tail at the standardized
 residual \(r = (q-\mu)/\sigma\): the tail on the far side of the
 location is \(\log(1/2) - |r|\), and the tail on the near side is
 \(\log(1 - e^{-|r|}/2)\), computed with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p()</a></code>. The requested tail is
-returned on the log scale or exponentiated, so neither <code>lower.tail = FALSE</code>
-nor <code>log.p = TRUE</code> subtracts from one, and a tail probability far below
-machine epsilon, or its logarithm, is returned accurately. The helper is
+returned on the log scale or exponentiated, so the method does not subtract
+from one when <code>lower.tail = FALSE</code> or <code>log.p = TRUE</code>, and a tail
+probability far below machine epsilon, or its logarithm, is returned
+accurately. The helper is
 <code><a href="laplace_cdf_tails.html">laplace_cdf_tails()</a></code>.</p>
     </div>
 
@@ -137,7 +140,7 @@ the generic.</p></div>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># One half at the location, the two arms meeting there.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is one half at the location, where the two arms meet.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
 <span class="r-in"><span></span></span>
@@ -148,7 +151,7 @@ the generic.</p></div>
 <span class="r-in"><span>                 <span class="fl">1</span> <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">q</span> <span class="op">-</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Symmetric: F(mu - a) + F(mu + a) = 1.</span></span></span>
+<span class="r-in"><span><span class="co"># The distribution is symmetric: F(mu - a) + F(mu + a) = 1.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">-</span> <span class="fl">2</span>, <span class="va">th</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">+</span> <span class="fl">2</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>

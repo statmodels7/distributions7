@@ -170,7 +170,8 @@ to build one;
 for the same law in Azzalini's centered parametrization, whose
 information is not singular at symmetry;
 [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md),
-which adds degrees of freedom and reaches a skewness this family cannot;
+which adds degrees of freedom and reaches a skewness that this family
+cannot reach;
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 for the case \\\alpha = 0\\.
 

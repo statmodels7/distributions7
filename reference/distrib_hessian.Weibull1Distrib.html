@@ -10,7 +10,7 @@ $$\dfrac{\partial^2 \ell}{\partial \mu^2}
         = -\dfrac{1}{\sigma^2} - u (\log z)^2,$$
 $$\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).$$
-All three carry the data through \(u\), so none is free of \(y\) and the
+All three carry the data through \(u\), so each depends on \(y\) and the
 observed matrix differs from its expectation at every observation."><meta property="og:description" content="Computes the three distinct second derivatives of the Weibull log-density
 with respect to the scale \(\mu\) and the shape \(\sigma\), one value
 per observation, in closed form. With \(z = y/\mu\) and
@@ -22,7 +22,7 @@ $$\dfrac{\partial^2 \ell}{\partial \mu^2}
         = -\dfrac{1}{\sigma^2} - u (\log z)^2,$$
 $$\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).$$
-All three carry the data through \(u\), so none is free of \(y\) and the
+All three carry the data through \(u\), so each depends on \(y\) and the
 observed matrix differs from its expectation at every observation."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -31,7 +31,7 @@ observed matrix differs from its expectation at every observation."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@ $$\dfrac{\partial^2 \ell}{\partial \mu^2}
         = -\dfrac{1}{\sigma^2} - u (\log z)^2,$$
 $$\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).$$
-All three carry the data through \(u\), so none is free of \(y\) and the
+All three carry the data through \(u\), so each depends on \(y\) and the
 observed matrix differs from its expectation at every observation.</p>
     </div>
 
@@ -135,7 +135,7 @@ quantity, <code><a href="distrib_deriv3.Weibull1Distrib.html">distrib_deriv3.Wei
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three closed forms, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The three closed forms are written out.</span></span></span>
 <span class="r-in"><span><span class="va">u</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">1.5</span>; <span class="va">lz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span>, <span class="fl">1.5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">2.5</span> <span class="op">*</span> <span class="va">u</span><span class="op">)</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

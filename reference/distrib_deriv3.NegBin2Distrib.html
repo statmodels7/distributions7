@@ -20,7 +20,7 @@ one needs \(\mathbb{E}[\psi_2(Y+\theta)]\), which has no closed form and
 is summed over the support with the mass recurrence and the stopping rule
 of distrib_expected_hessian.NegBin2Distrib(). approx and nsim are
 ignored either way.
-The cancellation of distrib_gradient.NegBin2Distrib() is performed
+The kernel performs the cancellation of distrib_gradient.NegBin2Distrib()
 symbolically at this order too: the observed pure dispersion component is
 a sum over \(j &amp;lt; y\) when \(\theta &amp;gt; 100\max(y, 1)\), and the expected
 one is a single merged sum, so both keep their accuracy at large
@@ -45,7 +45,7 @@ one needs \(\mathbb{E}[\psi_2(Y+\theta)]\), which has no closed form and
 is summed over the support with the mass recurrence and the stopping rule
 of distrib_expected_hessian.NegBin2Distrib(). approx and nsim are
 ignored either way.
-The cancellation of distrib_gradient.NegBin2Distrib() is performed
+The kernel performs the cancellation of distrib_gradient.NegBin2Distrib()
 symbolically at this order too: the observed pure dispersion component is
 a sum over \(j &amp;lt; y\) when \(\theta &amp;gt; 100\max(y, 1)\), and the expected
 one is a single merged sum, so both keep their accuracy at large
@@ -57,7 +57,7 @@ one is a single merged sum, so both keep their accuracy at large
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -111,7 +111,7 @@ one needs \(\mathbb{E}[\psi_2(Y+\theta)]\), which has no closed form and
 is summed over the support with the mass recurrence and the stopping rule
 of <code><a href="distrib_expected_hessian.NegBin2Distrib.html">distrib_expected_hessian.NegBin2Distrib()</a></code>. <code>approx</code> and <code>nsim</code> are
 ignored either way.</p>
-<p>The cancellation of <code><a href="distrib_gradient.NegBin2Distrib.html">distrib_gradient.NegBin2Distrib()</a></code> is performed
+<p>The kernel performs the cancellation of <code><a href="distrib_gradient.NegBin2Distrib.html">distrib_gradient.NegBin2Distrib()</a></code>
 symbolically at this order too: the observed pure dispersion component is
 a sum over \(j &lt; y\) when \(\theta &gt; 100\max(y, 1)\), and the expected
 one is a single merged sum, so both keep their accuracy at large
@@ -149,7 +149,8 @@ model are returned in place of the observed values. Defaults to <code>FALSE</cod
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, the expected values being closed form or exact sums.</p></dd>
+<dd><p>Ignored, because the expected values are closed form or exact
+sums.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>

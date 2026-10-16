@@ -6,20 +6,21 @@ compiled kernel. Every component but the pure-\\\nu\\ one is a rational
 function of \\r = y - \mu\\, \\\sigma\\ and \\D = \sqrt{\nu +
 (r/\sigma)^2}\\; Bessel functions enter through \\\nu\\ alone. The
 derivatives in \\\nu\\ of \\B(\nu) = \log\\\sqrt\nu K_1(\sqrt\nu)\\\\
-come from three routes, each where it keeps its digits: below \\\nu =
-1\\ the series of \\K_1\\ and \\K_2\\ at the origin; for \\1 \le \nu \<
-400\\ the cumulants of \\1/(4T)\\ under the generalized inverse Gaussian
-law of the integral representation of \\K_1\\, by the trapezoidal rule
-in \\\log t\\; and from \\\nu = 400\\ the asymptotic series of \\K_1\\,
-differentiated term by term in powers of \\\nu^{-1/2}\\. The same routes
-serve the score, the Hessian and the fourth order.
+come from three routes, and each is used in the range where it keeps its
+digits: below \\\nu = 1\\ the series of \\K_1\\ and \\K_2\\ at the
+origin; for \\1 \le \nu \< 400\\ the cumulants of \\1/(4T)\\ under the
+generalized inverse Gaussian law of the integral representation of
+\\K_1\\, by the trapezoidal rule in \\\log t\\; and from \\\nu = 400\\
+the asymptotic series of \\K_1\\, differentiated term by term in powers
+of \\\nu^{-1/2}\\. The same routes serve the score, the Hessian and the
+fourth order.
 
 The expected third derivatives have no closed form. With
 `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
 which integrates the observed derivatives against the density by the
-strategy `approx` names. That is the one place on this page where
-`approx` and `nsim` are read.
+strategy specified in `approx`. The arguments `approx` and `nsim` are
+read only in this case.
 
 ## Arguments
 
@@ -54,12 +55,12 @@ strategy `approx` names. That is the one place on this page where
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 
@@ -95,7 +96,7 @@ names(d3)
 #> [10] "nu_nu_nu"         
 
 # A central difference of the Hessian reproduces the pure-location
-# component, which is what says the closed form is the right one.
+# component, which confirms the closed form.
 eps <- 1e-5
 up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu
 dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu
@@ -107,9 +108,9 @@ all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
        function(v) v[1], numeric(1))
 #>          mu_mu_mu       mu_mu_sigma          mu_mu_nu    mu_sigma_sigma 
-#>      3.556183e-17      3.055008e-01      2.612955e-02     -4.163336e-17 
+#>      3.556183e-17      3.055008e-01      2.612955e-02      0.000000e+00 
 #>       mu_sigma_nu          mu_nu_nu sigma_sigma_sigma    sigma_sigma_nu 
-#>     -1.951564e-18     -4.662069e-18      3.135736e+00      7.878229e-02 
+#>     -5.637851e-18     -4.662069e-18      3.135736e+00      7.878229e-02 
 #>       sigma_nu_nu          nu_nu_nu 
 #>      2.363469e-02      5.907273e-03 
 ```

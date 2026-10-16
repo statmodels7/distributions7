@@ -1,9 +1,9 @@
-# Reject Centered Parameters the Map Cannot Carry
+# Reject Centered Parameters That the Map Cannot Carry
 
-Checks that the direct parameters
+Checks that the direct parameters produced by
 [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
-has produced are usable, and raises in the centered family's own terms
-when they are not.
+are usable, and signals an error in the centered family's own terms when
+they are not.
 
 ## Usage
 
@@ -20,7 +20,7 @@ sn2_reject_unmappable(dp, theta)
 
 - theta:
 
-  The centered parameters the caller supplied, ordered as
+  The centered parameters that the caller supplied, ordered as
   `c("mu", "sigma", "gamma1")`.
 
 ## Value
@@ -34,10 +34,10 @@ Every probability function of
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
 evaluates the parent at the mapped parameters, and the parent validates
 what it is handed against its own domains. Without this check a caller
-who wrote `gamma1` reads an error about `alpha`, a parameter the model
-does not have, and about `"skew normal1"`, a family the call does not
-name. The message here reports the centered parameter responsible and
-the value it holds.
+who wrote `gamma1` reads an error about `alpha`, a parameter that the
+model does not have, and about `"skew normal1"`, a family that the call
+does not name. The message reports the centered parameter that is
+responsible and the value that it holds.
 
 The check covers the failures of the delegation itself.
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
@@ -61,11 +61,11 @@ for the map.
 th <- list(mu = 0, sigma = 1, gamma1 = distributions7:::sn_max_skew())
 try(distributions7:::sn2_theta(th))
 #> Error : Invalid parameter value(s) for the 'skew normal2' distribution:
-#>   'gamma1' = 0.9952717 is at the ceiling 0.9952717 of the skewness a skew normal
-#>   can carry, where the shape it maps to is not finite.
+#>   'gamma1' = 0.9952717 is at the ceiling 0.9952717 of the skewness that a skew normal
+#>   can carry, where the shape to which it maps is not finite.
 
-# A scale and a skewness each inside its own domain whose implied scale
-# is not.
+# A scale and a skewness that each lie inside their own domains can still
+# imply a scale that is not finite.
 th2 <- list(mu = 0, sigma = 1.1e308, gamma1 = 0.99)
 try(distributions7:::sn2_theta(th2))
 #> Error : Invalid parameter value(s) for the 'skew normal2' distribution:

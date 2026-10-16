@@ -4,14 +4,14 @@ Computes the negative binomial mass at size \\r = \mu/\theta\\ and
 success probability \\1/(1+\theta)\\, \$\$P(Y = y; \mu, \theta) =
 \dfrac{\Gamma(y+r)}{\Gamma(r)\\y!} \left(\dfrac{1}{1+\theta}\right)^{r}
 \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad y = 0, 1, 2,
-\ldots,\$\$ which is the pairing that makes the variance
-\\\mu(1+\theta)\\. A compiled kernel forms the log-mass by R's negative
-binomial in its mean parametrization (size \\r\\ and mean \\\mu\\),
-which never forms the success probability \\1/(1+\theta)\\; that
-probability rounds to 1 below \\\theta \approx 10^{-16}\\ and loses
-digits long before, so the mass stays accurate down to the Poisson
-limit. The log-mass is exponentiated when `log` is `FALSE`, and
-`log = TRUE` is the accurate route far into the tail.
+\ldots,\$\$ and this pairing gives the variance \\\mu(1+\theta)\\. A
+compiled kernel forms the log-mass by R's negative binomial in its mean
+parametrization (size \\r\\ and mean \\\mu\\), which never forms the
+success probability \\1/(1+\theta)\\; that probability rounds to 1 below
+\\\theta \approx 10^{-16}\\ and loses digits long before, so the mass
+stays accurate down to the Poisson limit. The log-mass is exponentiated
+when `log` is `FALSE`, and `log = TRUE` is the accurate route far into
+the tail.
 
 The mean sits inside the gamma functions here, through the size. In
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)

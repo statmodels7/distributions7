@@ -2,11 +2,11 @@
 
 This is the S7 class of the lognormal family on \\(0, \infty)\\: the law
 of a variable whose logarithm is Gaussian with mean \\\mu\\ and variance
-\\\sigma^2 \> 0\\. Both parameters live on the log scale, so neither is
-the mean or the variance of \\Y\\ itself. It inherits from
-`continuous_distrib`, so every generic of the `distrib` class applies to
-it; the methods listed below are registered on it directly and
-everything else comes from the parent.
+\\\sigma^2 \> 0\\. Both parameters live on the log scale, so \\\mu\\ is
+not the mean of \\Y\\ and \\\sigma^2\\ is not the variance of \\Y\\. It
+inherits from `continuous_distrib`, so every generic of the `distrib`
+class applies to it; the methods listed below are registered on it
+directly and everything else comes from the parent.
 
 Build one with
 [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md),

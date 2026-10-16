@@ -19,7 +19,7 @@ skewnormal1_distrib(), and both together give the Gaussian."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,8 +105,8 @@ must be strictly positive. Defaults to <code><a href="https://statmodels7.github
     <div class="section level2">
     <h2 id="range-of-the-skewness-and-the-kurtosis">Range of the skewness and the kurtosis<a class="anchor" aria-label="anchor" href="#range-of-the-skewness-and-the-kurtosis"></a></h2>
     <p>The skew normal of <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code> reaches a skewness of at most
-0.99527 and an excess kurtosis of at most 0.86918, both approached only as
-\(|\alpha| \to \infty\). Adding \(\nu\) removes both ceilings: at
+0.99527 and an excess kurtosis of at most 0.86918, and both bounds are
+approached only as \(|\alpha| \to \infty\). Adding \(\nu\) removes both ceilings: at
 \(\alpha = 50\) the skewness is 1.12 at \(\nu = 30\), 2.05 at
 \(\nu = 6\) and 4.00 at \(\nu = 4\), and it grows without bound as
 \(\nu\) decreases to 3.</p>
@@ -123,8 +123,8 @@ that quadrature; see <code><a href="distrib_gradient.SkewTDistrib.html">distrib_
     <div class="section level2">
     <h2 id="fitting">Fitting<a class="anchor" aria-label="anchor" href="#fitting"></a></h2>
     <p>The expected information has no closed form and is computed by one
-quadrature over \(z\) per distinct \((\alpha, \nu)\), so Fisher scoring
-on an intercept-only fit pays for one integral per iteration.</p>
+quadrature over \(z\) per distinct \((\alpha, \nu)\), so each iteration
+of Fisher scoring on an intercept-only fit computes one integral.</p>
 <p>The distribution function and the quantile function likewise have no
 elementary form. The distribution function integrates the density by the
 compiled rule of <code><a href="compiled_cdf.html">compiled_cdf()</a></code>, and the quantile function inverts it by
@@ -148,7 +148,7 @@ to \(\sqrt{(\nu+z^2)/(\nu+1)}\), which depends on the observation through
 \(z\), whereas the skew normal's ratio is a constant. The relative
 variation of the ratio over \(z\) is of order \(z^2/\nu\), so the
 information becomes singular only as \(\nu \to \infty\).</p>
-<p>The parameter that is weakly identified is \(\nu\). At
+<p>Only \(\nu\) is weakly identified. At
 \(\alpha = 0\) the smallest eigenvalue of the expected information
 corresponds to the direction of \(\nu\) and decreases as \(\nu\) grows,
 because a tail close to the Gaussian one carries little information about
@@ -172,8 +172,8 @@ perturbation of symmetry with emphasis on a multivariate skew t distribution.
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code> for the \(\nu \to \infty\) limit,
 <code><a href="student_t1_distrib.html">student_t1_distrib()</a></code> for the \(\alpha = 0\) case,
-<code><a href="skewt_pieces.html">skewt_pieces()</a></code> for the scalar functions the derivatives are built from,
-and <a href="SkewTDistrib.html">SkewTDistrib</a> for the class and its method list.</p></div>
+<code><a href="skewt_pieces.html">skewt_pieces()</a></code> for the scalar functions from which the derivatives are
+built, and <a href="SkewTDistrib.html">SkewTDistrib</a> for the class and its method list.</p></div>
     </div>
 
     <div class="section level2">

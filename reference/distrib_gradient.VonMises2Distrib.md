@@ -92,7 +92,7 @@ rbind(numeric = numDeriv::grad(fn, c(0.5, 0.7)),
 #> closed  -0.9653846 -4.809689
 
 # The direction component is unchanged from the concentration
-# parametrization, the map touching the second parameter only.
+# parametrization, because the map touches the second parameter only.
 k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(g$mu,
           distrib_gradient(vonmises1_distrib(), y,

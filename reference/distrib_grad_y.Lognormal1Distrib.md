@@ -3,10 +3,11 @@
 Computes the first derivative of the lognormal log-density with respect
 to the response, in closed form. With \\r = \log y - \mu\\,
 \$\$\dfrac{\partial \ell}{\partial y} = -\dfrac{1}{y}\left(1 +
-\dfrac{r}{\sigma^2}\right).\$\$ This is where the family differs from
-the Gaussian: the Jacobian \\1/y\\ of the log transformation carries no
-parameter and so leaves every derivative in \\\mu\\ and \\\sigma^2\\
-alone, but it is a function of the response and does enter here.
+\dfrac{r}{\sigma^2}\right).\$\$ The family differs from the Gaussian in
+this derivative. The Jacobian \\1/y\\ of the log transformation carries
+no parameter and so leaves every derivative in \\\mu\\ and \\\sigma^2\\
+unchanged, but it is a function of the response and therefore enters
+here.
 
 The derivative vanishes at \\r = -\sigma^2\\, that is at \\y = e^{\mu -
 \sigma^2}\\, which is the mode of the density and lies below both the
@@ -55,12 +56,13 @@ d <- lognormal1_distrib()
 y <- c(0.5, 1.6, 4)
 th <- list(mu = 0.5, sigma2 = 0.36)
 
-# Written out.
+# The method equals the closed form written out.
 r <- log(y) - 0.5
 all.equal(distrib_grad_y(d, y, th), -(1 + r / 0.36) / y)
 #> [1] TRUE
 
-# Zero at the mode exp(mu - sigma2), which lies below the median exp(mu).
+# The derivative is zero at the mode exp(mu - sigma2), which lies below the
+# median exp(mu).
 mode <- exp(0.5 - 0.36)
 c(mode = mode, median = exp(0.5), at_mode = distrib_grad_y(d, mode, th))
 #>          mode        median       at_mode 

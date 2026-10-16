@@ -6,14 +6,16 @@ wherever it exists. At \(y = \mu\) the first derivative drops from
 \(1/\sigma\) to \(-1/\sigma\) and the second derivative does not exist;
 the returned zero is the value away from that single point.
 The same fact appears in the parameters as the zero mu_mu component of
-distrib_hessian.LaplaceDistrib(), the family being a location family."><meta property="og:description" content="Returns zero for every observation. The Laplace log-density is
+distrib_hessian.LaplaceDistrib(), because the family is a location
+family."><meta property="og:description" content="Returns zero for every observation. The Laplace log-density is
 \(-\log(2\sigma) - |y-\mu|/\sigma\), which is linear in \(y\) on
 each side of the location, so its second derivative in the response vanishes
 wherever it exists. At \(y = \mu\) the first derivative drops from
 \(1/\sigma\) to \(-1/\sigma\) and the second derivative does not exist;
 the returned zero is the value away from that single point.
 The same fact appears in the parameters as the zero mu_mu component of
-distrib_hessian.LaplaceDistrib(), the family being a location family."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+distrib_hessian.LaplaceDistrib(), because the family is a location
+family."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +23,7 @@ distrib_hessian.LaplaceDistrib(), the family being a location family."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +63,8 @@ wherever it exists. At \(y = \mu\) the first derivative drops from
 \(1/\sigma\) to \(-1/\sigma\) and the second derivative does not exist;
 the returned zero is the value away from that single point.</p>
 <p>The same fact appears in the parameters as the zero <code>mu_mu</code> component of
-<code><a href="distrib_hessian.LaplaceDistrib.html">distrib_hessian.LaplaceDistrib()</a></code>, the family being a location family.</p>
+<code><a href="distrib_hessian.LaplaceDistrib.html">distrib_hessian.LaplaceDistrib()</a></code>, because the family is a location
+family.</p>
     </div>
 
 
@@ -78,7 +81,7 @@ the returned zero is the value away from that single point.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list with components <code>mu</code> and <code>sigma</code>. Neither is read.</p></dd>
+<dd><p>A named list with components <code>mu</code> and <code>sigma</code>. The method does not read either component.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -105,12 +108,13 @@ vanishing curvature in the parameters; <code><a href="distrib_hess_y.html">distr
 <span class="r-in"><span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A location family: the same as the curvature in the location.</span></span></span>
+<span class="r-in"><span><span class="co"># This is a location family, so the second derivative equals the</span></span></span>
+<span class="r-in"><span><span class="co"># curvature in the location.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The first derivative drops by 2/sigma across the location, which is the</span></span></span>
-<span class="r-in"><span><span class="co"># curvature the zero above does not see.</span></span></span>
+<span class="r-in"><span><span class="co"># curvature that the zero above does not capture.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1e-9</span>, <span class="fl">1e-9</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.333333</span>
 <span class="r-in"><span><span class="op">-</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">1.5</span></span></span>

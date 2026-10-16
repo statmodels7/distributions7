@@ -3,13 +3,13 @@
 Computes \\F(q) = P(Y \le q)\\ on \\\[-\pi, \pi)\\ from the Fourier
 series of the density integrated term by term, through
 [`vm_cdf()`](https://statmodels7.github.io/distributions7/reference/vm_cdf.md).
-The density has no elementary antiderivative, and the quadrature the
-base class would use costs one integration per observation; the series
-replaces \\n\\ quadratures with a few dozen vectorized steps, using only
-the Bessel ratios \\I_j/I_0\\ from a backward recurrence.
+The density has no elementary antiderivative, and the quadrature that
+the base class would use costs one integration per observation; the
+series replaces the \\n\\ quadratures with a few dozen vectorized steps,
+using only the Bessel ratios \\I_j/I_0\\ from a backward recurrence.
 
-Below \\-\pi\\ the value is 0 and at or above \\\pi\\ it is 1, the
-support being the declared interval. Where the requested tail is below
+Below \\-\pi\\ the value is 0 and at or above \\\pi\\ it is 1, because
+the support is the declared interval. Where the requested tail is below
 \\10^{-6}\\, where the absolute error of the series would cost relative
 accuracy, it comes from a quadrature of the tail instead, on the log
 scale

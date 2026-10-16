@@ -7,8 +7,8 @@ in \\\lambda\\ apart from \\\log\lambda\\, and piecewise linear in
 \\\mu\\. Every third derivative involving \\\mu\\ at all is therefore
 zero, and the only surviving component comes from \\\log\lambda\\:
 \$\$\dfrac{\partial^3 \ell}{\partial \lambda^3} =
-\dfrac{2}{\lambda^3},\$\$ with `mu_mu_mu`, `mu_mu_lambda` and
-`mu_lambda_lambda` all zero.
+\dfrac{2}{\lambda^3},\$\$ where `mu_mu_mu`, `mu_mu_lambda` and
+`mu_lambda_lambda` are all zero.
 
 These derivatives do not depend on the data, so the observed and
 expected values coincide: `expected`, `approx` and `nsim` are accepted
@@ -93,7 +93,7 @@ vapply(d3, function(v) v[1], numeric(1))
 2 / 2^3
 #> [1] 0.25
 
-# expected = TRUE changes nothing, the values carrying no data.
+# expected = TRUE changes nothing, because the values carry no data.
 identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 #> [1] TRUE
 ```

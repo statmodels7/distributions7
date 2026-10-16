@@ -78,7 +78,7 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 z <- (y - 0.4) / 1.5
 all.equal(g$mu, tanh(z / 2) / 1.5)
 #> [1] TRUE

@@ -1,7 +1,8 @@
 # Skew Normal Derivatives in the Centered Parametrization
 
 Return the derivatives of the log-density in \\(\mu, \sigma, \gamma_1)\\
-of orders one to five, each from its own compiled kernel.
+of orders one to five. Each order is computed by its own compiled
+kernel.
 
 ## Arguments
 

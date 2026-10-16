@@ -3,11 +3,11 @@
 This is the S7 class of the Poisson family parametrized by its mean
 \\\mu \> 0\\, with mass \\P(Y = y) = e^{-\mu}\mu^y/y!\\ on the
 non-negative integers. It inherits from `discrete_distrib`, so
-expectations over its support are exact sums and no derivative with
-respect to the response is defined.
+expectations over its support are exact sums, and it defines no
+derivative with respect to the response.
 
-The mean and the variance are both \\\mu\\, which is the constraint a
-count model most often has to relax;
+The mean and the variance are both \\\mu\\, which is the constraint that
+a count model most often has to relax;
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 and
 [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)

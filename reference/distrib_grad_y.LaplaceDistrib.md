@@ -6,7 +6,7 @@ the response, \$\$\dfrac{\partial \ell}{\partial y} =
 is a location family in \\\mu\\, so this is the negative of the score in
 \\\mu\\. It takes only three values, and at \\y = \mu\\ exactly the
 method returns 0, the midpoint of the subdifferential; the derivative
-does not exist there, the log-density having a corner.
+does not exist there, because the log-density has a corner.
 
 ## Arguments
 
@@ -53,11 +53,12 @@ th <- list(mu = 0.4, sigma = 1.5)
 all.equal(distrib_grad_y(d, y, th), -sign(y - 0.4) / 1.5)
 #> [1] TRUE
 
-# A location family: minus the score in the location.
+# This is a location family, so the derivative is minus the score in the
+# location.
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #> [1] TRUE
 
-# Three values only, and 0 at the kink itself.
+# The derivative takes three values only, and it is 0 at the kink itself.
 distrib_grad_y(d, 0.4 + c(-100, -1e-9, 0, 1e-9, 100), th)
 #> [1]  0.6666667  0.6666667  0.0000000 -0.6666667 -0.6666667
 ```

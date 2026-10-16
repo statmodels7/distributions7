@@ -12,8 +12,8 @@ generic of the `distrib` class applies to it.
 The rate form is the one in which a lasso penalty is written: with \\\mu
 = 0\\ the negative log-density is \\\lambda\|y\| - \log(\lambda/2)\\, so
 \\\lambda\\ is the penalty's own tuning parameter and larger values
-shrink harder. `penalties7::lasso_penalty()` is this family with the
-location held at zero.
+shrink harder. `penalties7::lasso_penalty()` is this family when the
+location is held at zero.
 
 Like
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md),
@@ -192,7 +192,7 @@ d@params_smooth
 #>     mu lambda 
 #>  FALSE   TRUE 
 
-# The same law as laplace_distrib() at lambda = 1/sigma.
+# This is the same law as laplace_distrib() at lambda = 1/sigma.
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))

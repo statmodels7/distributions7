@@ -9,7 +9,7 @@ compiled kernel described on distrib_gradient.SkewTDistrib()."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,7 +121,7 @@ fourth-order component, from <code>mu_mu_mu_mu</code> to <code>nu_nu_nu_nu</code
 <span class="r-out co"><span class="r-pr">#&gt;</span>           35           20 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The components span five orders of magnitude, so a relative comparison</span></span></span>
-<span class="r-in"><span><span class="co"># on the smallest of them says nothing about the largest.</span></span></span>
+<span class="r-in"><span><span class="co"># on the smallest of them gives no information about the largest.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">d4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">s</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma_sigma_sigma_sigma          mu_mu_mu_sigma             nu_nu_nu_nu </span>
@@ -129,7 +129,8 @@ fourth-order component, from <code>mu_mu_mu_mu</code> to <code>nu_nu_nu_nu</code
 <span class="r-out co"><span class="r-pr">#&gt;</span>          alpha_nu_nu_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            2.024170e-03 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A closed-form-block component against a difference of the third order.</span></span></span>
+<span class="r-in"><span><span class="co"># A closed-form-block component is compared with a difference of the third</span></span></span>
+<span class="r-in"><span><span class="co"># order.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_alpha_alpha</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>,</span></span>

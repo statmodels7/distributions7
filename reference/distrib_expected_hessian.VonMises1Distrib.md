@@ -12,8 +12,8 @@ closed form and with no quadrature or simulation. Under the model
 The zero off-diagonal makes the direction and the concentration
 orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
-independently. `approx` and `nsim` are ignored, the expectation being
-exact.
+independently. `approx` and `nsim` are ignored because the expectation
+is exact.
 
 ## Arguments
 
@@ -24,8 +24,8 @@ exact.
 
 - y:
 
-  A numeric vector of angles. Only its length is read, the expectation
-  not depending on the data; the values are ignored.
+  A numeric vector of angles. Only its length is read, because the
+  expectation does not depend on the data; the values are ignored.
 
 - theta:
 
@@ -75,7 +75,7 @@ I_1(\kappa)/I_0(\kappa)\\ the mean resultant length.
 ## See also
 
 [`distrib_hessian.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMises1Distrib.md)
-for the quantity this is the expectation of,
+for the quantity of which this is the expectation,
 [`distrib_gradient.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.VonMises1Distrib.md)
 for the score, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
@@ -91,7 +91,7 @@ vapply(eh, function(v) v[1], numeric(1))
 #>       mu_mu kappa_kappa    mu_kappa 
 #>  -1.3955493  -0.1642232   0.0000000 
 
-# The closed forms, written out; the off-diagonal is exactly zero, so the
+# The closed forms are written out; the off-diagonal is exactly zero, so the
 # two parameters are orthogonal.
 A <- numericals7::bessel_i_ratio(2)
 c(mu_mu = -2 * A, mu_kappa = 0,
@@ -106,7 +106,7 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #>         mu_mu   kappa_kappa      mu_kappa 
 #> -1.3964000867 -0.1642231977 -0.0006979838 
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument is inert because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th,
                                        approx = "mc", nsim = 50))
 #> [1] TRUE

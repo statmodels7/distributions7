@@ -9,8 +9,8 @@ These are exactly the Gaussian's, read at \(\log y\). The lognormal
 log-density is the Gaussian's at \(\log y\) minus \(\log y\), and that
 last term carries no parameter, so it disappears from every derivative in
 \(\mu\) and \(\sigma^2\). The same holds at all four orders and for the
-expected values; what differs from gaussian2_distrib() is only the
-derivatives in the response, where the Jacobian does enter.
+expected values. Only the derivatives in the response differ from those of
+gaussian2_distrib(), because the Jacobian enters them.
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.
 With scale = &quot;link&quot; the generic applies the chain rule for the links of the
@@ -25,8 +25,8 @@ These are exactly the Gaussian's, read at \(\log y\). The lognormal
 log-density is the Gaussian's at \(\log y\) minus \(\log y\), and that
 last term carries no parameter, so it disappears from every derivative in
 \(\mu\) and \(\sigma^2\). The same holds at all four orders and for the
-expected values; what differs from gaussian2_distrib() is only the
-derivatives in the response, where the Jacobian does enter.
+expected values. Only the derivatives in the response differ from those of
+gaussian2_distrib(), because the Jacobian enters them.
 The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.
 With scale = &quot;link&quot; the generic applies the chain rule for the links of the
@@ -39,7 +39,7 @@ scale."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,8 +82,8 @@ $$\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2}, \qquad
 log-density is the Gaussian's at \(\log y\) minus \(\log y\), and that
 last term carries no parameter, so it disappears from every derivative in
 \(\mu\) and \(\sigma^2\). The same holds at all four orders and for the
-expected values; what differs from <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code> is only the
-derivatives in the response, where the Jacobian does enter.</p>
+expected values. Only the derivatives in the response differ from those of
+<code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code>, because the Jacobian enters them.</p>
 <p>The arithmetic runs in a compiled kernel decomposed over the elements of the
 output, so the result does not depend on the thread count.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links of the
@@ -153,14 +153,15 @@ length <code>max(length(y), length(mu), length(sigma2))</code>.</p>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, sigma2 <span class="op">=</span> <span class="fl">0.36</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two closed forms, written out on the log scale.</span></span></span>
+<span class="r-in"><span><span class="co"># The two closed forms are written out on the log scale.</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>, <span class="va">r</span> <span class="op">/</span> <span class="fl">0.36</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">sigma2</span>, <span class="op">(</span><span class="va">r</span><span class="op">^</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">0.36</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">0.36</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Identical to the Gaussian's score at log y, component for component.</span></span></span>
+<span class="r-in"><span><span class="co"># The score is identical to the Gaussian's at log y, component for</span></span></span>
+<span class="r-in"><span><span class="co"># component.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span>, <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="fu"><a href="gaussian2_distrib.html">gaussian2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>

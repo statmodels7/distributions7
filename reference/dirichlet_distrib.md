@@ -151,7 +151,7 @@ for the chart the mean rides;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery that this one
+to validate a user-defined family against the same battery that this one
 passes;
 [DirichletDistrib](https://statmodels7.github.io/distributions7/reference/DirichletDistrib.md)
 for the class.

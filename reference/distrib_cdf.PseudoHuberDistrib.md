@@ -1,12 +1,13 @@
 # Pseudo-Huber Cumulative Distribution Function
 
 Computes \\F(q) = P(Y \le q)\\ by numerical integration of the density,
-the family having no elementary distribution function. The integral is
-taken by the compiled rule of
+because the family has no elementary distribution function. The integral
+is taken by the compiled rule of
 [`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md),
 over the tail on the side of \\q\\ away from \\\mu\\: below the location
-it is \\F\\, above it the survival function, so that neither tail is a
-difference of two numbers near one.
+it is \\F\\, above it the survival function, so that the value in each
+tail is computed directly and not as a difference of two numbers near
+one.
 
 ## Arguments
 
@@ -65,13 +66,14 @@ for the generic.
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The quadrature, and the symmetry of the law about its location.
+# The quadrature gives the distribution function, and the law is symmetric
+# about its location.
 distrib_cdf(d, c(-1, 0.4, 2), th)
 #> [1] 0.2223070 0.5000000 0.8061021
 distrib_cdf(d, 0.4 - 1.5, th) + distrib_cdf(d, 0.4 + 1.5, th)
 #> [1] 1
 
-# At the location it is one half exactly, the law being symmetric.
+# At the location it is one half exactly, because the law is symmetric.
 distrib_cdf(d, 0.4, th)
 #> [1] 0.5
 

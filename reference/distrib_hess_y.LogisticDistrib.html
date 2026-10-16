@@ -4,17 +4,17 @@ the response,
 $$\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{2\sigma^2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right),
       \qquad z = \dfrac{y-\mu}{\sigma},$$
 in closed form. It is negative everywhere, so the log-density is concave in
-the response throughout, and it decays to zero in either tail. Being a
-location family, the logistic has the same curvature in the response as in
-its location, so this equals the mu_mu component of
+the response throughout, and it decays to zero in either tail. Because the
+logistic is a location family, it has the same curvature in the response as
+in its location, so this equals the mu_mu component of
 distrib_hessian.LogisticDistrib()."><meta property="og:description" content="Computes the second derivative of the logistic log-density with respect to
 the response,
 $$\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{2\sigma^2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right),
       \qquad z = \dfrac{y-\mu}{\sigma},$$
 in closed form. It is negative everywhere, so the log-density is concave in
-the response throughout, and it decays to zero in either tail. Being a
-location family, the logistic has the same curvature in the response as in
-its location, so this equals the mu_mu component of
+the response throughout, and it decays to zero in either tail. Because the
+logistic is a location family, it has the same curvature in the response as
+in its location, so this equals the mu_mu component of
 distrib_hessian.LogisticDistrib()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +23,7 @@ distrib_hessian.LogisticDistrib()."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,9 +61,9 @@ the response,
 $$\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{2\sigma^2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right),
       \qquad z = \dfrac{y-\mu}{\sigma},$$
 in closed form. It is negative everywhere, so the log-density is concave in
-the response throughout, and it decays to zero in either tail. Being a
-location family, the logistic has the same curvature in the response as in
-its location, so this equals the <code>mu_mu</code> component of
+the response throughout, and it decays to zero in either tail. Because the
+logistic is a location family, it has the same curvature in the response as
+in its location, so this equals the <code>mu_mu</code> component of
 <code><a href="distrib_hessian.LogisticDistrib.html">distrib_hessian.LogisticDistrib()</a></code>.</p>
     </div>
 
@@ -112,11 +112,13 @@ in its tails, and <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code
 <span class="r-in"><span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1693176 -0.2219755 -0.1410532</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A location family: the same curvature as in the location.</span></span></span>
+<span class="r-in"><span><span class="co"># The logistic is a location family, so the curvature is the same as in the</span></span></span>
+<span class="r-in"><span><span class="co"># location.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Concave everywhere, unlike the Cauchy, which turns convex in its tails.</span></span></span>
+<span class="r-in"><span><span class="co"># The logistic is concave everywhere, unlike the Cauchy, which turns convex</span></span></span>
+<span class="r-in"><span><span class="co"># in its tails.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">50</span>, length.out <span class="op">=</span> <span class="fl">1e3</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="fu"><a href="cauchy_distrib.html">cauchy_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">50</span>, <span class="fl">50</span>, length.out <span class="op">=</span> <span class="fl">1e3</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span></span>

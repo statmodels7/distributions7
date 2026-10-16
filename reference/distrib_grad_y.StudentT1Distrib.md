@@ -7,9 +7,9 @@ y} = -\dfrac{(\nu+1)r}{D}.\$\$ The family is a location family in
 \\\mu\\, so this is exactly the negative of the location score
 [`distrib_gradient.StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT1Distrib.md)`$mu`,
 and it redescends with it: it is largest in size at \\\|r\| =
-\sigma\sqrt{\nu}\\ and falls back towards zero beyond that. This
-quantity is what a quantile residual's delta-method standard error and a
-change of variable in the response both need.
+\sigma\sqrt{\nu}\\ and falls back towards zero beyond that. A quantile
+residual's delta-method standard error and a change of variable in the
+response both need this quantity.
 
 ## Arguments
 
@@ -56,7 +56,7 @@ d <- student_t1_distrib()
 y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 
-# The closed form, written out.
+# The closed form is written out.
 r <- y - 0.4
 all.equal(distrib_grad_y(d, y, th), -6 * r / (5 * 1.2^2 + r^2))
 #> [1] TRUE

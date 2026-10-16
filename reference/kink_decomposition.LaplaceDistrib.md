@@ -21,8 +21,8 @@ with `phi = "abs"`.
 Only the location moves the kink: \\\partial v/\partial \mu = -1\\ and
 \\\partial v/\partial \sigma = 0\\, so
 [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
-reports \\m\_\mu = 0\\ and \\m\_\sigma = \infty\\, which agrees with
-`params_smooth` being `c(mu = FALSE, sigma = TRUE)`.
+reports \\m\_\mu = 0\\ and \\m\_\sigma = \infty\\, which agrees with the
+value `c(mu = FALSE, sigma = TRUE)` of `params_smooth`.
 
 The scale is smooth although it multiplies the absolute value: the
 derivative in \\\sigma\\ of \\c(\theta)\phi(v)\\ is

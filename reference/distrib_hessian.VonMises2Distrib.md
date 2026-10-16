@@ -4,9 +4,9 @@ Computes the three distinct second derivatives of the log-density in
 \\\mu\\ and \\\rho\\, one value per observation, in closed form:
 \$\$\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad \ell^{(\mu\rho)} =
 \sin(y-\mu)\\\kappa'(\rho), \qquad \ell^{(\rho\rho)} = \\\cos(y-\mu) -
-\rho\\\kappa''(\rho) - \kappa'(\rho),\$\$ the last from differentiating
-the score's \\\\\cos(y-\mu) - \rho\\\kappa'(\rho)\\. The components are
-computed by a compiled kernel.
+\rho\\\kappa''(\rho) - \kappa'(\rho),\$\$ where the last component comes
+from differentiating the score's \\\\\cos(y-\mu) -
+\rho\\\kappa'(\rho)\\. The components are computed by a compiled kernel.
 
 Unlike in the concentration parametrization, the pure second derivative
 is not free of the data: the term in \\\kappa''\\, the curvature of the

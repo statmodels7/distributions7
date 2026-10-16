@@ -61,7 +61,7 @@ standard location and scale is a function of \\\nu\\ alone and is an
 integral over \\z\\ of the analytic observed derivatives against the
 density, taken once for each distinct \\\nu\\ by the exp-sinh rule of
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md).
-No component has an elementary closed form: the integrands carry
+The components have no elementary closed form: the integrands carry
 \\(\nu + z^2)^{-1/2}\\, which leads to Bickley functions rather than to
 the Bessel functions of the normalizing constant.
 
@@ -77,7 +77,7 @@ the entry comes back as zero to about \\10^{-20}\\.
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
 for the construction,
 [`distrib_hessian.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.PseudoHuberDistrib.md)
-for the quantity this is the expectation of, and
+for the quantity of which this is the expectation, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 

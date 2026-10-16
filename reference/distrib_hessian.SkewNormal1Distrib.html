@@ -45,7 +45,7 @@ distrib_expected_hessian.SkewNormal1Distrib()."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -145,10 +145,10 @@ then the off-diagonal pairs, which is <code><a href="hess_names.html">hess_names
     <div class="section level2">
     <h2 id="singularity-at-symmetry">Singularity at symmetry<a class="anchor" aria-label="anchor" href="#singularity-at-symmetry"></a></h2>
     <p>At \(\alpha = 0\) the expected information of this parametrization has rank
-2, not 3. The reason is in the score: the shape and location components are
-exactly proportional there, so no data can separate them. Measured at
-\(\mu = 0\), \(\sigma = 1\), its eigenvalues are 2, 1.637 and
-\(-2.6\times10^{-27}\), and the smallest one grows like
+2, not 3. The shape and location components of the score are exactly
+proportional there, so a data set cannot separate them. At
+\(\mu = 0\), \(\sigma = 1\) the numerically computed eigenvalues are 2,
+1.637 and \(-2.6\times10^{-27}\), and the smallest one grows like
 \(\alpha^4\) as the shape moves off zero: \(4.4\times10^{-10}\) at
 \(\alpha = 0.01\) and \(1.9\times10^{-3}\) at \(\alpha = 0.5\).</p>
 <p>The singularity is a property of this parametrization. Azzalini's centered
@@ -177,11 +177,11 @@ and \(R' = -R(t+R)\).</p>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The shape component written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The shape component equals its formula written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">alpha_alpha</span>, <span class="va">y</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/mills_ratio.html" class="external-link">mills_ratio</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">y</span><span class="op">)</span><span class="op">$</span><span class="va">dr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the score.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is compared with a central difference of the score.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">h</span><span class="op">$</span><span class="va">mu_alpha</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span> <span class="op">+</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span> <span class="op">-</span></span></span>
@@ -200,7 +200,7 @@ and \(R' = -R(t+R)\).</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="op">-</span><span class="va">M</span>, only.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">values</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.01</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="va">rank_gap</span>, <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.550320e-27 4.355684e-10 1.947533e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.550320e-27 4.355677e-10 1.947533e-03</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

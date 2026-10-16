@@ -83,7 +83,7 @@ y <- c(-1, 0, 0.5, 2)
 th <- list(mu = 0.5, kappa = 2)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 all.equal(g$mu, 2 * sin(y - 0.5))
 #> [1] TRUE
 all.equal(g$kappa, cos(y - 0.5) - besselI(2, 1) / besselI(2, 0))

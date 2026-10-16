@@ -23,7 +23,7 @@ variance.SkewNormal1Distrib() give those."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -133,17 +133,16 @@ come from <code><a href="expected_derivative.html">expected_derivative()</a></co
     </div>
     <div class="section level2">
     <h2 id="singularity-at-symmetry">Singularity at symmetry<a class="anchor" aria-label="anchor" href="#singularity-at-symmetry"></a></h2>
-    <p>At \(\alpha = 0\) the expected information has rank 2 and not 3. The score
-shows why: the shape component is \(z\sqrt{2/\pi}\) and the location
-component \(z/\sigma\), so the two are exactly proportional and no data
-can separate them. Measured, the smallest eigenvalue is
+    <p>At \(\alpha = 0\) the expected information has rank 2 and not 3. The shape
+component of the score is \(z\sqrt{2/\pi}\) and the location component is
+\(z/\sigma\), so the two are exactly proportional and a data set cannot
+separate them. Numerically, the smallest eigenvalue is
 \(-2.6\times10^{-27}\) against a largest of 2 at \(\alpha = 0\), and it
 grows like \(\alpha^4\) thereafter.</p>
-<p>The consequence for use is that a fit whose true shape is near zero
-identifies \(\alpha\) weakly, and that a variance matrix computed at
-exactly zero is not invertible. Azzalini and Capitanio's centered
-parametrization removes the singularity; it is <code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>, a
-separate object.</p>
+<p>A fit whose true shape is near zero identifies \(\alpha\) weakly, and a
+variance matrix computed at exactly zero is not invertible. Azzalini and
+Capitanio's centered parametrization removes the singularity; it is
+<code><a href="skewnormal2_distrib.html">skewnormal2_distrib()</a></code>, a separate object.</p>
     </div>
     <div class="section level2">
     <h2 id="moments-and-the-bound-on-the-skewness">Moments, and the bound on the skewness<a class="anchor" aria-label="anchor" href="#moments-and-the-bound-on-the-skewness"></a></h2>
@@ -152,9 +151,10 @@ $$E[Y] = \mu + \sigma b \delta, \qquad
       \mathrm{Var}(Y) = \sigma^2(1 - b^2\delta^2).$$
 All four moments are closed form. The skewness is bounded: \(\delta\)
 saturates at one as \(|\alpha|\to\infty\), so \(\gamma_1\) cannot leave
-\((-0.9953, 0.9953)\) whatever the shape is. Measured, it reaches 0.9556
-at \(\alpha = 10\) and 0.99527 at \(\alpha = 10^4\), and does not move
-after that. A sample skewer than this needs <code><a href="skewt_distrib.html">skewt_distrib()</a></code>.</p>
+\((-0.9953, 0.9953)\) whatever the shape is. Numerically, it reaches
+0.9556 at \(\alpha = 10\) and 0.99527 at \(\alpha = 10^4\), and does
+not move after that. A sample whose skewness exceeds this bound in absolute
+value needs <code><a href="skewt_distrib.html">skewt_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="parameter-domains">Parameter domains<a class="anchor" aria-label="anchor" href="#parameter-domains"></a></h2>
@@ -200,7 +200,7 @@ skewness, <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code> 
 <span class="r-out co"><span class="r-pr">#&gt;</span>      density          cdf </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5.551115e-17 0.000000e+00 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The skewness the family can reach is bounded, and saturates early.</span></span></span>
+<span class="r-in"><span><span class="co"># The skewness that the family can reach is bounded, and saturates early.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">10</span>, <span class="fl">50</span>, <span class="fl">1e4</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="va">a</span><span class="op">)</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1369488 0.6670236 0.9555571 0.9936306 0.9952717</span>

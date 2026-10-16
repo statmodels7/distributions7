@@ -16,8 +16,7 @@ location is concentrated at the single point \\r = 0\\, so the
 expectation of this second derivative is 0 although the information is
 positive.
 
-The consequence is that the observed information here is not the
-information.
+Hence the observed information here is not the information.
 [`distrib_expected_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
 returns \\-1/\sigma^2\\, obtained from the variance of the score, and
 that page explains which identity holds and which fails.
@@ -68,7 +67,7 @@ which returns the information and is not the expectation of this;
 [`distrib_gradient.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.LaplaceDistrib.md)
 for the score;
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
-the estimation route this family needs; and
+the estimation route that this family needs; and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 for the generic.
 
@@ -84,7 +83,7 @@ h <- distrib_hessian(d, y, th)
 h$mu_mu
 #> [1] 0 0 0
 
-# The other two, written out.
+# The other two components are compared with their formulas.
 r <- y - 0.4
 all.equal(h$sigma_sigma, (1.5 - 2 * abs(r)) / 1.5^3)
 #> [1] TRUE

@@ -5,7 +5,7 @@ parametrization whose two parameters are orthogonal, gamlss's `PIG2`. It
 is the same law as
 [Pig1Distrib](https://statmodels7.github.io/distributions7/reference/Pig1Distrib.md);
 the mean stays \\\mu\\ and the dispersion is replaced by \\\alpha\\, the
-argument the mass function's Bessel function is evaluated at.
+argument at which the mass function's Bessel function is evaluated.
 
 Orthogonal means the expected information is diagonal: at \\\mu = 3\\
 and \\\sigma = 0.8\\ its mixed entry is zero to rounding error here,
@@ -161,7 +161,7 @@ d@params_interpretation
 #>                mu             alpha 
 #>            "mean" "bessel argument" 
 
-# The same law as pig1, at the dispersion alpha implies.
+# Pig2 gives the same law as pig1, at the dispersion that alpha implies.
 al <- 3.010399
 d1 <- pig1_distrib()
 rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = al)),

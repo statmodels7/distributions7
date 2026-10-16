@@ -3,10 +3,10 @@
 the response, in closed form. With \(r = \log y - \mu\),
 $$\dfrac{\partial \ell}{\partial y} =
       -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right).$$
-This is where the family differs from the Gaussian: the Jacobian
+The family differs from the Gaussian in this derivative. The Jacobian
 \(1/y\) of the log transformation carries no parameter and so leaves every
-derivative in \(\mu\) and \(\sigma^2\) alone, but it is a function of
-the response and does enter here.
+derivative in \(\mu\) and \(\sigma^2\) unchanged, but it is a function
+of the response and therefore enters here.
 The derivative vanishes at \(r = -\sigma^2\), that is at
 \(y = e^{\mu - \sigma^2}\), which is the mode of the density and lies
 below both the median \(e^{\mu}\) and the mean
@@ -14,10 +14,10 @@ below both the median \(e^{\mu}\) and the mean
 the response, in closed form. With \(r = \log y - \mu\),
 $$\dfrac{\partial \ell}{\partial y} =
       -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right).$$
-This is where the family differs from the Gaussian: the Jacobian
+The family differs from the Gaussian in this derivative. The Jacobian
 \(1/y\) of the log transformation carries no parameter and so leaves every
-derivative in \(\mu\) and \(\sigma^2\) alone, but it is a function of
-the response and does enter here.
+derivative in \(\mu\) and \(\sigma^2\) unchanged, but it is a function
+of the response and therefore enters here.
 The derivative vanishes at \(r = -\sigma^2\), that is at
 \(y = e^{\mu - \sigma^2}\), which is the mode of the density and lies
 below both the median \(e^{\mu}\) and the mean
@@ -29,7 +29,7 @@ below both the median \(e^{\mu}\) and the mean
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,10 +66,10 @@ below both the median \(e^{\mu}\) and the mean
 the response, in closed form. With \(r = \log y - \mu\),
 $$\dfrac{\partial \ell}{\partial y} =
       -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right).$$
-This is where the family differs from the Gaussian: the Jacobian
+The family differs from the Gaussian in this derivative. The Jacobian
 \(1/y\) of the log transformation carries no parameter and so leaves every
-derivative in \(\mu\) and \(\sigma^2\) alone, but it is a function of
-the response and does enter here.</p>
+derivative in \(\mu\) and \(\sigma^2\) unchanged, but it is a function
+of the response and therefore enters here.</p>
 <p>The derivative vanishes at \(r = -\sigma^2\), that is at
 \(y = e^{\mu - \sigma^2}\), which is the mode of the density and lies
 below both the median \(e^{\mu}\) and the mean
@@ -118,12 +118,13 @@ parameters, and <code><a href="distrib_grad_y.html">distrib_grad_y()</a></code> 
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.6</span>, <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, sigma2 <span class="op">=</span> <span class="fl">0.36</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The method equals the closed form written out.</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="op">-</span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">r</span> <span class="op">/</span> <span class="fl">0.36</span><span class="op">)</span> <span class="op">/</span> <span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Zero at the mode exp(mu - sigma2), which lies below the median exp(mu).</span></span></span>
+<span class="r-in"><span><span class="co"># The derivative is zero at the mode exp(mu - sigma2), which lies below the</span></span></span>
+<span class="r-in"><span><span class="co"># median exp(mu).</span></span></span>
 <span class="r-in"><span><span class="va">mode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.5</span> <span class="op">-</span> <span class="fl">0.36</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mode <span class="op">=</span> <span class="va">mode</span>, median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>, at_mode <span class="op">=</span> <span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">mode</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mode        median       at_mode </span>

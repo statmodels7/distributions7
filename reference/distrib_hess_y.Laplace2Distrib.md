@@ -20,7 +20,8 @@ away from that single point.
 
 - theta:
 
-  A named list with components `mu` and `lambda`. Neither is read.
+  A named list with components `mu` and `lambda`. The method does not
+  read either of them.
 
 - ...:
 
@@ -49,7 +50,8 @@ th <- list(mu = 0.4, lambda = 2)
 distrib_hess_y(d, y, th)
 #> [1] 0 0 0
 
-# A location family: the same as the curvature in the location.
+# This is a location family, so the derivative equals the curvature in the
+# location.
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #> [1] TRUE
 

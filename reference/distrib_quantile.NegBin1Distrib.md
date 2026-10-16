@@ -64,7 +64,8 @@ for the generic.
 d <- negbin1_distrib()
 th <- list(mu = 4, theta = 4)
 
-# A nominal central 95 percent interval on the counts.
+# The first and last quantiles bound a nominal central 95 percent interval
+# on the counts.
 p <- c(0.025, 0.5, 0.975)
 q <- distrib_quantile(d, p, th)
 q

@@ -14,10 +14,10 @@ density.
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing
 to the estimating equation, and \\\nu\\ is estimated from the data
-rather than set: a large fitted \\\nu\\ reports that the sample looks
-Gaussian.
+rather than set: a large fitted \\\nu\\ indicates that the sample is
+close to Gaussian.
 
-The three arguments choose the links that carry each parameter to the
+The three arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works.
 
 ## Usage
@@ -37,7 +37,7 @@ student_t1_distrib(
   A `link` object from `linkfunctions7` for the location \\\mu\\.
   Defaults to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the location ranging over the whole line already.
+  because the location already ranges over the whole line.
 
 - link_sigma:
 
@@ -74,9 +74,9 @@ quantile function \\Q(p) = \mu + \sigma T\_\nu^{-1}(p)\\, with
 \\T\_\nu\\ the standard Student t distribution function.
 
 \\\sigma\\ is the scale and not the standard deviation, which is
-\\\sigma\sqrt{\nu/(\nu-2)}\\ and exists only above \\\nu = 2\\. Keeping
-the two apart lets the family be fitted where the second moment does not
-exist;
+\\\sigma\sqrt{\nu/(\nu-2)}\\ and exists only above \\\nu = 2\\. Because
+the two are kept apart, the family can be fitted where the second moment
+does not exist;
 [`student_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t2_distrib.md)
 is the parametrization by the standard deviation.
 
@@ -106,10 +106,10 @@ and its expectation is \$\$\mathbb{E}\left\[\dfrac{\partial^2
 \psi_1\\\left(\dfrac{\nu}{2}\right)\right\] +
 \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
 \mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \sigma \\ \partial
-\nu}\right\] = \dfrac{2}{\sigma(\nu+1)(\nu+3)},\$\$ with the two entries
-containing \\\mu\\ exactly zero. The location is therefore orthogonal to
-the other two, whose estimates are asymptotically correlated with each
-other.
+\nu}\right\] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.\$\$ The two entries
+containing \\\mu\\ are exactly zero. The location is therefore
+orthogonal to the other two, whose estimates are asymptotically
+correlated with each other.
 
 ## Redescending score
 
@@ -118,9 +118,9 @@ The location score \\(\nu+1)r/D\\ rises to
 falls back towards zero, so an observation far from the location is
 downweighted automatically. The price is that the curvature in \\\mu\\
 turns positive past the same point, so the observed information is
-indefinite at an outlying observation. Fisher scoring is unaffected, the
-expected information being negative definite everywhere, which is why it
-is the default in
+indefinite at an outlying observation. Fisher scoring is unaffected
+because the expected information is negative definite everywhere, which
+is why it is the default in
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md).
 
 ## Moments
@@ -134,11 +134,11 @@ or `Inf` below it: the mean is \\\mu\\ for \\\nu \> 1\\, the variance
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale by Fisher scoring. No
-estimate is closed form, the three estimating equations being coupled
-through \\D\\. On Gaussian data the likelihood has no finite maximizer
-in \\\nu\\: \\\hat\nu\\ diverges, and the fit returns a large finite
-value.
+maximizes the log-likelihood on the link scale by Fisher scoring. The
+estimates have no closed form, because the three estimating equations
+are coupled through \\D\\. On Gaussian data the likelihood has no finite
+maximizer in \\\nu\\: \\\hat\nu\\ diverges, and the fit returns a large
+finite value.
 
 ## Notation
 
@@ -179,8 +179,8 @@ for the multivariate version;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [StudentT1Distrib](https://statmodels7.github.io/distributions7/reference/StudentT1Distrib.md)
 for the class.
 
@@ -210,7 +210,8 @@ c(scale = th$sigma, mean = mean(d, th), var = variance(d, th),
 #> scale  mean   var  skew  kurt 
 #>   1.2   0.4   2.4   0.0   6.0 
 
-# Below its own threshold each moment reports that it does not exist.
+# Below its own threshold each moment is returned as NaN or Inf, which
+# means that the moment does not exist.
 t(vapply(c(0.8, 1.5, 2.5, 3.5),
          function(v) {
            p <- list(mu = 0.4, sigma = 1.2, nu = v)

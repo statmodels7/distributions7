@@ -80,7 +80,7 @@ y <- c(1, 2, 3)
 th <- list(mu = 2, lambda = 3)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out.
 all.equal(g$mu, 3 * (y - 2) / 2^3)
 #> [1] TRUE
 all.equal(g$lambda, 1 / (2 * 3) - (y - 2)^2 / (2 * 2^2 * y))

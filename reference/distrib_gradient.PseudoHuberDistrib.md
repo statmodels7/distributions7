@@ -79,7 +79,7 @@ y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 g <- distrib_gradient(d, y, th)
 
-# The location and scale components, written out.
+# The location and scale components agree with their formulas written out.
 r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 all.equal(g$mu, r / (1.2^2 * D))
 #> [1] TRUE

@@ -1,4 +1,4 @@
-# The Largest Skewness a Skew Normal Can Reach
+# The Largest Skewness That a Skew Normal Can Reach
 
 Returns \\\sup\|\gamma_1\|\\ over the skew normal family,
 \$\$\dfrac{4-\pi}{2}\left(\dfrac{b}{\sqrt{1-b^2}}\right)^3 \approx
@@ -25,17 +25,17 @@ bounds `gamma1` there and gives it a
 over the open interval. Without the bound the centered-to-direct map
 would return `NaN` without any indication of the cause.
 
-The ceiling is approached slowly: measured, the skewness is 0.9556 at
-\\\alpha = 10\\ and 0.99527 at \\\alpha = 10^4\\. Data skewer than this
-needs
+The ceiling is approached slowly: numerically, the skewness is 0.9556 at
+\\\alpha = 10\\ and 0.99527 at \\\alpha = 10^4\\. Data whose absolute
+skewness exceeds this value need
 [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md).
 
 ## See also
 
 [`sn_b()`](https://statmodels7.github.io/distributions7/reference/sn_b.md)
-for the constant it is built from,
+for the constant from which it is built,
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
-for the parameter it bounds, and
+for the parameter that it bounds, and
 [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
 for the family that goes further.
 

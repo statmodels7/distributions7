@@ -5,14 +5,14 @@ moments: the mean \\\mu\\, the standard deviation \\\sigma\\ and the
 skewness \\\gamma_1\\. It is the same law as
 [SkewNormal1Distrib](https://statmodels7.github.io/distributions7/reference/SkewNormal1Distrib.md),
 reached through the map of
-[`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md),
-and the only thing that differs is which three numbers name a member of
-it.
+[`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md);
+the two classes differ only in which three numbers name a member of the
+family.
 
 The expected information of this parametrization is non-singular at
-\\\gamma_1 = 0\\, where the direct parametrization's loses a rank; at
-\\\sigma = 1\\ its eigenvalues tend to 2, 1 and \\1/6\\ as the skewness
-goes to zero.
+\\\gamma_1 = 0\\, where the expected information of the direct
+parametrization loses a rank; at \\\sigma = 1\\ its eigenvalues tend to
+2, 1 and \\1/6\\ as the skewness goes to zero.
 
 Build one with
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md),
@@ -199,7 +199,7 @@ d@params_interpretation
 d@params_bounds$gamma1
 #> [1] -0.9952717  0.9952717
 
-# All three parameters are moments, which is what "centered" names.
+# All three parameters are moments, which is why it is called "centered".
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 c(mean = mean(d, th), sd = sqrt(variance(d, th)), skewness = skewness(d, th))
 #>     mean       sd skewness 

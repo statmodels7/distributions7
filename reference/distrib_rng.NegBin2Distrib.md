@@ -4,7 +4,7 @@ Draws `n` independent negative binomial counts by calling
 [`stats::rnbinom()`](https://rdrr.io/r/stats/NegBinomial.html) at
 `size = theta` and `mu = mu`, so the draws come from R's own generator
 and depend on `.Random.seed` in the usual way. The cumulative-table
-fallback the base class supplies for a discrete family is bypassed.
+fallback that the base class supplies for a discrete family is bypassed.
 
 ## Arguments
 
@@ -46,7 +46,8 @@ for the generic.
 ``` r
 d <- negbin2_distrib()
 
-# Same generator as stats::rnbinom at size = theta, mu = mu.
+# The method uses the same generator as stats::rnbinom at size = theta,
+# mu = mu.
 set.seed(2)
 a <- distrib_rng(d, 5, list(mu = 4, theta = 2))
 set.seed(2)
@@ -61,7 +62,7 @@ c(mu = mean(z), theta = mean(z)^2 / (var(z) - mean(z)))
 #>       mu    theta 
 #> 4.006700 2.041968 
 
-# Overdispersion is the point: the variance is three times the mean here.
+# The counts are overdispersed: the variance is three times the mean here.
 c(mean = mean(z), var = var(z))
 #>     mean      var 
 #>  4.00670 11.86855 

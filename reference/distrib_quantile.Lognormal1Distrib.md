@@ -4,8 +4,8 @@ Computes the lognormal quantile function \$\$Q(p; \mu, \sigma^2) =
 \exp\left\\\mu + \sigma\\\Phi^{-1}(p)\right\\, \qquad \sigma =
 \sqrt{\sigma^2},\$\$ by calling
 [`stats::qlnorm()`](https://rdrr.io/r/stats/Lognormal.html). It is
-closed form, the log transformation being monotone, so the round trip
-through
+closed form because the log transformation is monotone, so the round
+trip through
 [`distrib_cdf.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Lognormal1Distrib.md)
 returns `p` exactly. The median is \\e^{\mu}\\, which sits below the
 mean \\e^{\mu + \sigma^2/2}\\.
@@ -64,7 +64,7 @@ for the generic.
 d <- lognormal1_distrib()
 th <- list(mu = 0.5, sigma2 = 0.36)
 
-# A central 95 percent interval, multiplicatively symmetric about exp(mu).
+# A central 95 percent interval is multiplicatively symmetric about exp(mu).
 q <- distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 q
 #> [1] 0.5086585 1.6487213 5.3440211

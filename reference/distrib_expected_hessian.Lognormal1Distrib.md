@@ -7,9 +7,9 @@ closed form and with no quadrature or simulation:
 -\dfrac{1}{2\sigma^4}, \qquad
 \mathbb{E}\left\[\ell^{(\mu\sigma^2)}\right\] = 0.\$\$ They follow from
 \\\mathbb{E}\[\log Y\] = \mu\\ and \\\mathbb{E}\[(\log Y - \mu)^2\] =
-\sigma^2\\, \\\log Y\\ being Gaussian by construction. The zero
-off-diagonal says the two parameters are orthogonal, so their estimates
-are asymptotically independent.
+\sigma^2\\, because \\\log Y\\ is Gaussian by construction. The zero
+off-diagonal entry means that the two parameters are orthogonal, so
+their estimates are asymptotically independent.
 
 The information does not depend on \\\mu\\, only on \\\sigma^2\\, the
 variance of \\\log Y\\. Because the values do not depend on the data,
@@ -90,7 +90,7 @@ for the generic.
 d <- lognormal1_distrib()
 th <- list(mu = 0.5, sigma2 = 0.36)
 
-# The three constants, one value per observation.
+# The three constants are returned, one value per observation.
 lapply(distrib_expected_hessian(d, c(0.5, 1.6, 4), th), unique)
 #> $mu_mu
 #> [1] -2.777778

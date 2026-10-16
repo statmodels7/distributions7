@@ -82,7 +82,8 @@ names(d3)
 #> [1] "mu_mu_mu"          "mu_mu_alpha"       "mu_alpha_alpha"   
 #> [4] "alpha_alpha_alpha"
 
-# Against a central difference of the analytic Hessian.
+# The third-order entry is compared with a central difference of the
+# analytic Hessian.
 eps <- 1e-5
 rbind(analytic = d3$mu_mu_alpha,
       numeric = (distrib_hessian(d, y, list(mu = 3, alpha = al + eps))$mu_mu -

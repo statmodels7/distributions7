@@ -6,8 +6,8 @@ A^{-1}(\rho)\\. The map touches the second parameter only and the
 response not at all, so the distribution function is the other family's
 at that concentration.
 
-What it replaces is the base class's quadrature, one integration per
-observation. See
+This replaces the base class's quadrature, which performs one
+integration per observation. See
 [`vm_cdf()`](https://statmodels7.github.io/distributions7/reference/vm_cdf.md)
 for the series, its number of terms and the blocking that keeps the
 intermediate small. Where the requested tail is below \\10^{-6}\\, where
@@ -77,7 +77,8 @@ rbind(series = distrib_cdf(d2, y, th),
 #> series     0.04723942 0.2659828 0.5050289 0.9628184
 #> quadrature 0.04723942 0.2659828 0.5050289 0.9628184
 
-# And with the concentration parametrization at the implied concentration.
+# It also agrees with the concentration parametrization at the implied
+# concentration.
 k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(distrib_cdf(d2, y, th),
           distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))

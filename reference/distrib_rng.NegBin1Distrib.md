@@ -3,10 +3,9 @@
 Draws `n` independent counts by calling
 [`stats::rnbinom()`](https://rdrr.io/r/stats/NegBinomial.html) at size
 \\r = \mu/\theta\\ and mean \\\mu\\, so the success probability
-\\1/(1+\theta)\\ is never formed and the draws come from R's own
-generator and depend on `.Random.seed` in the usual way. The
-cumulative-table fallback the base class supplies for a discrete family
-is bypassed.
+\\1/(1+\theta)\\ is never formed. The draws come from R's own generator
+and depend on `.Random.seed` in the usual way. The cumulative-table
+fallback that the base class supplies for a discrete family is bypassed.
 
 ## Arguments
 
@@ -48,7 +47,7 @@ for the generic.
 ``` r
 d <- negbin1_distrib()
 
-# Same generator as stats::rnbinom at size mu/theta and mean mu.
+# The generator is the same as stats::rnbinom at size mu/theta and mean mu.
 set.seed(2)
 a <- distrib_rng(d, 5, list(mu = 4, theta = 4))
 set.seed(2)

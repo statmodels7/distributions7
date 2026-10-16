@@ -1,8 +1,9 @@
 # Lognormal Derivatives in the Response, Mean and Variance of Y
 
-The derivatives of the log-density in the response to order four, and
-the mixed derivatives of orders one and two in the response and one and
-two in \\(m, v)\\, each a closed form from its own compiled kernel.
+Return the derivatives of the log-density in the response to order four
+and the mixed derivatives of orders one and two in the response and one
+and two in \\(m, v)\\. Each of them is a closed form computed by its own
+compiled kernel.
 
 ## Arguments
 

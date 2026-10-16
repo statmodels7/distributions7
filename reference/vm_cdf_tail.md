@@ -11,13 +11,13 @@ would exceed about \\10^{-9}\\. `vm_log_tail()` integrates
 the integrand decreases from each end of the interval to the antimode.
 The interval is split at the antimode when it contains it, and each
 piece is integrated from its end on the scale \\1/\max\\\kappa\|\sin(e -
-\mu)\|, \sqrt\kappa\\\\ at that end \\e\\, relative to the value there
-and with the difference of the cosines written as a product of sines,
+\mu)\|, \sqrt\kappa\\\\ at that end \\e\\, relative to the value there,
 over panels of growing width until the remainder is below \\10^{-17}\\
-of the sum. The pieces are added on the log scale, and the normalizing
+of the sum. The difference of the cosines is written as a product of
+sines. The pieces are added on the log scale, and the normalizing
 constant comes from
 [`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html),
-so no factor underflows at any concentration.
+so that the factors do not underflow at any concentration.
 
 ## Usage
 

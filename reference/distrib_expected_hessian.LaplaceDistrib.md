@@ -77,7 +77,7 @@ family the two agree with the variance of the score by the second
 Bartlett identity. The Laplace is not regular in \\\mu\\: the first
 identity \\\mathbb{E}\[\partial\ell/\partial\mu\] = 0\\ still holds, the
 second does not, and the information is defined as the variance of the
-score. That is what this method returns.
+score, which this method returns.
 
 ## See also
 
@@ -89,8 +89,8 @@ whose variance this is;
 which inverts this matrix and so fits this family where a Newton step
 could not; and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-for the generic and the strategies it offers a family with no closed
-form.
+for the generic and the strategies that it offers for a family with no
+closed form.
 
 ## Examples
 

@@ -10,10 +10,10 @@ directly and everything else comes from the parent.
 The density has a kink at \\y = \mu\\, where \\\|y - \mu\|\\ is not
 differentiable. This makes the family non-regular in its location: the
 observed second derivative in \\\mu\\ is 0 almost everywhere while the
-information is \\1/\sigma^2\\. The class records that by setting
-`params_smooth` to `c(mu = FALSE, sigma = TRUE)`, which
+information is \\1/\sigma^2\\. The class records this by setting
+`params_smooth` to `c(mu = FALSE, sigma = TRUE)`, a property that
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-and the finite-difference guards consult.
+and the finite-difference guards read.
 
 Build one with
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md).
@@ -194,7 +194,7 @@ c(variance = variance(d, th), two_sigma_sq = 2 * 1.5^2)
 #>     variance two_sigma_sq 
 #>          4.5          4.5 
 
-# Heavier tailed than a Gaussian: the excess kurtosis is 3.
+# The tails are heavier than a Gaussian's: the excess kurtosis is 3.
 kurtosis(d, th)
 #> [1] 3
 ```

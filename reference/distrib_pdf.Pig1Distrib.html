@@ -9,8 +9,9 @@ function is a finite sum and the prefactors cancel, which gives
   + \log S_y - \log y!\) with \(S_y\) a sum of \(y\) positive terms
 taken on the log scale. The compiled kernel evaluates
 \((1-\sqrt c)/\sigma\) as \(-2\mu/(1+\sqrt c)\) and \(S_y\) in
-\(w = 1/(2\alpha)\), so nothing cancels as \(\sigma \to 0\), and no
-Bessel routine is called."><meta property="og:description" content="Computes the Poisson-inverse Gaussian mass. With \(c = 1 + 2\sigma\mu\)
+\(w = 1/(2\alpha)\), so the evaluation involves no subtraction of nearly
+equal terms as \(\sigma \to 0\), and the kernel does not call a Bessel
+routine."><meta property="og:description" content="Computes the Poisson-inverse Gaussian mass. With \(c = 1 + 2\sigma\mu\)
 and \(\alpha = \sqrt{c}/\sigma\),
 $$P(Y = y) = \sqrt{\dfrac{2\alpha}{\pi}}\,
   \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha).$$
@@ -20,8 +21,9 @@ function is a finite sum and the prefactors cancel, which gives
   + \log S_y - \log y!\) with \(S_y\) a sum of \(y\) positive terms
 taken on the log scale. The compiled kernel evaluates
 \((1-\sqrt c)/\sigma\) as \(-2\mu/(1+\sqrt c)\) and \(S_y\) in
-\(w = 1/(2\alpha)\), so nothing cancels as \(\sigma \to 0\), and no
-Bessel routine is called."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(w = 1/(2\alpha)\), so the evaluation involves no subtraction of nearly
+equal terms as \(\sigma \to 0\), and the kernel does not call a Bessel
+routine."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +31,7 @@ Bessel routine is called."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +74,9 @@ function is a finite sum and the prefactors cancel, which gives
   + \log S_y - \log y!\) with \(S_y\) a sum of \(y\) positive terms
 taken on the log scale. The compiled kernel evaluates
 \((1-\sqrt c)/\sigma\) as \(-2\mu/(1+\sqrt c)\) and \(S_y\) in
-\(w = 1/(2\alpha)\), so nothing cancels as \(\sigma \to 0\), and no
-Bessel routine is called.</p>
+\(w = 1/(2\alpha)\), so the evaluation involves no subtraction of nearly
+equal terms as \(\sigma \to 0\), and the kernel does not call a Bessel
+routine.</p>
     </div>
 
 
@@ -137,7 +140,8 @@ orthogonal coordinates, and <code><a href="distrib_pdf.html">distrib_pdf()</a></
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">6</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against the Bessel formula written out, which the kernel does not use.</span></span></span>
+<span class="r-in"><span><span class="co"># The mass is compared with the Bessel formula written out, which the</span></span></span>
+<span class="r-in"><span><span class="co"># kernel does not use.</span></span></span>
 <span class="r-in"><span><span class="va">al</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">0.8</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span> <span class="op">/</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">al</span> <span class="op">/</span> <span class="va">pi</span><span class="op">)</span> <span class="op">*</span> <span class="fl">3</span><span class="op">^</span><span class="va">y</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">/</span></span></span>
@@ -157,7 +161,7 @@ orthogonal coordinates, and <code><a href="distrib_pdf.html">distrib_pdf()</a></
 <span class="r-out co"><span class="r-pr">#&gt;</span> pig    0.0006790258 5.753016e-06 7.233866e-08</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> negbin 0.0004803803 5.368144e-07 5.596723e-10</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Off the support.</span></span></span>
+<span class="r-in"><span><span class="co"># A value off the support has probability zero.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1.5</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0</span>
 </code></pre></div>

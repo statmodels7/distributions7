@@ -8,7 +8,7 @@ closed-form moments.
 
 The family is equidispersed: its variance equals its mean at every
 parameter value. Real counts are usually more variable than that, so a
-Poisson fit is often the null a count analysis argues against;
+Poisson fit is often the null against which a count analysis argues;
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 and
 [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
@@ -57,7 +57,8 @@ canonical link, and on its scale \$\$\dfrac{\partial \ell}{\partial
 expected information coincide in exact arithmetic: Fisher scoring and
 Newton's method take the same step, and the iteratively reweighted least
 squares of a Poisson log-linear model is both at once. Under any other
-link the two differ and the choice matters.
+link the two differ, so Fisher scoring and Newton's method take
+different steps.
 
 ## Derivatives
 
@@ -126,7 +127,7 @@ all.equal(distrib_pdf(d, y, list(mu = 3)), dpois(y, 3))
 sum(distrib_pdf(d, 0:200, list(mu = 3)))
 #> [1] 1
 
-# Equidispersed, and closer to symmetric as the mean grows.
+# The family is equidispersed and closer to symmetric as the mean grows.
 vapply(c(0.5, 3, 20), function(m) {
   th <- list(mu = m)
   c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))
@@ -143,9 +144,10 @@ c(fitted = unname(coef(fit_distrib(d, z))), sample_mean = mean(z))
 #>      fitted sample_mean 
 #>       4.087       4.087 
 
-# Equidispersion is a testable assumption. Drawn from the family the
-# sample variance matches the mean; drawn with extra variability it does
-# not, and a negative binomial is the family to reach for.
+# Equidispersion is a testable assumption. A sample drawn from the family
+# has a variance that matches its mean; a sample drawn with extra
+# variability does not, and then a negative binomial is the appropriate
+# family.
 set.seed(6)
 over <- rpois(1000, lambda = rgamma(1000, shape = 2, rate = 2 / 4.2))
 rbind(poisson = c(mean = mean(z), var = var(z)),

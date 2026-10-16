@@ -75,7 +75,8 @@ d <- poisson_distrib()
 y <- c(0, 2, 7)
 th <- list(mu = 3)
 
-# The closed form, written out; zero at an observed zero.
+# The Hessian is compared with its closed form, which is zero at an
+# observed zero.
 all.equal(distrib_hessian(d, y, th)$mu_mu, -y / 3^2)
 #> [1] TRUE
 

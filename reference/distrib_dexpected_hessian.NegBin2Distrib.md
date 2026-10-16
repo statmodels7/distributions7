@@ -1,8 +1,8 @@
 # Negative Binomial Derivatives of the Expected Information, NB2
 
-The first and second derivatives of the expected information in \\(\mu,
-\theta)\\, from a compiled kernel. \\\mathbb{E}\[\ell\_{\mu\mu}\] =
--\theta/(\mu(\theta+\mu))\\ is differentiated in closed form and
+Computes the first and second derivatives of the expected information in
+\\(\mu, \theta)\\ with a compiled kernel. \\\mathbb{E}\[\ell\_{\mu\mu}\]
+= -\theta/(\mu(\theta+\mu))\\ is differentiated in closed form and
 \\\mathbb{E}\[\ell\_{\mu\theta}\] = 0\\.
 \\\mathbb{E}\[\ell\_{\theta\theta}\] = S = \sum_k p_k U_k\\ is a sum
 over the support whose mass depends on the parameters, so a derivative
@@ -12,8 +12,8 @@ moves the mass as well as the summand: \$\$\partial_x S = \sum_k p_k
 s_y)\big),\$\$ with \\s\\ the score of the log-mass at \\k\\. Every
 piece is an exact polynomial in \\k\\ or a sum
 \\\sum\_{j\<k}(\theta+j)^{-r}\\ accumulated beside the mass, over the
-recurrence and stopping rule the expected information itself uses. On
-the link scale the result is carried across by
+recurrence and stopping rule that the expected information itself uses.
+On the link scale the result is carried across by
 [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md).
 
 ## Arguments

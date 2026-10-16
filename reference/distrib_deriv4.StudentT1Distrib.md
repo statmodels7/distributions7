@@ -55,18 +55,18 @@ ignored.
 
 ## Value
 
-A named list of fifteen numeric vectors named for the multi-index they
-carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
-`max(length(y), length(mu), length(sigma), length(nu))`.
+A named list of fifteen numeric vectors named for the multi-index that
+each of them carries, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of
+length `max(length(y), length(mu), length(sigma), length(nu))`.
 
 ## Large degrees of freedom
 
-Written like the third order, in \\z\\, \\q = z^2/\nu\\ and \\t =
-1/(1+q)\\, with the quantities of \\\nu\\ alone on their asymptotic
-series above \\\nu = 20\\: on the parameter scale all fifteen components
-stay finite to `.Machine$double.xmax`. On the link scale the factors
-\\(h')^k\\ of the chain rule make some components non-finite from \\\nu
-= 10^{150}\\.
+The components are written as in the third order, in \\z\\, \\q =
+z^2/\nu\\ and \\t = 1/(1+q)\\, with the quantities of \\\nu\\ alone on
+their asymptotic series above \\\nu = 20\\, so on the parameter scale
+all fifteen components stay finite to `.Machine$double.xmax`. On the
+link scale the factors \\(h')^k\\ of the chain rule make some components
+non-finite from \\\nu = 10^{150}\\.
 
 ## See also
 
@@ -98,7 +98,7 @@ dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu_mu_mu
 all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 #> [1] TRUE
 
-# At a degrees of freedom the log link can produce, every component is
+# At a degrees of freedom that the log link can produce, every component is
 # finite.
 big <- distrib_deriv4(d, y, list(mu = 0.4, sigma = 1.2, nu = 1e300))
 all(vapply(big, function(v) all(is.finite(v)), logical(1)))

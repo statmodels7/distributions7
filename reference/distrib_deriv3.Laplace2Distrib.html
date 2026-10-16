@@ -6,7 +6,7 @@ log-density is \(\log(\lambda/2) - \lambda|y-\mu|\), which is linear in
 \(\mu\). Every third derivative involving \(\mu\) at all is therefore
 zero, and the only surviving component comes from \(\log\lambda\):
 $$\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},$$
-with mu_mu_mu, mu_mu_lambda and mu_lambda_lambda all zero.
+where mu_mu_mu, mu_mu_lambda and mu_lambda_lambda are all zero.
 These derivatives do not depend on the data, so the observed and expected
 values coincide: expected, approx and nsim are accepted and have no
 effect."><meta property="og:description" content="Computes the four distinct third derivatives of the Laplace log-density with
@@ -16,7 +16,7 @@ log-density is \(\log(\lambda/2) - \lambda|y-\mu|\), which is linear in
 \(\mu\). Every third derivative involving \(\mu\) at all is therefore
 zero, and the only surviving component comes from \(\log\lambda\):
 $$\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},$$
-with mu_mu_mu, mu_mu_lambda and mu_lambda_lambda all zero.
+where mu_mu_mu, mu_mu_lambda and mu_lambda_lambda are all zero.
 These derivatives do not depend on the data, so the observed and expected
 values coincide: expected, approx and nsim are accepted and have no
 effect."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -27,7 +27,7 @@ effect."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ log-density is \(\log(\lambda/2) - \lambda|y-\mu|\), which is linear in
 \(\mu\). Every third derivative involving \(\mu\) at all is therefore
 zero, and the only surviving component comes from \(\log\lambda\):
 $$\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},$$
-with <code>mu_mu_mu</code>, <code>mu_mu_lambda</code> and <code>mu_lambda_lambda</code> all zero.</p>
+where <code>mu_mu_mu</code>, <code>mu_mu_lambda</code> and <code>mu_lambda_lambda</code> are all zero.</p>
 <p>These derivatives do not depend on the data, so the observed and expected
 values coincide: <code>expected</code>, <code>approx</code> and <code>nsim</code> are accepted and have no
 effect.</p>
@@ -151,7 +151,7 @@ the order above; <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code>
 <span class="r-in"><span><span class="fl">2</span> <span class="op">/</span> <span class="fl">2</span><span class="op">^</span><span class="fl">3</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.25</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># expected = TRUE changes nothing, the values carrying no data.</span></span></span>
+<span class="r-in"><span><span class="co"># expected = TRUE changes nothing, because the values carry no data.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">d3</span>, <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>

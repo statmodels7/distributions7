@@ -12,7 +12,7 @@ The information in \(\kappa\) is \(A'(\kappa)\) and
 \(\kappa'(\rho) = 1/A'(\kappa)\), so the information in \(\rho\) is
 \(A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)\), the reciprocal of the
 information in \(\kappa\). The two parameters remain orthogonal.
-approx and nsim are ignored, the expectation being exact."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
+approx and nsim are ignored because the expectation is exact."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation. Since
 \(\mathbb{E}[\cos(Y-\mu)] = A(\kappa)\) and
 \(\mathbb{E}[\sin(Y-\mu)] = 0\), the term carrying the map's second
@@ -25,7 +25,7 @@ The information in \(\kappa\) is \(A'(\kappa)\) and
 \(\kappa'(\rho) = 1/A'(\kappa)\), so the information in \(\rho\) is
 \(A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)\), the reciprocal of the
 information in \(\kappa\). The two parameters remain orthogonal.
-approx and nsim are ignored, the expectation being exact."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+approx and nsim are ignored because the expectation is exact."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +33,7 @@ approx and nsim are ignored, the expectation being exact."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ The information in \(\kappa\) is \(A'(\kappa)\) and
 \(\kappa'(\rho) = 1/A'(\kappa)\), so the information in \(\rho\) is
 \(A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)\), the reciprocal of the
 information in \(\kappa\). The two parameters remain orthogonal.</p>
-<p><code>approx</code> and <code>nsim</code> are ignored, the expectation being exact.</p>
+<p><code>approx</code> and <code>nsim</code> are ignored because the expectation is exact.</p>
     </div>
 
 
@@ -92,8 +92,8 @@ information in \(\kappa\). The two parameters remain orthogonal.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of angles. Only its length is read, the
-expectation not depending on the data; the values are ignored.</p></dd>
+<dd><p>A numeric vector of angles. Only its length is read, because
+the expectation does not depend on the data; the values are ignored.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -142,8 +142,8 @@ concentration and \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hessian.VonMises2Distrib.html">distrib_hessian.VonMises2Distrib()</a></code> for the quantity this is the
-expectation of, <code><a href="distrib_expected_hessian.VonMises1Distrib.html">distrib_expected_hessian.VonMises1Distrib()</a></code> for the same
+    <div class="dont-index"><p><code><a href="distrib_hessian.VonMises2Distrib.html">distrib_hessian.VonMises2Distrib()</a></code> for the quantity of which this
+is the expectation, <code><a href="distrib_expected_hessian.VonMises1Distrib.html">distrib_expected_hessian.VonMises1Distrib()</a></code> for the same
 quantity in the concentration, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the
 generic.</p></div>
     </div>

@@ -11,8 +11,9 @@ come from a compiled quadrature of the derivatives of the density.
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
 the estimating equation, and \(\nu\) is estimated from the data rather
-than set: a large fitted \(\nu\) reports that the sample looks Gaussian.
-The three arguments choose the links that carry each parameter to the
+than set: a large fitted \(\nu\) indicates that the sample is close to
+Gaussian.
+The three arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works."><meta property="og:description" content="Builds the distribution object for the location-scale Student t family,
 parametrized by a location \(\mu\), a scale \(\sigma &amp;gt; 0\) and degrees
 of freedom \(\nu &amp;gt; 0\). The returned object carries closed-form
@@ -25,8 +26,9 @@ come from a compiled quadrature of the derivatives of the density.
 The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
 the estimating equation, and \(\nu\) is estimated from the data rather
-than set: a large fitted \(\nu\) reports that the sample looks Gaussian.
-The three arguments choose the links that carry each parameter to the
+than set: a large fitted \(\nu\) indicates that the sample is close to
+Gaussian.
+The three arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -35,7 +37,7 @@ unconstrained scale on which an optimizer works."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,8 +82,9 @@ come from a compiled quadrature of the derivatives of the density.</p>
 <p>The family is the standard heavy-tailed alternative to a Gaussian. Its
 location score redescends, so a gross outlier contributes almost nothing to
 the estimating equation, and \(\nu\) is estimated from the data rather
-than set: a large fitted \(\nu\) reports that the sample looks Gaussian.</p>
-<p>The three arguments choose the links that carry each parameter to the
+than set: a large fitted \(\nu\) indicates that the sample is close to
+Gaussian.</p>
+<p>The three arguments set the links that carry each parameter to the
 unconstrained scale on which an optimizer works.</p>
     </div>
 
@@ -100,8 +103,8 @@ unconstrained scale on which an optimizer works.</p>
 
 <dl><dt id="arg-link-mu">link_mu<a class="anchor" aria-label="anchor" href="#arg-link-mu"></a></dt>
 <dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the location
-\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, the location
-ranging over the whole line already.</p></dd>
+\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, because the
+location already ranges over the whole line.</p></dd>
 
 
 <dt id="arg-link-sigma">link_sigma<a class="anchor" aria-label="anchor" href="#arg-link-sigma"></a></dt>
@@ -133,10 +136,10 @@ the distribution function \(F(q) = T_\nu\{(q-\mu)/\sigma\}\) and the
 quantile function \(Q(p) = \mu + \sigma T_\nu^{-1}(p)\), with \(T_\nu\)
 the standard Student t distribution function.</p>
 <p>\(\sigma\) is the scale and not the standard deviation, which is
-\(\sigma\sqrt{\nu/(\nu-2)}\) and exists only above \(\nu = 2\). Keeping
-the two apart lets the family be fitted where the second moment does not
-exist; <code><a href="student_t2_distrib.html">student_t2_distrib()</a></code> is the parametrization by the standard
-deviation.</p>
+\(\sigma\sqrt{\nu/(\nu-2)}\) and exists only above \(\nu = 2\). Because
+the two are kept apart, the family can be fitted where the second moment
+does not exist; <code><a href="student_t2_distrib.html">student_t2_distrib()</a></code> is the parametrization by the
+standard deviation.</p>
 <p>Two shapes are named families: \(\nu = 1\) is the Cauchy, and
 \(\nu \to \infty\) the Gaussian with standard deviation \(\sigma\). The
 approach to the limit is \(O(1/\nu)\), so at \(\nu = 10^5\) the density
@@ -156,8 +159,8 @@ with \(\psi\) the digamma function. The observed Hessian is in
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)},$$
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)},$$
-with the two entries containing \(\mu\) exactly zero. The location is
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.$$
+The two entries containing \(\mu\) are exactly zero. The location is
 therefore orthogonal to the other two, whose estimates are asymptotically
 correlated with each other.</p>
     </div>
@@ -168,8 +171,8 @@ correlated with each other.</p>
 back towards zero, so an observation far from the location is downweighted
 automatically. The price is that the curvature in \(\mu\) turns
 positive past the same point, so the observed information is indefinite
-at an outlying observation. Fisher scoring is unaffected, the expected
-information being negative definite everywhere, which is why it is the
+at an outlying observation. Fisher scoring is unaffected because the
+expected information is negative definite everywhere, which is why it is the
 default in <code><a href="fit_distrib.html">fit_distrib()</a></code>.</p>
     </div>
     <div class="section level2">
@@ -184,8 +187,8 @@ variance \(\sigma^2\nu/(\nu-2)\) for \(\nu &gt; 2\), the skewness 0 for
     <div class="section level2">
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
     <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale by Fisher
-scoring. No estimate is closed form, the three estimating equations being
-coupled through \(D\). On Gaussian data the likelihood has no finite
+scoring. The estimates have no closed form, because the three estimating
+equations are coupled through \(D\). On Gaussian data the likelihood has no finite
 maximizer in \(\nu\): \(\hat\nu\) diverges, and the fit returns a large
 finite value.</p>
     </div>
@@ -216,7 +219,7 @@ limit; <code><a href="skewt_distrib.html">skewt_distrib()</a></code> to add a sh
 <code><a href="pseudohuber_distrib.html">pseudohuber_distrib()</a></code> and <code><a href="laplace_distrib.html">laplace_distrib()</a></code> for other robust families;
 <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> for the multivariate version;
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 <a href="StudentT1Distrib.html">StudentT1Distrib</a> for the class.</p></div>
     </div>
@@ -246,7 +249,8 @@ passes;
 <span class="r-out co"><span class="r-pr">#&gt;</span> scale  mean   var  skew  kurt </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1.2   0.4   2.4   0.0   6.0 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Below its own threshold each moment reports that it does not exist.</span></span></span>
+<span class="r-in"><span><span class="co"># Below its own threshold each moment is returned as NaN or Inf, which</span></span></span>
+<span class="r-in"><span><span class="co"># means that the moment does not exist.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1.5</span>, <span class="fl">2.5</span>, <span class="fl">3.5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>         <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>           <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, nu <span class="op">=</span> <span class="va">v</span><span class="op">)</span></span></span>

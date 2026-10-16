@@ -88,7 +88,7 @@ names(d3)
 #> [1] "mu_mu_mu"          "mu_mu_sigma"       "mu_sigma_sigma"   
 #> [4] "sigma_sigma_sigma"
 
-# The pure-mu component, written out.
+# The pure-mu component is written out.
 u <- (y / 2)^1.5
 all.equal(d3$mu_mu_mu, 1.5 * (-2 + 2.5 * 3.5 * u) / 8)
 #> [1] TRUE

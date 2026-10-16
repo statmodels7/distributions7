@@ -5,7 +5,7 @@ the mass, by calling
 [`stats::pnbinom()`](https://rdrr.io/r/stats/NegBinomial.html) at size
 \\r = \mu/\theta\\ and mean \\\mu\\, so that the success probability
 \\1/(1+\theta)\\ is never formed. That function evaluates it through the
-incomplete beta function, so nothing is summed. The result is a step
+incomplete beta function and does not sum the mass. The result is a step
 function, constant between consecutive integers. Both tails are
 available exactly, and `log.p = TRUE` returns a logarithm that stays
 finite where the probability itself underflows.

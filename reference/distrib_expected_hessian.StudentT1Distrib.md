@@ -14,11 +14,11 @@ closed form and with no quadrature or simulation:
 \nu}\right\] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.\$\$
 
 The location is orthogonal to both other parameters: the two mixed
-entries containing \\\mu\\ are exactly zero, the law being symmetric
-about \\\mu\\ while the other two components are even in \\r\\. So
-\\\hat\mu\\ is asymptotically independent of \\\hat\sigma\\ and
-\\\hat\nu\\, which the scale and the degrees of freedom are not of each
-other.
+entries containing \\\mu\\ are exactly zero, because the law is
+symmetric about \\\mu\\ while the other two components are even in
+\\r\\. So \\\hat\mu\\ is asymptotically independent of \\\hat\sigma\\
+and \\\hat\nu\\, whereas \\\hat\sigma\\ and \\\hat\nu\\ are not
+asymptotically independent of each other.
 
 Because a closed form exists, `approx` and `nsim` are ignored: every
 strategy returns the same six numbers. The arithmetic runs in a compiled
@@ -33,8 +33,8 @@ kernel, so the result does not depend on the thread count.
 
 - y:
 
-  A numeric vector of observations. Only its length is read, the
-  expectation not depending on the data; the values are ignored.
+  A numeric vector of observations. Only its length is read, because the
+  expectation does not depend on the data; the values are ignored.
 
 - theta:
 
@@ -112,7 +112,7 @@ vapply(eh, function(z) z[1], numeric(1))
 #>        mu_mu  sigma_sigma        nu_nu     mu_sigma        mu_nu     sigma_nu 
 #> -0.520833333 -0.868055556 -0.003022589  0.000000000  0.000000000  0.034722222 
 
-# The four non-zero closed forms, written out.
+# The four non-zero closed forms are written out.
 c(mu_mu = -6 / (1.2^2 * 8),
   sigma_sigma = -10 / (1.2^2 * 8),
   nu_nu = (trigamma(3) - trigamma(2.5)) / 4 + 10 / (2 * 5 * 6 * 8),
@@ -121,7 +121,7 @@ c(mu_mu = -6 / (1.2^2 * 8),
 #> -0.520833333 -0.868055556 -0.003022589  0.034722222 
 
 # Averaging the observed Hessian over draws reaches the same six numbers,
-# the two containing mu going to zero.
+# and the two entries containing mu go to zero.
 set.seed(1)
 z <- distrib_rng(d, 4e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
@@ -130,7 +130,7 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #>      sigma_nu 
 #>  3.461666e-02 
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument has no effect, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 #> [1] TRUE
 ```

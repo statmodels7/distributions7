@@ -3,16 +3,18 @@
 respect to the response, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{3}{2y^2}
       - \dfrac{1}{\phi y^3}.$$
-The mean drops out, the log-density depending on \(\mu\) only through
-terms linear in \(y\) and constant in it. The sign changes at
+The mean drops out because the log-density depends on \(\mu\) only
+through terms that are linear in \(y\) and terms that are constant in
+\(y\). The sign changes at
 \(y = 2/(3\phi)\): the log-density is concave in the response below that
 point and convex above it, so an inverse Gaussian log-likelihood is not
 a concave function of an observation over the whole support."><meta property="og:description" content="Computes the second derivative of the inverse Gaussian log-density with
 respect to the response, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{3}{2y^2}
       - \dfrac{1}{\phi y^3}.$$
-The mean drops out, the log-density depending on \(\mu\) only through
-terms linear in \(y\) and constant in it. The sign changes at
+The mean drops out because the log-density depends on \(\mu\) only
+through terms that are linear in \(y\) and terms that are constant in
+\(y\). The sign changes at
 \(y = 2/(3\phi)\): the log-density is concave in the response below that
 point and convex above it, so an inverse Gaussian log-likelihood is not
 a concave function of an observation over the whole support."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -23,7 +25,7 @@ a concave function of an observation over the whole support."><meta property="og
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +62,9 @@ a concave function of an observation over the whole support."><meta property="og
 respect to the response, in closed form:
 $$\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{3}{2y^2}
       - \dfrac{1}{\phi y^3}.$$
-The mean drops out, the log-density depending on \(\mu\) only through
-terms linear in \(y\) and constant in it. The sign changes at
+The mean drops out because the log-density depends on \(\mu\) only
+through terms that are linear in \(y\) and terms that are constant in
+\(y\). The sign changes at
 \(y = 2/(3\phi)\): the log-density is concave in the response below that
 point and convex above it, so an inverse Gaussian log-likelihood is not
 a concave function of an observation over the whole support.</p>
@@ -117,7 +120,7 @@ parameters, and <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code> 
 <span class="r-in"><span>          <span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">300</span>, phi <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Concave below 2/(3 phi) and convex above it.</span></span></span>
+<span class="r-in"><span><span class="co"># The log-density is concave in y below 2/(3 phi) and convex above it.</span></span></span>
 <span class="r-in"><span><span class="va">cut</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">/</span> <span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>below <span class="op">=</span> <span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">cut</span> <span class="op">/</span> <span class="fl">2</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  at <span class="op">=</span> <span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">cut</span>, <span class="va">th</span><span class="op">)</span>,</span></span>

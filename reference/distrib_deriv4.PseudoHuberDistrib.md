@@ -8,8 +8,8 @@ their derivatives come from the three routes described in
 
 The expected fourth derivatives have no closed form. With
 `expected = TRUE` the method calls
-[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-which is the one place on this page where `approx` and `nsim` are read.
+[`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md).
+The arguments `approx` and `nsim` are read only in this case.
 
 ## Arguments
 
@@ -44,12 +44,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 
@@ -57,8 +57,8 @@ which is the one place on this page where `approx` and `nsim` are read.
 
 ## Value
 
-A named list of fifteen numeric vectors named for the multi-index they
-carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
+A named list of fifteen numeric vectors named for the multi-index that
+they carry, from `mu_mu_mu_mu` to `nu_nu_nu_nu`, each of length
 `max(length(y), length(mu), length(sigma), length(nu))`.
 
 ## See also

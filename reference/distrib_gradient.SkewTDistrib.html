@@ -25,7 +25,7 @@ freedom, which has no elementary expression and is taken as an integral."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -177,12 +177,13 @@ incomplete beta function, every order from one to five agrees to about
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span>, nu <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The location component written out in skewt_pieces()' terms.</span></span></span>
+<span class="r-in"><span><span class="co"># The location component is written out in skewt_pieces()' terms.</span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="skewt_pieces.html">skewt_pieces</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">mu</span>, <span class="op">-</span><span class="op">(</span><span class="va">p</span><span class="op">$</span><span class="va">a</span> <span class="op">+</span> <span class="va">p</span><span class="op">$</span><span class="va">q</span> <span class="op">*</span> <span class="va">p</span><span class="op">$</span><span class="va">b</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># All four against numerical differentiation of the log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># All four components are compared with numerical differentiation of the</span></span></span>
+<span class="r-in"><span><span class="co"># log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, sigma <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                                            alpha <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, nu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                 log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

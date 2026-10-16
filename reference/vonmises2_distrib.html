@@ -3,7 +3,7 @@
 mean direction \(\mu\) and its mean resultant length
 \(\rho \in (0, 1)\). The returned object carries closed-form derivatives
 of the log-density to fourth order, a closed-form expected information, and
-the same Bessel-series distribution function the concentration
+the same Bessel-series distribution function that the concentration
 parametrization uses.
 The concentration \(\kappa\) of vonmises1_distrib() is unbounded and
 hard to interpret. The resultant length is bounded, is the quantity that is
@@ -13,7 +13,7 @@ sqrt(mean(cos(z))^2 + mean(sin(z))^2)."><meta property="og:description" content=
 mean direction \(\mu\) and its mean resultant length
 \(\rho \in (0, 1)\). The returned object carries closed-form derivatives
 of the log-density to fourth order, a closed-form expected information, and
-the same Bessel-series distribution function the concentration
+the same Bessel-series distribution function that the concentration
 parametrization uses.
 The concentration \(\kappa\) of vonmises1_distrib() is unbounded and
 hard to interpret. The resultant length is bounded, is the quantity that is
@@ -27,7 +27,7 @@ sqrt(mean(cos(z))^2 + mean(sin(z))^2)."><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@ sqrt(mean(cos(z))^2 + mean(sin(z))^2)."><meta property="og:image" content="https
 mean direction \(\mu\) and its mean resultant length
 \(\rho \in (0, 1)\). The returned object carries closed-form derivatives
 of the log-density to fourth order, a closed-form expected information, and
-the same Bessel-series distribution function the concentration
+the same Bessel-series distribution function that the concentration
 parametrization uses.</p>
 <p>The concentration \(\kappa\) of <code><a href="vonmises1_distrib.html">vonmises1_distrib()</a></code> is unbounded and
 hard to interpret. The resultant length is bounded, is the quantity that is
@@ -130,24 +130,24 @@ nearly all in one direction is therefore far better conditioned in
     <h2 id="derivatives-and-information">Derivatives and information<a class="anchor" aria-label="anchor" href="#derivatives-and-information"></a></h2>
     <p>The map touches the second parameter only, so every chain rule is the
 one-variable one and the derivatives are exact at every order. Every
-component carrying at least one \(\mu\) collapses to a single term, the
-concentration parametrization's \(\mu\)-derivatives being linear in
-\(\kappa\).</p>
-<p>The expected information is closed form and the two parameters are
-orthogonal, as in the concentration parametrization, with
+component carrying at least one \(\mu\) collapses to a single term,
+because the concentration parametrization's \(\mu\)-derivatives are linear
+in \(\kappa\).</p>
+<p>The expected information is closed form, and the two parameters are
+orthogonal as in the concentration parametrization:
 $$\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa\rho, \qquad
       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
-      \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)},$$
-the last being the reciprocal of the information in \(\kappa\), since the
-Jacobian of the map is that reciprocal.</p>
+      \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)}.$$
+The last of these is the reciprocal of the information in \(\kappa\), since
+the Jacobian of the map is that reciprocal.</p>
     </div>
     <div class="section level2">
     <h2 id="the-moments-are-not-the-parameters">The moments are not the parameters<a class="anchor" aria-label="anchor" href="#the-moments-are-not-the-parameters"></a></h2>
     <p><code><a href="mean.VonMises2Distrib.html">mean.VonMises2Distrib()</a></code> returns the ordinary expectation of \(Y\) on
 \([-\pi, \pi)\), which differs from \(\mu\) whenever \(\mu \ne 0\);
-<code><a href="vonmises1_distrib.html">vonmises1_distrib()</a></code> discusses the same distinction. What this
-parametrization offers is that the second parameter can be computed
-directly from a sample, which is not the case for the concentration.</p>
+<code><a href="vonmises1_distrib.html">vonmises1_distrib()</a></code> discusses the same distinction. In this
+parametrization the second parameter can be computed directly from a
+sample, which is not the case for the concentration.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -171,7 +171,7 @@ Wiley, Chichester.</p>
 conditioned at a nearly deterministic direction;
 <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse.html" class="external-link">numericals7::bessel_i_ratio_inverse()</a></code> for the map and its derivatives;
 <code><a href="beta1_distrib.html">beta1_distrib()</a></code> for another family on \((0, 1)\); <code><a href="fit_distrib.html">fit_distrib()</a></code> to
-estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your own
+estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a user-defined family
 against the same battery that this one passes; <a href="VonMises2Distrib.html">VonMises2Distrib</a> for the
 class.</p></div>
     </div>
@@ -188,11 +188,12 @@ class.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mu  (mean direction)     | Link: bounded(lwr=-3.14159265358979, upr=3.14159265358979) | Domain: (-3.14159265358979, 3.14159265358979)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rho (mean resultant length) | Link: logit      | Domain: (0, 1)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The resultant length is bounded, which is what makes it readable.</span></span></span>
+<span class="r-in"><span><span class="co"># The resultant length is bounded, so it is readable directly.</span></span></span>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">params_bounds</span><span class="op">$</span><span class="va">rho</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law as the concentration parametrization at the implied kappa.</span></span></span>
+<span class="r-in"><span><span class="co"># This is the same law as the concentration parametrization at the implied</span></span></span>
+<span class="r-in"><span><span class="co"># kappa.</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, rho <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse.html" class="external-link">bessel_i_ratio_inverse</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
@@ -200,7 +201,7 @@ class.</p></div>
 <span class="r-in"><span>                      <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.5</span>, kappa <span class="op">=</span> <span class="va">k</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A sample reads the second parameter back directly, which is the point.</span></span></span>
+<span class="r-in"><span><span class="co"># The second parameter can be computed directly from a sample.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">3e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>resultant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, rho <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></span>

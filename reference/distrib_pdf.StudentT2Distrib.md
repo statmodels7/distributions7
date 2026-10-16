@@ -1,9 +1,9 @@
 # Student t Density, Distribution and Generator in the Standard Deviation
 
-The Student t with \\\nu\\ degrees of freedom, location \\\mu\\ and
-scale \\s_0 = \sigma\sqrt{1 - 2/\nu}\\, so that the standard deviation
-is \\\sigma\\. The density, the distribution function, the quantile
-function and the generator are
+These methods implement the Student t with \\\nu\\ degrees of freedom,
+location \\\mu\\ and scale \\s_0 = \sigma\sqrt{1 - 2/\nu}\\, so that the
+standard deviation is \\\sigma\\. The density, the distribution
+function, the quantile function and the generator are
 [`stats::dt()`](https://rdrr.io/r/stats/TDist.html),
 [`stats::pt()`](https://rdrr.io/r/stats/TDist.html),
 [`stats::qt()`](https://rdrr.io/r/stats/TDist.html) and

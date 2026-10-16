@@ -6,16 +6,16 @@ $$\dfrac{\partial^2 \ell}{\partial y^2}
   = -\dfrac{(\sigma - 1)(1 + \sigma u)}{y^2}.$$
 The sign is the shape's: at \(\sigma &amp;gt; 1\) the log-density is concave on
 the whole support, at \(\sigma &amp;lt; 1\) convex, and at \(\sigma = 1\), the
-exponential case, exactly zero, the log-density being linear in \(y\)
-there."><meta property="og:description" content="Computes \(\partial^2 \ell / \partial y^2\), the second derivative of the
+exponential case, exactly zero, because the log-density is linear in
+\(y\) there."><meta property="og:description" content="Computes \(\partial^2 \ell / \partial y^2\), the second derivative of the
 Weibull log-density with respect to the response, in closed form. With
 \(u = (y/\mu)^{\sigma}\),
 $$\dfrac{\partial^2 \ell}{\partial y^2}
   = -\dfrac{(\sigma - 1)(1 + \sigma u)}{y^2}.$$
 The sign is the shape's: at \(\sigma &amp;gt; 1\) the log-density is concave on
 the whole support, at \(\sigma &amp;lt; 1\) convex, and at \(\sigma = 1\), the
-exponential case, exactly zero, the log-density being linear in \(y\)
-there."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+exponential case, exactly zero, because the log-density is linear in
+\(y\) there."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ there."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +63,8 @@ $$\dfrac{\partial^2 \ell}{\partial y^2}
   = -\dfrac{(\sigma - 1)(1 + \sigma u)}{y^2}.$$
 The sign is the shape's: at \(\sigma &gt; 1\) the log-density is concave on
 the whole support, at \(\sigma &lt; 1\) convex, and at \(\sigma = 1\), the
-exponential case, exactly zero, the log-density being linear in \(y\)
-there.</p>
+exponential case, exactly zero, because the log-density is linear in
+\(y\) there.</p>
     </div>
 
 
@@ -109,7 +109,7 @@ in the parameters, and <code><a href="distrib_hess_y.html">distrib_hess_y()</a><
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.2</span>, <span class="fl">3.0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed form, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The closed form is written out.</span></span></span>
 <span class="r-in"><span><span class="va">u</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">1.5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>, <span class="op">-</span><span class="op">(</span><span class="fl">1.5</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="va">u</span><span class="op">)</span> <span class="op">/</span> <span class="va">y</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

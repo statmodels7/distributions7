@@ -61,10 +61,10 @@ inheriting from `continuous_distrib`. Its `params` are
 The skew normal of
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
 reaches a skewness of at most 0.99527 and an excess kurtosis of at most
-0.86918, both approached only as \\\|\alpha\| \to \infty\\. Adding
-\\\nu\\ removes both ceilings: at \\\alpha = 50\\ the skewness is 1.12
-at \\\nu = 30\\, 2.05 at \\\nu = 6\\ and 4.00 at \\\nu = 4\\, and it
-grows without bound as \\\nu\\ decreases to 3.
+0.86918, and both bounds are approached only as \\\|\alpha\| \to
+\infty\\. Adding \\\nu\\ removes both ceilings: at \\\alpha = 50\\ the
+skewness is 1.12 at \\\nu = 30\\, 2.05 at \\\nu = 6\\ and 4.00 at \\\nu
+= 4\\, and it grows without bound as \\\nu\\ decreases to 3.
 
 ## How the derivatives are computed
 
@@ -79,8 +79,8 @@ from that quadrature; see
 ## Fitting
 
 The expected information has no closed form and is computed by one
-quadrature over \\z\\ per distinct \\(\alpha, \nu)\\, so Fisher scoring
-on an intercept-only fit pays for one integral per iteration.
+quadrature over \\z\\ per distinct \\(\alpha, \nu)\\, so each iteration
+of Fisher scoring on an intercept-only fit computes one integral.
 
 The distribution function and the quantile function likewise have no
 elementary form. The distribution function integrates the density by the
@@ -108,10 +108,10 @@ For the skew \\t\\ at a finite \\\nu\\ the ratio of the score in
 variation of the ratio over \\z\\ is of order \\z^2/\nu\\, so the
 information becomes singular only as \\\nu \to \infty\\.
 
-The parameter that is weakly identified is \\\nu\\. At \\\alpha = 0\\
-the smallest eigenvalue of the expected information corresponds to the
-direction of \\\nu\\ and decreases as \\\nu\\ grows, because a tail
-close to the Gaussian one carries little information about its weight.
+Only \\\nu\\ is weakly identified. At \\\alpha = 0\\ the smallest
+eigenvalue of the expected information corresponds to the direction of
+\\\nu\\ and decreases as \\\nu\\ grows, because a tail close to the
+Gaussian one carries little information about its weight.
 
 ## Parameter domains
 
@@ -137,7 +137,7 @@ for the \\\nu \to \infty\\ limit,
 [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
 for the \\\alpha = 0\\ case,
 [`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md)
-for the scalar functions the derivatives are built from, and
+for the scalar functions from which the derivatives are built, and
 [SkewTDistrib](https://statmodels7.github.io/distributions7/reference/SkewTDistrib.md)
 for the class and its method list.
 

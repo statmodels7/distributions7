@@ -61,7 +61,8 @@ all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
           dlogis(y, location = 0.4, scale = 1.5))
 #> [1] TRUE
 
-# Symmetric about mu: equal densities at equal distances either side.
+# The density is symmetric about mu, so equal distances on either side give
+# equal densities.
 distrib_pdf(d, 0.4 + c(-2, 2), list(mu = 0.4, sigma = 1.5))
 #> [1] 0.1100607 0.1100607
 

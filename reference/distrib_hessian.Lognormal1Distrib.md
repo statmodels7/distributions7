@@ -6,9 +6,9 @@ observation, in closed form. With \\r = \log y - \mu\\,
 \$\$\ell^{(\mu\mu)} = -\dfrac{1}{\sigma^2}, \qquad \ell^{(\mu\sigma^2)}
 = -\dfrac{r}{\sigma^4}, \qquad \ell^{(\sigma^2\sigma^2)} =
 \dfrac{1}{2\sigma^4} - \dfrac{r^2}{\sigma^6}.\$\$ These are the
-Gaussian's at \\\log y\\, the Jacobian of the log transformation
-carrying no parameter. Only the curvature in \\\mu\\ is free of the
-data; the other two vary with the residual on the log scale, and their
+Gaussian's at \\\log y\\, because the Jacobian of the log transformation
+carries no parameter. Only the curvature in \\\mu\\ is free of the data;
+the other two vary with the residual on the log scale, and their
 expectations are
 [`distrib_expected_hessian.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Lognormal1Distrib.md).
 
@@ -86,7 +86,7 @@ all.equal(h$mu_sigma2, -r / 0.36^2)
 all.equal(h$sigma2_sigma2, 1 / (2 * 0.36^2) - r^2 / 0.36^3)
 #> [1] TRUE
 
-# Identical to the Gaussian's at log y.
+# The Hessian is identical to the Gaussian's at log y.
 all.equal(h, distrib_hessian(gaussian2_distrib(), log(y), th))
 #> [1] TRUE
 

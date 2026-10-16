@@ -17,16 +17,16 @@ near \\\mu\\, and their difference loses that many digits at a small
 dispersion or a large mean; in this form the value keeps full relative
 accuracy, and a term with a zero coefficient contributes zero.
 
-The dispersion entry cancels at large \\\theta\\ for the same reason the
-score does, and the kernel handles it the same way. Here the collapse is
-better than a series: with \\a = \theta\\, \\b = \theta + y\\ and \\c =
-\theta + \mu\\ the three leading terms combine exactly,
+The dispersion entry cancels at large \\\theta\\ for the same reason
+that the score does, and the kernel handles it the same way. Here the
+collapse is better than a series: with \\a = \theta\\, \\b = \theta +
+y\\ and \\c = \theta + \mu\\ the three leading terms combine exactly,
 \$\$-\dfrac{y}{ab} + \dfrac{\mu}{ac} + \dfrac{y-\mu}{c^2} =
-\dfrac{(y-\mu)^2}{b\\c^2},\$\$ so what is computed is that quotient plus
+\dfrac{(y-\mu)^2}{b\\c^2},\$\$ so the kernel computes that quotient plus
 the remainder \\\psi_1(b) - \psi_1(a) + y/(ab)\\, and only the remainder
 needs a series. To leading order the result is \\\\(y-\mu)^2 -
-y\\/\theta^3\\, which is the derivative of the score's leading term and
-is how the two derivations check each other.
+y\\/\theta^3\\, which is the derivative of the score's leading term, so
+the two derivations check each other.
 
 ## Arguments
 
@@ -103,7 +103,7 @@ h
 #> [1] -0.11111111 -0.05555556  0.05555556
 #> 
 
-# The three closed forms, written out at a dispersion where the direct
+# We write out the three closed forms at a dispersion where the direct
 # expression still has its digits.
 s <- 2 + 4
 all.equal(h$mu_mu, (y + 2) / s^2 - y / 4^2)

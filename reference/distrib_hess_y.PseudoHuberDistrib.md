@@ -52,7 +52,7 @@ d <- pseudohuber_distrib()
 y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The closed form, written out.
+# The derivative equals its closed form written out.
 r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 all.equal(distrib_hess_y(d, y, th), -2 / (1.2^2 * D^3))
 #> [1] TRUE
@@ -68,7 +68,7 @@ all.equal((distrib_grad_y(d, y + eps, th) -
           distrib_hess_y(d, y, th), tolerance = 1e-6)
 #> [1] TRUE
 
-# Negative everywhere, decaying like |r|^-3 in the tails.
+# The derivative is negative everywhere and decays like |r|^-3 in the tails.
 distrib_hess_y(d, 0.4 + c(1, 10, 100), th)
 #> [1] -3.140246e-01 -2.299931e-03 -2.398964e-06
 ```

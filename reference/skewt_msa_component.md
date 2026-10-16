@@ -1,9 +1,9 @@
 # One Skew t Derivative in the Location, Scale and Shape
 
 Reads \\\partial^a\_\mu \partial^b\_\sigma \partial^c\_\alpha \ell\\ off
-the table
+the table that
 [`skewt_msa_tower()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_tower.md)
-builds, by the \\P\_{a,b}\\ sum that function's page derives.
+builds, by the \\P\_{a,b}\\ sum that the page of that function derives.
 
 ## Usage
 

@@ -4,7 +4,7 @@ Builds the distribution object for the von Mises family parametrized by
 its mean direction \\\mu\\ and its mean resultant length \\\rho \in (0,
 1)\\. The returned object carries closed-form derivatives of the
 log-density to fourth order, a closed-form expected information, and the
-same Bessel-series distribution function the concentration
+same Bessel-series distribution function that the concentration
 parametrization uses.
 
 The concentration \\\kappa\\ of
@@ -75,16 +75,16 @@ direction is therefore far better conditioned in \\\kappa\\ than in
 
 The map touches the second parameter only, so every chain rule is the
 one-variable one and the derivatives are exact at every order. Every
-component carrying at least one \\\mu\\ collapses to a single term, the
-concentration parametrization's \\\mu\\-derivatives being linear in
-\\\kappa\\.
+component carrying at least one \\\mu\\ collapses to a single term,
+because the concentration parametrization's \\\mu\\-derivatives are
+linear in \\\kappa\\.
 
-The expected information is closed form and the two parameters are
-orthogonal, as in the concentration parametrization, with
+The expected information is closed form, and the two parameters are
+orthogonal as in the concentration parametrization:
 \$\$\mathbb{E}\[\ell^{(\mu\mu)}\] = -\kappa\rho, \qquad
 \mathbb{E}\[\ell^{(\mu\rho)}\] = 0, \qquad
-\mathbb{E}\[\ell^{(\rho\rho)}\] = -\dfrac{1}{A'(\kappa)},\$\$ the last
-being the reciprocal of the information in \\\kappa\\, since the
+\mathbb{E}\[\ell^{(\rho\rho)}\] = -\dfrac{1}{A'(\kappa)}.\$\$ The last
+of these is the reciprocal of the information in \\\kappa\\, since the
 Jacobian of the map is that reciprocal.
 
 ## The moments are not the parameters
@@ -93,9 +93,9 @@ Jacobian of the map is that reciprocal.
 returns the ordinary expectation of \\Y\\ on \\\[-\pi, \pi)\\, which
 differs from \\\mu\\ whenever \\\mu \ne 0\\;
 [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
-discusses the same distinction. What this parametrization offers is that
-the second parameter can be computed directly from a sample, which is
-not the case for the concentration.
+discusses the same distinction. In this parametrization the second
+parameter can be computed directly from a sample, which is not the case
+for the concentration.
 
 ## Notation
 
@@ -123,7 +123,7 @@ for another family on \\(0, 1)\\;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery that this one
+to validate a user-defined family against the same battery that this one
 passes;
 [VonMises2Distrib](https://statmodels7.github.io/distributions7/reference/VonMises2Distrib.md)
 for the class.
@@ -141,11 +141,12 @@ d
 #>   mu  (mean direction)     | Link: bounded(lwr=-3.14159265358979, upr=3.14159265358979) | Domain: (-3.14159265358979, 3.14159265358979)
 #>   rho (mean resultant length) | Link: logit      | Domain: (0, 1)
 
-# The resultant length is bounded, which is what makes it readable.
+# The resultant length is bounded, so it is readable directly.
 d@params_bounds$rho
 #> [1] 0 1
 
-# The same law as the concentration parametrization at the implied kappa.
+# This is the same law as the concentration parametrization at the implied
+# kappa.
 th <- list(mu = 0.5, rho = 0.7)
 k <- numericals7::bessel_i_ratio_inverse(0.7)
 all.equal(distrib_pdf(d, c(-1, 0, 1), th),
@@ -153,7 +154,7 @@ all.equal(distrib_pdf(d, c(-1, 0, 1), th),
                       list(mu = 0.5, kappa = k)))
 #> [1] TRUE
 
-# A sample reads the second parameter back directly, which is the point.
+# The second parameter can be computed directly from a sample.
 set.seed(1)
 z <- distrib_rng(d, 3e5, th)
 c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)

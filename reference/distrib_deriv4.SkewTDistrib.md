@@ -80,7 +80,7 @@ c(components = length(d4), involving_nu = sum(grepl("nu", names(d4))))
 #>           35           20 
 
 # The components span five orders of magnitude, so a relative comparison
-# on the smallest of them says nothing about the largest.
+# on the smallest of them gives no information about the largest.
 s <- sort(vapply(d4, function(v) sum(abs(v)), 0), decreasing = TRUE)
 s[c(1, 2, length(s) - 1, length(s))]
 #> sigma_sigma_sigma_sigma          mu_mu_mu_sigma             nu_nu_nu_nu 
@@ -88,7 +88,8 @@ s[c(1, 2, length(s) - 1, length(s))]
 #>          alpha_nu_nu_nu 
 #>            2.024170e-03 
 
-# A closed-form-block component against a difference of the third order.
+# A closed-form-block component is compared with a difference of the third
+# order.
 eps <- 1e-5
 rbind(analytic = d4$mu_mu_alpha_alpha,
       numeric = (distrib_deriv3(d, y, list(mu = 0, sigma = 1,

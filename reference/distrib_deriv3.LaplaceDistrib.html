@@ -3,8 +3,8 @@
 respect to \(\mu\) and \(\sigma\), in closed form. The log-density is
 \(-\log\sigma - \log 2 - |r|/\sigma\) with \(r = y - \mu\), so it is
 linear in \(\mu\) on each side of the kink and every component that
-differentiates twice or more in \(\mu\) is zero. What survives comes from
-\(-\log\sigma\) and from \(|r|/\sigma\).
+differentiates twice or more in \(\mu\) is zero. The remaining components
+come from \(-\log\sigma\) and from \(|r|/\sigma\).
 With expected = TRUE the expectations under the model are returned, also in
 closed form, using \(\mathbb{E}|r| = \sigma\) and
 \(\mathbb{E}[\mathrm{sign}(r)] = 0\). Both routes are closed form, so the
@@ -12,8 +12,8 @@ method runs no quadrature and ignores approx and nsim."><meta property="og:descr
 respect to \(\mu\) and \(\sigma\), in closed form. The log-density is
 \(-\log\sigma - \log 2 - |r|/\sigma\) with \(r = y - \mu\), so it is
 linear in \(\mu\) on each side of the kink and every component that
-differentiates twice or more in \(\mu\) is zero. What survives comes from
-\(-\log\sigma\) and from \(|r|/\sigma\).
+differentiates twice or more in \(\mu\) is zero. The remaining components
+come from \(-\log\sigma\) and from \(|r|/\sigma\).
 With expected = TRUE the expectations under the model are returned, also in
 closed form, using \(\mathbb{E}|r| = \sigma\) and
 \(\mathbb{E}[\mathrm{sign}(r)] = 0\). Both routes are closed form, so the
@@ -25,7 +25,7 @@ method runs no quadrature and ignores approx and nsim."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +62,8 @@ method runs no quadrature and ignores approx and nsim."><meta property="og:image
 respect to \(\mu\) and \(\sigma\), in closed form. The log-density is
 \(-\log\sigma - \log 2 - |r|/\sigma\) with \(r = y - \mu\), so it is
 linear in \(\mu\) on each side of the kink and every component that
-differentiates twice or more in \(\mu\) is zero. What survives comes from
-\(-\log\sigma\) and from \(|r|/\sigma\).</p>
+differentiates twice or more in \(\mu\) is zero. The remaining components
+come from \(-\log\sigma\) and from \(|r|/\sigma\).</p>
 <p>With <code>expected = TRUE</code> the expectations under the model are returned, also in
 closed form, using \(\mathbb{E}|r| = \sigma\) and
 \(\mathbb{E}[\mathrm{sign}(r)] = 0\). Both routes are closed form, so the
@@ -150,7 +150,7 @@ that exist away from the kink at \(y = \mu\).</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">d3</span><span class="op">$</span><span class="va">mu_mu_mu</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">d3</span><span class="op">$</span><span class="va">mu_mu_sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expected values, in closed form.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected values are also in closed form.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>

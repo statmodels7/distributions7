@@ -1,4 +1,4 @@
-# The Dispersion a Poisson-Inverse Gaussian Alpha Implies
+# The Dispersion Implied by a Poisson-Inverse Gaussian Alpha
 
 Converts the orthogonal parametrization's \\\alpha\\ into the dispersion
 \\\sigma\\ of
@@ -16,7 +16,8 @@ pig2_sigma(mu, alpha)
 
 - mu:
 
-  A numeric vector of means, strictly positive. Nothing is validated.
+  A numeric vector of means, strictly positive. The function does not
+  validate the values.
 
 - alpha:
 
@@ -30,8 +31,8 @@ strictly positive.
 ## Details
 
 The relation is the inverse of \\\alpha = \sqrt{1 +
-2\sigma\mu}/\sigma\\. Written this way there is no cancellation anywhere
-in the domain: both \\\mu\\ and \\\sqrt{\mu^2 + \alpha^2}\\ are
+2\sigma\mu}/\sigma\\. Written this way the expression does not cancel
+anywhere in the domain: both \\\mu\\ and \\\sqrt{\mu^2 + \alpha^2}\\ are
 positive, so the numerator is a sum of positive terms. The other root of
 the quadratic is negative and is discarded.
 
@@ -54,7 +55,8 @@ for two of its callers.
 ## Examples
 
 ``` r
-# The map, and the round trip back through alpha = sqrt(1 + 2 sigma mu)/sigma.
+# The map is applied, and alpha is recovered by the round trip through
+# alpha = sqrt(1 + 2 sigma mu)/sigma.
 sg <- distributions7:::pig2_sigma(3, 3.010399)
 c(sigma = sg, alpha_back = sqrt(1 + 2 * sg * 3) / sg)
 #>      sigma alpha_back 

@@ -2,8 +2,9 @@
 
 Returns the exact first derivatives of the log-mass in \\(\mu,
 \sigma)\\, read off columns `d10` and `d01` of the compiled kernel of
-`pig1_gradient_cpp`. Nothing is differenced: the kernel writes every
-partial out in closed form from the finite Bessel sum.
+`pig1_gradient_cpp`. The kernel writes every partial out in closed form
+from the finite Bessel sum, so the derivatives are not obtained by
+differencing.
 
 ## Arguments
 
@@ -49,7 +50,8 @@ length of the recycled inputs.
 
 ## See also
 
-`pig1_gradient_cpp` for the kernel and the closed form it evaluates,
+`pig1_gradient_cpp` for the kernel and the closed form that it
+evaluates,
 [`distrib_hessian.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig1Distrib.md)
 for the second derivatives, and
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
@@ -63,7 +65,8 @@ y <- 0:6
 th <- list(mu = 3, sigma = 0.8)
 g <- distrib_gradient(d, y, th)
 
-# Against numerical differentiation of the log-likelihood.
+# The score is compared with numerical differentiation of the
+# log-likelihood.
 f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], sigma = p[2]),
                                  log = TRUE))
 rbind(analytic = vapply(g, sum, 0),

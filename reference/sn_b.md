@@ -1,9 +1,9 @@
 # The Constant Behind the Centered Parametrization
 
 Returns \\b = \sqrt{2/\pi} \approx 0.7978846\\, which is \\E\[\|Z\|\]\\
-for a standard Gaussian \\Z\\. It is the one constant the skew normal's
-first moment introduces, and it appears in every quantity of the
-centered parametrization: the mean is \\\xi + \omega b\delta\\, the
+for a standard Gaussian \\Z\\. It is the one constant that the skew
+normal's first moment introduces, and it appears in every quantity of
+the centered parametrization: the mean is \\\xi + \omega b\delta\\, the
 variance \\\omega^2(1-b^2\delta^2)\\, and the largest reachable skewness
 is built from \\b/\sqrt{1-b^2}\\.
 

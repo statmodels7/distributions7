@@ -3,11 +3,11 @@
 Builds the distribution object for the lognormal family on \\(0,
 \infty)\\: the law of a variable whose logarithm is Gaussian with mean
 \\\mu\\ and variance \\\sigma^2 \> 0\\. Both parameters are moments of
-the logarithm, so neither is the mean or the variance of \\Y\\. The
-returned object carries closed-form derivatives of the log-density to
-fourth order, in the parameters and in the response, closed-form
-derivatives of the distribution function, and closed-form moments. The
-fifth order and
+the logarithm, so \\\mu\\ is not the mean of \\Y\\ and \\\sigma^2\\ is
+not the variance of \\Y\\. The returned object carries closed-form
+derivatives of the log-density to fourth order, in the parameters and in
+the response, closed-form derivatives of the distribution function, and
+closed-form moments. The fifth order and
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
 come from the numerical fallbacks of the base class.
 
@@ -29,7 +29,7 @@ lognormal1_distrib(link_mu = identity_link(), link_sigma2 = log_link())
   A `link` object from `linkfunctions7` for the location \\\mu\\.
   Defaults to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  \\\mu\\ being a mean on the log scale and so already free.
+  because \\\mu\\ is a mean on the log scale and so already free.
 
 - link_sigma2:
 
@@ -85,8 +85,8 @@ at \\\log y\\, component for component and at all four orders, observed
 and expected. The two parameters are orthogonal and the information does
 not depend on \\\mu\\.
 
-The derivatives in the response are where the two families differ, the
-Jacobian being a function of \\y\\. They are still closed form; see
+The derivatives in the response differ between the two families, because
+the Jacobian is a function of \\y\\. They are still closed form; see
 [`distrib_grad_y.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal1Distrib.md)
 and
 [`distrib_hess_y.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Lognormal1Distrib.md),
@@ -128,12 +128,12 @@ and
 [`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md)
 for other positive families with a multiplicative variance function;
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
-for the general wrapper this family is a named instance of;
+for the general wrapper of which this family is a named instance;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [Lognormal1Distrib](https://statmodels7.github.io/distributions7/reference/Lognormal1Distrib.md)
 for the class.
 
@@ -156,12 +156,12 @@ th <- list(mu = 0.5, sigma2 = 0.36)
 all.equal(distrib_pdf(d, y, th), dlnorm(y, 0.5, sqrt(0.36)))
 #> [1] TRUE
 
-# Mode, median and mean, in that order.
+# The mode, the median and the mean are listed in increasing order.
 c(mode = exp(0.5 - 0.36), median = exp(0.5), mean = mean(d, th))
 #>     mode   median     mean 
 #> 1.150274 1.648721 1.973878 
 
-# Moments on the original scale, all exponential in sigma2.
+# The moments on the original scale are all exponential in sigma2.
 c(mean = mean(d, th), var = variance(d, th),
   skew = skewness(d, th), kurt = kurtosis(d, th))
 #>      mean       var      skew      kurt 

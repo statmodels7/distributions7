@@ -198,8 +198,8 @@ d@params_interpretation
 #>                   nu 
 #> "degrees of freedom" 
 
-# Two parameters for two departures from the Gaussian, which is why the
-# family exists.
+# The family has one parameter for each of its two departures from the
+# Gaussian, and it exists for that reason.
 vapply(d@link_params, function(l) l@link_name, character(1))
 #>         mu      sigma      alpha         nu 
 #> "identity"      "log" "identity"      "log" 

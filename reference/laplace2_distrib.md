@@ -10,8 +10,8 @@ second parameter is identical between them.
 The rate form is the one that penalized regression uses: with \\\mu =
 0\\ the negative log-density is \\\lambda\|y\| - \log(\lambda/2)\\, so
 \\\lambda\\ is a shrinkage parameter and larger values penalize harder.
-`penalties7::lasso_penalty()` is this family with the location held at
-zero.
+`penalties7::lasso_penalty()` is this family when the location is held
+at zero.
 
 ## Usage
 
@@ -26,7 +26,7 @@ laplace2_distrib(link_mu = identity_link(), link_lambda = log_link())
   A `link` object from `linkfunctions7` for the location \\\mu\\.
   Defaults to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the location ranging over the whole line already.
+  because the location already ranges over the whole line.
 
 - link_lambda:
 
@@ -58,8 +58,8 @@ Against
 the map is \\\lambda = 1/\sigma\\. The location is shared, so its score,
 its information and its derivatives in the response are the same
 quantities read at the same point; the second parameter's are not, and
-this parametrization's are the simpler of the two, \\\lambda\\ being the
-natural parameter of the exponential family in \\\|y - \mu\|\\.
+this parametrization's are the simpler of the two, because \\\lambda\\
+is the natural parameter of the exponential family in \\\|y - \mu\|\\.
 
 ## The kink
 
@@ -95,7 +95,7 @@ reaches them by Fisher scoring, which inverts the information above.
 \\\lambda \> 0\\ the rate, with variance \\2/\lambda^2\\. Here
 \\\lambda\\ is a distribution parameter; the same letter names the
 tuning parameter of a penalty in `penalties7`, and the two coincide in
-the lasso, which is this family with \\\mu\\ held at zero.
+the lasso, which is this family when \\\mu\\ is held at zero.
 
 ## References
 
@@ -133,7 +133,7 @@ d
 #>   mu     (location)           | Link: identity   | Domain: (-Inf, Inf)  [non-smooth log-likelihood]
 #>   lambda (rate)               | Link: log        | Domain: (0, Inf)
 
-# The same law as the scale parametrization at lambda = 1/sigma.
+# This is the same law as the scale parametrization at lambda = 1/sigma.
 y <- c(-1.2, 0.3, 2.5)
 all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
           distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
@@ -155,8 +155,8 @@ rbind(fitted = coef(fit),
 #> fitted 2.967076 0.5157146
 #> closed 2.967076 0.5157146
 
-# Holding the location at zero gives the prior a lasso penalty is written
-# from: the negative log-density is lambda |y| up to a constant.
+# Holding the location at zero gives the prior from which a lasso penalty
+# is written: the negative log-density is lambda |y| up to a constant.
 prior <- fixed(d, mu = 0)
 prior@params
 #> [1] "lambda"

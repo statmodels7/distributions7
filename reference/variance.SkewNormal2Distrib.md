@@ -3,7 +3,7 @@
 Returns \\\sigma^2\\, the square of the second parameter, which in this
 parametrization is the variance by construction.
 [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
-recycles the result to the length the three parameters imply.
+recycles the result to the length that the three parameters imply.
 
 ## Arguments
 
@@ -23,8 +23,8 @@ recycles the result to the length the three parameters imply.
 
 ## Value
 
-A numeric vector of variances, of the length the recycled parameters
-imply.
+A numeric vector of variances, of the length that the recycled
+parameters imply.
 
 ## See also
 

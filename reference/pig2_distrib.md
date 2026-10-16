@@ -59,14 +59,16 @@ dispersion of `PIG` is obtained from it as
 
 ## How the derivatives are computed
 
-By compiled kernels of the same form as those of
+The derivatives are computed by compiled kernels of the same form as
+those of
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
 (`pig2_pdf_cpp`, `pig2_gradient_cpp`, `pig2_hessian_cpp`,
-`pig2_deriv3_cpp` and `pig2_deriv4_cpp`), with \\\alpha\\ as a variable
-of its own, so the Bessel argument needs no chain rule. Every partial to
-fourth order is written out in closed form, and each order has its own
-kernel. The expected information is computed exactly, with its first and
-second derivatives, by one pass over the support per observation; see
+`pig2_deriv3_cpp` and `pig2_deriv4_cpp`). In these kernels \\\alpha\\ is
+a variable of its own, so the Bessel argument needs no chain rule. Every
+partial to fourth order is written out in closed form, and each order
+has its own kernel. The expected information is computed exactly, with
+its first and second derivatives, by one pass over the support per
+observation; see
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Pig2Distrib.md).
 
 ## Parameter domains
@@ -122,12 +124,12 @@ c(mean = mean(d, th), variance = variance(d, th))
 #>     mean variance 
 #>      3.0     10.2 
 
-# The same law as pig1 at the dispersion alpha implies.
+# Pig2 gives the same law as pig1 at the dispersion that alpha implies.
 all.equal(distrib_pdf(d, 0:5, th),
           distrib_pdf(pig1_distrib(), 0:5, list(mu = 3, sigma = 0.8)))
 #> [1] TRUE
 
-# The property the parametrization exists for.
+# This property is the reason for the parametrization.
 c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
   pig1 = distrib_expected_hessian(pig1_distrib(), 0,
                                   list(mu = 3, sigma = 0.8))$mu_sigma)

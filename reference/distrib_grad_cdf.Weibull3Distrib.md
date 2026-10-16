@@ -1,8 +1,8 @@
 # Weibull Distribution-Function Derivatives, Mean and Shape
 
-The derivatives of \\F(q) = 1 - \exp\\-(q/b)^\sigma\\\\ in \\(m,
-\sigma)\\ to order four, each a closed form from its own compiled
-kernel, carried to the upper tail and the log scale by
+Computes the derivatives of \\F(q) = 1 - \exp\\-(q/b)^\sigma\\\\ in
+\\(m, \sigma)\\ to order four. Each is a closed form computed by its own
+compiled kernel and carried to the upper tail and the log scale by
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md)
 and
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md).

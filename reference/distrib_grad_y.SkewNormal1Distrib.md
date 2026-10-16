@@ -66,7 +66,7 @@ th <- list(mu = 0, sigma = 1, alpha = 3)
 all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
 #> [1] TRUE
 
-# Against a central difference of the log-density.
+# The value is compared with a central difference of the log-density.
 eps <- 1e-6
 rbind(analytic = distrib_grad_y(d, y, th),
       numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -

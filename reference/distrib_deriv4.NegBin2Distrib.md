@@ -2,8 +2,8 @@
 
 Computes the five distinct fourth derivatives of the negative binomial
 log-mass with respect to \\\mu\\ and \\\theta\\, in closed form, by the
-same route the third order takes: the components involving the mean are
-rational in \\(\mu, \theta)\\ and linear in \\y\\, and the pure
+same route that the third order takes: the components involving the mean
+are rational in \\(\mu, \theta)\\ and linear in \\y\\, and the pure
 dispersion component carries \\\psi_3(y+\theta) - \psi_3(\theta)\\, with
 \\\psi_3\\ the third derivative of the digamma function.
 
@@ -13,7 +13,7 @@ With `expected = TRUE` the expectations are returned. The pure
 dispersion one needs \\\mathbb{E}\[\psi_3(Y+\theta)\]\\, summed over the
 support as at third order; the rest need only \\\mathbb{E}\[Y\] = \mu\\.
 `approx` and `nsim` are ignored either way. As at third order, the
-cancellation at large \\\theta\\ is performed symbolically
+kernel performs the cancellation at large \\\theta\\ symbolically
 ([`distrib_deriv3.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.md)).
 
 ## Arguments
@@ -47,7 +47,7 @@ cancellation at large \\\theta\\ is performed symbolically
 
 - approx:
 
-  Ignored, the expected values being closed form or exact sums.
+  Ignored, because the expected values are closed form or exact sums.
 
 - nsim:
 

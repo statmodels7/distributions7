@@ -7,8 +7,8 @@ fourth order in the response, and closed-form moments.
 
 The family is symmetric about \\\mu\\ with variance \\\pi^2\sigma^2/3\\,
 so \\\sigma\\ is a scale, not a standard deviation. Its distribution
-function is the logistic sigmoid, the same curve `linkfunctions7` uses
-as the inverse logit link.
+function is the logistic sigmoid, the same curve that `linkfunctions7`
+uses as the inverse logit link.
 
 ## Usage
 
@@ -78,7 +78,7 @@ and the expectations of orders three and four are closed form as well.
 
 ## Estimation
 
-There is no closed-form estimate;
+The estimate has no closed form;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 maximizes the log-likelihood on the link scale. The log-likelihood is
 concave in \\\mu\\ for a fixed \\\sigma\\, so the location is well

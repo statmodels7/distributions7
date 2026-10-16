@@ -3,10 +3,11 @@
 Returns \\\gamma_1\\, the third parameter, which in this parametrization
 is the standardized third central moment by construction.
 [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
-recycles the result to the length the three parameters imply.
+recycles the result to the length that the three parameters imply.
 
-The value cannot leave \\(-0.9952717, 0.9952717)\\, the constructor
-having bounded the parameter at the supremum the family reaches; see
+The value cannot leave \\(-0.9952717, 0.9952717)\\, because the
+constructor bounds the parameter at the supremum that the family
+reaches; see
 [`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md).
 
 ## Arguments
@@ -27,8 +28,8 @@ having bounded the parameter at the supremum the family reaches; see
 
 ## Value
 
-A numeric vector of skewnesses, of the length the recycled parameters
-imply.
+A numeric vector of skewnesses, of the length that the recycled
+parameters imply.
 
 ## See also
 

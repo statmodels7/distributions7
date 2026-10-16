@@ -5,8 +5,8 @@ distribution for an angle, parametrized by a mean direction \\\mu\\ and
 a concentration \\\kappa \> 0\\. The returned object carries closed-form
 derivatives of the log-density to fourth order in the parameters and in
 the response, a closed-form expected information, and a distribution
-function from a Bessel series in place of the quadrature the base class
-would use.
+function from a Bessel series in place of the quadrature that the base
+class would use.
 
 ## Usage
 
@@ -80,7 +80,7 @@ The log-density is linear in \\\kappa\\ apart from the normalizing
 constant, so at orders three and four every component naming one \\\mu\\
 and two or more \\\kappa\\ is exactly zero.
 
-## The moments a generic returns are not the circular ones
+## The moments that a generic returns are not the circular ones
 
 [`mean.distrib()`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md),
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),
@@ -96,8 +96,9 @@ not symmetric about \\\mu\\ on it: at \\\mu = 1.2\\ and \\\kappa = 2\\
 the ordinary mean is 1.079.
 
 The circular mean is \\\mu\\ and the mean resultant length is \\\rho =
-I_1(\kappa)/I_0(\kappa)\\, both closed form. Neither is returned by a
-generic whose name means something else; compute them from a sample as
+I_1(\kappa)/I_0(\kappa)\\, both closed form. These generics do not
+return either of them, because their names refer to the ordinary
+moments. Compute them from a sample as
 `atan2(mean(sin(z)), mean(cos(z)))` and
 `sqrt(mean(cos(z))^2 + mean(sin(z))^2)`.
 
@@ -154,7 +155,7 @@ for the Bessel machinery;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery that this one
+to validate a user-defined family against the same battery that this one
 passes;
 [VonMises1Distrib](https://statmodels7.github.io/distributions7/reference/VonMises1Distrib.md)
 for the class.
@@ -178,18 +179,19 @@ integrate(function(v) distrib_pdf(d, v, th), -pi, pi)$value
 #> [1] 1
 
 # The expected information is diagonal: direction and concentration are
-# orthogonal, the sine having mean zero.
+# orthogonal, because the sine has mean zero.
 vapply(distrib_expected_hessian(d, 0, th), function(v) v[1], numeric(1))
 #>       mu_mu kappa_kappa    mu_kappa 
 #>  -1.3955493  -0.1642232   0.0000000 
 
-# The ordinary mean is not the mean direction, the interval being cut at
-# plus or minus pi.
+# The ordinary mean is not the mean direction, because the interval is cut
+# at plus or minus pi.
 c(ordinary = mean(d, list(mu = 1.2, kappa = 2)), direction = 1.2)
 #>  ordinary direction 
 #>  1.079473  1.200000 
 
-# A sample recovers the circular quantities, which no generic returns.
+# A sample recovers the circular quantities, which the generics do not
+# return.
 set.seed(1)
 z <- distrib_rng(d, 3e5, th)
 c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)

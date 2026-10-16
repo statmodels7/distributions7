@@ -11,7 +11,7 @@ and second derivatives in the parameters."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,7 +102,7 @@ number of indices on \(\mu\) or \(\sigma\). The value at the standard
 location and scale is a function of \(\nu\) alone and is an integral over
 \(z\) of the analytic observed derivatives against the density, taken once
 for each distinct \(\nu\) by the exp-sinh rule of <code><a href="loc_scale_expected.html">loc_scale_expected()</a></code>.
-No component has an elementary closed form: the integrands carry
+The components have no elementary closed form: the integrands carry
 \((\nu + z^2)^{-1/2}\), which leads to Bickley functions rather than to
 the Bessel functions of the normalizing constant.</p>
 <p>The law is symmetric about \(\mu\), so every component carrying \(\mu\)
@@ -114,8 +114,8 @@ comes back as zero to about \(10^{-20}\).</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="loc_scale_expected.html">loc_scale_expected()</a></code> for the construction,
-<code><a href="distrib_hessian.PseudoHuberDistrib.html">distrib_hessian.PseudoHuberDistrib()</a></code> for the quantity this is the
-expectation of, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
+<code><a href="distrib_hessian.PseudoHuberDistrib.html">distrib_hessian.PseudoHuberDistrib()</a></code> for the quantity of which this is
+the expectation, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

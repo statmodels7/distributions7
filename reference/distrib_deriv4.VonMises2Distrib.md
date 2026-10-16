@@ -1,9 +1,9 @@
 # von Mises Fourth-Order Derivatives in the Resultant Length
 
 Computes the five distinct fourth derivatives of the log-density in
-\\\mu\\ and \\\rho\\, in closed form, by the construction
+\\\mu\\ and \\\rho\\, in closed form, by the construction that
 [`distrib_deriv3.VonMises2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md)
-describes carried one order further: a single term \\D_a
+describes, carried one order further: a single term \\D_a
 \kappa^{(b)}(\rho)\\ for every component carrying a \\\mu\\, and
 \\\\\cos(y-\mu) - \rho\\\kappa^{(4)}(\rho) - 3\kappa'''(\rho)\\ for the
 pure-\\\rho\\ one.
@@ -44,12 +44,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 

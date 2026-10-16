@@ -6,13 +6,13 @@ $$-I(\mu) = -\lambda^2, \qquad
       -I(\mu, \lambda) = 0.$$
 For \(\mu\) this is the variance of the score. It is not the
 expectation of distrib_hessian.Laplace2Distrib(), which is identically
-zero: the
-family has a kink at \(y = \mu\) and the second Bartlett identity fails
-there, exactly as in distrib_expected_hessian.LaplaceDistrib(). With
+zero: the family has a kink at \(y = \mu\) and the second Bartlett
+identity fails there, exactly as in
+distrib_expected_hessian.LaplaceDistrib(). With
 \(\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)\) the variance is
 \(\lambda^2\). The mixed entry vanishes because
-\(\mathbb{E}[\mathrm{sign}(r)] = 0\) by symmetry, and the rate entry does
-equal its observed counterpart, that one carrying no data.
+\(\mathbb{E}[\mathrm{sign}(r)] = 0\) by symmetry, and the rate entry
+equals its observed counterpart because that one carries no data.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the negative of the Fisher information, in closed form and with no
 quadrature or simulation:
@@ -21,13 +21,13 @@ $$-I(\mu) = -\lambda^2, \qquad
       -I(\mu, \lambda) = 0.$$
 For \(\mu\) this is the variance of the score. It is not the
 expectation of distrib_hessian.Laplace2Distrib(), which is identically
-zero: the
-family has a kink at \(y = \mu\) and the second Bartlett identity fails
-there, exactly as in distrib_expected_hessian.LaplaceDistrib(). With
+zero: the family has a kink at \(y = \mu\) and the second Bartlett
+identity fails there, exactly as in
+distrib_expected_hessian.LaplaceDistrib(). With
 \(\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)\) the variance is
 \(\lambda^2\). The mixed entry vanishes because
-\(\mathbb{E}[\mathrm{sign}(r)] = 0\) by symmetry, and the rate entry does
-equal its observed counterpart, that one carrying no data.
+\(\mathbb{E}[\mathrm{sign}(r)] = 0\) by symmetry, and the rate entry
+equals its observed counterpart because that one carries no data.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -37,7 +37,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,13 +77,13 @@ $$-I(\mu) = -\lambda^2, \qquad
       -I(\mu, \lambda) = 0.$$</p>
 <p>For \(\mu\) this is the variance of the score. It is not the
 expectation of <code><a href="distrib_hessian.Laplace2Distrib.html">distrib_hessian.Laplace2Distrib()</a></code>, which is identically
-zero: the
-family has a kink at \(y = \mu\) and the second Bartlett identity fails
-there, exactly as in <code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code>. With
+zero: the family has a kink at \(y = \mu\) and the second Bartlett
+identity fails there, exactly as in
+<code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code>. With
 \(\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)\) the variance is
 \(\lambda^2\). The mixed entry vanishes because
-\(\mathbb{E}[\mathrm{sign}(r)] = 0\) by symmetry, and the rate entry does
-equal its observed counterpart, that one carrying no data.</p>
+\(\mathbb{E}[\mathrm{sign}(r)] = 0\) by symmetry, and the rate entry
+equals its observed counterpart because that one carries no data.</p>
 <p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
     </div>
@@ -161,7 +161,8 @@ scale parametrization; <code><a href="fisher_scoring.html">fisher_scoring()</a><
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="laplace2_distrib.html">laplace2_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, lambda <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># -lambda^2 in the location, -1/lambda^2 in the rate, 0 mixed.</span></span></span>
+<span class="r-in"><span><span class="co"># The entries are -lambda^2 in the location, -1/lambda^2 in the rate and</span></span></span>
+<span class="r-in"><span><span class="co"># 0 in the mixed term.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.3</span>, <span class="fl">2.5</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -4</span>
@@ -184,7 +185,7 @@ scale parametrization; <code><a href="fisher_scoring.html">fisher_scoring()</a><
 <span class="r-out co"><span class="r-pr">#&gt;</span>            4            4 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># It agrees with the scale parametrization once the chain rule is applied:</span></span></span>
-<span class="r-in"><span><span class="co"># I(mu) is the same number, the location being shared.</span></span></span>
+<span class="r-in"><span><span class="co"># I(mu) is the same number, because the location is shared.</span></span></span>
 <span class="r-in"><span><span class="op">-</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="fu"><a href="laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                          <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>

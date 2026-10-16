@@ -6,8 +6,8 @@ Computes \\\partial \ell / \partial y\\ in closed form. With \\r = y -
 family in \\\mu\\, so this is exactly the negative of the location score
 [`distrib_gradient.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuberDistrib.md)`$mu`,
 and like it, it is bounded: it tends to \\\mp 1/\sigma\\ as the residual
-runs away. This quantity is what a quantile residual's delta-method
-standard error and a change of variable in the response both need.
+runs away. Both a quantile residual's delta-method standard error and a
+change of variable in the response need this quantity.
 
 ## Arguments
 
@@ -54,7 +54,7 @@ d <- pseudohuber_distrib()
 y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The closed form, written out.
+# The derivative equals its closed form written out.
 r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
 all.equal(distrib_grad_y(d, y, th), -r / (1.2^2 * D))
 #> [1] TRUE
@@ -70,7 +70,7 @@ all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
           distrib_grad_y(d, y, th), tolerance = 1e-6)
 #> [1] TRUE
 
-# Bounded by 1 / sigma however far out the response is.
+# The derivative is bounded by 1 / sigma however far out the response is.
 c(distrib_grad_y(d, 0.4 + c(10, 1000, 1e6), th), bound = -1 / 1.2)
 #>                                       bound 
 #> -0.8215865 -0.8333321 -0.8333333 -0.8333333 

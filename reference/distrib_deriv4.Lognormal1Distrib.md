@@ -104,7 +104,7 @@ c(d4$mu_mu_mu_mu[1], d4$mu_mu_mu_sigma2[1])
 all.equal(d4$mu_mu_sigma2_sigma2, rep(-2 / 0.36^3, 3))
 #> [1] TRUE
 
-# Expected values: -9/sigma2^4 in the pure variance component.
+# The expected value of the pure variance component is -9/sigma2^4.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu_mu
 #> [1] 0

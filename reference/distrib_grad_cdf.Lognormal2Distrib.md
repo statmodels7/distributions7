@@ -1,8 +1,9 @@
 # Lognormal Distribution-Function Derivatives, Mean and Variance of Y
 
-The derivatives of \\F(q) = \Phi\\(\log q - \mu_l)/\sqrt{S}\\\\ in \\(m,
-v)\\ to order four, each a closed form from its own compiled kernel,
-carried to the upper tail and the log scale by
+Return the derivatives of \\F(q) = \Phi\\(\log q - \mu_l)/\sqrt{S}\\\\
+in \\(m, v)\\ to order four. Each of them is a closed form computed by
+its own compiled kernel and is carried to the upper tail and the log
+scale by
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md)
 and
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md).

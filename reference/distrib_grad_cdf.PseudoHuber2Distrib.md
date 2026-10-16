@@ -1,12 +1,13 @@
 # Pseudo-Huber Distribution-Function Derivatives, Standard-Deviation Parametrization
 
-The derivatives of the distribution function in the parameters, by
+Return the derivatives of the distribution function in the parameters,
+using
 [`compiled_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 and
 [`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 and, at orders three and four,
-[`partial_loc_scale_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md):
-the location and scale components are closed in the density, and the
+[`partial_loc_scale_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md).
+The location and scale components are closed in the density, and the
 components in \\\nu\\ are integrals of the density's own derivatives,
 taken by the compiled rule.
 

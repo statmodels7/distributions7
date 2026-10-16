@@ -2,9 +2,9 @@
 
 Computes the five distinct fourth derivatives of the von Mises
 log-density in \\\mu\\ and \\\kappa\\, in closed form, by the
-construction
+construction that
 [`distrib_deriv3.VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises1Distrib.md)
-describes carried one order further. The log-density is linear in
+describes, carried one order further. The log-density is linear in
 \\\kappa\\ apart from the normalizing constant, so two of the five are
 exactly zero: `mu_mu_kappa_kappa` and `mu_kappa_kappa_kappa`. The
 pure-direction component is \\\kappa\cos(y-\mu)\\, the
@@ -13,7 +13,7 @@ pure-direction component is \\\kappa\cos(y-\mu)\\, the
 
 With `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-which is the one place on this page where `approx` and `nsim` are read.
+and only in this case are `approx` and `nsim` read.
 
 ## Arguments
 
@@ -48,12 +48,12 @@ which is the one place on this page where `approx` and `nsim` are read.
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 

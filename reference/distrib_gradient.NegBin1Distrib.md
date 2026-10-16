@@ -9,8 +9,8 @@ function, \$\$\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta},
 -\dfrac{\mu}{\theta^2}P - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} -
 \dfrac{y}{1+\theta}.\$\$ The arithmetic runs in a compiled kernel
 decomposed over the elements of the output, so the result does not
-depend on the thread count. These are the formulas the kernel evaluates
-for \\\theta \ge 1\\.
+depend on the thread count. These are the formulas that the kernel
+evaluates for \\\theta \ge 1\\.
 
 ## Arguments
 
@@ -63,13 +63,14 @@ uses instead the form of the log-mass in which the size does not appear,
 \log(1+\theta))/\theta^2\\, \$\$\dfrac{\partial \ell}{\partial \mu} =
 \dfrac{y-\mu}{\mu} - \dfrac{\theta}{\mu}B + \theta q, \qquad
 \dfrac{\partial \ell}{\partial \theta} = B - \dfrac{y-\mu}{1+\theta} -
-\mu q,\$\$ with \\q\\ from its power series below \\\theta = 1/4\\. No
-term of order \\\mu/\theta^2\\ is formed, so both components keep their
-accuracy as \\\theta\\ goes to zero, where the dispersion component
-tends to \$\$\lim\_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
-= \dfrac{(y-\mu)^2 - y}{2\mu}.\$\$ The cost is \\y\\ terms per
-observation in place of a fixed number of digamma evaluations. The
-example below compares the value with this limit at three settings.
+\mu q,\$\$ with \\q\\ from its power series below \\\theta = 1/4\\. The
+kernel does not form any term of order \\\mu/\theta^2\\, so both
+components keep their accuracy as \\\theta\\ goes to zero, where the
+dispersion component tends to \$\$\lim\_{\theta \to 0} \dfrac{\partial
+\ell}{\partial \theta} = \dfrac{(y-\mu)^2 - y}{2\mu}.\$\$ The cost is
+\\y\\ terms per observation in place of a fixed number of digamma
+evaluations. The example below compares the value with this limit at
+three settings.
 
 With `scale = "link"` the generic applies the chain rule for the links
 that the family carries before returning. This method always returns the
@@ -101,7 +102,7 @@ y <- c(0, 2, 6)
 th <- list(mu = 4, theta = 4)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The two closed forms are written out below.
 r <- 4 / 4
 P <- digamma(y + r) - digamma(r) - log(1 + 4)
 all.equal(g$mu, P / 4)

@@ -94,8 +94,8 @@ names(d3)
 #> [1] "mu_mu_mu"    "mu_mu_phi"   "mu_phi_phi"  "phi_phi_phi"
 
 # The expected values are constants at a fixed parameter setting, and the
-# mixed mu-phi-phi component is exactly zero, the score in mu being linear
-# in y and the two parameters entering it as a product.
+# mixed mu-phi-phi component is exactly zero, because the score in mu is
+# linear in y and the two parameters enter it as a product.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu
 #> [1] 3

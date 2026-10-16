@@ -3,8 +3,8 @@
 Computes the five distinct fourth derivatives of the Laplace log-density
 with respect to \\\mu\\ and \\\sigma\\, in closed form. As at third
 order, the log-density is linear in \\\mu\\ on each side of the kink, so
-every component differentiating twice or more in \\\mu\\ is zero and
-what survives comes from the \\-\log\sigma\\ term and from
+every component differentiating twice or more in \\\mu\\ is zero and the
+remaining components come from the \\-\log\sigma\\ term and from
 \\\|r\|/\sigma\\.
 
 With `expected = TRUE` the expectations under the model are returned,
@@ -89,7 +89,7 @@ names(distrib_deriv4(d, y, th))
 distrib_deriv4(d, y, th)$sigma_sigma_sigma_sigma
 #> [1] -3.8716049  0.8691358 -5.4518519
 
-# The expected values, in closed form.
+# The expected values are also in closed form.
 lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu_mu
 #> [1] 0

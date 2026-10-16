@@ -25,7 +25,7 @@ logarithm, because both parameters are positive."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -148,23 +148,23 @@ and the mixed derivative <code><a href="distrib_cross_y.Weibull1Distrib.html">di
     <div class="section level2">
     <h2 id="why-every-expectation-is-elementary">Why every expectation is elementary<a class="anchor" aria-label="anchor" href="#why-every-expectation-is-elementary"></a></h2>
     <p>Under the model \(u = (Y/\mu)^{\sigma}\) is standard exponential whatever
-the parameters are. Every expectation any order needs is therefore a moment
+the parameters are. Every expectation that any order needs is therefore a moment
 of \(u\) against a power of \(\log u\), and each of those is a
 derivative of \(\Gamma\) at 2: \(\mathbb{E}[u] = 1\),
 \(\mathbb{E}[u\log u] = 1 - \gamma\),
 \(\mathbb{E}[u(\log u)^2] = (1-\gamma)^2 + \pi^2/6 - 1\). The Gumbel
-family shares the substitution, \(\exp(-\text{Gumbel})\) being Weibull, so
-<code><a href="gumbel_distrib.html">gumbel_distrib()</a></code> rests on the same three moments.</p>
+family shares the substitution, because \(\exp(-\text{Gumbel})\) is
+Weibull, so <code><a href="gumbel_distrib.html">gumbel_distrib()</a></code> rests on the same three moments.</p>
     </div>
     <div class="section level2">
     <h2 id="moments-and-shape">Moments and shape<a class="anchor" aria-label="anchor" href="#moments-and-shape"></a></h2>
     <p>With \(g_k = \Gamma(1 + k/\sigma)\), the mean is \(\mu g_1\) and the
 variance \(\mu^2(g_2 - g_1^2)\); the skewness and the excess kurtosis
-follow from \(g_3\) and \(g_4\) and do not depend on \(\mu\), the
-scale being a multiplier. The hazard \(f/(1-F)\) is
+follow from \(g_3\) and \(g_4\) and do not depend on \(\mu\), because
+the scale is a multiplier. The hazard \(f/(1-F)\) is
 \((\sigma/\mu)(y/\mu)^{\sigma-1}\), increasing for \(\sigma &gt; 1\) and
-decreasing for \(\sigma &lt; 1\). That monotone hazard is why the family is
-used in survival work.</p>
+decreasing for \(\sigma &lt; 1\). The family is used in survival work because
+its hazard is monotone.</p>
 <p>Two shapes give named families: \(\sigma = 1\) is the exponential with
 mean \(\mu\), and \(\sigma = 2\) is the Rayleigh distribution with
 scale \(\mu/\sqrt{2}\). The example checks the first.</p>
@@ -203,7 +203,7 @@ Generalized additive models for location, scale and shape.
 <code><a href="exponential_distrib.html">exponential_distrib()</a></code> and <code><a href="gengamma1_distrib.html">gengamma1_distrib()</a></code> for the special case and
 the generalization; <code><a href="gpd_distrib.html">gpd_distrib()</a></code> for another extreme-value family;
 <code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
-family of your own against the same battery of checks that this family
+user-defined family against the same battery of checks that this family
 passes;
 <a href="Weibull1Distrib.html">Weibull1Distrib</a> for the class.</p></div>
     </div>

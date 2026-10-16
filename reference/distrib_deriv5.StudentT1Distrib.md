@@ -36,7 +36,7 @@ from a compiled kernel written like the lower orders (see
 ## Value
 
 A named list of twenty-one numeric vectors named for the multi-index
-they carry.
+that each of them carries.
 
 ## See also
 

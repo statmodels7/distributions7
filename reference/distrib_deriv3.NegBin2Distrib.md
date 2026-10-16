@@ -24,12 +24,12 @@ and the stopping rule of
 [`distrib_expected_hessian.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin2Distrib.md).
 `approx` and `nsim` are ignored either way.
 
-The cancellation of
+The kernel performs the cancellation of
 [`distrib_gradient.NegBin2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin2Distrib.md)
-is performed symbolically at this order too: the observed pure
-dispersion component is a sum over \\j \< y\\ when \\\theta \>
-100\max(y, 1)\\, and the expected one is a single merged sum, so both
-keep their accuracy at large \\\theta\\.
+symbolically at this order too: the observed pure dispersion component
+is a sum over \\j \< y\\ when \\\theta \> 100\max(y, 1)\\, and the
+expected one is a single merged sum, so both keep their accuracy at
+large \\\theta\\.
 
 ## Arguments
 
@@ -62,7 +62,7 @@ keep their accuracy at large \\\theta\\.
 
 - approx:
 
-  Ignored, the expected values being closed form or exact sums.
+  Ignored, because the expected values are closed form or exact sums.
 
 - nsim:
 

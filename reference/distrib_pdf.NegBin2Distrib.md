@@ -12,10 +12,9 @@ Computes the negative binomial mass \$\$P(Y = y; \mu, \theta) =
 far into the tail.
 
 The mass is that of a Poisson whose rate is itself gamma distributed
-with mean \\\mu\\ and shape \\\theta\\, which is where the
-overdispersion comes from. As \\\theta\\ grows the gamma concentrates
-and the mass tends to the Poisson's; at \\\theta = 1\\ it is the
-geometric.
+with mean \\\mu\\ and shape \\\theta\\, and this mixing produces the
+overdispersion. As \\\theta\\ grows the gamma concentrates and the mass
+tends to the Poisson's; at \\\theta = 1\\ it is the geometric.
 
 ## Arguments
 

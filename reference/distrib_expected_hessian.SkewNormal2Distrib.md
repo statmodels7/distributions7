@@ -1,12 +1,12 @@
 # Skew Normal Expected Information in the Centered Parametrization
 
-The expected information and its first two derivatives in the
+Return the expected information and its first two derivatives in the
 parameters. For \\\|\gamma_1\| \<\\
 [`sn2_ge()`](https://statmodels7.github.io/distributions7/reference/sn2_ge.md)
 they come from their series in \\r = (\gamma_1/c)^{1/3}\\; elsewhere
-from the quadrature of
+they come from the quadrature of
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
-over the family's own observed derivatives, the family being
+over the family's own observed derivatives, because the family is
 location-scale in \\(\mu, \sigma)\\ at fixed \\\gamma_1\\. The
 quadrature is centered at the step of the skewing function, \\w = -r\\
 ([`loc_scale_center()`](https://statmodels7.github.io/distributions7/reference/loc_scale_center.md)),
@@ -75,7 +75,8 @@ where the two derivative methods signal an error.
 
 ``` r
 d <- skewnormal2_distrib()
-# finite at zero skewness, where the direct parametrization's is singular
+# The information is finite at zero skewness, where that of the direct
+# parametrization is singular.
 distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = 0))
 #> $mu_mu
 #> [1] -1

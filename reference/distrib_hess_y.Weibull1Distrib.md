@@ -6,7 +6,7 @@ With \\u = (y/\mu)^{\sigma}\\, \$\$\dfrac{\partial^2 \ell}{\partial y^2}
 = -\dfrac{(\sigma - 1)(1 + \sigma u)}{y^2}.\$\$ The sign is the shape's:
 at \\\sigma \> 1\\ the log-density is concave on the whole support, at
 \\\sigma \< 1\\ convex, and at \\\sigma = 1\\, the exponential case,
-exactly zero, the log-density being linear in \\y\\ there.
+exactly zero, because the log-density is linear in \\y\\ there.
 
 ## Arguments
 
@@ -51,7 +51,7 @@ d <- weibull1_distrib()
 y <- c(0.5, 1.2, 3.0)
 th <- list(mu = 2, sigma = 1.5)
 
-# The closed form, written out.
+# The closed form is written out.
 u <- (y / 2)^1.5
 all.equal(distrib_hess_y(d, y, th), -(1.5 - 1) * (1 + 1.5 * u) / y^2)
 #> [1] TRUE

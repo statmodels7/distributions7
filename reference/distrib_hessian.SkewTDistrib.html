@@ -15,7 +15,7 @@ degrees of freedom, which are integrals."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,8 +138,8 @@ $$\dfrac{\partial^2 \ell}{\partial \alpha^2} = Q' z^2 c^2,
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "mu_mu"       "sigma_sigma" "alpha_alpha" "nu_nu"       "mu_sigma"   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "mu_alpha"    "mu_nu"       "sigma_alpha" "sigma_nu"    "alpha_nu"   </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against numerical differentiation of the log-likelihood: one component</span></span></span>
-<span class="r-in"><span><span class="co"># of the closed-form block, and two involving nu.</span></span></span>
+<span class="r-in"><span><span class="co"># Three components are compared with numerical differentiation of the</span></span></span>
+<span class="r-in"><span><span class="co"># log-likelihood: one of the closed-form block, and two involving nu.</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, sigma <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>                                            alpha <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, nu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                 log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

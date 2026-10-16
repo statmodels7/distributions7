@@ -2,10 +2,10 @@
 
 Computes the inverse Gaussian quantile function by calling
 [`statmod::qinvgauss()`](https://rdrr.io/pkg/statmod/man/invgauss.html)
-at `mean = mu` and `dispersion = 1/lambda`. There is no closed form: the
-distribution function is elementary but not invertible in elementary
-terms, so `qinvgauss()` inverts it numerically, with the far-tail
-correction of
+at `mean = mu` and `dispersion = 1/lambda`. The quantile function has no
+closed form: the distribution function is elementary but cannot be
+inverted in elementary terms, so `qinvgauss()` inverts it numerically,
+with the far-tail correction of
 [`invgauss_quantile()`](https://statmodels7.github.io/distributions7/reference/invgauss_quantile.md).
 The distribution function is strictly increasing on \\(0, \infty)\\, so
 the round trip through
@@ -68,7 +68,8 @@ for the generic.
 d <- invgauss2_distrib()
 th <- list(mu = 2, lambda = 3)
 
-# A central 95 percent interval, strongly asymmetric about the mean of 2.
+# These quantiles bound a central 95 percent interval, which is strongly
+# asymmetric about the mean of 2.
 distrib_quantile(d, c(0.025, 0.5, 0.975), th)
 #> [1] 0.4023134 1.5122507 6.4366188
 

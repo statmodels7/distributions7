@@ -6,9 +6,9 @@ centered triple implies. With \\(\xi, \omega, \alpha) = \mathrm{DP}(\mu,
 [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
 and \\z = (y-\xi)/\omega\\, \$\$f(y; \mu, \sigma, \gamma_1) =
 \dfrac{2}{\omega}\\\phi(z)\\\Phi(\alpha z).\$\$ The density is the same
-function of \\y\\ as
-[`distrib_pdf.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormal1Distrib.md)'s;
-only the three numbers naming it differ.
+function of \\y\\ as the one that
+[`distrib_pdf.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormal1Distrib.md)
+computes; only the three numbers that name it differ.
 
 Unlike the derivatives, the density is defined at \\\gamma_1 = 0\\ and
 equals the Gaussian's there: the map itself is continuous through zero,
@@ -50,9 +50,9 @@ A numeric vector of densities, of length
 ## Notation
 
 \\\mu\\, \\\sigma\\ and \\\gamma_1\\ are the mean, the standard
-deviation and the skewness; \\\xi\\, \\\omega\\ and \\\alpha\\ the
-location, scale and shape they imply; \\\phi\\ and \\\Phi\\ the standard
-Gaussian density and distribution function.
+deviation and the skewness; \\\xi\\, \\\omega\\ and \\\alpha\\ are the
+location, scale and shape that they imply; \\\phi\\ and \\\Phi\\ are the
+standard Gaussian density and distribution function.
 
 ## See also
 
@@ -71,7 +71,7 @@ d1 <- skewnormal1_distrib()
 y <- c(-1, 0.3, 1.7)
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# The same law, reached through the map.
+# The same law is reached through the map.
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(d1, y, distributions7:::sn2_theta(th)))
 #> [1] TRUE

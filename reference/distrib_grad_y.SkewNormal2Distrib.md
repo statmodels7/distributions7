@@ -1,9 +1,10 @@
 # Skew Normal Derivatives in the Response, Centered Parametrization
 
-The first and second derivatives of the log-density in the response, and
-the mixed derivatives of orders one and two in the response and one and
-two in \\(\mu, \sigma, \gamma_1)\\, each from its own compiled kernel,
-written as the parameter derivatives are (see
+Return the first and second derivatives of the log-density in the
+response, and the mixed derivatives of orders one and two in the
+response and one and two in \\(\mu, \sigma, \gamma_1)\\. Each derivative
+comes from its own compiled kernel, written in the same way as the
+parameter derivatives (see
 [`distrib_gradient.SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)).
 
 ## Arguments

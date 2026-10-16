@@ -2,21 +2,21 @@
 
 Returns the expectation of the observed Hessian under the model. Every
 term carrying \\P = \psi(y+r) - \psi(r) - \log(1+\theta)\\ drops out,
-its expectation vanishing by the first Bartlett identity. With \\u_j =
-\mu + \theta j\\, the entries are \\-A\\, \\W/\theta^2\\ and
+because its expectation vanishes by the first Bartlett identity. With
+\\u_j = \mu + \theta j\\, the entries are \\-A\\, \\W/\theta^2\\ and
 \\-W/(\mu\theta)\\, where \$\$A = \mathbb{E}\Big\[\sum\_{j\<Y}
 u_j^{-2}\Big\], \qquad W = \mathbb{E}\Big\[\sum\_{j\<Y}
-\Big(\frac{1}{1+\theta} - \frac{\mu^2}{u_j^2}\Big)\Big\].\$\$ Neither
-has a closed form. Each is summed against the exact mass until the terms
-fall below a tolerance, so this is a truncated exact sum and not a
-quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
-read only for its length.
+\Big(\frac{1}{1+\theta} - \frac{\mu^2}{u_j^2}\Big)\Big\].\$\$ \\A\\ and
+\\W\\ are not available in closed form. Each is summed against the exact
+mass until the terms fall below a tolerance, so this is a truncated
+exact sum and not a quadrature or a simulation. `approx` and `nsim` are
+ignored, and `y` is read only for its length.
 
 The mixed entry does not vanish, so the mean and the dispersion are not
 orthogonal in this family; in
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
-the same entry is exactly zero. This is a difference between the two
-families, not between two parametrizations of one.
+the same entry is exactly zero. The two negative binomials are different
+families, so this difference does not come from the parametrization.
 
 ## Arguments
 
@@ -124,7 +124,8 @@ lapply(e, unique)
 #> [1] -0.01717466
 #> 
 
-# Negative definite at a moderate dispersion.
+# The eigenvalues show that the matrix is negative definite at a moderate
+# dispersion.
 M <- matrix(c(e$mu_mu[1], e$mu_theta[1], e$mu_theta[1], e$theta_theta[1]), 2)
 eigen(M, only.values = TRUE)$values
 #> [1] -0.01184367 -0.07250565

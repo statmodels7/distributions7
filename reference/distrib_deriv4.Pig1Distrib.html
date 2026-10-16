@@ -3,7 +3,7 @@
 written out in closed form, read off the last five columns of the compiled
 kernel pig1_deriv4_cpp, which computes the fourth order alone.
 At a very small dispersion and a large count this order loses relative
-accuracy: the tables it is formed from are moments of the finite sum
+accuracy: the tables from which it is formed are moments of the finite sum
 \(S_y\), which has \(y\) terms, and their combination cancels as
 \(\sigma\) goes to zero. At \(\sigma = 10^{-7}\) and counts of 100 and
 more the component in \(\sigma\) alone has a relative error between
@@ -15,7 +15,7 @@ as at third order."><meta property="og:description" content="Returns the fourth 
 written out in closed form, read off the last five columns of the compiled
 kernel pig1_deriv4_cpp, which computes the fourth order alone.
 At a very small dispersion and a large count this order loses relative
-accuracy: the tables it is formed from are moments of the finite sum
+accuracy: the tables from which it is formed are moments of the finite sum
 \(S_y\), which has \(y\) terms, and their combination cancels as
 \(\sigma\) goes to zero. At \(\sigma = 10^{-7}\) and counts of 100 and
 more the component in \(\sigma\) alone has a relative error between
@@ -31,7 +31,7 @@ as at third order."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ as at third order."><meta property="og:image" content="https://statmodels7.githu
 written out in closed form, read off the last five columns of the compiled
 kernel <code>pig1_deriv4_cpp</code>, which computes the fourth order alone.</p>
 <p>At a very small dispersion and a large count this order loses relative
-accuracy: the tables it is formed from are moments of the finite sum
+accuracy: the tables from which it is formed are moments of the finite sum
 \(S_y\), which has \(y\) terms, and their combination cancels as
 \(\sigma\) goes to zero. At \(\sigma = 10^{-7}\) and counts of 100 and
 more the component in \(\sigma\) alone has a relative error between
@@ -150,7 +150,8 @@ kernel may use. Defaults to <code>1L</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3] "mu_mu_sigma_sigma"       "mu_sigma_sigma_sigma"   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "sigma_sigma_sigma_sigma"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the third order.</span></span></span>
+<span class="r-in"><span><span class="co"># The fourth-order entry is compared with a central difference of the</span></span></span>
+<span class="r-in"><span><span class="co"># third order.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_mu_sigma</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma <span class="op">=</span> <span class="fl">0.8</span> <span class="op">+</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu</span> <span class="op">-</span></span></span>
@@ -171,8 +172,8 @@ kernel may use. Defaults to <code>1L</code>.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">x</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"elapsed"</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>      fourth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv4.html">distrib_deriv4</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">x</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"elapsed"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         [,1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> score  0.016</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> fourth 0.016</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> score  0.011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> fourth 0.009</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

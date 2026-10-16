@@ -5,7 +5,8 @@ kernel. Every component but the pure-\(\nu\) one is a rational function of
 \(r = y - \mu\), \(\sigma\) and \(D = \sqrt{\nu + (r/\sigma)^2}\);
 Bessel functions enter through \(\nu\) alone. The derivatives in
 \(\nu\) of \(B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}\) come from
-three routes, each where it keeps its digits: below \(\nu = 1\) the
+three routes, and each is used in the range where it keeps its digits:
+below \(\nu = 1\) the
 series of \(K_1\) and \(K_2\) at the origin; for
 \(1 \le \nu &amp;lt; 400\) the cumulants of \(1/(4T)\) under the generalized
 inverse Gaussian law of the integral representation of \(K_1\), by the
@@ -15,14 +16,15 @@ series of \(K_1\), differentiated term by term in powers of
 fourth order.
 The expected third derivatives have no closed form. With
 expected = TRUE the method calls expected_derivative(), which integrates
-the observed derivatives against the density by the strategy approx names.
-That is the one place on this page where approx and nsim are read."><meta property="og:description" content="Computes the ten distinct third derivatives of the pseudo-Huber log-density
+the observed derivatives against the density by the strategy specified in
+approx. The arguments approx and nsim are read only in this case."><meta property="og:description" content="Computes the ten distinct third derivatives of the pseudo-Huber log-density
 in \(\mu\), \(\sigma\) and \(\nu\), in closed form, in a compiled
 kernel. Every component but the pure-\(\nu\) one is a rational function of
 \(r = y - \mu\), \(\sigma\) and \(D = \sqrt{\nu + (r/\sigma)^2}\);
 Bessel functions enter through \(\nu\) alone. The derivatives in
 \(\nu\) of \(B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}\) come from
-three routes, each where it keeps its digits: below \(\nu = 1\) the
+three routes, and each is used in the range where it keeps its digits:
+below \(\nu = 1\) the
 series of \(K_1\) and \(K_2\) at the origin; for
 \(1 \le \nu &amp;lt; 400\) the cumulants of \(1/(4T)\) under the generalized
 inverse Gaussian law of the integral representation of \(K_1\), by the
@@ -32,8 +34,8 @@ series of \(K_1\), differentiated term by term in powers of
 fourth order.
 The expected third derivatives have no closed form. With
 expected = TRUE the method calls expected_derivative(), which integrates
-the observed derivatives against the density by the strategy approx names.
-That is the one place on this page where approx and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+the observed derivatives against the density by the strategy specified in
+approx. The arguments approx and nsim are read only in this case."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -41,7 +43,7 @@ That is the one place on this page where approx and nsim are read."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +82,8 @@ kernel. Every component but the pure-\(\nu\) one is a rational function of
 \(r = y - \mu\), \(\sigma\) and \(D = \sqrt{\nu + (r/\sigma)^2}\);
 Bessel functions enter through \(\nu\) alone. The derivatives in
 \(\nu\) of \(B(\nu) = \log\{\sqrt\nu K_1(\sqrt\nu)\}\) come from
-three routes, each where it keeps its digits: below \(\nu = 1\) the
+three routes, and each is used in the range where it keeps its digits:
+below \(\nu = 1\) the
 series of \(K_1\) and \(K_2\) at the origin; for
 \(1 \le \nu &lt; 400\) the cumulants of \(1/(4T)\) under the generalized
 inverse Gaussian law of the integral representation of \(K_1\), by the
@@ -90,8 +93,8 @@ series of \(K_1\), differentiated term by term in powers of
 fourth order.</p>
 <p>The expected third derivatives have no closed form. With
 <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which integrates
-the observed derivatives against the density by the strategy <code>approx</code> names.
-That is the one place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
+the observed derivatives against the density by the strategy specified in
+<code>approx</code>. The arguments <code>approx</code> and <code>nsim</code> are read only in this case.</p>
     </div>
 
 
@@ -128,12 +131,13 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
 <dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
+or <code>"opg"</code>. It is read only when <code>expected = TRUE</code>.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
 <dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. Read only when <code>expected = TRUE</code>. Defaults to <code>10000</code>.</p></dd>
+<code>approx = "mc"</code>. It is read only when <code>expected = TRUE</code>. Defaults to
+<code>10000</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -167,7 +171,7 @@ or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10] "nu_nu_nu"         </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A central difference of the Hessian reproduces the pure-location</span></span></span>
-<span class="r-in"><span><span class="co"># component, which is what says the closed form is the right one.</span></span></span>
+<span class="r-in"><span><span class="co"># component, which confirms the closed form.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="va">up</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span> <span class="op">+</span> <span class="va">eps</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, nu <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-in"><span><span class="va">dn</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span> <span class="op">-</span> <span class="va">eps</span>, sigma <span class="op">=</span> <span class="fl">1.2</span>, nu <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
@@ -179,9 +183,9 @@ or <code>"opg"</code>. Read only when <code>expected = TRUE</code>.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu_mu_mu       mu_mu_sigma          mu_mu_nu    mu_sigma_sigma </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3.556183e-17      3.055008e-01      2.612955e-02     -4.163336e-17 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      3.556183e-17      3.055008e-01      2.612955e-02      0.000000e+00 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_sigma_nu          mu_nu_nu sigma_sigma_sigma    sigma_sigma_nu </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -1.951564e-18     -4.662069e-18      3.135736e+00      7.878229e-02 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -5.637851e-18     -4.662069e-18      3.135736e+00      7.878229e-02 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       sigma_nu_nu          nu_nu_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      2.363469e-02      5.907273e-03 </span>
 </code></pre></div>

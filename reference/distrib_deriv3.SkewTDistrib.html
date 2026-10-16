@@ -9,7 +9,7 @@ kernel described on distrib_gradient.SkewTDistrib()."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,7 +121,7 @@ information, so <code>approx</code> and <code>nsim</code> are read.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   components involving_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           20           10 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A closed-form-block component against a difference of the Hessian.</span></span></span>
+<span class="r-in"><span><span class="co"># A closed-form-block component is compared with a difference of the Hessian.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">d3</span><span class="op">$</span><span class="va">mu_mu_alpha</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>,</span></span>
@@ -133,7 +133,7 @@ information, so <code>approx</code> and <code>nsim</code> are read.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> analytic 0.6111686 -1.082016 -0.4214539 0.004008904</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> numeric  0.6111686 -1.082016 -0.4214539 0.004008904</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The pure-nu component against a single stencil on the log-density.</span></span></span>
+<span class="r-in"><span><span class="co"># The pure-nu component is compared with a single stencil on the log-density.</span></span></span>
 <span class="r-in"><span><span class="va">ld</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                                             alpha <span class="op">=</span> <span class="fl">3</span>, nu <span class="op">=</span> <span class="va">v</span><span class="op">)</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>ours <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">d3</span><span class="op">$</span><span class="va">nu_nu_nu</span><span class="op">)</span>,</span></span>

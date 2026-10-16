@@ -8,9 +8,9 @@ representation: with \\Z\\ standard skew normal of shape \\\alpha\\ and
 representation, so the whole draw is three `rnorm`/`rchisq` calls and no
 inversion or rejection.
 
-The representation reads off both limits. As \\\nu \to \infty\\ the
-mixing factor tends to one and \\Y\\ is skew normal; at \\\alpha = 0\\
-the numerator is Gaussian and \\Y\\ is Student \\t\\.
+Both limits can be read off the representation. As \\\nu \to \infty\\
+the mixing factor tends to one and \\Y\\ is skew normal; at \\\alpha =
+0\\ the numerator is Gaussian and \\Y\\ is Student \\t\\.
 
 ## Arguments
 
@@ -46,7 +46,7 @@ A numeric vector of `n` draws.
 ## See also
 
 [`distrib_pdf.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewTDistrib.md)
-for the density the draws follow,
+for the density that the draws follow,
 [`distrib_rng.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewNormal1Distrib.md)
 for the inner representation, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
@@ -61,15 +61,15 @@ th <- list(mu = 1, sigma = 2, alpha = 3, nu = 8)
 set.seed(21)
 x <- distrib_rng(d, 1e5, th)
 
-# Two moments against their closed forms. Both exist here; at nu <= 2 the
-# variance does not.
+# Two sample moments are compared with their closed forms. Both exist here;
+# at nu <= 2 the variance does not.
 rbind(sample = c(mean(x), var(x)),
       theory = c(mean(d, th), variance(d, th)))
 #>            [,1]     [,2]
 #> sample 2.677048 2.534376
 #> theory 2.677051 2.520833
 
-# The mixture, written out at the same seed.
+# The mixture is written out and run at the same seed.
 set.seed(21)
 delta <- 3 / sqrt(1 + 9)
 z <- delta * abs(rnorm(1e5)) + sqrt(1 - delta^2) * rnorm(1e5)

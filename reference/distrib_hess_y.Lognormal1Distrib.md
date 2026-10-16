@@ -56,7 +56,7 @@ r <- log(y) - 0.5
 all.equal(distrib_hess_y(d, y, th), (1 + (r - 1) / 0.36) / y^2)
 #> [1] TRUE
 
-# Concave below exp(mu + 1 - sigma2) and convex above it.
+# The log-density is concave below exp(mu + 1 - sigma2) and convex above it.
 cut <- exp(0.5 + 1 - 0.36)
 c(cut = cut,
   below = distrib_hess_y(d, cut / 2, th),

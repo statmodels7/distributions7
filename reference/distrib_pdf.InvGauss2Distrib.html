@@ -4,14 +4,16 @@ $$f(y; \mu, \lambda) = \sqrt{\dfrac{\lambda}{2\pi y^3}}
       \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\},
       \qquad y &amp;gt; 0,$$
 by calling statmod::dinvgauss() at mean = mu and
-dispersion = 1/lambda, that package writing the family in the dispersion.
+dispersion = 1/lambda, because that package writes the family in the
+dispersion.
 With log = TRUE the logarithm is formed inside dinvgauss() and stays
 finite where the density itself underflows."><meta property="og:description" content="Computes the inverse Gaussian density
 $$f(y; \mu, \lambda) = \sqrt{\dfrac{\lambda}{2\pi y^3}}
       \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\},
       \qquad y &amp;gt; 0,$$
 by calling statmod::dinvgauss() at mean = mu and
-dispersion = 1/lambda, that package writing the family in the dispersion.
+dispersion = 1/lambda, because that package writes the family in the
+dispersion.
 With log = TRUE the logarithm is formed inside dinvgauss() and stays
 finite where the density itself underflows."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +23,7 @@ finite where the density itself underflows."><meta property="og:image" content="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +61,8 @@ $$f(y; \mu, \lambda) = \sqrt{\dfrac{\lambda}{2\pi y^3}}
       \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\},
       \qquad y &gt; 0,$$
 by calling <code><a href="https://rdrr.io/pkg/statmod/man/invgauss.html" class="external-link">statmod::dinvgauss()</a></code> at <code>mean = mu</code> and
-<code>dispersion = 1/lambda</code>, that package writing the family in the dispersion.
+<code>dispersion = 1/lambda</code>, because that package writes the family in the
+dispersion.
 With <code>log = TRUE</code> the logarithm is formed inside <code>dinvgauss()</code> and stays
 finite where the density itself underflows.</p>
     </div>
@@ -117,7 +120,7 @@ dispersion, and <code><a href="distrib_pdf.html">distrib_pdf()</a></code> for th
 <span class="r-in"><span>          <span class="fu">statmod</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/statmod/man/invgauss.html" class="external-link">dinvgauss</a></span><span class="op">(</span><span class="va">y</span>, mean <span class="op">=</span> <span class="fl">2</span>, dispersion <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law as invgauss1 at phi = 1/lambda.</span></span></span>
+<span class="r-in"><span><span class="co"># The density is the same as that of invgauss1 at phi = 1/lambda.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="fu"><a href="invgauss1_distrib.html">invgauss1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, phi <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

@@ -79,8 +79,8 @@ score in \\\nu\\ carries the logarithm through \\q/(1+q) - \log(1+q)\\.
 The derivatives of \\\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2) -
 \tfrac12\log\nu\\ come from the polygamma functions below \\\nu = 20\\
 and from their asymptotic series in \\1/\nu\\ above it. All three
-components keep their digits and stay finite at every \\\nu\\ the chart
-can produce, up to `.Machine$double.xmax`.
+components keep their digits and stay finite at every \\\nu\\ that the
+chart can produce, up to `.Machine$double.xmax`.
 
 ## See also
 
@@ -101,7 +101,7 @@ y <- c(-2.5, 0.3, 1.8)
 th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 g <- distrib_gradient(d, y, th)
 
-# The location and scale components, written out.
+# The location and scale components are written out.
 r <- y - 0.4; D <- 5 * 1.2^2 + r^2
 all.equal(g$mu, 6 * r / D)
 #> [1] TRUE

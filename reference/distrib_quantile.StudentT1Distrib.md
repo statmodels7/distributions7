@@ -67,14 +67,15 @@ for the generic.
 d <- student_t1_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 5)
 
-# The quartiles, and the round trip back through the distribution function.
+# The quartiles are computed, and the distribution function maps them back
+# to the probabilities.
 q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
 q
 #> [1] -0.4720242  0.4000000  1.2720242
 all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75))
 #> [1] TRUE
 
-# The median is the location, the law being symmetric about it.
+# The median is the location, because the law is symmetric about it.
 distrib_quantile(d, 0.5, th)
 #> [1] 0.4
 

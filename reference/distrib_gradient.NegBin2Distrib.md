@@ -51,8 +51,8 @@ A named list of two numeric vectors, `mu` and `theta`, each of length
 ## The dispersion at large theta
 
 The dispersion component is not computed as written above. As \\\theta\\
-grows the family tends to the Poisson and this derivative vanishes, its
-three terms canceling to leading order: \\\psi(y+\theta) -
+grows the family tends to the Poisson and this derivative vanishes,
+because its three terms cancel to leading order: \\\psi(y+\theta) -
 \psi(\theta)\\ is \\y/\theta\\, \\\log\\\theta/s\\\\ is \\-\mu/\theta\\
 and \\(\mu-y)/s\\ is \\(\mu-y)/\theta\\, and the three sum to zero, so
 the value is \\O(\theta^{-2})\\ computed from terms of size
@@ -63,7 +63,7 @@ The kernel performs each cancellation symbolically instead. With \\a =
 \theta\\, \\b = \theta + y\\, \\c = \theta + \mu\\ and \\w =
 (y-\mu)/c\\, \$\$\dfrac{\partial \ell}{\partial \theta} =
 \left\\\psi(b) - \psi(a) - \log(1 + y/a)\right\\ + \left\\\log(1 + w) -
-w\right\\,\$\$ each bracket evaluated by its own series where the
+w\right\\,\$\$ and each bracket is evaluated by its own series where the
 arguments are large. To leading order the result is \\\\y -
 (y-\mu)^2\\/(2\theta^2)\\, which the example below reproduces. A fit
 reaches that regime when the sample is nearly equidispersed, because the
@@ -97,7 +97,7 @@ y <- c(0, 2, 6)
 th <- list(mu = 4, theta = 2)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out at a dispersion where the direct
+# We write out the two closed forms at a dispersion where the direct
 # expression still has its digits.
 s <- 2 + 4
 all.equal(g$mu, (2 / s) * (y / 4 - 1))

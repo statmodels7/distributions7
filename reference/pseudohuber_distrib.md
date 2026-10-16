@@ -31,7 +31,7 @@ pseudohuber_distrib(
   A `link` object from `linkfunctions7` for the location \\\mu\\.
   Defaults to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the location ranging over the whole line already.
+  because the location already ranges over the whole line.
 
 - link_sigma:
 
@@ -82,8 +82,8 @@ density approaches the Laplace density at rate \\O(\nu\log(1/\nu))\\.
 At \\\nu \to \infty\\ the exponent is \\\sqrt{\nu} +
 (y-\mu)^2/(2\sqrt{\nu}\sigma^2)\\ and the family is the Gaussian with
 standard deviation \\\sigma\nu^{1/4}\\: the largest gap is `1.5e-04` at
-\\\nu = 10^4\\ and `1.5e-07` at \\10^8\\. Note that the spread grows
-with \\\nu\\, so \\\sigma\\ alone is not the standard deviation.
+\\\nu = 10^4\\ and `1.5e-07` at \\10^8\\. The spread grows with \\\nu\\,
+so \\\sigma\\ by itself is not the standard deviation.
 
 ## Moments
 
@@ -111,7 +111,7 @@ kernels, as are the derivatives in the response and the mixed derivative
 [`distrib_cross_y.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md),
 whose \\\nu\\ component is \\r/(2\sigma^2 D^3)\\.
 
-## What is numerical, and what it costs
+## Numerical methods and their cost
 
 The distribution function has no elementary form and is a quadrature,
 batched over the quantiles and reflected about \\\mu\\ so that only the
@@ -127,8 +127,8 @@ is one integral over \\z\\ per distinct \\\nu\\, taken by the rule of
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md);
 see
 [`distrib_expected_hessian.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md).
-The components containing \\\mu\\ an odd number of times vanish, the law
-being symmetric, so the location is orthogonal to the scale and the
+The components containing \\\mu\\ an odd number of times vanish because
+the law is symmetric, so the location is orthogonal to the scale and the
 shape.
 
 ## Estimation
@@ -167,7 +167,7 @@ to zero where this one flattens to a bound;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery that this one
+to validate a user-defined family against the same battery that this one
 passes;
 [PseudoHuberDistrib](https://statmodels7.github.io/distributions7/reference/PseudoHuberDistrib.md)
 for the class.

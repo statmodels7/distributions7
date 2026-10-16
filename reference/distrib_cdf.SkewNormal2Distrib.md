@@ -1,10 +1,10 @@
 # Skew Normal Distribution Function in the Centered Parametrization
 
 Computes the skew normal distribution function at the direct parameters
-the centered triple implies, through Azzalini's Owen's T identity \\F(q)
-= \Phi(z) - 2T(z, \alpha)\\ with \\z = (q-\xi)/\omega\\. The arithmetic
-is
-[`distrib_cdf.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewNormal1Distrib.md)'s;
+that the centered triple implies, through Azzalini's Owen's T identity
+\\F(q) = \Phi(z) - 2T(z, \alpha)\\ with \\z = (q-\xi)/\omega\\. The
+arithmetic is that of
+[`distrib_cdf.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewNormal1Distrib.md);
 this method supplies the translated parameters.
 
 ## Arguments
@@ -45,8 +45,8 @@ with `log.p = TRUE`.
 
 ## Notation
 
-\\\gamma_1\\ is the skewness, \\(\xi, \omega, \alpha)\\ the implied
-location, scale and shape, and \\T\\ Owen's T function.
+\\\gamma_1\\ is the skewness, \\(\xi, \omega, \alpha)\\ are the implied
+location, scale and shape, and \\T\\ is Owen's T function.
 
 ## See also
 
@@ -64,7 +64,8 @@ d <- skewnormal2_distrib()
 q <- c(-2, -0.5, 0.5, 2)
 th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# Against a direct quadrature of the density.
+# The distribution function is compared with a direct quadrature of the
+# density.
 rbind(owen = distrib_cdf(d, q, th),
       quadrature = vapply(q, function(u)
         integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))

@@ -43,7 +43,8 @@ Here the scale is \$\$s_0 = \sigma\sqrt{\dfrac{\nu-2}{\nu}},\$\$ which
 exists only for \\\nu \> 2\\, so the degrees of freedom are bounded
 below at two. Every derivative in \\(\mu, \sigma, \nu)\\ to order five,
 the expected information and its derivatives, and the derivatives in the
-response are closed forms, each order in its own compiled kernel (see
+response are closed forms, and each order is computed by its own
+compiled kernel (see
 [`distrib_gradient.StudentT2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentT2Distrib.md)).
 This is `TF2` in gamlss.
 

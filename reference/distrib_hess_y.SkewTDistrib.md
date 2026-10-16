@@ -49,7 +49,7 @@ defines them.
 [`distrib_grad_y.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md)
 for the first derivative,
 [`distrib_hessian.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md)
-for the parameter curvature it shares an expression with,
+for the parameter curvature with which it shares an expression,
 [`distrib_hess_y.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewNormal1Distrib.md)
 for the case that does not change sign, and
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
@@ -66,7 +66,8 @@ th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
 all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
 #> [1] TRUE
 
-# Against a central difference of the response derivative.
+# The second derivative is compared with a central difference of the
+# response derivative.
 eps <- 1e-5
 rbind(analytic = distrib_hess_y(d, y, th),
       numeric = (distrib_grad_y(d, y + eps, th) -
@@ -75,7 +76,8 @@ rbind(analytic = distrib_hess_y(d, y, th),
 #> analytic 1.593377 -4.367025 -3.711409 -0.1050938
 #> numeric  1.593377 -4.367025 -3.711409 -0.1050938
 
-# Convex in the far tail, where the skew normal is concave everywhere.
+# The skew t is convex in the far tail, where the skew normal is concave
+# everywhere.
 sn <- skewnormal1_distrib()
 far <- c(-20, -8, 8, 20)
 rbind(skew_t = distrib_hess_y(d, far, th),

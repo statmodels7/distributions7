@@ -1,8 +1,9 @@
 # Weibull Derivatives in the Response, Mean and Shape
 
-The derivatives of the log-density in the response to order four, and
-the mixed derivatives of orders one and two in the response and one and
-two in \\(m, \sigma)\\, each a closed form from its own compiled kernel.
+Computes the derivatives of the log-density in the response to order
+four, and the mixed derivatives of orders one and two in the response
+and one and two in \\(m, \sigma)\\. Each is a closed form computed by
+its own compiled kernel.
 
 ## Arguments
 

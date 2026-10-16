@@ -10,8 +10,9 @@ function is a finite sum and the prefactors cancel, which gives
 \\\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma + \log S_y -
 \log y!\\ with \\S_y\\ a sum of \\y\\ positive terms taken on the log
 scale. The compiled kernel evaluates \\(1-\sqrt c)/\sigma\\ as
-\\-2\mu/(1+\sqrt c)\\ and \\S_y\\ in \\w = 1/(2\alpha)\\, so nothing
-cancels as \\\sigma \to 0\\, and no Bessel routine is called.
+\\-2\mu/(1+\sqrt c)\\ and \\S_y\\ in \\w = 1/(2\alpha)\\, so the
+evaluation involves no subtraction of nearly equal terms as \\\sigma \to
+0\\, and the kernel does not call a Bessel routine.
 
 ## Arguments
 
@@ -71,7 +72,8 @@ d <- pig1_distrib()
 y <- 0:6
 th <- list(mu = 3, sigma = 0.8)
 
-# Against the Bessel formula written out, which the kernel does not use.
+# The mass is compared with the Bessel formula written out, which the
+# kernel does not use.
 al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
 all.equal(distrib_pdf(d, y, th),
           sqrt(2 * al / pi) * 3^y * exp(1 / 0.8) /
@@ -91,7 +93,7 @@ rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
 #> pig    0.0006790258 5.753016e-06 7.233866e-08
 #> negbin 0.0004803803 5.368144e-07 5.596723e-10
 
-# Off the support.
+# A value off the support has probability zero.
 distrib_pdf(d, c(-1, 1.5), th)
 #> [1] 0 0
 ```

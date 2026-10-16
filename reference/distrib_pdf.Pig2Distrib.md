@@ -8,9 +8,10 @@ parametrization is the argument \\\sqrt{1 + 2\sigma\mu}/\sigma\\ at
 which the Bessel function is evaluated, so in this coordinate the mass
 function's own argument is a parameter.
 
-The compiled kernel takes \\\alpha\\ directly, so
+The compiled kernel takes \\\alpha\\ directly, so this method does not
+call
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
-is not called here and no map is composed.
+and does not compose a map.
 
 ## Arguments
 
@@ -72,7 +73,7 @@ d1 <- pig1_distrib()
 y <- 0:6
 al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
 
-# The same law, reached through the map.
+# Pig2 gives the same law as pig1, reached through the map.
 all.equal(distrib_pdf(d, y, list(mu = 3, alpha = al)),
           distrib_pdf(d1, y, list(mu = 3, sigma = 0.8)))
 #> [1] TRUE

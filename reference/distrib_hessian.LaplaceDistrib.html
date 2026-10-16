@@ -14,7 +14,7 @@ derivative does not exist. The curvature of the log-likelihood in the
 location is concentrated at the single point \(r = 0\), so the
 expectation of this second derivative is 0 although the information is
 positive.
-The consequence is that the observed information here is not the
+Hence the observed information here is not the
 information. distrib_expected_hessian.LaplaceDistrib() returns
 \(-1/\sigma^2\), obtained from the variance of the score, and that page
 explains which identity holds and which fails."><meta property="og:description" content="Computes the three distinct second derivatives of the Laplace log-density
@@ -32,7 +32,7 @@ derivative does not exist. The curvature of the log-likelihood in the
 location is concentrated at the single point \(r = 0\), so the
 expectation of this second derivative is 0 although the information is
 positive.
-The consequence is that the observed information here is not the
+Hence the observed information here is not the
 information. distrib_expected_hessian.LaplaceDistrib() returns
 \(-1/\sigma^2\), obtained from the variance of the score, and that page
 explains which identity holds and which fails."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -43,7 +43,7 @@ explains which identity holds and which fails."><meta property="og:image" conten
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,7 +91,7 @@ derivative does not exist. The curvature of the log-likelihood in the
 location is concentrated at the single point \(r = 0\), so the
 expectation of this second derivative is 0 although the information is
 positive.</p>
-<p>The consequence is that the observed information here is not the
+<p>Hence the observed information here is not the
 information. <code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code> returns
 \(-1/\sigma^2\), obtained from the variance of the score, and that page
 explains which identity holds and which fails.</p>
@@ -142,7 +142,7 @@ whatever the count is. Defaults to <code>1L</code>.</p></dd>
     <div class="dont-index"><p><code><a href="distrib_expected_hessian.LaplaceDistrib.html">distrib_expected_hessian.LaplaceDistrib()</a></code>, which returns the
 information and is not the expectation of this;
 <code><a href="distrib_gradient.LaplaceDistrib.html">distrib_gradient.LaplaceDistrib()</a></code> for the score;
-<code><a href="fisher_scoring.html">fisher_scoring()</a></code>, the estimation route this family needs; and
+<code><a href="fisher_scoring.html">fisher_scoring()</a></code>, the estimation route that this family needs; and
 <code><a href="distrib_hessian.html">distrib_hessian()</a></code> for the generic.</p></div>
     </div>
 
@@ -157,7 +157,7 @@ information and is not the expectation of this;
 <span class="r-in"><span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The other two, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The other two components are compared with their formulas.</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="fl">0.4</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">sigma_sigma</span>, <span class="op">(</span><span class="fl">1.5</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.5</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

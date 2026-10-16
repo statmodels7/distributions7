@@ -143,8 +143,8 @@ for other positive families with a multiplicative variance function;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery of checks that
-this family passes;
+to validate a user-defined family against the same battery of checks
+that this family passes;
 [Gamma1Distrib](https://statmodels7.github.io/distributions7/reference/Gamma1Distrib.md)
 for the class.
 

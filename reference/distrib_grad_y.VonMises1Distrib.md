@@ -54,7 +54,7 @@ d <- vonmises1_distrib()
 y <- c(-1, 0, 0.5, 2)
 th <- list(mu = 0.5, kappa = 2)
 
-# The closed form, written out.
+# The closed form is written out.
 all.equal(distrib_grad_y(d, y, th), -2 * sin(y - 0.5))
 #> [1] TRUE
 

@@ -46,7 +46,8 @@ for the generic.
 ``` r
 d <- invgauss2_distrib()
 
-# Same generator as statmod::rinvgauss at dispersion 1/lambda.
+# The method uses the same generator as statmod::rinvgauss at dispersion
+# 1/lambda.
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = 2, lambda = 3))
 set.seed(2)

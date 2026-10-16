@@ -88,7 +88,7 @@ h
 #> [1] -0.125  0.000  0.125
 #> 
 
-# The three closed forms, written out.
+# The three closed forms are written out.
 all.equal(h$mu_mu, 3 * (2 * 2 - 3 * y) / 2^4)
 #> [1] TRUE
 all.equal(h$mu_lambda, (y - 2) / 2^3)

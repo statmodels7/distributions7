@@ -5,8 +5,8 @@ Computes the inverse Gaussian density \$\$f(y; \mu, \lambda) =
 \exp\left\\-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\\, \qquad y \>
 0,\$\$ by calling
 [`statmod::dinvgauss()`](https://rdrr.io/pkg/statmod/man/invgauss.html)
-at `mean = mu` and `dispersion = 1/lambda`, that package writing the
-family in the dispersion. With `log = TRUE` the logarithm is formed
+at `mean = mu` and `dispersion = 1/lambda`, because that package writes
+the family in the dispersion. With `log = TRUE` the logarithm is formed
 inside `dinvgauss()` and stays finite where the density itself
 underflows.
 
@@ -65,7 +65,7 @@ all.equal(distrib_pdf(d, y, th),
           statmod::dinvgauss(y, mean = 2, dispersion = 1 / 3))
 #> [1] TRUE
 
-# The same law as invgauss1 at phi = 1/lambda.
+# The density is the same as that of invgauss1 at phi = 1/lambda.
 all.equal(distrib_pdf(d, y, th),
           distrib_pdf(invgauss1_distrib(), y, list(mu = 2, phi = 1 / 3)))
 #> [1] TRUE

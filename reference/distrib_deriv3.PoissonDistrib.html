@@ -4,14 +4,14 @@ mean, in closed form:
 $$\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}.$$
 With expected = TRUE the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives \(2/\mu^2\). Both routes are closed
-form, so no quadrature is run and approx and nsim are ignored.
+form, so the method runs no quadrature and ignores approx and nsim.
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order."><meta property="og:description" content="Computes the third derivative of the Poisson log-mass with respect to the
 mean, in closed form:
 $$\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}.$$
 With expected = TRUE the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives \(2/\mu^2\). Both routes are closed
-form, so no quadrature is run and approx and nsim are ignored.
+form, so the method runs no quadrature and ignores approx and nsim.
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +21,7 @@ two-parameter family carries four at this order."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ mean, in closed form:
 $$\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}.$$
 With <code>expected = TRUE</code> the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives \(2/\mu^2\). Both routes are closed
-form, so no quadrature is run and <code>approx</code> and <code>nsim</code> are ignored.</p>
+form, so the method runs no quadrature and ignores <code>approx</code> and <code>nsim</code>.</p>
 <p>The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.</p>
     </div>
@@ -137,7 +137,8 @@ subscript on \(\ell\) never does.</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">7</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed form, written out; zero at an observed zero.</span></span></span>
+<span class="r-in"><span><span class="co"># The third derivative is compared with its closed form, which is zero at</span></span></span>
+<span class="r-in"><span><span class="co"># an observed zero.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu</span>, <span class="fl">2</span> <span class="op">*</span> <span class="va">y</span> <span class="op">/</span> <span class="fl">3</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>

@@ -85,7 +85,7 @@ for why.
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md)
 for the construction,
 [`distrib_hessian.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormal1Distrib.md)
-for the quantity this is the expectation of, and
+for the quantity of which this is the expectation, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 
@@ -96,7 +96,8 @@ d <- skewnormal1_distrib()
 a <- 2
 e <- distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, alpha = a))
 
-# Azzalini's form, with the a_k computed by an independent quadrature.
+# Azzalini's form is evaluated with the a_k computed by an independent
+# quadrature.
 ak <- sapply(c(0, 2), function(k) integrate(function(z)
   2 * z^k * exp(dnorm(z, log = TRUE) + 2 * dnorm(a * z, log = TRUE) -
                 pnorm(a * z, log.p = TRUE)), -Inf, Inf, rel.tol = 1e-12)$value)

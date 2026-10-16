@@ -1,11 +1,12 @@
 # The Laplace Tails on the Log Scale
 
-Internal helpers of the two Laplace families. `laplace_cdf_tails()`
-returns the probability that `lower.tail` and `log.p` select at the
-standardized residual `r`, each tail from its own arm: \\\log(1/2) -
-\|r\|\\ for the far tail and `log1p(-exp(-|r|)/2)` for the near one.
-`laplace_std_quantile()` returns the standard Laplace quantile from the
-logarithm of the smaller tail, \\\pm(\log P + \log 2)\\.
+These are internal helpers of the two Laplace families.
+`laplace_cdf_tails()` returns the probability that `lower.tail` and
+`log.p` select at the standardized residual `r`, and computes each tail
+from its own arm: \\\log(1/2) - \|r\|\\ for the far tail and
+`log1p(-exp(-|r|)/2)` for the near one. `laplace_std_quantile()` returns
+the standard Laplace quantile from the logarithm of the smaller tail,
+\\\pm(\log P + \log 2)\\.
 
 ## Usage
 

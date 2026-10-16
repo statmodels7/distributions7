@@ -95,7 +95,7 @@ names(h)
 #> [1] "mu_mu"       "sigma_sigma" "nu_nu"       "mu_sigma"    "mu_nu"      
 #> [6] "sigma_nu"   
 
-# The location and mixed location-scale components, written out.
+# The location and mixed location-scale components are written out.
 r <- y - 0.4; D <- 5 * 1.2^2 + r^2
 all.equal(h$mu_mu, 6 * (r^2 - 5 * 1.2^2) / D^2)
 #> [1] TRUE

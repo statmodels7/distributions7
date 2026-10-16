@@ -11,8 +11,8 @@ powers of \\r\\ and the order of \\G\\ that is run rather than solved.
 
 With `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-instead: the expected third derivatives have no closed form. That is the
-one place on this page where `approx` and `nsim` are read.
+instead: the expected third derivatives have no closed form. The method
+reads `approx` and `nsim` only in this case.
 
 ## Arguments
 
@@ -28,9 +28,9 @@ one place on this page where `approx` and `nsim` are read.
 
 - theta:
 
-  A named list with components `mu` and `theta`, each a numeric vector
-  of length 1 or of the length of `y`, both strictly positive. A
-  component of length 1 is recycled.
+  A named list with components `mu` and `theta`. Each is a numeric
+  vector of length 1 or of the length of `y`, and both are strictly
+  positive. A component of length 1 is recycled.
 
 - expected:
 
@@ -47,12 +47,12 @@ one place on this page where `approx` and `nsim` are read.
 - approx:
 
   One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. Read only when `expected = TRUE`.
+  `"opg"`. It is read only when `expected = TRUE`.
 
 - nsim:
 
-  A single positive integer, the sample size when `approx = "mc"`. Read
-  only when `expected = TRUE`. Defaults to `10000`.
+  A single positive integer, the sample size when `approx = "mc"`. It is
+  read only when `expected = TRUE`. Defaults to `10000`.
 
 - ...:
 
@@ -114,7 +114,7 @@ dn <- distrib_hessian(d, y, list(mu = 4 - eps, theta = 1.2))$mu_mu
 all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #> [1] TRUE
 
-# And a mixed component, which is where the recursion does its work.
+# The same check applies to a mixed component, which exercises the recursion.
 up <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 + eps))$mu_theta
 dn <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 - eps))$mu_theta
 all.equal((up - dn) / (2 * eps), d3$mu_theta_theta, tolerance = 1e-6)

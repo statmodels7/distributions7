@@ -1,11 +1,12 @@
 # Student t Distribution-Function Derivatives, Standard Deviation
 
-The derivatives of \\F(q)\\ in \\(\mu, \sigma, \nu)\\ to order four. The
-family is location-scale in \\(\mu, \sigma)\\ at fixed \\\nu\\, so those
-components are closed forms in the density and its derivatives; the
-components in \\\nu\\, derivatives of an incomplete beta function in its
-parameter, have no elementary form and are integrals of the density's
-own derivatives, taken by the compiled rule, as for
+Return the derivatives of \\F(q)\\ in \\(\mu, \sigma, \nu)\\ to order
+four. The family is location-scale in \\(\mu, \sigma)\\ at fixed
+\\\nu\\, so those components are closed forms in the density and its
+derivatives; the components in \\\nu\\, derivatives of an incomplete
+beta function in its parameter, have no elementary form and are
+integrals of the density's own derivatives, taken by the compiled rule,
+as for
 [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md).
 
 ## Arguments

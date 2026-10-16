@@ -6,16 +6,16 @@ distrib_deriv3.SkewNormal1Distrib(). The recursion
 inverse Mills ratio, so the fourth order uses the same two functions as
 the third, and the same cumulant route below \(t = -1\).
 With expected = TRUE the value is a numerical expectation, for the reason
-it is at third order: the integrals are the ones that block the expected
-information."><meta property="og:description" content="Computes the fifteen fourth derivatives of the log-density in closed form,
+that applies at third order: the integrals are the ones that block the
+expected information."><meta property="og:description" content="Computes the fifteen fourth derivatives of the log-density in closed form,
 in a compiled kernel, in the notation of
 distrib_deriv3.SkewNormal1Distrib(). The recursion
 \(R' = -R(t+R)\) keeps every one of them a polynomial in \(t\) and the
 inverse Mills ratio, so the fourth order uses the same two functions as
 the third, and the same cumulant route below \(t = -1\).
 With expected = TRUE the value is a numerical expectation, for the reason
-it is at third order: the integrals are the ones that block the expected
-information."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+that applies at third order: the integrals are the ones that block the
+expected information."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ information."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +63,8 @@ in a compiled kernel, in the notation of
 inverse Mills ratio, so the fourth order uses the same two functions as
 the third, and the same cumulant route below \(t = -1\).</p>
 <p>With <code>expected = TRUE</code> the value is a numerical expectation, for the reason
-it is at third order: the integrals are the ones that block the expected
-information.</p>
+that applies at third order: the integrals are the ones that block the
+expected information.</p>
     </div>
 
 
@@ -144,7 +144,7 @@ family.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">d4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the third order.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is compared with a central difference of the third order.</span></span></span>
 <span class="r-in"><span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>analytic <span class="op">=</span> <span class="va">d4</span><span class="op">$</span><span class="va">mu_mu_alpha_alpha</span>,</span></span>
 <span class="r-in"><span>      numeric <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span> <span class="op">+</span> <span class="va">eps</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_alpha</span> <span class="op">-</span></span></span>

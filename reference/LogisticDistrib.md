@@ -183,7 +183,8 @@ c(variance = variance(d, th), pi_sq_over_3 = pi^2 * 1.5^2 / 3)
 #>     variance pi_sq_over_3 
 #>     7.402203     7.402203 
 
-# Symmetric, so the mean is the median; the excess kurtosis is 6/5.
+# The family is symmetric, so the mean is the median; the excess kurtosis
+# is 6/5.
 c(mean = mean(d, th), median = distrib_quantile(d, 0.5, th),
   excess_kurtosis = kurtosis(d, th))
 #>            mean          median excess_kurtosis 

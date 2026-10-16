@@ -33,13 +33,13 @@ is the scale and not the mean: the mean is \\b\\\Gamma(1 + 1/\sigma)\\.
 Here the scale is \$\$b = \dfrac{m}{\Gamma(1 + 1/\sigma)},\$\$ and every
 derivative in \\(m, \sigma)\\ to order five, the expected information
 and its derivatives, the derivatives in the response and the derivatives
-of the distribution function are closed forms, each order in its own
-compiled kernel (see
+of the distribution function are closed forms, and each order is
+computed in its own compiled kernel (see
 [`distrib_gradient.Weibull3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Weibull3Distrib.md)).
 
-The number follows gamlss, where the Weibull in the mean is `WEI3`.
-Leaving `weibull2` unused is deliberate: it names a different
-parametrization there.
+The number follows gamlss, where the Weibull in the mean is `WEI3`. This
+package does not use the name `weibull2`, because that name denotes a
+different parametrization in gamlss.
 
 ## The distribution
 

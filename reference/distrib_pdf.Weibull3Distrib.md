@@ -1,8 +1,9 @@
 # Weibull Density, Distribution and Generator in the Mean and Shape
 
-The Weibull with shape \\\sigma\\ and scale \\b = m / \Gamma(1 +
-1/\sigma)\\, so that \\E\[Y\] = m\\. The density, the distribution
-function, the quantile function and the generator are
+The methods of this page describe the Weibull with shape \\\sigma\\ and
+scale \\b = m / \Gamma(1 + 1/\sigma)\\, so that \\E\[Y\] = m\\. The
+density, the distribution function, the quantile function and the
+generator are
 [`stats::dweibull()`](https://rdrr.io/r/stats/Weibull.html),
 [`stats::pweibull()`](https://rdrr.io/r/stats/Weibull.html),
 [`stats::qweibull()`](https://rdrr.io/r/stats/Weibull.html) and
@@ -13,7 +14,7 @@ log scale of the lower tail the distribution function and the quantile
 go through the logarithm of the cumulative hazard
 ([`weibull_log_lower()`](https://statmodels7.github.io/distributions7/reference/weibull_log_lower.md),
 [`log_neg_log1mexp()`](https://statmodels7.github.io/distributions7/reference/log_neg_log1mexp.md)),
-so that neither rounds where the hazard or \\1 - p\\ would.
+so that they do not round where the hazard or \\1 - p\\ would.
 
 ## Arguments
 

@@ -11,7 +11,7 @@ parameters."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,8 +121,8 @@ and the smallest grows like \(\alpha^4\), reading
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="loc_scale_expected.html">loc_scale_expected()</a></code> for the construction,
-<code><a href="distrib_hessian.SkewNormal1Distrib.html">distrib_hessian.SkewNormal1Distrib()</a></code> for the quantity this is the
-expectation of, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
+<code><a href="distrib_hessian.SkewNormal1Distrib.html">distrib_hessian.SkewNormal1Distrib()</a></code> for the quantity of which this is
+the expectation, and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">
@@ -131,7 +131,8 @@ expectation of, and <code><a href="distrib_expected_hessian.html">distrib_expect
 <span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="va">a</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Azzalini's form, with the a_k computed by an independent quadrature.</span></span></span>
+<span class="r-in"><span><span class="co"># Azzalini's form is evaluated with the a_k computed by an independent</span></span></span>
+<span class="r-in"><span><span class="co"># quadrature.</span></span></span>
 <span class="r-in"><span><span class="va">ak</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">integrate</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fl">2</span> <span class="op">*</span> <span class="va">z</span><span class="op">^</span><span class="va">k</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="va">z</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="va">a</span> <span class="op">*</span> <span class="va">z</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">-</span></span></span>
 <span class="r-in"><span>                <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">a</span> <span class="op">*</span> <span class="va">z</span>, log.p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>, <span class="op">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>, rel.tol <span class="op">=</span> <span class="fl">1e-12</span><span class="op">)</span><span class="op">$</span><span class="va">value</span><span class="op">)</span></span></span>

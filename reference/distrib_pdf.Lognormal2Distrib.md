@@ -1,9 +1,9 @@
 # Lognormal Density, Distribution and Generator in the Mean and Variance of Y
 
-The lognormal with \\\log Y \sim N(\mu_l, S)\\, where \\S = \log(1 +
-v/m^2)\\ and \\\mu_l = \log m - S/2\\, so that \\E\[Y\] = m\\ and
-\\\operatorname{Var}(Y) = v\\. The density, the distribution function,
-the quantile function and the generator are
+These methods describe the lognormal with \\\log Y \sim N(\mu_l, S)\\,
+where \\S = \log(1 + v/m^2)\\ and \\\mu_l = \log m - S/2\\, so that
+\\E\[Y\] = m\\ and \\\operatorname{Var}(Y) = v\\. The density, the
+distribution function, the quantile function and the generator are
 [`stats::dlnorm()`](https://rdrr.io/r/stats/Lognormal.html),
 [`stats::plnorm()`](https://rdrr.io/r/stats/Lognormal.html),
 [`stats::qlnorm()`](https://rdrr.io/r/stats/Lognormal.html) and

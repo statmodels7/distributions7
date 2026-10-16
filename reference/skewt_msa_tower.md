@@ -38,8 +38,8 @@ free of \\z\\, so that `"0_0"` is `NA_real_` and is never read.
 With \\z = (y-\mu)/\sigma\\ and \\u(z) = z\sqrt{(\nu+1)/(\nu+z^2)}\\,
 the log-density is \$\$\ell = \log 2 - \log\sigma + g(z) +
 \Lambda(\alpha\\u(z)),\$\$ where \\g = \log t\_\nu\\ and \\\Lambda =
-\log T\_{\nu+1}\\. Neither \\\mu\\ nor \\\sigma\\ appears anywhere but
-inside \\z\\, and \\\alpha\\ nowhere but inside \\w = \alpha u\\, so
+\log T\_{\nu+1}\\. The parameters \\\mu\\ and \\\sigma\\ appear only
+inside \\z\\, and \\\alpha\\ appears only inside \\w = \alpha u\\, so
 every derivative in \\(\mu, \sigma, \alpha)\\ reduces to derivatives in
 \\z\\ and in the argument \\w\\ of \\\Lambda\\.
 
@@ -68,8 +68,8 @@ as a skew normal's inverse Mills ratio is handled. The two chain rules
 that remain, \\(u^c)^{(j)}\\ and \\\partial_z^p \Lambda^{(c)}(\alpha
 u)\\, are Faa di Bruno sums over the partial Bell polynomials of \\u\\.
 
-What is left outside the table is \\\nu\\, which enters the degrees of
-freedom of \\T\_{\nu+1}\\ and therefore carries the obstruction
+The parameter \\\nu\\ is outside the table: it enters the degrees of
+freedom of \\T\_{\nu+1}\\ and therefore carries the obstruction that
 [`distrib_gradient.SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md)
 records.
 

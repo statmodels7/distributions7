@@ -2,9 +2,9 @@
 
 Computes the five distinct fourth derivatives of the Weibull log-density
 in \\\mu\\ and \\\sigma\\, in closed form, observed at the data or
-expected under the model. The construction is the one
+expected under the model. The construction is the one that
 [`distrib_deriv3.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Weibull1Distrib.md)
-describes carried one order further: with \\z = y/\mu\\, \\u =
+describes, carried one order further: with \\z = y/\mu\\, \\u =
 z^{\sigma}\\ and \\L = \log z\\, each component is a polynomial in \\u
 L^k\\ for \\k \le 4\\, and the pure-\\\mu\\ component is
 \$\$\dfrac{\partial^4 \ell}{\partial \mu^4} =
@@ -91,7 +91,7 @@ names(d4)
 #> [3] "mu_mu_sigma_sigma"       "mu_sigma_sigma_sigma"   
 #> [5] "sigma_sigma_sigma_sigma"
 
-# The pure-mu component, written out.
+# The pure-mu component is written out.
 u <- (y / 2)^1.5
 all.equal(d4$mu_mu_mu_mu, 1.5 * (6 - 2.5 * 3.5 * 4.5 * u) / 16)
 #> [1] TRUE

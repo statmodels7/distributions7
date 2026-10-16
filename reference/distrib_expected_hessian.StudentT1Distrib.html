@@ -6,11 +6,11 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.$$
 The location is orthogonal to both other parameters: the two mixed
-entries containing \(\mu\) are exactly zero, the law being symmetric about
-\(\mu\) while the other two components are even in \(r\). So
+entries containing \(\mu\) are exactly zero, because the law is symmetric
+about \(\mu\) while the other two components are even in \(r\). So
 \(\hat\mu\) is asymptotically independent of \(\hat\sigma\) and
-\(\hat\nu\), which the scale and the degrees of freedom are not of each
-other.
+\(\hat\nu\), whereas \(\hat\sigma\) and \(\hat\nu\) are not
+asymptotically independent of each other.
 Because a closed form exists, approx and nsim are ignored: every
 strategy returns the same six numbers. The arithmetic runs in a compiled
 kernel, so the result does not depend on the thread count."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
@@ -20,11 +20,11 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.$$
 The location is orthogonal to both other parameters: the two mixed
-entries containing \(\mu\) are exactly zero, the law being symmetric about
-\(\mu\) while the other two components are even in \(r\). So
+entries containing \(\mu\) are exactly zero, because the law is symmetric
+about \(\mu\) while the other two components are even in \(r\). So
 \(\hat\mu\) is asymptotically independent of \(\hat\sigma\) and
-\(\hat\nu\), which the scale and the degrees of freedom are not of each
-other.
+\(\hat\nu\), whereas \(\hat\sigma\) and \(\hat\nu\) are not
+asymptotically independent of each other.
 Because a closed form exists, approx and nsim are ignored: every
 strategy returns the same six numbers. The arithmetic runs in a compiled
 kernel, so the result does not depend on the thread count."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -35,7 +35,7 @@ kernel, so the result does not depend on the thread count."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,11 +75,11 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.$$</p>
 <p>The location is orthogonal to both other parameters: the two mixed
-entries containing \(\mu\) are exactly zero, the law being symmetric about
-\(\mu\) while the other two components are even in \(r\). So
+entries containing \(\mu\) are exactly zero, because the law is symmetric
+about \(\mu\) while the other two components are even in \(r\). So
 \(\hat\mu\) is asymptotically independent of \(\hat\sigma\) and
-\(\hat\nu\), which the scale and the degrees of freedom are not of each
-other.</p>
+\(\hat\nu\), whereas \(\hat\sigma\) and \(\hat\nu\) are not
+asymptotically independent of each other.</p>
 <p>Because a closed form exists, <code>approx</code> and <code>nsim</code> are ignored: every
 strategy returns the same six numbers. The arithmetic runs in a compiled
 kernel, so the result does not depend on the thread count.</p>
@@ -95,8 +95,8 @@ kernel, so the result does not depend on the thread count.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations. Only its length is read, the
-expectation not depending on the data; the values are ignored.</p></dd>
+<dd><p>A numeric vector of observations. Only its length is read, because
+the expectation does not depend on the data; the values are ignored.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -175,7 +175,7 @@ the score, and
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mu_mu  sigma_sigma        nu_nu     mu_sigma        mu_nu     sigma_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.520833333 -0.868055556 -0.003022589  0.000000000  0.000000000  0.034722222 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The four non-zero closed forms, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The four non-zero closed forms are written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu_mu <span class="op">=</span> <span class="op">-</span><span class="fl">6</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  sigma_sigma <span class="op">=</span> <span class="op">-</span><span class="fl">10</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">8</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  nu_nu <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">trigamma</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">trigamma</a></span><span class="op">(</span><span class="fl">2.5</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">4</span> <span class="op">+</span> <span class="fl">10</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">5</span> <span class="op">*</span> <span class="fl">6</span> <span class="op">*</span> <span class="fl">8</span><span class="op">)</span>,</span></span>
@@ -184,7 +184,7 @@ the score, and
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.520833333 -0.868055556 -0.003022589  0.034722222 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Averaging the observed Hessian over draws reaches the same six numbers,</span></span></span>
-<span class="r-in"><span><span class="co"># the two containing mu going to zero.</span></span></span>
+<span class="r-in"><span><span class="co"># and the two entries containing mu go to zero.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">4e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -193,7 +193,7 @@ the score, and
 <span class="r-out co"><span class="r-pr">#&gt;</span>      sigma_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3.461666e-02 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The strategy argument is inert, the expectation being exact.</span></span></span>
+<span class="r-in"><span><span class="co"># The strategy argument has no effect, because the expectation is exact.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, approx <span class="op">=</span> <span class="st">"mc"</span>, nsim <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>

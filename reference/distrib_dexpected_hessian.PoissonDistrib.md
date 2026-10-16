@@ -1,8 +1,9 @@
 # Poisson Derivatives of the Expected Information
 
-The first and second derivatives of \\\mathbb{E}\[\ell\_{\mu\mu}\] =
--1/\mu\\, \\1/\mu^2\\ and \\-2/\mu^3\\, from a compiled kernel. On the
-link scale the result is carried across by
+Computes the first and second derivatives of
+\\\mathbb{E}\[\ell\_{\mu\mu}\] = -1/\mu\\, which are \\1/\mu^2\\ and
+\\-2/\mu^3\\, with a compiled kernel. On the link scale the result is
+carried across by
 [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md).
 
 ## Arguments

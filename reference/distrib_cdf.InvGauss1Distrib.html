@@ -9,11 +9,10 @@ $$F(q; \mu, \phi) = \Phi\left\{\sqrt{\dfrac{1}{\phi q}}
 by calling statmod::pinvgauss() at mean = mu and dispersion = phi.
 Both tails are available exactly, and log.p = TRUE returns a logarithm
 that stays finite where the probability itself underflows.
-The exponential factor is the reason this expression is evaluated on the
-log scale rather than as written: \(e^{2/(\phi\mu)}\) overflows at
-ordinary settings, at \(\mu = 0.01\) and \(\phi = 0.1\) the exponent
-already being 2000, and it multiplies a normal tail that underflows by the
-same amount."><meta property="og:description" content="Computes the inverse Gaussian distribution function, which is elementary in
+This expression is evaluated on the log scale rather than as written,
+because the exponential factor \(e^{2/(\phi\mu)}\) overflows at ordinary
+settings and multiplies a normal tail that underflows by the same amount.
+At \(\mu = 0.01\) and \(\phi = 0.1\), for example, the exponent is 2000."><meta property="og:description" content="Computes the inverse Gaussian distribution function, which is elementary in
 the standard normal distribution function \(\Phi\):
 $$F(q; \mu, \phi) = \Phi\left\{\sqrt{\dfrac{1}{\phi q}}
         \left(\dfrac{q}{\mu} - 1\right)\right\}
@@ -23,11 +22,10 @@ $$F(q; \mu, \phi) = \Phi\left\{\sqrt{\dfrac{1}{\phi q}}
 by calling statmod::pinvgauss() at mean = mu and dispersion = phi.
 Both tails are available exactly, and log.p = TRUE returns a logarithm
 that stays finite where the probability itself underflows.
-The exponential factor is the reason this expression is evaluated on the
-log scale rather than as written: \(e^{2/(\phi\mu)}\) overflows at
-ordinary settings, at \(\mu = 0.01\) and \(\phi = 0.1\) the exponent
-already being 2000, and it multiplies a normal tail that underflows by the
-same amount."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+This expression is evaluated on the log scale rather than as written,
+because the exponential factor \(e^{2/(\phi\mu)}\) overflows at ordinary
+settings and multiplies a normal tail that underflows by the same amount.
+At \(\mu = 0.01\) and \(\phi = 0.1\), for example, the exponent is 2000."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +33,7 @@ same amount."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,11 +76,10 @@ $$F(q; \mu, \phi) = \Phi\left\{\sqrt{\dfrac{1}{\phi q}}
 by calling <code><a href="https://rdrr.io/pkg/statmod/man/invgauss.html" class="external-link">statmod::pinvgauss()</a></code> at <code>mean = mu</code> and <code>dispersion = phi</code>.
 Both tails are available exactly, and <code>log.p = TRUE</code> returns a logarithm
 that stays finite where the probability itself underflows.</p>
-<p>The exponential factor is the reason this expression is evaluated on the
-log scale rather than as written: \(e^{2/(\phi\mu)}\) overflows at
-ordinary settings, at \(\mu = 0.01\) and \(\phi = 0.1\) the exponent
-already being 2000, and it multiplies a normal tail that underflows by the
-same amount.</p>
+<p>This expression is evaluated on the log scale rather than as written,
+because the exponential factor \(e^{2/(\phi\mu)}\) overflows at ordinary
+settings and multiplies a normal tail that underflows by the same amount.
+At \(\mu = 0.01\) and \(\phi = 0.1\), for example, the exponent is 2000.</p>
     </div>
 
 
@@ -145,7 +142,7 @@ the generic.</p></div>
 <span class="r-in"><span>          <span class="fu">statmod</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/statmod/man/invgauss.html" class="external-link">pinvgauss</a></span><span class="op">(</span><span class="va">q</span>, mean <span class="op">=</span> <span class="fl">1</span>, dispersion <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed form above, evaluated directly at these safe values.</span></span></span>
+<span class="r-in"><span><span class="co"># The closed form above is evaluated directly at these safe values.</span></span></span>
 <span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">q</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">q</span> <span class="op">/</span> <span class="fl">1</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">q</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">q</span> <span class="op">/</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span></span></span>

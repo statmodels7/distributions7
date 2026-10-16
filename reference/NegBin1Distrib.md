@@ -141,7 +141,7 @@ for the limit as \\\theta\\ goes to zero;
 [`distrib_pdf.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md)
 and
 [`distrib_gradient.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md)
-for the closed forms this class supplies.
+for the closed forms that this class supplies.
 
 ## Examples
 
@@ -160,8 +160,8 @@ d@params_interpretation
 d@bounds
 #> [1]   0 Inf
 
-# The variance-to-mean ratio is 1 + theta at every mean, which is what
-# separates this family from the quadratic one.
+# The variance-to-mean ratio is 1 + theta at every mean, and the quadratic
+# family does not have this property.
 vapply(c(1, 10, 100),
        function(m) variance(d, list(mu = m, theta = 4)) / m, numeric(1))
 #> [1] 5 5 5

@@ -5,15 +5,15 @@ implies. The parameter \(\alpha\) of this parametrization is the
 argument \(\sqrt{1 + 2\sigma\mu}/\sigma\) at which the Bessel function is
 evaluated, so in this coordinate the mass function's own argument is a
 parameter.
-The compiled kernel takes \(\alpha\) directly, so pig2_sigma() is not
-called here and no map is composed."><meta property="og:description" content="Computes the same mass as distrib_pdf.Pig1Distrib(), at the dispersion
+The compiled kernel takes \(\alpha\) directly, so this method does not call
+pig2_sigma() and does not compose a map."><meta property="og:description" content="Computes the same mass as distrib_pdf.Pig1Distrib(), at the dispersion
 \(\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2\) that \(\alpha\)
 implies. The parameter \(\alpha\) of this parametrization is the
 argument \(\sqrt{1 + 2\sigma\mu}/\sigma\) at which the Bessel function is
 evaluated, so in this coordinate the mass function's own argument is a
 parameter.
-The compiled kernel takes \(\alpha\) directly, so pig2_sigma() is not
-called here and no map is composed."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The compiled kernel takes \(\alpha\) directly, so this method does not call
+pig2_sigma() and does not compose a map."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ called here and no map is composed."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +60,8 @@ implies. The parameter \(\alpha\) of this parametrization is the
 argument \(\sqrt{1 + 2\sigma\mu}/\sigma\) at which the Bessel function is
 evaluated, so in this coordinate the mass function's own argument is a
 parameter.</p>
-<p>The compiled kernel takes \(\alpha\) directly, so <code><a href="pig2_sigma.html">pig2_sigma()</a></code> is not
-called here and no map is composed.</p>
+<p>The compiled kernel takes \(\alpha\) directly, so this method does not call
+<code><a href="pig2_sigma.html">pig2_sigma()</a></code> and does not compose a map.</p>
     </div>
 
 
@@ -125,7 +125,7 @@ generic.</p></div>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">6</span></span></span>
 <span class="r-in"><span><span class="va">al</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">0.8</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span> <span class="op">/</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law, reached through the map.</span></span></span>
+<span class="r-in"><span><span class="co"># Pig2 gives the same law as pig1, reached through the map.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="va">al</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d1</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

@@ -8,11 +8,12 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\lambda}{\mu^3},
       \mathbb{E}\left[\ell^{(\mu\lambda)}\right] = 0, \qquad
       \mathbb{E}\left[\ell^{(\lambda\lambda)}\right] =
         -\dfrac{1}{2\lambda^2}.$$
-The pure shape entry is the observed value itself, being free of the data.
+The pure shape entry equals the observed value itself, because it is free of
+the data.
 Both diagonal entries are negative at every parameter setting, so the
-information is positive definite everywhere. The zero off-diagonal says the
-mean and the shape are orthogonal, so the mean equation can be fitted with
-the shape held at any value without biasing it.
+information is positive definite everywhere. The zero off-diagonal entry
+shows that the mean and the shape are orthogonal, so the mean equation can
+be fitted without bias when the shape is held at any value.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation. Every second derivative is at
@@ -23,11 +24,12 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\lambda}{\mu^3},
       \mathbb{E}\left[\ell^{(\mu\lambda)}\right] = 0, \qquad
       \mathbb{E}\left[\ell^{(\lambda\lambda)}\right] =
         -\dfrac{1}{2\lambda^2}.$$
-The pure shape entry is the observed value itself, being free of the data.
+The pure shape entry equals the observed value itself, because it is free of
+the data.
 Both diagonal entries are negative at every parameter setting, so the
-information is positive definite everywhere. The zero off-diagonal says the
-mean and the shape are orthogonal, so the mean equation can be fitted with
-the shape held at any value without biasing it.
+information is positive definite everywhere. The zero off-diagonal entry
+shows that the mean and the shape are orthogonal, so the mean equation can
+be fitted without bias when the shape is held at any value.
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -37,7 +39,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,11 +81,12 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\lambda}{\mu^3},
       \mathbb{E}\left[\ell^{(\mu\lambda)}\right] = 0, \qquad
       \mathbb{E}\left[\ell^{(\lambda\lambda)}\right] =
         -\dfrac{1}{2\lambda^2}.$$
-The pure shape entry is the observed value itself, being free of the data.</p>
+The pure shape entry equals the observed value itself, because it is free of
+the data.</p>
 <p>Both diagonal entries are negative at every parameter setting, so the
-information is positive definite everywhere. The zero off-diagonal says the
-mean and the shape are orthogonal, so the mean equation can be fitted with
-the shape held at any value without biasing it.</p>
+information is positive definite everywhere. The zero off-diagonal entry
+shows that the mean and the shape are orthogonal, so the mean equation can
+be fitted without bias when the shape is held at any value.</p>
 <p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
     </div>
@@ -163,7 +166,7 @@ and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="invgauss2_distrib.html">invgauss2_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, lambda <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three constants, one value per observation.</span></span></span>
+<span class="r-in"><span><span class="co"># Each of the three constants has one value per observation.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.375</span>

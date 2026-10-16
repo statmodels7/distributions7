@@ -2,9 +2,9 @@
 
 Returns the excess kurtosis, computed from
 [`kurtosis.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewNormal1Distrib.md)
-at the implied direct parameters. It is the one moment this
-parametrization does not name: fixing the first three uses up all three
-parameters, so the fourth follows from them.
+at the implied direct parameters. It is the one moment that this
+parametrization does not name: once the first three moments are fixed,
+all three parameters are used up, so the fourth follows from them.
 
 The consequence for use is that a skew normal cannot match an arbitrary
 first four moments. At \\\gamma_1 = 0.5\\ the excess kurtosis is 0.347,
@@ -28,7 +28,7 @@ and it is determined by the skewness alone.
 
 ## Value
 
-A numeric vector of excess kurtoses, of the length the recycled
+A numeric vector of excess kurtoses, of the length that the recycled
 parameters imply.
 
 ## See also
@@ -45,8 +45,8 @@ whose degrees of freedom give the fourth moment a parameter of its own.
 ``` r
 d <- skewnormal2_distrib()
 
-# The kurtosis follows from the skewness and from nothing else: changing
-# the mean and the standard deviation leaves it alone.
+# The kurtosis depends on the skewness only: it does not change when the
+# mean and the standard deviation change.
 c(a = kurtosis(d, list(mu = 0, sigma = 1, gamma1 = 0.5)),
   b = kurtosis(d, list(mu = 9, sigma = 4, gamma1 = 0.5)))
 #>         a         b 

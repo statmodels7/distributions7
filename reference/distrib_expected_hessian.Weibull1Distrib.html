@@ -35,7 +35,7 @@ strategy returns the same three numbers."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,8 +95,8 @@ strategy returns the same three numbers.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations. Only its length is read, the
-expectation not depending on the data; the values are ignored.</p></dd>
+<dd><p>A numeric vector of observations. Only its length is read, because
+the expectation does not depend on the data; the values are ignored.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -139,7 +139,7 @@ and constant when <code>mu</code> and <code>sigma</code> have length 1.</p>
     <div class="section level2">
     <h2 id="why-the-expectations-are-gamma-derivatives">Why the expectations are gamma derivatives<a class="anchor" aria-label="anchor" href="#why-the-expectations-are-gamma-derivatives"></a></h2>
     <p>Under the model \(u = (Y/\mu)^{\sigma}\) is standard exponential whatever
-the parameters are, so every expectation the Hessian needs is a moment of
+the parameters are, so every expectation that the Hessian needs is a moment of
 \(u\) against a power of \(\log u\), and each of those is a derivative
 of \(\Gamma\) at 2:
 $$\mathbb{E}[u] = 1, \qquad
@@ -176,7 +176,7 @@ the score, and
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -0.5625000  -0.8105247   0.2113922 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The closed forms, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The closed forms are written out.</span></span></span>
 <span class="r-in"><span><span class="va">eg</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">digamma</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu_mu <span class="op">=</span> <span class="op">-</span><span class="fl">1.5</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">4</span>,</span></span>
 <span class="r-in"><span>  sigma_sigma <span class="op">=</span> <span class="op">-</span><span class="op">(</span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">eg</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="va">pi</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1.5</span><span class="op">^</span><span class="fl">2</span>,</span></span>
@@ -191,7 +191,7 @@ the score, and
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -0.5635714  -0.8109912   0.2125961 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The strategy argument is inert, the expectation being exact.</span></span></span>
+<span class="r-in"><span><span class="co"># The strategy argument has no effect, because the expectation is exact.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, approx <span class="op">=</span> <span class="st">"mc"</span>, nsim <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>

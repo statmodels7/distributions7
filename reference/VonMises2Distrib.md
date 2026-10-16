@@ -169,7 +169,7 @@ d <- vonmises2_distrib()
 S7::S7_inherits(d, continuous_distrib)
 #> [1] TRUE
 
-# The resultant length is bounded, which is what makes it readable.
+# The resultant length is bounded, so it is readable directly.
 d@params
 #> [1] "mu"  "rho"
 d@params_bounds$rho

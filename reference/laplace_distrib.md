@@ -9,12 +9,13 @@ moments.
 The family is symmetric about \\\mu\\ with variance \\2\sigma^2\\ and
 excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
 likelihood estimates are the sample median and the mean absolute
-deviation about it, both available in closed form.
+deviation about it, and both are available in closed form.
 
 This family is not regular in \\\mu\\: the density has a corner at \\y =
 \mu\\ and the observed second derivative there is zero almost
 everywhere, while the information is \\1/\sigma^2\\. The object records
-this in `params_smooth`, and the details below say what follows from it.
+this in `params_smooth`, and the details below describe the
+consequences.
 
 ## Usage
 
@@ -29,7 +30,7 @@ laplace_distrib(link_mu = identity_link(), link_sigma = log_link())
   A `link` object from `linkfunctions7` for the location \\\mu\\.
   Defaults to
   [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html),
-  the location ranging over the whole line already.
+  because the location already ranges over the whole line.
 
 - link_sigma:
 
@@ -65,8 +66,8 @@ form that a lasso penalty uses.
 ## The kink, and what it costs
 
 \\\|y - \mu\|\\ is not differentiable at \\y = \mu\\, so the log-density
-is piecewise linear in \\\mu\\ with a corner. Three consequences, all
-visible in the methods:
+is piecewise linear in \\\mu\\ with a corner. Three consequences follow,
+and all of them appear in the methods:
 
 - the score in \\\mu\\ is \\\mathrm{sign}(r)/\sigma\\, carrying only the
   sign of the residual;
@@ -76,7 +77,7 @@ visible in the methods:
   returns a vector of zeros;
 
 - the second Bartlett identity fails, and the information is defined as
-  the variance of the score, \\1/\sigma^2\\. That is what
+  the variance of the score, \\1/\sigma^2\\, which
   [`distrib_expected_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
   returns.
 
@@ -86,7 +87,7 @@ visible in the methods:
 recomputes each finite-difference reference with half the step and drops
 the observations at which the two disagree, because a central difference
 that straddles the corner is not a derivative there; the comparison
-still covers every parameter, \\\mu\\ included.
+still covers every parameter, including \\\mu\\.
 
 ## Estimation
 
@@ -95,8 +96,9 @@ Both estimates are closed form: \\\hat\mu\\ is the sample median and
 \hat\mu\|\\.
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 reaches them by Fisher scoring, which inverts the information above; a
-Newton step could not, the observed Hessian being singular in \\\mu\\.
-The example below checks the fitted values against both closed forms.
+Newton step could not, because the observed Hessian is singular in
+\\\mu\\. The example below checks the fitted values against both closed
+forms.
 
 ## Notation
 
@@ -147,7 +149,7 @@ d
 #>   mu    (location)           | Link: identity   | Domain: (-Inf, Inf)  [non-smooth log-likelihood]
 #>   sigma (scale)              | Link: log        | Domain: (0, Inf)
 
-# The density, written out.
+# The density is compared with its formula.
 y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 all.equal(distrib_pdf(d, y, th), exp(-abs(y - 0.4) / 1.5) / (2 * 1.5))

@@ -24,8 +24,8 @@ strategy returns the same three numbers.
 
 - y:
 
-  A numeric vector of observations. Only its length is read, the
-  expectation not depending on the data; the values are ignored.
+  A numeric vector of observations. Only its length is read, because the
+  expectation does not depend on the data; the values are ignored.
 
 - theta:
 
@@ -68,9 +68,9 @@ and constant when `mu` and `sigma` have length 1.
 ## Why the expectations are gamma derivatives
 
 Under the model \\u = (Y/\mu)^{\sigma}\\ is standard exponential
-whatever the parameters are, so every expectation the Hessian needs is a
-moment of \\u\\ against a power of \\\log u\\, and each of those is a
-derivative of \\\Gamma\\ at 2: \$\$\mathbb{E}\[u\] = 1, \qquad
+whatever the parameters are, so every expectation that the Hessian needs
+is a moment of \\u\\ against a power of \\\log u\\, and each of those is
+a derivative of \\\Gamma\\ at 2: \$\$\mathbb{E}\[u\] = 1, \qquad
 \mathbb{E}\[u \log u\] = 1 - \gamma, \qquad \mathbb{E}\[u (\log u)^2\] =
 (1-\gamma)^2 + \dfrac{\pi^2}{6} - 1.\$\$ Substituting \\\log z = (\log
 u)/\sigma\\ into the three observed components gives the display above.
@@ -105,7 +105,7 @@ vapply(eh, function(z) z[1], numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  -0.5625000  -0.8105247   0.2113922 
 
-# The closed forms, written out.
+# The closed forms are written out.
 eg <- -digamma(1)
 c(mu_mu = -1.5^2 / 4,
   sigma_sigma = -((1 - eg)^2 + pi^2 / 6) / 1.5^2,
@@ -120,7 +120,7 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  -0.5635714  -0.8109912   0.2125961 
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument has no effect, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 #> [1] TRUE
 ```

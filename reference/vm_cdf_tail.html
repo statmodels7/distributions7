@@ -10,11 +10,11 @@ mode, so the integrand decreases from each end of the interval to the
 antimode. The interval is split at the antimode when it contains it, and
 each piece is integrated from its end on the scale
 \(1/\max\{\kappa|\sin(e - \mu)|, \sqrt\kappa\}\) at that end \(e\),
-relative to the value there and with the difference of the cosines written
-as a product of sines, over panels of growing width until the remainder is
-below \(10^{-17}\) of the sum. The pieces are added on the log scale, and
-the normalizing constant comes from numericals7::log_bessel_i(), so no
-factor underflows at any concentration."><meta property="og:description" content="vm_cdf_tail() returns \(P(Y \le q)\) or \(P(Y &amp;gt; q)\), or their
+relative to the value there, over panels of growing width until the
+remainder is below \(10^{-17}\) of the sum. The difference of the cosines
+is written as a product of sines. The pieces are added on the log scale, and
+the normalizing constant comes from numericals7::log_bessel_i(), so that
+the factors do not underflow at any concentration."><meta property="og:description" content="vm_cdf_tail() returns \(P(Y \le q)\) or \(P(Y &amp;gt; q)\), or their
 logarithms, from the series of vm_cdf() where the requested tail is
 above \(10^{-6}\), and from vm_log_tail() below. The series has an
 absolute error of about \(10^{-16}\), which grows slowly with
@@ -25,11 +25,11 @@ mode, so the integrand decreases from each end of the interval to the
 antimode. The interval is split at the antimode when it contains it, and
 each piece is integrated from its end on the scale
 \(1/\max\{\kappa|\sin(e - \mu)|, \sqrt\kappa\}\) at that end \(e\),
-relative to the value there and with the difference of the cosines written
-as a product of sines, over panels of growing width until the remainder is
-below \(10^{-17}\) of the sum. The pieces are added on the log scale, and
-the normalizing constant comes from numericals7::log_bessel_i(), so no
-factor underflows at any concentration."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+relative to the value there, over panels of growing width until the
+remainder is below \(10^{-17}\) of the sum. The difference of the cosines
+is written as a product of sines. The pieces are added on the log scale, and
+the normalizing constant comes from numericals7::log_bessel_i(), so that
+the factors do not underflow at any concentration."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -37,7 +37,7 @@ factor underflows at any concentration."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,11 +81,11 @@ mode, so the integrand decreases from each end of the interval to the
 antimode. The interval is split at the antimode when it contains it, and
 each piece is integrated from its end on the scale
 \(1/\max\{\kappa|\sin(e - \mu)|, \sqrt\kappa\}\) at that end \(e\),
-relative to the value there and with the difference of the cosines written
-as a product of sines, over panels of growing width until the remainder is
-below \(10^{-17}\) of the sum. The pieces are added on the log scale, and
-the normalizing constant comes from <code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code>, so no
-factor underflows at any concentration.</p>
+relative to the value there, over panels of growing width until the
+remainder is below \(10^{-17}\) of the sum. The difference of the cosines
+is written as a product of sines. The pieces are added on the log scale, and
+the normalizing constant comes from <code><a href="https://statmodels7.github.io/numericals7/reference/log_bessel_i.html" class="external-link">numericals7::log_bessel_i()</a></code>, so that
+the factors do not underflow at any concentration.</p>
     </div>
 
     <div class="section level2">

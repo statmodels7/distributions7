@@ -3,7 +3,7 @@
 Return the derivatives of the log-density in \\(m, \sigma)\\ of orders
 one to five, the expected information and its expected third and fourth
 derivatives, and the first two derivatives of the expected information,
-each from its own compiled kernel.
+and each of them is computed by its own compiled kernel.
 
 ## Arguments
 
@@ -42,8 +42,8 @@ each from its own compiled kernel.
 ## Value
 
 A named list with one numeric vector per component: 2, 3, 4, 5 and 6
-components at orders one to five, the second order keyed `mean_mean`,
-`sigma_sigma`, `mean_sigma`.
+components at orders one to five. At order two the components are keyed
+`mean_mean`, `sigma_sigma` and `mean_sigma`.
 
 ## Details
 

@@ -48,14 +48,15 @@ families, not two parametrizations of one. Here the variance is
 \\\mu(1+\theta)\\, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
-has \\\mu + \mu^2/\theta\\, growing quadratically. Fitting one is not
-fitting the other, and a likelihood ratio between them is not a test of
-nested models.
+has \\\mu + \mu^2/\theta\\, growing quadratically. Because they are
+different families, fitting one is not fitting the other, and a
+likelihood ratio between them is not a test of nested models.
 
-The difference is visible in where the mean sits. The size is \\r =
-\mu/\theta\\ and the success probability \\1/(1+\theta)\\, so \\\mu\\
-appears inside the gamma functions of the mass; in the quadratic form
-the size is \\\theta\\ and the mean stays outside them.
+The two families differ in whether the mean appears inside the gamma
+functions of the mass. The size is \\r = \mu/\theta\\ and the success
+probability \\1/(1+\theta)\\, so \\\mu\\ appears inside the gamma
+functions of the mass; in the quadratic form the size is \\\theta\\ and
+the mean stays outside them.
 
 ## The parametrization
 
@@ -78,8 +79,8 @@ function, the score is \$\$\dfrac{\partial \ell}{\partial \mu} =
 -\dfrac{\mu}{\theta^2}P - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} -
 \dfrac{y}{1+\theta},\$\$ and the Hessian is the same chain rule at
 second order. In the expected information every term carrying \\P\\
-drops out, its expectation vanishing by the first Bartlett identity, and
-what remains is two sums over the support against the exact mass
+drops out, because its expectation vanishes by the first Bartlett
+identity, and two sums over the support against the exact mass remain
 ([`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)).
 
 The mean and the dispersion are not orthogonal here. The mixed entry of
@@ -114,7 +115,7 @@ its domain.
 ## Estimation
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximizes the log-likelihood on the link scale. Neither estimate is
+maximizes the log-likelihood on the link scale. Both estimates lack a
 closed form. The method of moments supplies the starting values
 \\\hat\mu = \bar y\\ and \\\hat\theta = s^2/\bar y - 1\\, with \\s^2\\
 the sample variance.
@@ -150,7 +151,7 @@ for counts with excess zeros;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery that this one
+to validate a user-defined family against the same battery that this one
 passes;
 [NegBin1Distrib](https://statmodels7.github.io/distributions7/reference/NegBin1Distrib.md)
 for the class.
@@ -202,7 +203,7 @@ rbind(fitted  = coef(fit),
 #> moments 3.968 3.909959
 
 # On an equidispersed sample the dispersion runs to its boundary, which is
-# the regime the expected information page warns about.
+# the regime against which the expected information page warns.
 set.seed(4)
 coef(fit_distrib(d, rpois(2000, 4)))
 #>          mu       theta 

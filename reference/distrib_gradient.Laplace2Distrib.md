@@ -56,7 +56,7 @@ A named list of two numeric vectors, `mu` and `lambda`, each of length
 \\\lambda \> 0\\ the rate, with variance \\2/\lambda^2\\. \\r = y-\mu\\
 is the residual. Here \\\lambda\\ is a rate; the same letter names the
 tuning parameter of a lasso penalty, and the two coincide because the
-lasso is this family with \\\mu\\ held at zero.
+lasso is this family when \\\mu\\ is held at zero.
 
 ## See also
 
@@ -75,14 +75,14 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, lambda = 2)
 g <- distrib_gradient(d, y, th)
 
-# The two closed forms, written out.
+# The score equals the two closed forms.
 r <- y - 0.4
 all.equal(g$mu, 2 * sign(r))
 #> [1] TRUE
 all.equal(g$lambda, 1 / 2 - abs(r))
 #> [1] TRUE
 
-# The rate's score vanishes summed at 1/mean|r|, its estimate.
+# The rate's score sums to zero at 1/mean|r|, which is its estimate.
 set.seed(12)
 z <- distrib_rng(d, 2000, list(mu = 3, lambda = 0.5))
 lam_hat <- 1 / mean(abs(z - median(z)))

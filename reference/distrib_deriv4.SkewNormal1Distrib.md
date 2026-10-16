@@ -8,8 +8,8 @@ The recursion \\R' = -R(t+R)\\ keeps every one of them a polynomial in
 functions as the third, and the same cumulant route below \\t = -1\\.
 
 With `expected = TRUE` the value is a numerical expectation, for the
-reason it is at third order: the integrals are the ones that block the
-expected information.
+reason that applies at third order: the integrals are the ones that
+block the expected information.
 
 ## Arguments
 
@@ -88,7 +88,7 @@ d4 <- distrib_deriv4(d, y, th)
 length(d4)
 #> [1] 15
 
-# Against a central difference of the third order.
+# The value is compared with a central difference of the third order.
 eps <- 1e-4
 rbind(analytic = d4$mu_mu_alpha_alpha,
       numeric = (distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu_alpha -

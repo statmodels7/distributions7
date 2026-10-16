@@ -18,11 +18,12 @@ with `phi = "abs"`.
 
 ## Details
 
-The same kink as
-[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)'s,
-carried across the map \\\lambda = 1/\sigma\\: a reparametrization moves
-the coefficient in front and leaves the argument alone, so the order is
-unchanged and the location is again the only non-smooth parameter.
+The kink is the same as in
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+and is carried across the map \\\lambda = 1/\sigma\\: a
+reparametrization moves the coefficient in front and leaves the argument
+alone, so the order is unchanged and the location is again the only
+non-smooth parameter.
 
 ## See also
 

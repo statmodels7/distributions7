@@ -195,7 +195,7 @@ d@params_bounds
 #> 
 
 # The location is already free; the scale and the degrees of freedom ride
-# a log, both being positive.
+# a log, because both are positive.
 vapply(d@link_params, function(l) l@link_name, character(1))
 #>         mu      sigma         nu 
 #> "identity"      "log"      "log" 

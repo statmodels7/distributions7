@@ -4,8 +4,8 @@ Computes the four distinct third derivatives of the Laplace log-density
 with respect to \\\mu\\ and \\\sigma\\, in closed form. The log-density
 is \\-\log\sigma - \log 2 - \|r\|/\sigma\\ with \\r = y - \mu\\, so it
 is linear in \\\mu\\ on each side of the kink and every component that
-differentiates twice or more in \\\mu\\ is zero. What survives comes
-from \\-\log\sigma\\ and from \\\|r\|/\sigma\\.
+differentiates twice or more in \\\mu\\ is zero. The remaining
+components come from \\-\log\sigma\\ and from \\\|r\|/\sigma\\.
 
 With `expected = TRUE` the expectations under the model are returned,
 also in closed form, using \\\mathbb{E}\|r\| = \sigma\\ and
@@ -92,7 +92,7 @@ names(d3)
 c(d3$mu_mu_mu[1], d3$mu_mu_sigma[1])
 #> [1] 0 0
 
-# The expected values, in closed form.
+# The expected values are also in closed form.
 lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #> $mu_mu_mu
 #> [1] 0

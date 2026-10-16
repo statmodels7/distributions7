@@ -7,7 +7,8 @@ does not involve the second parameter is identical between them.
 The rate form is the one that penalized regression uses: with \(\mu = 0\) the
 negative log-density is \(\lambda|y| - \log(\lambda/2)\), so \(\lambda\)
 is a shrinkage parameter and larger values penalize harder.
-penalties7::lasso_penalty() is this family with the location held at zero."><meta property="og:description" content="Builds the distribution object for the Laplace (double exponential) family
+penalties7::lasso_penalty() is this family when the location is held at
+zero."><meta property="og:description" content="Builds the distribution object for the Laplace (double exponential) family
 written by its rate \(\lambda &amp;gt; 0\), with density
 \((\lambda/2)\exp(-\lambda|y-\mu|)\). It is the same law as
 laplace_distrib() at \(\lambda = 1/\sigma\), and every quantity that
@@ -15,7 +16,8 @@ does not involve the second parameter is identical between them.
 The rate form is the one that penalized regression uses: with \(\mu = 0\) the
 negative log-density is \(\lambda|y| - \log(\lambda/2)\), so \(\lambda\)
 is a shrinkage parameter and larger values penalize harder.
-penalties7::lasso_penalty() is this family with the location held at zero."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+penalties7::lasso_penalty() is this family when the location is held at
+zero."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +25,7 @@ penalties7::lasso_penalty() is this family with the location held at zero."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +66,8 @@ does not involve the second parameter is identical between them.</p>
 <p>The rate form is the one that penalized regression uses: with \(\mu = 0\) the
 negative log-density is \(\lambda|y| - \log(\lambda/2)\), so \(\lambda\)
 is a shrinkage parameter and larger values penalize harder.
-<code>penalties7::lasso_penalty()</code> is this family with the location held at zero.</p>
+<code>penalties7::lasso_penalty()</code> is this family when the location is held at
+zero.</p>
     </div>
 
     <div class="section level2">
@@ -78,8 +81,8 @@ is a shrinkage parameter and larger values penalize harder.
 
 <dl><dt id="arg-link-mu">link_mu<a class="anchor" aria-label="anchor" href="#arg-link-mu"></a></dt>
 <dd><p>A <code>link</code> object from <code>linkfunctions7</code> for the location
-\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, the location
-ranging over the whole line already.</p></dd>
+\(\mu\). Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">linkfunctions7::identity_link()</a></code>, because the
+location already ranges over the whole line.</p></dd>
 
 
 <dt id="arg-link-lambda">link_lambda<a class="anchor" aria-label="anchor" href="#arg-link-lambda"></a></dt>
@@ -108,7 +111,7 @@ skewness is 0 and the excess kurtosis is 3.</p>
 location is shared, so its score, its information and its derivatives in the
 response are the same quantities read at the same point; the second
 parameter's are not, and this parametrization's are the simpler of the two,
-\(\lambda\) being the natural parameter of the exponential family in
+because \(\lambda\) is the natural parameter of the exponential family in
 \(|y - \mu|\).</p>
     </div>
     <div class="section level2">
@@ -143,7 +146,7 @@ information above.</p>
 \(\lambda &gt; 0\) the rate, with variance \(2/\lambda^2\). Here
 \(\lambda\) is a distribution parameter; the same letter names the
 tuning parameter of a penalty in <code>penalties7</code>, and the two coincide in the
-lasso, which is this family with \(\mu\) held at zero.</p>
+lasso, which is this family when \(\mu\) is held at zero.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -173,7 +176,7 @@ location at zero to produce a prior; <code><a href="fit_distrib.html">fit_distri
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mu     (location)           | Link: identity   | Domain: (-Inf, Inf)  [non-smooth log-likelihood]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   lambda (rate)               | Link: log        | Domain: (0, Inf)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The same law as the scale parametrization at lambda = 1/sigma.</span></span></span>
+<span class="r-in"><span><span class="co"># This is the same law as the scale parametrization at lambda = 1/sigma.</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.3</span>, <span class="fl">2.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, lambda <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="fu"><a href="laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -195,8 +198,8 @@ location at zero to produce a prior; <code><a href="fit_distrib.html">fit_distri
 <span class="r-out co"><span class="r-pr">#&gt;</span> fitted 2.967076 0.5157146</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> closed 2.967076 0.5157146</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Holding the location at zero gives the prior a lasso penalty is written</span></span></span>
-<span class="r-in"><span><span class="co"># from: the negative log-density is lambda |y| up to a constant.</span></span></span>
+<span class="r-in"><span><span class="co"># Holding the location at zero gives the prior from which a lasso penalty</span></span></span>
+<span class="r-in"><span><span class="co"># is written: the negative log-density is lambda |y| up to a constant.</span></span></span>
 <span class="r-in"><span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="va">d</span>, mu <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">prior</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lambda"</span>

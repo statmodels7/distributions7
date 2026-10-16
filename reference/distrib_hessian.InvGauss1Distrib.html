@@ -6,7 +6,7 @@ $$\ell^{(\mu\mu)} = -\dfrac{3y - 2\mu}{\phi\mu^4}, \qquad
       \ell^{(\phi\phi)} =
         \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad
       \ell^{(\mu\phi)} = -\dfrac{y - \mu}{\phi^2\mu^3}.$$
-Neither diagonal entry is negative at every observation. The curvature
+Each diagonal entry is positive for some values of \(y\). The curvature
 in \(\mu\) turns positive wherever \(y &amp;lt; 2\mu/3\), and the curvature in
 \(\phi\) is negative only where \(\phi &amp;lt; 2(y-\mu)^2/(\mu^2 y)\), so at
 \(y = \mu\) it is \(+1/(2\phi^2)\). An observation near the mean
@@ -21,7 +21,7 @@ $$\ell^{(\mu\mu)} = -\dfrac{3y - 2\mu}{\phi\mu^4}, \qquad
       \ell^{(\phi\phi)} =
         \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad
       \ell^{(\mu\phi)} = -\dfrac{y - \mu}{\phi^2\mu^3}.$$
-Neither diagonal entry is negative at every observation. The curvature
+Each diagonal entry is positive for some values of \(y\). The curvature
 in \(\mu\) turns positive wherever \(y &amp;lt; 2\mu/3\), and the curvature in
 \(\phi\) is negative only where \(\phi &amp;lt; 2(y-\mu)^2/(\mu^2 y)\), so at
 \(y = \mu\) it is \(+1/(2\phi^2)\). An observation near the mean
@@ -37,7 +37,7 @@ distrib_expected_hessian.InvGauss1Distrib()."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@ $$\ell^{(\mu\mu)} = -\dfrac{3y - 2\mu}{\phi\mu^4}, \qquad
       \ell^{(\phi\phi)} =
         \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad
       \ell^{(\mu\phi)} = -\dfrac{y - \mu}{\phi^2\mu^3}.$$</p>
-<p>Neither diagonal entry is negative at every observation. The curvature
+<p>Each diagonal entry is positive for some values of \(y\). The curvature
 in \(\mu\) turns positive wherever \(y &lt; 2\mu/3\), and the curvature in
 \(\phi\) is negative only where \(\phi &lt; 2(y-\mu)^2/(\mu^2 y)\), so at
 \(y = \mu\) it is \(+1/(2\phi^2)\). An observation near the mean
@@ -161,7 +161,7 @@ quantity, <code><a href="distrib_deriv3.InvGauss1Distrib.html">distrib_deriv3.In
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.125  0.000 -0.250</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three closed forms, written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The three closed forms are written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">mu_mu</span>, <span class="op">-</span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">y</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">^</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">phi_phi</span>, <span class="op">(</span><span class="fl">2</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -169,7 +169,8 @@ quantity, <code><a href="distrib_deriv3.InvGauss1Distrib.html">distrib_deriv3.In
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">h</span><span class="op">$</span><span class="va">mu_phi</span>, <span class="op">-</span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Positive curvature in mu below 2 mu/3, and in phi at y = mu.</span></span></span>
+<span class="r-in"><span><span class="co"># The curvature is positive in mu where y is below 2 mu/3, and in phi at</span></span></span>
+<span class="r-in"><span><span class="co"># y = mu.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu_mu_at_half <span class="op">=</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.5</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>,</span></span>
 <span class="r-in"><span>  phi_phi_at_mu <span class="op">=</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">1</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">phi_phi</span>,</span></span>
 <span class="r-in"><span>  one_over_2phi2 <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>

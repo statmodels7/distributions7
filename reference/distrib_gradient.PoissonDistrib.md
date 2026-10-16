@@ -72,7 +72,7 @@ d <- poisson_distrib()
 y <- c(0, 2, 7)
 th <- list(mu = 3)
 
-# The closed form, written out.
+# The score is compared with its closed form.
 all.equal(distrib_gradient(d, y, th)$mu, (y - 3) / 3)
 #> [1] TRUE
 

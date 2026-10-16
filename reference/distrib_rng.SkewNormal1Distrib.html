@@ -4,7 +4,7 @@ representation: with \(U_0\) and \(U_1\) independent standard Gaussians
 and \(\delta = \alpha/\sqrt{1+\alpha^2}\),
 $$Z = \delta\,|U_0| + \sqrt{1-\delta^2}\;U_1$$
 is standard skew normal with shape \(\alpha\), and \(Y = \mu + \sigma Z\).
-No inversion and no rejection is involved. The cost is two rnorm calls
+The method uses neither inversion nor rejection. The cost is two rnorm calls
 whatever the shape is, and the draws follow the density exactly.
 The representation also reads off why the family cannot be very skewed: the
 half-normal component enters with weight \(\delta\), which saturates at one
@@ -14,7 +14,7 @@ representation: with \(U_0\) and \(U_1\) independent standard Gaussians
 and \(\delta = \alpha/\sqrt{1+\alpha^2}\),
 $$Z = \delta\,|U_0| + \sqrt{1-\delta^2}\;U_1$$
 is standard skew normal with shape \(\alpha\), and \(Y = \mu + \sigma Z\).
-No inversion and no rejection is involved. The cost is two rnorm calls
+The method uses neither inversion nor rejection. The cost is two rnorm calls
 whatever the shape is, and the draws follow the density exactly.
 The representation also reads off why the family cannot be very skewed: the
 half-normal component enters with weight \(\delta\), which saturates at one
@@ -27,7 +27,7 @@ itself."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ representation: with \(U_0\) and \(U_1\) independent standard Gaussians
 and \(\delta = \alpha/\sqrt{1+\alpha^2}\),
 $$Z = \delta\,|U_0| + \sqrt{1-\delta^2}\;U_1$$
 is standard skew normal with shape \(\alpha\), and \(Y = \mu + \sigma Z\).
-No inversion and no rejection is involved. The cost is two <code>rnorm</code> calls
+The method uses neither inversion nor rejection. The cost is two <code>rnorm</code> calls
 whatever the shape is, and the draws follow the density exactly.</p>
 <p>The representation also reads off why the family cannot be very skewed: the
 half-normal component enters with weight \(\delta\), which saturates at one
@@ -115,9 +115,10 @@ scale.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_pdf.SkewNormal1Distrib.html">distrib_pdf.SkewNormal1Distrib()</a></code> for the density the draws follow,
-<code><a href="mean.SkewNormal1Distrib.html">mean.SkewNormal1Distrib()</a></code> and <code><a href="variance.SkewNormal1Distrib.html">variance.SkewNormal1Distrib()</a></code> for the
-moments they should reproduce, and <code><a href="distrib_rng.html">distrib_rng()</a></code> for the generic.</p></div>
+    <div class="dont-index"><p><code><a href="distrib_pdf.SkewNormal1Distrib.html">distrib_pdf.SkewNormal1Distrib()</a></code> for the density that the draws
+follow, <code><a href="mean.SkewNormal1Distrib.html">mean.SkewNormal1Distrib()</a></code> and <code><a href="variance.SkewNormal1Distrib.html">variance.SkewNormal1Distrib()</a></code> for
+the moments that they should reproduce, and <code><a href="distrib_rng.html">distrib_rng()</a></code> for the
+generic.</p></div>
     </div>
 
     <div class="section level2">
@@ -128,14 +129,14 @@ moments they should reproduce, and <code><a href="distrib_rng.html">distrib_rng(
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Three moments against their closed forms.</span></span></span>
+<span class="r-in"><span><span class="co"># Three sample moments are compared with their closed forms.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      theory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]      [,2]      [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample 0.7583858 0.4279862 0.6619280</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> theory 0.7569398 0.4270422 0.6670236</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The representation, written out at the same seed.</span></span></span>
+<span class="r-in"><span><span class="co"># The representation is written out at the same seed.</span></span></span>
 <span class="r-in"><span><span class="va">delta</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">delta</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">2e5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">delta</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">2e5</span><span class="op">)</span></span></span>

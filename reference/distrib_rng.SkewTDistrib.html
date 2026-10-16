@@ -6,7 +6,7 @@ $$Y = \mu + \sigma\,\dfrac{Z}{\sqrt{V/\nu}}.$$
 \(Z\) itself is drawn from distrib_rng.SkewNormal1Distrib()'s
 representation, so the whole draw is three rnorm/rchisq calls and no
 inversion or rejection.
-The representation reads off both limits. As \(\nu \to \infty\) the mixing
+Both limits can be read off the representation. As \(\nu \to \infty\) the mixing
 factor tends to one and \(Y\) is skew normal; at \(\alpha = 0\) the
 numerator is Gaussian and \(Y\) is Student \(t\)."><meta property="og:description" content="Draws from the skew \(t\) exactly, from its scale-mixture representation:
 with \(Z\) standard skew normal of shape \(\alpha\) and
@@ -15,7 +15,7 @@ $$Y = \mu + \sigma\,\dfrac{Z}{\sqrt{V/\nu}}.$$
 \(Z\) itself is drawn from distrib_rng.SkewNormal1Distrib()'s
 representation, so the whole draw is three rnorm/rchisq calls and no
 inversion or rejection.
-The representation reads off both limits. As \(\nu \to \infty\) the mixing
+Both limits can be read off the representation. As \(\nu \to \infty\) the mixing
 factor tends to one and \(Y\) is skew normal; at \(\alpha = 0\) the
 numerator is Gaussian and \(Y\) is Student \(t\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -25,7 +25,7 @@ numerator is Gaussian and \(Y\) is Student \(t\)."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ $$Y = \mu + \sigma\,\dfrac{Z}{\sqrt{V/\nu}}.$$
 \(Z\) itself is drawn from <code><a href="distrib_rng.SkewNormal1Distrib.html">distrib_rng.SkewNormal1Distrib()</a></code>'s
 representation, so the whole draw is three <code>rnorm</code>/<code>rchisq</code> calls and no
 inversion or rejection.</p>
-<p>The representation reads off both limits. As \(\nu \to \infty\) the mixing
+<p>Both limits can be read off the representation. As \(\nu \to \infty\) the mixing
 factor tends to one and \(Y\) is skew normal; at \(\alpha = 0\) the
 numerator is Gaussian and \(Y\) is Student \(t\).</p>
     </div>
@@ -107,7 +107,7 @@ component of \(Z\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_pdf.SkewTDistrib.html">distrib_pdf.SkewTDistrib()</a></code> for the density the draws follow,
+    <div class="dont-index"><p><code><a href="distrib_pdf.SkewTDistrib.html">distrib_pdf.SkewTDistrib()</a></code> for the density that the draws follow,
 <code><a href="distrib_rng.SkewNormal1Distrib.html">distrib_rng.SkewNormal1Distrib()</a></code> for the inner representation, and
 <code><a href="distrib_rng.html">distrib_rng()</a></code> for the generic.</p></div>
     </div>
@@ -120,15 +120,15 @@ component of \(Z\).</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">21</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">1e5</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Two moments against their closed forms. Both exist here; at nu &lt;= 2 the</span></span></span>
-<span class="r-in"><span><span class="co"># variance does not.</span></span></span>
+<span class="r-in"><span><span class="co"># Two sample moments are compared with their closed forms. Both exist here;</span></span></span>
+<span class="r-in"><span><span class="co"># at nu &lt;= 2 the variance does not.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      theory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]     [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sample 2.677048 2.534376</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> theory 2.677051 2.520833</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The mixture, written out at the same seed.</span></span></span>
+<span class="r-in"><span><span class="co"># The mixture is written out and run at the same seed.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">21</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">delta</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">delta</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">delta</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e5</span><span class="op">)</span></span></span>

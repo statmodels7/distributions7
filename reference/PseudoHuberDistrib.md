@@ -2,11 +2,11 @@
 
 This is the S7 class of the pseudo-Huber family, a location-scale family
 on the whole real line whose log-density is the negative pseudo-Huber
-loss \\-\sqrt{\nu + z^2}\\, with a shape \\\nu \> 0\\ interpolating
+loss \\-\sqrt{\nu + z^2}\\, and whose shape \\\nu \> 0\\ interpolates
 between a Laplace at \\\nu \to 0\\ and a Gaussian at \\\nu \to \infty\\.
 It is the symmetric hyperbolic distribution, a special case of the
 generalized hyperbolic. It inherits from `continuous_distrib`; the
-eleven methods listed below are registered on it in this file.
+methods listed below are registered on it in this file.
 
 Build one with
 [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md),

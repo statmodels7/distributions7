@@ -23,7 +23,7 @@ them, and the constructor adds no check of its own."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -165,7 +165,7 @@ and
 different family and not a reparametrization of this one;
 <code><a href="poisson_distrib.html">poisson_distrib()</a></code> for the limit as \(\theta\) goes to zero;
 <code><a href="distrib_pdf.NegBin1Distrib.html">distrib_pdf.NegBin1Distrib()</a></code> and <code><a href="distrib_gradient.NegBin1Distrib.html">distrib_gradient.NegBin1Distrib()</a></code> for
-the closed forms this class supplies.</p></div>
+the closed forms that this class supplies.</p></div>
     </div>
 
     <div class="section level2">
@@ -184,8 +184,8 @@ the closed forms this class supplies.</p></div>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">bounds</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]   0 Inf</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The variance-to-mean ratio is 1 + theta at every mean, which is what</span></span></span>
-<span class="r-in"><span><span class="co"># separates this family from the quadratic one.</span></span></span>
+<span class="r-in"><span><span class="co"># The variance-to-mean ratio is 1 + theta at every mean, and the quadratic</span></span></span>
+<span class="r-in"><span><span class="co"># family does not have this property.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">100</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">m</span>, theta <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">m</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5 5 5</span>

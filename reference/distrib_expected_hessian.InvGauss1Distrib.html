@@ -7,14 +7,14 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^3},
       \qquad
       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.$$
 They follow from \(\mathbb{E}[Y] = \mu\) and
-\(\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2\). The second identity is the one
-that gives the score in \(\phi\) mean zero.
+\(\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2\). The second identity implies that
+the score in \(\phi\) has mean zero.
 Both diagonal entries are negative at every parameter setting, so the
 information is positive definite everywhere, where the observed Hessian of
-distrib_hessian.InvGauss1Distrib() is not. The zero off-diagonal says the
-mean and the dispersion are orthogonal, so the mean equation can be fitted
-with the dispersion held at any value without biasing it: this is the
-generalized linear model parametrization, with variance function
+distrib_hessian.InvGauss1Distrib() is not. The zero off-diagonal entry
+means that the mean and the dispersion are orthogonal, so the mean equation
+can be fitted without biasing it while the dispersion is held at any value:
+this is the generalized linear model parametrization, with variance function
 \(V(\mu) = \mu^3\).
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
@@ -25,14 +25,14 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^3},
       \qquad
       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.$$
 They follow from \(\mathbb{E}[Y] = \mu\) and
-\(\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2\). The second identity is the one
-that gives the score in \(\phi\) mean zero.
+\(\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2\). The second identity implies that
+the score in \(\phi\) has mean zero.
 Both diagonal entries are negative at every parameter setting, so the
 information is positive definite everywhere, where the observed Hessian of
-distrib_hessian.InvGauss1Distrib() is not. The zero off-diagonal says the
-mean and the dispersion are orthogonal, so the mean equation can be fitted
-with the dispersion held at any value without biasing it: this is the
-generalized linear model parametrization, with variance function
+distrib_hessian.InvGauss1Distrib() is not. The zero off-diagonal entry
+means that the mean and the dispersion are orthogonal, so the mean equation
+can be fitted without biasing it while the dispersion is held at any value:
+this is the generalized linear model parametrization, with variance function
 \(V(\mu) = \mu^3\).
 Because the values do not depend on the data, approx and nsim are
 ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -43,7 +43,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,14 +84,14 @@ $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^3},
       \qquad
       \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.$$
 They follow from \(\mathbb{E}[Y] = \mu\) and
-\(\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2\). The second identity is the one
-that gives the score in \(\phi\) mean zero.</p>
+\(\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2\). The second identity implies that
+the score in \(\phi\) has mean zero.</p>
 <p>Both diagonal entries are negative at every parameter setting, so the
 information is positive definite everywhere, where the observed Hessian of
-<code><a href="distrib_hessian.InvGauss1Distrib.html">distrib_hessian.InvGauss1Distrib()</a></code> is not. The zero off-diagonal says the
-mean and the dispersion are orthogonal, so the mean equation can be fitted
-with the dispersion held at any value without biasing it: this is the
-generalized linear model parametrization, with variance function
+<code><a href="distrib_hessian.InvGauss1Distrib.html">distrib_hessian.InvGauss1Distrib()</a></code> is not. The zero off-diagonal entry
+means that the mean and the dispersion are orthogonal, so the mean equation
+can be fitted without biasing it while the dispersion is held at any value:
+this is the generalized linear model parametrization, with variance function
 \(V(\mu) = \mu^3\).</p>
 <p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
 ignored. <code>y</code> is read only for its length.</p>
@@ -171,7 +171,7 @@ and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="invgauss1_distrib.html">invgauss1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, phi <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three constants, one value per observation.</span></span></span>
+<span class="r-in"><span><span class="co"># The three constants are returned with one value per observation.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">unique</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5</span>
@@ -185,8 +185,8 @@ and <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">1</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span>, <span class="op">-</span><span class="fl">1</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fl">2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.500 -0.125  0.000</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Negative definite at every setting, where the observed Hessian is</span></span></span>
-<span class="r-in"><span><span class="co"># positive in phi at y = mu.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected Hessian is negative definite at every setting, whereas the</span></span></span>
+<span class="r-in"><span><span class="co"># observed Hessian is positive in phi at y = mu.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>expected <span class="op">=</span> <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">1</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">phi_phi</span>,</span></span>
 <span class="r-in"><span>  observed <span class="op">=</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">1</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">phi_phi</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected observed </span>

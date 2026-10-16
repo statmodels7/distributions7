@@ -77,12 +77,13 @@ y <- c(-1.2, 0.3, 2.5)
 th <- list(mu = 0.4, sigma = 1.5)
 h <- distrib_hessian(d, y, th)
 
-# The closed form for the location, written out.
+# The closed form for the location is written out.
 z <- (y - 0.4) / 1.5
 all.equal(h$mu_mu, -(1 - tanh(z / 2)^2) / (2 * 1.5^2))
 #> [1] TRUE
 
-# Concave in mu everywhere, and flattening as the residual grows.
+# The log-density is concave in mu everywhere, and the curvature flattens
+# as the residual grows.
 round(distrib_hessian(d, 0.4 + c(0, 1.5, 3, 6, 12), th)$mu_mu, 6)
 #> [1] -0.222222 -0.174766 -0.093328 -0.015700 -0.000298
 

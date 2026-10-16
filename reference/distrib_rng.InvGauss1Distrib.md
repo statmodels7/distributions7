@@ -46,7 +46,7 @@ for the generic.
 ``` r
 d <- invgauss1_distrib()
 
-# Same generator as statmod::rinvgauss at this parametrization.
+# The generator is the same as statmod::rinvgauss at this parametrization.
 set.seed(2)
 a <- distrib_rng(d, 3, list(mu = 1, phi = 2))
 set.seed(2)

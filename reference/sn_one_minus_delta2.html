@@ -21,7 +21,7 @@ involves no cancellation."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@ involves no cancellation.</p>
 
 
 <dl><dt id="arg-gamma-">gamma1<a class="anchor" aria-label="anchor" href="#arg-gamma-"></a></dt>
-<dd><p>The skewness, a numeric vector. Nothing is validated here:
-the result is positive strictly inside
+<dd><p>The skewness, a numeric vector. The function does not
+validate it: the result is positive strictly inside
 \((-\gamma_{\max}, \gamma_{\max})\), zero at either bound and negative
 outside them.</p></dd>
 
@@ -96,18 +96,18 @@ plain value.</p></dd>
 \(\mu_z = c/\sqrt{1+c^2}\) and \(\delta = \mu_z/b\), and \(c^2\)
 equals \((\lvert\gamma_1\rvert/\gamma_{\max})^{2/3}\,b^2/(1-b^2)\), so the
 ratio to the ceiling carries the whole of the degeneracy.</p>
-<p>The two forms this replaces differ from it only at the top of the range,
-and both subtract two nearly equal numbers there. <code>1 - (mu_z/b)^2</code> reaches
-exactly zero at the largest skewness <code><a href="https://statmodels7.github.io/linkfunctions7/reference/bounded_link.html" class="external-link">linkfunctions7::bounded_link()</a></code> can
-produce, and the difference \(b^2 + (b^2-1)c^2\) reaches
-\(-1.11\times 10^{-16}\). At that skewness, one unit in the last place
+<p>The two forms that this function replaces differ from it only at the top of
+the range, and both subtract two nearly equal numbers there.
+<code>1 - (mu_z/b)^2</code> reaches exactly zero at the largest skewness that
+<code><a href="https://statmodels7.github.io/linkfunctions7/reference/bounded_link.html" class="external-link">linkfunctions7::bounded_link()</a></code> can produce, and the difference
+\(b^2 + (b^2-1)c^2\) reaches \(-1.11\times 10^{-16}\). At that skewness, one unit in the last place
 inside the bound, this function returns \(1.48\times 10^{-16}\), and the
 shape that follows from it is \(1.36\times 10^{8}\) and finite.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="sn_cp_to_dp.html">sn_cp_to_dp()</a></code> and <code><a href="reparam_map_derivs.html">md_skewnormal2()</a></code>, the two places that divide
-by it, and <code><a href="sn_max_skew.html">sn_max_skew()</a></code> for the ceiling it is written against.</p></div>
+by it, and <code><a href="sn_max_skew.html">sn_max_skew()</a></code> for the ceiling against which it is written.</p></div>
     </div>
 
     <div class="section level2">

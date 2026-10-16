@@ -39,8 +39,8 @@ so `approx` and `nsim` are read.
 - approx:
 
   One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, the strategy
-  for the expectation. Read only when `expected = TRUE`; for a discrete
-  family `"integrate"` is an exact sum over the support, not a
+  for the expectation. It is read only when `expected = TRUE`; for a
+  discrete family `"integrate"` is an exact sum over the support, not a
   quadrature.
 
 - nsim:
@@ -82,7 +82,8 @@ names(d3)
 #> [1] "mu_mu_mu"          "mu_mu_sigma"       "mu_sigma_sigma"   
 #> [4] "sigma_sigma_sigma"
 
-# Against a central difference of the analytic Hessian.
+# The third-order entry is compared with a central difference of the
+# analytic Hessian.
 eps <- 1e-5
 rbind(analytic = d3$mu_mu_sigma,
       numeric = (distrib_hessian(d, y, list(mu = 3, sigma = 0.8 + eps))$mu_mu -

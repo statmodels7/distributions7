@@ -88,16 +88,15 @@ come from
 ## Singularity at symmetry
 
 At \\\alpha = 0\\ the expected information has rank 2 and not 3. The
-score shows why: the shape component is \\z\sqrt{2/\pi}\\ and the
-location component \\z/\sigma\\, so the two are exactly proportional and
-no data can separate them. Measured, the smallest eigenvalue is
+shape component of the score is \\z\sqrt{2/\pi}\\ and the location
+component is \\z/\sigma\\, so the two are exactly proportional and a
+data set cannot separate them. Numerically, the smallest eigenvalue is
 \\-2.6\times10^{-27}\\ against a largest of 2 at \\\alpha = 0\\, and it
 grows like \\\alpha^4\\ thereafter.
 
-The consequence for use is that a fit whose true shape is near zero
-identifies \\\alpha\\ weakly, and that a variance matrix computed at
-exactly zero is not invertible. Azzalini and Capitanio's centered
-parametrization removes the singularity; it is
+A fit whose true shape is near zero identifies \\\alpha\\ weakly, and a
+variance matrix computed at exactly zero is not invertible. Azzalini and
+Capitanio's centered parametrization removes the singularity; it is
 [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md),
 a separate object.
 
@@ -108,9 +107,10 @@ With \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b = \sqrt{2/\pi}\\,
 \sigma^2(1 - b^2\delta^2).\$\$ All four moments are closed form. The
 skewness is bounded: \\\delta\\ saturates at one as
 \\\|\alpha\|\to\infty\\, so \\\gamma_1\\ cannot leave \\(-0.9953,
-0.9953)\\ whatever the shape is. Measured, it reaches 0.9556 at \\\alpha
-= 10\\ and 0.99527 at \\\alpha = 10^4\\, and does not move after that. A
-sample skewer than this needs
+0.9953)\\ whatever the shape is. Numerically, it reaches 0.9556 at
+\\\alpha = 10\\ and 0.99527 at \\\alpha = 10^4\\, and does not move
+after that. A sample whose skewness exceeds this bound in absolute value
+needs
 [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md).
 
 ## Parameter domains
@@ -163,7 +163,7 @@ c(density = max(abs(distrib_pdf(d, y, th0) - dnorm(y))),
 #>      density          cdf 
 #> 5.551115e-17 0.000000e+00 
 
-# The skewness the family can reach is bounded, and saturates early.
+# The skewness that the family can reach is bounded, and saturates early.
 vapply(c(1, 3, 10, 50, 1e4),
        function(a) skewness(d, list(mu = 0, sigma = 1, alpha = a)), 0)
 #> [1] 0.1369488 0.6670236 0.9555571 0.9936306 0.9952717

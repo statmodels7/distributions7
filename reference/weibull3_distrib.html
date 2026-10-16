@@ -9,7 +9,7 @@ shape."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,11 +76,12 @@ the mean is \(b\,\Gamma(1 + 1/\sigma)\). Here the scale is
 $$b = \dfrac{m}{\Gamma(1 + 1/\sigma)},$$
 and every derivative in \((m, \sigma)\) to order five, the expected
 information and its derivatives, the derivatives in the response and the
-derivatives of the distribution function are closed forms, each order in
-its own compiled kernel (see <code><a href="distrib_gradient.Weibull3Distrib.html">distrib_gradient.Weibull3Distrib()</a></code>).</p>
+derivatives of the distribution function are closed forms, and each order
+is computed in its own compiled kernel (see
+<code><a href="distrib_gradient.Weibull3Distrib.html">distrib_gradient.Weibull3Distrib()</a></code>).</p>
 <p>The number follows gamlss, where the Weibull in the mean is <code>WEI3</code>.
-Leaving <code>weibull2</code> unused is deliberate: it names a different
-parametrization there.</p>
+This package does not use the name <code>weibull2</code>, because that name denotes a
+different parametrization in gamlss.</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
