@@ -2367,8 +2367,11 @@ S7::method(distrib_grad_y_hess, MvStudentTDistrib) <-
     y <- as_mv_matrix(distrib, y)
     z <- mvt_dpieces(distrib, y, theta)
     nm <- distrib@params
+    # built once: hess_pairs() enumerates every pair, so a call per key costs
+    # the square of the number of pairs
+    pairs <- hess_pairs(nm)
     stats::setNames(lapply(hess_names(nm), function(k) {
-      ij <- hess_pairs(nm)[[k]]
+      ij <- pairs[[k]]
       a <- match(ij[1L], nm)
       b <- match(ij[2L], nm)
       ab <- z$pair(a, b)
@@ -2452,8 +2455,9 @@ S7::method(distrib_hess_y_hess, MvStudentTDistrib) <-
     z <- mvt_dpieces(distrib, y, theta)
     nm <- distrib@params
     ww <- mv_outer_rows(z$w, z$w)
+    pairs <- hess_pairs(nm)
     stats::setNames(lapply(hess_names(nm), function(k) {
-      ij <- hess_pairs(nm)[[k]]
+      ij <- pairs[[k]]
       a <- match(ij[1L], nm)
       b <- match(ij[2L], nm)
       ab <- z$pair(a, b)

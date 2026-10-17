@@ -1533,8 +1533,11 @@ S7::method(distrib_hess_y_hess, MvGaussianDistrib) <-
     si <- pc$sigma_inv
     nm <- distrib@params
     zero <- matrix(0, p, p)
+    # built once: hess_pairs() enumerates every pair, so a call per key costs
+    # the square of the number of pairs (61 s at 100 means)
+    pairs <- hess_pairs(nm)
     stats::setNames(lapply(hess_names(nm), function(k) {
-      ij <- hess_pairs(nm)[[k]]
+      ij <- pairs[[k]]
       a <- match(ij[1L], nm)
       b <- match(ij[2L], nm)
       if (a <= p || b <= p) return(zero)
@@ -1628,8 +1631,10 @@ S7::method(distrib_grad_y_hess, MvGaussianDistrib) <-
     r <- mvg_residuals(y, pc)$r
     nm <- distrib@params
     zero <- matrix(0, n, p)
+    # built once, as in distrib_hess_y_hess()
+    pairs <- hess_pairs(nm)
     stats::setNames(lapply(hess_names(nm), function(k) {
-      ij <- hess_pairs(nm)[[k]]
+      ij <- pairs[[k]]
       a <- match(ij[1L], nm)
       b <- match(ij[2L], nm)
       # the response gradient is -Sigma^-1 r, linear in the mean, so a

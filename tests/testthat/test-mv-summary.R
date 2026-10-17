@@ -386,6 +386,34 @@ test_that("a precision parametrization says which matrix the block describes", {
 })
 
 
+test_that("an inverse structure under a precision reports the covariance's quantities", {
+  # ar1_inv() is the precision of the AR(1) whose free values it carries, so
+  # mvgaussian2 with ar1_inv() is the same distribution as mvgaussian1 with
+  # ar1() and reports the same block, without the precision mark.
+  eta <- c(log(2), atanh(0.5))
+  d1 <- mvgaussian1_distrib(5, parameters7::ar1(5))
+  d2 <- mvgaussian2_distrib(5, parameters7::ar1_inv(5))
+  th1 <- as.list(stats::setNames(c(rep(0, 5), eta), d1@params))
+  th2 <- as.list(stats::setNames(c(rep(0, 5), eta), d2@params))
+  r1 <- mv_derived(d1, th1)
+  r2 <- mv_derived(d2, th2)
+  expect_identical(names(r2$value), c("sd", "rho"))
+  expect_identical(unname(r2$block), rep("Autoregressive structure", 2L))
+  expect_equal(unname(r2$value), unname(r1$value), tolerance = 1e-12)
+  expect_equal(unname(r2$jacobian[, 6:7]), unname(r1$jacobian[, 6:7]),
+               tolerance = 1e-12)
+  expect_equal(unname(r2$value[["sd"]]),
+               sqrt(solve(parameters7::param_value(d2@param, eta))[1, 1]),
+               tolerance = 1e-10)
+
+  # the same inverse structure carried as a covariance describes a precision
+  d3 <- mvgaussian1_distrib(5, parameters7::ar1_inv(5))
+  r3 <- mv_derived(d3, as.list(stats::setNames(c(rep(0, 5), eta), d3@params)))
+  expect_true(all(r3$block == "Autoregressive structure (precision)"))
+  expect_identical(names(r3$value), c("scale", "rho"))
+})
+
+
 test_that("an unstructured matrix adds no block and is unchanged", {
   d <- mvgaussian1_distrib(3)
   th <- as.list(stats::setNames(c(0, 0, 0, 0.1, -0.2, 0.05, 0.4, 0.3, -0.1),

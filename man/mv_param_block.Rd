@@ -14,7 +14,9 @@ mv_param_block(distrib, theta)
 \value{
 \code{NULL} where the parametrization declares nothing, or a named list
 in the shape of the return value of \code{\link[=mv_derived]{mv_derived()}}: \code{value}, \code{jacobian},
-\code{transform} and \code{block}, with the Jacobian as wide as \code{distrib@params}.
+\code{transform} and \code{block}, with the Jacobian as wide as \code{distrib@params},
+and a logical attribute \code{precision}, \code{TRUE} when the quantities describe
+a precision.
 }
 \description{
 Returns the block that a \pkg{parameters7} parametrization declares through
@@ -27,8 +29,13 @@ summary reports beside the standard deviations.
 \details{
 A parametrization that declares nothing gives \code{NULL}, and the summary is
 then the result of \code{\link[=mv_derived]{mv_derived()}} without it. The label ends in
-\code{(precision)} when the distribution is inverted, because the parametrization
-itself does not record whether its matrix is a covariance or a precision.
+\code{(precision)} when the declared quantities describe a precision, because the
+parametrization itself does not record whether its matrix is a covariance or
+a precision. They describe a precision when the distribution is inverted and
+the parametrization is not an inverse one, or the other way round: an inverse
+parametrization such as \code{parameters7::ar1_inv()} declares, with
+\code{inverse = TRUE}, the quantities of the matrix that it inverts, so under an
+inverted distribution they describe the covariance.
 
 The positions of the free values are found by name: the family names each
 free value with a prefix followed by the free name, after the location for

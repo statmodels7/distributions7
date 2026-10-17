@@ -157,8 +157,13 @@ mv_entry_index <- function(p, prefix) {
 #' @details
 #' A parametrization that declares nothing gives `NULL`, and the summary is
 #' then the result of [mv_derived()] without it. The label ends in
-#' `(precision)` when the distribution is inverted, because the parametrization
-#' itself does not record whether its matrix is a covariance or a precision.
+#' `(precision)` when the declared quantities describe a precision, because the
+#' parametrization itself does not record whether its matrix is a covariance or
+#' a precision. They describe a precision when the distribution is inverted and
+#' the parametrization is not an inverse one, or the other way round: an inverse
+#' parametrization such as `parameters7::ar1_inv()` declares, with
+#' `inverse = TRUE`, the quantities of the matrix that it inverts, so under an
+#' inverted distribution they describe the covariance.
 #'
 #' The positions of the free values are found by name: the family names each
 #' free value with a prefix followed by the free name, after the location for
@@ -173,7 +178,9 @@ mv_entry_index <- function(p, prefix) {
 #'
 #' @return `NULL` where the parametrization declares nothing, or a named list
 #'   in the shape of the return value of [mv_derived()]: `value`, `jacobian`,
-#'   `transform` and `block`, with the Jacobian as wide as `distrib@params`.
+#'   `transform` and `block`, with the Jacobian as wide as `distrib@params`,
+#'   and a logical attribute `precision`, `TRUE` when the quantities describe
+#'   a precision.
 #'
 #' @seealso [parameters7::param_readable()] for what a parametrization
 #'   declares, [mv_append_block()] for how the result is joined on, and
@@ -234,17 +241,22 @@ mv_param_block <- function(distrib, theta) {
   jac <- matrix(0, length(nm), distrib@n_params,
                 dimnames = list(nm, distrib@params))
   jac[, pos] <- r$jacobian
-  # Which matrix the family describes is the distribution's business, not the
+  # Which matrix the family carries is the distribution's business, not the
   # structure's: the same structure carries a covariance on one side of a
-  # model and a precision on the other.
+  # model and a precision on the other. An inverse structure (ar1_inv() and
+  # the like) declares the quantities of the matrix it inverts, so the two
+  # inversions cancel: ar1_inv() under mvgaussian2_distrib() describes the
+  # AR(1) covariance.
   inv <- "inverted" %in% S7::prop_names(distrib) && isTRUE(distrib@inverted)
+  inv <- xor(inv, isTRUE(r$inverse))
   label <- if (inv) {
     paste(r$label, "(precision)")
   } else {
     r$label
   }
-  list(value = r$value, jacobian = jac, transform = r$transform,
-       block = stats::setNames(rep(label, length(nm)), nm))
+  structure(list(value = r$value, jacobian = jac, transform = r$transform,
+                 block = stats::setNames(rep(label, length(nm)), nm)),
+            precision = inv)
 }
 
 
@@ -262,8 +274,9 @@ mv_param_block <- function(distrib, theta) {
 #' @details
 #' The standard deviation is \eqn{\sqrt{s}} with \eqn{s} the `scale`, so its
 #' Jacobian row is the `scale` row times \eqn{1/(2\sqrt{s})}; it is intervalled
-#' on the log scale, as `scale` was. Where the matrix is a precision the
-#' `scale` is a precision's common diagonal and is reported as it is.
+#' on the log scale, as `scale` was. Where the declared quantities describe a
+#' precision (the attribute `precision` of the result of [mv_param_block()])
+#' the `scale` is a precision's common diagonal and is reported as it is.
 #'
 #' @param distrib A multivariate distribution object.
 #' @param theta Its parameters, aligned.
@@ -284,7 +297,7 @@ mv_param_block <- function(distrib, theta) {
 #' @keywords internal
 mv_own_block <- function(distrib, theta, sd_label = "sd") {
   pb <- mv_param_block(distrib, theta)
-  if (is.null(pb) || isTRUE(distrib@inverted)) return(pb)
+  if (is.null(pb) || isTRUE(attr(pb, "precision"))) return(pb)
   k <- which(names(pb$value) == "scale")
   if (length(k) != 1L) return(pb)
   s <- pb$value[[k]]

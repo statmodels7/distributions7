@@ -1,3 +1,17 @@
+# distributions7 0.80.0
+
+* `distrib_hess_y_hess()` and `distrib_grad_y_hess()` of the multivariate
+  gaussian and Student t compute the pairs of parameters once per call, in
+  place of once per pair. At 100 dimensions (102 parameters, 5253 pairs)
+  each call took about 60 s and takes 0.2 s; the results are unchanged.
+* The summary of a multivariate family with an inverse parametrization
+  (`parameters7::ar1_inv()`, `autoregressive_inv()`, `inverse_of()`) reports
+  the quantities of the matrix that the parametrization inverts. A
+  `mvgaussian2_distrib()` with `ar1_inv()` reports the standard deviation and
+  the lag-one correlation of the AR(1), as `mvgaussian1_distrib()` with
+  `ar1()` does, in place of every conditional variance and every partial
+  correlation. Requires parameters7 0.26.0.
+
 # distributions7 0.79.2
 
 * Documentation, second part: the pages of the families from inverse

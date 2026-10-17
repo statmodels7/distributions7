@@ -29,8 +29,9 @@ repeat them.
 \details{
 The standard deviation is \eqn{\sqrt{s}} with \eqn{s} the \code{scale}, so its
 Jacobian row is the \code{scale} row times \eqn{1/(2\sqrt{s})}; it is intervalled
-on the log scale, as \code{scale} was. Where the matrix is a precision the
-\code{scale} is a precision's common diagonal and is reported as it is.
+on the log scale, as \code{scale} was. Where the declared quantities describe a
+precision (the attribute \code{precision} of the result of \code{\link[=mv_param_block]{mv_param_block()}})
+the \code{scale} is a precision's common diagonal and is reported as it is.
 }
 \examples{
 d <- mvgaussian1_distrib(3, parameters7::compound_symmetry(3))
