@@ -1653,6 +1653,67 @@ S7::method(distrib_grad_y_hess, MvGaussianDistrib) <-
     }), hess_names(nm))
   }
 
+#' @title Multivariate Gaussian Third and Fourth Response Derivatives
+#' @name distrib_deriv3_y.MvGaussianDistrib
+#'
+#' @description
+#' Returns the third and fourth derivatives of the log-density in the
+#' response, and the derivative of the third one in each parameter. The
+#' log-density is quadratic in \eqn{y}, with response Hessian
+#' \eqn{-\Sigma^{-1}}, so all three quantities are zero. The arrays follow
+#' [distrib_hess_y.MvGaussianDistrib()]: they are constant in \eqn{y} and carry
+#' no observation dimension.
+#'
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()]
+#'   or [mvgaussian2_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param scale One of `"parameter"` (the default) or `"link"`. Every link of
+#'   this family is the identity, so the two scales coincide.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return `distrib_deriv3_y()` a \eqn{p \times p \times p} array of zeros,
+#'   `distrib_deriv4_y()` a \eqn{p \times p \times p \times p} one, and
+#'   `distrib_cross3_y()` a named list of \eqn{p \times p \times p} arrays of
+#'   zeros, one per parameter, in `distrib@params` order.
+#'
+#' @seealso [distrib_hess_y.MvGaussianDistrib()] for the order below, and
+#'   [distrib_deriv3_y()] and [distrib_cross3_y()] for the generics.
+#'
+#' @examples
+#' d <- mvgaussian1_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#' dim(distrib_deriv3_y(d, y, theta))
+#' dim(distrib_deriv4_y(d, y, theta))
+#' names(distrib_cross3_y(d, y, theta))
+#'
+#' @keywords internal
+S7::method(distrib_deriv3_y, MvGaussianDistrib) <- function(distrib, y, theta,
+                                                           ...) {
+  array(0, dim = rep(distrib@n_dim, 3L))
+}
+
+#' @rdname distrib_deriv3_y.MvGaussianDistrib
+#' @name distrib_deriv4_y.MvGaussianDistrib
+#' @keywords internal
+S7::method(distrib_deriv4_y, MvGaussianDistrib) <- function(distrib, y, theta,
+                                                           ...) {
+  array(0, dim = rep(distrib@n_dim, 4L))
+}
+
+#' @rdname distrib_deriv3_y.MvGaussianDistrib
+#' @name distrib_cross3_y.MvGaussianDistrib
+#' @keywords internal
+S7::method(distrib_cross3_y, MvGaussianDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    zero <- array(0, dim = rep(distrib@n_dim, 3L))
+    stats::setNames(rep(list(zero), length(distrib@params)), distrib@params)
+  }
+
 # Commented out on 2026-10-12 (T4): the observed Hessian reads the chart's second derivatives of the inverse,
 # so the second derivative of the covariance has no caller here.
 # Kept rather than deleted.

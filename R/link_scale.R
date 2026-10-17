@@ -293,7 +293,7 @@ link_scale_lower_orders <- function(distrib, y, theta, expected, order) {
   nat <- vector("list", order - 1L)
 
   nat[[1]] <- if (isTRUE(expected)) {
-    stats::setNames(lapply(params, function(p) rep(0, length(y))), params)
+    stats::setNames(lapply(params, function(p) rep(0, n_obs(distrib, y))), params)
   } else {
     distrib_gradient(distrib, y, theta)
   }

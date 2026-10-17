@@ -1,3 +1,19 @@
+# distributions7 0.80.2
+
+* `distrib_deriv3()` and `distrib_deriv4()` with `expected = TRUE` and
+  `scale = "link"` fill the first-order slot with `n_obs()` zeros. For a
+  multivariate family they used one zero per cell of the response matrix,
+  so some components had length \eqn{np} instead of \eqn{n}, with the
+  terms of length \eqn{n} recycled into them.
+* The multivariate gaussian has `distrib_deriv3_y()`, `distrib_deriv4_y()`
+  and `distrib_cross3_y()` methods, which return arrays of zeros without an
+  observation dimension, like its `distrib_hess_y()`. The calls stopped with
+  "Can't find method", also through `fixed()`.
+* `distrib_deriv5()` of the multivariate gaussian and Student t runs at
+  three dimensions and above. It stopped with an error in the cache of
+  `numericals7::fd_tensor()`, repaired in numericals7 0.23.3, which is now
+  required.
+
 # distributions7 0.80.1
 
 * Documentation, third part: the pages of the wrappers (`fixed()`,
