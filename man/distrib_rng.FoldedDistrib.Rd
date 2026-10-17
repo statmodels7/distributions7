@@ -17,8 +17,9 @@ A numeric vector of length \code{n}, every value non-negative.
 }
 \description{
 Draws \code{n} values from the parent and takes the absolute value. That is the
-DEFINITION of the folded variable, not an approximation of it, so the draws
-are exact whatever route the parent's own generator takes. They consume
+DEFINITION of the folded variable and not an approximation of it, so the
+draws are exact regardless of the route that the parent's own generator
+uses. They consume
 whatever the parent consumes from R's stream, and are reproducible under
 \code{\link[base:Random]{base::set.seed()}}.
 }

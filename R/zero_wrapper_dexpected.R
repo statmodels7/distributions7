@@ -21,13 +21,14 @@ NULL
 #' \deqn{E^{ZI}_{ij} = (1-\zeta) E_{ij} + \zeta(1-\zeta) f s_i s_j / L,}
 #' \deqn{E^{ZI}_{i\zeta} = -f s_i / L, \qquad
 #'   E^{ZI}_{\zeta\zeta} = -(1-f)^2/L - (1-f)/(1-\zeta),}
-#' the observed Hessian at zero cancelling from the first, and the
-#' derivatives follow with \eqn{\partial_c f = f s_c} and
+#' where the observed Hessian at zero cancels from the first of these
+#' expressions. The derivatives follow with \eqn{\partial_c f = f s_c} and
 #' \eqn{\partial_c s_i = H_{ic}}. For the zero-adjusted discrete family, with
-#' \eqn{q = 1 - f} and \eqn{\pi} the probability of zero,
+#' \eqn{q = 1 - f} and \eqn{\pi} the probability of zero, the expected
+#' information is
 #' \deqn{E^{ZA}_{ij} = (1-\pi)\,[E_{ij}/q + f s_i s_j / q^2], \qquad
 #'   E^{ZA}_{\pi\pi} = -1/(\pi(1-\pi)),}
-#' the mixed block being zero; for the continuous one
+#' where the mixed block is zero. For the continuous family, the entries are
 #' \eqn{E^{ZA}_{ij} = (1-\pi) E_{ij}}.
 #'
 #' @param distrib A family from [zero_inflated()] or [zero_adjusted()].
@@ -90,7 +91,8 @@ zero_wrapper_dexpected <- function(distrib, y, theta, threads = 1L) {
 #' differentiated are one parent parameter `k`, and the entry in the
 #' probability.
 #' @param i,j,c The indices of one entry: the pair and the parameter
-#'   differentiated, the parent's parameters first and the probability last.
+#'   differentiated. The parent's parameters come first and the probability
+#'   last.
 #' @param p The number of the parent's parameters.
 #' @param zi,za The wrapper's probability, one value per observation.
 #' @param f0 The parent's mass at zero.
@@ -241,8 +243,8 @@ zero_wrapper_d2expected <- function(distrib, y, theta, threads = 1L) {
 #' `za_disc_d2expected_entry()` or `za_cont_d2expected_entry()`, and
 #' `d2_quotient()` gives the second derivative of a quotient.
 #' @param i,j,c,d The indices of one entry: the pair \eqn{(i,j)} and the
-#'   pair \eqn{(c,d)} differentiated, the parent's parameters first and the
-#'   probability last.
+#'   pair \eqn{(c,d)} differentiated. The parent's parameters come first and
+#'   the probability last.
 #' @param tm A list of the parent's quantities: functions `e0`, `e1`, `e2`
 #'   of parameter indices returning the expected information and its first and
 #'   second derivatives, the probability `z`, the index `m` of the

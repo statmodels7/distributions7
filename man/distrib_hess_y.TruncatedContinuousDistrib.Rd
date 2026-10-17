@@ -18,13 +18,13 @@ A numeric vector as long as \code{y}.
 }
 \description{
 Returns \eqn{\partial^2\ell_T/\partial y^2}, which inside \eqn{[L, U]} is
-the PARENT's and is \code{NaN} outside, for the reason
-\code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y.TruncatedContinuousDistrib()}} gives: the log-density is
+the PARENT's and is \code{NaN} outside, as
+\code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y.TruncatedContinuousDistrib()}} explains: the log-density is
 \eqn{-\infty} there and has no derivative.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

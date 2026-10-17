@@ -17,9 +17,9 @@ Builds the order-\code{k} derivative method for
 \code{\link[=transformation]{transformation()}}.
 }
 \details{
-There is nothing to do. The Jacobian does not depend on \eqn{\theta}, so every
-derivative of the transformed log-likelihood is the parent's evaluated at
-\eqn{x = g^{-1}(y)}. The methods exist only so that the numerical fallback is
-never reached.
+The Jacobian does not depend on \eqn{\theta}, so the method applies no
+correction: every derivative of the transformed log-likelihood is the
+parent's evaluated at \eqn{x = g^{-1}(y)}. The methods exist only so that the
+numerical fallback is never reached.
 }
 \keyword{internal}

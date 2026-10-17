@@ -42,7 +42,7 @@ p <- c(0.1, 0.5, 0.9)
 distrib_quantile(d, p, theta)
 all.equal(distrib_quantile(d, p, theta), qlnorm(p, 0.5, 0.8))
 
-# The round trip closes, the transformation being a bijection.
+# The round trip closes, because the transformation is a bijection.
 max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
 
 # Under a decreasing transformation the p-th quantile is g of the

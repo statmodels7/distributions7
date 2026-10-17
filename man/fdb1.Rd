@@ -19,9 +19,10 @@ A numeric vector, the derivative of order \code{order} of the
 composition.
 }
 \description{
-The derivative of order \code{order} of \eqn{h(u(x))} for scalar chains, Faa di
-Bruno written out: \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to
-order four. Each order is its own formula and forms nothing above it.
+Computes the derivative of order \code{order} of \eqn{h(u(x))} for scalar
+chains by the Faa di Bruno formula written out:
+\eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to order four. Each order
+is its own formula and does not form any derivative of higher order.
 }
 \seealso{
 \code{\link[=fdb2]{fdb2()}} for a bivariate inner function;

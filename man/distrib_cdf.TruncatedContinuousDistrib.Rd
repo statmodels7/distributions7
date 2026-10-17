@@ -22,12 +22,12 @@ A numeric vector of cumulative probabilities.
 \description{
 Evaluates \eqn{F_T(q) = \{F(q;\theta) - F(L^-;\theta)\}/Z(\theta)}, clamped
 to \eqn{[0, 1]}. The clamp makes the endpoints exact, returning \code{0} at and
-below \eqn{L} and \code{1} at and above \eqn{U}, where the unclamped ratio would
-give a small negative number or one plus a rounding.
+below \eqn{L} and \code{1} at and above \eqn{U}, where the ratio before clamping
+would give a small negative number or one plus a rounding.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -38,10 +38,10 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 theta <- list(mu = 0.3, sigma = 1.2)
 
-# Exactly 0 and 1 at the endpoints.
+# The values at the endpoints are exactly 0 and 1.
 distrib_cdf(tn, c(-1, 0.3, 2), theta)
 
-# Against the ratio written out.
+# The ratio written out gives the same value at 0.3.
 Fl <- pnorm(-1, 0.3, 1.2); Z <- pnorm(2, 0.3, 1.2) - Fl
 (pnorm(0.3, 0.3, 1.2) - Fl) / Z
 

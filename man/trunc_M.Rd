@@ -19,19 +19,19 @@ parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 Computes \eqn{M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j]}, which is
 \eqn{d_{ij} Z / Z}, since \eqn{d_{ij} f / f = H_{ij} + s_i s_j}. It enters
 the truncated Hessian as
-\eqn{d_{ij}\ell_T = H_{ij}(y) - M_{ij} + m_i m_j}, the subtracted part being
-the second derivative of \eqn{\log Z}.
+\eqn{d_{ij}\ell_T = H_{ij}(y) - M_{ij} + m_i m_j}, and the subtracted part
+is the second derivative of \eqn{\log Z}.
 }
 \details{
 Where the parent has exact cdf derivatives the whole quantity comes from
 \code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}} at order two. Otherwise it is assembled from two
-quadratures, \code{\link[=trunc_hess_mean]{trunc_hess_mean()}} and \code{\link[=trunc_score_prod_mean]{trunc_score_prod_mean()}}, which is
-also why \code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} cannot use the cheap route: it needs the
+quadratures, \code{\link[=trunc_hess_mean]{trunc_hess_mean()}} and \code{\link[=trunc_score_prod_mean]{trunc_score_prod_mean()}}.
+\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} cannot use the cheap route, because it needs the
 two pieces separately and \eqn{d_{ij} Z} only gives their sum.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

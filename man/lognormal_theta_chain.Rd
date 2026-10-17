@@ -26,8 +26,8 @@ A named list of numeric vectors, keyed by parameter when \code{second} is
 Computes the gaussian's components at \eqn{t = \log y}, carried by the
 Jacobian of the transformation. It serves all three of the lognormal's mixed
 methods, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
-\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, with \code{order} selecting the response derivative and
-\code{second} the order in \eqn{\theta}.
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, where \code{order} selects the response derivative and
+\code{second} selects the order in \eqn{\theta}.
 }
 \section{Why theta passes through untouched}{
 With \eqn{t = \log y} the log-density is the gaussian's in \eqn{t} plus the
@@ -35,7 +35,8 @@ log-Jacobian, \eqn{\ell(y) = \ell_N(t;\mu,\sigma^2) - \log y}. The
 transformation carries NO parameter, so \eqn{t} does not move with
 \eqn{\theta} and every \eqn{\theta}-derivative is the gaussian's own at
 \eqn{t}. The parent is \code{gaussian2}, which carries the same
-\eqn{(\mu, \sigma^2)} the lognormal does, so \code{theta} needs no map at all.
+\eqn{(\mu, \sigma^2)} that the lognormal carries, so \code{theta} needs no map at
+all.
 }
 
 \section{What the Jacobian does carry}{
@@ -64,7 +65,7 @@ theta <- list(mu = 0.2, sigma2 = 0.6)
 
 distributions7:::lognormal_theta_chain(y, theta, 2L, FALSE)
 
-# Which is what the family's distrib_cross2_y reports.
+# The family's distrib_cross2_y returns the same value.
 distrib_cross2_y(d, y, theta)
 
 # And it is the gaussian's own component at t = log y, over y^2.
@@ -76,7 +77,7 @@ hi <- distrib_cross2_y(g2, t, theta)
 }
 \seealso{
 \code{\link[=distrib_cross2_y.Lognormal1Distrib]{distrib_cross2_y.Lognormal1Distrib()}}, the three methods that it
-serves, and \code{\link[=mapped_theta2]{mapped_theta2()}}, the route a family whose transformation DOES
-carry a parameter takes instead.
+serves, and \code{\link[=mapped_theta2]{mapped_theta2()}}, the route taken instead by a family whose
+transformation carries a parameter.
 }
 \keyword{internal}

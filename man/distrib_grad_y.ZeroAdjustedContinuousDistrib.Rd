@@ -18,8 +18,9 @@ A numeric vector as long as \code{y}.
 }
 \description{
 Returns \eqn{\partial\ell/\partial y}, which equals the PARENT's for
-\eqn{y \ne 0}, the factor \eqn{1-\pi} not depending on \eqn{y}. At the atom
-the log-density jumps and no derivative exists, so \code{NaN} is returned. The
+\eqn{y \ne 0}, because the factor \eqn{1-\pi} does not depend on \eqn{y}. At
+the atom the log-density jumps and the derivative does not exist, so \code{NaN}
+is returned. The
 numerical fallback would difference across the jump and return a finite
 number.
 }

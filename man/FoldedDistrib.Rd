@@ -48,12 +48,12 @@ wrapped family's, \code{bounds} becomes \verb{c(0, max(abs(parent bounds)))}, an
 \code{distrib_name} is \code{"folded "} followed by the parent's.
 }
 \description{
-The S7 class of the distribution of \eqn{|Y|} when \eqn{Y} follows the
-wrapped continuous distribution, with density
+This is the S7 class of the distribution of \eqn{|Y|} when \eqn{Y} follows
+the wrapped continuous distribution. Its density is
 \deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0,}
-the two preimages of \eqn{x} added together. It inherits from
-\code{continuous_distrib} and carries the SAME parameters as its parent: folding
-adds none and removes none.
+which adds the parent's density at the two preimages of \eqn{x}. It
+inherits from \code{continuous_distrib} and carries the SAME parameters as its
+parent: folding adds none and removes none.
 
 Build one with \code{\link[=folded]{folded()}}, which checks that the parent reaches below zero
 and carries no atom. This page documents the raw S7 constructor, which

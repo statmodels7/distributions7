@@ -20,7 +20,7 @@ A named list with one numeric vector per unordered pair of
 parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}. It is
 \code{\link[=distrib_grad_y_hess.continuous_distrib]{distrib_grad_y_hess.continuous_distrib()}} read one order higher in the
 response, and it makes the fourth-order mixed derivative available for
@@ -35,13 +35,13 @@ theta <- list(mu = 2, sigma2 = 1)
 h <- distrib_hess_y_hess(d, y, theta)
 c(h$mu_mu[1], h$mu_sigma2[1], h$sigma2_sigma2[1])
 
-# Against a numerical Hessian of the response curvature.
+# The result is compared with a numerical Hessian of the response curvature.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(2, 1))
 }
 \seealso{
 \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for the generic,
 \code{\link[=distrib_grad_y_hess.continuous_distrib]{distrib_grad_y_hess.continuous_distrib()}} for the third-order twin, and
-\code{\link[=numerical_theta2_y]{numerical_theta2_y()}}, which does the work.
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}, which does the work.
 }
 \keyword{internal}

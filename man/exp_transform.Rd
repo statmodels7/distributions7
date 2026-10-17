@@ -10,8 +10,9 @@ exp_transform()
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for \eqn{Y = e^X}: maps the real line to \eqn{(0, \infty)}.
-Inverse \eqn{X = \log(Y)}, Jacobian \eqn{|J| = 1/Y}.
+Returns the transformer for \eqn{Y = e^X}, which maps the real
+line to \eqn{(0, \infty)}. The inverse is \eqn{X = \log(Y)} and the Jacobian
+is \eqn{|J| = 1/Y}.
 }
 \examples{
 d <- transformation(gaussian1_distrib(), exp_transform())
@@ -19,5 +20,8 @@ distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}},
+\code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}},
+\code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}},
+\code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }

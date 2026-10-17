@@ -9,9 +9,9 @@
 \item{y}{A numeric vector of observations. A point off the parent's support
 returns whatever the parent returns there, scaled by \eqn{1-\zeta}.}
 
-\item{theta}{A named list with the parent's parameters followed by \code{zi},
-each a numeric vector of length 1 or of the length of \code{y}. \code{zi} must lie
-strictly inside \eqn{(0, 1)}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi};
+each element is a numeric vector of length 1 or of the length of \code{y}. \code{zi}
+must lie strictly inside \eqn{(0, 1)}.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned. It is
 computed from the parent's log-mass, as a log-sum-exp at zero and as
@@ -28,8 +28,8 @@ Computes the zero-inflated mass function
 \deqn{P(Y = y) = \zeta\,\mathbb{I}(y = 0) + (1-\zeta)\, f(y; \theta),}
 with \eqn{f} the parent's mass function. Inflation can only ADD zeros: the
 mass at zero is \eqn{\zeta + (1-\zeta)f(0)}, which exceeds \eqn{f(0)} for
-every \eqn{\zeta > 0}, and no single observed zero can be attributed to one
-mechanism or the other.
+every \eqn{\zeta > 0}, and a single observed zero cannot be attributed to one
+mechanism or to the other.
 }
 \section{Notation}{
 
@@ -46,11 +46,11 @@ theta <- list(mu = 3, zi = 0.25)
 
 distrib_pdf(d, 0:5, theta)
 
-# Which is the mixture written out.
+# The mass function is the mixture written out.
 y <- 0:5
 all.equal(distrib_pdf(d, y, theta), 0.25 * (y == 0) + 0.75 * dpois(y, 3))
 
-# The mass at zero exceeds the parent's, inflation adding to it.
+# The mass at zero exceeds the parent's because inflation adds to it.
 c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
 
 # And the whole mass function still sums to one.

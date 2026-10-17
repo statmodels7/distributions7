@@ -21,7 +21,7 @@ gengamma2_by_reparam(
 A reparametrized distribution object.
 }
 \description{
-The same family as \code{\link[=gengamma2_distrib]{gengamma2_distrib()}}, obtained through
+Returns the same family as \code{\link[=gengamma2_distrib]{gengamma2_distrib()}}, obtained through
 \code{\link[=reparametrize]{reparametrize()}} on \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} rather than written out.
 }
 \details{

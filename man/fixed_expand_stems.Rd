@@ -9,7 +9,7 @@ fixed_expand_stems(fix, params)
 \arguments{
 \item{fix}{The named list of values passed to \code{\link[=fixed]{fixed()}}.}
 
-\item{params}{The parameter names of the distribution being fixed.}
+\item{params}{The parameter names of the distribution that is being fixed.}
 }
 \value{
 The list with every stem expanded into its coordinates. A name that
@@ -19,7 +19,7 @@ to check.
 \description{
 Replaces a name that is not a parameter but is the stem of the parameters
 \verb{stem1, ..., stemk} by those parameters, recycling a single value or taking
-one value per coordinate. It is what lets \code{fixed(mvgaussian1_distrib(3), mu = 0)} hold the whole mean at zero.
+one value per coordinate. With this expansion, \code{fixed(mvgaussian1_distrib(3), mu = 0)} holds the whole mean at zero.
 }
 \examples{
 distributions7:::fixed_expand_stems(list(mu = 0, sigma = 1),

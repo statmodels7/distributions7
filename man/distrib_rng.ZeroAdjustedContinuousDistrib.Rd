@@ -19,7 +19,7 @@ probability \eqn{\pi} and is exact.
 }
 \description{
 Draws zeros with probability \eqn{\pi} and otherwise samples from the parent
-unchanged. No truncation is involved, unlike the discrete branch: a
+unchanged. Unlike the discrete branch, this method does not truncate: a
 continuous parent produces an exact zero with probability zero, so a draw
 from it never collides with the atom.
 }
@@ -45,7 +45,7 @@ c(sampled_atom = mean(big == 0), parameter = 0.3)
 round(c(mean = mean(big[big != 0]), sd = sd(big[big != 0])), 2)
 }
 \seealso{
-\code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf.ZeroAdjustedContinuousDistrib()}} for the law these
-are drawn from, \code{\link[=distrib_rng.ZeroAdjustedDiscreteDistrib]{distrib_rng.ZeroAdjustedDiscreteDistrib()}}, which does
-truncate, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+\code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf.ZeroAdjustedContinuousDistrib()}} for the law from
+which these are drawn, \code{\link[=distrib_rng.ZeroAdjustedDiscreteDistrib]{distrib_rng.ZeroAdjustedDiscreteDistrib()}}, which
+does truncate, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

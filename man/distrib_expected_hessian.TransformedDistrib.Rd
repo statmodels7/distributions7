@@ -32,10 +32,10 @@ Returns the parent's expected Hessian, EXACTLY. Since
 \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
 and the Jacobian does not depend on \eqn{\theta}, the expectation of the
 transformed model's second derivative is the parent's expectation
-reparametrized by the change of variables, which is the same number. No
-approximation is added by the wrapper, and \code{approx} and \code{nsim} are not
+reparametrized by the change of variables, which is the same number. The
+wrapper does not add an approximation, and \code{approx} and \code{nsim} are not
 forwarded. The result is exact when the parent's expected Hessian is exact
-and otherwise is the value the parent's own default route returns.
+and otherwise is the value that the parent's own default route returns.
 }
 \details{
 This is the strongest of the three delegations: the score and the observed

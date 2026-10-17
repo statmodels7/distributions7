@@ -35,9 +35,9 @@ component.
 }
 \details{
 The parent block is the ordinary two-component mixture curvature: the
-weighted Hessian plus the variance of the score across the two components,
-\eqn{w(1-w)} being that variance's weight when one component's score is
-zero.
+weighted Hessian plus the variance of the score across the two components.
+When one component's score is zero, \eqn{w(1-w)} is the weight of that
+variance.
 
 The mixed block collapses. Written out it is
 \eqn{-f'(0)/L_0 - (1-\zeta)f'(0)(1 - f(0))/L_0^2}, and the bracket is
@@ -61,7 +61,7 @@ y <- distrib_rng(d, 200, theta)
 H <- distrib_hessian(d, y, theta)
 vapply(H, sum, numeric(1))
 
-# Against a numerical Hessian of the log-likelihood.
+# The sums are compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -73,7 +73,8 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
 max(abs(vapply(H, sum, numeric(1)) - ref))
 
 # At a positive observation the mixed block is exactly zero and the zi
-# block is a constant; at a zero neither is.
+# block is a constant; at a zero the mixed block is not zero and the zi
+# block is not a constant.
 rbind(positive = c(mu_zi = H$mu_zi[y > 0][1], zi_zi = H$zi_zi[y > 0][1]),
       at_zero = c(mu_zi = H$mu_zi[y == 0][1], zi_zi = H$zi_zi[y == 0][1]))
 -1 / 0.75^2

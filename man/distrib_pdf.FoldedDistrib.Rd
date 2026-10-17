@@ -7,10 +7,11 @@
 \item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
 \item{y}{A numeric vector of observations. Negative values return \code{0}
-without an error, the folded support being \eqn{[0, \infty)}.}
+without an error, because the folded support is \eqn{[0, \infty)}.}
 
-\item{theta}{A named list of the PARENT's parameters, each a numeric vector
-of length 1 or of the length of \code{y}. Folding adds and removes nothing.}
+\item{theta}{A named list of the PARENT's parameters, in which each element
+is a numeric vector of length 1 or of the length of \code{y}. Folding adds and
+removes nothing.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 The logarithm is taken of the sum, not inside the parent, so it underflows
@@ -30,9 +31,9 @@ density is exactly \code{0} and its logarithm \code{-Inf}.
 }
 \details{
 At \eqn{x = 0} the two preimages coincide and the folded density is twice
-the parent's. The addition is what separates a fold from a change of
-variable: the map is two to one, so there is no Jacobian to divide by, and
-\code{\link[=transformer]{transformer()}} cannot express it.
+the parent's. A fold differs from a change of variable because it adds the
+two preimages: the map is two to one, so the density has no Jacobian factor
+to divide out, and \code{\link[=transformer]{transformer()}} cannot express it.
 }
 \section{Notation}{
 
@@ -46,7 +47,7 @@ theta <- list(mu = 0.5, sigma = 1.2)
 
 distrib_pdf(d, c(0, 0.5, 2), theta)
 
-# Which is the parent's density at the two preimages, added.
+# The folded density is the sum of the parent's density at the two preimages.
 y <- c(0, 0.5, 2)
 all.equal(distrib_pdf(d, y, theta),
           dnorm(y, 0.5, 1.2) + dnorm(-y, 0.5, 1.2))

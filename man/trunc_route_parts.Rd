@@ -14,7 +14,7 @@ trunc_route_parts(distrib, y, theta, what, rows = NULL)
 \item{theta}{A named list of parameter values.}
 
 \item{what}{One of \code{"z"}, \code{"grad"}, \code{"hess"}, \code{"info"} and \code{"dinfo"},
-each adding quantities to those of the previous one.}
+Each value adds quantities to those of the previous one.}
 
 \item{rows}{\code{NULL}, or the observations to compute; the function sets it
 when it computes each distinct parameter vector once.}
@@ -22,8 +22,8 @@ when it computes each distinct parameter vector once.}
 \value{
 \code{NULL} when the family has no route; otherwise a list with \code{Z},
 \code{Zi} (named by parameter), and, as \code{what} requires, \code{Zij} and \code{S} (named
-as \code{\link[=hess_names]{hess_names()}}) and \code{D} (named as \code{\link[=dexpected_names]{dexpected_names()}}), each a vector
-over the observations.
+as \code{\link[=hess_names]{hess_names()}}) and \code{D} (named as \code{\link[=dexpected_names]{dexpected_names()}}). Each
+component is a vector over the observations.
 }
 \description{
 Computes, for a \code{\link[=truncated]{truncated()}} family whose parent has a scalar route, the
@@ -44,18 +44,20 @@ over the retained set, so that \eqn{E_T[s_i s_j] = S_{ij}/Z} and
 For a discrete parent the integrals are sums over support points.
 \code{trunc_rule_cpp()} returns, for each observation, the points over which the
 sums run: the retained points when they are finitely many, and otherwise a
-series over the retained points stopped by a rule on the masses alone. For
-the density, the score and the Hessian on an unbounded support, the points
+series over the retained points stopped by a rule that uses only the
+masses. For the density, the score and the Hessian on an unbounded support,
+the points
 removed below \code{lower} are used instead when their mass is at most one half,
 and the retained sums are \eqn{1 - \sum f}, \eqn{-\sum f s_i} and \eqn{-\sum
 f(\ell_{ij} + s_i s_j)}.
 
 For a continuous parent, \eqn{Z}, \eqn{Z_i} and \eqn{Z_{ij}} are the
 differences of the compiled distribution function and its derivatives at
-the two truncation points (\code{trunc_cont_ends_cpp()}), \eqn{Z} in the
-survival function when the lower point lies above the median; \eqn{S}
-and \eqn{D} are taken by the rule of \code{trunc_cont_rule_cpp()}, whose nodes
-depend on the interval and on the parent's center, scale and kinks only.
+the two truncation points (\code{trunc_cont_ends_cpp()}), and \eqn{Z} is
+computed from the survival function when the lower point lies above the
+median; \eqn{S} and \eqn{D} are taken by the rule of
+\code{trunc_cont_rule_cpp()}, whose nodes depend on the interval and on the
+parent's center, scale and kinks only.
 
 The sums accumulate in long double in the registry's order, so that each
 diagonal quantity is the registry's to the bit.

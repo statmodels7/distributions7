@@ -21,7 +21,7 @@ outer coordinates, as \code{\link[=reparam_tables]{reparam_tables()}} returns th
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{n}{The length to recycle a constant component to, so that every
+\item{n}{The length to which a constant component is recycled, so that every
 component comes back one value per observation.}
 }
 \value{
@@ -29,15 +29,17 @@ A named list of numeric vectors, keyed as
 \code{\link[=deriv_names]{deriv_names(new_params, order)}}.
 }
 \description{
-The partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}, taking the inner derivatives as
-tables instead of fetching them from a distribution. With the two split, a
-family whose derivatives are easiest in coordinates it does not expose can
-carry them into the ones it does, without a second copy of the enumeration.
+Computes the partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}, taking the inner
+derivatives as tables instead of fetching them from a distribution. Because
+the two functions are separate, a family whose derivatives are easiest in
+coordinates that it does not expose can carry them into the coordinates that
+it does expose, without a second copy of the enumeration.
 }
 \details{
-\code{\link[=enet_distrib]{enet_distrib()}} is the case the split was made for: its derivatives are
-compact in the two rates \eqn{(a, c)} and the family is parametrized by
-\eqn{(\lambda, \alpha)}, which is a bilinear map away. The same function
+\code{\link[=enet_distrib]{enet_distrib()}} is the case for which the split was made: its derivatives
+are compact in the two rates \eqn{(a, c)}, and the family is parametrized by
+\eqn{(\lambda, \alpha)}, which are related to \eqn{(a, c)} by a bilinear
+map. The same function
 also serves the location-scale cdf derivatives, whose inner coordinate is
 the standardized quantile.
 

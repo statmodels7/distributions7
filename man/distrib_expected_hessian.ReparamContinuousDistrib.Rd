@@ -19,8 +19,8 @@ reparam_expected_hessian(
 \arguments{
 \item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response, a numeric vector. Its length is what the result is
-recycled to; the values are read only where the parent's own expected
+\item{y}{The response, a numeric vector. The result is recycled to the
+length of \code{y}; the values are read only where the parent's own expected
 information reads them.}
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
@@ -36,13 +36,14 @@ does.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
-length of \code{y} recycled against \code{theta}, in that enumeration's order.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, in that
+enumeration's order. Each has the length of \code{y} after it is recycled
+against \code{theta}.
 }
 \description{
-The same chain rule as the observed Hessian, with the term in the parent's
-score dropped: expectation is linear and the map deterministic, and the
-score has mean zero, so
+Computes the expected information by the same chain rule as the observed
+Hessian, without the term in the parent's score. Expectation is linear, the
+map is deterministic, and the score has mean zero, so
 \deqn{E[\ell^{(ab)}] = \sum_{i,j} E[\ell^{(ij)}]
       \frac{\partial\theta_i}{\partial\psi_a}
       \frac{\partial\theta_j}{\partial\psi_b}.}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/truncated.R
 \name{parent_mass_at}
 \alias{parent_mass_at}
-\title{Probability the Parent Puts on a Single Point}
+\title{Probability that the Parent Puts on a Single Point}
 \usage{
 parent_mass_at(distrib, x, theta)
 }
@@ -10,7 +10,7 @@ parent_mass_at(distrib, x, theta)
 \item{distrib}{A truncated distribution object, of either class. Its class
 selects the branch, and the mass is read from \code{distrib@parent_distrib}.}
 
-\item{x}{A single number, the point to evaluate at.}
+\item{x}{A single number, the point at which to evaluate the mass.}
 
 \item{theta}{A named list of the parent's parameters.}
 }
@@ -26,8 +26,8 @@ is included in the truncated support, so the tail below the interval is
 \eqn{F(L^-) = F(L) - P(Y = L)}.
 }
 \details{
-The mass is read from the object through \code{\link[=distrib_atoms]{distrib_atoms()}} and is not decided
-by the object's class. The distribution function of
+The function reads the mass from the object through \code{\link[=distrib_atoms]{distrib_atoms()}} and
+does not depend on the object's class. The distribution function of
 \code{zero_adjusted(gamma2_distrib())} contains the point mass at zero, so
 \eqn{F(0) \ne F(0^-)} although the object is a \code{continuous_distrib}. A rule
 based on \code{discrete_distrib} would omit that mass from \eqn{Z} when such a
@@ -36,7 +36,7 @@ not integrate to one.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -44,23 +44,25 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 }
 
 \examples{
-# A discrete parent: the mass function.
+# For a discrete parent, the function returns the mass function.
 ztp <- truncated(poisson_distrib(), lower = 1)
 c(reported = distributions7:::parent_mass_at(ztp, 1, list(mu = 2)),
   dpois = dpois(1, 2))
 
-# A mixed parent: the atom, although the object is a continuous_distrib.
+# For a mixed parent, the function returns the atom, although the object is
+# a continuous_distrib.
 tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
 th <- list(mu = 2, sigma2 = 1, za = 0.3)
 distributions7:::parent_mass_at(tz, 0, th)
 
-# An ordinary continuous parent: zero, at every point.
+# For an ordinary continuous parent, the function returns zero at every
+# point.
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 theta <- list(mu = 0.3, sigma = 1.2)
 distributions7:::parent_mass_at(tn, 0, theta)
 }
 \seealso{
-\code{\link[=distrib_atoms]{distrib_atoms()}} for the declaration it reads, and
+\code{\link[=distrib_atoms]{distrib_atoms()}} for the declaration that it reads, and
 \code{\link[=trunc_constants]{trunc_constants()}} for its one caller.
 }
 \keyword{internal}

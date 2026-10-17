@@ -10,8 +10,8 @@ theta2_link_scale(distrib, y, theta, second, first)
 \item{distrib}{A distribution object. Its \code{link_params} supply \eqn{h'} and
 \eqn{h''} through \code{\link[=inverse_link_derivs]{inverse_link_derivs()}}.}
 
-\item{y}{The response. Unused, and present so that the signature reads like
-its callers'.}
+\item{y}{The response. It is unused and is present so that the signature
+matches that of the callers.}
 
 \item{theta}{A named list of parameters, on the parameter scale.}
 
@@ -32,15 +32,16 @@ call it after dispatch, so a method returns the parameter scale and contains
 no code for links.
 }
 \details{
-The chain rule is DIAGONAL, each parameter carrying its own link, so a pair
-\eqn{(i, j)} becomes
+The chain rule is DIAGONAL because each parameter carries its own link, so a
+pair \eqn{(i, j)} becomes
 \deqn{\frac{\partial^2}{\partial\eta_i \partial\eta_j}
   = h_i'(\eta_i)\, h_j'(\eta_j) \frac{\partial^2}{\partial\theta_i
     \partial\theta_j}
   + \delta_{ij}\, h_i''(\eta_i) \frac{\partial}{\partial\theta_i}.}
-The response derivatives do not enter: a reparametrization of \eqn{\theta}
-leaves them alone, which is why \code{first} and \code{second} are the SAME quantity
-at two orders in \eqn{\theta} and no third argument is needed.
+The response derivatives do not enter, because a reparametrization of
+\eqn{\theta} leaves them alone. For that reason \code{first} and \code{second} are the
+same quantity at two orders in \eqn{\theta}, and the function takes no third
+argument.
 }
 \section{Notation}{
 
@@ -55,7 +56,7 @@ d <- gaussian1_distrib()
 y <- c(-1, 0, 2)
 theta <- list(mu = 0.4, sigma = 1.3)
 
-# What the generic does with scale = "link".
+# The generic applies the same computation when scale = "link".
 second <- distrib_grad_y_hess(d, y, theta)
 first <- distrib_cross_y(d, y, theta)
 linked <- distributions7:::theta2_link_scale(d, y, theta, second, first)

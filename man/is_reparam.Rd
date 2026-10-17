@@ -13,10 +13,10 @@ is_reparam(distrib)
 A single logical.
 }
 \description{
-\code{TRUE} for either of the two wrapper classes, \code{\link[=ReparamContinuousDistrib]{ReparamContinuousDistrib()}}
-and \code{\link[=ReparamDiscreteDistrib]{ReparamDiscreteDistrib()}}, and \code{FALSE} for anything else. The test
-exists because the two classes have different parents, so no single
-\code{S7_inherits()} call answers it.
+Returns \code{TRUE} for either of the two wrapper classes,
+\code{\link[=ReparamContinuousDistrib]{ReparamContinuousDistrib()}} and \code{\link[=ReparamDiscreteDistrib]{ReparamDiscreteDistrib()}}, and \code{FALSE} for
+anything else. The test is needed because the two classes have different
+parents, and one \code{S7_inherits()} call cannot test both.
 }
 \examples{
 d <- reparametrize(

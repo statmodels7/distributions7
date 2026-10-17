@@ -21,7 +21,8 @@ A named list of three numeric vectors of length \code{length(y)}, keyed
 exactly zero.
 }
 \description{
-Closed form, and nearly all of it zero. The gaussian's response curvature is
+Computes the closed form, in which nearly every component is zero. The
+gaussian's response curvature is
 \eqn{-1/\sigma^2}, which carries no location at all, so
 \deqn{\frac{\partial^4\ell}{\partial y^2\partial\sigma^2}
     = -\frac{6}{\sigma^4}}
@@ -43,10 +44,10 @@ theta <- list(mu = 0.4, sigma = 1.3)
 h <- distrib_hess_y_hess(d, y, theta)
 h
 
-# One surviving component, constant along y.
+# One component survives, and it is constant along y.
 c(reported = h$sigma_sigma[1], formula = -6 / 1.3^4)
 
-# Against a numerical Hessian of the response curvature.
+# The result is compared with a numerical Hessian of the response curvature.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(f, c(0.4, 1.3))
 }

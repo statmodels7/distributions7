@@ -44,7 +44,8 @@ from \code{continuous_distrib} and from \code{distrib}. It carries \code{parent_
 beside the parent's properties, with \code{za} added last.
 }
 \description{
-The S7 class of a continuous distribution with a point mass at zero:
+This S7 class represents a continuous distribution with a point mass at
+zero:
 \deqn{P(Y = 0) = \pi, \qquad f_Y(y) = (1-\pi) f(y; \theta) \; (y \ne 0).}
 The result is a MIXED distribution, a density plus an atom, and it declares
 that atom through \code{\link[=distrib_atoms]{distrib_atoms()}}. \code{\link[=check_distrib]{check_distrib()}}, \code{\link[=truncated]{truncated()}} and
@@ -52,11 +53,11 @@ that atom through \code{\link[=distrib_atoms]{distrib_atoms()}}. \code{\link[=ch
 this class, which splits the integral at zero.
 }
 \details{
-No truncation is needed here. A continuous parent has \eqn{P(Y = 0) = 0}, so
-there is no mass to remove before placing the atom, and the density is
-simply scaled by \eqn{1-\pi}. That is the whole difference from
-\link{ZeroAdjustedDiscreteDistrib}, whose parent must be truncated away from the
-point it already occupies.
+Here the parent needs no truncation. A continuous parent has
+\eqn{P(Y = 0) = 0}, so the atom can be placed without removing any mass, and
+the density is simply scaled by \eqn{1-\pi}. That is the whole difference
+from \link{ZeroAdjustedDiscreteDistrib}, whose parent must be truncated away from
+the point that it already occupies.
 
 The likelihood factorizes completely: the mixed blocks of the Hessian are
 exactly zero, \eqn{\pi} is estimated by the proportion of zeros and
@@ -121,13 +122,13 @@ c(at_zero = distrib_pdf(d, 0, theta),
   elsewhere = distrib_pdf(d, 2, theta),
   scaled_parent = 0.7 * dnorm(2, 1, 2))
 
-# The density part integrates to 1 - pi, the atom carrying the rest.
+# The density part integrates to 1 - pi, and the atom carries the rest.
 integrate(function(z) ifelse(z == 0, 0, distrib_pdf(d, z, theta)),
           -Inf, Inf)$value
 }
 \seealso{
 \code{\link[=zero_adjusted]{zero_adjusted()}} to build one, \link{ZeroAdjustedDiscreteDistrib} for
 the discrete branch, \code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} for
-the atom it declares, and \code{\link[=folded]{folded()}}, which REJECTS a parent of this class
-for exactly that atom.
+the atom that it declares, and \code{\link[=folded]{folded()}}, which REJECTS a parent of this
+class for exactly that atom.
 }

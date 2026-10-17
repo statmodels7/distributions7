@@ -58,13 +58,13 @@ parent's parameter metadata; calling the class directly does none of that.
 \section{What truncation adds, and what it does not}{
 It adds NO parameter. The endpoints are known constants, like a binomial's
 \code{size}, so the truncated object carries exactly the parent's \code{params},
-\code{params_bounds} and \code{link_params}. What it adds is the
+\code{params_bounds} and \code{link_params}. It does add the
 \eqn{\theta}-dependent normalizing constant \eqn{Z}, and every derivative of
 \eqn{\ell_T = \ell - \log Z} carries its contribution.
 
-The support does not move with \eqn{\theta}. That is the condition under
-which \eqn{Z} may be differentiated under the integral sign, and it is what
-keeps truncation at fixed points a regular problem.
+The support does not move with \eqn{\theta}. This condition allows \eqn{Z}
+to be differentiated under the integral sign and keeps truncation at fixed
+points a regular problem.
 }
 
 \section{A mixed parent}{
@@ -82,7 +82,7 @@ serves both truncation classes.
 
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

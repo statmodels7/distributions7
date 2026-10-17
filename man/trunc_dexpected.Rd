@@ -18,7 +18,7 @@ trunc_logz_derivs(d, theta, order)
 
 \item{k}{The order, \code{1L} or \code{2L}.}
 
-\item{t}{Unused; the thread count of the registration.}
+\item{t}{Unused; it is the thread count of the registration.}
 
 \item{theta}{The parameters.}
 
@@ -35,20 +35,22 @@ expected Hessian of a \code{\link[=truncated]{truncated()}} family on the parame
 law taken by \code{\link[=expectation]{expectation()}}, as the expected Hessian itself is.
 }
 \details{
-With \eqn{\ell = \ell_P - \log Z} the truncated log-likelihood, \eqn{\ell_P}
-being the parent's, and \eqn{G = \ell_i \ell_j}, the second Bartlett identity
-gives \eqn{E[\ell_{ij}] = -E[G]}, and differentiating under the expectation,
+With \eqn{\ell = \ell_P - \log Z} the truncated log-likelihood (\eqn{\ell_P}
+is the parent's) and \eqn{G = \ell_i \ell_j}, the second Bartlett identity
+gives \eqn{E[\ell_{ij}] = -E[G]}. Differentiating under the expectation
+gives
 \deqn{\partial_c E[G] = E[G_c + G\ell_c],}
 \deqn{\partial_{cd} E[G] = E[G_{cd} + G_c\ell_d + G_d\ell_c +
   G(\ell_c\ell_d + \ell_{cd})],}
 with \eqn{G_c = \ell_{ic}\ell_j + \ell_i\ell_{jc}} and
 \eqn{G_{cd} = \ell_{icd}\ell_j + \ell_{ic}\ell_{jd} + \ell_{id}\ell_{jc} +
 \ell_i\ell_{jcd}}. The truncation points do not depend on the parameters,
-so no boundary term arises. The truncated derivatives are the parent's less
-those of \eqn{\log Z}, which do not depend on \eqn{y}: they are computed
-once per parameter combination by \code{trunc_logz_derivs()} and passed to the
-integrand, which reads only the parent's derivatives at the nodes.
-Registered through \code{\link[=register_dexpected]{register_dexpected()}}.
+so the differentiation does not produce a boundary term. The truncated
+derivatives are the parent's less those of \eqn{\log Z}, which do not depend
+on \eqn{y}: they are computed once per parameter combination by
+\code{trunc_logz_derivs()} and passed to the integrand, which reads only the
+parent's derivatives at the nodes. \code{trunc_dexpected()} is registered through
+\code{\link[=register_dexpected]{register_dexpected()}}.
 
 \code{trunc_logz_derivs()} returns the derivatives of \eqn{\log Z} to order
 \code{order}, keyed by \code{\link[=deriv_names]{deriv_names()}} at each order (the pairs as

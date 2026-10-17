@@ -18,7 +18,7 @@ A list with components \code{name} and \code{constants}, or \code{NULL}.
 Returns the route of a \code{\link[=folded]{folded()}} family, \code{"FoldedDistrib|<inner name>"}
 with the inner family's constants, or \code{NULL} when the parent has no route
 or is not a location-scale family on the real line (possibly with some
-parameters fixed by \code{\link[=fixed]{fixed()}}), the expected information's quadrature
-reading the parent's center and scale.
+parameters fixed by \code{\link[=fixed]{fixed()}}), because the quadrature of the expected
+information reads the parent's center and scale.
 }
 \keyword{internal}

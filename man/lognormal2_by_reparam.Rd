@@ -15,7 +15,7 @@ lognormal2_by_reparam(link_mean = log_link(), link_var = log_link())
 A reparametrized distribution object.
 }
 \description{
-The same family as \code{\link[=lognormal2_distrib]{lognormal2_distrib()}}, obtained through
+Returns the same family as \code{\link[=lognormal2_distrib]{lognormal2_distrib()}}, obtained through
 \code{\link[=reparametrize]{reparametrize()}} on \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} rather than written out.
 }
 \details{

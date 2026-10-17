@@ -23,12 +23,12 @@ A named list with one numeric vector per parameter, in
 }
 \description{
 Computes the first derivatives of the hurdle log-mass in closed form. The
-likelihood SEPARATES, so each parameter is informed by one half of the data
-only. For the parent's parameters the score is zero at a zero and the
+likelihood SEPARATES, so each parameter is informed only by one half of the
+data. For the parent's parameters the score is zero at a zero and the
 truncated score at a positive observation,
 \deqn{\frac{\partial \ell}{\partial \theta_i}
   = \mathbb{I}(y > 0)\left\{s_i(y) + \frac{f(0)}{1 - f(0)}\,s_i(0)\right\},}
-the second term being the derivative of the normalizing constant
+where the second term is the derivative of the normalizing constant
 \eqn{-\log\{1 - f(0)\}}. For the hurdle parameter,
 \deqn{\frac{\partial \ell}{\partial \pi}
   = \frac{\mathbb{I}(y = 0)}{\pi} - \frac{\mathbb{I}(y > 0)}{1 - \pi},}
@@ -50,15 +50,15 @@ y <- distrib_rng(d, 300, theta)
 g <- distrib_gradient(d, y, theta)
 vapply(g, sum, numeric(1))
 
-# Against a numerical derivative of the log-likelihood.
+# The scores are compared with a numerical derivative of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
 
-# A zero tells the parent's parameters nothing at all, the two halves of
-# the likelihood being separate.
+# A zero carries no information about the parent's parameters, because the
+# two halves of the likelihood are separate.
 unique(g$mu[y == 0])
 
 # And the za component is the Bernoulli score of the zero indicator, so it

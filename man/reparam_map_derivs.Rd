@@ -45,9 +45,10 @@ A list over parent parameters of keyed partial tables.
 \description{
 Each function returns, for its family's map \eqn{\theta = h(\psi)}, the
 non-zero partials \eqn{\partial^B \theta_i / \partial \psi_B} up to order
-\code{order}: a list over parent parameters, each a list keyed by the sorted
-tuple of \eqn{\psi} positions. A missing key is an exact zero. A partial of
-higher order than \code{order} is not formed. Every formula is derived by hand
-and validated against one numerical pass per order in the tests.
+\code{order}: a list over parent parameters, in which each entry is a list keyed
+by the sorted tuple of \eqn{\psi} positions. A missing key is an exact zero.
+A partial of higher order than \code{order} is not formed. Every formula is
+derived by hand and validated against one numerical pass per order in the
+tests.
 }
 \keyword{internal}

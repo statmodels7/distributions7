@@ -15,14 +15,14 @@ A parameter whose name is a prefix of \code{distrib} (the shape \code{d} of
 otherwise partial matching assigns the value to \code{distrib} and an error is
 signalled.}
 
-\item{...}{The fixed values, named after the parameters they fix, as in
+\item{...}{The fixed values, named after the parameters that they fix, as in
 \code{fixed(gaussian1_distrib(), mu = 0)}. Each must be a single finite number
 strictly inside its parameter's domain, and each name must be a parameter
 of \code{distrib}, or the stem of a vector parameter such as a multivariate
 mean, whose value is then one number for every coordinate or one number
 per coordinate. A name that is not, a value outside the domain, a value that
 is not a single number, and an empty \code{...} are each rejected with an error
-saying which condition failed.}
+that names the condition that failed.}
 }
 \value{
 An S7 object of class \link{FixedContinuousDistrib},
@@ -45,12 +45,13 @@ free part \eqn{\theta_F},
 \deqn{f_{\mathrm{fix}}(y; \theta_F) = f(y; \theta_F, c),
   \qquad \ell^{(i_1 \cdots i_k)}_{\mathrm{fix}} = \ell^{(i_1 \cdots i_k)},
   \quad i_1, \dots, i_k \in F.}
-\code{theta} carries only the free parameters, every generic answers as the
-parent does at the full vector, and a derivative is the parent's restricted
-to the free indices: a subvector of the score, a submatrix of the Hessian,
-sub-arrays at orders three and four. Nothing is recomputed, no normalizing
-constant changes, and \code{\link[=fit_distrib]{fit_distrib()}} estimates the free parameters with
-standard errors and intervals for them alone.
+\code{theta} carries only the free parameters, every generic returns what the
+parent returns at the full vector, and a derivative is the parent's
+restricted to the free indices: a subvector of the score, a submatrix of the
+Hessian, sub-arrays at orders three and four. The wrapper does not recompute
+anything and does not change the normalizing constant, and \code{\link[=fit_distrib]{fit_distrib()}}
+estimates the free parameters and reports standard errors and intervals only
+for those parameters.
 }
 
 \section{What is accepted}{
@@ -60,20 +61,20 @@ their parameter. A multivariate family's mean is the vector parameter
 coordinate at zero, and \code{mu = c(0, 1, 2)} holds each at its own value. The
 same holds for any parameter named as a stem followed by the indices
 \verb{1, ..., k}. Fixing a parameter of a distribution that is already a
-fixed-parameter wrapper collapses the two into one wrapper around the
+fixed-parameter wrapper COLLAPSES the two into one wrapper around the
 original parent. Fixing a WRAPPER's own parameter is allowed and useful:
 \code{fixed(zero_inflated(d), zi = 0.3)} is a zero-inflated model with a known
 inflation rate. Fixing every parameter is allowed too and gives a fully
-known distribution with an empty parameter set. Calling with no named value
-is an error: the result would be the parent unchanged, and returning it
-silently would hide a missing argument.
+known distribution with an empty parameter set. A call with no named value
+signals an error, because the result would be the parent unchanged and the
+missing argument would go unreported.
 }
 
-\section{What it is for}{
+\section{Purpose}{
 The wrapper builds priors. \code{fixed(gaussian1_distrib(), mu = 0)} is the ridge
-penalty with its scale free, \code{fixed(laplace2_distrib(), mu = 0)} is the
-lasso, and \code{fixed(mvgaussian1_distrib(p), mu = 0)} is what a random effect is
-distributed by. \code{fixed(folded(gaussian1_distrib()), mu = 0)} is the
+penalty with a free scale, \code{fixed(laplace2_distrib(), mu = 0)} is the
+lasso, and \code{fixed(mvgaussian1_distrib(p), mu = 0)} is the distribution of a
+random effect. \code{fixed(folded(gaussian1_distrib()), mu = 0)} is the
 half-normal.
 
 The per-parameter smoothness declaration travels with the free parameters,
@@ -90,10 +91,10 @@ parameters named.
 }
 
 \examples{
-# A multivariate gaussian with its whole mean held at zero.
+# This multivariate gaussian has its whole mean held at zero.
 fixed(mvgaussian1_distrib(3), mu = 0)@params
 
-# A gaussian with a known mean: only sigma remains.
+# Fixing the mean of a gaussian leaves only sigma as a free parameter.
 d <- fixed(gaussian1_distrib(), mu = 0)
 d@params
 theta <- list(sigma = 2)
@@ -104,7 +105,7 @@ full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1),
                          list(mu = 0, sigma = 2))
 all.equal(distrib_gradient(d, c(-1, 0, 1), theta)$sigma, full$sigma)
 
-# The lasso prior: a Laplace in its rate, centered at zero.
+# The lasso prior is a Laplace in its rate, centered at zero.
 lasso <- fixed(laplace2_distrib(), mu = 0)
 lasso@params
 b <- c(-1, 0.5, 2)
@@ -114,10 +115,10 @@ all.equal(-distrib_pdf(lasso, b, list(lambda = 2), log = TRUE),
 # A wrapper's own parameter can be held.
 fixed(zero_inflated(poisson_distrib()), zi = 0.3)@params
 
-# Two calls collapse into one wrapper, and fixing everything is legal.
+# Two calls collapse into one wrapper, and fixing every parameter is allowed.
 fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
 
-# Four errors, each naming the condition that failed.
+# The four errors below each name the condition that failed.
 try(fixed(gaussian1_distrib(), nope = 1))
 try(fixed(gaussian1_distrib(), sigma = -1))
 try(fixed(gaussian1_distrib(), mu = c(0, 1)))

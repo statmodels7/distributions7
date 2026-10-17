@@ -35,15 +35,15 @@ A named list of three numeric vectors, keyed as
 \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method bodies shared
-by the families that are location-scale in BOTH their parameters. Each one
-calls \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} at its own order and returns the three
-components in \code{\link[=hess_names]{hess_names()}}'s order, so neither derives anything of its
-own.
+Implements the \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method
+bodies shared by the families that are location-scale in BOTH their
+parameters. Each one calls \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} at its own order,
+returns the three components in \code{\link[=hess_names]{hess_names()}}'s order, and does not derive
+anything of its own.
 }
 \details{
-Registered on the logistic, Cauchy, Gumbel and Laplace. A family carrying a
-shape parameter beyond the two takes
+Both bodies are registered on the logistic, Cauchy, Gumbel and Laplace.
+A family carrying a shape parameter beyond the two takes
 \code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} instead, where the pairs touching that
 shape are differenced.
 
@@ -69,7 +69,7 @@ theta <- list(mu = 0.3, sigma = 1.2)
 g3 <- distrib_grad_y_hess(d, y, theta)
 vapply(g3, function(z) z[1], numeric(1))
 
-# Against a numerical Hessian of the response gradient.
+# The result is compared with a numerical Hessian of the response gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(f, c(0.3, 1.2))
 

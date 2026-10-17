@@ -39,7 +39,7 @@ corrections; the positive part contributes with probability \eqn{1 - L_0}
 and carries the parent's own expected Hessian, less what the zero would have
 contributed to it. The wrapper's own blocks do not depend on the data, so the
 returned vectors are constant when the parent's expected Hessian is, and \code{y}
-is then read for its length alone.
+is then used only for its length.
 }
 \details{
 The blocks of the wrapper are exact combinations of the parent's mass, score
@@ -68,11 +68,11 @@ y <- distrib_rng(d, 200, theta)
 EH <- distrib_expected_hessian(d, y, theta)
 vapply(EH, function(z) z[1], numeric(1))
 
-# Closed form, so two calls agree to the bit and nothing is sampled.
+# Closed form, so two calls agree to the bit and the method draws no samples.
 identical(EH, distrib_expected_hessian(d, y, theta))
 
-# It is what summing the observed Hessian against the mass function gives,
-# over the support taken far enough out.
+# The closed form equals the observed Hessian summed against the mass
+# function, over a support that extends far enough out.
 sup <- 0:400
 m <- distrib_pdf(d, sup, theta)
 Hs <- distrib_hessian(d, sup, theta)

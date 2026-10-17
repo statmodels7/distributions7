@@ -20,10 +20,10 @@ Builds the order-\code{k} derivative method for
 At \eqn{y > 0} the likelihood separates, \eqn{\log(1 - \zeta) + \ell(y)}, so a
 mixed index gives zero and the pure ones are immediate. At \eqn{y = 0} it is
 \eqn{\log L_0} with \eqn{L_0 = \zeta + (1-\zeta) f_0}, which is affine
-in \eqn{\zeta} -- so any block containing two or more \eqn{\zeta}'s
-contributes nothing, which is what keeps the partition sum small. Writing
+in \eqn{\zeta}. Any block containing two or more \eqn{\zeta}'s therefore
+contributes nothing, and this keeps the partition sum small. With
 \eqn{w_0 = (1-\zeta) f_0 / L_0}, the ratios are \eqn{w_0 (d^A f_0/f_0)} for a
-block of parameters alone, and \eqn{-f_0 (d^A f_0/f_0)/L_0} for a block
-carrying one \eqn{\zeta}.
+block that contains only parent parameters, and
+\eqn{-f_0 (d^A f_0/f_0)/L_0} for a block carrying one \eqn{\zeta}.
 }
 \keyword{internal}

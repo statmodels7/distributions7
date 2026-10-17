@@ -26,11 +26,12 @@ it returns for the parent.}
 }
 \value{
 A named list of numeric vectors of length \code{length(y)}, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}. Constant across observations
-when the parent's own expected information is, which is always true for a
-family reaching this method with the default \code{approx = "opg"} and a
-closed-form parent; a parent evaluated by an approximation can vary by
-observation, \code{h_orig_exp} being read at the actual \code{y} rather than at
+\code{\link[=hess_names]{hess_names(distrib@params)}}. The vectors are constant across
+observations when the parent's own expected information is constant, which
+is always true for a family that reaches this method with the default
+\code{approx = "opg"} and a closed-form parent. If the parent's expected
+information is evaluated by an approximation, the vectors can vary by
+observation, because \code{h_orig_exp} is read at the actual \code{y} rather than at
 zero.
 }
 \description{
@@ -38,14 +39,15 @@ Computes the expectation of the observed Hessian in closed form. The hurdle
 block is the negative of the Bernoulli information, \eqn{-1/\{\pi(1-\pi)\}},
 the mixed blocks are exactly zero, and the parent block is \eqn{(1-\pi)}
 times the truncated parent's own expected Hessian: a positive observation
-arrives with probability \eqn{1-\pi} and carries the whole of what
-\eqn{\theta} is estimated from. The components do not depend on the observed
+arrives with probability \eqn{1-\pi} and carries all of the information from
+which \eqn{\theta} is estimated. The components do not depend on the observed
 values, so each returned vector is constant whenever the parent's expected
 Hessian is.
 }
 \details{
-The block diagonal is why a hurdle model is cheap to fit: the two halves can
-be estimated independently, and the information matrix inverts blockwise.
+Because the information matrix is block diagonal, a hurdle model is cheap to
+fit: the two halves can be estimated independently, and the matrix inverts
+blockwise.
 \code{approx} and \code{nsim} are forwarded to the expected Hessian of the parent and
 are used only where the parent has no closed form. The remaining blocks are
 exact, and the whole expectation is exact when the parent's is.
@@ -70,7 +72,7 @@ vapply(EH, function(z) z[1], numeric(1))
 c(reported = EH$za_za[1], bernoulli = -1 / (0.4 * 0.6),
   mixed = EH$mu_za[1])
 
-# It is what summing the observed Hessian against the mass function gives.
+# The closed form equals the observed Hessian summed against the mass function.
 sup <- 0:400
 m <- distrib_pdf(d, sup, theta)
 Hs <- distrib_hessian(d, sup, theta)

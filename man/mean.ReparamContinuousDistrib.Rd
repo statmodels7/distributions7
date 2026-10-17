@@ -34,15 +34,15 @@ the parent has no closed form.}
 \value{
 A numeric vector: means for \code{mean()}, variances for \code{\link[=variance]{variance()}},
 and the standardized third and fourth moments for \code{\link[=skewness]{skewness()}} and
-\code{\link[=kurtosis]{kurtosis()}}, the excess in the last case. \code{NaN} or \code{Inf} wherever the
-parent's own method gives one.
+\code{\link[=kurtosis]{kurtosis()}}, the excess in the last case. An element is \code{NaN} or \code{Inf}
+wherever the parent's own method gives one.
 }
 \description{
 \code{mean()}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} all delegate to the
 parent at the mapped parameters. A reparametrization does not change the
-law, so it does not change a moment; what changes is the coordinates the
-moment is computed from. Delegating keeps the parent's closed forms, where
-falling through to the \code{distrib} default would run a quadrature.
+law, so it does not change a moment; it changes only the coordinates from
+which the moment is computed. Delegating keeps the parent's closed forms,
+where falling through to the \code{distrib} default would run a quadrature.
 }
 \examples{
 d <- reparametrize(
@@ -55,12 +55,12 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# The parent's closed forms, in the new coordinates.
+# The values are the parent's closed forms, in the new coordinates.
 c(mean(d, th), variance(d, th), skewness(d, th), kurtosis(d, th))
 
 }
 \seealso{
-\code{\link[=moment]{moment()}} for the numerical route the parent may take;
-\code{\link[=mean.distrib]{mean.distrib()}} for the default this replaces; \code{\link[=reparametrize]{reparametrize()}}.
+\code{\link[=moment]{moment()}} for the numerical route that the parent may take;
+\code{\link[=mean.distrib]{mean.distrib()}} for the default that this replaces; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

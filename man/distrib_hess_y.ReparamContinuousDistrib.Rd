@@ -16,9 +16,9 @@
 A numeric vector, the length of \code{y} recycled against \code{theta}.
 }
 \description{
-The parent's, unchanged, for the same reason as the first: a
-reparametrization moves the parameters and leaves the response where it was.
-Only the continuous class registers it.
+Returns the parent's second response derivative, unchanged, for the same
+reason as for the first: a reparametrization moves the parameters and leaves
+the response where it was. Only the continuous class registers it.
 }
 \examples{
 d <- reparametrize(
@@ -30,7 +30,8 @@ d <- reparametrize(
                sigma2 = linkfunctions7::log_link())
 )
 
-# A Gaussian's is -1/sigma^2, whatever the parametrization.
+# A Gaussian's second response derivative is -1/sigma^2, whatever the
+# parametrization.
 distrib_hess_y(d, c(0, 1, 2), list(mu = 1, sigma2 = 4))
 
 }

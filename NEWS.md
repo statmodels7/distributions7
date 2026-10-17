@@ -1,3 +1,21 @@
+# distributions7 0.80.1
+
+* Documentation, third part: the pages of the wrappers (`fixed()`,
+  `folded()`, `reparametrize()`, `transformation()`, `truncated()`,
+  `zero_inflated()`, `zero_adjusted()`) and of their derivative routes
+  rewritten without relative clauses lacking their pronoun, stranded
+  prepositions, absolute constructions, sentences without a verb (example
+  captions included) and personified descriptions of the code. The heading
+  "Writing your own" of `transformer()` reads "User-defined transformers".
+* Corrections in the same pages: the fallback of `distrib_grad_y_hess()` and
+  `distrib_hess_y_hess()` is `mixed_tensor_derivatives()`; the atoms of a
+  zero-adjusted continuous family are read by `check_distrib()` and
+  `truncated()`, not by `expectation()`; two wrong counts, of the callers of
+  `reparam_chain()` and of the methods that `za_y_deriv()` serves, are
+  removed.
+* The error messages of `fixed()` and `truncated()` for a missing argument,
+  and those of `fixed()` that list the parameters, are reworded.
+
 # distributions7 0.80.0
 
 * `distrib_hess_y_hess()` and `distrib_grad_y_hess()` of the multivariate

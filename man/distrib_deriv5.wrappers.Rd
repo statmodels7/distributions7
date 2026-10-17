@@ -44,9 +44,9 @@ on the scale requested, since their parameters and links are the parent's.
 The zero wrappers, the truncated and the folded families assemble the
 fifth derivative of \eqn{\log L} from the block ratios \eqn{d^B L / L} by
 the moment-to-cumulant relation over the 52 partitions of five indices,
-each ratio a complete Bell polynomial in the parent's derivatives to order
-five. A transformed family's fifth derivatives are the parent's at the
-preimage, and a fixed family's are the parent's at the full parameter
+where each ratio is a complete Bell polynomial in the parent's derivatives
+to order five. A transformed family's fifth derivatives are the parent's at
+the preimage, and a fixed family's are the parent's at the full parameter
 vector, subset to the free parameters. The result is analytic where the
 parent's fifth derivative is.
 

@@ -28,10 +28,10 @@ integration over the mixed density would miss the point mass entirely and
 return \eqn{(1-\pi)\mathbb{E}_W[f]}, silently.
 }
 \details{
-\code{f} receives the FULL \code{theta}, \code{za} included, even though the integral runs
+\code{f} receives the FULL \code{theta}, including \code{za}, even though the integral runs
 over the parent. The method re-attaches the atom probability inside a
-wrapper, so a caller's \code{f} sees the same parameter list at the atom and away
-from it.
+wrapper, so a caller's \code{f} receives the same parameter list at the atom and
+away from it.
 }
 \section{Notation}{
 
@@ -43,7 +43,7 @@ variable and \eqn{Y} the zero-adjusted one.
 d <- zero_adjusted(gaussian1_distrib())
 theta <- list(mu = 1, sigma = 2, za = 0.3)
 
-# The first two moments, against the split written out.
+# The first two moments are compared with the split written out.
 c(computed = expectation(d, function(y, theta) y, theta),
   theory = 0.7 * 1)
 c(computed = expectation(d, function(y, theta) y^2, theta),
@@ -60,7 +60,7 @@ expectation(gaussian1_distrib(), function(y, theta) y,
 }
 \seealso{
 \code{\link[=expectation]{expectation()}} for the generic,
-\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} for the declaration this
-rests on, and \code{\link[base:mean]{base::mean()}} and \code{\link[=variance]{variance()}}, the two moments built on
-it.
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} for the declaration on
+which this rests, and \code{\link[base:mean]{base::mean()}} and \code{\link[=variance]{variance()}}, the two moments
+built on it.
 }

@@ -18,13 +18,14 @@ A numeric vector as long as \code{y}.
 }
 \description{
 Returns \eqn{\partial\ell_T/\partial y}, which inside \eqn{[L, U]} is the
-PARENT's, \eqn{Z} not depending on \eqn{y}. Outside the interval the
-log-density is \eqn{-\infty} and no derivative exists, so \code{NaN} is returned
-where the finite-difference default would return a finite number.
+PARENT's because \eqn{Z} does not depend on \eqn{y}. Outside the interval
+the log-density is \eqn{-\infty} and the derivative does not exist, so \code{NaN}
+is returned where the finite-difference default would return a finite
+number.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

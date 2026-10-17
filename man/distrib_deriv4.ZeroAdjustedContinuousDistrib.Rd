@@ -7,7 +7,7 @@
 \item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
 \code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations, zero included.}
+\item{y}{A numeric vector of observations, which may include zero.}
 
 \item{theta}{A named list with the parent's parameters followed by \code{za}, the
 probability of the atom, in \eqn{(0, 1)}.}
@@ -24,15 +24,15 @@ each a numeric vector of length \code{length(y)}. A two-parameter parent gives
 fifteen.
 }
 \description{
-The same separation as at third order, one step along, and for the same
-reason: a continuous parent has no mass at zero, so no normalizing constant
-enters and the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)} away
-from the atom. The \eqn{\theta} components are the parent's fourth
-derivatives unchanged, the pure \code{za} component is that of
+The method separates the derivatives as at third order, one step along, and
+for the same reason: a continuous parent has no mass at zero, so the
+log-likelihood contains no normalizing constant and equals \eqn{\log(1 - \pi)
++ \ell(y;\theta)} away from the atom. The \eqn{\theta} components are the
+parent's fourth derivatives unchanged, the pure \code{za} component is that of
 \eqn{\log(1-\pi)}, and everything mixing the two is exactly zero.
 
-No partition sum is taken here, because the parameter components are the
-parent's own.
+The method does not take a partition sum, because the parameter components
+are the parent's own.
 }
 \examples{
 za <- zero_adjusted(gamma2_distrib())

@@ -15,7 +15,7 @@ reparam_tables(distrib, theta, order)
 \item{order}{The highest order of partial that the caller reads, an integer
 from 1 to 4: one for a gradient, a distribution function's gradient or a
 mixed response derivative, two for a Hessian or an expected information,
-and so on. No partial of higher order is formed.}
+and so on. Partials of higher order are not formed.}
 }
 \value{
 A list over the parent's parameters, each element a keyed list of
@@ -33,10 +33,10 @@ When the family supplies \code{map_derivs}, they are its hand-written closed
 forms; the shipped second parametrizations all do, and the formulas live in
 \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}. Otherwise each needed partial comes from one
 finite-difference stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} applied to the
-analytic map, a single stencil per order and never a chain of differences,
-at the accuracy that construction carries: close to the stencil's own at
-first order and falling quickly with the order. Exact tables are therefore
-required for derivatives of order three and above.
+analytic map, a single stencil per order and never a chain of differences.
+The accuracy of this construction is close to the stencil's own at first
+order and falls quickly with the order. Derivatives of order three and above
+therefore need exact tables.
 }
 
 \seealso{

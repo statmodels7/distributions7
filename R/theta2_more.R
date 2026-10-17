@@ -23,21 +23,22 @@ NULL
 #' Builds the [distrib_cross2_y()], [distrib_grad_y_hess()] and
 #' [distrib_hess_y_hess()] method bodies for a family that carries its own
 #' class and kernels while its map onto a parent is tabulated. Each body is the
-#' chain rule of [mapped_cross2_y()] or [mapped_theta2()] with the parent, the
-#' map and the partial tables closed over, so no new algebra is involved.
+#' chain rule of [mapped_cross2_y()] or [mapped_theta2()] in which the parent,
+#' the map and the partial tables are closed over, so the bodies need no new
+#' algebra.
 #'
 #' @details
-#' The families it serves have their own classes and their own compiled
-#' kernels, so they are NOT `ReparamContinuousDistrib` and do not inherit its
-#' methods; what they share with it is the map, which `reparam_maps.R` already
-#' tabulates. Registered on `gaussian2`, `gaussian3`, `laplace2` and
-#' `invgauss2`.
+#' The families to which these bodies apply have their own classes and their
+#' own compiled kernels. They are therefore NOT `ReparamContinuousDistrib` and
+#' do not inherit its methods. They share the map with it, and `reparam_maps.R`
+#' already tabulates that map. The bodies are registered on `gaussian2`,
+#' `gaussian3`, `laplace2` and `invgauss2`.
 #'
 #' The parent of `invgauss2`, `invgauss1`, carries the three quantities in
 #' closed form: with \eqn{\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)}
 #' and \eqn{\ell^{(yy)} = 3/(2y^2) - 1/(\phi y^3)}, every mixed derivative in
 #' \eqn{(\mu, \phi)} is a monomial, and the map carries them to
-#' \eqn{(\mu, \lambda)} with no difference taken.
+#' \eqn{(\mu, \lambda)} without taking a difference.
 #'
 #' @param parent The parent distribution, built once and closed over.
 #' @param th_par A function of the new parameters returning the parent's, as a
@@ -56,7 +57,7 @@ NULL
 #'
 #' @seealso [mapped_theta2()] and [mapped_cross2_y()], which do the work,
 #'   [reparam_map_derivs()] for the tables, and [scale_only_theta2_methods()]
-#'   for the other shape this file covers.
+#'   for the other shape that this file covers.
 #'
 #' @aliases distrib_cross2_y.Gaussian2Distrib
 #'   distrib_grad_y_hess.Gaussian2Distrib distrib_hess_y_hess.Gaussian2Distrib
@@ -78,8 +79,8 @@ NULL
 #' g3 <- distrib_grad_y_hess(d, y, theta)
 #' vapply(g3, function(z) z[1], numeric(1))
 #'
-#' # Against a numerical Hessian of the response gradient in the family's own
-#' # parameters, which shares none of the map's arithmetic.
+#' # The result is compared with a numerical Hessian of the response gradient
+#' # in the family's own parameters, which does not use the map's arithmetic.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 #' numDeriv::hessian(f, c(0.3, 1.44))
 #'
@@ -126,9 +127,9 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
 #'   \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
 #'   = \frac{z^2B'' + 6zB' + 6B}{\sigma^4},}
 #' and the primed quantities are the family's own third and fourth response
-#' derivatives times a power of \eqn{\sigma}, so no further differentiation is
-#' needed. A parameter beyond the scale is a shape and is not covered;
-#' [scale_only_theta2_methods()] differences those.
+#' derivatives times a power of \eqn{\sigma}, so the formulas do not need
+#' further differentiation. A parameter beyond the scale is a shape and is not
+#' covered; [scale_only_theta2_methods()] differences those.
 #'
 #' @param distrib An object inheriting from class `distrib`, with a scale and
 #'   no location.
@@ -139,8 +140,8 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
 #' @param at The index of the scale parameter in `distrib@params`. The default
 #'   is `1`.
 #'
-#' @return A numeric vector as long as `y`: the scale's own pair alone, not a
-#'   list.
+#' @return A numeric vector as long as `y` that contains only the scale's own
+#'   pair, not a list.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
@@ -162,7 +163,7 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
 #'
 #' distributions7:::scale_only_theta2(d, y, theta, 1L, 1L)
 #'
-#' # The identity written out.
+#' # The identity is written out.
 #' s <- 1.5
 #' z <- y / s
 #' A <- s * distrib_grad_y(d, y, theta)
@@ -170,7 +171,7 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
 #' A2 <- s^3 * distrib_deriv3_y(d, y, theta)
 #' (z^2 * A2 + 4 * z * A1 + 2 * A) / s^3
 #'
-#' # And what the family's own method reports.
+#' # The family's own method returns the same value.
 #' distrib_grad_y_hess(d, y, theta)$mu_mu
 scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
   s <- theta[[at]]
@@ -198,16 +199,16 @@ scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
 #' @description
 #' Builds the [distrib_grad_y_hess()] and [distrib_hess_y_hess()] method bodies
 #' for a family with a scale and no location: the scale's own pair comes from
-#' [scale_only_theta2()] in closed form, and every pair touching a shape
-#' parameter from one central difference of the first-order component through
-#' [numerical_theta2_y()]. In the fourth-order body that component, from
+#' [scale_only_theta2()] in closed form, and every pair that involves a shape
+#' parameter comes from one central difference of the first-order component
+#' through [numerical_theta2_y()]. In the fourth-order body that component, from
 #' [distrib_cross2_y()], is itself differenced for the shape parameter.
 #'
 #' @details
-#' A one-parameter family returns the closed component alone and never
-#' differences anything. Registered on the exponential, which is that case, and
-#' on the Weibull, whose second parameter is a shape. The generalized Pareto has
-#' compiled methods of its own.
+#' A one-parameter family returns only the closed component and differences
+#' nothing. The bodies are registered on the exponential, which is that case,
+#' and on the Weibull, whose second parameter is a shape. The generalized Pareto
+#' has compiled methods of its own.
 #'
 #' @param at The index of the scale parameter in `distrib@params`. The default
 #'   is `1`.
@@ -234,18 +235,19 @@ scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
 #' @examples
 #' y <- c(0.4, 1.1, 2.3)
 #'
-#' # One parameter: the closed component alone, nothing differenced.
+#' # For one parameter, the method returns only the closed component.
 #' d <- exponential_distrib()
 #' distrib_grad_y_hess(d, y, list(mu = 1.5))
 #'
-#' # Two: the scale pair closed, the two touching the shape differenced.
+#' # For two parameters, the scale pair is closed and the two pairs that
+#' # involve the shape are differenced.
 #' dw <- weibull1_distrib()
 #' theta <- list(mu = 1.5, sigma = 1.3)
 #' g <- distrib_grad_y_hess(dw, y, theta)
 #' names(g)
 #' vapply(g, function(z) z[1], numeric(1))
 #'
-#' # Against a numerical Hessian of the response gradient.
+#' # The result is compared with a numerical Hessian of the response gradient.
 #' f <- function(v) distrib_grad_y(dw, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::hessian(f, c(1.5, 1.3))
 #'
@@ -277,16 +279,16 @@ scale_only_theta2_methods <- function(at = 1L) {
 #'
 #' @description
 #' Builds the [distrib_cross2_y()] method body for a family with a scale and no
-#' location. The scale's component is the identity
+#' location. The scale's component is the identity that
 #' [loc_scale_cross2_block()] uses, read at \eqn{z = y/\sigma}:
 #' \eqn{-(zB' + 2B)/\sigma^3} with \eqn{B = \sigma^2\ell^{(yy)}} and
 #' \eqn{B' = \sigma^3\ell^{(yyy)}}. Any shape component is differenced through
 #' [numerical_cross2_y()].
 #'
 #' @details
-#' A one-parameter family returns the closed component alone. Registered on the
-#' exponential and the Weibull; the generalized Pareto has a compiled method of
-#' its own.
+#' A one-parameter family returns only the closed component. The body is
+#' registered on the exponential and the Weibull; the generalized Pareto has a
+#' compiled method of its own.
 #'
 #' @param at The index of the scale parameter in `distrib@params`. The default
 #'   is `1`.
@@ -312,16 +314,18 @@ scale_only_theta2_methods <- function(at = 1L) {
 #' @examples
 #' y <- c(0.4, 1.1, 2.3)
 #'
-#' # The Weibull: a scale and a shape.
+#' # The Weibull has a scale and a shape.
 #' d <- weibull1_distrib()
 #' theta <- list(mu = 1.5, sigma = 1.3)
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #'
-#' # Against a numerical derivative of the response Hessian.
+#' # The result is compared with a numerical derivative of the response
+#' # Hessian.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::grad(f, c(1.5, 1.3))
 #'
-#' # The exponential has one parameter, so nothing is differenced.
+#' # The exponential has one parameter, so the method does not difference
+#' # anything.
 #' distrib_cross2_y(exponential_distrib(), y, list(mu = 1.5))
 scale_only_cross2_method <- function(at = 1L) {
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -447,8 +451,8 @@ rm(.s)
 #' Computes the gaussian's components at \eqn{t = \log y}, carried by the
 #' Jacobian of the transformation. It serves all three of the lognormal's mixed
 #' methods, [distrib_cross2_y()], [distrib_grad_y_hess()] and
-#' [distrib_hess_y_hess()], with `order` selecting the response derivative and
-#' `second` the order in \eqn{\theta}.
+#' [distrib_hess_y_hess()], where `order` selects the response derivative and
+#' `second` selects the order in \eqn{\theta}.
 #'
 #' @details
 #' # Why theta passes through untouched
@@ -458,7 +462,8 @@ rm(.s)
 #' transformation carries NO parameter, so \eqn{t} does not move with
 #' \eqn{\theta} and every \eqn{\theta}-derivative is the gaussian's own at
 #' \eqn{t}. The parent is `gaussian2`, which carries the same
-#' \eqn{(\mu, \sigma^2)} the lognormal does, so `theta` needs no map at all.
+#' \eqn{(\mu, \sigma^2)} that the lognormal carries, so `theta` needs no map at
+#' all.
 #'
 #' # What the Jacobian does carry
 #'
@@ -489,8 +494,8 @@ rm(.s)
 #' prime denotes a derivative in \eqn{t}.
 #'
 #' @seealso [distrib_cross2_y.Lognormal1Distrib()], the three methods that it
-#'   serves, and [mapped_theta2()], the route a family whose transformation DOES
-#'   carry a parameter takes instead.
+#'   serves, and [mapped_theta2()], the route taken instead by a family whose
+#'   transformation carries a parameter.
 #'
 #' @keywords internal
 #'
@@ -501,7 +506,7 @@ rm(.s)
 #'
 #' distributions7:::lognormal_theta_chain(y, theta, 2L, FALSE)
 #'
-#' # Which is what the family's distrib_cross2_y reports.
+#' # The family's distrib_cross2_y returns the same value.
 #' distrib_cross2_y(d, y, theta)
 #'
 #' # And it is the gaussian's own component at t = log y, over y^2.
@@ -561,11 +566,12 @@ lognormal_theta_chain <- function(y, theta, order, second) {
 #'
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #'
-#' # Against a numerical derivative of the response Hessian.
+#' # The result is compared with a numerical derivative of the response
+#' # Hessian.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 #' numDeriv::grad(f, c(0.2, 0.6))
 #'
-#' # The second order in theta, and its numerical Hessian.
+#' # The second order in theta is compared with its numerical Hessian.
 #' g3 <- distrib_grad_y_hess(d, y, theta)
 #' vapply(g3, function(z) z[1], numeric(1))
 #' h <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))

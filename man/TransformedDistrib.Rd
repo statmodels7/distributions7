@@ -47,14 +47,16 @@ An S7 object of class \code{TransformedDistrib}, inheriting from
 \code{transformer} beside the parent's properties. For an object built by
 \code{\link[=transformation]{transformation()}}, \code{params}, \code{params_bounds} and \code{link_params} are the
 parent's unchanged; \code{bounds} is the transformer's image of the parent's;
-\code{params_interpretation} is the parent's with the parent's name appended in
-brackets, since a mean on the transformed scale is not the parent's mean;
-and \code{distrib_name} is \code{"g(parent)"} or whatever \code{new_name} said.
+\code{params_interpretation} is the parent's, and the parent's name is appended
+in brackets because a mean on the transformed scale is not the parent's
+mean;
+and \code{distrib_name} is \code{"g(parent)"}, or the value of \code{new_name} if that
+argument is given.
 }
 \description{
-The S7 class of the distribution of \eqn{Y = g(X)}, where \eqn{X} follows a
-wrapped continuous distribution and \eqn{g} is a BIJECTIVE \code{\link[=transformer]{transformer()}}.
-Its density is the change-of-variables formula
+\code{TransformedDistrib} is the S7 class of the distribution of \eqn{Y = g(X)},
+where \eqn{X} follows a wrapped continuous distribution and \eqn{g} is a
+BIJECTIVE \code{\link[=transformer]{transformer()}}. Its density is the change-of-variables formula
 \deqn{f_Y(y) = f_X(g^{-1}(y))\,\lvert J(y)\rvert,
   \qquad J(y) = \frac{d}{dy}g^{-1}(y),}
 and it carries exactly the parent's parameters: the transformation adds none
@@ -125,7 +127,7 @@ all.equal(distrib_pdf(d, y, theta),
           distrib_pdf(lognormal1_distrib(), y,
                       list(mu = 0.5, sigma2 = 0.8^2)))
 
-# The interpretation says which scale a parameter lives on.
+# The interpretation records the scale on which each parameter is defined.
 d@params_interpretation
 }
 \seealso{

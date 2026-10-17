@@ -22,9 +22,10 @@ lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's p
 numeric vector of length \code{length(y)}. A two-parameter parent gives five.
 }
 \description{
-The third-order construction one step along: \eqn{\ell_T = \ell - \log Z},
+The method extends the third-order construction by one order:
+\eqn{\ell_T = \ell - \log Z},
 and \eqn{d^I \log Z} comes from the moment-to-cumulant expansion over the
-fifteen partitions of four indices, each block an expectation
+fifteen partitions of four indices, where each block is an expectation
 \eqn{\mathbb{E}_T[\partial^B f / f]} under the truncated law.
 
 The cost is set by the number of distinct blocks: a block that occurs in
@@ -44,5 +45,5 @@ round(unlist(distrib_deriv4(tr, 1, th)), 5)
 \seealso{
 \code{\link[=truncated]{truncated()}} for the wrapper;
 \code{\link[=distrib_deriv3.TruncatedContinuousDistrib]{distrib_deriv3.TruncatedContinuousDistrib()}} for the order below;
-\code{\link[=log_deriv]{log_deriv()}}, the partition sum both orders use.
+\code{\link[=log_deriv]{log_deriv()}}, the partition sum that both orders use.
 }

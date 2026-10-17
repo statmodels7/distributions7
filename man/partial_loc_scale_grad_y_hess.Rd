@@ -48,20 +48,21 @@ A named list with one numeric vector per unordered pair of
 parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method bodies for a
-family carrying shape parameters beyond its location and scale. The three
-pairs in \eqn{(\mu, \sigma)} come from \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} in closed
-form, and every pair touching a shape parameter from one central difference
-of the first-order component, \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the third-order body
-and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the fourth. In the fourth-order body a pair of
+Implements the \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method
+bodies for a family carrying shape parameters beyond its location and scale.
+The three pairs in \eqn{(\mu, \sigma)} come from \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}
+in closed form, and every pair that touches a shape parameter comes from one
+central difference of the first-order component, which is
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the third-order body and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for
+the fourth. In the fourth-order body a pair of
 shape parameters is one stencil on the analytic \code{\link[=distrib_hess_y]{distrib_hess_y()}}, since the
 shape components of \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} are themselves a difference in the
 shape. Both delegate to \code{\link[=partial_theta2]{partial_theta2()}}, which does the splicing.
 }
 \details{
-Registered on the two pseudo-Huber parametrizations, the skew normal and the
-skew t. The Student t's methods, documented on this page as well, call
-compiled kernels of their own and do not use these bodies.
+Both bodies are registered on the two pseudo-Huber parametrizations, the
+skew normal and the skew t. The Student t's methods, documented on this page
+as well, call compiled kernels of their own and do not use these bodies.
 }
 \section{Notation}{
 
@@ -81,8 +82,9 @@ g3 <- distrib_grad_y_hess(d, y, theta)
 names(g3)
 vapply(g3, function(z) z[1], numeric(1))
 
-# Against a numerical Hessian of the response gradient. The three pairs in
-# (mu, sigma) are closed and the three touching alpha are differenced.
+# The result is compared with a numerical Hessian of the response gradient.
+# The three pairs in (mu, sigma) are closed and the three touching alpha are
+# differenced.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2],
                                               alpha = v[3]))
 numDeriv::hessian(f, c(0.3, 1.2, 0.7))

@@ -22,17 +22,18 @@ A named list with one numeric vector per parameter, in
 }
 \description{
 Computes the first derivatives of the mixed log-density in closed form. The
-likelihood separates COMPLETELY here, with no truncation term to correct
-for: the parent's parameters take the parent's own score at a non-zero
-observation and zero at the atom, and
+likelihood separates COMPLETELY here and has no truncation term that needs
+a correction: the parent's parameters take the parent's own score at a
+non-zero observation and zero at the atom, and
 \deqn{\frac{\partial \ell}{\partial \pi}
   = \frac{\mathbb{I}(y = 0)}{\pi} - \frac{\mathbb{I}(y \ne 0)}{1 - \pi},}
 the Bernoulli score of the indicator that the observation is zero.
 }
 \details{
 Compare the discrete branch, whose parent block carries the truncation
-correction \eqn{f(0)s(0)/\{1 - f(0)\}}. There is none here because a
-continuous parent places no mass at zero, so nothing is removed from it.
+correction \eqn{f(0)s(0)/\{1 - f(0)\}}. This branch has no such correction
+because a continuous parent places no mass at zero, so the method removes
+nothing from it.
 }
 \section{Notation}{
 
@@ -50,7 +51,7 @@ y <- distrib_rng(d, 300, theta)
 g <- distrib_gradient(d, y, theta)
 vapply(g, sum, numeric(1))
 
-# Against a numerical derivative of the log-likelihood.
+# The sums are compared with a numerical derivative of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -63,7 +64,7 @@ c(mixed = g$mu[nz],
   parent = distrib_gradient(gaussian1_distrib(), y[nz],
                             theta[c("mu", "sigma")])$mu)
 
-# And an observation at the atom says nothing about the parent.
+# And an observation at the atom carries no information about the parent.
 unique(g$mu[y == 0])
 }
 \seealso{

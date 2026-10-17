@@ -30,7 +30,7 @@ score mean zero, which the parent's own score does not have here.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -45,7 +45,8 @@ y <- c(-0.5, 0, 1)
 g <- distrib_gradient(tn, y, theta)
 vapply(g, sum, numeric(1))
 
-# Against a numerical derivative of the truncated log-likelihood.
+# The gradient is compared with a numerical derivative of the truncated
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- tn@params
   sum(distrib_pdf(tn, y, t2, log = TRUE))

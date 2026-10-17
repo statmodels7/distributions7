@@ -24,33 +24,33 @@ reparam_deriv4(
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{expected}{Should the expected derivatives be carried? A single logical,
-\code{FALSE} by default.}
+\item{expected}{Should the expected derivatives be carried? It is a single
+logical, \code{FALSE} by default.}
 
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic after this method has returned.}
 
 \item{approx}{The strategy that the parent uses for an expected derivative
-for which it has no closed form, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}.
-Passed straight through.}
+for which it has no closed form, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}. The value is passed straight through.}
 
 \item{nsim}{The number of draws for \code{approx = "mc"}, 10000 by default.
-Passed through.}
+The value is passed through.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list of numeric vectors keyed as
-\code{\link[=deriv_names]{deriv_names(distrib@params, 4)}}, each the length of \code{y}
-recycled against \code{theta}.
+\code{\link[=deriv_names]{deriv_names(distrib@params, 4)}}. Each has the length of
+\code{y} after it is recycled against \code{theta}.
 }
 \description{
-The partition sum at order four, observed or expected. A marginal criterion
-reads this order in its exact Hessian, so a reparametrized family used inside
-a penalized fit reaches it through this method. The fifth derivative has no
-method registered on the reparametrized classes: \code{\link[=distrib_deriv5]{distrib_deriv5()}}
-dispatches to the base method, which differences the lower orders
-numerically.
+Computes the partition sum at order four, observed or expected. A marginal
+criterion reads this order in its exact Hessian, so a reparametrized family
+used inside a penalized fit reaches it through this method. The fifth
+derivative has no method registered on the reparametrized classes:
+\code{\link[=distrib_deriv5]{distrib_deriv5()}} dispatches to the base method, which differences the lower
+orders numerically.
 }
 \examples{
 d <- reparametrize(
@@ -63,7 +63,7 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# Five components for a two-parameter family.
+# The result has five components for a two-parameter family.
 names(distrib_deriv4(d, c(0, 1, 2), th))
 
 }

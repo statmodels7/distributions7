@@ -42,8 +42,8 @@ functions \code{s}, \code{H}, \code{T} returning the score, Hessian and third
 derivatives at zero.}
 
 \item{i, j, c, d}{The indices of one entry: the pair \eqn{(i,j)} and the
-pair \eqn{(c,d)} differentiated, the parent's parameters first and the
-probability last.}
+pair \eqn{(c,d)} differentiated. The parent's parameters come first and
+the probability last.}
 }
 \value{
 A named list keyed as \code{\link[=d2expected_names]{d2expected_names()}}, each component of

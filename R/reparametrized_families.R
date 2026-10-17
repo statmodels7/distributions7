@@ -16,7 +16,7 @@ NULL
 #' Lognormal Distribution in the Mean and Variance of Y, Obtained
 #'
 #' @description
-#' The same family as [lognormal2_distrib()], obtained through
+#' Returns the same family as [lognormal2_distrib()], obtained through
 #' [reparametrize()] on [lognormal1_distrib()] rather than written out.
 #'
 #' @details
@@ -52,7 +52,7 @@ lognormal2_by_reparam <- function(link_mean = log_link(), link_var = log_link())
 #' Weibull Distribution in the Mean, Obtained
 #'
 #' @description
-#' The same family as [weibull3_distrib()], obtained through
+#' Returns the same family as [weibull3_distrib()], obtained through
 #' [reparametrize()] on [weibull1_distrib()] rather than written out.
 #'
 #' @details
@@ -87,7 +87,7 @@ weibull3_by_reparam <- function(link_mean = log_link(), link_sigma = log_link())
 #' Student t Distribution in the Standard Deviation, Obtained
 #'
 #' @description
-#' The same family as [student_t2_distrib()], obtained through
+#' Returns the same family as [student_t2_distrib()], obtained through
 #' [reparametrize()] on [student_t1_distrib()] rather than written out.
 #'
 #' @details
@@ -130,7 +130,7 @@ student_t2_by_reparam <- function(link_mu = identity_link(),
 #' Generalized Gamma Distribution in the Mean, Obtained
 #'
 #' @description
-#' The same family as [gengamma2_distrib()], obtained through
+#' Returns the same family as [gengamma2_distrib()], obtained through
 #' [reparametrize()] on [gengamma1_distrib()] rather than written out.
 #'
 #' @details
@@ -168,7 +168,7 @@ gengamma2_by_reparam <- function(link_mean = log_link(), link_d = log_link(),
 #' Inverse Gaussian Distribution in the Mean and Shape, Obtained
 #'
 #' @description
-#' The same family as [invgauss2_distrib()], obtained through
+#' Returns the same family as [invgauss2_distrib()], obtained through
 #' [reparametrize()] rather than written out.
 #'
 #' @details

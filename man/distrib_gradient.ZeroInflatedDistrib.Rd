@@ -36,7 +36,7 @@ and for the inflation parameter
 A positive observation carries no information about \eqn{\zeta} beyond the
 \eqn{(1-\zeta)} factor, which is why its \eqn{\zeta} component is the same
 number at every such point. A zero carries all of it, and its weight
-\eqn{w} is what shares the credit between the two mechanisms.
+\eqn{w} shares the credit between the two mechanisms.
 }
 \section{Notation}{
 
@@ -56,7 +56,7 @@ y <- distrib_rng(d, 200, theta)
 g <- distrib_gradient(d, y, theta)
 vapply(g, sum, numeric(1))
 
-# Against a numerical derivative of the log-likelihood.
+# The sums are compared with a numerical derivative of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

@@ -7,13 +7,13 @@
 \item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
 \code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations, zero included.}
+\item{y}{A numeric vector of observations, which may include zero.}
 
 \item{theta}{A named list with the parent's parameters followed by \code{za}, the
 probability of the atom, in \eqn{(0, 1)}.}
 
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation over the
-mixed law, atom included.}
+mixed law, which includes the atom.}
 
 \item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
@@ -24,8 +24,8 @@ each a numeric vector of length \code{length(y)}. A two-parameter parent gives
 ten.
 }
 \description{
-A continuous parent puts no mass at zero, so there is nothing to
-truncate away and no normalizing constant to differentiate. Away from the
+A continuous parent puts no mass at zero, so the method truncates nothing
+and differentiates no normalizing constant. Away from the
 atom the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)}: the
 \eqn{\theta} derivatives are the parent's unchanged, and every component
 mixing \code{za} with a parent parameter is exactly zero.

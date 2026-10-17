@@ -19,20 +19,21 @@ parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 Computes \eqn{\mathbb{E}_T[s_i s_j]} for every unordered pair of parameters,
 by quadrature. Two consumers need it: \code{\link[=trunc_M]{trunc_M()}} adds it to
 \code{\link[=trunc_hess_mean]{trunc_hess_mean()}} where the cdf route is unavailable, and
-\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} uses it for a parent without a scalar route, the
-expected Hessian being \eqn{-\mathrm{Cov}_T(s_i, s_j)}. For a parent with a
-scalar route, the sums \eqn{S_{ij}} come from \code{\link[=trunc_route_parts]{trunc_route_parts()}}.
+\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} uses it for a parent without a scalar route,
+because the expected Hessian is \eqn{-\mathrm{Cov}_T(s_i, s_j)}. For a
+parent with a scalar route, the sums \eqn{S_{ij}} come from
+\code{\link[=trunc_route_parts]{trunc_route_parts()}}.
 }
 \details{
-This is the quantity that keeps a truncated expected information expensive
-even for a parent with closed-form cdf derivatives. Those give
+This quantity keeps a truncated expected information expensive even for a
+parent with closed-form cdf derivatives. Those give
 \eqn{d_{ij} Z}, which is \eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]},
-and no rearrangement separates the two terms; the covariance needs the
-second alone.
+and the two terms cannot be separated by rearrangement; the covariance needs
+only the second.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -46,7 +47,7 @@ theta <- list(mu = 0.3, sigma = 1.2)
 ES <- distributions7:::trunc_score_prod_mean(tn, theta)
 unlist(ES)
 
-# Against the same expectation taken by simulation.
+# The result is compared with the same expectation taken by simulation.
 set.seed(1)
 ys <- distrib_rng(tn, 100000, theta)
 g <- distrib_gradient(gaussian1_distrib(), ys, theta)

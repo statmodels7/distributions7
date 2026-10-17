@@ -26,9 +26,9 @@ NULL
 #' The zero wrappers, the truncated and the folded families assemble the
 #' fifth derivative of \eqn{\log L} from the block ratios \eqn{d^B L / L} by
 #' the moment-to-cumulant relation over the 52 partitions of five indices,
-#' each ratio a complete Bell polynomial in the parent's derivatives to order
-#' five. A transformed family's fifth derivatives are the parent's at the
-#' preimage, and a fixed family's are the parent's at the full parameter
+#' where each ratio is a complete Bell polynomial in the parent's derivatives
+#' to order five. A transformed family's fifth derivatives are the parent's at
+#' the preimage, and a fixed family's are the parent's at the full parameter
 #' vector, subset to the free parameters. The result is analytic where the
 #' parent's fifth derivative is.
 #'
@@ -71,11 +71,11 @@ wrapper_deriv5_method <- function(builder) {
 #' Is a Family's Fifth Derivative Analytic?
 #'
 #' @description
-#' `TRUE` where the [distrib_deriv5()] method that dispatches is registered on
-#' a class other than the base class, whose method is the stencil of
-#' [numerical_deriv5()]. A wrapper registered in this file answers for the
-#' family it wraps, since its fifth derivative is analytic exactly when that
-#' family's is.
+#' Returns `TRUE` where the [distrib_deriv5()] method that dispatches is
+#' registered on a class other than the base class, whose method is the stencil
+#' of [numerical_deriv5()]. For a wrapper registered in this file, the result is
+#' that of the family that the wrapper wraps, since the wrapper's fifth
+#' derivative is analytic exactly when that family's is.
 #'
 #' @param x A distribution object.
 #'

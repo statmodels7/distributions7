@@ -32,16 +32,16 @@ Computes
   {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),}
 the covariance of the PARENT's score under the truncated law. This is the
 second Bartlett identity for the truncated model: the parent's expected
-Hessian cancels exactly against the term it contributes to the second
+Hessian cancels exactly against the term that it contributes to the second
 derivative of \eqn{\log Z}.
 }
 \details{
 The cdf derivatives of the parent give only
-\eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]}, not the second term
-alone, so the expected Hessian reads separately computed sums of \eqn{s_i
-  s_j}. For a parent with a scalar route, \code{trunc_route_parts()} computes them
-by the compiled rule; otherwise \code{\link[=expectation]{expectation()}} is called for each
-component. The cdf derivatives give
+\eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]}, and not the second term
+separately, so the expected Hessian is computed from sums of \eqn{s_i
+  s_j} that are computed separately. For a parent with a scalar route,
+\code{trunc_route_parts()} computes them by the compiled rule; otherwise
+\code{\link[=expectation]{expectation()}} is called for each component. The cdf derivatives give
 \eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]} and the covariance needs
 the second term on its own. The components do not depend on the data. Each
 returned vector is constant when the parameters are scalars, and varies with
@@ -49,7 +49,7 @@ the parameters when they vary by observation.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -63,14 +63,16 @@ theta <- list(mu = 0.3, sigma = 1.2)
 EH <- distrib_expected_hessian(tn, 1, theta)
 unlist(EH)
 
-# Minus the covariance of the parent's score under the truncated law.
+# The expected Hessian is minus the covariance of the parent's score under
+# the truncated law.
 m <- distributions7:::trunc_score_mean(tn, theta)
 ES <- distributions7:::trunc_score_prod_mean(tn, theta)
 c(mu_mu = -(ES$mu_mu - m$mu^2),
   sigma_sigma = -(ES$sigma_sigma - m$sigma^2),
   mu_sigma = -(ES$mu_sigma - m$mu * m$sigma))
 
-# And what averaging the observed Hessian gives.
+# The average of the observed Hessian over simulated draws approximates
+# the expected Hessian.
 set.seed(1)
 ys <- distrib_rng(tn, 200000, theta)
 round(vapply(distrib_hessian(tn, ys, theta), mean, numeric(1)), 3)

@@ -28,10 +28,10 @@ Carries the parent's \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} block o
 by the first-order chain rule,
 \eqn{\sum_i (\partial\theta_i/\partial\alpha_a)\,
 \partial\ell^{(yy)}/\partial\theta_i}. It is the same expansion
-\code{\link[=mapped_cross_y]{mapped_cross_y()}} takes, read one derivative further in the response.
+that \code{\link[=mapped_cross_y]{mapped_cross_y()}} takes, read one derivative further in the response.
 }
 \details{
-Only the map's FIRST partials enter, so the second-partial tables
+Only the map's FIRST partials enter, so the second-partial tables that
 \code{\link[=mapped_theta2]{mapped_theta2()}} needs are never touched. A missing key is an exact zero
 and is skipped.
 }
@@ -52,7 +52,7 @@ theta <- list(mu = 0.3, sigma2 = 1.44)
 
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 
-# The parent's own block, carried by that one factor.
+# The parent's own block is carried by that one factor.
 par_block <- distrib_cross2_y(gaussian1_distrib(), y,
                               list(mu = 0.3, sigma = 1.2))
 c(mu = par_block$mu[1], sigma2 = par_block$sigma[1] / (2 * sqrt(1.44)))

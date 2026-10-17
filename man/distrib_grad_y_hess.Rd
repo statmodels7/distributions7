@@ -25,33 +25,35 @@ See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 }
 \value{
 A named list with one numeric vector per unordered pair of
-parameters, each as long as \code{y}, keyed as
+parameters. Each vector is as long as \code{y}, and the list is keyed as
 \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Computes \eqn{\partial^3 \ell / \partial y\, \partial\theta_i
-\partial\theta_j}, one component per unordered pair of parameters, each a
-vector along \code{y}. It gives the second derivative, in the parameters, of the
-response gradient, and it is the third-order entry of the mixed grid below.
+\partial\theta_j}, with one component per unordered pair of parameters, and
+each component is a vector along \code{y}. It gives the second derivative, in the
+parameters, of the response gradient, and it is the third-order entry of the
+mixed grid below.
 }
 \details{
 These are the second-order column of the mixed grid whose first-order column
-is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}:\tabular{llll}{
-    \tab \eqn{\partial^0/\partial\theta^0} \tab \eqn{\partial^1/\partial\theta^1} \tab \eqn{\partial^2/\partial\theta^2} \cr
-   \eqn{\partial/\partial y} \tab \code{\link[=distrib_grad_y]{distrib_grad_y()}} \tab \code{\link[=distrib_cross_y]{distrib_cross_y()}} \tab \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} \cr
-   \eqn{\partial^2/\partial y^2} \tab \code{\link[=distrib_hess_y]{distrib_hess_y()}} \tab \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} \tab \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} \cr
-}
+is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}:
 
+| | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} |
+\eqn{\partial^2/\partial\theta^2} | |---|---|---|---| |
+\eqn{\partial/\partial y} | \code{\link[=distrib_grad_y]{distrib_grad_y()}} | \code{\link[=distrib_cross_y]{distrib_cross_y()}} |
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} | | \eqn{\partial^2/\partial y^2} |
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} | \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} | \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} |
 
-The right-hand column is the one that the second derivative of a marginal
-criterion requires from a penalty. A penalty is a negative log-density read
+The second derivative of a marginal criterion requires the right-hand column
+from a penalty. A penalty is a negative log-density read
 at the
 coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 response curvature and the two mixed derivatives above carry
 \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
 \eqn{\partial^4\rho/\partial\beta^2\partial\theta^2}.
 
-The components are keyed by \code{\link[=hess_names]{hess_names()}}, the same enumeration
+The components are keyed by \code{\link[=hess_names]{hess_names()}}, the same enumeration that
 \code{\link[=distrib_hessian]{distrib_hessian()}} uses, so a consumer that looks up a pair finds it under
 the name that \code{\link[=distrib_hessian]{distrib_hessian()}} uses.
 }
@@ -94,11 +96,12 @@ distrib_grad_y_hess(d, y, theta)
 r <- y - 0.4
 c(mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
 
-# Against a numerical Hessian of the response gradient in the parameters.
+# The result is compared with a numerical Hessian of the response gradient
+# in the parameters.
 g <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(g, c(0.4, 1.3))
 
-# On the link scale, with sigma on a log link: h' = h'' = sigma.
+# On the link scale, with sigma on a log link, both h' and h'' equal sigma.
 cy <- distrib_cross_y(d, y, theta)
 distrib_grad_y_hess(d, y, theta, scale = "link")$sigma_sigma
 distrib_grad_y_hess(d, y, theta)$sigma_sigma * 1.3^2 + cy$sigma * 1.3

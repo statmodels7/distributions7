@@ -14,10 +14,10 @@ is_zero_wrapper(distrib)
 \code{FALSE} otherwise.
 }
 \description{
-Answers whether the object is already one of the two zero wrappers, which is
-how each constructor rejects a parent that is the other wrapper. Stacking
-them leaves only their combination identified, so the check is what turns a
-model with a flat direction into an error at construction.
+Tests whether the object is already one of the two zero wrappers. Each
+constructor uses the test to reject a parent that is the other wrapper.
+Stacking them leaves only their combination identified, so the test makes
+the constructor signal an error for a model that has a flat direction.
 }
 \examples{
 c(plain = distributions7:::is_zero_wrapper(poisson_distrib()),

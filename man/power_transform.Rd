@@ -7,18 +7,19 @@
 power_transform(p = 2)
 }
 \arguments{
-\item{p}{Numeric. The exponent. Defaults to 2.}
+\item{p}{A numeric exponent. Defaults to 2.}
 }
 \value{
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for \eqn{Y = X^p}. Inverse \eqn{X = Y^{1/p}},
-Jacobian \eqn{|J| = \frac{1}{|p|}|Y|^{1/p - 1}}. Fractional powers require a
+Returns the transformer for \eqn{Y = X^p}. The inverse is
+\eqn{X = Y^{1/p}} and the Jacobian is
+\eqn{|J| = \frac{1}{|p|}|Y|^{1/p - 1}}. Fractional powers require a
 non-negative support; even integer powers require a support that does not
 straddle 0, and on a support at or below zero \code{\link[=transformation]{transformation()}} uses the
 negative root \eqn{X = -Y^{1/p}} as the inverse; negative powers require a
-support that excludes 0, its endpoints included.
+support that does not contain 0, not even as an endpoint.
 }
 \examples{
 d <- transformation(gamma2_distrib(), power_transform(p = 2))
@@ -26,5 +27,8 @@ distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}},
+\code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}},
+\code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}},
+\code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }

@@ -10,8 +10,8 @@ folded(distrib)
 \item{distrib}{A \code{continuous_distrib} object whose support reaches below
 zero and which declares no atom. A discrete distribution, a distribution
 supported on \eqn{[0, \infty)}, an already folded distribution, and a
-zero-adjusted continuous one are each rejected with an error saying which
-condition failed.}
+zero-adjusted continuous one are each rejected with an error whose message
+names the condition that failed.}
 }
 \value{
 An S7 object of class \link{FoldedDistrib} carrying \code{parent_distrib}. Its
@@ -41,18 +41,19 @@ Every one comes from the wrapper machinery unchanged. Writing
 machinery consumes are
 \deqn{\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
       + (1-w) \frac{d^B f(-x)}{f(-x)},}
-each term a complete Bell polynomial in the parent's own log-derivatives,
-one at \eqn{+x} and one at \eqn{-x}; \eqn{\log L} then follows by the
+where each term is a complete Bell polynomial in the parent's own
+log-derivatives, evaluated at \eqn{+x} for one term and at \eqn{-x} for the
+other; \eqn{\log L} then follows by the
 moment-to-cumulant relation. At first order this reads
-\eqn{w s(x) + (1-w) s(-x)}, the score of a two-component mixture, which is
-what a fold is. A parent analytic to fourth order gives a folded family
-analytic to fourth order.
+\eqn{w s(x) + (1-w) s(-x)}, the score of a two-component mixture, and a
+fold has the form of such a mixture. A parent analytic to fourth order gives
+a folded family analytic to fourth order.
 }
 
 \section{What is rejected}{
 A parent whose support lies in \eqn{[0, \infty)} is mapped to itself by the
 absolute value, so \code{folded()} rejects it with an error; the same check
-rejects \code{folded()} of a folded distribution. an error. A parent with an atom
+rejects \code{folded()} of a folded distribution. A parent with an atom
 is rejected too: zero is its own preimage while every other point has two, so
 an atom at zero would be counted twice by the sum above and one elsewhere
 would be moved onto its reflection. A discrete parent is rejected outright.
@@ -64,14 +65,14 @@ When the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x;
 EXACTLY even in \eqn{\mu}. A fit converges to \eqn{+\hat\mu} or
 \eqn{-\hat\mu} according to where it started, at the same maximized value to
 every digit. The example below fits the same sample from starting values of
-opposite sign. The invariance belongs to the model and not to the fitting,
-and \code{folded()} does not reject it, since the folded normal is a standard
-family; what is estimable is \eqn{|\mu|} together with the remaining
-parameters. Holding the location at zero removes the question and gives the
-half-normal. A parent that is not symmetric about its location, such as
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, is invariant only under the joint change of sign of
-the location and of the shape, so the sign of the location is identified once
-the shape is held fixed.
+opposite sign. The invariance is a property of the model and does not depend
+on the fitting routine, and \code{folded()} does not reject it, since the folded
+normal is a standard family. The estimable quantities are \eqn{|\mu|} and
+the remaining parameters. Holding the location at zero removes the question
+and gives the half-normal. A parent that is not symmetric about its location,
+such as \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, is invariant only under the joint change of
+sign of the location and of the shape, so the sign of the location is
+identified once the shape is held fixed.
 }
 
 \section{Notation}{
@@ -86,8 +87,8 @@ d <- folded(gaussian1_distrib())
 theta <- list(mu = 0.5, sigma = 1)
 distrib_pdf(d, c(0, 0.5, 2), theta)
 
-# The half-normal: a folded gaussian with its location held at zero, whose
-# density is twice the gaussian's and whose mean is sigma sqrt(2 / pi).
+# The half-normal is a folded gaussian whose location is held at zero; its
+# density is twice the gaussian's and its mean is sigma sqrt(2 / pi).
 hn <- fixed(folded(gaussian1_distrib()), mu = 0)
 hn@params
 all.equal(distrib_pdf(hn, c(0.5, 1), list(sigma = 2)),
@@ -103,7 +104,7 @@ f2 <- fit_distrib(d, z, start = list(mu = -1, sigma = 1))
 rbind(from_plus = c(coef(f1), logLik = as.numeric(logLik(f1))),
       from_minus = c(coef(f2), logLik = as.numeric(logLik(f2))))
 
-# With the shape held at 3, a skew-normal parent has no such invariance in
+# If the shape is held at 3, a skew-normal parent has no such invariance in
 # the location alone (the joint sign change of mu and alpha leaves the
 # likelihood unchanged).
 sn <- folded(skewnormal1_distrib())
@@ -113,7 +114,8 @@ lf <- function(m)
   sum(distrib_pdf(sn, zs, list(mu = m, sigma = 1, alpha = 3), log = TRUE))
 c(at_plus_1 = lf(1), at_minus_1 = lf(-1))
 
-# Three rejections, each naming the condition that failed.
+# Three calls are rejected, and each error message names the condition that
+# failed.
 try(folded(gamma1_distrib()))
 try(folded(folded(gaussian1_distrib())))
 try(folded(poisson_distrib()))

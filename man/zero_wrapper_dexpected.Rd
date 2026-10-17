@@ -26,7 +26,8 @@ probability.}
 \item{threads}{The thread count passed to the parent's methods.}
 
 \item{i, j, c}{The indices of one entry: the pair and the parameter
-differentiated, the parent's parameters first and the probability last.}
+differentiated. The parent's parameters come first and the probability
+last.}
 
 \item{p}{The number of the parent's parameters.}
 
@@ -63,13 +64,14 @@ derivatives, \eqn{\zeta} the zero-inflation probability and
 \deqn{E^{ZI}_{ij} = (1-\zeta) E_{ij} + \zeta(1-\zeta) f s_i s_j / L,}
 \deqn{E^{ZI}_{i\zeta} = -f s_i / L, \qquad
   E^{ZI}_{\zeta\zeta} = -(1-f)^2/L - (1-f)/(1-\zeta),}
-the observed Hessian at zero cancelling from the first, and the
-derivatives follow with \eqn{\partial_c f = f s_c} and
+where the observed Hessian at zero cancels from the first of these
+expressions. The derivatives follow with \eqn{\partial_c f = f s_c} and
 \eqn{\partial_c s_i = H_{ic}}. For the zero-adjusted discrete family, with
-\eqn{q = 1 - f} and \eqn{\pi} the probability of zero,
+\eqn{q = 1 - f} and \eqn{\pi} the probability of zero, the expected
+information is
 \deqn{E^{ZA}_{ij} = (1-\pi)\,[E_{ij}/q + f s_i s_j / q^2], \qquad
   E^{ZA}_{\pi\pi} = -1/(\pi(1-\pi)),}
-the mixed block being zero; for the continuous one
+where the mixed block is zero. For the continuous family, the entries are
 \eqn{E^{ZA}_{ij} = (1-\pi) E_{ij}}.
 
 Each entry is computed by \code{zi_dexpected_entry()}, \code{za_disc_dexpected_entry()}

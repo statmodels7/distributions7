@@ -15,20 +15,20 @@ reparam_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...)
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{lower.tail}{Should probabilities be \eqn{P(Y \le q)}? A single
-logical, \code{TRUE} by default.}
+\item{lower.tail}{Should probabilities be \eqn{P(Y \le q)}? It is a single
+logical, with default \code{TRUE}.}
 
-\item{log.p}{Should log-probabilities be returned? A single logical, \code{FALSE}
-by default.}
+\item{log.p}{Should log-probabilities be returned? It is a single logical,
+with default \code{FALSE}.}
 
 \item{...}{Passed to the parent's method.}
 }
 \value{
-A numeric vector of probabilities, the length of \code{q} recycled
-against \code{theta}.
+A numeric vector of probabilities, whose length is that of \code{q} after
+it is recycled against \code{theta}.
 }
 \description{
-The parent's distribution function, evaluated at the mapped parameters. The
+Evaluates the parent's distribution function at the mapped parameters. The
 \code{lower.tail} and \code{log.p} arguments are passed through and applied by the
 parent, so they are not applied twice.
 }

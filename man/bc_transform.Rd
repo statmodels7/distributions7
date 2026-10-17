@@ -7,16 +7,16 @@
 bc_transform(lambda)
 }
 \arguments{
-\item{lambda}{Numeric. The transformation parameter.}
+\item{lambda}{The numeric transformation parameter.}
 }
 \value{
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for the one-parameter Box-Cox transformation \eqn{Y
-  = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for \eqn{\lambda = 0}).
-Requires \eqn{X > 0}. The map is increasing for every \eqn{\lambda}, its
-derivative being \eqn{X^{\lambda - 1}}.
+Returns the transformer for the one-parameter Box-Cox
+transformation \eqn{Y = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for
+\eqn{\lambda = 0}). It requires \eqn{X > 0}. The map is increasing for
+every \eqn{\lambda}, because its derivative is \eqn{X^{\lambda - 1}}.
 }
 \examples{
 d <- transformation(gamma2_distrib(), bc_transform(lambda = 0.5))
@@ -24,5 +24,8 @@ distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}},
+\code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=yj_transform]{yj_transform()}},
+\code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}},
+\code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }

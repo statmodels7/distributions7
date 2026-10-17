@@ -138,8 +138,8 @@ test_that("truncation refuses points that remove no mass", {
 })
 
 test_that("truncation requires at least one endpoint, and support points when discrete", {
-  expect_error(truncated(poisson_distrib()), "at least one")
-  expect_error(truncated(gaussian1_distrib()), "at least one")
+  expect_error(truncated(poisson_distrib()), "At least one")
+  expect_error(truncated(gaussian1_distrib()), "At least one")
 
   expect_error(truncated(poisson_distrib(), lower = 1.5), "not a point of the support")
   expect_error(truncated(negbin2_distrib(), upper = 7.2), "not a point of the support")

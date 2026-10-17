@@ -44,11 +44,13 @@ with respect to \eqn{y}.}
 transformed support, a numeric vector of length 2.}
 
 \item{valid_support}{A function of the parent's \code{bounds} returning a single
-logical: whether the map applies there. It is what
-\code{transformation(gaussian1_distrib(), log_transform())} fails on.}
+logical: whether the map applies there. The call
+\code{transformation(gaussian1_distrib(), log_transform())} fails because this
+function returns \code{FALSE} for the support of the Gaussian.}
 
-\item{decreasing}{Logical of length 1. \code{TRUE} for a monotonically decreasing
-map, which swaps the tails in the distribution and quantile functions.}
+\item{decreasing}{Logical of length 1. It is \code{TRUE} for a monotonically
+decreasing map, which swaps the tails in the distribution and quantile
+functions.}
 }
 \value{
 An S7 object of class \code{transformer}, carrying the ten properties
@@ -57,27 +59,28 @@ above and nothing else.
 \description{
 A \code{transformer} records the mathematical rules of a change of variables
 \eqn{Y = g(X)}: the map, its inverse, the Jacobian of that inverse and the
-two derivatives of the Jacobian's logarithm, together with the bookkeeping
-that says which supports the map applies to and what it does to them. It
-carries no distribution and answers no distribution generic; it is consumed
-by \code{\link[=transformation]{transformation()}}, which returns a \link{TransformedDistrib}.
+two derivatives of the Jacobian's logarithm. It also records the supports on
+which the map is valid and the transformed support that results. It carries
+no distribution and defines no method for the distribution generics; it is
+consumed by \code{\link[=transformation]{transformation()}}, which returns a \link{TransformedDistrib}.
 }
 \section{Requirements on the map}{
 \eqn{g} has to be BIJECTIVE on the parent's support. A map that is two to
-one, such as the absolute value, has no inverse to carry a density through
-and cannot be a transformer at all; \code{\link[=folded]{folded()}} handles that case by adding
-the two preimages instead.
+one, such as the absolute value, has no inverse through which a density
+could be carried and cannot be a transformer at all; \code{\link[=folded]{folded()}} handles that
+case by adding the two preimages instead.
 }
 
-\section{Writing your own}{
+\section{User-defined transformers}{
 The constructor accepts any subset of the ten properties and gives the others
 empty defaults, but \code{\link[=transformation]{transformation()}} needs all of them to be functions of
 the stated form, and \code{trans_abs_jac} must accept a \code{log} argument, because
 \code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf.TransformedDistrib()}} works on the log scale throughout.
-\code{valid_support} takes the parent's \code{bounds} and answers whether the map
-applies; \code{bounds_fun} takes the same and returns the transformed support.
-Nothing validates the derivatives, so \code{\link[=check_distrib]{check_distrib()}} on the resulting
-distribution is what catches a transcription error in them.
+\code{valid_support} takes the parent's \code{bounds} and returns a logical value that
+indicates whether the map applies; \code{bounds_fun} takes the same argument and
+returns the transformed support. Because the derivatives are not validated, a
+transcription error in them is detected by applying \code{\link[=check_distrib]{check_distrib()}} to the
+resulting distribution.
 }
 
 \section{Notation}{
@@ -88,11 +91,11 @@ the parent's variable and \eqn{Y = g(X)} the transformed one.
 
 \section{Methods}{
 
-None. A \code{transformer} is a description of a change of variables, not a
-distribution. It is consumed by \code{\link[=transformation]{transformation()}}, which returns a
-\link{TransformedDistrib} carrying the full set of distribution methods.
+A \code{transformer} has no methods. It is a description of a change of variables,
+not a distribution. It is consumed by \code{\link[=transformation]{transformation()}}, which returns a
+\link{TransformedDistrib} that carries the full set of distribution methods.
 
-The twelve ready-made transformers: \code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}},
+The twelve ready-made transformers are \code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}},
 \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}},
 \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}},
 \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}} and
@@ -105,16 +108,19 @@ S7::S7_inherits(tr, transformer)
 tr@name
 S7::prop_names(tr)
 
-# The map, its inverse and the Jacobian of that inverse.
+# The map, its inverse and the Jacobian of that inverse are evaluated at one
+# point.
 c(forward = tr@trans_fun(exp(1)), inverse = tr@trans_inv(1),
   log_jacobian = tr@trans_abs_jac(1, log = TRUE))
 
-# It says which supports it applies to, and what it does to them.
+# The transformer records the supports on which the map is valid and the
+# transformed support.
 c(on_positives = tr@valid_support(c(0, Inf)),
   on_the_line = tr@valid_support(c(-Inf, Inf)))
 tr@bounds_fun(c(0, Inf))
 
-# And a decreasing map declares itself, which swaps the tails downstream.
+# The `decreasing` property is TRUE for a decreasing map, which swaps the
+# tails downstream.
 vapply(list(log_transform(), inverse_transform(), expit_transform()),
        function(z) z@decreasing, TRUE)
 

@@ -7,17 +7,18 @@
 softplus_transform(a = 1)
 }
 \arguments{
-\item{a}{Numeric. Positive scale parameter. Defaults to 1.}
+\item{a}{The numeric scale parameter, which must be positive. Defaults to 1.}
 }
 \value{
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for the inverse-softplus map \eqn{Y =
-  \frac{1}{a}\log(e^{aX} - 1)}, sending \eqn{(0, \infty)} to the real line,
-evaluated as \eqn{X + \frac{1}{a}\log(1 - e^{-aX})} so that it does not
-overflow at a large argument. Inverse (softplus) \eqn{X = \frac{1}{a}\log(1
-  + e^{aY})}, Jacobian \eqn{|J| = \text{plogis}(aY)}.
+Returns the transformer for the inverse-softplus map \eqn{Y =
+  \frac{1}{a}\log(e^{aX} - 1)}, which sends \eqn{(0, \infty)} to the real
+line and is evaluated as \eqn{X + \frac{1}{a}\log(1 - e^{-aX})} so that it
+does not overflow at a large argument. The inverse (softplus) is
+\eqn{X = \frac{1}{a}\log(1 + e^{aY})} and the Jacobian is
+\eqn{|J| = \text{plogis}(aY)}.
 }
 \examples{
 d <- transformation(gamma2_distrib(), softplus_transform(a = 1))
@@ -25,5 +26,8 @@ distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}},
+\code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}},
+\code{\link[=yj_transform]{yj_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}},
+\code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }

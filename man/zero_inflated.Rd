@@ -10,8 +10,8 @@ zero_inflated(distrib, link_zi = logit_link())
 \item{distrib}{An object inheriting from \code{discrete_distrib} whose support
 includes 0, such as \code{\link[=poisson_distrib]{poisson_distrib()}} or \code{\link[=negbin2_distrib]{negbin2_distrib()}}. A
 continuous distribution, an already-wrapped one, and a support of fewer
-than \code{n_params + 2} points are each rejected with an error saying which
-condition failed.}
+than \code{n_params + 2} points are each rejected with an error that names the
+condition that failed.}
 
 \item{link_zi}{The link carrying \eqn{\zeta} to the unconstrained scale, a
 \code{linkfunctions7::link} object. Defaults to
@@ -33,25 +33,25 @@ the new parameter \code{zi}:
 \deqn{P(Y = y; \theta, \zeta) = \begin{cases}
   \zeta + (1 - \zeta)f(0; \theta) & y = 0 \\
   (1 - \zeta)f(y; \theta) & y > 0. \end{cases}}
-It is the wrapper to reach for when the data carry MORE zeros than the
+It is the wrapper to use when the data carry MORE zeros than the
 parent can produce and a zero may plausibly have come either from the count
 process or from a mechanism that switches it off.
 }
 \section{Zero-inflation against zero-adjustment}{
-The two wrappers differ in what they do to the mass the parent already
+The two wrappers differ in what they do to the mass that the parent already
 places at zero. Zero-inflation ADDS to it, so
 \eqn{P(Y = 0) = \zeta + (1-\zeta)f(0) > f(0)}: the model can produce more
 zeros than the parent and never fewer, and the observed zeros are a mixture
-of structural and sampling ones that no single observation can be assigned
-to. Zero-adjustment REPLACES it: the parent is truncated away from zero and
-the mass there becomes a free parameter, which may sit above or below
-\eqn{f(0)}.
+of structural and sampling ones, so a single observation cannot be assigned
+to either kind. Zero-adjustment REPLACES it: the parent is truncated away
+from zero and the mass there becomes a free parameter, which may sit above or
+below \eqn{f(0)}.
 
 A hurdle model therefore also handles UNDER-dispersed zeros, and its
 likelihood factorizes into a binary part and a positive-count part that can
 be read separately. Zero-inflation keeps the parent's interpretation, so
-\eqn{\theta} still describes the count process the non-structural
-observations come from, while the hurdle re-interprets \eqn{\theta} as the
+\eqn{\theta} still describes the count process from which the non-structural
+observations come, while the hurdle re-interprets \eqn{\theta} as the
 parameters of a truncated law.
 }
 
@@ -78,11 +78,12 @@ sufficient. If \eqn{\mu} is large enough that \eqn{f(0)} underflows, or
 }
 
 \section{What the result supports}{
-The mass function, the distribution function, the quantile function, the
-generator, the analytic score, the observed and the expected Hessian, and the
-third, fourth and fifth derivatives from the shared wrapper machinery. The
-derivatives with respect to the response are not defined for a discrete
-family. The moments are computed numerically by \code{\link[=moment]{moment()}}.
+The result provides the mass function, the distribution function, the
+quantile function, the generator, the analytic score, the observed and the
+expected Hessian, and the third, fourth and fifth derivatives from the shared
+wrapper machinery. The derivatives with respect to the response are not
+defined for a discrete family. The moments are computed numerically by
+\code{\link[=moment]{moment()}}.
 }
 
 \section{Notation}{
@@ -99,15 +100,15 @@ zip@params
 
 distrib_pdf(zip, 0:5, theta)
 
-# More mass at zero than the Poisson alone can put there, and the rest of
-# the mass function shrunk by 1 - zi.
+# The mass at zero is larger than the Poisson alone can put there, and the
+# rest of the mass function is shrunk by 1 - zi.
 c(inflated = distrib_pdf(zip, 0, theta), poisson = dpois(0, 3))
 all.equal(distrib_pdf(zip, 1:5, theta), 0.8 * dpois(1:5, 3))
 
 # It is still a distribution: the mass sums to one.
 sum(distrib_pdf(zip, 0:200, theta))
 
-# A fit recovers both parameters, the extra zeros identifying zi.
+# A fit recovers both parameters, because the extra zeros identify zi.
 set.seed(1)
 y <- distrib_rng(zip, 2000, theta)
 round(coef(fit_distrib(zip, y)), 3)
@@ -117,8 +118,8 @@ round(coef(fit_distrib(zip, y)), 3)
 try(zero_inflated(bernoulli_distrib()))
 try(zero_inflated(zero_adjusted(poisson_distrib())))
 
-# Nor can a continuous parent be inflated: there is no mass at zero to add
-# to, and the message names the wrapper that does apply.
+# Nor can a continuous parent be inflated: there is no mass at zero for the
+# inflation to increase, and the message names the wrapper that does apply.
 try(zero_inflated(gaussian1_distrib()))
 
 }

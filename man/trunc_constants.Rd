@@ -48,7 +48,7 @@ only when it underflows.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -69,7 +69,7 @@ ztp <- truncated(poisson_distrib(), lower = 1)
 cz <- distributions7:::trunc_constants(ztp, list(mu = 2))
 c(Z = cz$Z, direct = 1 - dpois(0, 2), Fl = cz$Fl)
 
-# Vectorized in theta.
+# The function is vectorized in theta.
 distributions7:::trunc_constants(tn, list(mu = c(0, 0.5), sigma = 1.2))$Z
 
 # An interval carrying no mass is reported, not returned.

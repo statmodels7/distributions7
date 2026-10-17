@@ -19,7 +19,7 @@ point of the parent.
 }
 \description{
 Draws zeros with probability \eqn{\pi} and otherwise samples from the
-zero-truncated parent, so no draw from the positive part is ever zero. The
+zero-truncated parent, so a draw from the positive part is never zero. The
 truncated draw is taken by inverting the parent's distribution function in
 its upper tail, at \eqn{(1 - U)\{1 - f(0)\}} with \eqn{U} uniform, at the
 rows of the observations. It needs no rejection loop and so terminates in
@@ -39,7 +39,7 @@ theta <- list(mu = 3, za = 0.4)
 set.seed(1)
 distrib_rng(d, 10, theta)
 
-# A large sample reproduces the mass at zero, and no positive draw is zero.
+# A large sample reproduces the mass at zero, and a positive draw is never zero.
 set.seed(1)
 big <- distrib_rng(d, 20000, theta)
 c(sampled_zero = mean(big == 0), parameter = 0.4,
@@ -47,7 +47,7 @@ c(sampled_zero = mean(big == 0), parameter = 0.4,
 }
 \seealso{
 \code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf.ZeroAdjustedDiscreteDistrib()}} for the mass function
-these are drawn from, \code{\link[=truncated]{truncated()}} for the general truncation wrapper (the
-method here draws the positive part by inversion and does not call it), and
-\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+from which these are drawn, \code{\link[=truncated]{truncated()}} for the general truncation
+wrapper (the method here draws the positive part by inversion and does not
+call it), and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

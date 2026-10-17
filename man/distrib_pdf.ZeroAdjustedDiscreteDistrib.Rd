@@ -9,9 +9,9 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list with the parent's parameters followed by \code{za},
-each a numeric vector of length 1 or of the length of \code{y}. \code{za} must lie
-strictly inside \eqn{(0, 1)}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za};
+each element is a numeric vector of length 1 or of the length of \code{y}. \code{za}
+must lie strictly inside \eqn{(0, 1)}.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned, which
 is the quantity actually computed. Defaults to \code{FALSE}.}
@@ -28,7 +28,7 @@ Computes the hurdle mass function
 The mass at zero is the parameter itself, so it may sit ABOVE or BELOW the
 parent's \eqn{f(0)}; the positive part is the parent renormalized away from
 zero. Everything is computed on the log scale and exponentiated at the end,
-with the normalizing constant \eqn{1 - f(0)} formed from the parent's
+and the normalizing constant \eqn{1 - f(0)} is formed from the parent's
 log-mass at zero as \verb{-expm1(log f(0))}, so that a parent with almost all its
 mass at zero keeps its digits.
 }

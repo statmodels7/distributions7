@@ -22,7 +22,8 @@ lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's p
 each a numeric vector of length \code{length(y)}.
 }
 \description{
-Two regimes, and the observation decides which. At \eqn{y > 0} the
+The method distinguishes two regimes by the value of the observation. At
+\eqn{y > 0} the
 log-likelihood is \eqn{\log(1-\zeta) + \ell(y;\theta)}, which separates:
 every mixed component in \eqn{\zeta} and a parent parameter is exactly zero.
 At \eqn{y = 0} it is \eqn{\log L_0} with
@@ -32,7 +33,7 @@ the moment-to-cumulant expansion over set partitions,
       \prod_{B \in \pi} \frac{d^B L_0}{L_0}.}
 
 \eqn{L_0} is affine in \eqn{\zeta}, so any block of a partition naming
-\eqn{\zeta} twice contributes nothing and the sum is shorter than it looks.
+\eqn{\zeta} twice contributes nothing, and those terms drop from the sum.
 A whole component may still be non-zero: its partition into singletons
 survives.
 }

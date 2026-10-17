@@ -24,37 +24,37 @@ route only where this is \code{TRUE}, and falls back to quadrature otherwise.
 Reading \eqn{d^B Z} off the parent's cdf derivatives replaces one quadrature
 per component with two calls on the parent. Where the parent has no
 closed-form cdf derivative, that route differences its distribution function
-and has a larger relative error than the quadrature it would replace. The
-error passes into \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which differentiates the analytical
-Hessian, and enlarges the error of the reference used in the fourth-order
-check.
+and has a larger relative error than the quadrature that it would replace.
+The error passes into \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which differentiates the
+analytical Hessian, and enlarges the error of the reference used in the
+fourth-order check.
 }
 
 \section{How a genuine method is recognized}{
-\code{attr(m, "signature")[[1]]} is the class the method was registered on, so an
-inherited fallback answers with a base class. \code{identical()} on the method
-object cannot be used for this, S7 wrapping it. The third- and
+\code{attr(m, "signature")[[1]]} is the class on which the method was registered,
+so for an inherited fallback it is a base class. \code{identical()} on the method
+object cannot be used for this, because S7 wraps the method. The third- and
 fourth-order defaults sit on \code{distrib} where the first two sit on
 \code{continuous_distrib}, so both base classes are excluded or a stencil would
 be read as a closed form.
 
-The test reads the class that owns the method, so a family that registers a
-method combining closed components with a stencil in one direction answers
-\code{TRUE}. That is the intended reading: what the gate protects against is the
-generic differencing the cdf itself.
+The test uses the class that owns the method, so for a family that registers
+a method combining closed components with a stencil in one direction the
+result is \code{TRUE}. This behavior is intended, because the gate protects
+against the generic method differencing the cdf itself.
 }
 
 \examples{
-# A discrete family answers TRUE at every order: its cdf derivatives are an
-# exact sum.
+# For a discrete family the result is TRUE at every order, because its cdf
+# derivatives are an exact sum.
 vapply(1:4, function(k)
   distributions7:::has_exact_cdf_deriv(poisson_distrib(), k), logical(1))
 
-# The gaussian writes all four out.
+# The gaussian has closed forms for all four orders.
 vapply(1:4, function(k)
   distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))
 
-# The gamma's cdf derivatives are compiled, so it answers TRUE as well.
+# The gamma's cdf derivatives are compiled, so the result is TRUE as well.
 vapply(1:4, function(k)
   distributions7:::has_exact_cdf_deriv(gamma2_distrib(), k), logical(1))
 }

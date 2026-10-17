@@ -15,17 +15,17 @@ reparam_pdf(distrib, y, theta, log = FALSE, ...)
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{log}{Should the log-density be returned? A single logical, \code{FALSE} by
-default.}
+\item{log}{Should the log-density be returned? It is a single logical, with
+default \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of densities, the length of \code{y} recycled against
-\code{theta}.
+A numeric vector of densities, whose length is that of \code{y} after it
+is recycled against \code{theta}.
 }
 \description{
-The parent's density, evaluated at the mapped parameters. A change of
+Evaluates the parent's density at the mapped parameters. A change of
 parametrization does not change the law, so the density is not recomputed
 here: the new parameters go through \code{\link[=reparam_theta]{reparam_theta()}} and the parent's
 density is evaluated at the result.
@@ -41,7 +41,7 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# The same numbers as the family written out by hand.
+# The result equals that of the family written out by hand.
 all.equal(distrib_pdf(d, c(0, 1, 2), th),
           distrib_pdf(gaussian2_distrib(), c(0, 1, 2), th))
 

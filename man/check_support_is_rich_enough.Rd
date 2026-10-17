@@ -30,9 +30,9 @@ This rules out, among the shipped families, the Bernoulli,
 or 2 (which have two parameters and need four support points). Zero-adjusting
 a Bernoulli leaves the truncated part on the single point \eqn{\{1\}} and
 \code{mu} disappears: the mass function is literally the same at \code{mu = 0.2} and at
-\code{mu = 0.9}. None of this is visible at run time, the mass summing to one and
-\code{\link[=check_distrib]{check_distrib()}} passing, so the constructor is the only place it can be
-caught.
+\code{mu = 0.9}. The mass function still sums to one and \code{\link[=check_distrib]{check_distrib()}} still
+passes, so these problems are not visible at run time, and the constructor is
+the only place where they can be caught.
 
 A support with enough points is necessary for identification but not
 sufficient. If the mean is large enough that the parent puts almost no mass
@@ -44,7 +44,7 @@ depends on the data, and the check does not examine the data.
 distributions7:::check_support_is_rich_enough(poisson_distrib(),
                                               "zero_inflated()")
 
-# A Bernoulli does not, and neither does a one-trial binomial.
+# A Bernoulli and a one-trial binomial do not have room.
 try(zero_inflated(bernoulli_distrib()))
 try(zero_inflated(binomial_distrib(size = 1)))
 

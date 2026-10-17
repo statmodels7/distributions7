@@ -23,14 +23,14 @@ continuous distribution is.
 }
 \details{
 A mass outside \eqn{[L, U]} is dropped, along with the rest of the density
-there, and one inside is rescaled by the same factor the density is. Two
+there, and one inside is rescaled by the same factor as the density. Two
 consumers read the result: \code{\link[=expectation.TruncatedContinuousDistrib]{expectation.TruncatedContinuousDistrib()}} adds
 the masses to its integral, and \code{\link[=check_distrib]{check_distrib()}} adjusts the checks that a
 point mass invalidates.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

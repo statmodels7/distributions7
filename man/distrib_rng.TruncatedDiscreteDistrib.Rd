@@ -18,12 +18,12 @@ A numeric vector of \code{n} random draws, every one a support point in
 \description{
 Draws by inverse transform on the parent, through
 \code{\link[=distrib_quantile.TruncatedDiscreteDistrib]{distrib_quantile.TruncatedDiscreteDistrib()}} at \eqn{V} uniform on \eqn{(0,
-1)}. Every draw is a support point in \eqn{[L, U]}, in one pass and with no
-rejection, an interval in the upper tail included.
+1)}. Every draw is a support point in \eqn{[L, U]}, obtained in one pass and
+without rejection, and this holds also for an interval in the upper tail.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

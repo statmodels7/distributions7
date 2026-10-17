@@ -32,10 +32,10 @@ as a sum of representable numbers.
 Two singular cases are handled explicitly. A parent log-density that is
 \code{+Inf}, which a density with a pole produces, is clamped to
 \code{log(.Machine$double.xmax)}, so that a quadrature over the transformed
-density meets a large number instead of \code{Inf - Inf}. A parent density of
-exactly zero WINS over an infinite Jacobian, so the result is \code{-Inf}. The
-point is on the boundary or outside the transformed support, and the result
-is \code{-Inf} where the unguarded sum would give \code{NaN}.
+density meets a large number instead of \code{Inf - Inf}. If the parent density
+is exactly zero, the result is \code{-Inf} even where the Jacobian is infinite.
+Such a point is on the boundary or outside the transformed support, and the
+result is \code{-Inf} where the unguarded sum would give \code{NaN}.
 }
 \section{Notation}{
 
@@ -56,7 +56,8 @@ all.equal(distrib_pdf(d, y, theta), dlnorm(y, 0.5, 0.8))
 # It is a density: it integrates to one over the transformed support.
 integrate(function(z) distrib_pdf(d, z, theta), 0, Inf)$value
 
-# Written out, the parent's density at the preimage times the Jacobian.
+# Written out, the density is the parent's density at the preimage times the
+# Jacobian.
 tr <- d@transformer
 all.equal(distrib_pdf(d, y, theta),
           dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y, log = FALSE))

@@ -16,24 +16,23 @@ those wraps a distribution for which the function returns \code{TRUE};
 \code{FALSE} when the method comes from the base class or is absent.
 }
 \description{
-Answers whether a distribution registers \code{\link[=distrib_atoms]{distrib_atoms()}} for itself, which
-is how \code{\link[=folded]{folded()}} decides that a parent carries a point mass and must be
-rejected. The function examines the class on which the method is registered
-and not a value: a distribution with an atom declares one at every parameter
-setting, whereas a value taken at one setting could be empty by accident.
+Returns \code{TRUE} when a distribution registers a \code{\link[=distrib_atoms]{distrib_atoms()}} method of
+its own. \code{\link[=folded]{folded()}} uses the result to detect that a parent carries a point
+mass, in which case the parent is rejected. The function examines the class
+on which the method is registered and not a value: a distribution with an
+atom declares one at every parameter setting, whereas a value taken at one
+setting could be empty by accident.
 }
 \details{
 The wrappers \code{\link[=fixed]{fixed()}}, \code{\link[=reparametrize]{reparametrize()}} and \code{\link[=truncated]{truncated()}} register
 \code{\link[=distrib_atoms]{distrib_atoms()}} on their continuous classes only to report the parent's
-atoms, so their registration says nothing about the wrapped family. For
-these classes the function is applied to \code{parent@parent_distrib} instead,
-and a wrapper of a family without atoms declares none.
+atoms, so their registration does not indicate whether the wrapped family has
+atoms. For these classes the function is applied to \code{parent@parent_distrib}
+instead, and a wrapper of a family without atoms declares none.
 
-The argument is named \code{parent} deliberately. The base class of this package
-is called \code{distrib}, and an argument of that name would shadow it: the
-comparison meant for the base class would then be against the object. That
 The argument is named \code{parent} because an argument named \code{distrib} would
-shadow the base class \code{distrib} in the comparison with the class.
+shadow the base class \code{distrib}, and the comparison meant for the base class
+would then be against the object.
 }
 \examples{
 # A plain gaussian declares none.
@@ -42,10 +41,10 @@ distributions7:::declares_atoms(gaussian1_distrib())
 # A zero-adjusted continuous parent is a mixed distribution and does.
 distributions7:::declares_atoms(zero_adjusted(gaussian1_distrib()))
 
-# Which is why folded() rejects the second by name.
+# For this reason folded() rejects the second by name.
 try(folded(zero_adjusted(gaussian1_distrib())))
 
-# A wrapper declares atoms exactly when the family it wraps does.
+# A wrapper declares atoms exactly when the family that it wraps does.
 distributions7:::declares_atoms(fixed(gaussian1_distrib(), sigma = 1.2))
 distributions7:::declares_atoms(fixed(zero_adjusted(gaussian1_distrib()),
                                       sigma = 1.2))
@@ -53,6 +52,6 @@ distributions7:::declares_atoms(fixed(zero_adjusted(gaussian1_distrib()),
 }
 \seealso{
 \code{\link[=distrib_atoms]{distrib_atoms()}} for the generic, \code{\link[=folded]{folded()}}, which consults this,
-and \code{\link[=zero_adjusted]{zero_adjusted()}}, which produces a parent it rejects.
+and \code{\link[=zero_adjusted]{zero_adjusted()}}, which produces a parent that it rejects.
 }
 \keyword{internal}

@@ -21,17 +21,17 @@ parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Returns the parent's observed Hessian evaluated at \eqn{x = g^{-1}(y)}, for
-the reason the score has: the Jacobian is a constant in \eqn{\theta} and
-differentiates away twice over.
+the same reason as for the score: the Jacobian is a constant in
+\eqn{\theta} and differentiates away twice over.
 }
 \details{
 The transformation does not depend on \eqn{\theta}, so
 \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
 has a second term that is a CONSTANT in the parameters and differentiates
 away. Every derivative in \eqn{\theta} is therefore the parent's own,
-evaluated at \eqn{x = g^{-1}(y)}, and nothing is recomputed. The response
-derivatives are the exception and come from the base class, the Jacobian
-depending on \eqn{y}.
+evaluated at \eqn{x = g^{-1}(y)}, and the method does not recompute them.
+The response derivatives are the exception and come from the base class,
+because the Jacobian depends on \eqn{y}.
 }
 \section{Notation}{
 
@@ -48,10 +48,10 @@ y <- distrib_rng(d, 40, theta)
 H <- distrib_hessian(d, y, theta)
 vapply(H, sum, numeric(1))
 
-# The parent's, at the preimage.
+# It is the parent's Hessian, at the preimage.
 identical(H, distrib_hessian(gaussian1_distrib(), log(y), theta))
 
-# Against a numerical Hessian of the transformed log-likelihood.
+# It agrees with a numerical Hessian of the transformed log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

@@ -13,14 +13,15 @@ mapped_theta2(distrib, parent, th_par, maps, y, first, second)
 \item{parent}{The parent distribution, whose \code{params} key the inputs.}
 
 \item{th_par}{A named list of the parent's parameters, evaluated at the new
-ones. Not read by this function; the callers use it to compute \code{first}
-and \code{second}.}
+ones. This function does not read it; the callers use it to compute
+\code{first} and \code{second}.}
 
 \item{maps}{The map's keyed partial tables, from \code{\link[=reparam_tables]{reparam_tables()}}: one
-entry per parent parameter, each a list keyed by new-parameter index.}
+entry per parent parameter, and each entry is a list keyed by
+new-parameter index.}
 
-\item{y}{A numeric vector of observations. Not used; present so that the
-signature matches the callers'.}
+\item{y}{A numeric vector of observations. This function does not use it;
+it is present so that the signature matches the callers'.}
 
 \item{first}{The parent's first-order components, keyed by the parent's
 parameters.}
@@ -39,9 +40,9 @@ second-order chain rule. It is the arithmetic behind every
 reparametrized family, and it differentiates nothing itself.
 }
 \section{The expansion}{
-A derivative in the RESPONSE does not see the parameters, so a
-reparametrization acts on the \eqn{\theta} side alone and the ordinary
-two-term expansion applies:
+A derivative in the RESPONSE does not interact with a reparametrization of
+the parameters, so a reparametrization acts only on the \eqn{\theta} side
+and the ordinary two-term expansion applies:
 \deqn{\frac{\partial^2 f}{\partial\alpha_a \partial\alpha_b}
   = \sum_{i,j} \frac{\partial\theta_i}{\partial\alpha_a}
     \frac{\partial\theta_j}{\partial\alpha_b} f_{ij}
@@ -53,7 +54,7 @@ partial and \code{"1,2"} for a second, so this function only combines them.
 }
 
 \section{What \code{first} and \code{second} are}{
-They are the same quantity at two orders in \eqn{\theta}, and which
+They are the SAME quantity at two orders in \eqn{\theta}, and which
 quantity depends on the caller: \code{\link[=distrib_cross_y]{distrib_cross_y()}} with
 \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the third-order derivative, and
 \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} with \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for the fourth.
@@ -79,8 +80,8 @@ theta <- list(mu = 0.3, sigma2 = 1.44)
 g <- distrib_grad_y_hess(d, y, theta)
 vapply(g, function(z) z[1], numeric(1))
 
-# Against a numerical Hessian of the response gradient in the NEW
-# parameters, which shares none of the map's arithmetic.
+# The result is compared with a numerical Hessian of the response gradient
+# in the NEW parameters, which does not share any of the map's arithmetic.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(0.3, 1.44))
 }

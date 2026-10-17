@@ -7,16 +7,19 @@
 affine_transform(loc = 0, scale = 1)
 }
 \arguments{
-\item{loc}{Numeric. The location shift. Defaults to 0.}
+\item{loc}{The numeric location shift. Defaults to 0.}
 
-\item{scale}{Numeric. The scale multiplier (non-zero). Defaults to 1.}
+\item{scale}{The numeric scale multiplier, which must be non-zero. Defaults
+to 1.}
 }
 \value{
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for \eqn{Y = \text{loc} + \text{scale} \cdot X}.
-Inverse \eqn{X = (Y - \text{loc})/\text{scale}}, Jacobian \eqn{|J| = 1/|\text{scale}|}.
+Returns the transformer for
+\eqn{Y = \text{loc} + \text{scale} \cdot X}. The inverse is
+\eqn{X = (Y - \text{loc})/\text{scale}} and the Jacobian is
+\eqn{|J| = 1/|\text{scale}|}.
 }
 \examples{
 d <- transformation(gaussian1_distrib(), affine_transform(loc = 1, scale = 2))
@@ -24,5 +27,8 @@ distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}},
+\code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}},
+\code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}},
+\code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=transformation]{transformation()}}
 }

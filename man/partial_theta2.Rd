@@ -31,9 +31,9 @@ location or scale parameter with a shape is one central difference, in the
 shape, of the closed component of \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, and a pair of shapes
 is one stencil on \code{\link[=distrib_hess_y]{distrib_hess_y()}}, a second-order stencil for a repeated
 shape and a mixed one for two shapes; the shape components of
-\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} are not differenced again. It is what
-\code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} and \code{\link[=partial_loc_scale_hess_y_hess]{partial_loc_scale_hess_y_hess()}} both
-run, at order 1 and 2 respectively.
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} are not differenced again. Both
+\code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} and \code{\link[=partial_loc_scale_hess_y_hess]{partial_loc_scale_hess_y_hess()}} run
+it, at order 1 and 2 respectively.
 }
 \details{
 \code{\link[=numerical_theta2_y]{numerical_theta2_y()}} takes one central difference per parameter, and each
@@ -63,7 +63,7 @@ names(out)
 cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
 all(vapply(names(cl), function(k) identical(out[[k]], cl[[k]]), logical(1)))
 
-# And it is exactly what the family's method returns.
+# The result is identical to the value that the family's method returns.
 identical(out, distrib_grad_y_hess(d, y, theta))
 }
 \seealso{

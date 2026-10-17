@@ -49,8 +49,8 @@ theta <- list(mu = 1, sigma = 2, za = 0.3)
 
 distrib_quantile(d, c(0.1, 0.3, 0.5, 0.9), theta)
 
-# An interval of probabilities of width pi maps to zero, which is what
-# inverting across a jump means.
+# An interval of probabilities of width pi maps to zero, as inversion
+# across a jump requires.
 lo <- distrib_cdf(d, -1e-9, theta)
 c(just_below = distrib_quantile(d, lo - 1e-6, theta),
   inside = distrib_quantile(d, lo + 0.15, theta),

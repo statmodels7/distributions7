@@ -21,21 +21,21 @@ generic after this method has returned.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
-length of \code{y} recycled against \code{theta}. Note the order: this route
-enumerates as \code{\link[=hess_names]{hess_names()}} does, diagonal first, while a family written
-out by hand may enumerate lexicographically. Compare two such results by
-name and not by position.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}. Each has
+the length of \code{y} after it is recycled against \code{theta}. This route enumerates the
+components as \code{\link[=hess_names]{hess_names()}} does, diagonal first, while a family written
+out by hand may enumerate them lexicographically. Two such results should
+be compared by name and not by position.
 }
 \description{
-The second-order chain rule, which keeps the term in the parent's score as
-well as the one in its Hessian:
+Computes the observed Hessian by the second-order chain rule, which keeps the
+term in the parent's score as well as the one in its Hessian:
 \deqn{\ell^{(ab)} = \sum_{i,j} \ell^{(ij)}
       \frac{\partial\theta_i}{\partial\psi_a}
       \frac{\partial\theta_j}{\partial\psi_b}
       + \sum_i \ell^{(i)}
       \frac{\partial^2\theta_i}{\partial\psi_a \partial\psi_b}.}
-The second sum is what a first-order chain does not have, and it is why the
+A first-order chain does not contain the second sum, and for this reason the
 map's second partials are needed as well as its first.
 }
 \section{Notation}{

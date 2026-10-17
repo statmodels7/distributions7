@@ -15,9 +15,9 @@ is_fixed(distrib)
 }
 \description{
 Returns \code{TRUE} for a distribution produced by \code{\link[=fixed]{fixed()}}, in any of its three
-forms, which is how \code{fixed()} of a \code{fixed()} COLLAPSES into one wrapper. The
-two describe the same law either way, and nesting would leave the inner
-object's free set to be reconstructed at every call.
+forms. \code{\link[=fixed]{fixed()}} uses it to COLLAPSE a \code{fixed()} of a \code{fixed()} into one
+wrapper. The two describe the same law either way, and nesting would leave
+the inner object's free set to be reconstructed at every call.
 }
 \examples{
 c(plain = distributions7:::is_fixed(gaussian1_distrib()),
@@ -25,7 +25,7 @@ c(plain = distributions7:::is_fixed(gaussian1_distrib()),
   multivariate = distributions7:::is_fixed(
     fixed(mvgaussian1_distrib(2), mu1 = 0)))
 
-# Which is why two calls collapse into one wrapper holding both values.
+# Two calls therefore collapse into one wrapper that holds both values.
 d <- fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)
 c(class = class(d)[1], held = paste(names(d@fixed_params), collapse = ", "))
 

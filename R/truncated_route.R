@@ -9,10 +9,10 @@ NULL
 #' `"TruncatedContinuousDistrib|<inner name>"`, with the inner family's
 #' constants followed by the truncation points `lower` and `upper`, as
 #' [distrib_scalar_route()] describes, or `NULL` when the parent has no
-#' route. A continuous parent needs a family with a compiled distribution
-#' function and at most four parameters, which may be wrapped by any chain of
-#' [fixed()], [folded()] and [transformation()] (the last with one of the
-#' ready-made transformers).
+#' route. A continuous parent has a route only if it is a family with a
+#' compiled distribution function and at most four parameters; such a family
+#' may be wrapped by any chain of [fixed()], [folded()] and [transformation()]
+#' (the last with one of the ready-made transformers).
 #'
 #' @param distrib A truncated family.
 #' @param ... Unused.
@@ -54,18 +54,20 @@ S7::method(distrib_scalar_route, TruncatedContinuousDistrib) <- truncated_scalar
 #' For a discrete parent the integrals are sums over support points.
 #' `trunc_rule_cpp()` returns, for each observation, the points over which the
 #' sums run: the retained points when they are finitely many, and otherwise a
-#' series over the retained points stopped by a rule on the masses alone. For
-#' the density, the score and the Hessian on an unbounded support, the points
+#' series over the retained points stopped by a rule that uses only the
+#' masses. For the density, the score and the Hessian on an unbounded support,
+#' the points
 #' removed below `lower` are used instead when their mass is at most one half,
 #' and the retained sums are \eqn{1 - \sum f}, \eqn{-\sum f s_i} and \eqn{-\sum
 #' f(\ell_{ij} + s_i s_j)}.
 #'
 #' For a continuous parent, \eqn{Z}, \eqn{Z_i} and \eqn{Z_{ij}} are the
 #' differences of the compiled distribution function and its derivatives at
-#' the two truncation points (`trunc_cont_ends_cpp()`), \eqn{Z} in the
-#' survival function when the lower point lies above the median; \eqn{S}
-#' and \eqn{D} are taken by the rule of `trunc_cont_rule_cpp()`, whose nodes
-#' depend on the interval and on the parent's center, scale and kinks only.
+#' the two truncation points (`trunc_cont_ends_cpp()`), and \eqn{Z} is
+#' computed from the survival function when the lower point lies above the
+#' median; \eqn{S} and \eqn{D} are taken by the rule of
+#' `trunc_cont_rule_cpp()`, whose nodes depend on the interval and on the
+#' parent's center, scale and kinks only.
 #'
 #' The sums accumulate in long double in the registry's order, so that each
 #' diagonal quantity is the registry's to the bit.
@@ -74,14 +76,14 @@ S7::method(distrib_scalar_route, TruncatedContinuousDistrib) <- truncated_scalar
 #' @param y The observations, read for their number.
 #' @param theta A named list of parameter values.
 #' @param what One of `"z"`, `"grad"`, `"hess"`, `"info"` and `"dinfo"`,
-#'   each adding quantities to those of the previous one.
+#'   Each value adds quantities to those of the previous one.
 #' @param rows `NULL`, or the observations to compute; the function sets it
 #'   when it computes each distinct parameter vector once.
 #'
 #' @return `NULL` when the family has no route; otherwise a list with `Z`,
 #'   `Zi` (named by parameter), and, as `what` requires, `Zij` and `S` (named
-#'   as [hess_names()]) and `D` (named as [dexpected_names()]), each a vector
-#'   over the observations.
+#'   as [hess_names()]) and `D` (named as [dexpected_names()]). Each
+#'   component is a vector over the observations.
 #'
 #' @keywords internal
 trunc_route_parts <- function(distrib, y, theta, what, rows = NULL) {
@@ -247,13 +249,13 @@ trunc_route_parts <- function(distrib, y, theta, what, rows = NULL) {
 #'
 #' @description
 #' Returns `distrib` with every constant that varies by observation (a
-#' binomial's or a beta-binomial's `size`), its parents' included, taken at
-#' the observations `idx`, so that the family can be evaluated at points that
-#' belong to those observations.
+#' binomial's or a beta-binomial's `size`), including the constants of its
+#' parents, taken at the observations `idx`, so that the family can be evaluated
+#' at points that belong to those observations.
 #'
 #' @param distrib A univariate family.
 #' @param idx Integer indices of observations, one per point.
-#' @param n The number of observations the constants are recycled to.
+#' @param n The number of observations to which the constants are recycled.
 #'
 #' @return The family, with its varying constants of length `length(idx)`.
 #'

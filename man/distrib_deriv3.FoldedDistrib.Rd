@@ -16,12 +16,12 @@ approximated by \code{\link[=expected_derivative]{expected_derivative()}}. Defau
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{The strategy \code{\link[=expected_derivative]{expected_derivative()}} uses when
+\item{approx}{The strategy that \code{\link[=expected_derivative]{expected_derivative()}} uses when
 \code{expected = TRUE}: one of \code{"integrate"} (the default), \code{"bartlett"},
-\code{"mc"} or \code{"opg"}. Ignored otherwise.}
+\code{"mc"} or \code{"opg"}. It is ignored otherwise.}
 
 \item{nsim}{The Monte Carlo sample size when \code{approx = "mc"}. Defaults to
-\code{10000}. Ignored otherwise.}
+\code{10000}. It is ignored otherwise.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -31,13 +31,13 @@ A named list of numeric vectors, keyed and ordered as
 }
 \description{
 Computes every third derivative of the folded log-density from the SAME
-partition sums the Hessian uses, one order up. The block ratios are
+partition sums that the Hessian uses, one order up. The block ratios are
 \deqn{\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
   + (1-w) \frac{d^B f(-x)}{f(-x)},}
-each term a complete Bell polynomial in the parent's own log-derivatives,
-and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L} by the
-moment-to-cumulant relation. A parent with closed forms to third order gives
-the folded family closed forms to third order.
+in which each term is a complete Bell polynomial in the parent's own
+log-derivatives, and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log
+L} by the moment-to-cumulant relation. A parent with closed forms to third
+order gives the folded family closed forms to third order.
 }
 \details{
 With \code{expected = TRUE} the expectation goes to \code{\link[=expected_derivative]{expected_derivative()}},
@@ -59,7 +59,7 @@ y <- distrib_rng(d, 30, theta)
 d3 <- distrib_deriv3(d, y, theta)
 names(d3)
 
-# Against one stencil on the analytic Hessian.
+# The result is compared with one stencil on the analytic Hessian.
 h <- 1e-4
 tp <- theta; tp$sigma <- tp$sigma + h
 tm <- theta; tm$sigma <- tm$sigma - h

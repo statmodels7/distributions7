@@ -24,11 +24,11 @@ Draws by inverse transform through \code{\link[=trunc_quantile]{trunc_quantile()
 \eqn{V} uniform on \eqn{(0, 1)}. A draw needs one evaluation of the parent's
 quantile function whatever \eqn{Z} is, where rejection sampling from the
 parent would need \eqn{1/Z} draws on average, and an interval in the upper
-tail is inverted there. One of the shared bodies, registered on both classes.
+tail is inverted there. The body is shared and is registered on both classes.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

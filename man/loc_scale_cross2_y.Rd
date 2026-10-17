@@ -40,8 +40,9 @@ A named list with one numeric vector per parameter, keyed by
 \code{distrib@params}.
 }
 \description{
-The \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method bodies shared by the families whose response
-enters only through \eqn{z = (y-\mu)/\sigma}. \code{loc_scale_cross2_y()} serves
+These functions are the \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method bodies shared by the
+families whose response enters only through
+\eqn{z = (y-\mu)/\sigma}. \code{loc_scale_cross2_y()} serves
 a family that is location-scale in BOTH its parameters, and
 \code{partial_loc_scale_cross2_y()} one carrying shape parameters beyond the two:
 the location and scale components come from \code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} in
@@ -49,12 +50,13 @@ closed form, and each shape component from one central difference of
 \code{\link[=distrib_hess_y]{distrib_hess_y()}} through \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}.
 }
 \details{
-Registered on the logistic, Cauchy, Gumbel and Laplace for the first body,
-and on the two pseudo-Huber parametrizations, the skew normal and the skew t
-for the second. The gaussian and the Student t have methods of their own, as
-do several other families (the exponential, the Weibull, the generalized
-Pareto and the lognormal among them), and a continuous family with no method
-of its own takes \code{\link[=distrib_cross2_y.continuous_distrib]{distrib_cross2_y.continuous_distrib()}}.
+\code{loc_scale_cross2_y()} is registered on the logistic, Cauchy, Gumbel and
+Laplace, and \code{partial_loc_scale_cross2_y()} is registered on the two
+pseudo-Huber parametrizations, the skew normal and the skew t. The gaussian
+and the Student t have methods of their own, as do several other families
+(the exponential, the Weibull, the generalized Pareto and the lognormal
+among them), and a continuous family with no method of its own takes
+\code{\link[=distrib_cross2_y.continuous_distrib]{distrib_cross2_y.continuous_distrib()}}.
 }
 \section{Notation}{
 
@@ -68,12 +70,13 @@ the two standardized quantities \eqn{\sigma\ell^{(y)}} and
 \examples{
 y <- c(-0.7, 0.3, 1.4)
 
-# Fully location-scale: both components closed.
+# A fully location-scale family has both components in closed form.
 d <- cauchy_distrib()
 theta <- list(mu = 0.3, sigma = 1.2)
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::grad(f, c(0.3, 1.2))
 

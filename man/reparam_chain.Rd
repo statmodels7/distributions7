@@ -23,9 +23,9 @@ reparam_chain(
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{expected}{Should the expected derivatives be carried? A single
-logical, \code{FALSE} by default. \code{TRUE} is meaningful from order 2 up, the
-score having mean zero.}
+\item{expected}{Should the expected derivatives be carried? It is a single
+logical, with default \code{FALSE}. \code{TRUE} is meaningful from order 2 up,
+because the score has mean zero.}
 
 \item{approx, nsim}{Forwarded to the parent's expected derivatives: \code{approx}
 is one of \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, and
@@ -36,10 +36,10 @@ A named list of numeric vectors, keyed as
 \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-The body that the four derivative methods share: it aligns the new
+The body that the derivative methods share: it aligns the new
 parameters, maps them to the parent's, fetches the map's tables and hands all
-three to \code{\link[=chain_derivatives]{chain_derivatives()}}. The \code{order} and \code{expected} arguments are what
-separate the four registrations.
+three to \code{\link[=chain_derivatives]{chain_derivatives()}}. The registrations differ in the \code{order} and
+\code{expected} arguments that they pass.
 }
 \seealso{
 \code{\link[=chain_derivatives]{chain_derivatives()}}, which does the work;

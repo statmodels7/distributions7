@@ -17,8 +17,8 @@ Builds the order-\code{k} derivative method for the mixed form of
 \code{\link[=zero_adjusted]{zero_adjusted()}}.
 }
 \details{
-A continuous parent puts no mass at zero, so there is no truncation constant
-to correct for: the parameter part is simply the parent's derivative, switched
-off at the atom.
+A continuous parent puts no mass at zero, so the likelihood needs no
+truncation constant: the parameter part is simply the parent's derivative,
+switched off at the atom.
 }
 \keyword{internal}

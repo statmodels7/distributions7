@@ -26,14 +26,14 @@ per unordered pair of parameters, keyed as
 \description{
 Computes
 \deqn{\frac{\partial^2 \ell_T}{\partial\theta_i \partial\theta_j}
-  = H_{ij}(y) - M_{ij} + m_i m_j,}
-the subtracted part \eqn{M_{ij} - m_i m_j} being the second derivative of
-\eqn{\log Z}. One of the shared bodies, registered on both truncated
+  = H_{ij}(y) - M_{ij} + m_i m_j.}
+The subtracted part \eqn{M_{ij} - m_i m_j} is the second derivative of
+\eqn{\log Z}. The body is shared and is registered on both truncated
 classes.
 }
 \details{
-Only \eqn{H_{ij}(y)} varies with the data; the correction is a function of
-\eqn{\theta} and the endpoints alone, so it is computed once and recycled to
+Only \eqn{H_{ij}(y)} varies with the data; the correction depends only on
+\eqn{\theta} and the endpoints, so it is computed once and recycled to
 the length of \code{y}. For a discrete parent whose retained mass sits at the
 lower endpoint, \eqn{f(L)/Z > 0.9}, the two terms cancel to a number much
 smaller than either, and the Hessian there is taken from \code{\link[=head_derivs]{head_derivs()}}
@@ -42,7 +42,7 @@ treated the same way.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -57,7 +57,8 @@ y <- c(-0.5, 0, 1)
 H <- distrib_hessian(tn, y, theta)
 vapply(H, sum, numeric(1))
 
-# Against a numerical Hessian of the truncated log-likelihood.
+# The Hessian is compared with a numerical Hessian of the truncated
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- tn@params
   sum(distrib_pdf(tn, y, t2, log = TRUE))

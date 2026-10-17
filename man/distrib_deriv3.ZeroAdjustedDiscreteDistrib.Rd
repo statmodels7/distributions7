@@ -27,12 +27,12 @@ The hurdle likelihood factorizes into a binary part and a positive part,
 so at every order the mixed components in \code{za} and a parent parameter are
 exactly zero, and the two halves are differentiated separately. The
 \eqn{\theta} part is the parent's derivative less that of the truncation
-constant \eqn{\log(1 - f_0)}, which is the mass the parent puts at zero and
-the hurdle removes.
+constant \eqn{\log(1 - f_0)}, which is the mass that the parent puts at zero
+and that the hurdle removes.
 
 This is the structural difference from \code{\link[=zero_inflated]{zero_inflated()}}, where the mixed
-block is not zero, because inflation adds to the parent's mass at zero and no
-single zero can be attributed to one mechanism.
+block is not zero, because inflation adds to the parent's mass at zero and a
+zero cannot be attributed to a single mechanism.
 }
 \examples{
 h <- zero_adjusted(poisson_distrib())
@@ -48,7 +48,8 @@ distrib_deriv3(zero_inflated(poisson_distrib()), 0,
 
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}} for the wrapper and the counting rule it
+\code{\link[=zero_adjusted]{zero_adjusted()}} for the wrapper and the counting rule that it
 enforces; \code{\link[=distrib_deriv4.ZeroAdjustedDiscreteDistrib]{distrib_deriv4.ZeroAdjustedDiscreteDistrib()}} for the order
-above; \code{\link[=distrib_deriv3.ZeroInflatedDistrib]{distrib_deriv3.ZeroInflatedDistrib()}} for the model this is not.
+above; \code{\link[=distrib_deriv3.ZeroInflatedDistrib]{distrib_deriv3.ZeroInflatedDistrib()}} for the model that this is
+not.
 }

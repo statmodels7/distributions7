@@ -35,12 +35,14 @@ y <- c(0.2, 1, 3)
 
 distrib_grad_y(d, y, theta)
 
-# Against a numerical derivative of the folded log-density.
+# The result is compared with a numerical derivative of the folded
+# log-density.
 vapply(y, function(v)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), v),
   numeric(1))
 
-# The minus sign written out: the reflected preimage pushes the other way.
+# The minus sign is written out here: the reflected preimage pushes the
+# other way.
 g0 <- gaussian1_distrib()
 w <- distributions7:::fold_parts(g0, y, theta)$w
 all.equal(distrib_grad_y(d, y, theta),

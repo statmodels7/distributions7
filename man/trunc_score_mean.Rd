@@ -23,14 +23,14 @@ parent's score: the truncated score is \eqn{s_i(y) - m_i}. It is
 \code{\link[=trunc_score_mean_quad]{trunc_score_mean_quad()}} otherwise.
 }
 \details{
-\eqn{m_i} is a function of \eqn{\theta} and of the endpoints alone, not of
-the data, so one evaluation serves a whole sample. It is also what makes
-derivatives of a truncated distribution dearer than the parent's: the
-quadrature route costs one integral per parameter.
+\eqn{m_i} depends only on \eqn{\theta} and the endpoints, not on the data,
+so one evaluation serves a whole sample. Its computation also makes
+derivatives of a truncated distribution more expensive than the parent's,
+because the quadrature route costs one integral per parameter.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -50,7 +50,7 @@ g <- distrib_gradient(tn, y, theta)
 gp <- distrib_gradient(gaussian1_distrib(), y, theta)
 max(abs(unlist(g) - (unlist(gp) - rep(unlist(m), each = length(y)))))
 
-# It is also what makes the truncated score have mean zero, which the
+# This recentering makes the truncated score have mean zero, which the
 # untruncated score does not have over the interval.
 set.seed(1)
 ys <- distrib_rng(tn, 50000, theta)

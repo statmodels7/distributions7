@@ -22,12 +22,13 @@ each a numeric vector of length \code{length(y)}. A one-parameter parent gives
 five.
 }
 \description{
-The same two regimes as at third order, one order along. At \eqn{y > 0} the
+The method uses the same two regimes as the third-order method, at one order
+higher. At \eqn{y > 0} the
 log-likelihood separates into \eqn{\log(1-\zeta)} and the parent's, so a
 component mixing \eqn{\zeta} with a parent parameter is exactly zero; at
 \eqn{y = 0} the moment-to-cumulant sum over the partitions of a four-index
-set gives \eqn{d^I \log L_0}, with every block naming \eqn{\zeta} twice
-contributing nothing because \eqn{L_0} is affine in it.
+set gives \eqn{d^I \log L_0}, and every block that names \eqn{\zeta} twice
+contributes nothing because \eqn{L_0} is affine in \eqn{\zeta}.
 
 The partitions of four indices number fifteen against five for three, so the
 partition sum has three times as many terms at this order. The same identity

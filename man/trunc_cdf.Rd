@@ -22,8 +22,8 @@ returned on the log scale.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probabilities, of the length \code{q} and \code{theta}
-recycle to.
+A numeric vector of probabilities, of the length to which \code{q} and
+\code{theta} recycle.
 }
 \description{
 Evaluates \eqn{F_T(q) = (F(q) - F(L^-))/Z} and the upper tail \eqn{(F(U) -
@@ -31,20 +31,20 @@ F(q))/Z}, clamped to \eqn{[0, 1]}. The lower tail of an interval with
 \eqn{F(L^-) \le 1/2} is the first difference as written. Otherwise, and for
 the upper tail, each difference is formed from the parent's distribution
 function while \eqn{F(q) \le 1/2} and from its survival function beyond, as
-\eqn{(S(L^-) - S(q))/Z} and \eqn{(S(q) - S(U))/Z}, so that neither tail is a
-difference of two numbers near one. One of the shared method bodies,
-registered on both truncated classes.
+\eqn{(S(L^-) - S(q))/Z} and \eqn{(S(q) - S(U))/Z}, so that each tail avoids a
+difference of two numbers near one. The body is shared and is registered on
+both truncated classes.
 }
 \details{
-The clamp is there to make the endpoints exact. It returns \code{0} below \eqn{L}
-and \code{1} at and above \eqn{U}, where the unclamped ratio would give a small
-negative number or one plus a rounding. At \eqn{L} itself the value is \code{0}
-for a continuous parent and \eqn{f(L)/Z}, the mass of the lower endpoint, for
-a discrete one.
+The clamp makes the endpoints exact. The function returns \code{0} below \eqn{L}
+and \code{1} at and above \eqn{U}, where the ratio before clamping would give a
+small negative number or one plus a rounding. At \eqn{L} itself the value is
+\code{0} for a continuous parent and \eqn{f(L)/Z}, the mass of the lower endpoint,
+for a discrete one.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -55,10 +55,10 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 theta <- list(mu = 0.3, sigma = 1.2)
 
-# Exactly 0 and 1 at the endpoints.
+# The values at the endpoints are exactly 0 and 1.
 distrib_cdf(tn, c(-1, 0.3, 2), theta)
 
-# Against the ratio written out.
+# The ratio written out gives the same value at 0.3.
 cs <- distributions7:::trunc_constants(tn, theta)
 (pnorm(0.3, 0.3, 1.2) - cs$Fl) / cs$Z
 

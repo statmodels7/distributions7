@@ -20,19 +20,19 @@ probability at it.
 Declares the single point mass at zero, with probability \eqn{\pi}. This
 declaration marks the object as a MIXED distribution: its density integrates
 to \eqn{1 - \pi}, and the remaining probability \eqn{\pi} is the mass of the
-atom. A function that ignores the atom finds a total probability of \eqn{1 -
-\pi}.
+atom. A function that ignores the atom obtains a total probability of \eqn{1
+- \pi}.
 }
 \details{
 The declaration is read by \code{\link[=check_distrib]{check_distrib()}}, \code{\link[=truncated]{truncated()}} and \code{\link[=folded]{folded()}}.
 \code{\link[=check_distrib]{check_distrib()}} changes the checks that fail on a mixed law: the density
 integrates to \eqn{1-\pi} plus the atom, the quantile round trip cannot close
 inside the jump, and a central difference in \eqn{y} across the atom has no
-derivative to converge to. \code{\link[=truncated]{truncated()}} keeps the atoms of the parent that
-lie inside the truncation interval. \code{\link[=folded]{folded()}} rejects a parent that declares
-an atom, because zero is its own preimage under the absolute value and every
-other point has two. \code{\link[=expectation]{expectation()}} does not read the declaration; its
-method for this class splits the integral at zero.
+derivative to which it can converge. \code{\link[=truncated]{truncated()}} keeps the atoms of the
+parent that lie inside the truncation interval. \code{\link[=folded]{folded()}} rejects a parent
+that declares an atom, because zero is its own preimage under the absolute
+value and every other point has two. \code{\link[=expectation]{expectation()}} does not read the
+declaration; its method for this class splits the integral at zero.
 
 The probability is read from \code{theta}, so the returned value changes with the
 value of \code{za}.
@@ -51,11 +51,12 @@ distrib_atoms(d, theta)
 # A plain continuous parent declares none.
 distrib_atoms(gaussian1_distrib(), theta[c("mu", "sigma")])
 
-# The declaration is what folded() rejects.
+# A parent that has this declaration is rejected by folded().
 try(folded(d))
 }
 \seealso{
 \code{\link[=distrib_atoms]{distrib_atoms()}} for the generic, \code{\link[=check_distrib]{check_distrib()}} and
-\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation.ZeroAdjustedContinuousDistrib()}} for the two consumers, and
-\code{\link[=folded]{folded()}}, which rejects a parent that declares one.
+\code{\link[=truncated]{truncated()}}, which read the declaration,
+\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation.ZeroAdjustedContinuousDistrib()}}, which splits the integral at
+zero, and \code{\link[=folded]{folded()}}, which rejects a parent that declares one.
 }

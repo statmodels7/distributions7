@@ -23,10 +23,10 @@ key pairing a parent parameter with \code{za} holds a vector of exact zeros.
 }
 \description{
 Computes the second derivatives of the mixed log-density in closed form. The
-MIXED BLOCKS ARE EXACTLY ZERO, the likelihood factorizing into a binary part
-and a continuous part. The parent block is the parent's own observed Hessian
-at a non-zero observation and zero at the atom, with no truncation
-correction; the hurdle block is \eqn{-1/\pi^2} at the atom and
+MIXED BLOCKS ARE EXACTLY ZERO because the likelihood factorizes into a
+binary part and a continuous part. The parent block is the parent's own
+observed Hessian at a non-zero observation and zero at the atom, with no
+truncation correction; the hurdle block is \eqn{-1/\pi^2} at the atom and
 \eqn{-1/(1-\pi)^2} elsewhere.
 }
 \section{Notation}{
@@ -45,7 +45,7 @@ y <- distrib_rng(d, 300, theta)
 H <- distrib_hessian(d, y, theta)
 vapply(H, sum, numeric(1))
 
-# Against a numerical Hessian of the log-likelihood.
+# The sums are compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

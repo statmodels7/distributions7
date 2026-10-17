@@ -30,9 +30,9 @@ The transformation does not depend on \eqn{\theta}, so
 \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
 has a second term that is a CONSTANT in the parameters and differentiates
 away. Every derivative in \eqn{\theta} is therefore the parent's own,
-evaluated at \eqn{x = g^{-1}(y)}, and nothing is recomputed. The response
-derivatives are the exception and come from the base class, the Jacobian
-depending on \eqn{y}.
+evaluated at \eqn{x = g^{-1}(y)}, and the method does not recompute them.
+The response derivatives are the exception and come from the base class,
+because the Jacobian depends on \eqn{y}.
 }
 \section{Notation}{
 
@@ -53,7 +53,7 @@ vapply(g, sum, numeric(1))
 identical(g, distrib_gradient(gaussian1_distrib(), log(y), theta))
 
 # And it agrees with a numerical derivative of the TRANSFORMED
-# log-likelihood, the Jacobian having differentiated away.
+# log-likelihood, because the Jacobian differentiates away.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

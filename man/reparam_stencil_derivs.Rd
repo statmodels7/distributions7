@@ -17,7 +17,7 @@ order of the returned list.}
 }
 \value{
 A function of the new parameters and the highest order to form,
-usable as an object's \code{reparam_derivs}, returning the keyed tables
+usable as an object's \code{reparam_derivs}, returning the keyed tables that
 \code{\link[=reparam_tables]{reparam_tables()}} describes.
 }
 \description{
@@ -25,15 +25,14 @@ The numerical fallback behind \code{\link[=reparam_tables]{reparam_tables()}}: e
 is one central stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} in each direction,
 applied to the analytic map, iterated across distinct directions. A
 cross-variable composition of two first differences is one mixed stencil and
-not the same-variable nesting the toolkit forbids.
+is not a nesting in the same variable, which is not allowed in the toolkit.
 }
 \details{
 The accuracy is of the order of \eqn{10^{-11}} at first order and falls
 quickly with the order (see \code{\link[=reparam_tables]{reparam_tables()}}), which is why a family fitted
-in earnest supplies \code{map_derivs} instead. What the fallback buys is that a
-user's own reparametrization works immediately, with no derivatives
-written, as \code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y.continuous_distrib()}} does for a density-only
-family.
+in earnest supplies \code{map_derivs} instead. The fallback lets a user's own
+reparametrization work immediately without derivatives, as
+\code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y.continuous_distrib()}} does for a density-only family.
 }
 \seealso{
 \code{\link[=reparam_tables]{reparam_tables()}}, which calls the result;

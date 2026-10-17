@@ -17,13 +17,13 @@ A named list of numeric vectors, one component per parameter, in
 }
 \description{
 Computes \eqn{m_i = \mathbb{E}_T[s_i]} by integrating the parent's score
-against the truncated law, one integral per parameter. It is the route
-\code{\link[=trunc_score_mean]{trunc_score_mean()}} falls back on for a parent whose cdf derivatives are not
-exact, that is, a continuous parent without registered cdf derivatives.
+against the truncated law, one integral per parameter. \code{\link[=trunc_score_mean]{trunc_score_mean()}}
+falls back on this route for a parent whose cdf derivatives are not exact,
+that is, a continuous parent without registered cdf derivatives.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

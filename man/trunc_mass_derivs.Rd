@@ -22,29 +22,31 @@ route is declined.
 \description{
 Computes \eqn{d^B Z = d^B F(U) - d^B F(L^-)} from the parent's cdf
 derivatives, or returns \code{NULL} when that route is not available. Dividing
-the result by \eqn{Z} gives the truncated expectations
+the result by \eqn{Z} gives the truncated expectations that
 \code{\link[=trunc_score_mean]{trunc_score_mean()}} and \code{\link[=trunc_M]{trunc_M()}} need, replacing one quadrature per
 component with two calls on the parent.
 }
 \section{The discrete correction}{
-The lower endpoint is included in the truncated support, so what leaves
-\eqn{Z} is \eqn{F(L)} minus the mass at \eqn{L}. Its derivatives lose that
-mass's derivatives with it, \eqn{d^I F(L^-) = d^I F(L) - f(L) B_I}, where
-\eqn{B_I} is the complete Bell polynomial in the parent's log-mass
-derivatives that \code{\link[=bell_f_ratio]{bell_f_ratio()}} assembles.
+The lower endpoint is included in the truncated support, so the lower tail
+subtracted in \eqn{Z} is \eqn{F(L)} minus the mass at \eqn{L}. Its
+derivatives are reduced in the same way by the derivatives of that mass,
+\eqn{d^I F(L^-) = d^I F(L) - f(L) B_I}, where \eqn{B_I} is the complete Bell
+polynomial in the parent's log-mass derivatives that \code{\link[=bell_f_ratio]{bell_f_ratio()}}
+assembles.
 }
 
 \section{When NULL is returned}{
 \code{NULL} is returned, and the caller falls back to quadrature, when the order
 exceeds four, the highest order of a cdf derivative, and in two further
-situations. The first is accuracy, and is decided by \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}.
-The second is correctness: a mixed parent with an atom sitting exactly on the
-lower endpoint, whose mass derivative is not the parent's own mass function.
+situations. One concerns accuracy and is tested by \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}.
+The other concerns correctness and arises for a mixed parent with an atom
+sitting exactly on the lower endpoint, because the derivative of that mass
+is not the parent's own mass function.
 }
 
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -59,7 +61,7 @@ Z <- distributions7:::trunc_constants(tn, theta)$Z
 dZ <- distributions7:::trunc_mass_derivs(tn, theta, 1L)
 unlist(dZ) / Z
 
-# The same numbers the quadrature route returns, to machine precision.
+# The quadrature route returns the same numbers, to machine precision.
 unlist(distributions7:::trunc_score_mean_quad(tn, theta))
 
 # A gamma parent has compiled cdf derivatives, so the route is available

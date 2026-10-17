@@ -26,7 +26,7 @@ vector of the recycled length of \code{x}.
 }
 \description{
 Returns a memoized function giving \eqn{d^B L / L} for any block \eqn{B} of
-parameter names. That is what \code{\link[=log_deriv]{log_deriv()}} consumes to assemble a
+parameter names. The function \code{\link[=log_deriv]{log_deriv()}} consumes it to assemble a
 derivative of \eqn{\log L} of any order. The ratio is the parent's complete
 Bell polynomial evaluated at each preimage and averaged with the weight
 \eqn{w},
@@ -59,7 +59,7 @@ sp <- distrib_gradient(g, x, theta)$mu
 sm <- distrib_gradient(g, -x, theta)$mu
 all.equal(r("mu"), w * sp + (1 - w) * sm)
 
-# Which at first order IS the folded score, log L having no other term.
+# At first order this IS the folded score, because log L has no other term.
 all.equal(r("mu"), distrib_gradient(folded(g), x, theta)$mu)
 
 # A two-element block is the second-order ratio, not the second derivative
@@ -71,6 +71,7 @@ c(ratio = r(c("mu", "mu"))[2],
 }
 \seealso{
 \code{\link[=fold_parts]{fold_parts()}} for the weight, \code{\link[=log_deriv]{log_deriv()}} for the partition sum
-this feeds, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} for the parent's own Bell quantity.
+that this function feeds, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} for the parent's own Bell
+quantity.
 }
 \keyword{internal}

@@ -21,8 +21,8 @@ no location.}
 is \code{1}.}
 }
 \value{
-A numeric vector as long as \code{y}: the scale's own pair alone, not a
-list.
+A numeric vector as long as \code{y} that contains only the scale's own
+pair, not a list.
 }
 \description{
 Computes \eqn{\partial^2\ell^{(y)}/\partial\sigma^2} or
@@ -38,9 +38,9 @@ With \eqn{A = \sigma\ell^{(y)}} and \eqn{B = \sigma^2\ell^{(yy)}},
   \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
   = \frac{z^2B'' + 6zB' + 6B}{\sigma^4},}
 and the primed quantities are the family's own third and fourth response
-derivatives times a power of \eqn{\sigma}, so no further differentiation is
-needed. A parameter beyond the scale is a shape and is not covered;
-\code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}} differences those.
+derivatives times a power of \eqn{\sigma}, so the formulas do not need
+further differentiation. A parameter beyond the scale is a shape and is not
+covered; \code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}} differences those.
 }
 \section{Notation}{
 
@@ -58,7 +58,7 @@ theta <- list(mu = 1.5)
 
 distributions7:::scale_only_theta2(d, y, theta, 1L, 1L)
 
-# The identity written out.
+# The identity is written out.
 s <- 1.5
 z <- y / s
 A <- s * distrib_grad_y(d, y, theta)
@@ -66,7 +66,7 @@ A1 <- s^2 * distrib_hess_y(d, y, theta)
 A2 <- s^3 * distrib_deriv3_y(d, y, theta)
 (z^2 * A2 + 4 * z * A1 + 2 * A) / s^3
 
-# And what the family's own method reports.
+# The family's own method returns the same value.
 distrib_grad_y_hess(d, y, theta)$mu_mu
 }
 \seealso{

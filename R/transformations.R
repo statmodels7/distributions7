@@ -7,29 +7,30 @@ NULL
 #' @description
 #' A `transformer` records the mathematical rules of a change of variables
 #' \eqn{Y = g(X)}: the map, its inverse, the Jacobian of that inverse and the
-#' two derivatives of the Jacobian's logarithm, together with the bookkeeping
-#' that says which supports the map applies to and what it does to them. It
-#' carries no distribution and answers no distribution generic; it is consumed
-#' by [transformation()], which returns a [TransformedDistrib].
+#' two derivatives of the Jacobian's logarithm. It also records the supports on
+#' which the map is valid and the transformed support that results. It carries
+#' no distribution and defines no method for the distribution generics; it is
+#' consumed by [transformation()], which returns a [TransformedDistrib].
 #'
 #' @details
 #' # Requirements on the map
 #'
 #' \eqn{g} has to be BIJECTIVE on the parent's support. A map that is two to
-#' one, such as the absolute value, has no inverse to carry a density through
-#' and cannot be a transformer at all; [folded()] handles that case by adding
-#' the two preimages instead.
+#' one, such as the absolute value, has no inverse through which a density
+#' could be carried and cannot be a transformer at all; [folded()] handles that
+#' case by adding the two preimages instead.
 #'
-#' # Writing your own
+#' # User-defined transformers
 #'
 #' The constructor accepts any subset of the ten properties and gives the others
 #' empty defaults, but [transformation()] needs all of them to be functions of
 #' the stated form, and `trans_abs_jac` must accept a `log` argument, because
 #' [distrib_pdf.TransformedDistrib()] works on the log scale throughout.
-#' `valid_support` takes the parent's `bounds` and answers whether the map
-#' applies; `bounds_fun` takes the same and returns the transformed support.
-#' Nothing validates the derivatives, so [check_distrib()] on the resulting
-#' distribution is what catches a transcription error in them.
+#' `valid_support` takes the parent's `bounds` and returns a logical value that
+#' indicates whether the map applies; `bounds_fun` takes the same argument and
+#' returns the transformed support. Because the derivatives are not validated, a
+#' transcription error in them is detected by applying [check_distrib()] to the
+#' resulting distribution.
 #'
 #' @param name A single string identifying the transformation. It composes the
 #'   result's `distrib_name` as `"name(parent)"` unless `transformation()` is
@@ -49,10 +50,12 @@ NULL
 #' @param bounds_fun A function of the parent's `bounds` returning the
 #'   transformed support, a numeric vector of length 2.
 #' @param valid_support A function of the parent's `bounds` returning a single
-#'   logical: whether the map applies there. It is what
-#'   `transformation(gaussian1_distrib(), log_transform())` fails on.
-#' @param decreasing Logical of length 1. `TRUE` for a monotonically decreasing
-#'   map, which swaps the tails in the distribution and quantile functions.
+#'   logical: whether the map applies there. The call
+#'   `transformation(gaussian1_distrib(), log_transform())` fails because this
+#'   function returns `FALSE` for the support of the Gaussian.
+#' @param decreasing Logical of length 1. It is `TRUE` for a monotonically
+#'   decreasing map, which swaps the tails in the distribution and quantile
+#'   functions.
 #'
 #' @return An S7 object of class `transformer`, carrying the ten properties
 #'   above and nothing else.
@@ -62,11 +65,11 @@ NULL
 #' the parent's variable and \eqn{Y = g(X)} the transformed one.
 #'
 #' @section Methods:
-#' None. A `transformer` is a description of a change of variables, not a
-#' distribution. It is consumed by [transformation()], which returns a
-#' [TransformedDistrib] carrying the full set of distribution methods.
+#' A `transformer` has no methods. It is a description of a change of variables,
+#' not a distribution. It is consumed by [transformation()], which returns a
+#' [TransformedDistrib] that carries the full set of distribution methods.
 #'
-#' The twelve ready-made transformers: [log_transform()], [exp_transform()],
+#' The twelve ready-made transformers are [log_transform()], [exp_transform()],
 #' [sqrt_transform()], [inverse_transform()], [power_transform()],
 #' [bc_transform()], [yj_transform()], [softplus_transform()],
 #' [asinh_transform()], [logit_transform()], [expit_transform()] and
@@ -81,16 +84,19 @@ NULL
 #' tr@name
 #' S7::prop_names(tr)
 #'
-#' # The map, its inverse and the Jacobian of that inverse.
+#' # The map, its inverse and the Jacobian of that inverse are evaluated at one
+#' # point.
 #' c(forward = tr@trans_fun(exp(1)), inverse = tr@trans_inv(1),
 #'   log_jacobian = tr@trans_abs_jac(1, log = TRUE))
 #'
-#' # It says which supports it applies to, and what it does to them.
+#' # The transformer records the supports on which the map is valid and the
+#' # transformed support.
 #' c(on_positives = tr@valid_support(c(0, Inf)),
 #'   on_the_line = tr@valid_support(c(-Inf, Inf)))
 #' tr@bounds_fun(c(0, Inf))
 #'
-#' # And a decreasing map declares itself, which swaps the tails downstream.
+#' # The `decreasing` property is TRUE for a decreasing map, which swaps the
+#' # tails downstream.
 #' vapply(list(log_transform(), inverse_transform(), expit_transform()),
 #'        function(z) z@decreasing, TRUE)
 #'
@@ -118,14 +124,18 @@ transformer <- S7::new_class("transformer",
 
 #' Logarithmic Transformation
 #'
-#' @description Transformer for \eqn{Y = \log(X)}: maps \eqn{(0, \infty)} to the real line.
-#' Inverse \eqn{X = e^Y}, Jacobian \eqn{|J| = e^Y}.
+#' @description Returns the transformer for \eqn{Y = \log(X)}, which maps
+#' \eqn{(0, \infty)} to the real line. The inverse is \eqn{X = e^Y} and the
+#' Jacobian is \eqn{|J| = e^Y}.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), log_transform())
 #' distrib_pdf(d, 0, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [exp_transform()], [sqrt_transform()], [inverse_transform()],
+#'   [power_transform()], [bc_transform()], [yj_transform()],
+#'   [softplus_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 log_transform <- function() {
   transformer(
@@ -148,14 +158,18 @@ log_transform <- function() {
 
 #' Exponential Transformation
 #'
-#' @description Transformer for \eqn{Y = e^X}: maps the real line to \eqn{(0, \infty)}.
-#' Inverse \eqn{X = \log(Y)}, Jacobian \eqn{|J| = 1/Y}.
+#' @description Returns the transformer for \eqn{Y = e^X}, which maps the real
+#' line to \eqn{(0, \infty)}. The inverse is \eqn{X = \log(Y)} and the Jacobian
+#' is \eqn{|J| = 1/Y}.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), exp_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso [log_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [sqrt_transform()], [inverse_transform()],
+#'   [power_transform()], [bc_transform()], [yj_transform()],
+#'   [softplus_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 exp_transform <- function() {
   transformer(
@@ -174,14 +188,19 @@ exp_transform <- function() {
 
 #' Reciprocal (Inverse) Transformation
 #'
-#' @description Transformer for \eqn{Y = 1/X} (monotonically decreasing on a support not
-#' containing 0). Inverse \eqn{X = 1/Y}, Jacobian \eqn{|J| = 1/Y^2}.
+#' @description Returns the transformer for \eqn{Y = 1/X}, which is
+#'   monotonically
+#' decreasing on a support that does not contain 0. The inverse is
+#' \eqn{X = 1/Y} and the Jacobian is \eqn{|J| = 1/Y^2}.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), inverse_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [power_transform()], [bc_transform()], [yj_transform()],
+#'   [softplus_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 inverse_transform <- function() {
   transformer(
@@ -200,14 +219,18 @@ inverse_transform <- function() {
 
 #' Square Root Transformation
 #'
-#' @description Transformer for \eqn{Y = \sqrt{X}} (requires \eqn{X \ge 0}).
-#' Inverse \eqn{X = Y^2}, Jacobian \eqn{|J| = 2Y}.
+#' @description Returns the transformer for \eqn{Y = \sqrt{X}}, which requires
+#' \eqn{X \ge 0}. The inverse is \eqn{X = Y^2} and the Jacobian is
+#' \eqn{|J| = 2Y}.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), sqrt_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [inverse_transform()],
+#'   [power_transform()], [bc_transform()], [yj_transform()],
+#'   [softplus_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 sqrt_transform <- function() {
   transformer(
@@ -226,19 +249,23 @@ sqrt_transform <- function() {
 
 #' Power Transformation
 #'
-#' @description Transformer for \eqn{Y = X^p}. Inverse \eqn{X = Y^{1/p}},
-#' Jacobian \eqn{|J| = \frac{1}{|p|}|Y|^{1/p - 1}}. Fractional powers require a
+#' @description Returns the transformer for \eqn{Y = X^p}. The inverse is
+#' \eqn{X = Y^{1/p}} and the Jacobian is
+#' \eqn{|J| = \frac{1}{|p|}|Y|^{1/p - 1}}. Fractional powers require a
 #' non-negative support; even integer powers require a support that does not
 #' straddle 0, and on a support at or below zero [transformation()] uses the
 #' negative root \eqn{X = -Y^{1/p}} as the inverse; negative powers require a
-#' support that excludes 0, its endpoints included.
-#' @param p Numeric. The exponent. Defaults to 2.
+#' support that does not contain 0, not even as an endpoint.
+#' @param p A numeric exponent. Defaults to 2.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), power_transform(p = 2))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [bc_transform()], [yj_transform()],
+#'   [softplus_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 power_transform <- function(p = 2) {
   transformer(
@@ -320,14 +347,19 @@ power_negative_transform <- function(p) {
 
 #' Inverse Hyperbolic Sine Transformation
 #'
-#' @description Transformer for \eqn{Y = \text{asinh}(X)}, a log-like transformation that
-#' handles zero and negative values. Inverse \eqn{X = \sinh(Y)}, Jacobian \eqn{|J| = \cosh(Y)}.
+#' @description Returns the transformer for \eqn{Y = \text{asinh}(X)}, a
+#'   log-like
+#' transformation that is defined at zero and at negative values. The inverse is
+#' \eqn{X = \sinh(Y)} and the Jacobian is \eqn{|J| = \cosh(Y)}.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), asinh_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [power_transform()], [bc_transform()],
+#'   [yj_transform()], [softplus_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 asinh_transform <- function() {
   transformer(
@@ -350,17 +382,20 @@ asinh_transform <- function() {
 
 #' Box-Cox Transformation
 #'
-#' @description Transformer for the one-parameter Box-Cox transformation \eqn{Y
-#'   = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for \eqn{\lambda = 0}).
-#'   Requires \eqn{X > 0}. The map is increasing for every \eqn{\lambda}, its
-#'   derivative being \eqn{X^{\lambda - 1}}.
-#' @param lambda Numeric. The transformation parameter.
+#' @description Returns the transformer for the one-parameter Box-Cox
+#'   transformation \eqn{Y = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for
+#'   \eqn{\lambda = 0}). It requires \eqn{X > 0}. The map is increasing for
+#'   every \eqn{\lambda}, because its derivative is \eqn{X^{\lambda - 1}}.
+#' @param lambda The numeric transformation parameter.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), bc_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [power_transform()], [yj_transform()],
+#'   [softplus_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 bc_transform <- function(lambda) {
   if (abs(lambda) < 1e-10) {
@@ -399,16 +434,21 @@ bc_transform <- function(lambda) {
 
 #' Yeo-Johnson Transformation
 #'
-#' @description Transformer for the Yeo-Johnson transformation, extending Box-Cox to
-#' negative values: Box-Cox of \eqn{X+1} (parameter \eqn{\lambda}) for \eqn{X \ge 0},
-#' and negated Box-Cox of \eqn{|X|+1} (parameter \eqn{2-\lambda}) for \eqn{X < 0}.
-#' @param lambda Numeric. The transformation parameter.
+#' @description Returns the transformer for the Yeo-Johnson transformation,
+#'   which
+#' extends Box-Cox to negative values. The map is Box-Cox of \eqn{X+1}
+#' (parameter \eqn{\lambda}) for \eqn{X \ge 0}, and negated Box-Cox of
+#' \eqn{|X|+1} (parameter \eqn{2-\lambda}) for \eqn{X < 0}.
+#' @param lambda The numeric transformation parameter.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), yj_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [power_transform()], [bc_transform()],
+#'   [softplus_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 yj_transform <- function(lambda) {
   lam2 <- 2 - lambda
@@ -498,16 +538,22 @@ yj_transform <- function(lambda) {
 
 #' Affine (Location-Scale) Transformation
 #'
-#' @description Transformer for \eqn{Y = \text{loc} + \text{scale} \cdot X}.
-#' Inverse \eqn{X = (Y - \text{loc})/\text{scale}}, Jacobian \eqn{|J| = 1/|\text{scale}|}.
-#' @param loc Numeric. The location shift. Defaults to 0.
-#' @param scale Numeric. The scale multiplier (non-zero). Defaults to 1.
+#' @description Returns the transformer for
+#' \eqn{Y = \text{loc} + \text{scale} \cdot X}. The inverse is
+#' \eqn{X = (Y - \text{loc})/\text{scale}} and the Jacobian is
+#' \eqn{|J| = 1/|\text{scale}|}.
+#' @param loc The numeric location shift. Defaults to 0.
+#' @param scale The numeric scale multiplier, which must be non-zero. Defaults
+#'   to 1.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), affine_transform(loc = 1, scale = 2))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [power_transform()], [bc_transform()],
+#'   [yj_transform()], [softplus_transform()], [asinh_transform()],
+#'   [logit_transform()], [expit_transform()], [transformation()]
 #' @export
 affine_transform <- function(loc = 0, scale = 1) {
   if (scale == 0) {
@@ -536,14 +582,19 @@ affine_transform <- function(loc = 0, scale = 1) {
 
 #' Logit Transformation
 #'
-#' @description Transformer for \eqn{Y = \text{logit}(X)}: maps \eqn{(0, 1)} to the real line.
-#' Inverse \eqn{X = \text{plogis}(Y)}, Jacobian \eqn{|J| = \text{dlogis}(Y)}.
+#' @description Returns the transformer for \eqn{Y = \text{logit}(X)}, which
+#'   maps
+#' \eqn{(0, 1)} to the real line. The inverse is \eqn{X = \text{plogis}(Y)} and
+#' the Jacobian is \eqn{|J| = \text{dlogis}(Y)}.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(beta1_distrib(), logit_transform())
 #' distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [power_transform()], [bc_transform()],
+#'   [yj_transform()], [softplus_transform()], [asinh_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 logit_transform <- function() {
   transformer(
@@ -562,14 +613,19 @@ logit_transform <- function() {
 
 #' Expit (Sigmoid) Transformation
 #'
-#' @description Transformer for \eqn{Y = \text{plogis}(X)}: maps the real line to \eqn{(0, 1)}.
-#' Inverse \eqn{X = \text{logit}(Y)}, Jacobian \eqn{|J| = 1/(Y(1-Y))}.
+#' @description Returns the transformer for \eqn{Y = \text{plogis}(X)}, which
+#'   maps
+#' the real line to \eqn{(0, 1)}. The inverse is \eqn{X = \text{logit}(Y)} and
+#' the Jacobian is \eqn{|J| = 1/(Y(1-Y))}.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), expit_transform())
 #' distrib_pdf(d, 0.5, list(mu = 0, sigma = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [power_transform()], [bc_transform()],
+#'   [yj_transform()], [softplus_transform()], [asinh_transform()],
+#'   [logit_transform()], [affine_transform()], [transformation()]
 #' @export
 expit_transform <- function() {
   transformer(
@@ -591,18 +647,22 @@ expit_transform <- function() {
 
 #' Softplus Transformation
 #'
-#' @description Transformer for the inverse-softplus map \eqn{Y =
-#'   \frac{1}{a}\log(e^{aX} - 1)}, sending \eqn{(0, \infty)} to the real line,
-#'   evaluated as \eqn{X + \frac{1}{a}\log(1 - e^{-aX})} so that it does not
-#'   overflow at a large argument. Inverse (softplus) \eqn{X = \frac{1}{a}\log(1
-#'   + e^{aY})}, Jacobian \eqn{|J| = \text{plogis}(aY)}.
-#' @param a Numeric. Positive scale parameter. Defaults to 1.
+#' @description Returns the transformer for the inverse-softplus map \eqn{Y =
+#'   \frac{1}{a}\log(e^{aX} - 1)}, which sends \eqn{(0, \infty)} to the real
+#'   line and is evaluated as \eqn{X + \frac{1}{a}\log(1 - e^{-aX})} so that it
+#'   does not overflow at a large argument. The inverse (softplus) is
+#'   \eqn{X = \frac{1}{a}\log(1 + e^{aY})} and the Jacobian is
+#'   \eqn{|J| = \text{plogis}(aY)}.
+#' @param a The numeric scale parameter, which must be positive. Defaults to 1.
 #' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), softplus_transform(a = 1))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()],
+#'   [inverse_transform()], [power_transform()], [bc_transform()],
+#'   [yj_transform()], [asinh_transform()], [logit_transform()],
+#'   [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 softplus_transform <- function(a = 1) {
   if (a <= 0) {
@@ -633,9 +693,9 @@ softplus_transform <- function(a = 1) {
 #' @name TransformedDistrib
 #'
 #' @description
-#' The S7 class of the distribution of \eqn{Y = g(X)}, where \eqn{X} follows a
-#' wrapped continuous distribution and \eqn{g} is a BIJECTIVE [transformer()].
-#' Its density is the change-of-variables formula
+#' `TransformedDistrib` is the S7 class of the distribution of \eqn{Y = g(X)},
+#' where \eqn{X} follows a wrapped continuous distribution and \eqn{g} is a
+#' BIJECTIVE [transformer()]. Its density is the change-of-variables formula
 #' \deqn{f_Y(y) = f_X(g^{-1}(y))\,\lvert J(y)\rvert,
 #'   \qquad J(y) = \frac{d}{dy}g^{-1}(y),}
 #' and it carries exactly the parent's parameters: the transformation adds none
@@ -667,9 +727,11 @@ softplus_transform <- function(a = 1) {
 #'   `transformer` beside the parent's properties. For an object built by
 #'   [transformation()], `params`, `params_bounds` and `link_params` are the
 #'   parent's unchanged; `bounds` is the transformer's image of the parent's;
-#'   `params_interpretation` is the parent's with the parent's name appended in
-#'   brackets, since a mean on the transformed scale is not the parent's mean;
-#'   and `distrib_name` is `"g(parent)"` or whatever `new_name` said.
+#'   `params_interpretation` is the parent's, and the parent's name is appended
+#'   in brackets because a mean on the transformed scale is not the parent's
+#'   mean;
+#'   and `distrib_name` is `"g(parent)"`, or the value of `new_name` if that
+#'   argument is given.
 #'
 #' @section Notation:
 #' \eqn{g} is the transformation, \eqn{J} the Jacobian of its inverse,
@@ -718,7 +780,7 @@ softplus_transform <- function(a = 1) {
 #'           distrib_pdf(lognormal1_distrib(), y,
 #'                       list(mu = 0.5, sigma2 = 0.8^2)))
 #'
-#' # The interpretation says which scale a parameter lives on.
+#' # The interpretation records the scale on which each parameter is defined.
 #' d@params_interpretation
 TransformedDistrib <- S7::new_class("TransformedDistrib",
   parent = continuous_distrib,
@@ -742,10 +804,10 @@ TransformedDistrib <- S7::new_class("TransformedDistrib",
 #' Two singular cases are handled explicitly. A parent log-density that is
 #' `+Inf`, which a density with a pole produces, is clamped to
 #' `log(.Machine$double.xmax)`, so that a quadrature over the transformed
-#' density meets a large number instead of `Inf - Inf`. A parent density of
-#' exactly zero WINS over an infinite Jacobian, so the result is `-Inf`. The
-#' point is on the boundary or outside the transformed support, and the result
-#' is `-Inf` where the unguarded sum would give `NaN`.
+#' density meets a large number instead of `Inf - Inf`. If the parent density
+#' is exactly zero, the result is `-Inf` even where the Jacobian is infinite.
+#' Such a point is on the boundary or outside the transformed support, and the
+#' result is `-Inf` where the unguarded sum would give `NaN`.
 #'
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param y A numeric vector of observations on the TRANSFORMED scale. A point
@@ -779,7 +841,8 @@ TransformedDistrib <- S7::new_class("TransformedDistrib",
 #' # It is a density: it integrates to one over the transformed support.
 #' integrate(function(z) distrib_pdf(d, z, theta), 0, Inf)$value
 #'
-#' # Written out, the parent's density at the preimage times the Jacobian.
+#' # Written out, the density is the parent's density at the preimage times the
+#' # Jacobian.
 #' tr <- d@transformer
 #' all.equal(distrib_pdf(d, y, theta),
 #'           dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y, log = FALSE))
@@ -889,7 +952,7 @@ S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower
 #' distrib_quantile(d, p, theta)
 #' all.equal(distrib_quantile(d, p, theta), qlnorm(p, 0.5, 0.8))
 #'
-#' # The round trip closes, the transformation being a bijection.
+#' # The round trip closes, because the transformation is a bijection.
 #' max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
 #'
 #' # Under a decreasing transformation the p-th quantile is g of the
@@ -920,8 +983,8 @@ S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, 
 #'
 #' @return A numeric vector of length `n`, on the transformed scale.
 #'
-#' @seealso [distrib_pdf.TransformedDistrib()] for the density these are drawn
-#'   from, and [distrib_rng()] for the generic.
+#' @seealso [distrib_pdf.TransformedDistrib()] for the density from which these
+#'   are drawn, and [distrib_rng()] for the generic.
 #'
 #' @examples
 #' d <- transformation(gaussian1_distrib(), exp_transform())
@@ -955,9 +1018,9 @@ S7::method(distrib_rng, TransformedDistrib) <- function(distrib, n, theta, ...) 
 #' \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
 #' has a second term that is a CONSTANT in the parameters and differentiates
 #' away. Every derivative in \eqn{\theta} is therefore the parent's own,
-#' evaluated at \eqn{x = g^{-1}(y)}, and nothing is recomputed. The response
-#' derivatives are the exception and come from the base class, the Jacobian
-#' depending on \eqn{y}.
+#' evaluated at \eqn{x = g^{-1}(y)}, and the method does not recompute them.
+#' The response derivatives are the exception and come from the base class,
+#' because the Jacobian depends on \eqn{y}.
 #'
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param y A numeric vector of observations on the transformed scale.
@@ -991,7 +1054,7 @@ S7::method(distrib_rng, TransformedDistrib) <- function(distrib, n, theta, ...) 
 #' identical(g, distrib_gradient(gaussian1_distrib(), log(y), theta))
 #'
 #' # And it agrees with a numerical derivative of the TRANSFORMED
-#' # log-likelihood, the Jacobian having differentiated away.
+#' # log-likelihood, because the Jacobian differentiates away.
 #' ll <- function(v) {
 #'   t2 <- as.list(v); names(t2) <- d@params
 #'   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -1006,17 +1069,17 @@ S7::method(distrib_gradient, TransformedDistrib) <- function(distrib, y, theta, 
 #'
 #' @description
 #' Returns the parent's observed Hessian evaluated at \eqn{x = g^{-1}(y)}, for
-#' the reason the score has: the Jacobian is a constant in \eqn{\theta} and
-#' differentiates away twice over.
+#' the same reason as for the score: the Jacobian is a constant in
+#' \eqn{\theta} and differentiates away twice over.
 #'
 #' @details
 #' The transformation does not depend on \eqn{\theta}, so
 #' \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
 #' has a second term that is a CONSTANT in the parameters and differentiates
 #' away. Every derivative in \eqn{\theta} is therefore the parent's own,
-#' evaluated at \eqn{x = g^{-1}(y)}, and nothing is recomputed. The response
-#' derivatives are the exception and come from the base class, the Jacobian
-#' depending on \eqn{y}.
+#' evaluated at \eqn{x = g^{-1}(y)}, and the method does not recompute them.
+#' The response derivatives are the exception and come from the base class,
+#' because the Jacobian depends on \eqn{y}.
 #'
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param y A numeric vector of observations on the transformed scale.
@@ -1045,10 +1108,10 @@ S7::method(distrib_gradient, TransformedDistrib) <- function(distrib, y, theta, 
 #' H <- distrib_hessian(d, y, theta)
 #' vapply(H, sum, numeric(1))
 #'
-#' # The parent's, at the preimage.
+#' # It is the parent's Hessian, at the preimage.
 #' identical(H, distrib_hessian(gaussian1_distrib(), log(y), theta))
 #'
-#' # Against a numerical Hessian of the transformed log-likelihood.
+#' # It agrees with a numerical Hessian of the transformed log-likelihood.
 #' ll <- function(v) {
 #'   t2 <- as.list(v); names(t2) <- d@params
 #'   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -1070,10 +1133,10 @@ S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, s
 #' \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
 #' and the Jacobian does not depend on \eqn{\theta}, the expectation of the
 #' transformed model's second derivative is the parent's expectation
-#' reparametrized by the change of variables, which is the same number. No
-#' approximation is added by the wrapper, and `approx` and `nsim` are not
+#' reparametrized by the change of variables, which is the same number. The
+#' wrapper does not add an approximation, and `approx` and `nsim` are not
 #' forwarded. The result is exact when the parent's expected Hessian is exact
-#' and otherwise is the value the parent's own default route returns.
+#' and otherwise is the value that the parent's own default route returns.
 #'
 #' @details
 #' This is the strongest of the three delegations: the score and the observed
@@ -1149,7 +1212,7 @@ S7::method(expected_hessian_exact, TransformedDistrib) <- function(x, ...) {
 #' derivatives of the expected information on the parameter scale. A
 #' transformation of the response leaves the expected information unchanged
 #' as a function of the parameters, so its derivatives are the parent's.
-#' Registered through [register_dexpected()].
+#' The function is registered through [register_dexpected()].
 #'
 #' @param d A transformed family, from [transformation()].
 #' @param y The response, read for its length.
@@ -1187,30 +1250,33 @@ register_dexpected(TransformedDistrib, transformed_dexpected)
 #' # What comes from where
 #'
 #' The distribution function, the quantile function and the generator are
-#' obtained by mapping through \eqn{g}, with the tails swapped for a decreasing
-#' transformation. Since \eqn{g} does not depend on the parameters, the score,
-#' the observed Hessian and the expected Hessian COINCIDE with the parent's,
-#' evaluated at \eqn{x = g^{-1}(y)}; nothing is recomputed and no accuracy is
-#' lost. The moments are available numerically through [moment()].
+#' obtained by mapping through \eqn{g}, and for a decreasing transformation the
+#' tails are swapped. Since \eqn{g} does not depend on the parameters, the
+#' score, the observed Hessian and the expected Hessian COINCIDE with the
+#' parent's, evaluated at \eqn{x = g^{-1}(y)}. The function does not recompute
+#' them and loses no accuracy. The moments are available numerically through
+#' [moment()].
 #'
 #' # What is rejected
 #'
-#' A parent that is not continuous (discrete or multivariate), since a change of
-#' variables of one coordinate needs a continuous density; a `transformer`
-#' argument that is not a `transformer` object; a transformer that is not valid
-#' on the parent's support, which the transformer itself decides through its
-#' `valid_support`; and a `new_name` that is not a single non-empty string. A
-#' map that is not injective, such as the absolute value, cannot be a
-#' transformer at all and is [folded()] instead.
+#' The function rejects a parent that is not continuous (discrete or
+#' multivariate), since a change of variables of one coordinate needs a
+#' continuous density; a `transformer` argument that is not a `transformer`
+#' object; a transformer that is not valid on the parent's support, as its
+#' `valid_support` function determines; and a `new_name`
+#' that is not a single non-empty string. A map that is not injective, such as
+#' the absolute value, cannot be a transformer at all and is [folded()]
+#' instead.
 #'
 #' # Naming the result
 #'
-#' Several standard families are a transformation of one already here, and
-#' `new_name` lets the result carry the name it is known by instead of the
-#' recipe that produced it: the reciprocal of a gamma is an inverse gamma, the
-#' exponential of a logistic a log-logistic, the exponential of an exponential
-#' a Pareto. Only the printed name changes, and nothing about the distribution
-#' depends on it.
+#' Several standard families are a transformation of another family that the
+#' package already provides, and `new_name` sets the name that the result
+#' carries, in place of the default name that records the recipe that produced
+#' it. The reciprocal of a gamma is an inverse gamma, the exponential of a
+#' logistic is a log-logistic, and the exponential of an exponential is a
+#' Pareto. Only the printed name changes, and the distribution does not depend
+#' on it.
 #'
 #' @section Notation:
 #' \eqn{g} is the transformation, \eqn{f_X} the parent's density, \eqn{f_Y} the
@@ -1220,7 +1286,7 @@ register_dexpected(TransformedDistrib, transformed_dexpected)
 #'   one is rejected.
 #' @param transformer A [transformer()] object, such as [log_transform()],
 #'   `bc_transform(0.5)` or `affine_transform(1, 2)`. It is rejected where its
-#'   own `valid_support` says it does not apply to `distrib@bounds`.
+#'   own `valid_support` returns `FALSE` for `distrib@bounds`.
 #' @param new_name A single non-empty string naming the result, or `NULL`, the
 #'   default, to compose the parent's name with the transformer's as
 #'   `"g(parent)"`.
@@ -1229,8 +1295,8 @@ register_dexpected(TransformedDistrib, transformed_dexpected)
 #'   `parent_distrib` and `transformer`. Its `params`, `params_bounds` and
 #'   `link_params` are the parent's unchanged; `bounds` is the transformer's
 #'   image of the parent's; `params_interpretation` names the parent's scale in
-#'   brackets; and `params_smooth` is the parent's, a kink in the parameters
-#'   surviving a change of variables in the response untouched.
+#'   brackets; and `params_smooth` is the parent's, because a kink in the
+#'   parameters survives a change of variables in the response untouched.
 #'
 #' @seealso [transformer()] for the map and the twelve ready-made ones,
 #'   [TransformedDistrib] for the class, [folded()] for a map that is not
@@ -1238,13 +1304,14 @@ register_dexpected(TransformedDistrib, transformed_dexpected)
 #'   [zero_adjusted()] for the other wrappers.
 #'
 #' @examples
-#' # A lognormal built by transformation, equal to lognormal1_distrib() with
+#' # A lognormal built by transformation is equal to lognormal1_distrib() with
 #' # its second parameter read as a variance.
 #' logn <- transformation(gaussian1_distrib(), exp_transform())
 #' logn@params
 #' c(built = distrib_pdf(logn, 2, list(mu = 0, sigma = 1)), dlnorm = dlnorm(2))
 #'
-#' # The reciprocal of a gamma is an inverse gamma, and can say so.
+#' # The reciprocal of a gamma is an inverse gamma, and new_name gives the
+#' # result that name.
 #' ig <- transformation(gamma2_distrib(), inverse_transform(),
 #'                      new_name = "inverse gamma")
 #' ig@distrib_name
@@ -1256,7 +1323,7 @@ register_dexpected(TransformedDistrib, transformed_dexpected)
 #' rbind(transformed = coef(fit_distrib(logn, y)),
 #'       parent_on_logs = coef(fit_distrib(gaussian1_distrib(), log(y))))
 #'
-#' # Three errors, each naming the condition that failed.
+#' # Three errors follow, and each message names the condition that failed.
 #' try(transformation(poisson_distrib(), log_transform()))
 #' try(transformation(gaussian1_distrib(), log_transform()))
 #' try(transformation(gaussian1_distrib(), exp_transform(), new_name = ""))

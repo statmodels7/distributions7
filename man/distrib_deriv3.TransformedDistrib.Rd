@@ -11,8 +11,8 @@
 \item{theta}{A named list of the parent's parameters; a transformation
 adds none.}
 
-\item{expected}{Logical of length 1. Passed to the parent, so the parent
-decides whether an expectation is closed or approximated.}
+\item{expected}{Logical of length 1. The value is passed to the parent,
+which computes the expectation in closed form or approximates it.}
 
 \item{...}{Passed to the parent's method, \code{approx} and \code{nsim} among them.}
 }
@@ -22,7 +22,7 @@ lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's p
 numeric vector of length \code{length(y)}.
 }
 \description{
-Exactly the parent's third derivatives, read at the preimage
+Returns exactly the parent's third derivatives, read at the preimage
 \eqn{x = g^{-1}(y)}. A transformation of the response contributes
 \eqn{\log|dg^{-1}/dy|} to the log-density, and that Jacobian does not
 depend on \eqn{\theta}, so it vanishes from every derivative in
@@ -32,7 +32,7 @@ For \code{transformation(gaussian1_distrib(), exp_transform())}, the component
 list equals the Gaussian's at \code{log(y)}, at this order and at the fourth.
 }
 \examples{
-# A lognormal built by transforming a Gaussian.
+# A lognormal is built by transforming a Gaussian.
 logn <- transformation(gaussian1_distrib(), exp_transform())
 y <- c(1.2, 2.5)
 th <- list(mu = 0.3, sigma = 1.1)

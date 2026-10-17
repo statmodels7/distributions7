@@ -20,9 +20,9 @@ for each parameter combination (a single number for scalar \code{theta}).
 \description{
 Computes \eqn{\mathbb{E}[f(Y)]} by integrating the density over
 \eqn{[L, U]} and then adding each surviving atom's contribution. The
-integral alone is what the inherited continuous method gives, and it is
-correct unless the parent carries point masses, as \code{\link[=zero_adjusted]{zero_adjusted()}} of a
-continuous distribution does.
+inherited continuous method gives only the integral, which is correct unless
+the parent carries point masses, as \code{\link[=zero_adjusted]{zero_adjusted()}} of a continuous
+distribution does.
 }
 \details{
 The atoms come from \code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}}, already
@@ -31,7 +31,7 @@ atoms the loop is empty and the result is exactly the inherited method's.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -39,14 +39,15 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 }
 
 \examples{
-# A mixed parent: the mass at zero is part of the answer.
+# A mixed parent has a mass at zero, and the mass is part of the answer.
 tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
 th <- list(mu = 2, sigma2 = 1, za = 0.3)
 
 # The total mass is one only because the atom is counted.
 expectation(tz, function(y, theta) rep(1, length(y)), th)
 
-# Which is what mean() and variance() are built on.
+# The functions mean() and variance() are computed from expectations of
+# this kind.
 c(mean = mean(tz, th), variance = variance(tz, th))
 
 # With no atoms it agrees with plain integration over the interval.
@@ -58,7 +59,7 @@ c(method = expectation(tn, function(y, theta) y, theta),
 }
 \seealso{
 \code{\link[=expectation]{expectation()}} for the generic,
-\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}} for the masses it adds, and
-\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation.ZeroAdjustedContinuousDistrib()}}, which splits the same way
-before truncation.
+\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}} for the masses that it adds,
+and \code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation.ZeroAdjustedContinuousDistrib()}}, which splits the same
+way before truncation.
 }

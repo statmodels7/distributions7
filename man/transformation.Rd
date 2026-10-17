@@ -12,7 +12,7 @@ one is rejected.}
 
 \item{transformer}{A \code{\link[=transformer]{transformer()}} object, such as \code{\link[=log_transform]{log_transform()}},
 \code{bc_transform(0.5)} or \code{affine_transform(1, 2)}. It is rejected where its
-own \code{valid_support} says it does not apply to \code{distrib@bounds}.}
+own \code{valid_support} returns \code{FALSE} for \code{distrib@bounds}.}
 
 \item{new_name}{A single non-empty string naming the result, or \code{NULL}, the
 default, to compose the parent's name with the transformer's as
@@ -23,8 +23,8 @@ An S7 object of class \link{TransformedDistrib}, carrying
 \code{parent_distrib} and \code{transformer}. Its \code{params}, \code{params_bounds} and
 \code{link_params} are the parent's unchanged; \code{bounds} is the transformer's
 image of the parent's; \code{params_interpretation} names the parent's scale in
-brackets; and \code{params_smooth} is the parent's, a kink in the parameters
-surviving a change of variables in the response untouched.
+brackets; and \code{params_smooth} is the parent's, because a kink in the
+parameters survives a change of variables in the response untouched.
 }
 \description{
 Builds the distribution of \eqn{Y = g(X)}, where \eqn{X} follows an existing
@@ -36,30 +36,33 @@ change-of-variables formula
 }
 \section{What comes from where}{
 The distribution function, the quantile function and the generator are
-obtained by mapping through \eqn{g}, with the tails swapped for a decreasing
-transformation. Since \eqn{g} does not depend on the parameters, the score,
-the observed Hessian and the expected Hessian COINCIDE with the parent's,
-evaluated at \eqn{x = g^{-1}(y)}; nothing is recomputed and no accuracy is
-lost. The moments are available numerically through \code{\link[=moment]{moment()}}.
+obtained by mapping through \eqn{g}, and for a decreasing transformation the
+tails are swapped. Since \eqn{g} does not depend on the parameters, the
+score, the observed Hessian and the expected Hessian COINCIDE with the
+parent's, evaluated at \eqn{x = g^{-1}(y)}. The function does not recompute
+them and loses no accuracy. The moments are available numerically through
+\code{\link[=moment]{moment()}}.
 }
 
 \section{What is rejected}{
-A parent that is not continuous (discrete or multivariate), since a change of
-variables of one coordinate needs a continuous density; a \code{transformer}
-argument that is not a \code{transformer} object; a transformer that is not valid
-on the parent's support, which the transformer itself decides through its
-\code{valid_support}; and a \code{new_name} that is not a single non-empty string. A
-map that is not injective, such as the absolute value, cannot be a
-transformer at all and is \code{\link[=folded]{folded()}} instead.
+The function rejects a parent that is not continuous (discrete or
+multivariate), since a change of variables of one coordinate needs a
+continuous density; a \code{transformer} argument that is not a \code{transformer}
+object; a transformer that is not valid on the parent's support, as its
+\code{valid_support} function determines; and a \code{new_name}
+that is not a single non-empty string. A map that is not injective, such as
+the absolute value, cannot be a transformer at all and is \code{\link[=folded]{folded()}}
+instead.
 }
 
 \section{Naming the result}{
-Several standard families are a transformation of one already here, and
-\code{new_name} lets the result carry the name it is known by instead of the
-recipe that produced it: the reciprocal of a gamma is an inverse gamma, the
-exponential of a logistic a log-logistic, the exponential of an exponential
-a Pareto. Only the printed name changes, and nothing about the distribution
-depends on it.
+Several standard families are a transformation of another family that the
+package already provides, and \code{new_name} sets the name that the result
+carries, in place of the default name that records the recipe that produced
+it. The reciprocal of a gamma is an inverse gamma, the exponential of a
+logistic is a log-logistic, and the exponential of an exponential is a
+Pareto. Only the printed name changes, and the distribution does not depend
+on it.
 }
 
 \section{Notation}{
@@ -69,13 +72,14 @@ transformed one and \eqn{\theta} the parameters shared by both.
 }
 
 \examples{
-# A lognormal built by transformation, equal to lognormal1_distrib() with
+# A lognormal built by transformation is equal to lognormal1_distrib() with
 # its second parameter read as a variance.
 logn <- transformation(gaussian1_distrib(), exp_transform())
 logn@params
 c(built = distrib_pdf(logn, 2, list(mu = 0, sigma = 1)), dlnorm = dlnorm(2))
 
-# The reciprocal of a gamma is an inverse gamma, and can say so.
+# The reciprocal of a gamma is an inverse gamma, and new_name gives the
+# result that name.
 ig <- transformation(gamma2_distrib(), inverse_transform(),
                      new_name = "inverse gamma")
 ig@distrib_name
@@ -87,7 +91,7 @@ y <- distrib_rng(logn, 500, list(mu = 0, sigma = 1))
 rbind(transformed = coef(fit_distrib(logn, y)),
       parent_on_logs = coef(fit_distrib(gaussian1_distrib(), log(y))))
 
-# Three errors, each naming the condition that failed.
+# Three errors follow, and each message names the condition that failed.
 try(transformation(poisson_distrib(), log_transform()))
 try(transformation(gaussian1_distrib(), log_transform()))
 try(transformation(gaussian1_distrib(), exp_transform(), new_name = ""))

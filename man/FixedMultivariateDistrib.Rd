@@ -60,7 +60,7 @@ FixedMultivariateDistrib(
 
 \item{n_dim}{The number of coordinates, carried from the parent: fixing a
 parameter removes it from the parameter set and leaves the dimension of
-the response alone.}
+the response unchanged.}
 
 \item{parent_distrib}{The wrapped \code{multivariate_distrib} object.}
 
@@ -84,8 +84,9 @@ parent's quantities with the Jacobian columns of the fixed parameters
 removed.
 
 The motivating case is a CENTERED PRIOR: holding the mean components of a
-multivariate family at zero leaves the matrix parameter alone, and a matrix
-parameter alone is what a random effect is distributed by.
+multivariate family at zero leaves only the matrix parameter, and a random
+effect is distributed according to a law with this matrix as its only
+parameter.
 }
 \section{Methods}{
 
@@ -129,37 +130,39 @@ The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
 ORDER. Every method splices the fixed values back into \code{theta} at their
 positions and delegates to the parent, so the parent's closed forms are used
 wherever they exist, and a derivative method then keeps only the components
-in which every index is a free parameter. No method of this class computes
-anything of its own, and none is faster or more accurate than the parent's.
+in which every index is a free parameter. Every method of this class
+delegates its computation to the parent, so the speed and the accuracy of
+each method are those of the parent's method.
 }
 
 \section{Why the components can be subset by name}{
 The free set preserves the parent's ORDER, so a combination of free
 parameters produces the same name string under the parent's enumeration as
 under the wrapper's. Subsetting by name therefore cannot pair a component
-with the wrong indices. That is the mistake re-parsing a name by splitting
-on the underscore commits, for a parameter whose own name contains one.
+with the wrong indices. Re-parsing a name by splitting on the underscore
+makes this mistake for a parameter whose own name contains an underscore.
 }
 
 \section{The methods carry no documentation pages}{
-The continuous and discrete branches register theirs inside a loop over the
-two classes, so there is no top-level assignment for roxygen to attach a
-block to. The multivariate branch registers its own at the top level and is
-left undocumented to match, every one of them being the same delegation.
+The continuous and discrete branches register their methods inside a loop
+over the two classes, so roxygen has no top-level assignment to which it can
+attach a block. The multivariate branch registers its methods at the top
+level and leaves them undocumented to match, because each of them is the
+same delegation.
 Read the parent's page for what a method computes and this page for what the
 wrapper does to it.
 }
 
 \section{Generics that are rejected}{
 The multivariate branch sits BESIDE the continuous and discrete ones rather
-than under either, so the generics a multivariate family rejects by design,
-the distribution function and the quantile, are inherited unregistered and
-go on rejecting through this wrapper.
+than under either, so the generics that a multivariate family rejects by
+design, the distribution function and the quantile, are inherited
+unregistered and go on rejecting through this wrapper.
 }
 
 \examples{
-# A centered two-dimensional gaussian: the matrix alone, which is what a
-# random effect is distributed by.
+# A centered two-dimensional gaussian has only the matrix parameter, as the
+# law of a random effect does.
 d <- fixed(mvgaussian1_distrib(2), mu1 = 0, mu2 = 0)
 d@params
 d
@@ -183,5 +186,5 @@ try(distrib_cdf(d, y, theta))
 \seealso{
 \code{\link[=fixed]{fixed()}} to build one, \link{FixedContinuousDistrib} and
 \link{FixedDiscreteDistrib} for the two siblings, \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for a
-parent, and \code{\link[=mv_summary]{mv_summary()}} for the quantities a fit of one reports.
+parent, and \code{\link[=mv_summary]{mv_summary()}} for the quantities that a fit of one reports.
 }

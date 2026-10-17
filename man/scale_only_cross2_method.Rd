@@ -18,16 +18,16 @@ named list with one numeric vector per parameter.
 }
 \description{
 Builds the \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method body for a family with a scale and no
-location. The scale's component is the identity
+location. The scale's component is the identity that
 \code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} uses, read at \eqn{z = y/\sigma}:
 \eqn{-(zB' + 2B)/\sigma^3} with \eqn{B = \sigma^2\ell^{(yy)}} and
 \eqn{B' = \sigma^3\ell^{(yyy)}}. Any shape component is differenced through
 \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}.
 }
 \details{
-A one-parameter family returns the closed component alone. Registered on the
-exponential and the Weibull; the generalized Pareto has a compiled method of
-its own.
+A one-parameter family returns only the closed component. The body is
+registered on the exponential and the Weibull; the generalized Pareto has a
+compiled method of its own.
 }
 \section{Notation}{
 
@@ -40,16 +40,18 @@ where there is no location and \eqn{(y-\mu)/\sigma} where there is.
 \examples{
 y <- c(0.4, 1.1, 2.3)
 
-# The Weibull: a scale and a shape.
+# The Weibull has a scale and a shape.
 d <- weibull1_distrib()
 theta <- list(mu = 1.5, sigma = 1.3)
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::grad(f, c(1.5, 1.3))
 
-# The exponential has one parameter, so nothing is differenced.
+# The exponential has one parameter, so the method does not difference
+# anything.
 distrib_cross2_y(exponential_distrib(), y, list(mu = 1.5))
 }
 \seealso{

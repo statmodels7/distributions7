@@ -41,8 +41,9 @@ TruncatedDiscreteDistrib(
 \item{parent_distrib}{The wrapped \code{discrete_distrib} object. Its parameters
 become the truncated object's, unchanged.}
 
-\item{lower, upper}{The truncation points, \code{L} and \code{U}, both included in the
-support. Either may be infinite, and a finite one must be a whole number.}
+\item{lower, upper}{The truncation points, \code{L} and \code{U}, which both belong to
+the support. Either may be infinite, and a finite one must be a whole
+number.}
 }
 \value{
 An S7 object of class \code{TruncatedDiscreteDistrib}, inheriting from
@@ -54,7 +55,7 @@ Represents a discrete parent restricted to the support points in
 endpoints are INCLUDED, so \code{truncated(poisson_distrib(), lower = 1)} is the
 zero-truncated Poisson on \eqn{\{1, 2, \dots\}} and keeps the mass at one.
 Construct one with \code{\link[=truncated]{truncated()}}; calling the class directly skips every
-validation the constructor performs.
+validation that the constructor performs.
 }
 \details{
 The tail below the interval is \eqn{F(L^-) = F(L) - f(L)}, because the lower
@@ -64,14 +65,14 @@ has to be added back; \code{\link[=trunc_constants]{trunc_constants()}} does tha
 to the derivatives of \eqn{Z}.
 
 Truncation adds no parameter, so the object carries exactly the parent's
-\code{params}, \code{params_bounds} and \code{link_params}. What it can remove is
+\code{params}, \code{params_bounds} and \code{link_params}. It can, however, remove
 IDENTIFIABILITY: \eqn{k} retained support points carry \eqn{k-1} free
 probabilities, so \code{\link[=truncated]{truncated()}} rejects an interval leaving fewer than
 \code{n_params + 1} of them.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

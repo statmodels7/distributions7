@@ -11,9 +11,10 @@ NULL
 #' Univariate Composition, One Order
 #'
 #' @description
-#' The derivative of order `order` of \eqn{h(u(x))} for scalar chains, Faa di
-#' Bruno written out: \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to
-#' order four. Each order is its own formula and forms nothing above it.
+#' Computes the derivative of order `order` of \eqn{h(u(x))} for scalar
+#' chains by the Faa di Bruno formula written out:
+#' \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to order four. Each order
+#' is its own formula and does not form any derivative of higher order.
 #'
 #' @param h A list of the outer derivatives of orders 1 to at least `order`,
 #'   evaluated at the inner value.
@@ -38,13 +39,13 @@ fdb1 <- function(h, u, order) {
 #' Bivariate Composition, One Order
 #'
 #' @description
-#' The partials of order `order` of \eqn{h(u(x, z))} for a scalar outer
-#' \eqn{h} and a bivariate inner \eqn{u}, Faa di Bruno written out component
-#' by component: two partials at order one, three at order two, four at order
-#' three and five at order four. The inner partials arrive as a named list
-#' with entries `x`, `z`, `xx`, `xz`, `zz`, `xxx`, `xxz`, `xzz`, `zzz`,
-#' `xxxx`, `xxxz`, `xxzz`, `xzzz`, `zzzz`; missing entries count as zero, and
-#' only the entries of order up to `order` are read. A caller that needs
+#' Computes the partials of order `order` of \eqn{h(u(x, z))} for a scalar
+#' outer \eqn{h} and a bivariate inner \eqn{u}, by the Faa di Bruno formula
+#' written out component by component: two partials at order one, three at order
+#' two, four at order three and five at order four. The inner partials arrive as
+#' a named list with entries `x`, `z`, `xx`, `xz`, `zz`, `xxx`, `xxz`, `xzz`,
+#' `zzz`, `xxxx`, `xxxz`, `xxzz`, `xzzz`, `zzzz`; missing entries count as zero,
+#' and only the entries of order up to `order` are read. A caller that needs
 #' several orders calls it once per order.
 #'
 #' @param h A list of the outer derivatives of orders 1 to at least `order`,
@@ -52,7 +53,7 @@ fdb1 <- function(h, u, order) {
 #' @param u The named list of inner partials.
 #' @param order An integer from 1 to 4.
 #' @return A named list of the partials of order `order` of the composition,
-#'   keyed as `u` is.
+#'   keyed by the same names as `u`.
 #'
 #' @seealso [fdb1()] for a univariate inner function;
 #'   [gengamma_components()], [gpd_components()] and [reparam_map_derivs()],
@@ -112,10 +113,11 @@ fdb2 <- function(h, u, order) {
 #' @description
 #' Each function returns, for its family's map \eqn{\theta = h(\psi)}, the
 #' non-zero partials \eqn{\partial^B \theta_i / \partial \psi_B} up to order
-#' `order`: a list over parent parameters, each a list keyed by the sorted
-#' tuple of \eqn{\psi} positions. A missing key is an exact zero. A partial of
-#' higher order than `order` is not formed. Every formula is derived by hand
-#' and validated against one numerical pass per order in the tests.
+#' `order`: a list over parent parameters, in which each entry is a list keyed
+#' by the sorted tuple of \eqn{\psi} positions. A missing key is an exact zero.
+#' A partial of higher order than `order` is not formed. Every formula is
+#' derived by hand and validated against one numerical pass per order in the
+#' tests.
 #'
 #' @param psi The aligned list of the new parameters.
 #' @param order The highest order of partial to form, an integer from 1 to 4.

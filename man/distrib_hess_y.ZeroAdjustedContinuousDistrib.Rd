@@ -19,8 +19,8 @@ A numeric vector as long as \code{y}.
 \description{
 Returns \eqn{\partial^2\ell/\partial y^2}, which equals the PARENT's for
 \eqn{y \ne 0} and is \code{NaN} at the atom, for the reason
-\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y.ZeroAdjustedContinuousDistrib()}} gives: the log-density
-jumps there and no derivative exists.
+\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y.ZeroAdjustedContinuousDistrib()}}: the log-density
+jumps there and the derivative does not exist.
 }
 \section{Notation}{
 

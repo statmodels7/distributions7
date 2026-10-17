@@ -14,17 +14,17 @@ NULL
 #' against the folded density \eqn{f(y) + f(-y)}. The integrand turns
 #' sharply near zero, where the weight
 #' \eqn{f(y)/(f(y)+f(-y))} goes from one half to one over a width of order
-#' \eqn{s^2/|c|}, \eqn{c} and \eqn{s} a center and a scale of the parent
-#' read from the scalar registry. The integral is taken over \eqn{y > 0} by a
-#' tanh-sinh rule on \eqn{[0, |c|]}, whose nodes cluster at both ends, and
-#' the rule of [loc_scale_rule()] scaled by \eqn{s} on \eqn{[|c|, \infty)};
-#' the split at \eqn{|c|} also takes in a parent with a kink at its center.
-#' The nodes are the scalar registry's. The expectations are formed through
-#' the second Bartlett identity,
+#' \eqn{s^2/|c|}, where \eqn{c} and \eqn{s} are a center and a scale of the
+#' parent, read from the scalar registry. The integral is taken over \eqn{y > 0}
+#' by a tanh-sinh rule on \eqn{[0, |c|]}, whose nodes cluster at both ends, and
+#' the rule of [loc_scale_rule()] scaled by \eqn{s} on \eqn{[|c|, \infty)}; the
+#' split at \eqn{|c|} also takes in a parent with a kink at its center. The
+#' nodes are the scalar registry's. The expectations are formed through the
+#' second Bartlett identity,
 #' \deqn{E[\ell_{ij}] = -E[\ell_i \ell_j], \qquad
 #'   \partial_c E[\ell_{ij}] = -E[\ell_{ic}\ell_j + \ell_i\ell_{jc} +
 #'   \ell_i\ell_j\ell_c],}
-#' so that the folded score and Hessian are all it reads at orders 0 and 1.
+#' so that only the folded score and Hessian are read at orders 0 and 1.
 #' The second derivatives differentiate \eqn{-E[G]}, \eqn{G = \ell_i\ell_j},
 #' twice under the integral,
 #' \deqn{\partial_{cd} E[G] = E[G_{cd} + G_c\ell_d + G_d\ell_c +
@@ -40,7 +40,7 @@ NULL
 #' mirror image, and the expectations are the parent's own expected Hessian and
 #' its derivatives, which the quadrature around the fold does not resolve at a
 #' center many scales away. A kink at a center of exactly zero is read as the
-#' one-sided limit, the quantities being even or odd in the center.
+#' one-sided limit, because the quantities are even or odd in the center.
 #'
 #' @param distrib A [folded()] family.
 #' @param y The response, read for its length.
@@ -50,7 +50,7 @@ NULL
 #'
 #' @return A named list keyed as [hess_names()] (`order = 0`),
 #'   [dexpected_names()] (`order = 1`), or [dexpected_names()] followed by
-#'   [d2expected_names()] (`order = 2`), each component of length
+#'   [d2expected_names()] (`order = 2`), in which each component has length
 #'   `length(y)`.
 #'
 #' @seealso [distrib_expected_hessian()], [distrib_dexpected_hessian()],
@@ -189,18 +189,18 @@ folded_expected <- function(distrib, y, theta, order) {
 #' A parent with a kink at its center \eqn{c} (a parameter that is not
 #' smooth, as in [laplace_distrib()], [laplace2_distrib()] and
 #' [enet_distrib()]) gives a folded score that jumps at \eqn{y^* = |c|},
-#' a point that moves with \eqn{c}. With \eqn{F = L\,G} the integrand,
-#' \eqn{J(X) = X(y^{*-}) - X(y^{*+})} and \eqn{a_k = \partial y^*/\partial
-#' \theta_k = \mathrm{sign}(c)} for the center and zero otherwise,
+#' a point that moves with \eqn{c}. Let \eqn{F = L\,G} be the integrand, let
+#' \eqn{J(X) = X(y^{*-}) - X(y^{*+})}, and let \eqn{a_k = \partial y^*/\partial
+#' \theta_k = \mathrm{sign}(c)} for the center and zero otherwise. Then
 #' \deqn{\partial_k \int F = \int \partial_k F + J(F)\,a_k,}
 #' \deqn{\partial_{kl} \int F = \int \partial_{kl} F + J(\partial_k F)\,a_l
 #'   + J(\partial_l F)\,a_k + J(\partial_y F)\,a_k a_l,}
-#' the one-sided values read four units in the last place either side of
-#' \eqn{y^*}. `fold_kink_parts()` returns those values: the folded density at
-#' \eqn{y^*}, the folded score and Hessian, and, at order 2, the response
-#' derivative \eqn{\ell_y} and the mixed derivatives \eqn{\ell_{iy}} from
-#' the parent's at the two preimages, or `NULL` where the parent has no kink
-#' or \eqn{c = 0}.
+#' where the one-sided values are read four units in the last place on either
+#' side of \eqn{y^*}. `fold_kink_parts()` returns those values: the folded
+#' density at \eqn{y^*}, the folded score and Hessian, and, at order 2, the
+#' response derivative \eqn{\ell_y} and the mixed derivatives \eqn{\ell_{iy}}
+#' from the parent's at the two preimages, or `NULL` where the parent has no
+#' kink or \eqn{c = 0}.
 #' @param th One row of parameters, in the order of the family's.
 #' @param center The parent's center at that row.
 fold_kink_parts <- function(distrib, th, center, order) {
@@ -264,8 +264,8 @@ S7::method(expected_hessian_costly, FoldedDistrib) <- function(x, ...) TRUE
 #' Returns the route of a [folded()] family, `"FoldedDistrib|<inner name>"`
 #' with the inner family's constants, or `NULL` when the parent has no route
 #' or is not a location-scale family on the real line (possibly with some
-#' parameters fixed by [fixed()]), the expected information's quadrature
-#' reading the parent's center and scale.
+#' parameters fixed by [fixed()]), because the quadrature of the expected
+#' information reads the parent's center and scale.
 #'
 #' @param distrib A folded family.
 #' @param ... Unused.

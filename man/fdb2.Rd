@@ -16,16 +16,16 @@ evaluated at the inner value.}
 }
 \value{
 A named list of the partials of order \code{order} of the composition,
-keyed as \code{u} is.
+keyed by the same names as \code{u}.
 }
 \description{
-The partials of order \code{order} of \eqn{h(u(x, z))} for a scalar outer
-\eqn{h} and a bivariate inner \eqn{u}, Faa di Bruno written out component
-by component: two partials at order one, three at order two, four at order
-three and five at order four. The inner partials arrive as a named list
-with entries \code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx}, \code{xxz}, \code{xzz}, \code{zzz},
-\code{xxxx}, \code{xxxz}, \code{xxzz}, \code{xzzz}, \code{zzzz}; missing entries count as zero, and
-only the entries of order up to \code{order} are read. A caller that needs
+Computes the partials of order \code{order} of \eqn{h(u(x, z))} for a scalar
+outer \eqn{h} and a bivariate inner \eqn{u}, by the Faa di Bruno formula
+written out component by component: two partials at order one, three at order
+two, four at order three and five at order four. The inner partials arrive as
+a named list with entries \code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx}, \code{xxz}, \code{xzz},
+\code{zzz}, \code{xxxx}, \code{xxxz}, \code{xxzz}, \code{xzzz}, \code{zzzz}; missing entries count as zero,
+and only the entries of order up to \code{order} are read. A caller that needs
 several orders calls it once per order.
 }
 \seealso{

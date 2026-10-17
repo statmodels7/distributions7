@@ -26,9 +26,9 @@ NULL
 #' @details
 #' # The expansion
 #'
-#' A derivative in the RESPONSE does not see the parameters, so a
-#' reparametrization acts on the \eqn{\theta} side alone and the ordinary
-#' two-term expansion applies:
+#' A derivative in the RESPONSE does not interact with a reparametrization of
+#' the parameters, so a reparametrization acts only on the \eqn{\theta} side
+#' and the ordinary two-term expansion applies:
 #' \deqn{\frac{\partial^2 f}{\partial\alpha_a \partial\alpha_b}
 #'   = \sum_{i,j} \frac{\partial\theta_i}{\partial\alpha_a}
 #'     \frac{\partial\theta_j}{\partial\alpha_b} f_{ij}
@@ -40,7 +40,7 @@ NULL
 #'
 #' # What `first` and `second` are
 #'
-#' They are the same quantity at two orders in \eqn{\theta}, and which
+#' They are the SAME quantity at two orders in \eqn{\theta}, and which
 #' quantity depends on the caller: [distrib_cross_y()] with
 #' [distrib_grad_y_hess()] for the third-order derivative, and
 #' [distrib_cross2_y()] with [distrib_hess_y_hess()] for the fourth.
@@ -52,12 +52,13 @@ NULL
 #'   `params` are read, to key the result.
 #' @param parent The parent distribution, whose `params` key the inputs.
 #' @param th_par A named list of the parent's parameters, evaluated at the new
-#'   ones. Not read by this function; the callers use it to compute `first`
-#'   and `second`.
+#'   ones. This function does not read it; the callers use it to compute
+#'   `first` and `second`.
 #' @param maps The map's keyed partial tables, from [reparam_tables()]: one
-#'   entry per parent parameter, each a list keyed by new-parameter index.
-#' @param y A numeric vector of observations. Not used; present so that the
-#'   signature matches the callers'.
+#'   entry per parent parameter, and each entry is a list keyed by
+#'   new-parameter index.
+#' @param y A numeric vector of observations. This function does not use it;
+#'   it is present so that the signature matches the callers'.
 #' @param first The parent's first-order components, keyed by the parent's
 #'   parameters.
 #' @param second The parent's second-order components, keyed by the parent's
@@ -87,8 +88,8 @@ NULL
 #' g <- distrib_grad_y_hess(d, y, theta)
 #' vapply(g, function(z) z[1], numeric(1))
 #'
-#' # Against a numerical Hessian of the response gradient in the NEW
-#' # parameters, which shares none of the map's arithmetic.
+#' # The result is compared with a numerical Hessian of the response gradient
+#' # in the NEW parameters, which does not share any of the map's arithmetic.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 #' numDeriv::hessian(f, c(0.3, 1.44))
 mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
@@ -137,8 +138,8 @@ mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
 #'
 #' @details
 #' A response derivative does not interact with a reparametrization of
-#' \eqn{\theta}, so nothing on the \eqn{y} side is touched and the whole
-#' correction is the map's. The partials come from [reparam_tables()], which a
+#' \eqn{\theta}, so the \eqn{y} side is left unchanged and the map supplies the
+#' whole correction. The partials come from [reparam_tables()], which a
 #' family supplies through `map_derivs` or, failing that, through one stencil
 #' per partial.
 #'
@@ -163,7 +164,8 @@ mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
 #'   \eqn{\theta}, and [reparametrize()] for the wrapper.
 #'
 #' @examples
-#' # A gaussian obtained in its variance rather than written out.
+#' # The gaussian is obtained in its variance through reparametrize() rather
+#' # than written out.
 #' d <- reparametrize(
 #'   gaussian1_distrib(),
 #'   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
@@ -178,13 +180,14 @@ mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
 #' g3 <- distrib_grad_y_hess(d, y, theta)
 #' vapply(g3, function(z) z[1], numeric(1))
 #'
-#' # Against the family written out by hand, which shares none of the map's
-#' # arithmetic. The map's partials are stencils here, no map_derivs having
-#' # been given, so the two agree to about 1e-09.
+#' # The result is compared with the family written out by hand, which does not
+#' # share any of the map's arithmetic. The map's partials are stencils here
+#' # because map_derivs is not supplied, so the two agree to about 1e-09.
 #' max(abs(unlist(g3) -
 #'         unlist(distrib_grad_y_hess(gaussian2_distrib(), y, theta))))
 #'
-#' # And against a numerical Hessian of the response gradient.
+#' # The result is also compared with a numerical Hessian of the response
+#' # gradient.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 #' numDeriv::hessian(f, c(0.3, 1.44))
 #'
@@ -260,8 +263,8 @@ S7::method(distrib_hess_y_hess, ReparamContinuousDistrib) <-
 #'
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #'
-#' # Against the family written out by hand, and against a numerical
-#' # derivative of the response Hessian.
+#' # The result is compared with the family written out by hand and with a
+#' # numerical derivative of the response Hessian.
 #' max(abs(unlist(distrib_cross2_y(d, y, theta)) -
 #'         unlist(distrib_cross2_y(gaussian2_distrib(), y, theta))))
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
@@ -283,10 +286,10 @@ S7::method(distrib_cross2_y, ReparamContinuousDistrib) <-
 #' by the first-order chain rule,
 #' \eqn{\sum_i (\partial\theta_i/\partial\alpha_a)\,
 #' \partial\ell^{(yy)}/\partial\theta_i}. It is the same expansion
-#' [mapped_cross_y()] takes, read one derivative further in the response.
+#' that [mapped_cross_y()] takes, read one derivative further in the response.
 #'
 #' @details
-#' Only the map's FIRST partials enter, so the second-partial tables
+#' Only the map's FIRST partials enter, so the second-partial tables that
 #' [mapped_theta2()] needs are never touched. A missing key is an exact zero
 #' and is skipped.
 #'
@@ -322,7 +325,7 @@ S7::method(distrib_cross2_y, ReparamContinuousDistrib) <-
 #'
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #'
-#' # The parent's own block, carried by that one factor.
+#' # The parent's own block is carried by that one factor.
 #' par_block <- distrib_cross2_y(gaussian1_distrib(), y,
 #'                               list(mu = 0.3, sigma = 1.2))
 #' c(mu = par_block$mu[1], sigma2 = par_block$sigma[1] / (2 * sqrt(1.44)))

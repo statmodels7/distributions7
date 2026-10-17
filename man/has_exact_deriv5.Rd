@@ -13,10 +13,10 @@ has_exact_deriv5(x)
 A single logical.
 }
 \description{
-\code{TRUE} where the \code{\link[=distrib_deriv5]{distrib_deriv5()}} method that dispatches is registered on
-a class other than the base class, whose method is the stencil of
-\code{\link[=numerical_deriv5]{numerical_deriv5()}}. A wrapper registered in this file answers for the
-family it wraps, since its fifth derivative is analytic exactly when that
-family's is.
+Returns \code{TRUE} where the \code{\link[=distrib_deriv5]{distrib_deriv5()}} method that dispatches is
+registered on a class other than the base class, whose method is the stencil
+of \code{\link[=numerical_deriv5]{numerical_deriv5()}}. For a wrapper registered in this file, the result is
+that of the family that the wrapper wraps, since the wrapper's fifth
+derivative is analytic exactly when that family's is.
 }
 \keyword{internal}

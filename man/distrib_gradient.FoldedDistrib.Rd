@@ -29,7 +29,7 @@ It needs nothing of the fold beyond the weight: \eqn{s} is the parent's own
 score, evaluated at \eqn{+x} and at \eqn{-x}.
 }
 \details{
-The weight is where the folded score departs from the parent's. Near zero
+The folded score departs from the parent's through the weight. Near zero
 \eqn{w} is one half and the two preimages contribute equally; far into the
 tail of a parent centered above zero \eqn{w} approaches one and the folded
 score approaches the parent's.
@@ -50,7 +50,8 @@ y <- distrib_rng(d, 30, theta)
 g <- distrib_gradient(d, y, theta)
 vapply(g, sum, numeric(1))
 
-# Against a numerical derivative of the folded log-likelihood.
+# The result is compared with a numerical derivative of the folded
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

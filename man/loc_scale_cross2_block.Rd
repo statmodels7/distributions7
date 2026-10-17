@@ -26,11 +26,11 @@ family whose response enters only through \eqn{z = (y-\mu)/\sigma}. It is
 the arithmetic behind every location-scale method of \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}.
 }
 \details{
-The same identity \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} uses, one derivative further in
-the response: it reads the family's own \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} instead of
-differencing its \code{\link[=distrib_hess_y]{distrib_hess_y()}}. A shape parameter beyond the two is not
-covered, and \code{\link[=partial_loc_scale_cross2_y]{partial_loc_scale_cross2_y()}} differences those components
-instead.
+This is the identity that \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} uses, taken one
+derivative further in the response: it reads the family's own
+\code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} instead of differencing its \code{\link[=distrib_hess_y]{distrib_hess_y()}}. A shape
+parameter beyond the two is not covered, and \code{\link[=partial_loc_scale_cross2_y]{partial_loc_scale_cross2_y()}}
+differences those components instead.
 }
 \section{Notation}{
 
@@ -49,14 +49,14 @@ theta <- list(mu = 0.3, sigma = 1.2)
 blk <- distributions7:::loc_scale_cross2_block(d, y, theta)
 vapply(blk, function(z) z[1], numeric(1))
 
-# The identity written out.
+# The identity is written out.
 s <- 1.2
 z <- (y - 0.3) / s
 B <- s^2 * distrib_hess_y(d, y, theta)
 B1 <- s^3 * distrib_deriv3_y(d, y, theta)
 c(mu = (-B1 / s^3)[1], sigma = (-(z * B1 + 2 * B) / s^3)[1])
 
-# It is what the family's distrib_cross2_y method returns, named.
+# The family's distrib_cross2_y method returns the same components, named.
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 }
 \seealso{

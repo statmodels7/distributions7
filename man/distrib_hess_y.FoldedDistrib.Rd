@@ -23,7 +23,7 @@ Computes the second derivative of the folded log-density in the response,
 with \eqn{g} and \eqn{h} the parent's first and second response derivatives.
 The last term is the square of \code{\link[=distrib_grad_y.FoldedDistrib]{distrib_grad_y.FoldedDistrib()}}'s value, so
 the expression is the mixture's second-order ratio less the square of its
-first: the same moment-to-cumulant step the parameter derivatives take,
+first: the same moment-to-cumulant step that the parameter derivatives take,
 applied in the response.
 }
 \section{Notation}{
@@ -40,7 +40,7 @@ y <- c(0.2, 1, 3)
 
 distrib_hess_y(d, y, theta)
 
-# Against a numerical second derivative.
+# The result is compared with a numerical second derivative.
 vapply(y, function(v)
   numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
                     v)[1, 1],

@@ -77,13 +77,13 @@ theta <- list(mu = 0.3, sigma = 1.2)
 blk <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
 blk$mu_mu
 
-# The identity written out: A'' / sigma^3, with A'' the family's own third
-# response derivative scaled.
+# The identity is written out as A'' / sigma^3, where A'' is the family's
+# own third response derivative, scaled.
 s <- 1.2
 A2 <- s^3 * distrib_deriv3_y(d, y, theta)
 A2 / s^3
 
-# And the scale pair, which carries all three of A, A' and A''.
+# The scale pair carries all three of A, A' and A''.
 z <- (y - 0.3) / s
 A <- s * distrib_grad_y(d, y, theta)
 A1 <- s^2 * distrib_hess_y(d, y, theta)

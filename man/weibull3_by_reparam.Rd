@@ -15,7 +15,7 @@ weibull3_by_reparam(link_mean = log_link(), link_sigma = log_link())
 A reparametrized distribution object.
 }
 \description{
-The same family as \code{\link[=weibull3_distrib]{weibull3_distrib()}}, obtained through
+Returns the same family as \code{\link[=weibull3_distrib]{weibull3_distrib()}}, obtained through
 \code{\link[=reparametrize]{reparametrize()}} on \code{\link[=weibull1_distrib]{weibull1_distrib()}} rather than written out.
 }
 \details{

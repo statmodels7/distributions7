@@ -24,8 +24,8 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} (\code{k
 \description{
 Returns the parent family's first (\code{k = 1}) or second (\code{k = 2})
 derivatives of the expected information at the full parameter vector,
-subset to the free parameters, on the parameter scale. Registered through
-\code{\link[=register_dexpected]{register_dexpected()}}, which carries them to the link scale with the
-wrapper's links.
+subset to the free parameters, on the parameter scale. The function is
+registered through \code{\link[=register_dexpected]{register_dexpected()}}, which carries the derivatives to
+the link scale with the wrapper's links.
 }
 \keyword{internal}

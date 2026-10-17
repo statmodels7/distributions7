@@ -25,7 +25,7 @@ named list of the parent's.}
 \item{params}{A character vector naming the new parameters.}
 
 \item{bounds}{A named list of length-two numeric vectors, the open interval
-each new parameter lives in.}
+in which each new parameter lies.}
 
 \item{links}{A named list of \pkg{linkfunctions7} links, one per new
 parameter.}
@@ -38,8 +38,8 @@ new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
 an exact zero. Each caller passes the highest order that it reads, so a
 gradient passes order one and a fourth derivative passes order four. The
 shipped second parametrizations supply hand-written tables (see
-\code{\link[=reparam_map_derivs]{reparam_map_derivs()}}); when \code{NULL}, each needed partial comes from one
-finite-difference stencil on the map.}
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}}); when \code{map_derivs} is \code{NULL}, each needed partial
+comes from one finite-difference stencil on the map.}
 
 \item{interpretation}{An optional named character vector describing each new
 parameter; defaults to the parameter names.}
@@ -47,12 +47,13 @@ parameter; defaults to the parameter names.}
 \item{name}{An optional name for the result; defaults to the parent's with
 the new parameters appended.}
 
-\item{params_smooth}{An optional named logical vector, one entry per new
-parameter, saying which of them the log-density is differentiable in.
-The map is arbitrary, so the default cannot read which new parameter
-reaches a kink of the parent: it is \code{TRUE} for every new parameter when
-every parameter of the parent is smooth, and \code{FALSE} for every one
-otherwise.}
+\item{params_smooth}{An optional named logical vector with one entry per new
+parameter. An entry is \code{TRUE} when the log-density is differentiable in
+that new parameter.
+Because the map is arbitrary, the default cannot identify which new
+parameter reaches a kink of the parent: it is \code{TRUE} for every new
+parameter when every parameter of the parent is smooth, and \code{FALSE} for
+every one otherwise.}
 }
 \value{
 A distribution object of class
@@ -63,8 +64,8 @@ A distribution object of class
 Returns the same law as \code{distrib}, parametrized by quantities of the
 caller's choosing.
 
-The function is meant for trying a parametrization the package does not
-ship. Every derivative it returns is assembled from the parent's
+The function is meant for trying a parametrization that the package does not
+ship. Every derivative that it returns is assembled from the parent's
 derivatives through the map, one order at a time, so it costs more than a
 family written for that parametrization; a parametrization used in a
 real analysis is better written as a distribution of its own, with its
@@ -78,41 +79,40 @@ quantity, and the estimate, the standard error and the confidence interval
 describe that quantity.
 
 The map is written in ordinary R. It takes a named list of the new
-parameters and returns a named list of the parent's, and nothing in it
-mentions derivatives:
+parameters and returns a named list of the parent's, and it does not mention
+derivatives:
 
 \preformatted{
 function(psi) list(mu = psi$mean / gamma(1 + 1 / psi$sigma),
                    sigma = psi$sigma)
 }
 
-Where the map's derivatives come from. Two routes, and \code{map_derivs}
-chooses between them. Supply it, and the tables are hand-written closed
-forms, exact at every order with no chain rule transcribed; the shipped
-second parametrizations all do, and their formulas live in
-\code{\link[=reparam_map_derivs]{reparam_map_derivs()}}. Leave it \code{NULL}, and each partial the chain needs
-comes from one central stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} applied to
-the analytic map, a single stencil per order and never a chain of
+The map's derivatives come from one of two routes, and \code{map_derivs} selects
+between them. If \code{map_derivs} is supplied, the tables are hand-written closed
+forms, exact at every order and written without a transcribed chain rule;
+the shipped second parametrizations all supply it, and their formulas are in
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}}. If \code{map_derivs} is \code{NULL}, each partial that the
+chain needs comes from one central stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}}
+applied to the analytic map, a single stencil per order and never a chain of
 differences. The stencil route is accurate to about \eqn{10^{-11}} at first
 order and loses accuracy quickly with the order (the third and fourth tables
 can be wrong in their leading digits), so a family used for anything beyond a
 first exploration needs \code{map_derivs}.
 
-What is exact and what is inherited. The derivatives of the
-log-density are carried by
+The derivatives of the log-density are carried by
 \deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
       \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial \psi_B},}
-the sum over set partitions, so every order the parent has in closed form
-survives in closed form. Expectation being linear and the map
+the sum over set partitions, so every order that the parent has in closed
+form survives in closed form. Because expectation is linear and the map is
 deterministic, the expected derivatives obey the same formula, and the term
-carrying the parent's score (multiplied by a derivative of the map of the
+that carries the parent's score (multiplied by a derivative of the map of the
 order being formed) drops because the score has mean zero: a parent with an
 exact expected information gives an exact one here. The density, the
 distribution function, the quantile function, the generator and the response
 derivatives are the parent's at the mapped parameters.
 
-Cost. The density, the distribution function, the quantile function and
+The density, the distribution function, the quantile function and
 the generator call the map once per evaluation, on whole vectors. When
 \code{map_derivs} is \code{NULL}, the derivatives call the map at the points of the
 stencil, several times for each observation (more at higher orders), and
@@ -120,7 +120,7 @@ separately for each observation when a parameter varies by observation. A
 supplied \code{map_derivs} is called once per evaluation.
 }
 \examples{
-# a gaussian in its mean and variance, obtained rather than written
+# This is a gaussian in its mean and variance, obtained rather than written.
 d <- reparametrize(
   gaussian1_distrib(),
   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),

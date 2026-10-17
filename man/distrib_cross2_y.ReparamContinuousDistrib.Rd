@@ -47,8 +47,8 @@ theta <- list(mu = 0.3, sigma2 = 1.44)
 
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 
-# Against the family written out by hand, and against a numerical
-# derivative of the response Hessian.
+# The result is compared with the family written out by hand and with a
+# numerical derivative of the response Hessian.
 max(abs(unlist(distrib_cross2_y(d, y, theta)) -
         unlist(distrib_cross2_y(gaussian2_distrib(), y, theta))))
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))

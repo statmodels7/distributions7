@@ -32,8 +32,8 @@ and orders the result.}
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{expected}{Should the expected derivatives be carried? A single
-logical, \code{FALSE} by default.}
+\item{expected}{Should the expected derivatives be carried? It is a single
+logical, with default \code{FALSE}.}
 
 \item{approx, nsim}{Forwarded to the parent's expected derivatives: \code{approx}
 is one of \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, and
@@ -53,17 +53,17 @@ copy of it: the hand-written second parametrizations all do.
 \section{The identity}{
 \deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
-      \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B},}
-the sum over set partitions of the multi-index. Every order that the parent
-has in closed form therefore survives in closed form.
+      \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B}.}
+The outer sum runs over set partitions of the multi-index. Every order that
+the parent has in closed form therefore survives in closed form.
 }
 
 \section{Under expectation}{
 Expectation is linear and the map deterministic, so the expected derivatives
 obey the same formula, and the term carrying the parent's score drops
-because the score has mean zero. That is why \code{D[[1]]} is left \code{NULL} when
-\code{expected} is \code{TRUE}: a parent with an exact expected information gives an
-exact one here.
+because the score has mean zero. Therefore \code{D[[1]]} is left \code{NULL} when
+\code{expected} is \code{TRUE}, and a parent with an exact expected information gives
+an exact one here.
 }
 
 \section{Notation}{
@@ -74,7 +74,7 @@ exact one here.
 }
 
 \seealso{
-\code{\link[=chain_assemble]{chain_assemble()}}, the sum it delegates to;
+\code{\link[=chain_assemble]{chain_assemble()}}, to which it delegates the sum;
 \code{\link[=reparam_chain]{reparam_chain()}}, its caller for a \code{\link[=reparametrize]{reparametrize()}} object;
 \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}, the same construction on the distribution function.
 }

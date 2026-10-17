@@ -46,8 +46,8 @@ parameters are the parent's followed by \code{za}, whose bound is
 \eqn{(0, 1)} and whose interpretation is \code{"prob. of zero"}.
 }
 \description{
-The S7 class of the hurdle version of a discrete distribution, with mass
-function
+This S7 class represents the hurdle version of a discrete distribution,
+with mass function
 \deqn{P(Y = y) = \begin{cases} \pi & y = 0 \\
   (1-\pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} & y > 0. \end{cases}}
 The mass at zero is REPLACED by the free parameter \eqn{\pi}, carried by
@@ -59,8 +59,8 @@ well as more.
 The likelihood factorizes into a binary part in \eqn{\pi} and a
 positive-count part in \eqn{\theta}. Every mixed block of the Hessian is
 exactly zero for that reason, and the two halves can be read separately. It
-also re-interprets \eqn{\theta}: they are now the parameters of a TRUNCATED
-law, not of the count process the observations come from.
+also re-interprets \eqn{\theta}: these are now the parameters of a TRUNCATED
+law, not of the count process from which the observations come.
 
 Build one with \code{\link[=zero_adjusted]{zero_adjusted()}}, which checks that the parent is not
 already a zero wrapper and has enough support points. This page documents

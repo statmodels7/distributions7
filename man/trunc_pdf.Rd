@@ -20,23 +20,23 @@ returned.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, of the length \code{y} and \code{theta} recycle to.
+A numeric vector, of the length to which \code{y} and \code{theta} recycle.
 }
 \description{
 Evaluates the parent's density divided by the retained mass \eqn{Z}, and
 zero outside \eqn{[L, U]}. This is one of the shared method bodies:
 truncation treats the two kinds of parent identically once
-\code{\link[=trunc_constants]{trunc_constants()}} has resolved the one place they differ, so the body is
-written once and registered on both classes.
+\code{\link[=trunc_constants]{trunc_constants()}} has resolved the one place where they differ, so the body
+is written once and registered on both classes.
 }
 \details{
-The division is done on the LOG scale and the outside is set to
+The body divides by \eqn{Z} on the LOG scale and sets the outside to
 \eqn{-\infty} there, so a point far in a tail keeps its precision instead of
 underflowing to zero before the division.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -49,11 +49,11 @@ theta <- list(mu = 0.3, sigma = 1.2)
 
 distrib_pdf(tn, c(-2, 0, 1, 3), theta)
 
-# The parent's density divided by the retained mass.
+# The result is the parent's density divided by the retained mass.
 Z <- distributions7:::trunc_constants(tn, theta)$Z
 dnorm(c(0, 1), 0.3, 1.2) / Z
 
-# Outside the interval, zero, and -Inf on the log scale.
+# Outside the interval the density is zero and the log-density is -Inf.
 distrib_pdf(tn, c(-2, 3), theta, log = TRUE)
 
 # It integrates to one over the interval, which the parent's does not.

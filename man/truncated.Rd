@@ -10,9 +10,9 @@ truncated(distrib, lower = NULL, upper = NULL)
 \item{distrib}{An object inheriting from \code{discrete_distrib} or
 \code{continuous_distrib}, including one that is already truncated.}
 
-\item{lower, upper}{The truncation points \eqn{L} and \eqn{U}, each a single
-number or \code{NULL} for no truncation on that side. At least one must be
-supplied, and for a discrete parent a finite one must be a whole number.
+\item{lower, upper}{The truncation points \eqn{L} and \eqn{U}. Each is a
+single number or \code{NULL} for no truncation on that side. At least one must
+be supplied, and for a discrete parent a finite one must be a whole number.
 Both are included in the resulting support.}
 }
 \value{
@@ -24,10 +24,10 @@ parent's name and the interval.
 }
 \description{
 Restricts an existing distribution to \eqn{[L, U]} and renormalizes it, so
-that the probability the parent placed outside the interval is redistributed
-inside it. Either endpoint may be omitted, giving one-sided truncation, and
-at least one must be given. Discrete and continuous parents are both
-accepted.
+that the probability that the parent placed outside the interval is
+redistributed inside it. Either endpoint may be omitted, giving one-sided
+truncation, and at least one must be given. Discrete and continuous parents
+are both accepted.
 
 Both endpoints are included in the support. For a discrete parent this means
 that \code{truncated(poisson_distrib(), lower = 1)} is the zero-truncated Poisson
@@ -40,30 +40,30 @@ Write \eqn{Z(\theta) = P(L \le Y \le U)} for the retained mass. Then
   \qquad F_T(q) = \frac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)},
   \qquad Q_T(p) = Q\{F(L^-;\theta) + pZ(\theta)\},}
 with \eqn{F(L^-) = F(L)} for a continuous parent and \eqn{F(L) - f(L)} for a
-discrete one, the lower endpoint being kept. The quantile function inverts
-\eqn{F_T} through the parent's own, so drawing from the truncated law is a
-one-pass inverse transform. An interval in the upper tail is handled through
-the parent's survival function, in \eqn{Z}, in the distribution function and
-in the quantile function.
+discrete one, because the lower endpoint is kept. The quantile function
+inverts \eqn{F_T} through the parent's own, so drawing from the truncated law
+is a one-pass inverse transform. An interval in the upper tail is handled
+through the parent's survival function, in \eqn{Z}, in the distribution
+function and in the quantile function.
 }
 
 \section{Truncation adds no parameter}{
 The endpoints are known constants, like a binomial's \code{size}, so the result
-carries exactly the parent's parameters, domains and links. What it adds is
-the \eqn{\theta}-dependent normalizing constant, which contributes to every
+carries exactly the parent's parameters, domains and links. It adds the
+\eqn{\theta}-dependent normalizing constant, which contributes to every
 derivative of \eqn{\ell_T = \ell - \log Z}. Writing
 \deqn{m_i = \mathbb{E}_T[s_i], \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],}
-with both expectations taken under the TRUNCATED law,
+where both expectations are taken under the TRUNCATED law,
 \deqn{\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
   \frac{\partial^{2}\ell_T}{\partial\theta_i\partial\theta_j}
     = H_{ij}(y) - M_{ij} + m_i m_j,}
 \deqn{\mathbb{E}\left[\frac{\partial^{2}\ell_T}
   {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j).}
-The score is the parent's recentered at its truncated mean, and the expected
-Hessian is minus the covariance of that score. This is the second Bartlett
-identity for the truncated model, and \code{distrib_expected_hessian()} evaluates
-it directly.
+The score is the parent's score recentered at its truncated mean, and the
+expected Hessian is minus the covariance of that score. This is the second
+Bartlett identity for the truncated model, and \code{distrib_expected_hessian()}
+evaluates it directly.
 }
 
 \section{Computation of the derivatives}{
@@ -82,8 +82,8 @@ distinct block otherwise.
 
 \section{What the constructor rejects}{
 \itemize{
-\item Both endpoints \code{NULL}. There is nothing to do, and returning the parent
-silently would hide the missing argument.
+\item Both endpoints \code{NULL}. The call requests no truncation, and returning the
+parent silently would hide the missing argument.
 \item \code{lower >= upper}.
 \item An endpoint removing no mass, such as
 \code{truncated(gamma2_distrib(), lower = -2)}: the gamma lives on
@@ -109,7 +109,7 @@ computing the normalizing constant twice.
 
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f},
 \eqn{F} and \eqn{Q} are the parent's density, distribution and quantile
 functions; \eqn{s_i} and \eqn{H_{ij}} are the parent's score and observed
@@ -118,13 +118,13 @@ Hessian; \eqn{\ell_T} is the truncated log-likelihood; and
 }
 
 \examples{
-# The zero-truncated Poisson: the lower endpoint is kept.
+# The zero-truncated Poisson keeps the lower endpoint.
 ztp <- truncated(poisson_distrib(), lower = 1)
 distrib_pdf(ztp, 0:4, list(mu = 2))
 dpois(1:4, 2) / (1 - dpois(0, 2))
 c(fitted_mean = mean(ztp, list(mu = 2)), theory = 2 / (1 - exp(-2)))
 
-# A gaussian restricted to an interval. Truncation adds no parameter.
+# A gaussian is restricted to an interval, and truncation adds no parameter.
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 theta <- list(mu = 0.3, sigma = 1.2)
 identical(tn@params, gaussian1_distrib()@params)
@@ -143,7 +143,7 @@ c(lower = t2@lower, upper = t2@upper)
 tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
 distrib_atoms(tz, list(mu = 2, sigma2 = 1, za = 0.3))
 
-# Three errors, each stating the condition that failed.
+# Each of three errors states the condition that failed.
 try(truncated(gamma2_distrib(), lower = -2))
 try(truncated(poisson_distrib(), lower = 1.5))
 try(truncated(zero_inflated(poisson_distrib()), lower = 1))

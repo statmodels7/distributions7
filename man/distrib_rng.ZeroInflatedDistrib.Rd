@@ -46,6 +46,6 @@ c(sampled = mean(big == 0), exact = distrib_pdf(d, 0, theta),
   parent = dpois(0, 3))
 }
 \seealso{
-\code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf.ZeroInflatedDistrib()}} for the mass function these
-are drawn from, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+\code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf.ZeroInflatedDistrib()}} for the mass function from
+which these are drawn, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

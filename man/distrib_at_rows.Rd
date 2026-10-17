@@ -11,15 +11,15 @@ distrib_at_rows(distrib, idx, n)
 
 \item{idx}{Integer indices of observations, one per point.}
 
-\item{n}{The number of observations the constants are recycled to.}
+\item{n}{The number of observations to which the constants are recycled.}
 }
 \value{
 The family, with its varying constants of length \code{length(idx)}.
 }
 \description{
 Returns \code{distrib} with every constant that varies by observation (a
-binomial's or a beta-binomial's \code{size}), its parents' included, taken at
-the observations \code{idx}, so that the family can be evaluated at points that
-belong to those observations.
+binomial's or a beta-binomial's \code{size}), including the constants of its
+parents, taken at the observations \code{idx}, so that the family can be evaluated
+at points that belong to those observations.
 }
 \keyword{internal}

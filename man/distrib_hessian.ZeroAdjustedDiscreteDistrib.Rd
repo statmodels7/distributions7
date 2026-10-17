@@ -55,7 +55,7 @@ y <- distrib_rng(d, 300, theta)
 H <- distrib_hessian(d, y, theta)
 vapply(H, sum, numeric(1))
 
-# Against a numerical Hessian of the log-likelihood.
+# The Hessian is compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

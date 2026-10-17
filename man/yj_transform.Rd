@@ -7,15 +7,17 @@
 yj_transform(lambda)
 }
 \arguments{
-\item{lambda}{Numeric. The transformation parameter.}
+\item{lambda}{The numeric transformation parameter.}
 }
 \value{
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for the Yeo-Johnson transformation, extending Box-Cox to
-negative values: Box-Cox of \eqn{X+1} (parameter \eqn{\lambda}) for \eqn{X \ge 0},
-and negated Box-Cox of \eqn{|X|+1} (parameter \eqn{2-\lambda}) for \eqn{X < 0}.
+Returns the transformer for the Yeo-Johnson transformation,
+which
+extends Box-Cox to negative values. The map is Box-Cox of \eqn{X+1}
+(parameter \eqn{\lambda}) for \eqn{X \ge 0}, and negated Box-Cox of
+\eqn{|X|+1} (parameter \eqn{2-\lambda}) for \eqn{X < 0}.
 }
 \examples{
 d <- transformation(gaussian1_distrib(), yj_transform(lambda = 0.5))
@@ -23,5 +25,8 @@ distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}},
+\code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}},
+\code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}},
+\code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }

@@ -25,41 +25,43 @@ See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 }
 \value{
 A named list with one numeric vector per unordered pair of
-parameters, each as long as \code{y}, keyed as
+parameters. Each vector is as long as \code{y}, and the list is keyed as
 \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Computes \eqn{\partial^4 \ell / \partial y^2\, \partial\theta_i
-\partial\theta_j}, one component per unordered pair of parameters, each a
-vector along \code{y}. It gives the second derivative, in the parameters, of the
-response curvature, and it is the fourth-order entry of the mixed grid below.
+\partial\theta_j}, with one component per unordered pair of parameters, and
+each component is a vector along \code{y}. It gives the second derivative, in the
+parameters, of the response curvature, and it is the fourth-order entry of
+the mixed grid below.
 }
 \details{
 These are the second-order column of the mixed grid whose first-order column
-is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}:\tabular{llll}{
-    \tab \eqn{\partial^0/\partial\theta^0} \tab \eqn{\partial^1/\partial\theta^1} \tab \eqn{\partial^2/\partial\theta^2} \cr
-   \eqn{\partial/\partial y} \tab \code{\link[=distrib_grad_y]{distrib_grad_y()}} \tab \code{\link[=distrib_cross_y]{distrib_cross_y()}} \tab \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} \cr
-   \eqn{\partial^2/\partial y^2} \tab \code{\link[=distrib_hess_y]{distrib_hess_y()}} \tab \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} \tab \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} \cr
-}
+is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}:
 
+| | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} |
+\eqn{\partial^2/\partial\theta^2} | |---|---|---|---| |
+\eqn{\partial/\partial y} | \code{\link[=distrib_grad_y]{distrib_grad_y()}} | \code{\link[=distrib_cross_y]{distrib_cross_y()}} |
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} | | \eqn{\partial^2/\partial y^2} |
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} | \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} | \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} |
 
-The right-hand column is the one that the second derivative of a marginal
-criterion requires from a penalty. A penalty is a negative log-density read
+The second derivative of a marginal criterion requires the right-hand column
+from a penalty. A penalty is a negative log-density read
 at the
 coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 response curvature and the two mixed derivatives above carry
 \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
 \eqn{\partial^4\rho/\partial\beta^2\partial\theta^2}.
 
-The components are keyed by \code{\link[=hess_names]{hess_names()}}, the same enumeration
+The components are keyed by \code{\link[=hess_names]{hess_names()}}, the same enumeration that
 \code{\link[=distrib_hessian]{distrib_hessian()}} uses.
 }
 \section{The link scale}{
 Each component is multiplied by \eqn{h_i'(\eta_i) h_j'(\eta_j)} and, on a
 diagonal pair, gains \eqn{h_i''(\eta_i)} times the corresponding
 first-order component from \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}. That is the same diagonal
-chain rule \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} obeys, with the first-order quantity
-taken one order higher in \eqn{y}.
+chain rule that \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} obeys, except that the first-order
+quantity is differentiated one order higher in \eqn{y}.
 }
 
 \section{Where the numbers come from}{
@@ -89,7 +91,8 @@ distrib_hess_y_hess(d, y, theta)
 # so only the scale pair survives and it does not vary with y.
 -6 / 1.3^4
 
-# Against a numerical Hessian of the response curvature in the parameters.
+# The result is compared with a numerical Hessian of the response curvature
+# in the parameters.
 h <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(h, c(0.4, 1.3))
 
@@ -100,5 +103,5 @@ try(distrib_hess_y_hess(poisson_distrib(), 1:3, list(mu = 2)))
 \seealso{
 \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the third-order twin,
 \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the first-order column, and
-\code{\link[=numerical_theta2_y]{numerical_theta2_y()}} for the fallback.
+\code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} for the fallback.
 }

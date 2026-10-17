@@ -10,14 +10,14 @@ numerical_theta2_y(distrib, y, theta, inner, h_rel = .Machine$double.eps^(1/3))
 \item{distrib}{A distribution object. Its \code{params} and \code{params_bounds} set
 the enumeration and the steps.}
 
-\item{y}{A numeric vector of observations. Passed to nothing here; \code{inner}
-has already closed over it.}
+\item{y}{A numeric vector of observations. The function does not use it,
+because \code{inner} has already closed over it.}
 
-\item{theta}{A named list of parameters, the point to differentiate at.}
+\item{theta}{A named list of parameters, the point at which to differentiate.}
 
-\item{inner}{A function of \code{theta} alone returning the first-order
-components as a list with one entry per parameter, typically
-\code{function(th) distrib_cross_y(distrib, y, th)}.}
+\item{inner}{A function that takes \code{theta} as its only argument and returns
+the first-order components as a list with one entry per parameter,
+typically \code{function(th) distrib_cross_y(distrib, y, th)}.}
 
 \item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
 which is the optimal exponent for a central first difference.}
@@ -35,12 +35,12 @@ continuous family use \code{\link[=mixed_tensor_derivatives]{mixed_tensor_deriva
 }
 \details{
 The reference is \code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, so a
-distribution with a closed form for those pays for exactly one difference
+distribution with a closed form for those requires exactly one difference
 and never differences a difference.
 
 A mixed pair is differenced in both orders and the two results are averaged.
-They agree in exact arithmetic and differ in floating point, the two steps
-having different sizes, and the average is symmetric in the pair.
+They agree in exact arithmetic and differ in floating point because the two
+steps have different sizes. The average is symmetric in the pair.
 
 The step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}} from the two candidates of
 \code{\link[=fd_steps]{fd_steps()}}, so that both evaluation points of the central difference of a
@@ -63,11 +63,12 @@ num <- numerical_theta2_y(d, y, theta,
                           function(th) distrib_cross_y(d, y, th))
 num$sigma_sigma
 
-# Against the gaussian's own closed form, which this family does not need
-# the fallback for.
+# The result is compared with the gaussian's own closed form, for which this
+# family does not need the fallback.
 max(abs(unlist(num) - unlist(distrib_grad_y_hess(d, y, theta))))
 
-# A family that takes the default continuous method, checked against numDeriv.
+# A family that takes the default continuous method is checked against
+# numDeriv.
 dg <- gamma2_distrib()
 yg <- c(0.5, 1, 2)
 thg <- list(mu = 2, sigma2 = 1)
@@ -79,5 +80,5 @@ c(g$mu_mu[1], g$mu_sigma2[1], g$sigma2_sigma2[1])
 }
 \seealso{
 \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, the two
-generics it serves, and \code{\link[=fd_steps]{fd_steps()}} for the step rule.
+generics that it serves, and \code{\link[=fd_steps]{fd_steps()}} for the step rule.
 }

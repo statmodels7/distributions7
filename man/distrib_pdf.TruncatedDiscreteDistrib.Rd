@@ -17,8 +17,8 @@ returned.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probabilities, of the length \code{y} and \code{theta}
-recycle to.
+A numeric vector of probabilities, of the length to which \code{y} and
+\code{theta} recycle.
 }
 \description{
 Evaluates
@@ -31,7 +31,7 @@ zero-truncated Poisson and keeps the mass at one.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -42,7 +42,7 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 ztp <- truncated(poisson_distrib(), lower = 1)
 theta <- list(mu = 2)
 
-# Zero is gone; one is not.
+# The mass at zero is removed, and the mass at one is kept.
 distrib_pdf(ztp, 0:4, theta)
 dpois(1:4, 2) / (1 - dpois(0, 2))
 

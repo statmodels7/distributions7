@@ -15,19 +15,19 @@ reparam_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}. Handled by the
-generic, which applies the chain rule onto the link scale after this
-method has returned; the method itself always answers on the parameter
-scale.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}. The
+generic handles it and applies the chain rule onto the link scale after
+this method has returned; the method itself always returns values on the
+parameter scale.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors, one per new parameter, each the
-length of \code{y} recycled against \code{theta}.
+A named list of numeric vectors, one per new parameter, where each
+vector has the length of \code{y} after it is recycled against \code{theta}.
 }
 \description{
-The parent's score carried by the Jacobian of the map,
+Carries the parent's score through the Jacobian of the map,
 \deqn{\ell^{(a)} = \sum_i \ell^{(i)}\,
       \frac{\partial\theta_i}{\partial\psi_a}.}
 It is exact whenever the parent's score is, and the map's partials are
@@ -51,8 +51,8 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# The same numbers as the family written out by hand, to 1e-12: the map's
-# partials are differenced here and written out there.
+# The result equals that of the family written out by hand, to 1e-12: the
+# map's partials are differenced here and written out there.
 a <- distrib_gradient(d, c(0, 1, 2), th)
 b <- distrib_gradient(gaussian2_distrib(), c(0, 1, 2), th)
 max(abs(unlist(a[names(b)]) - unlist(b)))

@@ -18,7 +18,7 @@ Reports whether an object belongs to either truncated class. \code{\link[=trunca
 tests the object before wrapping, and collapses a nested truncation into a
 single object over the intersection of the two intervals. Nesting would be
 correct but would pay the quadrature cost of \code{\link[=trunc_score_mean]{trunc_score_mean()}} twice for a
-law one truncation already describes.
+law that one truncation already describes.
 }
 \examples{
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
@@ -34,6 +34,6 @@ distributions7:::is_truncated(t2@parent_distrib)
 }
 \seealso{
 \code{\link[=truncated]{truncated()}}, which uses it, and \link{TruncatedContinuousDistrib} and
-\link{TruncatedDiscreteDistrib}, the two classes it recognizes.
+\link{TruncatedDiscreteDistrib}, the two classes that it recognizes.
 }
 \keyword{internal}

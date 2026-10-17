@@ -21,10 +21,10 @@ A named list with components \code{y} (the atom locations) and \code{p}
 of length zero.
 }
 \description{
-The parent's, unchanged: a reparametrization does not move mass. Delegating
-matters because \code{\link[=check_distrib]{check_distrib()}} consults this to decide which of its
-checks apply, and a reparametrized mixed family would otherwise be validated
-as though it were purely continuous.
+Returns the parent's atoms, unchanged, because a reparametrization does not
+move mass. Delegating matters because \code{\link[=check_distrib]{check_distrib()}} uses the atoms to
+select which of its checks apply, and a reparametrized mixed family would
+otherwise be validated as though it were purely continuous.
 }
 \examples{
 # A reparametrized zero-adjusted gamma keeps its atom at zero.

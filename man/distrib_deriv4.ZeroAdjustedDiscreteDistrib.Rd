@@ -28,9 +28,10 @@ parent parameter are exactly zero, the \code{za} part is the fourth derivative o
 a binomial log-likelihood in one probability, and the \eqn{\theta} part is
 the parent's fourth derivative less that of \eqn{\log(1 - f_0)}.
 
-The truncation constant is where the work is. Its fourth derivative comes
-from the moment-to-cumulant expansion over the fifteen partitions of four
-indices, read on the ratios \eqn{d^B f_0 / f_0} alone.
+Most of the computation concerns the truncation constant. Its fourth
+derivative comes from the moment-to-cumulant expansion over the fifteen
+partitions of four indices, which uses only the ratios
+\eqn{d^B f_0 / f_0}.
 }
 \examples{
 h <- zero_adjusted(poisson_distrib())
@@ -46,5 +47,5 @@ vapply(c("mu_mu_mu_za", "mu_mu_za_za", "mu_za_za_za"),
 \seealso{
 \code{\link[=zero_adjusted]{zero_adjusted()}} for the wrapper;
 \code{\link[=distrib_deriv3.ZeroAdjustedDiscreteDistrib]{distrib_deriv3.ZeroAdjustedDiscreteDistrib()}} for the order below;
-\code{\link[=log_deriv]{log_deriv()}}, the partition sum the truncation constant uses.
+\code{\link[=log_deriv]{log_deriv()}}, the partition sum that the truncation constant uses.
 }

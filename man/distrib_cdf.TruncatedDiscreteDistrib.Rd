@@ -21,13 +21,13 @@ A numeric vector of cumulative probabilities.
 }
 \description{
 Evaluates \eqn{F_T(q) = \{F(q;\theta) - F(L^-;\theta)\}/Z(\theta)}, clamped
-to \eqn{[0, 1]}. The lower tail subtracted is \eqn{F(L) - f(L)}, the mass at
-\eqn{L} being retained, so the truncated distribution function is already
-positive at \eqn{L} itself.
+to \eqn{[0, 1]}. The lower tail subtracted is \eqn{F(L) - f(L)}, because the
+mass at \eqn{L} is retained, so the truncated distribution function is
+already positive at \eqn{L} itself.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -38,10 +38,11 @@ and \eqn{H_{ij}} are the parent's score and observed Hessian; and
 ztp <- truncated(poisson_distrib(), lower = 1)
 theta <- list(mu = 2)
 
-# Zero below the interval, and already positive at the lower endpoint.
+# The value is zero below the interval and already positive at the lower
+# endpoint.
 distrib_cdf(ztp, 0:4, theta)
 
-# The cumulative sums of the truncated mass function.
+# The cumulative sums of the truncated mass function give the same values.
 cumsum(distrib_pdf(ztp, 1:4, theta))
 }
 \seealso{

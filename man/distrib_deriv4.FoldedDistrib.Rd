@@ -16,11 +16,11 @@ approximated by \code{\link[=expected_derivative]{expected_derivative()}}. Defau
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{The strategy \code{\link[=expected_derivative]{expected_derivative()}} uses when
-\code{expected = TRUE}. Ignored otherwise.}
+\item{approx}{The strategy that \code{\link[=expected_derivative]{expected_derivative()}} uses when
+\code{expected = TRUE}. It is ignored otherwise.}
 
 \item{nsim}{The Monte Carlo sample size when \code{approx = "mc"}. Defaults to
-\code{10000}. Ignored otherwise.}
+\code{10000}. It is ignored otherwise.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -30,9 +30,9 @@ A named list of numeric vectors, keyed and ordered as
 }
 \description{
 Computes every fourth derivative of the folded log-density from the same
-partition sums as \code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3.FoldedDistrib()}}, one order up: the block
-ratios \eqn{d^B L/L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))} handed
-to \code{\link[=log_deriv]{log_deriv()}}. A parent with closed forms to fourth order gives the
+partition sums as \code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3.FoldedDistrib()}}, one order up. The block
+ratios \eqn{d^B L/L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))} are
+handed to \code{\link[=log_deriv]{log_deriv()}}. A parent with closed forms to fourth order gives the
 folded family closed forms to fourth order.
 }
 \details{
@@ -54,7 +54,7 @@ y <- distrib_rng(d, 30, theta)
 d4 <- distrib_deriv4(d, y, theta)
 length(d4)
 
-# Against one stencil on the analytic third order.
+# The result is compared with one stencil on the analytic third order.
 h <- 1e-4
 tp <- theta; tp$sigma <- tp$sigma + h
 tm <- theta; tm$sigma <- tm$sigma - h

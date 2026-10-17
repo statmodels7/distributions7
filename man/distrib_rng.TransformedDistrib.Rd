@@ -38,6 +38,6 @@ big <- distrib_rng(d, 20000, theta)
 c(sampled = mean(big < 2), exact = distrib_cdf(d, 2, theta))
 }
 \seealso{
-\code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf.TransformedDistrib()}} for the density these are drawn
-from, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+\code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf.TransformedDistrib()}} for the density from which these
+are drawn, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

@@ -17,8 +17,8 @@ log_pow_deriv(p, k, complement = FALSE)
 A numeric vector.
 }
 \description{
-The two elementary logarithmic derivatives the zero wrappers need:
-\eqn{d^k \log p = (-1)^{k-1}(k-1)!/p^k} and
+Computes the two elementary logarithmic derivatives that the zero wrappers
+need: \eqn{d^k \log p = (-1)^{k-1}(k-1)!/p^k} and
 \eqn{d^k \log(1-p) = -(k-1)!/(1-p)^k}.
 }
 \keyword{internal}

@@ -11,26 +11,28 @@ NULL
 #' law taken by [expectation()], as the expected Hessian itself is.
 #'
 #' @details
-#' With \eqn{\ell = \ell_P - \log Z} the truncated log-likelihood, \eqn{\ell_P}
-#' being the parent's, and \eqn{G = \ell_i \ell_j}, the second Bartlett identity
-#' gives \eqn{E[\ell_{ij}] = -E[G]}, and differentiating under the expectation,
+#' With \eqn{\ell = \ell_P - \log Z} the truncated log-likelihood (\eqn{\ell_P}
+#' is the parent's) and \eqn{G = \ell_i \ell_j}, the second Bartlett identity
+#' gives \eqn{E[\ell_{ij}] = -E[G]}. Differentiating under the expectation
+#' gives
 #' \deqn{\partial_c E[G] = E[G_c + G\ell_c],}
 #' \deqn{\partial_{cd} E[G] = E[G_{cd} + G_c\ell_d + G_d\ell_c +
 #'   G(\ell_c\ell_d + \ell_{cd})],}
 #' with \eqn{G_c = \ell_{ic}\ell_j + \ell_i\ell_{jc}} and
 #' \eqn{G_{cd} = \ell_{icd}\ell_j + \ell_{ic}\ell_{jd} + \ell_{id}\ell_{jc} +
 #' \ell_i\ell_{jcd}}. The truncation points do not depend on the parameters,
-#' so no boundary term arises. The truncated derivatives are the parent's less
-#' those of \eqn{\log Z}, which do not depend on \eqn{y}: they are computed
-#' once per parameter combination by `trunc_logz_derivs()` and passed to the
-#' integrand, which reads only the parent's derivatives at the nodes.
-#' Registered through [register_dexpected()].
+#' so the differentiation does not produce a boundary term. The truncated
+#' derivatives are the parent's less those of \eqn{\log Z}, which do not depend
+#' on \eqn{y}: they are computed once per parameter combination by
+#' `trunc_logz_derivs()` and passed to the integrand, which reads only the
+#' parent's derivatives at the nodes. `trunc_dexpected()` is registered through
+#' [register_dexpected()].
 #'
 #' @param d A truncated family, from [truncated()].
 #' @param y The response, read for its length.
 #' @param th The parameters.
 #' @param k The order, `1L` or `2L`.
-#' @param t Unused; the thread count of the registration.
+#' @param t Unused; it is the thread count of the registration.
 #'
 #' @return A named list keyed as [dexpected_names()] (`k = 1`) or
 #'   [d2expected_names()] (`k = 2`), each component of length `length(y)`.

@@ -23,7 +23,7 @@ bounded below at two.}
 A reparametrized distribution object.
 }
 \description{
-The same family as \code{\link[=student_t2_distrib]{student_t2_distrib()}}, obtained through
+Returns the same family as \code{\link[=student_t2_distrib]{student_t2_distrib()}}, obtained through
 \code{\link[=reparametrize]{reparametrize()}} on \code{\link[=student_t1_distrib]{student_t1_distrib()}} rather than written out.
 }
 \details{

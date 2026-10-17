@@ -15,11 +15,11 @@ split_index(idx, mix_name)
 A list with \code{theta}, the parent part, and \code{n_mix}, a count.
 }
 \description{
-Separates a multi-index into the parent's parameters and the number of times
-the wrapper's own parameter appears.
+Separates a multi-index into the parent's parameters and a count of the
+occurrences of the wrapper's own parameter.
 }
 \details{
-The wrapper's parameter is always the last one it declares, so the split needs
-only its name.
+The wrapper's parameter is always the last one that the wrapper declares, so
+the split needs only its name.
 }
 \keyword{internal}

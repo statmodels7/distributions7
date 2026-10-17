@@ -17,9 +17,9 @@ Builds the order-\code{k} derivative method for \code{\link[=truncated]{truncate
 }
 \details{
 Here \eqn{\ell_T = \ell - \log Z}, and the ratios are truncated expectations
-of the same complete Bell quantity the other wrappers use,
+of the same complete Bell quantity that the other wrappers use,
 \eqn{d^B Z / Z = \mathbb{E}_T[d^B f / f]}. Each distinct block costs one
-quadrature or summation, which is why they are memoized across the partition
+quadrature or summation, so the blocks are memoized across the partition
 sum.
 }
 \seealso{

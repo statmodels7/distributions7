@@ -20,7 +20,8 @@ A named list of three numeric vectors of length \code{length(y)}, keyed
 \code{mu_mu}, \code{sigma_sigma} and \code{mu_sigma}.
 }
 \description{
-Closed form. With \eqn{r = y - \mu} the response gradient is
+Computes the derivative in closed form. With \eqn{r = y - \mu} the response
+gradient is
 \eqn{-r/\sigma^2}, so differentiating it twice in the parameters gives
 \deqn{\frac{\partial^3\ell}{\partial y\,\partial\mu^2} = 0, \qquad
   \frac{\partial^3\ell}{\partial y\,\partial\mu\,\partial\sigma}
@@ -45,11 +46,11 @@ theta <- list(mu = 0.4, sigma = 1.3)
 g <- distrib_grad_y_hess(d, y, theta)
 g
 
-# The three formulas written out.
+# The three formulas are written out.
 r <- y - 0.4
 c(mu_mu = 0, mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
 
-# Against a numerical Hessian of the response gradient.
+# The result is compared with a numerical Hessian of the response gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(f, c(0.4, 1.3))
 }

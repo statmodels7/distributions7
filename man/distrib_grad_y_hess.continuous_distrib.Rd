@@ -20,7 +20,7 @@ A named list with one numeric vector per unordered pair of
 parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central
 difference of an analytic \code{\link[=distrib_cross_y]{distrib_cross_y()}} in each parameter, a
 difference in the response of an analytic Hessian, or one mixed stencil of
@@ -34,7 +34,7 @@ fallback; only quantities that the family's class registers are used as the
 base.
 }
 \examples{
-# The gamma writes no closed form, so this method answers for it.
+# The gamma has no closed form of its own, so this method is used for it.
 d <- gamma2_distrib()
 y <- c(0.5, 1, 2)
 theta <- list(mu = 2, sigma2 = 1)
@@ -43,7 +43,7 @@ attr(S7::method(distrib_grad_y_hess, S7::S7_class(d)), "signature")[[1]]
 g <- distrib_grad_y_hess(d, y, theta)
 c(g$mu_mu[1], g$mu_sigma2[1], g$sigma2_sigma2[1])
 
-# Against a numerical Hessian of the response gradient.
+# The result is compared with a numerical Hessian of the response gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(2, 1))
 }

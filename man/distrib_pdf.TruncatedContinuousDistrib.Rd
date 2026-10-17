@@ -17,20 +17,20 @@ returned.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values, of the length \code{y} and \code{theta}
-recycle to.
+A numeric vector of density values, of the length to which \code{y} and
+\code{theta} recycle.
 }
 \description{
 Evaluates
 \deqn{f_T(y) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U), \qquad
   f_T(y) = 0 \ \text{ otherwise},}
 with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta)} the retained mass. The
-division is carried out on the log scale, so a point far in a tail keeps its
-precision instead of underflowing before the division.
+density is divided by \eqn{Z} on the log scale, so a point far in a tail
+keeps its precision instead of underflowing before the division.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -43,7 +43,8 @@ theta <- list(mu = 0.3, sigma = 1.2)
 
 distrib_pdf(tn, c(-2, 0, 1, 3), theta)
 
-# The parent's density lifted by the reciprocal of the retained mass.
+# The result is the parent's density lifted by the reciprocal of the
+# retained mass.
 Z <- pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2)
 c(dnorm(0, 0.3, 1.2), dnorm(1, 0.3, 1.2)) / Z
 

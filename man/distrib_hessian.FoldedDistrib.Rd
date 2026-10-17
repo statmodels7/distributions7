@@ -30,8 +30,8 @@ average of their first-order ones.
 }
 \details{
 The Hessian of the fold has no formula of its own. \code{\link[=fold_ratio]{fold_ratio()}} supplies
-the ratios and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L}, the
-same two functions the third and fourth orders use. Each ratio is a complete
+the ratios and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L}; the
+third and fourth orders use the same two functions. Each ratio is a complete
 Bell polynomial in the parent's own log-derivatives, so a parent with closed
 forms gives the folded family closed forms.
 }
@@ -51,7 +51,8 @@ y <- distrib_rng(d, 30, theta)
 H <- distrib_hessian(d, y, theta)
 vapply(H, sum, numeric(1))
 
-# Against a numerical Hessian of the folded log-likelihood.
+# The result is compared with a numerical Hessian of the folded
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

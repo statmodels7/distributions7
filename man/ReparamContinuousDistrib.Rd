@@ -38,9 +38,9 @@ ReparamDiscreteDistrib(
 \arguments{
 \item{distrib_name}{The name of the family, a single string.}
 
-\item{dimension}{\code{"univariate"} or \code{"multivariate"}. Always the first for a
-reparametrization, since \code{\link[=reparametrize]{reparametrize()}} signals an error for a
-multivariate parent.}
+\item{dimension}{\code{"univariate"} or \code{"multivariate"}. It is always
+\code{"univariate"} for a reparametrization, since \code{\link[=reparametrize]{reparametrize()}} signals an
+error for a multivariate parent.}
 
 \item{bounds}{A length-two numeric vector, the support.}
 
@@ -51,17 +51,18 @@ parameter.}
 
 \item{n_params}{The number of new parameters.}
 
-\item{params_bounds}{A named list of length-two numeric vectors, the open
-interval each new parameter lives in.}
+\item{params_bounds}{A named list of length-two numeric vectors, each of
+which gives the open interval in which the corresponding new parameter
+lies.}
 
 \item{link_params}{A named list of \pkg{linkfunctions7} links, one per new
-parameter. Note the name: it is \code{link_params} on the object and \code{links} in
+parameter. The name is \code{link_params} on the object and \code{links} in
 \code{\link[=reparametrize]{reparametrize()}}'s signature.}
 
-\item{params_smooth}{A named logical vector saying which parameters the
-log-density is differentiable in.}
+\item{params_smooth}{A named logical vector indicating the parameters with
+respect to which the log-density is differentiable.}
 
-\item{parent_distrib}{The distribution being rewritten.}
+\item{parent_distrib}{The distribution that is rewritten.}
 
 \item{reparam_map}{The map from the new parameters to the parent's, a
 function of one named list returning another.}
@@ -75,8 +76,9 @@ An object of class \code{ReparamContinuousDistrib} or
 three above.
 }
 \description{
-What \code{\link[=reparametrize]{reparametrize()}} returns: the same law as its parent, written in
-different coordinates. There is one class per kind of parent, so that a
+\code{\link[=reparametrize]{reparametrize()}} returns objects of these classes. Each of them
+represents the same law as its parent, written in different coordinates.
+There is one class per kind of parent, so that a
 continuous parent keeps the defaults registered on \code{\link[=continuous_distrib]{continuous_distrib()}}
 and a discrete one those of \code{\link[=discrete_distrib]{discrete_distrib()}}. The two classes differ only
 in their parent, and the methods of this file are registered on both from the
@@ -84,16 +86,16 @@ same body, except \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\lin
 continuous class registers.
 }
 \details{
-The three properties beyond a distribution's own are what the methods read.
-\code{parent_distrib} is the law being rewritten and is delegated to for the
-density, the distribution function, the quantile function, the generator and
-the response derivatives, all of which a change of parametrization leaves
-alone. \code{reparam_map} carries the new parameters to the parent's, and
-\code{reparam_derivs} carries the map's partial derivatives, which is where the
-exactness of the parameter derivatives comes from.
+The methods read three properties beyond a distribution's own.
+\code{parent_distrib} is the law that is rewritten, and the methods delegate to it
+for the density, the distribution function, the quantile function, the
+generator and the response derivatives, all of which a change of
+parametrization leaves unchanged. \code{reparam_map} carries the new parameters
+to the parent's, and \code{reparam_derivs} carries the map's partial derivatives,
+on which the exactness of the parameter derivatives depends.
 }
 \examples{
-# The class a continuous parent gives.
+# The class below is the one that a continuous parent gives.
 d <- reparametrize(
   gaussian1_distrib(),
   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),

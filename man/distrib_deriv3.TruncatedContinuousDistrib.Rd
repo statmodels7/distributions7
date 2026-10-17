@@ -9,7 +9,7 @@
 \item{y}{A numeric vector of observations inside the truncation interval.}
 
 \item{theta}{A named list of the parent's parameters; truncation adds
-none, the endpoints being constants.}
+none, because the endpoints are constants.}
 
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
 truncated law.}
@@ -32,8 +32,8 @@ expectations \eqn{\mathbb{E}_T[\partial^B f / f]}:
 
 Each distinct block that has no closed-form cdf derivative costs one
 quadrature, memoized across the partition sum. Where the parent has
-closed-form cdf derivatives of the block's order, the block is read from them
-and no quadrature is taken.
+closed-form cdf derivatives of the block's order, the method reads the block
+from them and does not evaluate a quadrature.
 }
 \examples{
 tr <- truncated(gaussian1_distrib(), lower = -1, upper = 3)
@@ -41,7 +41,7 @@ th <- list(mu = 0.3, sigma = 1.1)
 
 round(unlist(distrib_deriv3(tr, c(0, 1, 2), th)[["mu_mu_mu"]]), 6)
 
-# log Z is what separates it from the parent: the parent's third derivative
+# log Z separates it from the parent: the parent's third derivative
 # in mu is identically zero and the truncated one is not.
 c(truncated = distrib_deriv3(tr, 1, th)[["mu_mu_mu"]],
   parent = distrib_deriv3(gaussian1_distrib(), 1, th)[["mu_mu_mu"]])

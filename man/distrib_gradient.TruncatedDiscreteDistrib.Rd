@@ -26,11 +26,11 @@ Computes
   m_i = \mathbb{E}_T[s_i],}
 the parent's score recentered at its mean over the retained support points.
 For a discrete parent \eqn{m_i} is an exact finite sum, not a quadrature,
-the parent's cdf derivatives being exact sums themselves.
+because the parent's cdf derivatives are exact sums themselves.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -45,11 +45,12 @@ y <- 1:4
 g <- distrib_gradient(ztp, y, theta)
 g$mu
 
-# The parent's score, shifted by one number.
+# The truncated score is the parent's score shifted by one number.
 distrib_gradient(poisson_distrib(), y, theta)$mu
 distributions7:::trunc_score_mean(ztp, theta)$mu
 
-# Against a numerical derivative of the truncated log-likelihood.
+# The sum of the gradient is compared with a numerical derivative of the
+# truncated log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- ztp@params
   sum(distrib_pdf(ztp, y, t2, log = TRUE))

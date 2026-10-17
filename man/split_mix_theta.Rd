@@ -10,8 +10,8 @@ split_mix_theta(distrib, theta)
 \item{distrib}{A \code{ZeroInflatedDistrib} or a zero-adjusted object, whose
 \code{n_params} gives the position of the wrapper's parameter.}
 
-\item{theta}{A named list of parameters, already aligned, the parent's
-followed by the wrapper's.}
+\item{theta}{A named list of parameters, already aligned, in which the
+parent's parameters are followed by the wrapper's.}
 }
 \value{
 A named list with \code{orig}, the parent's parameters as a named list,
@@ -19,10 +19,10 @@ and \code{mix}, the wrapper's parameter as a numeric vector.
 }
 \description{
 Separates a full \code{theta} into the parent distribution's parameters and the
-single mixing parameter the wrapper adds. Both zero wrappers append their
-parameter last, so the split is positional and uses no parameter names. The
-constructors reject a parent that already has a parameter with the wrapper's
-name (\code{zi} or \code{za}).
+single mixing parameter that the wrapper adds. Both zero wrappers append
+their parameter last, so the split is positional and uses no parameter names.
+The constructors reject a parent that already has a parameter with the
+wrapper's name (\code{zi} or \code{za}).
 }
 \examples{
 d <- zero_inflated(poisson_distrib())
@@ -31,7 +31,7 @@ p <- distributions7:::split_mix_theta(
   d, distributions7:::align_theta(d, theta))
 str(p)
 
-# The first block is exactly what the parent expects.
+# The first block has exactly the form that the parent's methods require.
 all.equal(distrib_pdf(d@parent_distrib, 0:3, p$orig), dpois(0:3, 3))
 
 }

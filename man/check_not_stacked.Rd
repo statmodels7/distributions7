@@ -25,9 +25,9 @@ parameter named \code{param}, it signals an error that names that parameter.
 \description{
 Signals an error when the parent already models the probability of a zero,
 which is how both constructors reject a parent that is already a zero
-wrapper. The models this rejects are well defined and inestimable, so the
-constructor is the only place the problem can be caught: nothing at run time
-reports it.
+wrapper. The models that this function rejects are well defined and
+inestimable, and the problem is not reported at run time, so the constructor
+is the only place where it can be caught.
 }
 \details{
 Two zero parameters cannot both be identified. Zero-adjusting a

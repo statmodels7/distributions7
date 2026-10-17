@@ -24,8 +24,8 @@ parent's derivative inside.
 Evaluates a response derivative of the PARENT at the observations inside
 \eqn{[L, U]} and returns \code{NaN} outside. The normalizing constant does not
 depend on \eqn{y}, so inside the interval the parent's derivative is exact
-and needs no correction; outside, the log-density is \eqn{-\infty} and no
-derivative exists.
+and needs no correction; outside, the log-density is \eqn{-\infty} and the
+derivative does not exist.
 }
 \details{
 The function returns \code{NaN} for a point outside \eqn{[L, U]}. The
@@ -39,7 +39,7 @@ the \code{y} that it is given.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

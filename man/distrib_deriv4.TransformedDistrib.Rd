@@ -11,7 +11,7 @@
 \item{theta}{A named list of the parent's parameters; a transformation
 adds none.}
 
-\item{expected}{Logical of length 1. Passed to the parent.}
+\item{expected}{Logical of length 1. The value is passed to the parent.}
 
 \item{...}{Passed to the parent's method.}
 }
@@ -21,7 +21,7 @@ lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's p
 numeric vector of length \code{length(y)}. A two-parameter parent gives five.
 }
 \description{
-Exactly the parent's fourth derivatives, read at the preimage
+Returns exactly the parent's fourth derivatives, read at the preimage
 \eqn{x = g^{-1}(y)}, for the same reason as at third order: the Jacobian
 \eqn{\log|dg^{-1}/dy|} carries no \eqn{\theta}, so it contributes nothing to
 any derivative in \eqn{\theta} whatever the order.

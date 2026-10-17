@@ -26,8 +26,8 @@ A numeric vector of probabilities, in \eqn{[0, 1]}.
 \description{
 Computes \eqn{F_Y(q) = (1-\pi)F_W(q;\theta) + \pi\,\mathbb{I}(q \ge 0)}, the
 parent's own distribution function scaled by \eqn{1-\pi} with a JUMP of size
-\eqn{\pi} added at zero. That jump is the whole of what makes the law mixed,
-and its height is exactly the probability
+\eqn{\pi} added at zero. The jump is the only feature that makes the law
+mixed, and its height is exactly the probability that
 \code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} reports.
 }
 \section{Notation}{

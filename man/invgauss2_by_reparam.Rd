@@ -10,7 +10,7 @@ invgauss2_by_reparam()
 A reparametrized distribution object.
 }
 \description{
-The same family as \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, obtained through
+Returns the same family as \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, obtained through
 \code{\link[=reparametrize]{reparametrize()}} rather than written out.
 }
 \details{

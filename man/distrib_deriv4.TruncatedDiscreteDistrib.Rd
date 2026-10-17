@@ -23,10 +23,10 @@ lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's p
 numeric vector of length \code{length(y)}.
 }
 \description{
-The third-order construction one step along, with the expectations again
-taken by summation over the retained support: \eqn{\ell_T = \ell - \log Z},
-and \eqn{d^I \log Z} from the moment-to-cumulant expansion over the fifteen
-partitions of four indices.
+The method extends the third-order construction by one order and again takes
+the expectations by summation over the retained support:
+\eqn{\ell_T = \ell - \log Z}, and \eqn{d^I \log Z} is obtained from the
+moment-to-cumulant expansion over the fifteen partitions of four indices.
 
 Each block is a sum over the retained support, finite when both endpoints are
 finite, and the memoization across the partition sum applies as at the order
@@ -46,5 +46,5 @@ sum(distrib_pdf(tr, 1:8, th))
 \seealso{
 \code{\link[=truncated]{truncated()}} for the wrapper;
 \code{\link[=distrib_deriv3.TruncatedDiscreteDistrib]{distrib_deriv3.TruncatedDiscreteDistrib()}} for the order below;
-\code{\link[=log_deriv]{log_deriv()}}, the partition sum both orders use.
+\code{\link[=log_deriv]{log_deriv()}}, the partition sum that both orders use.
 }

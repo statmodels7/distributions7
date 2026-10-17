@@ -19,28 +19,30 @@ NULL
 #'
 #' @description
 #' Computes \eqn{\partial^3 \ell / \partial y\, \partial\theta_i
-#' \partial\theta_j}, one component per unordered pair of parameters, each a
-#' vector along `y`. It gives the second derivative, in the parameters, of the
-#' response gradient, and it is the third-order entry of the mixed grid below.
+#' \partial\theta_j}, with one component per unordered pair of parameters, and
+#' each component is a vector along `y`. It gives the second derivative, in the
+#' parameters, of the response gradient, and it is the third-order entry of the
+#' mixed grid below.
 #'
 #' @details
 #' These are the second-order column of the mixed grid whose first-order column
 #' is [distrib_cross_y()] and [distrib_cross2_y()]:
 #'
-#' |          | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} | \eqn{\partial^2/\partial\theta^2} |
-#' |---|---|---|---|
-#' | \eqn{\partial/\partial y}   | [distrib_grad_y()] | [distrib_cross_y()]  | [distrib_grad_y_hess()] |
-#' | \eqn{\partial^2/\partial y^2} | [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
+#' | | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} |
+#' \eqn{\partial^2/\partial\theta^2} | |---|---|---|---| |
+#' \eqn{\partial/\partial y} | [distrib_grad_y()] | [distrib_cross_y()] |
+#' [distrib_grad_y_hess()] | | \eqn{\partial^2/\partial y^2} |
+#' [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
 #'
-#' The right-hand column is the one that the second derivative of a marginal
-#' criterion requires from a penalty. A penalty is a negative log-density read
+#' The second derivative of a marginal criterion requires the right-hand column
+#' from a penalty. A penalty is a negative log-density read
 #' at the
 #' coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 #' response curvature and the two mixed derivatives above carry
 #' \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
 #' \eqn{\partial^4\rho/\partial\beta^2\partial\theta^2}.
 #'
-#' The components are keyed by [hess_names()], the same enumeration
+#' The components are keyed by [hess_names()], the same enumeration that
 #' [distrib_hessian()] uses, so a consumer that looks up a pair finds it under
 #' the name that [distrib_hessian()] uses.
 #'
@@ -73,7 +75,7 @@ NULL
 #' @param ... Passed to the method.
 #'
 #' @return A named list with one numeric vector per unordered pair of
-#'   parameters, each as long as `y`, keyed as
+#'   parameters. Each vector is as long as `y`, and the list is keyed as
 #'   [`hess_names(distrib@params)`][hess_names].
 #'
 #' @section Notation:
@@ -97,11 +99,12 @@ NULL
 #' r <- y - 0.4
 #' c(mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
 #'
-#' # Against a numerical Hessian of the response gradient in the parameters.
+#' # The result is compared with a numerical Hessian of the response gradient
+#' # in the parameters.
 #' g <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::hessian(g, c(0.4, 1.3))
 #'
-#' # On the link scale, with sigma on a log link: h' = h'' = sigma.
+#' # On the link scale, with sigma on a log link, both h' and h'' equal sigma.
 #' cy <- distrib_cross_y(d, y, theta)
 #' distrib_grad_y_hess(d, y, theta, scale = "link")$sigma_sigma
 #' distrib_grad_y_hess(d, y, theta)$sigma_sigma * 1.3^2 + cy$sigma * 1.3
@@ -127,28 +130,30 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #'
 #' @description
 #' Computes \eqn{\partial^4 \ell / \partial y^2\, \partial\theta_i
-#' \partial\theta_j}, one component per unordered pair of parameters, each a
-#' vector along `y`. It gives the second derivative, in the parameters, of the
-#' response curvature, and it is the fourth-order entry of the mixed grid below.
+#' \partial\theta_j}, with one component per unordered pair of parameters, and
+#' each component is a vector along `y`. It gives the second derivative, in the
+#' parameters, of the response curvature, and it is the fourth-order entry of
+#' the mixed grid below.
 #'
 #' @details
 #' These are the second-order column of the mixed grid whose first-order column
 #' is [distrib_cross_y()] and [distrib_cross2_y()]:
 #'
-#' |          | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} | \eqn{\partial^2/\partial\theta^2} |
-#' |---|---|---|---|
-#' | \eqn{\partial/\partial y}   | [distrib_grad_y()] | [distrib_cross_y()]  | [distrib_grad_y_hess()] |
-#' | \eqn{\partial^2/\partial y^2} | [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
+#' | | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} |
+#' \eqn{\partial^2/\partial\theta^2} | |---|---|---|---| |
+#' \eqn{\partial/\partial y} | [distrib_grad_y()] | [distrib_cross_y()] |
+#' [distrib_grad_y_hess()] | | \eqn{\partial^2/\partial y^2} |
+#' [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
 #'
-#' The right-hand column is the one that the second derivative of a marginal
-#' criterion requires from a penalty. A penalty is a negative log-density read
+#' The second derivative of a marginal criterion requires the right-hand column
+#' from a penalty. A penalty is a negative log-density read
 #' at the
 #' coefficients, so \eqn{\partial^2\rho/\partial\beta^2} carries the density's
 #' response curvature and the two mixed derivatives above carry
 #' \eqn{\partial^3\rho/\partial\beta\,\partial\theta^2} and
 #' \eqn{\partial^4\rho/\partial\beta^2\partial\theta^2}.
 #'
-#' The components are keyed by [hess_names()], the same enumeration
+#' The components are keyed by [hess_names()], the same enumeration that
 #' [distrib_hessian()] uses.
 #'
 #' # The link scale
@@ -156,8 +161,8 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #' Each component is multiplied by \eqn{h_i'(\eta_i) h_j'(\eta_j)} and, on a
 #' diagonal pair, gains \eqn{h_i''(\eta_i)} times the corresponding
 #' first-order component from [distrib_cross2_y()]. That is the same diagonal
-#' chain rule [distrib_grad_y_hess()] obeys, with the first-order quantity
-#' taken one order higher in \eqn{y}.
+#' chain rule that [distrib_grad_y_hess()] obeys, except that the first-order
+#' quantity is differentiated one order higher in \eqn{y}.
 #'
 #' # Where the numbers come from
 #'
@@ -177,7 +182,7 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #' @param ... Passed to the method.
 #'
 #' @return A named list with one numeric vector per unordered pair of
-#'   parameters, each as long as `y`, keyed as
+#'   parameters. Each vector is as long as `y`, and the list is keyed as
 #'   [`hess_names(distrib@params)`][hess_names].
 #'
 #' @section Notation:
@@ -188,7 +193,7 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #'
 #' @seealso [distrib_grad_y_hess()] for the third-order twin,
 #'   [distrib_cross2_y()] for the first-order column, and
-#'   [numerical_theta2_y()] for the fallback.
+#'   [mixed_tensor_derivatives()] for the fallback.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -200,7 +205,8 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #' # so only the scale pair survives and it does not vary with y.
 #' -6 / 1.3^4
 #'
-#' # Against a numerical Hessian of the response curvature in the parameters.
+#' # The result is compared with a numerical Hessian of the response curvature
+#' # in the parameters.
 #' h <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::hessian(h, c(0.4, 1.3))
 #'
@@ -232,20 +238,21 @@ distrib_hess_y_hess <- S7::new_generic("distrib_hess_y_hess", "distrib", functio
 #' no code for links.
 #'
 #' @details
-#' The chain rule is DIAGONAL, each parameter carrying its own link, so a pair
-#' \eqn{(i, j)} becomes
+#' The chain rule is DIAGONAL because each parameter carries its own link, so a
+#' pair \eqn{(i, j)} becomes
 #' \deqn{\frac{\partial^2}{\partial\eta_i \partial\eta_j}
 #'   = h_i'(\eta_i)\, h_j'(\eta_j) \frac{\partial^2}{\partial\theta_i
 #'     \partial\theta_j}
 #'   + \delta_{ij}\, h_i''(\eta_i) \frac{\partial}{\partial\theta_i}.}
-#' The response derivatives do not enter: a reparametrization of \eqn{\theta}
-#' leaves them alone, which is why `first` and `second` are the SAME quantity
-#' at two orders in \eqn{\theta} and no third argument is needed.
+#' The response derivatives do not enter, because a reparametrization of
+#' \eqn{\theta} leaves them alone. For that reason `first` and `second` are the
+#' same quantity at two orders in \eqn{\theta}, and the function takes no third
+#' argument.
 #'
 #' @param distrib A distribution object. Its `link_params` supply \eqn{h'} and
 #'   \eqn{h''} through [inverse_link_derivs()].
-#' @param y The response. Unused, and present so that the signature reads like
-#'   its callers'.
+#' @param y The response. It is unused and is present so that the signature
+#'   matches that of the callers.
 #' @param theta A named list of parameters, on the parameter scale.
 #' @param second The parameter-scale second-order components, keyed by
 #'   parameter pair.
@@ -271,7 +278,7 @@ distrib_hess_y_hess <- S7::new_generic("distrib_hess_y_hess", "distrib", functio
 #' y <- c(-1, 0, 2)
 #' theta <- list(mu = 0.4, sigma = 1.3)
 #'
-#' # What the generic does with scale = "link".
+#' # The generic applies the same computation when scale = "link".
 #' second <- distrib_grad_y_hess(d, y, theta)
 #' first <- distrib_cross_y(d, y, theta)
 #' linked <- distributions7:::theta2_link_scale(d, y, theta, second, first)
@@ -310,12 +317,12 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #'
 #' @details
 #' The reference is [distrib_cross_y()] or [distrib_cross2_y()], so a
-#' distribution with a closed form for those pays for exactly one difference
+#' distribution with a closed form for those requires exactly one difference
 #' and never differences a difference.
 #'
 #' A mixed pair is differenced in both orders and the two results are averaged.
-#' They agree in exact arithmetic and differ in floating point, the two steps
-#' having different sizes, and the average is symmetric in the pair.
+#' They agree in exact arithmetic and differ in floating point because the two
+#' steps have different sizes. The average is symmetric in the pair.
 #'
 #' The step is chosen by [fd_stable_step()] from the two candidates of
 #' [fd_steps()], so that both evaluation points of the central difference of a
@@ -323,12 +330,12 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #'
 #' @param distrib A distribution object. Its `params` and `params_bounds` set
 #'   the enumeration and the steps.
-#' @param y A numeric vector of observations. Passed to nothing here; `inner`
-#'   has already closed over it.
-#' @param theta A named list of parameters, the point to differentiate at.
-#' @param inner A function of `theta` alone returning the first-order
-#'   components as a list with one entry per parameter, typically
-#'   `function(th) distrib_cross_y(distrib, y, th)`.
+#' @param y A numeric vector of observations. The function does not use it,
+#'   because `inner` has already closed over it.
+#' @param theta A named list of parameters, the point at which to differentiate.
+#' @param inner A function that takes `theta` as its only argument and returns
+#'   the first-order components as a list with one entry per parameter,
+#'   typically `function(th) distrib_cross_y(distrib, y, th)`.
 #' @param h_rel The relative step, defaulting to `.Machine$double.eps^(1/3)`,
 #'   which is the optimal exponent for a central first difference.
 #'
@@ -342,7 +349,7 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #' the other.
 #'
 #' @seealso [distrib_grad_y_hess()] and [distrib_hess_y_hess()], the two
-#'   generics it serves, and [fd_steps()] for the step rule.
+#'   generics that it serves, and [fd_steps()] for the step rule.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -353,11 +360,12 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #'                           function(th) distrib_cross_y(d, y, th))
 #' num$sigma_sigma
 #'
-#' # Against the gaussian's own closed form, which this family does not need
-#' # the fallback for.
+#' # The result is compared with the gaussian's own closed form, for which this
+#' # family does not need the fallback.
 #' max(abs(unlist(num) - unlist(distrib_grad_y_hess(d, y, theta))))
 #'
-#' # A family that takes the default continuous method, checked against numDeriv.
+#' # A family that takes the default continuous method is checked against
+#' # numDeriv.
 #' dg <- gamma2_distrib()
 #' yg <- c(0.5, 1, 2)
 #' thg <- list(mu = 2, sigma2 = 1)
@@ -396,7 +404,7 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 #' @name distrib_grad_y_hess.continuous_distrib
 #'
 #' @description
-#' Falls back to one tensor stencil on the highest quantity the family
+#' Falls back to one tensor stencil on the highest quantity that the family
 #' implements itself, through [mixed_tensor_derivatives()]: a central
 #' difference of an analytic [distrib_cross_y()] in each parameter, a
 #' difference in the response of an analytic Hessian, or one mixed stencil of
@@ -426,7 +434,7 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 #' @keywords internal
 #'
 #' @examples
-#' # The gamma writes no closed form, so this method answers for it.
+#' # The gamma has no closed form of its own, so this method is used for it.
 #' d <- gamma2_distrib()
 #' y <- c(0.5, 1, 2)
 #' theta <- list(mu = 2, sigma2 = 1)
@@ -435,7 +443,7 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 #' g <- distrib_grad_y_hess(d, y, theta)
 #' c(g$mu_mu[1], g$mu_sigma2[1], g$sigma2_sigma2[1])
 #'
-#' # Against a numerical Hessian of the response gradient.
+#' # The result is compared with a numerical Hessian of the response gradient.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 #' numDeriv::hessian(f, c(2, 1))
 S7::method(distrib_grad_y_hess, continuous_distrib) <- function(distrib, y, theta,
@@ -448,7 +456,7 @@ S7::method(distrib_grad_y_hess, continuous_distrib) <- function(distrib, y, thet
 #' @name distrib_hess_y_hess.continuous_distrib
 #'
 #' @description
-#' Falls back to one tensor stencil on the highest quantity the family
+#' Falls back to one tensor stencil on the highest quantity that the family
 #' implements itself, through [mixed_tensor_derivatives()]. It is
 #' [distrib_grad_y_hess.continuous_distrib()] read one order higher in the
 #' response, and it makes the fourth-order mixed derivative available for
@@ -468,7 +476,7 @@ S7::method(distrib_grad_y_hess, continuous_distrib) <- function(distrib, y, thet
 #'
 #' @seealso [distrib_hess_y_hess()] for the generic,
 #'   [distrib_grad_y_hess.continuous_distrib()] for the third-order twin, and
-#'   [numerical_theta2_y()], which does the work.
+#'   [mixed_tensor_derivatives()], which does the work.
 #'
 #' @keywords internal
 #'
@@ -479,7 +487,7 @@ S7::method(distrib_grad_y_hess, continuous_distrib) <- function(distrib, y, thet
 #' h <- distrib_hess_y_hess(d, y, theta)
 #' c(h$mu_mu[1], h$mu_sigma2[1], h$sigma2_sigma2[1])
 #'
-#' # Against a numerical Hessian of the response curvature.
+#' # The result is compared with a numerical Hessian of the response curvature.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 #' numDeriv::hessian(f, c(2, 1))
 S7::method(distrib_hess_y_hess, continuous_distrib) <- function(distrib, y, theta,
@@ -493,7 +501,8 @@ S7::method(distrib_hess_y_hess, continuous_distrib) <- function(distrib, y, thet
 #' @name distrib_grad_y_hess.Gaussian1Distrib
 #'
 #' @description
-#' Closed form. With \eqn{r = y - \mu} the response gradient is
+#' Computes the derivative in closed form. With \eqn{r = y - \mu} the response
+#' gradient is
 #' \eqn{-r/\sigma^2}, so differentiating it twice in the parameters gives
 #' \deqn{\frac{\partial^3\ell}{\partial y\,\partial\mu^2} = 0, \qquad
 #'   \frac{\partial^3\ell}{\partial y\,\partial\mu\,\partial\sigma}
@@ -532,11 +541,11 @@ S7::method(distrib_hess_y_hess, continuous_distrib) <- function(distrib, y, thet
 #' g <- distrib_grad_y_hess(d, y, theta)
 #' g
 #'
-#' # The three formulas written out.
+#' # The three formulas are written out.
 #' r <- y - 0.4
 #' c(mu_mu = 0, mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
 #'
-#' # Against a numerical Hessian of the response gradient.
+#' # The result is compared with a numerical Hessian of the response gradient.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::hessian(f, c(0.4, 1.3))
 S7::method(distrib_grad_y_hess, Gaussian1Distrib) <- function(distrib, y, theta,
@@ -555,7 +564,8 @@ S7::method(distrib_grad_y_hess, Gaussian1Distrib) <- function(distrib, y, theta,
 #' @name distrib_hess_y_hess.Gaussian1Distrib
 #'
 #' @description
-#' Closed form, and nearly all of it zero. The gaussian's response curvature is
+#' Computes the closed form, in which nearly every component is zero. The
+#' gaussian's response curvature is
 #' \eqn{-1/\sigma^2}, which carries no location at all, so
 #' \deqn{\frac{\partial^4\ell}{\partial y^2\partial\sigma^2}
 #'     = -\frac{6}{\sigma^4}}
@@ -592,10 +602,10 @@ S7::method(distrib_grad_y_hess, Gaussian1Distrib) <- function(distrib, y, theta,
 #' h <- distrib_hess_y_hess(d, y, theta)
 #' h
 #'
-#' # One surviving component, constant along y.
+#' # One component survives, and it is constant along y.
 #' c(reported = h$sigma_sigma[1], formula = -6 / 1.3^4)
 #'
-#' # Against a numerical Hessian of the response curvature.
+#' # The result is compared with a numerical Hessian of the response curvature.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::hessian(f, c(0.4, 1.3))
 S7::method(distrib_hess_y_hess, Gaussian1Distrib) <- function(distrib, y, theta,

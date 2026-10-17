@@ -44,7 +44,7 @@ Computes
 the second Bartlett identity under the truncated law. The truncated-law mean
 of the parent's Hessian, \eqn{\mathbb{E}_T[H_{ij}]}, cancels against the same
 quantity in \eqn{M_{ij}}, which enters the second derivative of \eqn{\log Z},
-and \eqn{-\mathrm{Cov}_T(s_i, s_j)} remains. One of the shared bodies,
+and \eqn{-\mathrm{Cov}_T(s_i, s_j)} remains. The body is shared and is
 registered on both truncated classes.
 }
 \details{
@@ -56,13 +56,14 @@ the sums come from \code{\link[=trunc_route_parts]{trunc_route_parts()}}.
 
 The components do not depend on the data, so for a single parameter vector
 every returned vector is constant; if a parameter varies by observation, the
-components vary with it. \code{approx} and \code{nsim} are accepted so that the
-signature matches the generic's, and neither is read: the identity above is
-exact, and what it rests on is computed by quadrature whatever \code{approx} says.
+components vary with it. The arguments \code{approx} and \code{nsim} are accepted so
+that the signature matches the generic's, and the method does not read them:
+the identity above is exact, and the quantities on which it rests are
+computed by quadrature for every value of \code{approx}.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -76,7 +77,8 @@ theta <- list(mu = 0.3, sigma = 1.2)
 EH <- distrib_expected_hessian(tn, 1, theta)
 unlist(EH)
 
-# Minus the covariance of the parent's score under the truncated law.
+# The result equals minus the covariance of the parent's score under the
+# truncated law.
 m <- distributions7:::trunc_score_mean(tn, theta)
 ES <- distributions7:::trunc_score_prod_mean(tn, theta)
 c(mu_mu = -(ES$mu_mu - m$mu^2),

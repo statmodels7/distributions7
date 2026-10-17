@@ -22,8 +22,8 @@ scale.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of quantiles, of the length \code{p} and \code{theta} recycle
-to.
+A numeric vector of quantiles, of the length to which \code{p} and \code{theta}
+recycle.
 }
 \description{
 Inverts \code{\link[=trunc_cdf]{trunc_cdf()}} through the parent's quantile function, with no
@@ -45,7 +45,7 @@ disagree.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and

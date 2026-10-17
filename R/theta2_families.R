@@ -101,13 +101,13 @@ NULL
 #' blk <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
 #' blk$mu_mu
 #'
-#' # The identity written out: A'' / sigma^3, with A'' the family's own third
-#' # response derivative scaled.
+#' # The identity is written out as A'' / sigma^3, where A'' is the family's
+#' # own third response derivative, scaled.
 #' s <- 1.2
 #' A2 <- s^3 * distrib_deriv3_y(d, y, theta)
 #' A2 / s^3
 #'
-#' # And the scale pair, which carries all three of A, A' and A''.
+#' # The scale pair carries all three of A, A' and A''.
 #' z <- (y - 0.3) / s
 #' A <- s * distrib_grad_y(d, y, theta)
 #' A1 <- s^2 * distrib_hess_y(d, y, theta)
@@ -156,11 +156,11 @@ loc_scale_theta2_block <- function(distrib, y, theta, order = 1L) {
 #' the arithmetic behind every location-scale method of [distrib_cross2_y()].
 #'
 #' @details
-#' The same identity [loc_scale_cross_block()] uses, one derivative further in
-#' the response: it reads the family's own [distrib_deriv3_y()] instead of
-#' differencing its [distrib_hess_y()]. A shape parameter beyond the two is not
-#' covered, and [partial_loc_scale_cross2_y()] differences those components
-#' instead.
+#' This is the identity that [loc_scale_cross_block()] uses, taken one
+#' derivative further in the response: it reads the family's own
+#' [distrib_deriv3_y()] instead of differencing its [distrib_hess_y()]. A shape
+#' parameter beyond the two is not covered, and [partial_loc_scale_cross2_y()]
+#' differences those components instead.
 #'
 #' @param distrib An object inheriting from class `distrib`, whose first two
 #'   parameters are a location and a scale in that order.
@@ -191,14 +191,14 @@ loc_scale_theta2_block <- function(distrib, y, theta, order = 1L) {
 #' blk <- distributions7:::loc_scale_cross2_block(d, y, theta)
 #' vapply(blk, function(z) z[1], numeric(1))
 #'
-#' # The identity written out.
+#' # The identity is written out.
 #' s <- 1.2
 #' z <- (y - 0.3) / s
 #' B <- s^2 * distrib_hess_y(d, y, theta)
 #' B1 <- s^3 * distrib_deriv3_y(d, y, theta)
 #' c(mu = (-B1 / s^3)[1], sigma = (-(z * B1 + 2 * B) / s^3)[1])
 #'
-#' # It is what the family's distrib_cross2_y method returns, named.
+#' # The family's distrib_cross2_y method returns the same components, named.
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 loc_scale_cross2_block <- function(distrib, y, theta) {
   s <- theta[[2]]
@@ -213,8 +213,9 @@ loc_scale_cross2_block <- function(distrib, y, theta) {
 #' @title Second-Response Mixed Derivatives of a Location-Scale Family
 #'
 #' @description
-#' The [distrib_cross2_y()] method bodies shared by the families whose response
-#' enters only through \eqn{z = (y-\mu)/\sigma}. `loc_scale_cross2_y()` serves
+#' These functions are the [distrib_cross2_y()] method bodies shared by the
+#' families whose response enters only through
+#' \eqn{z = (y-\mu)/\sigma}. `loc_scale_cross2_y()` serves
 #' a family that is location-scale in BOTH its parameters, and
 #' `partial_loc_scale_cross2_y()` one carrying shape parameters beyond the two:
 #' the location and scale components come from [loc_scale_cross2_block()] in
@@ -222,12 +223,13 @@ loc_scale_cross2_block <- function(distrib, y, theta) {
 #' [distrib_hess_y()] through [numerical_cross2_y()].
 #'
 #' @details
-#' Registered on the logistic, Cauchy, Gumbel and Laplace for the first body,
-#' and on the two pseudo-Huber parametrizations, the skew normal and the skew t
-#' for the second. The gaussian and the Student t have methods of their own, as
-#' do several other families (the exponential, the Weibull, the generalized
-#' Pareto and the lognormal among them), and a continuous family with no method
-#' of its own takes [distrib_cross2_y.continuous_distrib()].
+#' `loc_scale_cross2_y()` is registered on the logistic, Cauchy, Gumbel and
+#' Laplace, and `partial_loc_scale_cross2_y()` is registered on the two
+#' pseudo-Huber parametrizations, the skew normal and the skew t. The gaussian
+#' and the Student t have methods of their own, as do several other families
+#' (the exponential, the Weibull, the generalized Pareto and the lognormal
+#' among them), and a continuous family with no method of its own takes
+#' [distrib_cross2_y.continuous_distrib()].
 #'
 #' @param distrib An object inheriting from class `distrib`, whose first two
 #'   parameters are a location and a scale in that order.
@@ -261,12 +263,13 @@ loc_scale_cross2_block <- function(distrib, y, theta) {
 #' @examples
 #' y <- c(-0.7, 0.3, 1.4)
 #'
-#' # Fully location-scale: both components closed.
+#' # A fully location-scale family has both components in closed form.
 #' d <- cauchy_distrib()
 #' theta <- list(mu = 0.3, sigma = 1.2)
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #'
-#' # Against a numerical derivative of the response Hessian.
+#' # The result is compared with a numerical derivative of the response
+#' # Hessian.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::grad(f, c(0.3, 1.2))
 #'
@@ -298,15 +301,15 @@ partial_loc_scale_cross2_y <- function(distrib, y, theta,
 #' @title Second-Order Mixed Derivatives of a Location-Scale Family
 #'
 #' @description
-#' The [distrib_grad_y_hess()] and [distrib_hess_y_hess()] method bodies shared
-#' by the families that are location-scale in BOTH their parameters. Each one
-#' calls [loc_scale_theta2_block()] at its own order and returns the three
-#' components in [hess_names()]'s order, so neither derives anything of its
-#' own.
+#' Implements the [distrib_grad_y_hess()] and [distrib_hess_y_hess()] method
+#' bodies shared by the families that are location-scale in BOTH their
+#' parameters. Each one calls [loc_scale_theta2_block()] at its own order,
+#' returns the three components in [hess_names()]'s order, and does not derive
+#' anything of its own.
 #'
 #' @details
-#' Registered on the logistic, Cauchy, Gumbel and Laplace. A family carrying a
-#' shape parameter beyond the two takes
+#' Both bodies are registered on the logistic, Cauchy, Gumbel and Laplace.
+#' A family carrying a shape parameter beyond the two takes
 #' [partial_loc_scale_grad_y_hess()] instead, where the pairs touching that
 #' shape are differenced.
 #'
@@ -353,7 +356,7 @@ partial_loc_scale_cross2_y <- function(distrib, y, theta,
 #' g3 <- distrib_grad_y_hess(d, y, theta)
 #' vapply(g3, function(z) z[1], numeric(1))
 #'
-#' # Against a numerical Hessian of the response gradient.
+#' # The result is compared with a numerical Hessian of the response gradient.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::hessian(f, c(0.3, 1.2))
 #'
@@ -378,20 +381,21 @@ loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' @title Second-Order Mixed Derivatives With a Shape Parameter
 #'
 #' @description
-#' The [distrib_grad_y_hess()] and [distrib_hess_y_hess()] method bodies for a
-#' family carrying shape parameters beyond its location and scale. The three
-#' pairs in \eqn{(\mu, \sigma)} come from [loc_scale_theta2_block()] in closed
-#' form, and every pair touching a shape parameter from one central difference
-#' of the first-order component, [distrib_cross_y()] for the third-order body
-#' and [distrib_cross2_y()] for the fourth. In the fourth-order body a pair of
+#' Implements the [distrib_grad_y_hess()] and [distrib_hess_y_hess()] method
+#' bodies for a family carrying shape parameters beyond its location and scale.
+#' The three pairs in \eqn{(\mu, \sigma)} come from [loc_scale_theta2_block()]
+#' in closed form, and every pair that touches a shape parameter comes from one
+#' central difference of the first-order component, which is
+#' [distrib_cross_y()] for the third-order body and [distrib_cross2_y()] for
+#' the fourth. In the fourth-order body a pair of
 #' shape parameters is one stencil on the analytic [distrib_hess_y()], since the
 #' shape components of [distrib_cross2_y()] are themselves a difference in the
 #' shape. Both delegate to [partial_theta2()], which does the splicing.
 #'
 #' @details
-#' Registered on the two pseudo-Huber parametrizations, the skew normal and the
-#' skew t. The Student t's methods, documented on this page as well, call
-#' compiled kernels of their own and do not use these bodies.
+#' Both bodies are registered on the two pseudo-Huber parametrizations, the
+#' skew normal and the skew t. The Student t's methods, documented on this page
+#' as well, call compiled kernels of their own and do not use these bodies.
 #'
 #' @param distrib An object inheriting from class `distrib`, whose first two
 #'   parameters are a location and a scale in that order and whose remaining
@@ -434,8 +438,9 @@ loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' names(g3)
 #' vapply(g3, function(z) z[1], numeric(1))
 #'
-#' # Against a numerical Hessian of the response gradient. The three pairs in
-#' # (mu, sigma) are closed and the three touching alpha are differenced.
+#' # The result is compared with a numerical Hessian of the response gradient.
+#' # The three pairs in (mu, sigma) are closed and the three touching alpha are
+#' # differenced.
 #' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2],
 #'                                               alpha = v[3]))
 #' numDeriv::hessian(f, c(0.3, 1.2, 0.7))
@@ -468,9 +473,9 @@ partial_loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' shape, of the closed component of [distrib_cross2_y()], and a pair of shapes
 #' is one stencil on [distrib_hess_y()], a second-order stencil for a repeated
 #' shape and a mixed one for two shapes; the shape components of
-#' [distrib_cross2_y()] are not differenced again. It is what
-#' [partial_loc_scale_grad_y_hess()] and [partial_loc_scale_hess_y_hess()] both
-#' run, at order 1 and 2 respectively.
+#' [distrib_cross2_y()] are not differenced again. Both
+#' [partial_loc_scale_grad_y_hess()] and [partial_loc_scale_hess_y_hess()] run
+#' it, at order 1 and 2 respectively.
 #'
 #' @details
 #' [numerical_theta2_y()] takes one central difference per parameter, and each
@@ -516,7 +521,7 @@ partial_loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
 #' all(vapply(names(cl), function(k) identical(out[[k]], cl[[k]]), logical(1)))
 #'
-#' # And it is exactly what the family's method returns.
+#' # The result is identical to the value that the family's method returns.
 #' identical(out, distrib_grad_y_hess(d, y, theta))
 partial_theta2 <- function(distrib, y, theta, order) {
   if (order == 1L) {

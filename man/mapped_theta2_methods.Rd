@@ -38,21 +38,22 @@ each with the generics' signature.
 Builds the \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
 \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method bodies for a family that carries its own
 class and kernels while its map onto a parent is tabulated. Each body is the
-chain rule of \code{\link[=mapped_cross2_y]{mapped_cross2_y()}} or \code{\link[=mapped_theta2]{mapped_theta2()}} with the parent, the
-map and the partial tables closed over, so no new algebra is involved.
+chain rule of \code{\link[=mapped_cross2_y]{mapped_cross2_y()}} or \code{\link[=mapped_theta2]{mapped_theta2()}} in which the parent,
+the map and the partial tables are closed over, so the bodies need no new
+algebra.
 }
 \details{
-The families it serves have their own classes and their own compiled
-kernels, so they are NOT \code{ReparamContinuousDistrib} and do not inherit its
-methods; what they share with it is the map, which \code{reparam_maps.R} already
-tabulates. Registered on \code{gaussian2}, \code{gaussian3}, \code{laplace2} and
-\code{invgauss2}.
+The families to which these bodies apply have their own classes and their
+own compiled kernels. They are therefore NOT \code{ReparamContinuousDistrib} and
+do not inherit its methods. They share the map with it, and \code{reparam_maps.R}
+already tabulates that map. The bodies are registered on \code{gaussian2},
+\code{gaussian3}, \code{laplace2} and \code{invgauss2}.
 
 The parent of \code{invgauss2}, \code{invgauss1}, carries the three quantities in
 closed form: with \eqn{\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)}
 and \eqn{\ell^{(yy)} = 3/(2y^2) - 1/(\phi y^3)}, every mixed derivative in
 \eqn{(\mu, \phi)} is a monomial, and the map carries them to
-\eqn{(\mu, \lambda)} with no difference taken.
+\eqn{(\mu, \lambda)} without taking a difference.
 }
 \section{Notation}{
 
@@ -71,8 +72,8 @@ theta <- list(mu = 0.3, sigma2 = 1.44)
 g3 <- distrib_grad_y_hess(d, y, theta)
 vapply(g3, function(z) z[1], numeric(1))
 
-# Against a numerical Hessian of the response gradient in the family's own
-# parameters, which shares none of the map's arithmetic.
+# The result is compared with a numerical Hessian of the response gradient
+# in the family's own parameters, which does not use the map's arithmetic.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(0.3, 1.44))
 
@@ -84,6 +85,6 @@ vapply(distrib_cross2_y(dl, c(-0.7, 1.1, 1.4), list(mu = 0.3, lambda = 0.8)),
 \seealso{
 \code{\link[=mapped_theta2]{mapped_theta2()}} and \code{\link[=mapped_cross2_y]{mapped_cross2_y()}}, which do the work,
 \code{\link[=reparam_map_derivs]{reparam_map_derivs()}} for the tables, and \code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}}
-for the other shape this file covers.
+for the other shape that this file covers.
 }
 \keyword{internal}

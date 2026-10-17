@@ -58,7 +58,7 @@ and rides a link of its own.
 Build one with \code{\link[=zero_inflated]{zero_inflated()}}, which checks that the parent is discrete,
 is not already a zero wrapper, and has enough support points for the extra
 parameter to be identified. This page documents the raw S7 constructor,
-which checks none of that.
+which does not perform these checks.
 }
 \section{Methods}{
 
@@ -93,7 +93,8 @@ d <- zero_inflated(poisson_distrib())
 theta <- list(mu = 3, zi = 0.25)
 S7::S7_inherits(d, discrete_distrib)
 
-# The parent's parameters, then zi last with its own link and bound.
+# The parent's parameters come first, and zi comes last with its own link
+# and bound.
 d@params
 d@params_bounds$zi
 vapply(d@link_params, function(l) l@link_name, character(1))
@@ -105,6 +106,6 @@ c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
 \seealso{
 \code{\link[=zero_inflated]{zero_inflated()}} to build one, \link{ZeroAdjustedDiscreteDistrib} for
 the wrapper that REPLACES the mass at zero where this one adds to it, and
-\code{\link[=zero_adjusted]{zero_adjusted()}}, the constructor to reach for with a continuous
+\code{\link[=zero_adjusted]{zero_adjusted()}}, the constructor that applies to a continuous
 parent.
 }

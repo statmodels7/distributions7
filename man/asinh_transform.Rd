@@ -10,8 +10,10 @@ asinh_transform()
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for \eqn{Y = \text{asinh}(X)}, a log-like transformation that
-handles zero and negative values. Inverse \eqn{X = \sinh(Y)}, Jacobian \eqn{|J| = \cosh(Y)}.
+Returns the transformer for \eqn{Y = \text{asinh}(X)}, a
+log-like
+transformation that is defined at zero and at negative values. The inverse is
+\eqn{X = \sinh(Y)} and the Jacobian is \eqn{|J| = \cosh(Y)}.
 }
 \examples{
 d <- transformation(gaussian1_distrib(), asinh_transform())
@@ -19,5 +21,8 @@ distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}},
+\code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}},
+\code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=logit_transform]{logit_transform()}},
+\code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }

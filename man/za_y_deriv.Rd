@@ -28,10 +28,11 @@ Evaluates a response derivative of the PARENT away from the atom and returns
 \code{NaN} at it. Away from zero the \eqn{1-\pi} factor is a constant in \eqn{y},
 so the parent's own derivative is exact and needs no correction; at zero the
 log-density jumps, \eqn{\log\pi} on one side and
-\eqn{\log\{(1-\pi)f(y)\}} on the other, and no derivative exists.
+\eqn{\log\{(1-\pi)f(y)\}} on the other, and the derivative does not exist.
 }
 \details{
-At the atom the function returns \code{NaN}, because no derivative exists there.
+At the atom the function returns \code{NaN}, because the derivative does not
+exist there.
 The finite-difference default inherited from \code{\link[=continuous_distrib]{continuous_distrib()}} would
 difference across the jump and return a finite number. It serves the response
 derivatives of orders one to four; \code{za_y_list()} applies the same rule to the
@@ -47,7 +48,7 @@ mixed derivatives, which are zero in \code{za}.
 d <- zero_adjusted(gaussian1_distrib())
 theta <- list(mu = 1, sigma = 2, za = 0.3)
 
-# NaN at the atom, the parent's derivative elsewhere.
+# The result is NaN at the atom and the parent's derivative elsewhere.
 distributions7:::za_y_deriv(d, c(-1, 0, 2), theta, distrib_grad_y)
 distrib_grad_y(gaussian1_distrib(), c(-1, 2), theta[c("mu", "sigma")])
 
@@ -56,7 +57,7 @@ distributions7:::za_y_deriv(d, c(0, 2), theta, distrib_hess_y)
 }
 \seealso{
 \code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y.ZeroAdjustedContinuousDistrib()}} and
-\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y.ZeroAdjustedContinuousDistrib()}}, the two methods that it
-serves.
+\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y.ZeroAdjustedContinuousDistrib()}}, which are among the
+methods that it serves.
 }
 \keyword{internal}

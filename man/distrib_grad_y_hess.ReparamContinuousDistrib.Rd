@@ -30,8 +30,8 @@ fourth-order method is the same body reading \code{\link[=distrib_cross2_y]{dist
 }
 \details{
 A response derivative does not interact with a reparametrization of
-\eqn{\theta}, so nothing on the \eqn{y} side is touched and the whole
-correction is the map's. The partials come from \code{\link[=reparam_tables]{reparam_tables()}}, which a
+\eqn{\theta}, so the \eqn{y} side is left unchanged and the map supplies the
+whole correction. The partials come from \code{\link[=reparam_tables]{reparam_tables()}}, which a
 family supplies through \code{map_derivs} or, failing that, through one stencil
 per partial.
 }
@@ -44,7 +44,8 @@ of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
 }
 
 \examples{
-# A gaussian obtained in its variance rather than written out.
+# The gaussian is obtained in its variance through reparametrize() rather
+# than written out.
 d <- reparametrize(
   gaussian1_distrib(),
   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
@@ -59,13 +60,14 @@ theta <- list(mu = 0.3, sigma2 = 1.44)
 g3 <- distrib_grad_y_hess(d, y, theta)
 vapply(g3, function(z) z[1], numeric(1))
 
-# Against the family written out by hand, which shares none of the map's
-# arithmetic. The map's partials are stencils here, no map_derivs having
-# been given, so the two agree to about 1e-09.
+# The result is compared with the family written out by hand, which does not
+# share any of the map's arithmetic. The map's partials are stencils here
+# because map_derivs is not supplied, so the two agree to about 1e-09.
 max(abs(unlist(g3) -
         unlist(distrib_grad_y_hess(gaussian2_distrib(), y, theta))))
 
-# And against a numerical Hessian of the response gradient.
+# The result is also compared with a numerical Hessian of the response
+# gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(0.3, 1.44))
 

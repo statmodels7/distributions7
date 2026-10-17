@@ -36,7 +36,7 @@ parent the expectations behind it are exact sums over that support.
 }
 \section{Notation}{
 
-\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+\eqn{L} and \eqn{U} are the truncation endpoints, which both belong to the
 support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
 and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
 and \eqn{H_{ij}} are the parent's score and observed Hessian; and
@@ -50,12 +50,14 @@ theta <- list(mu = 2)
 EH <- distrib_expected_hessian(ztp, 1, theta)
 EH$mu_mu
 
-# Minus the variance of the parent's score over the retained support.
+# The expected Hessian is minus the variance of the parent's score over the
+# retained support.
 m <- distributions7:::trunc_score_mean(ztp, theta)$mu
 ES <- distributions7:::trunc_score_prod_mean(ztp, theta)$mu_mu
 -(ES - m^2)
 
-# And what averaging the observed Hessian gives.
+# The average of the observed Hessian over simulated draws approximates
+# the expected Hessian.
 set.seed(9)
 ys <- distrib_rng(ztp, 200000, theta)
 c(sampled = mean(distrib_hessian(ztp, ys, theta)$mu_mu),

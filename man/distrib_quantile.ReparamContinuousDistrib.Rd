@@ -16,19 +16,20 @@ log-probabilities when \code{log.p} is \code{TRUE}.}
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{lower.tail}{Are the probabilities \eqn{P(Y \le q)}? A single logical,
-\code{TRUE} by default.}
+\item{lower.tail}{Are the probabilities \eqn{P(Y \le q)}? It is a single
+logical, with default \code{TRUE}.}
 
-\item{log.p}{Is \code{p} a log-probability? A single logical, \code{FALSE} by default.}
+\item{log.p}{Is \code{p} a log-probability? It is a single logical, with default
+\code{FALSE}.}
 
 \item{...}{Passed to the parent's method.}
 }
 \value{
-A numeric vector of quantiles, the length of \code{p} recycled against
-\code{theta}.
+A numeric vector of quantiles, whose length is that of \code{p} after it
+is recycled against \code{theta}.
 }
 \description{
-The parent's quantile function, evaluated at the mapped parameters. Where
+Evaluates the parent's quantile function at the mapped parameters. Where
 the parent inverts its distribution function numerically, so does this; the
 map costs one evaluation and does not enter the search.
 }

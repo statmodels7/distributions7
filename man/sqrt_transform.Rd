@@ -10,8 +10,9 @@ sqrt_transform()
 A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
-Transformer for \eqn{Y = \sqrt{X}} (requires \eqn{X \ge 0}).
-Inverse \eqn{X = Y^2}, Jacobian \eqn{|J| = 2Y}.
+Returns the transformer for \eqn{Y = \sqrt{X}}, which requires
+\eqn{X \ge 0}. The inverse is \eqn{X = Y^2} and the Jacobian is
+\eqn{|J| = 2Y}.
 }
 \examples{
 d <- transformation(gamma2_distrib(), sqrt_transform())
@@ -19,5 +20,8 @@ distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
-\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}},
+\code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}},
+\code{\link[=softplus_transform]{softplus_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}},
+\code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }
