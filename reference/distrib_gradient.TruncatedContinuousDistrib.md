@@ -38,7 +38,7 @@ A named list of numeric vectors, one component per parameter, in
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -66,7 +66,8 @@ vapply(g, sum, numeric(1))
 #>         mu      sigma 
 #> -0.5193428 -0.3639437 
 
-# Against a numerical derivative of the truncated log-likelihood.
+# The gradient is compared with a numerical derivative of the truncated
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- tn@params
   sum(distrib_pdf(tn, y, t2, log = TRUE))

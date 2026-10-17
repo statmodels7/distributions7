@@ -6,14 +6,14 @@ corrections; the positive part contributes with probability \(1 - L_0\)
 and carries the parent's own expected Hessian, less what the zero would have
 contributed to it. The wrapper's own blocks do not depend on the data, so the
 returned vectors are constant when the parent's expected Hessian is, and y
-is then read for its length alone."><meta property="og:description" content="Computes the expectation of the observed Hessian in closed form, by
+is then used only for its length."><meta property="og:description" content="Computes the expectation of the observed Hessian in closed form, by
 splitting the expectation over the two events \(y = 0\) and \(y &amp;gt; 0\).
 The zero contributes with probability \(L_0\) and carries the mixture's
 corrections; the positive part contributes with probability \(1 - L_0\)
 and carries the parent's own expected Hessian, less what the zero would have
 contributed to it. The wrapper's own blocks do not depend on the data, so the
 returned vectors are constant when the parent's expected Hessian is, and y
-is then read for its length alone."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+is then used only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ is then read for its length alone."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@ corrections; the positive part contributes with probability \(1 - L_0\)
 and carries the parent's own expected Hessian, less what the zero would have
 contributed to it. The wrapper's own blocks do not depend on the data, so the
 returned vectors are constant when the parent's expected Hessian is, and <code>y</code>
-is then read for its length alone.</p>
+is then used only for its length.</p>
     </div>
 
 
@@ -150,12 +150,12 @@ Hessian and \(\ell\) the log-mass of one observation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      mu_mu      zi_zi      mu_zi </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.2175121 -4.4092338  0.1732687 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Closed form, so two calls agree to the bit and nothing is sampled.</span></span></span>
+<span class="r-in"><span><span class="co"># Closed form, so two calls agree to the bit and the method draws no samples.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">EH</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># It is what summing the observed Hessian against the mass function gives,</span></span></span>
-<span class="r-in"><span><span class="co"># over the support taken far enough out.</span></span></span>
+<span class="r-in"><span><span class="co"># The closed form equals the observed Hessian summed against the mass</span></span></span>
+<span class="r-in"><span><span class="co"># function, over a support that extends far enough out.</span></span></span>
 <span class="r-in"><span><span class="va">sup</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">400</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">sup</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">sup</span>, <span class="va">theta</span><span class="op">)</span></span></span>

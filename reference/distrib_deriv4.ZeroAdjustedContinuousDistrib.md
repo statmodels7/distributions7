@@ -1,14 +1,15 @@
 # Zero-Adjusted Fourth Derivatives, Continuous Parent
 
-The same separation as at third order, one step along, and for the same
-reason: a continuous parent has no mass at zero, so no normalizing
-constant enters and the log-likelihood is \\\log(1 - \pi) +
-\ell(y;\theta)\\ away from the atom. The \\\theta\\ components are the
-parent's fourth derivatives unchanged, the pure `za` component is that
-of \\\log(1-\pi)\\, and everything mixing the two is exactly zero.
+The method separates the derivatives as at third order, one step along,
+and for the same reason: a continuous parent has no mass at zero, so the
+log-likelihood contains no normalizing constant and equals \\\log(1 -
+\pi) + \ell(y;\theta)\\ away from the atom. The \\\theta\\ components
+are the parent's fourth derivatives unchanged, the pure `za` component
+is that of \\\log(1-\pi)\\, and everything mixing the two is exactly
+zero.
 
-No partition sum is taken here, because the parameter components are the
-parent's own.
+The method does not take a partition sum, because the parameter
+components are the parent's own.
 
 ## Arguments
 
@@ -19,7 +20,7 @@ parent's own.
 
 - y:
 
-  A numeric vector of observations, zero included.
+  A numeric vector of observations, which may include zero.
 
 - theta:
 

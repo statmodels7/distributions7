@@ -1,8 +1,8 @@
 # Transformed Observed Hessian
 
 Returns the parent's observed Hessian evaluated at \\x = g^{-1}(y)\\,
-for the reason the score has: the Jacobian is a constant in \\\theta\\
-and differentiates away twice over.
+for the same reason as for the score: the Jacobian is a constant in
+\\\theta\\ and differentiates away twice over.
 
 ## Arguments
 
@@ -40,9 +40,9 @@ The transformation does not depend on \\\theta\\, so \\\ell_Y(\theta; y)
 = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert\\ has a second term
 that is a CONSTANT in the parameters and differentiates away. Every
 derivative in \\\theta\\ is therefore the parent's own, evaluated at \\x
-= g^{-1}(y)\\, and nothing is recomputed. The response derivatives are
-the exception and come from the base class, the Jacobian depending on
-\\y\\.
+= g^{-1}(y)\\, and the method does not recompute them. The response
+derivatives are the exception and come from the base class, because the
+Jacobian depends on \\y\\.
 
 ## Notation
 
@@ -71,11 +71,11 @@ vapply(H, sum, numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>    -62.5000   -164.9888    -12.1987 
 
-# The parent's, at the preimage.
+# It is the parent's Hessian, at the preimage.
 identical(H, distrib_hessian(gaussian1_distrib(), log(y), theta))
 #> [1] TRUE
 
-# Against a numerical Hessian of the transformed log-likelihood.
+# It agrees with a numerical Hessian of the transformed log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

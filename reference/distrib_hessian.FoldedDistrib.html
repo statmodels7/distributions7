@@ -19,7 +19,7 @@ average of their first-order ones."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,8 +95,8 @@ parameters, keyed as <code><a href="hess_names.html">hess_names(distrib@params)<
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The Hessian of the fold has no formula of its own. <code><a href="fold_ratio.html">fold_ratio()</a></code> supplies
-the ratios and <code><a href="log_deriv.html">log_deriv()</a></code> turns them into derivatives of \(\log L\), the
-same two functions the third and fourth orders use. Each ratio is a complete
+the ratios and <code><a href="log_deriv.html">log_deriv()</a></code> turns them into derivatives of \(\log L\); the
+third and fourth orders use the same two functions. Each ratio is a complete
 Bell polynomial in the parent's own log-derivatives, so a parent with closed
 forms gives the folded family closed forms.</p>
     </div>
@@ -127,7 +127,8 @@ ratios, and <code><a href="distrib_hessian.html">distrib_hessian()</a></code> fo
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -0.2363048 -53.5849052 -24.9136187 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical Hessian of the folded log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a numerical Hessian of the folded</span></span></span>
+<span class="r-in"><span><span class="co"># log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

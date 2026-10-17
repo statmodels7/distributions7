@@ -7,7 +7,7 @@ g(-x)\right)^2,\$\$ with \\g\\ and \\h\\ the parent's first and second
 response derivatives. The last term is the square of
 [`distrib_grad_y.FoldedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.FoldedDistrib.md)'s
 value, so the expression is the mixture's second-order ratio less the
-square of its first: the same moment-to-cumulant step the parameter
+square of its first: the same moment-to-cumulant step that the parameter
 derivatives take, applied in the response.
 
 ## Arguments
@@ -58,7 +58,7 @@ y <- c(0.2, 1, 3)
 distrib_hess_y(d, y, theta)
 #> [1] -0.5744607 -0.5873235 -0.6469585
 
-# Against a numerical second derivative.
+# The result is compared with a numerical second derivative.
 vapply(y, function(v)
   numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
                     v)[1, 1],

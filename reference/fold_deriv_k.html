@@ -17,7 +17,7 @@ order."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@ of the positive preimage and \(B\) a multiset of parameter names.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_deriv3.FoldedDistrib.html">distrib_deriv3.FoldedDistrib()</a></code> and
-<code><a href="distrib_deriv4.FoldedDistrib.html">distrib_deriv4.FoldedDistrib()</a></code>, the two methods it builds, and
+<code><a href="distrib_deriv4.FoldedDistrib.html">distrib_deriv4.FoldedDistrib()</a></code>, the two methods that it builds, and
 <code><a href="log_deriv.html">log_deriv()</a></code> for the partition sum.</p></div>
     </div>
 
@@ -107,11 +107,11 @@ of the positive preimage and \(B\) a multiset of parameter names.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m3</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">fold_deriv_k</span><span class="op">(</span><span class="fl">3L</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># It builds the method the class registers, so the two agree.</span></span></span>
+<span class="r-in"><span><span class="co"># It builds the method that the class registers, so the two agree.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu">m3</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span>, <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And the order it was built at fixes the component count.</span></span></span>
+<span class="r-in"><span><span class="co"># And the order at which it was built fixes the component count.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>order3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">m3</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  order4 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">fold_deriv_k</span><span class="op">(</span><span class="fl">4L</span><span class="op">)</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> order3 order4 </span>

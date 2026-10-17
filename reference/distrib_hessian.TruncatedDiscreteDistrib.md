@@ -2,10 +2,10 @@
 
 Computes \$\$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
 = H\_{ij}(y) - M\_{ij} + m_i m_j, \qquad M\_{ij} =
-\mathbb{E}\_T\[H\_{ij} + s_i s_j\],\$\$ the subtracted part being the
+\mathbb{E}\_T\[H\_{ij} + s_i s_j\],\$\$ where the subtracted part is the
 second derivative of \\\log Z\\. For a discrete parent \\M\_{ij}\\ comes
-from the parent's cdf derivatives, which are exact finite sums, with the
-mass at the retained lower endpoint added back.
+from the parent's cdf derivatives, which are exact finite sums, and the
+mass at the retained lower endpoint is added back.
 
 ## Arguments
 
@@ -39,7 +39,7 @@ unordered pair of parameters, keyed as
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -66,7 +66,8 @@ H <- distrib_hessian(ztp, y, theta)
 H$mu_mu
 #> [1] -0.06898458 -0.31898458 -0.56898458 -0.81898458
 
-# Against a numerical Hessian of the truncated log-likelihood.
+# The analytic Hessian is compared with a numerical Hessian of the
+# truncated log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- ztp@params
   sum(distrib_pdf(ztp, y, t2, log = TRUE))

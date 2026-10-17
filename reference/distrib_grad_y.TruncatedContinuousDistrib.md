@@ -1,10 +1,10 @@
 # Truncated Continuous Response Gradient
 
 Returns \\\partial\ell_T/\partial y\\, which inside \\\[L, U\]\\ is the
-PARENT's, \\Z\\ not depending on \\y\\. Outside the interval the
-log-density is \\-\infty\\ and no derivative exists, so `NaN` is
-returned where the finite-difference default would return a finite
-number.
+PARENT's because \\Z\\ does not depend on \\y\\. Outside the interval
+the log-density is \\-\infty\\ and the derivative does not exist, so
+`NaN` is returned where the finite-difference default would return a
+finite number.
 
 ## Arguments
 
@@ -32,7 +32,7 @@ A numeric vector as long as `y`.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

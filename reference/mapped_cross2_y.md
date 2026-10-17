@@ -4,7 +4,7 @@ Carries the parent's
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
 block onto a new parametrization by the first-order chain rule, \\\sum_i
 (\partial\theta_i/\partial\alpha_a)\\
-\partial\ell^{(yy)}/\partial\theta_i\\. It is the same expansion
+\partial\ell^{(yy)}/\partial\theta_i\\. It is the same expansion that
 [`mapped_cross_y()`](https://statmodels7.github.io/distributions7/reference/mapped_cross_y.md)
 takes, read one derivative further in the response.
 
@@ -45,7 +45,7 @@ A named list with one numeric vector per new parameter, keyed by
 
 ## Details
 
-Only the map's FIRST partials enter, so the second-partial tables
+Only the map's FIRST partials enter, so the second-partial tables that
 [`mapped_theta2()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2.md)
 needs are never touched. A missing key is an exact zero and is skipped.
 
@@ -78,7 +78,7 @@ vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #>        mu    sigma2 
 #> 0.0000000 0.4822531 
 
-# The parent's own block, carried by that one factor.
+# The parent's own block is carried by that one factor.
 par_block <- distrib_cross2_y(gaussian1_distrib(), y,
                               list(mu = 0.3, sigma = 1.2))
 c(mu = par_block$mu[1], sigma2 = par_block$sigma[1] / (2 * sqrt(1.44)))

@@ -1,10 +1,10 @@
 # The Parent's Parameters at the New Ones
 
 Runs the map on plain numbers and returns the parent's parameters in the
-parent's own order, which is the form every probability function needs
-before delegating. The new parameters are aligned and validated first,
-so a missing or out-of-bounds component signals an error here and not
-several frames down.
+parent's own order, which is the form that every probability function
+needs before delegating. The new parameters are aligned and validated
+first, so a missing or out-of-bounds component signals an error here and
+not several frames down.
 
 ## Usage
 

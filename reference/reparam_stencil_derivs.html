@@ -3,11 +3,11 @@
 is one central stencil of numericals7::fd_derivative() in each direction,
 applied to the analytic map, iterated across distinct directions. A
 cross-variable composition of two first differences is one mixed stencil and
-not the same-variable nesting the toolkit forbids."><meta property="og:description" content="The numerical fallback behind reparam_tables(): every partial of the map
+is not a nesting in the same variable, which is not allowed in the toolkit."><meta property="og:description" content="The numerical fallback behind reparam_tables(): every partial of the map
 is one central stencil of numericals7::fd_derivative() in each direction,
 applied to the analytic map, iterated across distinct directions. A
 cross-variable composition of two first differences is one mixed stencil and
-not the same-variable nesting the toolkit forbids."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+is not a nesting in the same variable, which is not allowed in the toolkit."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +15,7 @@ not the same-variable nesting the toolkit forbids."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ not the same-variable nesting the toolkit forbids."><meta property="og:image" co
 is one central stencil of <code><a href="https://statmodels7.github.io/numericals7/reference/fd_derivative.html" class="external-link">numericals7::fd_derivative()</a></code> in each direction,
 applied to the analytic map, iterated across distinct directions. A
 cross-variable composition of two first differences is one mixed stencil and
-not the same-variable nesting the toolkit forbids.</p>
+is not a nesting in the same variable, which is not allowed in the toolkit.</p>
     </div>
 
     <div class="section level2">
@@ -81,17 +81,16 @@ order of the returned list.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A function of the new parameters and the highest order to form,
-usable as an object's <code>reparam_derivs</code>, returning the keyed tables
+usable as an object's <code>reparam_derivs</code>, returning the keyed tables that
 <code><a href="reparam_tables.html">reparam_tables()</a></code> describes.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The accuracy is of the order of \(10^{-11}\) at first order and falls
 quickly with the order (see <code><a href="reparam_tables.html">reparam_tables()</a></code>), which is why a family fitted
-in earnest supplies <code>map_derivs</code> instead. What the fallback buys is that a
-user's own reparametrization works immediately, with no derivatives
-written, as <code><a href="distrib_grad_y.continuous_distrib.html">distrib_grad_y.continuous_distrib()</a></code> does for a density-only
-family.</p>
+in earnest supplies <code>map_derivs</code> instead. The fallback lets a user's own
+reparametrization work immediately without derivatives, as
+<code><a href="distrib_grad_y.continuous_distrib.html">distrib_grad_y.continuous_distrib()</a></code> does for a density-only family.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -29,14 +29,14 @@ fixed(distrib, ...)
 
 - ...:
 
-  The fixed values, named after the parameters they fix, as in
+  The fixed values, named after the parameters that they fix, as in
   `fixed(gaussian1_distrib(), mu = 0)`. Each must be a single finite
   number strictly inside its parameter's domain, and each name must be a
   parameter of `distrib`, or the stem of a vector parameter such as a
   multivariate mean, whose value is then one number for every coordinate
   or one number per coordinate. A name that is not, a value outside the
   domain, a value that is not a single number, and an empty `...` are
-  each rejected with an error saying which condition failed.
+  each rejected with an error that names the condition that failed.
 
 ## Value
 
@@ -56,14 +56,14 @@ Splitting the parent's parameters into a fixed part \\\theta_C = c\\ and
 a free part \\\theta_F\\, \$\$f\_{\mathrm{fix}}(y; \theta_F) = f(y;
 \theta_F, c), \qquad \ell^{(i_1 \cdots i_k)}\_{\mathrm{fix}} =
 \ell^{(i_1 \cdots i_k)}, \quad i_1, \dots, i_k \in F.\$\$ `theta`
-carries only the free parameters, every generic answers as the parent
-does at the full vector, and a derivative is the parent's restricted to
-the free indices: a subvector of the score, a submatrix of the Hessian,
-sub-arrays at orders three and four. Nothing is recomputed, no
-normalizing constant changes, and
+carries only the free parameters, every generic returns what the parent
+returns at the full vector, and a derivative is the parent's restricted
+to the free indices: a subvector of the score, a submatrix of the
+Hessian, sub-arrays at orders three and four. The wrapper does not
+recompute anything and does not change the normalizing constant, and
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-estimates the free parameters with standard errors and intervals for
-them alone.
+estimates the free parameters and reports standard errors and intervals
+only for those parameters.
 
 ## What is accepted
 
@@ -73,20 +73,20 @@ of their parameter. A multivariate family's mean is the vector parameter
 coordinate at zero, and `mu = c(0, 1, 2)` holds each at its own value.
 The same holds for any parameter named as a stem followed by the indices
 `1, ..., k`. Fixing a parameter of a distribution that is already a
-fixed-parameter wrapper collapses the two into one wrapper around the
+fixed-parameter wrapper COLLAPSES the two into one wrapper around the
 original parent. Fixing a WRAPPER's own parameter is allowed and useful:
 `fixed(zero_inflated(d), zi = 0.3)` is a zero-inflated model with a
 known inflation rate. Fixing every parameter is allowed too and gives a
-fully known distribution with an empty parameter set. Calling with no
-named value is an error: the result would be the parent unchanged, and
-returning it silently would hide a missing argument.
+fully known distribution with an empty parameter set. A call with no
+named value signals an error, because the result would be the parent
+unchanged and the missing argument would go unreported.
 
-## What it is for
+## Purpose
 
 The wrapper builds priors. `fixed(gaussian1_distrib(), mu = 0)` is the
-ridge penalty with its scale free, `fixed(laplace2_distrib(), mu = 0)`
-is the lasso, and `fixed(mvgaussian1_distrib(p), mu = 0)` is what a
-random effect is distributed by.
+ridge penalty with a free scale, `fixed(laplace2_distrib(), mu = 0)` is
+the lasso, and `fixed(mvgaussian1_distrib(p), mu = 0)` is the
+distribution of a random effect.
 `fixed(folded(gaussian1_distrib()), mu = 0)` is the half-normal.
 
 The per-parameter smoothness declaration travels with the free
@@ -113,12 +113,12 @@ for what the methods do.
 ## Examples
 
 ``` r
-# A multivariate gaussian with its whole mean held at zero.
+# This multivariate gaussian has its whole mean held at zero.
 fixed(mvgaussian1_distrib(3), mu = 0)@params
 #> [1] "sigma_log_L1" "sigma_log_L2" "sigma_log_L3" "sigma_L2.1"   "sigma_L3.1"  
 #> [6] "sigma_L3.2"  
 
-# A gaussian with a known mean: only sigma remains.
+# Fixing the mean of a gaussian leaves only sigma as a free parameter.
 d <- fixed(gaussian1_distrib(), mu = 0)
 d@params
 #> [1] "sigma"
@@ -132,7 +132,7 @@ full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1),
 all.equal(distrib_gradient(d, c(-1, 0, 1), theta)$sigma, full$sigma)
 #> [1] TRUE
 
-# The lasso prior: a Laplace in its rate, centered at zero.
+# The lasso prior is a Laplace in its rate, centered at zero.
 lasso <- fixed(laplace2_distrib(), mu = 0)
 lasso@params
 #> [1] "lambda"
@@ -145,7 +145,7 @@ all.equal(-distrib_pdf(lasso, b, list(lambda = 2), log = TRUE),
 fixed(zero_inflated(poisson_distrib()), zi = 0.3)@params
 #> [1] "mu"
 
-# Two calls collapse into one wrapper, and fixing everything is legal.
+# Two calls collapse into one wrapper, and fixing every parameter is allowed.
 fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
 #> $mu
 #> [1] 0
@@ -154,15 +154,15 @@ fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
 #> [1] 1
 #> 
 
-# Four errors, each naming the condition that failed.
+# The four errors below each name the condition that failed.
 try(fixed(gaussian1_distrib(), nope = 1))
-#> Error : 'nope' is not a parameter of 'gaussian1'. Parameters: mu, sigma.
+#> Error : 'nope' is not a parameter of 'gaussian1'. The parameters are mu, sigma.
 try(fixed(gaussian1_distrib(), sigma = -1))
 #> Error : The value fixing 'sigma' (-1) is outside its open domain (0, Inf).
 try(fixed(gaussian1_distrib(), mu = c(0, 1)))
 #> Error : The value fixing 'mu' must be a single finite number.
 try(fixed(gaussian1_distrib()))
 #> Error : fixed() needs at least one named value, as in fixed(d, mu = 0). With
-#>   none, the result would be the parent distribution unchanged; returning
-#>   it silently would hide a missing argument rather than report it.
+#>   none, the result would be the parent distribution unchanged, and the
+#>   missing argument would go unreported.
 ```

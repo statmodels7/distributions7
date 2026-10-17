@@ -1,6 +1,6 @@
 # Generalized Gamma Distribution in the Mean, Obtained
 
-The same family as
+Returns the same family as
 [`gengamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.md),
 obtained through
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)

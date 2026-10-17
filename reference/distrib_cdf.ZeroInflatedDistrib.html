@@ -13,7 +13,7 @@ The result is clamped to \([0, 1]\) against rounding."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,7 +115,7 @@ log-mass of one observation.</p>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2873403 0.5673926 0.9370615</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Which is the parent's, shrunk and shifted.</span></span></span>
+<span class="r-in"><span><span class="co"># The distribution function is the parent's, shrunk and shifted.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">theta</span><span class="op">)</span>, <span class="fl">0.75</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">ppois</a></span><span class="op">(</span><span class="va">q</span>, <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
@@ -124,7 +124,7 @@ log-mass of one observation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       cdf    summed </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.9370615 0.9370615 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Both tails and the logarithm.</span></span></span>
+<span class="r-in"><span><span class="co"># Both tails and the logarithm are available through arguments.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2</span>, <span class="va">theta</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4326074</span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2</span>, <span class="va">theta</span>, log.p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

@@ -1,9 +1,9 @@
 # Third-Order Derivatives of a Reparametrized Distribution
 
-The partition sum at order three, observed or expected. Every order the
-parent has in closed form survives in closed form, so a family
-reparametrized from a parent that carries analytic third derivatives
-keeps them.
+Computes the partition sum at order three, observed or expected. Every
+order that the parent has in closed form survives in closed form, so a
+family reparametrized from a parent that carries analytic third
+derivatives keeps them.
 
 ## Usage
 
@@ -37,9 +37,9 @@ reparam_deriv3(
 
 - expected:
 
-  Should the expected derivatives be carried? A single logical, `FALSE`
-  by default. Under expectation the term in the parent's score drops,
-  the score having mean zero.
+  Should the expected derivatives be carried? It is a single logical,
+  `FALSE` by default. Under expectation the term in the parent's score
+  drops, because the score has mean zero.
 
 - scale:
 
@@ -50,13 +50,13 @@ reparam_deriv3(
 
   The strategy that the parent uses for an expected derivative for which
   it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"` or
-  `"opg"`. Passed straight through; read only when `expected` is `TRUE`
-  and only by a parent that approximates.
+  `"opg"`. The value is passed straight through, and it is read only
+  when `expected` is `TRUE` and only by a parent that approximates.
 
 - nsim:
 
-  The number of draws for `approx = "mc"`, 10000 by default. Passed
-  through.
+  The number of draws for `approx = "mc"`, 10000 by default. The value
+  is passed through.
 
 - ...:
 
@@ -65,8 +65,8 @@ reparam_deriv3(
 ## Value
 
 A named list of numeric vectors keyed as
-[`deriv_names(distrib@params, 3)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
-each the length of `y` recycled against `theta`.
+[`deriv_names(distrib@params, 3)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
+Each has the length of `y` after it is recycled against `theta`.
 
 ## Details
 
@@ -98,7 +98,7 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# Four components for a two-parameter family.
+# The result has four components for a two-parameter family.
 names(distrib_deriv3(d, c(0, 1, 2), th))
 #> [1] "mu_mu_mu"             "mu_mu_sigma2"         "mu_sigma2_sigma2"    
 #> [4] "sigma2_sigma2_sigma2"

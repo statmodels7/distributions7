@@ -15,7 +15,7 @@ the arithmetic behind every location-scale method of distrib_cross2_y()."><meta 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,11 +84,11 @@ order. The callers name them.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The same identity <code><a href="loc_scale_cross_block.html">loc_scale_cross_block()</a></code> uses, one derivative further in
-the response: it reads the family's own <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> instead of
-differencing its <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code>. A shape parameter beyond the two is not
-covered, and <code><a href="loc_scale_cross2_y.html">partial_loc_scale_cross2_y()</a></code> differences those components
-instead.</p>
+    <p>This is the identity that <code><a href="loc_scale_cross_block.html">loc_scale_cross_block()</a></code> uses, taken one
+derivative further in the response: it reads the family's own
+<code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> instead of differencing its <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code>. A shape
+parameter beyond the two is not covered, and <code><a href="loc_scale_cross2_y.html">partial_loc_scale_cross2_y()</a></code>
+differences those components instead.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -117,7 +117,7 @@ in \(\theta\), and <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a><
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">blk</span>, <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="va">z</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.09632533 0.40854287</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The identity written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The identity is written out.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">1.2</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">/</span> <span class="va">s</span></span></span>
 <span class="r-in"><span><span class="va">B</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
@@ -126,7 +126,7 @@ in \(\theta\), and <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a><
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu      sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.09632533 0.40854287 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># It is what the family's distrib_cross2_y method returns, named.</span></span></span>
+<span class="r-in"><span><span class="co"># The family's distrib_cross2_y method returns the same components, named.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_cross2_y.html">distrib_cross2_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="va">z</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu      sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.09632533 0.40854287 </span>

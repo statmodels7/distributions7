@@ -13,7 +13,7 @@ law taken by expectation(), as the expected Hessian itself is."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ law taken by <code><a href="expectation.html">expectation()</a></code>, as the e
 
 
 <dt id="arg-t">t<a class="anchor" aria-label="anchor" href="#arg-t"></a></dt>
-<dd><p>Unused; the thread count of the registration.</p></dd>
+<dd><p>Unused; it is the thread count of the registration.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -98,20 +98,22 @@ law taken by <code><a href="expectation.html">expectation()</a></code>, as the e
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>With \(\ell = \ell_P - \log Z\) the truncated log-likelihood, \(\ell_P\)
-being the parent's, and \(G = \ell_i \ell_j\), the second Bartlett identity
-gives \(E[\ell_{ij}] = -E[G]\), and differentiating under the expectation,
+    <p>With \(\ell = \ell_P - \log Z\) the truncated log-likelihood (\(\ell_P\)
+is the parent's) and \(G = \ell_i \ell_j\), the second Bartlett identity
+gives \(E[\ell_{ij}] = -E[G]\). Differentiating under the expectation
+gives
 $$\partial_c E[G] = E[G_c + G\ell_c],$$
 $$\partial_{cd} E[G] = E[G_{cd} + G_c\ell_d + G_d\ell_c +
   G(\ell_c\ell_d + \ell_{cd})],$$
 with \(G_c = \ell_{ic}\ell_j + \ell_i\ell_{jc}\) and
 \(G_{cd} = \ell_{icd}\ell_j + \ell_{ic}\ell_{jd} + \ell_{id}\ell_{jc} +
 \ell_i\ell_{jcd}\). The truncation points do not depend on the parameters,
-so no boundary term arises. The truncated derivatives are the parent's less
-those of \(\log Z\), which do not depend on \(y\): they are computed
-once per parameter combination by <code>trunc_logz_derivs()</code> and passed to the
-integrand, which reads only the parent's derivatives at the nodes.
-Registered through <code><a href="register_dexpected.html">register_dexpected()</a></code>.</p>
+so the differentiation does not produce a boundary term. The truncated
+derivatives are the parent's less those of \(\log Z\), which do not depend
+on \(y\): they are computed once per parameter combination by
+<code>trunc_logz_derivs()</code> and passed to the integrand, which reads only the
+parent's derivatives at the nodes. <code>trunc_dexpected()</code> is registered through
+<code><a href="register_dexpected.html">register_dexpected()</a></code>.</p>
 <p><code>trunc_logz_derivs()</code> returns the derivatives of \(\log Z\) to order
 <code>order</code>, keyed by <code><a href="deriv_names.html">deriv_names()</a></code> at each order (the pairs as
 <code><a href="hess_names.html">hess_names()</a></code> spells them), from the ratios \(d^B Z / Z\) by

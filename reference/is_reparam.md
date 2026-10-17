@@ -1,11 +1,12 @@
 # Is This a Reparametrized Distribution?
 
-`TRUE` for either of the two wrapper classes,
+Returns `TRUE` for either of the two wrapper classes,
 [`ReparamContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md)
 and
 [`ReparamDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md),
-and `FALSE` for anything else. The test exists because the two classes
-have different parents, so no single `S7_inherits()` call answers it.
+and `FALSE` for anything else. The test is needed because the two
+classes have different parents, and one `S7_inherits()` call cannot test
+both.
 
 ## Usage
 

@@ -1,10 +1,10 @@
 # Hyperparameter Hessian of the Response Gradient
 
 Computes \\\partial^3 \ell / \partial y\\ \partial\theta_i
-\partial\theta_j\\, one component per unordered pair of parameters, each
-a vector along `y`. It gives the second derivative, in the parameters,
-of the response gradient, and it is the third-order entry of the mixed
-grid below.
+\partial\theta_j\\, with one component per unordered pair of parameters,
+and each component is a vector along `y`. It gives the second
+derivative, in the parameters, of the response gradient, and it is the
+third-order entry of the mixed grid below.
 
 ## Usage
 
@@ -42,8 +42,8 @@ distrib_grad_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 ## Value
 
-A named list with one numeric vector per unordered pair of parameters,
-each as long as `y`, keyed as
+A named list with one numeric vector per unordered pair of parameters.
+Each vector is as long as `y`, and the list is keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
 
 ## Details
@@ -54,23 +54,30 @@ column is
 and
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md):
 
-|  |  |  |  |
-|----|----|----|----|
-|  | \\\partial^0/\partial\theta^0\\ | \\\partial^1/\partial\theta^1\\ | \\\partial^2/\partial\theta^2\\ |
-| \\\partial/\partial y\\ | [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md) | [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md) | `distrib_grad_y_hess()` |
-| \\\partial^2/\partial y^2\\ | [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md) | [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md) | [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md) |
+\| \| \\\partial^0/\partial\theta^0\\ \| \\\partial^1/\partial\theta^1\\
+\| \\\partial^2/\partial\theta^2\\ \| \|—\|—\|—\|—\| \|
+\\\partial/\partial y\\ \|
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
+\|
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+\| `distrib_grad_y_hess()` \| \| \\\partial^2/\partial y^2\\ \|
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
+\|
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
+\|
+[`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
+\|
 
-The right-hand column is the one that the second derivative of a
-marginal criterion requires from a penalty. A penalty is a negative
-log-density read at the coefficients, so
-\\\partial^2\rho/\partial\beta^2\\ carries the density's response
-curvature and the two mixed derivatives above carry
+The second derivative of a marginal criterion requires the right-hand
+column from a penalty. A penalty is a negative log-density read at the
+coefficients, so \\\partial^2\rho/\partial\beta^2\\ carries the
+density's response curvature and the two mixed derivatives above carry
 \\\partial^3\rho/\partial\beta\\\partial\theta^2\\ and
 \\\partial^4\rho/\partial\beta^2\partial\theta^2\\.
 
 The components are keyed by
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-the same enumeration
+the same enumeration that
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 uses, so a consumer that looks up a pair finds it under the name that
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
@@ -141,14 +148,15 @@ c(mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
 #>    mu_sigma sigma_sigma 
 #>  -0.9103323   2.9410735 
 
-# Against a numerical Hessian of the response gradient in the parameters.
+# The result is compared with a numerical Hessian of the response gradient
+# in the parameters.
 g <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(g, c(0.4, 1.3))
 #>               [,1]       [,2]
 #> [1,] -1.060880e-12 -0.9103323
 #> [2,] -9.103323e-01  2.9410735
 
-# On the link scale, with sigma on a log link: h' = h'' = sigma.
+# On the link scale, with sigma on a log link, both h' and h'' equal sigma.
 cy <- distrib_cross_y(d, y, theta)
 distrib_grad_y_hess(d, y, theta, scale = "link")$sigma_sigma
 #> [1]  3.3136095  0.9467456 -3.7869822

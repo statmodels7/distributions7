@@ -30,8 +30,8 @@ with no atoms.
 ## Details
 
 A mass outside \\\[L, U\]\\ is dropped, along with the rest of the
-density there, and one inside is rescaled by the same factor the density
-is. Two consumers read the result:
+density there, and one inside is rescaled by the same factor as the
+density. Two consumers read the result:
 [`expectation.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
 adds the masses to its integral, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
@@ -39,7 +39,7 @@ adjusts the checks that a point mass invalidates.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

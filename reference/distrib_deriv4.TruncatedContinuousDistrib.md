@@ -1,9 +1,10 @@
 # Truncated Fourth Derivatives
 
-The third-order construction one step along: \\\ell_T = \ell - \log Z\\,
-and \\d^I \log Z\\ comes from the moment-to-cumulant expansion over the
-fifteen partitions of four indices, each block an expectation
-\\\mathbb{E}\_T\[\partial^B f / f\]\\ under the truncated law.
+The method extends the third-order construction by one order: \\\ell_T =
+\ell - \log Z\\, and \\d^I \log Z\\ comes from the moment-to-cumulant
+expansion over the fifteen partitions of four indices, where each block
+is an expectation \\\mathbb{E}\_T\[\partial^B f / f\]\\ under the
+truncated law.
 
 The cost is set by the number of distinct blocks: a block that occurs in
 several partitions is computed once and looked up. For the component
@@ -49,7 +50,7 @@ for the wrapper;
 [`distrib_deriv3.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedContinuousDistrib.md)
 for the order below;
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md),
-the partition sum both orders use.
+the partition sum that both orders use.
 
 ## Examples
 

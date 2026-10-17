@@ -1,10 +1,10 @@
 # Folded Third Derivatives
 
 Computes every third derivative of the folded log-density from the SAME
-partition sums the Hessian uses, one order up. The block ratios are
+partition sums that the Hessian uses, one order up. The block ratios are
 \$\$\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)} + (1-w) \frac{d^B
-f(-x)}{f(-x)},\$\$ each term a complete Bell polynomial in the parent's
-own log-derivatives, and
+f(-x)}{f(-x)},\$\$ in which each term is a complete Bell polynomial in
+the parent's own log-derivatives, and
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
 turns them into derivatives of \\\log L\\ by the moment-to-cumulant
 relation. A parent with closed forms to third order gives the folded
@@ -38,15 +38,15 @@ family closed forms to third order.
 
 - approx:
 
-  The strategy
+  The strategy that
   [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
   uses when `expected = TRUE`: one of `"integrate"` (the default),
-  `"bartlett"`, `"mc"` or `"opg"`. Ignored otherwise.
+  `"bartlett"`, `"mc"` or `"opg"`. It is ignored otherwise.
 
 - nsim:
 
   The Monte Carlo sample size when `approx = "mc"`. Defaults to `10000`.
-  Ignored otherwise.
+  It is ignored otherwise.
 
 - ...:
 
@@ -93,7 +93,7 @@ names(d3)
 #> [1] "mu_mu_mu"          "mu_mu_sigma"       "mu_sigma_sigma"   
 #> [4] "sigma_sigma_sigma"
 
-# Against one stencil on the analytic Hessian.
+# The result is compared with one stencil on the analytic Hessian.
 h <- 1e-4
 tp <- theta; tp$sigma <- tp$sigma + h
 tm <- theta; tm$sigma <- tm$sigma - h

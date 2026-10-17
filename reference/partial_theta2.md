@@ -15,11 +15,11 @@ and a pair of shapes is one stencil on
 a second-order stencil for a repeated shape and a mixed one for two
 shapes; the shape components of
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
-are not differenced again. It is what
+are not differenced again. Both
 [`partial_loc_scale_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
 and
 [`partial_loc_scale_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
-both run, at order 1 and 2 respectively.
+run it, at order 1 and 2 respectively.
 
 ## Usage
 
@@ -104,7 +104,7 @@ cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
 all(vapply(names(cl), function(k) identical(out[[k]], cl[[k]]), logical(1)))
 #> [1] TRUE
 
-# And it is exactly what the family's method returns.
+# The result is identical to the value that the family's method returns.
 identical(out, distrib_grad_y_hess(d, y, theta))
 #> [1] TRUE
 ```

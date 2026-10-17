@@ -2,10 +2,11 @@
 
 Returns the parent family's first (`k = 1`) or second (`k = 2`)
 derivatives of the expected information at the full parameter vector,
-subset to the free parameters, on the parameter scale. Registered
-through
+subset to the free parameters, on the parameter scale. The function is
+registered through
 [`register_dexpected()`](https://statmodels7.github.io/distributions7/reference/register_dexpected.md),
-which carries them to the link scale with the wrapper's links.
+which carries the derivatives to the link scale with the wrapper's
+links.
 
 ## Usage
 

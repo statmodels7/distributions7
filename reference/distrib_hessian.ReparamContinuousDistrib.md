@@ -1,12 +1,13 @@
 # Observed Hessian of a Reparametrized Distribution
 
-The second-order chain rule, which keeps the term in the parent's score
-as well as the one in its Hessian: \$\$\ell^{(ab)} = \sum\_{i,j}
-\ell^{(ij)} \frac{\partial\theta_i}{\partial\psi_a}
+Computes the observed Hessian by the second-order chain rule, which
+keeps the term in the parent's score as well as the one in its Hessian:
+\$\$\ell^{(ab)} = \sum\_{i,j} \ell^{(ij)}
+\frac{\partial\theta_i}{\partial\psi_a}
 \frac{\partial\theta_j}{\partial\psi_b} + \sum_i \ell^{(i)}
-\frac{\partial^2\theta_i}{\partial\psi_a \partial\psi_b}.\$\$ The second
-sum is what a first-order chain does not have, and it is why the map's
-second partials are needed as well as its first.
+\frac{\partial^2\theta_i}{\partial\psi_a \partial\psi_b}.\$\$ A
+first-order chain does not contain the second sum, and for this reason
+the map's second partials are needed as well as its first.
 
 ## Usage
 
@@ -41,12 +42,13 @@ reparam_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
 ## Value
 
 A named list of numeric vectors keyed as
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `y` recycled against `theta`. Note the order: this
-route enumerates as
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
+Each has the length of `y` after it is recycled against `theta`. This
+route enumerates the components as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 does, diagonal first, while a family written out by hand may enumerate
-lexicographically. Compare two such results by name and not by position.
+them lexicographically. Two such results should be compared by name and
+not by position.
 
 ## Notation
 

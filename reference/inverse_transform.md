@@ -1,7 +1,8 @@
 # Reciprocal (Inverse) Transformation
 
-Transformer for \\Y = 1/X\\ (monotonically decreasing on a support not
-containing 0). Inverse \\X = 1/Y\\, Jacobian \\\|J\| = 1/Y^2\\.
+Returns the transformer for \\Y = 1/X\\, which is monotonically
+decreasing on a support that does not contain 0. The inverse is \\X =
+1/Y\\ and the Jacobian is \\\|J\| = 1/Y^2\\.
 
 ## Usage
 

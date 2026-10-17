@@ -3,7 +3,7 @@
 Computes \\M\_{ij} = \mathbb{E}\_T\[H\_{ij} + s_i s_j\]\\, which is
 \\d\_{ij} Z / Z\\, since \\d\_{ij} f / f = H\_{ij} + s_i s_j\\. It
 enters the truncated Hessian as \\d\_{ij}\ell_T = H\_{ij}(y) - M\_{ij} +
-m_i m_j\\, the subtracted part being the second derivative of \\\log
+m_i m_j\\, and the subtracted part is the second derivative of \\\log
 Z\\.
 
 ## Usage
@@ -35,15 +35,14 @@ Where the parent has exact cdf derivatives the whole quantity comes from
 at order two. Otherwise it is assembled from two quadratures,
 [`trunc_hess_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_hess_mean.md)
 and
-[`trunc_score_prod_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_prod_mean.md),
-which is also why
+[`trunc_score_prod_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_prod_mean.md).
 [`trunc_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/trunc_expected_hessian.md)
-cannot use the cheap route: it needs the two pieces separately and
-\\d\_{ij} Z\\ only gives their sum.
+cannot use the cheap route, because it needs the two pieces separately
+and \\d\_{ij} Z\\ only gives their sum.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

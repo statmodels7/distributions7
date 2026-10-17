@@ -5,33 +5,33 @@ on the parent's type, and the constructor dispatches on it:
 a DISCRETE parent with 0 in its support gives a HURDLE model. The mass
 that the parent puts at zero is removed, the parent is renormalized over
 the positive values, and \(\pi\) takes its place.
-a CONTINUOUS parent gives a MIXED distribution. Nothing has to be removed,
-\(P(Y = 0)\) being zero already; a point mass \(\pi\) is placed at zero
-and the density is scaled by \(1-\pi\).
+a CONTINUOUS parent gives a MIXED distribution. The wrapper removes
+nothing, because \(P(Y = 0)\) is already zero; a point mass \(\pi\) is
+placed at zero and the density is scaled by \(1-\pi\).
 
 
 The wrapper applies when the zeros come from a mechanism of their own (for
-example, no claim is filed or no rain falls) and the parent describes only
-the observations produced after that mechanism has allowed a positive
+example, a claim is not filed or rain does not fall) and the parent describes
+only the observations produced after that mechanism has allowed a positive
 outcome. Where the zeros come partly from the parent and partly from a
-separate source, so that no single zero can be attributed, zero_inflated()
-is the model."><meta property="og:description" content="Makes the probability of a zero a parameter of its own, \(\pi\), carried
+separate source, so that a single zero cannot be attributed,
+zero_inflated() is the model."><meta property="og:description" content="Makes the probability of a zero a parameter of its own, \(\pi\), carried
 by za, and leaves everything else to the parent. What that means depends
 on the parent's type, and the constructor dispatches on it:
 a DISCRETE parent with 0 in its support gives a HURDLE model. The mass
 that the parent puts at zero is removed, the parent is renormalized over
 the positive values, and \(\pi\) takes its place.
-a CONTINUOUS parent gives a MIXED distribution. Nothing has to be removed,
-\(P(Y = 0)\) being zero already; a point mass \(\pi\) is placed at zero
-and the density is scaled by \(1-\pi\).
+a CONTINUOUS parent gives a MIXED distribution. The wrapper removes
+nothing, because \(P(Y = 0)\) is already zero; a point mass \(\pi\) is
+placed at zero and the density is scaled by \(1-\pi\).
 
 
 The wrapper applies when the zeros come from a mechanism of their own (for
-example, no claim is filed or no rain falls) and the parent describes only
-the observations produced after that mechanism has allowed a positive
+example, a claim is not filed or rain does not fall) and the parent describes
+only the observations produced after that mechanism has allowed a positive
 outcome. Where the zeros come partly from the parent and partly from a
-separate source, so that no single zero can be attributed, zero_inflated()
-is the model."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+separate source, so that a single zero cannot be attributed,
+zero_inflated() is the model."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -39,7 +39,7 @@ is the model."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,15 +77,15 @@ by <code>za</code>, and leaves everything else to the parent. What that means de
 on the parent's type, and the constructor dispatches on it:</p><ul><li><p>a DISCRETE parent with 0 in its support gives a HURDLE model. The mass
 that the parent puts at zero is removed, the parent is renormalized over
 the positive values, and \(\pi\) takes its place.</p></li>
-<li><p>a CONTINUOUS parent gives a MIXED distribution. Nothing has to be removed,
-\(P(Y = 0)\) being zero already; a point mass \(\pi\) is placed at zero
-and the density is scaled by \(1-\pi\).</p></li>
+<li><p>a CONTINUOUS parent gives a MIXED distribution. The wrapper removes
+nothing, because \(P(Y = 0)\) is already zero; a point mass \(\pi\) is
+placed at zero and the density is scaled by \(1-\pi\).</p></li>
 </ul><p>The wrapper applies when the zeros come from a mechanism of their own (for
-example, no claim is filed or no rain falls) and the parent describes only
-the observations produced after that mechanism has allowed a positive
+example, a claim is not filed or rain does not fall) and the parent describes
+only the observations produced after that mechanism has allowed a positive
 outcome. Where the zeros come partly from the parent and partly from a
-separate source, so that no single zero can be attributed, <code><a href="zero_inflated.html">zero_inflated()</a></code>
-is the model.</p>
+separate source, so that a single zero cannot be attributed,
+<code><a href="zero_inflated.html">zero_inflated()</a></code> is the model.</p>
     </div>
 
     <div class="section level2">
@@ -101,7 +101,7 @@ is the model.</p>
 <dd><p>An object inheriting from <code>discrete_distrib</code> with 0 in its
 support, or from <code>continuous_distrib</code>. An already-wrapped parent and a
 discrete support of fewer than <code>n_params + 2</code> points are rejected with an
-error saying which condition failed.</p></dd>
+error that names the condition that failed.</p></dd>
 
 
 <dt id="arg-link-za">link_za<a class="anchor" aria-label="anchor" href="#arg-link-za"></a></dt>
@@ -123,8 +123,8 @@ and whose interpretation is <code>"prob. of zero"</code>; <code>distrib_name</co
     <h2 id="a-discrete-parent-the-hurdle">A discrete parent: the hurdle<a class="anchor" aria-label="anchor" href="#a-discrete-parent-the-hurdle"></a></h2>
     <p>$$P(Y = y; \theta, \pi) = \begin{cases} \pi &amp; y = 0 \\
   (1 - \pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} &amp; y &gt; 0. \end{cases}$$
-The division by \(1 - f(0;\theta)\) is the TRUNCATION, and it is what
-separates this from zero-inflation: it makes \(\theta\) the parameters of
+The division by \(1 - f(0;\theta)\) is the TRUNCATION. It separates this
+model from zero-inflation, because it makes \(\theta\) the parameters of
 a law on the positive integers instead of the original count process. The
 log-likelihood separates into a Bernoulli part in \(\pi\) and a truncated
 part in \(\theta\), so every mixed block of the information is exactly
@@ -135,21 +135,23 @@ zero and the two halves could be fitted separately.</p>
     <p>$$f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \quad (y \ne 0).$$
 Here \(f_Y\) is a density against Lebesgue measure plus a point mass, so
 it integrates to \(1 - \pi\); the remainder is the atom, which
-<code><a href="distrib_atoms.html">distrib_atoms()</a></code> reports and <code><a href="check_distrib.html">check_distrib()</a></code> accounts for. The classical
+<code><a href="distrib_atoms.html">distrib_atoms()</a></code> reports and which <code><a href="check_distrib.html">check_distrib()</a></code> takes into account.
+The classical
 members have a parent on \((0, \infty)\) or \((0, 1)\), where zero sits
 on the boundary: the zero-adjusted gamma, inverse gaussian or lognormal for
 semicontinuous data, and the zero-adjusted beta for proportions.</p>
     </div>
     <div class="section level2">
     <h2 id="choosing-between-the-two-wrappers">Choosing between the two wrappers<a class="anchor" aria-label="anchor" href="#choosing-between-the-two-wrappers"></a></h2>
-    <p>Zero-inflation can only ADD zeros, \(P(Y = 0) = \zeta + (1-\zeta)f(0)\)
-exceeding \(f(0)\); the hurdle replaces \(f(0)\) outright and so also
-covers FEWER zeros than the parent implies. Where both apply they are not
-nested, and they differ in interpretation more than in fit: zero-inflation
-keeps \(\theta\) as the parameters of the original count process, the
-hurdle re-reads them as those of a truncated one. Prefer the hurdle when a
-zero is observable evidence of a distinct decision, and zero-inflation when
-the two kinds of zero are genuinely indistinguishable.</p>
+    <p>Zero-inflation can only ADD zeros, because
+\(P(Y = 0) = \zeta + (1-\zeta)f(0)\) exceeds \(f(0)\); the hurdle
+replaces \(f(0)\) outright and so also covers FEWER zeros than the parent
+implies. Where both apply they are not nested, and they differ in
+interpretation more than in fit: zero-inflation keeps \(\theta\) as the
+parameters of the original count process, the hurdle re-reads them as those
+of a truncated one. Prefer the hurdle when a zero is observable evidence of a
+distinct decision, and zero-inflation when the two kinds of zero are
+genuinely indistinguishable.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-parent-must-be">What the parent must be<a class="anchor" aria-label="anchor" href="#what-the-parent-must-be"></a></h2>
@@ -182,7 +184,7 @@ probability of the other wrapper, and \(k\) the number of support points.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="zero_inflated.html">zero_inflated()</a></code> for the mixture counterpart,
 <a href="ZeroAdjustedDiscreteDistrib.html">ZeroAdjustedDiscreteDistrib</a> and <a href="ZeroAdjustedContinuousDistrib.html">ZeroAdjustedContinuousDistrib</a> for the
-two classes, <code><a href="distrib_atoms.html">distrib_atoms()</a></code> for the atom the continuous branch
+two classes, <code><a href="distrib_atoms.html">distrib_atoms()</a></code> for the atom that the continuous branch
 declares, and <code><a href="check_distrib.html">check_distrib()</a></code> to validate the result.</p></div>
     </div>
 
@@ -209,7 +211,7 @@ declares, and <code><a href="check_distrib.html">check_distrib()</a></code> to v
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">zap</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">mu_za</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Semicontinuous data: a spike at zero and a gamma above it.</span></span></span>
+<span class="r-in"><span><span class="co"># Semicontinuous data are modeled with a spike at zero and a gamma above it.</span></span></span>
 <span class="r-in"><span><span class="va">zag</span> <span class="op">&lt;-</span> <span class="fu">zero_adjusted</span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_atoms.html">distrib_atoms</a></span><span class="op">(</span><span class="va">zag</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span>, za <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
@@ -219,14 +221,16 @@ declares, and <code><a href="check_distrib.html">check_distrib()</a></code> to v
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A fit recovers both halves, each from its own part of the data.</span></span></span>
+<span class="r-in"><span><span class="co"># A fit recovers both halves, and each half comes from its own part of the</span></span></span>
+<span class="r-in"><span><span class="co"># data.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">yg</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">zag</span>, <span class="fl">2000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span>, za <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">zag</span>, <span class="va">yg</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mu sigma2     za </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2.029  1.016  0.302 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Two errors, each naming the condition that failed.</span></span></span>
+<span class="r-in"><span><span class="co"># These two calls signal errors, and each error names the condition that</span></span></span>
+<span class="r-in"><span><span class="co"># failed.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">zero_adjusted</span><span class="op">(</span><span class="fu"><a href="bernoulli_distrib.html">bernoulli_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : zero_adjusted() cannot wrap 'bernoulli': its support has 2 points, so the family has 1 free</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   probability, while the wrapped distribution would have 2 parameters. They are not</span>

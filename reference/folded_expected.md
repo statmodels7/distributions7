@@ -53,25 +53,25 @@ A named list keyed as
 [`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
 followed by
 [`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md)
-(`order = 2`), each component of length `length(y)`.
+(`order = 2`), in which each component has length `length(y)`.
 
 ## Details
 
 An expectation under the folded law is an integral over \\y \> 0\\
 against the folded density \\f(y) + f(-y)\\. The integrand turns sharply
 near zero, where the weight \\f(y)/(f(y)+f(-y))\\ goes from one half to
-one over a width of order \\s^2/\|c\|\\, \\c\\ and \\s\\ a center and a
-scale of the parent read from the scalar registry. The integral is taken
-over \\y \> 0\\ by a tanh-sinh rule on \\\[0, \|c\|\]\\, whose nodes
-cluster at both ends, and the rule of
+one over a width of order \\s^2/\|c\|\\, where \\c\\ and \\s\\ are a
+center and a scale of the parent, read from the scalar registry. The
+integral is taken over \\y \> 0\\ by a tanh-sinh rule on \\\[0,
+\|c\|\]\\, whose nodes cluster at both ends, and the rule of
 [`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md)
 scaled by \\s\\ on \\\[\|c\|, \infty)\\; the split at \\\|c\|\\ also
 takes in a parent with a kink at its center. The nodes are the scalar
 registry's. The expectations are formed through the second Bartlett
 identity, \$\$E\[\ell\_{ij}\] = -E\[\ell_i \ell_j\], \qquad \partial_c
 E\[\ell\_{ij}\] = -E\[\ell\_{ic}\ell_j + \ell_i\ell\_{jc} +
-\ell_i\ell_j\ell_c\],\$\$ so that the folded score and Hessian are all
-it reads at orders 0 and 1. The second derivatives differentiate
+\ell_i\ell_j\ell_c\],\$\$ so that only the folded score and Hessian are
+read at orders 0 and 1. The second derivatives differentiate
 \\-E\[G\]\\, \\G = \ell_i\ell_j\\, twice under the integral,
 \$\$\partial\_{cd} E\[G\] = E\[G\_{cd} + G_c\ell_d + G_d\ell_c +
 G(\ell_c\ell_d + \ell\_{cd})\],\$\$ and read the folded third
@@ -88,7 +88,7 @@ folded variable is the parent or its mirror image, and the expectations
 are the parent's own expected Hessian and its derivatives, which the
 quadrature around the fold does not resolve at a center many scales
 away. A kink at a center of exactly zero is read as the one-sided limit,
-the quantities being even or odd in the center.
+because the quantities are even or odd in the center.
 
 A parent with a kink at its center \\c\\ (a parameter that is not
 smooth, as in
@@ -97,17 +97,18 @@ smooth, as in
 and
 [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md))
 gives a folded score that jumps at \\y^\* = \|c\|\\, a point that moves
-with \\c\\. With \\F = L\\G\\ the integrand, \\J(X) = X(y^{\*-}) -
-X(y^{\*+})\\ and \\a_k = \partial y^\*/\partial \theta_k =
-\mathrm{sign}(c)\\ for the center and zero otherwise, \$\$\partial_k
-\int F = \int \partial_k F + J(F)\\a_k,\$\$ \$\$\partial\_{kl} \int F =
-\int \partial\_{kl} F + J(\partial_k F)\\a_l + J(\partial_l F)\\a_k +
-J(\partial_y F)\\a_k a_l,\$\$ the one-sided values read four units in
-the last place either side of \\y^\*\\. `fold_kink_parts()` returns
-those values: the folded density at \\y^\*\\, the folded score and
-Hessian, and, at order 2, the response derivative \\\ell_y\\ and the
-mixed derivatives \\\ell\_{iy}\\ from the parent's at the two preimages,
-or `NULL` where the parent has no kink or \\c = 0\\.
+with \\c\\. Let \\F = L\\G\\ be the integrand, let \\J(X) = X(y^{\*-}) -
+X(y^{\*+})\\, and let \\a_k = \partial y^\*/\partial \theta_k =
+\mathrm{sign}(c)\\ for the center and zero otherwise. Then
+\$\$\partial_k \int F = \int \partial_k F + J(F)\\a_k,\$\$
+\$\$\partial\_{kl} \int F = \int \partial\_{kl} F + J(\partial_k
+F)\\a_l + J(\partial_l F)\\a_k + J(\partial_y F)\\a_k a_l,\$\$ where the
+one-sided values are read four units in the last place on either side of
+\\y^\*\\. `fold_kink_parts()` returns those values: the folded density
+at \\y^\*\\, the folded score and Hessian, and, at order 2, the response
+derivative \\\ell_y\\ and the mixed derivatives \\\ell\_{iy}\\ from the
+parent's at the two preimages, or `NULL` where the parent has no kink or
+\\c = 0\\.
 
 ## See also
 

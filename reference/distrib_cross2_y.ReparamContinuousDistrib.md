@@ -70,8 +70,8 @@ vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #>        mu    sigma2 
 #> 0.0000000 0.4822531 
 
-# Against the family written out by hand, and against a numerical
-# derivative of the response Hessian.
+# The result is compared with the family written out by hand and with a
+# numerical derivative of the response Hessian.
 max(abs(unlist(distrib_cross2_y(d, y, theta)) -
         unlist(distrib_cross2_y(gaussian2_distrib(), y, theta))))
 #> [1] 6.324885e-12

@@ -31,16 +31,23 @@ mv_param_block(distrib, theta)
 the shape of the return value of
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md):
 `value`, `jacobian`, `transform` and `block`, with the Jacobian as wide
-as `distrib@params`.
+as `distrib@params`, and a logical attribute `precision`, `TRUE` when
+the quantities describe a precision.
 
 ## Details
 
 A parametrization that declares nothing gives `NULL`, and the summary is
 then the result of
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
-without it. The label ends in `(precision)` when the distribution is
-inverted, because the parametrization itself does not record whether its
-matrix is a covariance or a precision.
+without it. The label ends in `(precision)` when the declared quantities
+describe a precision, because the parametrization itself does not record
+whether its matrix is a covariance or a precision. They describe a
+precision when the distribution is inverted and the parametrization is
+not an inverse one, or the other way round: an inverse parametrization
+such as
+[`parameters7::ar1_inv()`](https://statmodels7.github.io/parameters7/reference/ar1_inv.html)
+declares, with `inverse = TRUE`, the quantities of the matrix that it
+inverts, so under an inverted distribution they describe the covariance.
 
 The positions of the free values are found by name: the family names
 each free value with a prefix followed by the free name, after the

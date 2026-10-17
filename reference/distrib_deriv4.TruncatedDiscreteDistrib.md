@@ -1,9 +1,10 @@
 # Truncated Fourth Derivatives, Discrete Parent
 
-The third-order construction one step along, with the expectations again
-taken by summation over the retained support: \\\ell_T = \ell - \log
-Z\\, and \\d^I \log Z\\ from the moment-to-cumulant expansion over the
-fifteen partitions of four indices.
+The method extends the third-order construction by one order and again
+takes the expectations by summation over the retained support: \\\ell_T
+= \ell - \log Z\\, and \\d^I \log Z\\ is obtained from the
+moment-to-cumulant expansion over the fifteen partitions of four
+indices.
 
 Each block is a sum over the retained support, finite when both
 endpoints are finite, and the memoization across the partition sum
@@ -47,7 +48,7 @@ for the wrapper;
 [`distrib_deriv3.TruncatedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedDiscreteDistrib.md)
 for the order below;
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md),
-the partition sum both orders use.
+the partition sum that both orders use.
 
 ## Examples
 

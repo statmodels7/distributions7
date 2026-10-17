@@ -7,9 +7,10 @@ derivative of a binomial log-likelihood in one probability, and the
 \\\theta\\ part is the parent's fourth derivative less that of
 \\\log(1 - f_0)\\.
 
-The truncation constant is where the work is. Its fourth derivative
-comes from the moment-to-cumulant expansion over the fifteen partitions
-of four indices, read on the ratios \\d^B f_0 / f_0\\ alone.
+Most of the computation concerns the truncation constant. Its fourth
+derivative comes from the moment-to-cumulant expansion over the fifteen
+partitions of four indices, which uses only the ratios \\d^B f_0 /
+f_0\\.
 
 ## Arguments
 
@@ -49,7 +50,7 @@ for the wrapper;
 [`distrib_deriv3.ZeroAdjustedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedDiscreteDistrib.md)
 for the order below;
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md),
-the partition sum the truncation constant uses.
+the partition sum that the truncation constant uses.
 
 ## Examples
 

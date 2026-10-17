@@ -1,7 +1,8 @@
 # Expit (Sigmoid) Transformation
 
-Transformer for \\Y = \text{plogis}(X)\\: maps the real line to \\(0,
-1)\\. Inverse \\X = \text{logit}(Y)\\, Jacobian \\\|J\| = 1/(Y(1-Y))\\.
+Returns the transformer for \\Y = \text{plogis}(X)\\, which maps the
+real line to \\(0, 1)\\. The inverse is \\X = \text{logit}(Y)\\ and the
+Jacobian is \\\|J\| = 1/(Y(1-Y))\\.
 
 ## Usage
 

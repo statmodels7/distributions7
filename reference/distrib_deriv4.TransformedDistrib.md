@@ -1,7 +1,7 @@
 # Transformed Fourth Derivatives
 
-Exactly the parent's fourth derivatives, read at the preimage \\x =
-g^{-1}(y)\\, for the same reason as at third order: the Jacobian
+Returns exactly the parent's fourth derivatives, read at the preimage
+\\x = g^{-1}(y)\\, for the same reason as at third order: the Jacobian
 \\\log\|dg^{-1}/dy\|\\ carries no \\\theta\\, so it contributes nothing
 to any derivative in \\\theta\\ whatever the order.
 
@@ -25,7 +25,7 @@ evaluates the parent's fourth derivative at \\x = g^{-1}(y)\\.
 
 - expected:
 
-  Logical of length 1. Passed to the parent.
+  Logical of length 1. The value is passed to the parent.
 
 - ...:
 

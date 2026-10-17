@@ -1,7 +1,8 @@
 # Logarithmic Transformation
 
-Transformer for \\Y = \log(X)\\: maps \\(0, \infty)\\ to the real line.
-Inverse \\X = e^Y\\, Jacobian \\\|J\| = e^Y\\.
+Returns the transformer for \\Y = \log(X)\\, which maps \\(0, \infty)\\
+to the real line. The inverse is \\X = e^Y\\ and the Jacobian is \\\|J\|
+= e^Y\\.
 
 ## Usage
 

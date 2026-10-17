@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,26 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.80.2" id="distributions7-0802">distributions7 0.80.2<a class="anchor" aria-label="anchor" href="#distributions7-0802"></a></h2>
+<ul><li>
+<code><a href="../reference/distrib_deriv3.html">distrib_deriv3()</a></code> and <code><a href="../reference/distrib_deriv4.html">distrib_deriv4()</a></code> with <code>expected = TRUE</code> and <code>scale = "link"</code> fill the first-order slot with <code><a href="../reference/n_obs.html">n_obs()</a></code> zeros. For a multivariate family they used one zero per cell of the response matrix, so some components had length  instead of , with the terms of length  recycled into them.</li>
+<li>The multivariate gaussian has <code><a href="../reference/distrib_deriv3_y.html">distrib_deriv3_y()</a></code>, <code><a href="../reference/distrib_deriv3_y.html">distrib_deriv4_y()</a></code> and <code><a href="../reference/distrib_cross3_y.html">distrib_cross3_y()</a></code> methods, which return arrays of zeros without an observation dimension, like its <code><a href="../reference/distrib_hess_y.html">distrib_hess_y()</a></code>. The calls stopped with “Can’t find method”, also through <code><a href="../reference/fixed.html">fixed()</a></code>.</li>
+<li>
+<code><a href="../reference/distrib_deriv5.html">distrib_deriv5()</a></code> of the multivariate gaussian and Student t runs at three dimensions and above. It stopped with an error in the cache of <code><a href="https://statmodels7.github.io/numericals7/reference/fd_tensor.html" class="external-link">numericals7::fd_tensor()</a></code>, repaired in numericals7 0.23.3, which is now required.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.80.1" id="distributions7-0801">distributions7 0.80.1<a class="anchor" aria-label="anchor" href="#distributions7-0801"></a></h2>
+<ul><li>Documentation, third part: the pages of the wrappers (<code><a href="../reference/fixed.html">fixed()</a></code>, <code><a href="../reference/folded.html">folded()</a></code>, <code><a href="../reference/reparametrize.html">reparametrize()</a></code>, <code><a href="../reference/transformation.html">transformation()</a></code>, <code><a href="../reference/truncated.html">truncated()</a></code>, <code><a href="../reference/zero_inflated.html">zero_inflated()</a></code>, <code><a href="../reference/zero_adjusted.html">zero_adjusted()</a></code>) and of their derivative routes rewritten without relative clauses lacking their pronoun, stranded prepositions, absolute constructions, sentences without a verb (example captions included) and personified descriptions of the code. The heading “Writing your own” of <code><a href="../reference/transformer.html">transformer()</a></code> reads “User-defined transformers”.</li>
+<li>Corrections in the same pages: the fallback of <code><a href="../reference/distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> and <code><a href="../reference/distrib_hess_y_hess.html">distrib_hess_y_hess()</a></code> is <code><a href="../reference/mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>; the atoms of a zero-adjusted continuous family are read by <code><a href="../reference/check_distrib.html">check_distrib()</a></code> and <code><a href="../reference/truncated.html">truncated()</a></code>, not by <code><a href="../reference/expectation.html">expectation()</a></code>; two wrong counts, of the callers of <code><a href="../reference/reparam_chain.html">reparam_chain()</a></code> and of the methods that <code><a href="../reference/za_y_deriv.html">za_y_deriv()</a></code> serves, are removed.</li>
+<li>The error messages of <code><a href="../reference/fixed.html">fixed()</a></code> and <code><a href="../reference/truncated.html">truncated()</a></code> for a missing argument, and those of <code><a href="../reference/fixed.html">fixed()</a></code> that list the parameters, are reworded.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.80.0" id="distributions7-0800">distributions7 0.80.0<a class="anchor" aria-label="anchor" href="#distributions7-0800"></a></h2>
+<ul><li>
+<code><a href="../reference/distrib_hess_y_hess.html">distrib_hess_y_hess()</a></code> and <code><a href="../reference/distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> of the multivariate gaussian and Student t compute the pairs of parameters once per call, in place of once per pair. At 100 dimensions (102 parameters, 5253 pairs) each call took about 60 s and takes 0.2 s; the results are unchanged.</li>
+<li>The summary of a multivariate family with an inverse parametrization (<code><a href="https://statmodels7.github.io/parameters7/reference/ar1_inv.html" class="external-link">parameters7::ar1_inv()</a></code>, <code>autoregressive_inv()</code>, <code>inverse_of()</code>) reports the quantities of the matrix that the parametrization inverts. A <code><a href="../reference/mvgaussian1_distrib.html">mvgaussian2_distrib()</a></code> with <code>ar1_inv()</code> reports the standard deviation and the lag-one correlation of the AR(1), as <code><a href="../reference/mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> with <code>ar1()</code> does, in place of every conditional variance and every partial correlation. Requires parameters7 0.26.0.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.79.2" id="distributions7-0792">distributions7 0.79.2<a class="anchor" aria-label="anchor" href="#distributions7-0792"></a></h2>
 <ul><li>Documentation, second part: the pages of the families from inverse Gaussian to Weibull rewritten without relative clauses lacking their pronoun, stranded prepositions, absolute constructions, sentences without a verb (example captions included) and personified descriptions of the code. “A family of your own” reads “a user-defined family” throughout. The error message for a skewness beyond the bound of the skew normal (centered parametrization) is reworded.</li>

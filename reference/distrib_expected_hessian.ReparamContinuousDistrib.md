@@ -1,9 +1,10 @@
 # Expected Information of a Reparametrized Distribution
 
-The same chain rule as the observed Hessian, with the term in the
-parent's score dropped: expectation is linear and the map deterministic,
-and the score has mean zero, so \$\$E\[\ell^{(ab)}\] = \sum\_{i,j}
-E\[\ell^{(ij)}\] \frac{\partial\theta_i}{\partial\psi_a}
+Computes the expected information by the same chain rule as the observed
+Hessian, without the term in the parent's score. Expectation is linear,
+the map is deterministic, and the score has mean zero, so
+\$\$E\[\ell^{(ab)}\] = \sum\_{i,j} E\[\ell^{(ij)}\]
+\frac{\partial\theta_i}{\partial\psi_a}
 \frac{\partial\theta_j}{\partial\psi_b}.\$\$ A parent with an exact
 expected information therefore gives an exact one here, and the map's
 second partials are not read at all.
@@ -31,8 +32,8 @@ reparam_expected_hessian(
 
 - y:
 
-  The response, a numeric vector. Its length is what the result is
-  recycled to; the values are read only where the parent's own expected
+  The response, a numeric vector. The result is recycled to the length
+  of `y`; the values are read only where the parent's own expected
   information reads them.
 
 - theta:
@@ -60,8 +61,8 @@ reparam_expected_hessian(
 
 A named list of numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `y` recycled against `theta`, in that enumeration's
-order.
+in that enumeration's order. Each has the length of `y` after it is
+recycled against `theta`.
 
 ## Notation
 

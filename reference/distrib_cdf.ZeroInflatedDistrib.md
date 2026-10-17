@@ -66,7 +66,7 @@ q <- c(0, 2, 5)
 distrib_cdf(d, q, theta)
 #> [1] 0.2873403 0.5673926 0.9370615
 
-# Which is the parent's, shrunk and shifted.
+# The distribution function is the parent's, shrunk and shifted.
 all.equal(distrib_cdf(d, q, theta), 0.75 * ppois(q, 3) + 0.25)
 #> [1] TRUE
 
@@ -75,7 +75,7 @@ c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
 #>       cdf    summed 
 #> 0.9370615 0.9370615 
 
-# Both tails and the logarithm.
+# Both tails and the logarithm are available through arguments.
 distrib_cdf(d, 2, theta, lower.tail = FALSE)
 #> [1] 0.4326074
 distrib_cdf(d, 2, theta, log.p = TRUE)

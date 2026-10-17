@@ -4,7 +4,7 @@ Evaluates a response derivative of the PARENT away from the atom and
 returns `NaN` at it. Away from zero the \\1-\pi\\ factor is a constant
 in \\y\\, so the parent's own derivative is exact and needs no
 correction; at zero the log-density jumps, \\\log\pi\\ on one side and
-\\\log\\(1-\pi)f(y)\\\\ on the other, and no derivative exists.
+\\\log\\(1-\pi)f(y)\\\\ on the other, and the derivative does not exist.
 
 ## Usage
 
@@ -44,8 +44,8 @@ parent's derivative elsewhere.
 
 ## Details
 
-At the atom the function returns `NaN`, because no derivative exists
-there. The finite-difference default inherited from
+At the atom the function returns `NaN`, because the derivative does not
+exist there. The finite-difference default inherited from
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 would difference across the jump and return a finite number. It serves
 the response derivatives of orders one to four;
@@ -62,7 +62,7 @@ applies the same rule to the mixed derivatives, which are zero in `za`.
 [`distrib_grad_y.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ZeroAdjustedContinuousDistrib.md)
 and
 [`distrib_hess_y.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ZeroAdjustedContinuousDistrib.md),
-the two methods that it serves.
+which are among the methods that it serves.
 
 ## Examples
 
@@ -70,7 +70,7 @@ the two methods that it serves.
 d <- zero_adjusted(gaussian1_distrib())
 theta <- list(mu = 1, sigma = 2, za = 0.3)
 
-# NaN at the atom, the parent's derivative elsewhere.
+# The result is NaN at the atom and the parent's derivative elsewhere.
 distributions7:::za_y_deriv(d, c(-1, 0, 2), theta, distrib_grad_y)
 #> [1]  0.50   NaN -0.25
 distrib_grad_y(gaussian1_distrib(), c(-1, 2), theta[c("mu", "sigma")])

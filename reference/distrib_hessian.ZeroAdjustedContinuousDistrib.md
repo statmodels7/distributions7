@@ -1,11 +1,11 @@
 # Zero-Adjusted Continuous Observed Hessian
 
 Computes the second derivatives of the mixed log-density in closed form.
-The MIXED BLOCKS ARE EXACTLY ZERO, the likelihood factorizing into a
-binary part and a continuous part. The parent block is the parent's own
-observed Hessian at a non-zero observation and zero at the atom, with no
-truncation correction; the hurdle block is \\-1/\pi^2\\ at the atom and
-\\-1/(1-\pi)^2\\ elsewhere.
+The MIXED BLOCKS ARE EXACTLY ZERO because the likelihood factorizes into
+a binary part and a continuous part. The parent block is the parent's
+own observed Hessian at a non-zero observation and zero at the atom,
+with no truncation correction; the hurdle block is \\-1/\pi^2\\ at the
+atom and \\-1/(1-\pi)^2\\ elsewhere.
 
 ## Arguments
 
@@ -67,7 +67,7 @@ vapply(H, sum, numeric(1))
 #>        mu_mu  sigma_sigma        za_za     mu_sigma        mu_za     sigma_za 
 #>   -50.250000   -93.318705 -1510.204082     6.757865     0.000000     0.000000 
 
-# Against a numerical Hessian of the log-likelihood.
+# The sums are compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

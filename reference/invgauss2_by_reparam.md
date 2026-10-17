@@ -1,6 +1,6 @@
 # Inverse Gaussian Distribution in the Mean and Shape, Obtained
 
-The same family as
+Returns the same family as
 [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md),
 obtained through
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)

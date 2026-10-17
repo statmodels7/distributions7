@@ -10,7 +10,8 @@ Build one with
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
 which checks that the parent is discrete, is not already a zero wrapper,
 and has enough support points for the extra parameter to be identified.
-This page documents the raw S7 constructor, which checks none of that.
+This page documents the raw S7 constructor, which does not perform these
+checks.
 
 ## Usage
 
@@ -145,7 +146,7 @@ to build one,
 for the wrapper that REPLACES the mass at zero where this one adds to
 it, and
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md),
-the constructor to reach for with a continuous parent.
+the constructor that applies to a continuous parent.
 
 ## Examples
 
@@ -155,7 +156,8 @@ theta <- list(mu = 3, zi = 0.25)
 S7::S7_inherits(d, discrete_distrib)
 #> [1] TRUE
 
-# The parent's parameters, then zi last with its own link and bound.
+# The parent's parameters come first, and zi comes last with its own link
+# and bound.
 d@params
 #> [1] "mu" "zi"
 d@params_bounds$zi

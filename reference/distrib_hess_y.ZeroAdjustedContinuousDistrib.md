@@ -2,8 +2,8 @@
 
 Returns \\\partial^2\ell/\partial y^2\\, which equals the PARENT's for
 \\y \ne 0\\ and is `NaN` at the atom, for the reason
-[`distrib_grad_y.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ZeroAdjustedContinuousDistrib.md)
-gives: the log-density jumps there and no derivative exists.
+[`distrib_grad_y.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ZeroAdjustedContinuousDistrib.md):
+the log-density jumps there and the derivative does not exist.
 
 ## Arguments
 

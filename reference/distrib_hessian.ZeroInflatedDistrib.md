@@ -44,8 +44,8 @@ keyed as
 
 The parent block is the ordinary two-component mixture curvature: the
 weighted Hessian plus the variance of the score across the two
-components, \\w(1-w)\\ being that variance's weight when one component's
-score is zero.
+components. When one component's score is zero, \\w(1-w)\\ is the weight
+of that variance.
 
 The mixed block collapses. Written out it is \\-f'(0)/L_0 -
 (1-\zeta)f'(0)(1 - f(0))/L_0^2\\, and the bracket is exactly one, so the
@@ -81,7 +81,7 @@ vapply(H, sum, numeric(1))
 #>      mu_mu      zi_zi      mu_zi 
 #>  -37.75413 -987.45601   41.60759 
 
-# Against a numerical Hessian of the log-likelihood.
+# The sums are compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -94,7 +94,8 @@ max(abs(vapply(H, sum, numeric(1)) - ref))
 #> [1] 1.588853e-08
 
 # At a positive observation the mixed block is exactly zero and the zi
-# block is a constant; at a zero neither is.
+# block is a constant; at a zero the mixed block is not zero and the zi
+# block is not a constant.
 rbind(positive = c(mu_zi = H$mu_zi[y > 0][1], zi_zi = H$zi_zi[y > 0][1]),
       at_zero = c(mu_zi = H$mu_zi[y == 0][1], zi_zi = H$zi_zi[y == 0][1]))
 #>              mu_zi      zi_zi

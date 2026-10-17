@@ -5,7 +5,7 @@ parameters, by quadrature.
 [`trunc_M()`](https://statmodels7.github.io/distributions7/reference/trunc_M.md)
 adds it to
 [`trunc_score_prod_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_prod_mean.md)
-where the parent's cdf derivatives are not exact, that sum being
+where the parent's cdf derivatives are not exact, and that sum is
 \\d\_{ij} Z / Z\\.
 
 ## Usage
@@ -32,7 +32,7 @@ parameters, keyed as
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -56,7 +56,7 @@ unlist(EH)
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  -0.6944444  -0.1971907  -0.1342028 
 
-# Against the same expectation taken by simulation.
+# The result is compared with the same expectation taken by simulation.
 set.seed(1)
 ys <- distrib_rng(tn, 100000, theta)
 H <- distrib_hessian(gaussian1_distrib(), ys, theta)

@@ -23,8 +23,8 @@ folded(distrib)
   A `continuous_distrib` object whose support reaches below zero and
   which declares no atom. A discrete distribution, a distribution
   supported on \\\[0, \infty)\\, an already folded distribution, and a
-  zero-adjusted continuous one are each rejected with an error saying
-  which condition failed.
+  zero-adjusted continuous one are each rejected with an error whose
+  message names the condition that failed.
 
 ## Value
 
@@ -49,22 +49,23 @@ parent with an atom is rejected (see below).
 Every one comes from the wrapper machinery unchanged. Writing \\w =
 f(x)/L(x)\\ for the weight of the positive preimage, the ratios that
 machinery consumes are \$\$\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)} +
-(1-w) \frac{d^B f(-x)}{f(-x)},\$\$ each term a complete Bell polynomial
-in the parent's own log-derivatives, one at \\+x\\ and one at \\-x\\;
-\\\log L\\ then follows by the moment-to-cumulant relation. At first
-order this reads \\w s(x) + (1-w) s(-x)\\, the score of a two-component
-mixture, which is what a fold is. A parent analytic to fourth order
-gives a folded family analytic to fourth order.
+(1-w) \frac{d^B f(-x)}{f(-x)},\$\$ where each term is a complete Bell
+polynomial in the parent's own log-derivatives, evaluated at \\+x\\ for
+one term and at \\-x\\ for the other; \\\log L\\ then follows by the
+moment-to-cumulant relation. At first order this reads \\w s(x) + (1-w)
+s(-x)\\, the score of a two-component mixture, and a fold has the form
+of such a mixture. A parent analytic to fourth order gives a folded
+family analytic to fourth order.
 
 ## What is rejected
 
 A parent whose support lies in \\\[0, \infty)\\ is mapped to itself by
 the absolute value, so `folded()` rejects it with an error; the same
-check rejects `folded()` of a folded distribution. an error. A parent
-with an atom is rejected too: zero is its own preimage while every other
-point has two, so an atom at zero would be counted twice by the sum
-above and one elsewhere would be moved onto its reflection. A discrete
-parent is rejected outright.
+check rejects `folded()` of a folded distribution. A parent with an atom
+is rejected too: zero is its own preimage while every other point has
+two, so an atom at zero would be counted twice by the sum above and one
+elsewhere would be moved onto its reflection. A discrete parent is
+rejected outright.
 
 ## The sign of a symmetric parent's location is not identified
 
@@ -73,12 +74,12 @@ When the parent is symmetric about its location, \\f(-x; \mu) = f(x;
 EXACTLY even in \\\mu\\. A fit converges to \\+\hat\mu\\ or \\-\hat\mu\\
 according to where it started, at the same maximized value to every
 digit. The example below fits the same sample from starting values of
-opposite sign. The invariance belongs to the model and not to the
-fitting, and `folded()` does not reject it, since the folded normal is a
-standard family; what is estimable is \\\|\mu\|\\ together with the
-remaining parameters. Holding the location at zero removes the question
-and gives the half-normal. A parent that is not symmetric about its
-location, such as
+opposite sign. The invariance is a property of the model and does not
+depend on the fitting routine, and `folded()` does not reject it, since
+the folded normal is a standard family. The estimable quantities are
+\\\|\mu\|\\ and the remaining parameters. Holding the location at zero
+removes the question and gives the half-normal. A parent that is not
+symmetric about its location, such as
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
 is invariant only under the joint change of sign of the location and of
 the shape, so the sign of the location is identified once the shape is
@@ -109,8 +110,8 @@ theta <- list(mu = 0.5, sigma = 1)
 distrib_pdf(d, c(0, 0.5, 2), theta)
 #> [1] 0.7041307 0.6409130 0.1470459
 
-# The half-normal: a folded gaussian with its location held at zero, whose
-# density is twice the gaussian's and whose mean is sigma sqrt(2 / pi).
+# The half-normal is a folded gaussian whose location is held at zero; its
+# density is twice the gaussian's and its mean is sigma sqrt(2 / pi).
 hn <- fixed(folded(gaussian1_distrib()), mu = 0)
 hn@params
 #> [1] "sigma"
@@ -133,7 +134,7 @@ rbind(from_plus = c(coef(f1), logLik = as.numeric(logLik(f1))),
 #> from_plus   1.504939 1.041631 -511.2516
 #> from_minus -1.504939 1.041631 -511.2516
 
-# With the shape held at 3, a skew-normal parent has no such invariance in
+# If the shape is held at 3, a skew-normal parent has no such invariance in
 # the location alone (the joint sign change of mu and alpha leaves the
 # likelihood unchanged).
 sn <- folded(skewnormal1_distrib())
@@ -145,7 +146,8 @@ c(at_plus_1 = lf(1), at_minus_1 = lf(-1))
 #>  at_plus_1 at_minus_1 
 #>  -266.6752 -1044.9657 
 
-# Three rejections, each naming the condition that failed.
+# Three calls are rejected, and each error message names the condition that
+# failed.
 try(folded(gamma1_distrib()))
 #> Error : 'gamma1' is supported on [0, Inf], which the absolute value leaves alone.
 #>   folded() would return the same distribution, so the call has no effect

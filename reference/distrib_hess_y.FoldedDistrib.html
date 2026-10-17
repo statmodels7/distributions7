@@ -6,7 +6,7 @@ $$\frac{\partial^2 \ell}{\partial x^2}
 with \(g\) and \(h\) the parent's first and second response derivatives.
 The last term is the square of distrib_grad_y.FoldedDistrib()'s value, so
 the expression is the mixture's second-order ratio less the square of its
-first: the same moment-to-cumulant step the parameter derivatives take,
+first: the same moment-to-cumulant step that the parameter derivatives take,
 applied in the response."><meta property="og:description" content="Computes the second derivative of the folded log-density in the response,
 $$\frac{\partial^2 \ell}{\partial x^2}
       = w\left(h(x) + g(x)^2\right) + (1-w)\left(h(-x) + g(-x)^2\right)
@@ -14,7 +14,7 @@ $$\frac{\partial^2 \ell}{\partial x^2}
 with \(g\) and \(h\) the parent's first and second response derivatives.
 The last term is the square of distrib_grad_y.FoldedDistrib()'s value, so
 the expression is the mixture's second-order ratio less the square of its
-first: the same moment-to-cumulant step the parameter derivatives take,
+first: the same moment-to-cumulant step that the parameter derivatives take,
 applied in the response."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +23,7 @@ applied in the response."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,7 @@ $$\frac{\partial^2 \ell}{\partial x^2}
 with \(g\) and \(h\) the parent's first and second response derivatives.
 The last term is the square of <code><a href="distrib_grad_y.FoldedDistrib.html">distrib_grad_y.FoldedDistrib()</a></code>'s value, so
 the expression is the mixture's second-order ratio less the square of its
-first: the same moment-to-cumulant step the parameter derivatives take,
+first: the same moment-to-cumulant step that the parameter derivatives take,
 applied in the response.</p>
     </div>
 
@@ -116,7 +116,7 @@ response derivatives, \(w\) the weight of the positive preimage and
 <span class="r-in"><span><span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5744607 -0.5873235 -0.6469585</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical second derivative.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a numerical second derivative.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">y</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">numDeriv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/numDeriv/man/hessian.html" class="external-link">hessian</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">theta</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                    <span class="va">v</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span>,</span></span>

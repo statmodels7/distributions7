@@ -1,9 +1,9 @@
 # Yeo-Johnson Transformation
 
-Transformer for the Yeo-Johnson transformation, extending Box-Cox to
-negative values: Box-Cox of \\X+1\\ (parameter \\\lambda\\) for \\X \ge
-0\\, and negated Box-Cox of \\\|X\|+1\\ (parameter \\2-\lambda\\) for
-\\X \< 0\\.
+Returns the transformer for the Yeo-Johnson transformation, which
+extends Box-Cox to negative values. The map is Box-Cox of \\X+1\\
+(parameter \\\lambda\\) for \\X \ge 0\\, and negated Box-Cox of
+\\\|X\|+1\\ (parameter \\2-\lambda\\) for \\X \< 0\\.
 
 ## Usage
 
@@ -15,7 +15,7 @@ yj_transform(lambda)
 
 - lambda:
 
-  Numeric. The transformation parameter.
+  The numeric transformation parameter.
 
 ## Value
 

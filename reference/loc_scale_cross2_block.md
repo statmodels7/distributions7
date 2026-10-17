@@ -35,9 +35,10 @@ The callers name them.
 
 ## Details
 
-The same identity
+This is the identity that
 [`loc_scale_cross_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross_block.md)
-uses, one derivative further in the response: it reads the family's own
+uses, taken one derivative further in the response: it reads the
+family's own
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
 instead of differencing its
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md).
@@ -75,7 +76,7 @@ blk <- distributions7:::loc_scale_cross2_block(d, y, theta)
 vapply(blk, function(z) z[1], numeric(1))
 #> [1] 0.09632533 0.40854287
 
-# The identity written out.
+# The identity is written out.
 s <- 1.2
 z <- (y - 0.3) / s
 B <- s^2 * distrib_hess_y(d, y, theta)
@@ -84,7 +85,7 @@ c(mu = (-B1 / s^3)[1], sigma = (-(z * B1 + 2 * B) / s^3)[1])
 #>         mu      sigma 
 #> 0.09632533 0.40854287 
 
-# It is what the family's distrib_cross2_y method returns, named.
+# The family's distrib_cross2_y method returns the same components, named.
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #>         mu      sigma 
 #> 0.09632533 0.40854287 

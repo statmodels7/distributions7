@@ -1,11 +1,11 @@
 # Zero-Adjusted Discrete Score
 
 Computes the first derivatives of the hurdle log-mass in closed form.
-The likelihood SEPARATES, so each parameter is informed by one half of
-the data only. For the parent's parameters the score is zero at a zero
-and the truncated score at a positive observation, \$\$\frac{\partial
+The likelihood SEPARATES, so each parameter is informed only by one half
+of the data. For the parent's parameters the score is zero at a zero and
+the truncated score at a positive observation, \$\$\frac{\partial
 \ell}{\partial \theta_i} = \mathbb{I}(y \> 0)\left\\s_i(y) +
-\frac{f(0)}{1 - f(0)}\\s_i(0)\right\\,\$\$ the second term being the
+\frac{f(0)}{1 - f(0)}\\s_i(0)\right\\,\$\$ where the second term is the
 derivative of the normalizing constant \\-\log\\1 - f(0)\\\\. For the
 hurdle parameter, \$\$\frac{\partial \ell}{\partial \pi} =
 \frac{\mathbb{I}(y = 0)}{\pi} - \frac{\mathbb{I}(y \> 0)}{1 - \pi},\$\$
@@ -70,7 +70,7 @@ vapply(g, sum, numeric(1))
 #>        mu        za 
 #> -2.697686 58.333333 
 
-# Against a numerical derivative of the log-likelihood.
+# The scores are compared with a numerical derivative of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -78,8 +78,8 @@ ll <- function(v) {
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
 #> [1] 2.340322e-09
 
-# A zero tells the parent's parameters nothing at all, the two halves of
-# the likelihood being separate.
+# A zero carries no information about the parent's parameters, because the
+# two halves of the likelihood are separate.
 unique(g$mu[y == 0])
 #> [1] 0
 

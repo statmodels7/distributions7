@@ -2,8 +2,9 @@
 
 Evaluates \\F_T(q) = \\F(q;\theta) - F(L^-;\theta)\\/Z(\theta)\\,
 clamped to \\\[0, 1\]\\. The clamp makes the endpoints exact, returning
-`0` at and below \\L\\ and `1` at and above \\U\\, where the unclamped
-ratio would give a small negative number or one plus a rounding.
+`0` at and below \\L\\ and `1` at and above \\U\\, where the ratio
+before clamping would give a small negative number or one plus a
+rounding.
 
 ## Arguments
 
@@ -36,7 +37,7 @@ A numeric vector of cumulative probabilities.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -58,11 +59,11 @@ for the discrete branch.
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 theta <- list(mu = 0.3, sigma = 1.2)
 
-# Exactly 0 and 1 at the endpoints.
+# The values at the endpoints are exactly 0 and 1.
 distrib_cdf(tn, c(-1, 0.3, 2), theta)
 #> [1] 0.0000000 0.4609908 1.0000000
 
-# Against the ratio written out.
+# The ratio written out gives the same value at 0.3.
 Fl <- pnorm(-1, 0.3, 1.2); Z <- pnorm(2, 0.3, 1.2) - Fl
 (pnorm(0.3, 0.3, 1.2) - Fl) / Z
 #> [1] 0.4609908

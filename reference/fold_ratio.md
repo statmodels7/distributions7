@@ -1,12 +1,12 @@
 # The Block Ratios of a Folded Density
 
 Returns a memoized function giving \\d^B L / L\\ for any block \\B\\ of
-parameter names. That is what
+parameter names. The function
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
-consumes to assemble a derivative of \\\log L\\ of any order. The ratio
-is the parent's complete Bell polynomial evaluated at each preimage and
-averaged with the weight \\w\\, \$\$\frac{d^B L}{L} = w \frac{d^B
-f(x)}{f(x)} + (1-w) \frac{d^B f(-x)}{f(-x)}.\$\$
+consumes it to assemble a derivative of \\\log L\\ of any order. The
+ratio is the parent's complete Bell polynomial evaluated at each
+preimage and averaged with the weight \\w\\, \$\$\frac{d^B L}{L} = w
+\frac{d^B f(x)}{f(x)} + (1-w) \frac{d^B f(-x)}{f(-x)}.\$\$
 
 ## Usage
 
@@ -66,7 +66,7 @@ the weight of the positive preimage.
 [`fold_parts()`](https://statmodels7.github.io/distributions7/reference/fold_parts.md)
 for the weight,
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
-for the partition sum this feeds, and
+for the partition sum that this function feeds, and
 [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
 for the parent's own Bell quantity.
 
@@ -85,7 +85,7 @@ sm <- distrib_gradient(g, -x, theta)$mu
 all.equal(r("mu"), w * sp + (1 - w) * sm)
 #> [1] TRUE
 
-# Which at first order IS the folded score, log L having no other term.
+# At first order this IS the folded score, because log L has no other term.
 all.equal(r("mu"), distrib_gradient(folded(g), x, theta)$mu)
 #> [1] TRUE
 

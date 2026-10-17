@@ -1,8 +1,8 @@
 # Logit Transformation
 
-Transformer for \\Y = \text{logit}(X)\\: maps \\(0, 1)\\ to the real
-line. Inverse \\X = \text{plogis}(Y)\\, Jacobian \\\|J\| =
-\text{dlogis}(Y)\\.
+Returns the transformer for \\Y = \text{logit}(X)\\, which maps \\(0,
+1)\\ to the real line. The inverse is \\X = \text{plogis}(Y)\\ and the
+Jacobian is \\\|J\| = \text{dlogis}(Y)\\.
 
 ## Usage
 

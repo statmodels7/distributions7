@@ -53,7 +53,7 @@ the positive preimage and \\B\\ a multiset of parameter names.
 [`distrib_deriv3.FoldedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.FoldedDistrib.md)
 and
 [`distrib_deriv4.FoldedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.FoldedDistrib.md),
-the two methods it builds, and
+the two methods that it builds, and
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
 for the partition sum.
 
@@ -67,11 +67,11 @@ y <- distrib_rng(d, 6, theta)
 
 m3 <- distributions7:::fold_deriv_k(3L)
 
-# It builds the method the class registers, so the two agree.
+# It builds the method that the class registers, so the two agree.
 all.equal(m3(d, y, theta), distrib_deriv3(d, y, theta))
 #> [1] TRUE
 
-# And the order it was built at fixes the component count.
+# And the order at which it was built fixes the component count.
 c(order3 = length(m3(d, y, theta)),
   order4 = length(distributions7:::fold_deriv_k(4L)(d, y, theta)))
 #> order3 order4 

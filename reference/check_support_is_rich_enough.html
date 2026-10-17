@@ -15,7 +15,7 @@ is the SAME for both wrappers."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,9 +86,9 @@ count required.</p>
 or 2 (which have two parameters and need four support points). Zero-adjusting
 a Bernoulli leaves the truncated part on the single point \(\{1\}\) and
 <code>mu</code> disappears: the mass function is literally the same at <code>mu = 0.2</code> and at
-<code>mu = 0.9</code>. None of this is visible at run time, the mass summing to one and
-<code><a href="check_distrib.html">check_distrib()</a></code> passing, so the constructor is the only place it can be
-caught.</p>
+<code>mu = 0.9</code>. The mass function still sums to one and <code><a href="check_distrib.html">check_distrib()</a></code> still
+passes, so these problems are not visible at run time, and the constructor is
+the only place where they can be caught.</p>
 <p>A support with enough points is necessary for identification but not
 sufficient. If the mean is large enough that the parent puts almost no mass
 at zero, the extra parameter is weakly identified for any support size. This
@@ -106,7 +106,7 @@ depends on the data, and the check does not examine the data.</p>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">check_support_is_rich_enough</span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                              <span class="st">"zero_inflated()"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A Bernoulli does not, and neither does a one-trial binomial.</span></span></span>
+<span class="r-in"><span><span class="co"># A Bernoulli and a one-trial binomial do not have room.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="zero_inflated.html">zero_inflated</a></span><span class="op">(</span><span class="fu"><a href="bernoulli_distrib.html">bernoulli_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : zero_inflated() cannot wrap 'bernoulli': its support has 2 points, so the family has 1 free</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   probability, while the wrapped distribution would have 2 parameters. They are not</span>

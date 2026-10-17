@@ -3,14 +3,14 @@
 $$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
   = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],$$
-the subtracted part being the second derivative of \(\log Z\). Only
+where the subtracted part is the second derivative of \(\log Z\). Only
 \(H_{ij}(y)\) depends on the data. The correction depends on \(\theta\)
 alone, so it is one number per component for a scalar \(\theta\) and one
 number per distinct parameter vector when a parameter varies by observation."><meta property="og:description" content="Computes
 $$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
   = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],$$
-the subtracted part being the second derivative of \(\log Z\). Only
+where the subtracted part is the second derivative of \(\log Z\). Only
 \(H_{ij}(y)\) depends on the data. The correction depends on \(\theta\)
 alone, so it is one number per component for a scalar \(\theta\) and one
 number per distinct parameter vector when a parameter varies by observation."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -21,7 +21,7 @@ number per distinct parameter vector when a parameter varies by observation."><m
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,7 @@ number per distinct parameter vector when a parameter varies by observation."><m
 $$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
   = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
   M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],$$
-the subtracted part being the second derivative of \(\log Z\). Only
+where the subtracted part is the second derivative of \(\log Z\). Only
 \(H_{ij}(y)\) depends on the data. The correction depends on \(\theta\)
 alone, so it is one number per component for a scalar \(\theta\) and one
 number per distinct parameter vector when a parameter varies by observation.</p>
@@ -100,7 +100,7 @@ per unordered pair of parameters, keyed as
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -125,7 +125,8 @@ expectation.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -0.8721839   0.4749147   0.6374049 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical Hessian of the truncated log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># The sums of the Hessian components are compared with a numerical Hessian</span></span></span>
+<span class="r-in"><span><span class="co"># of the truncated log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">tn</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

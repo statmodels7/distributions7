@@ -45,8 +45,8 @@ za_cont_dexpected_entry(i, j, c, p, za, Ep, Dp, n)
 
 - i, j, c:
 
-  The indices of one entry: the pair and the parameter differentiated,
-  the parent's parameters first and the probability last.
+  The indices of one entry: the pair and the parameter differentiated.
+  The parent's parameters come first and the probability last.
 
 - p:
 
@@ -88,13 +88,15 @@ expected information) and its derivatives, \\\zeta\\ the zero-inflation
 probability and \\L = \zeta + (1-\zeta) f\\, the zero-inflated expected
 information is \$\$E^{ZI}\_{ij} = (1-\zeta) E\_{ij} + \zeta(1-\zeta) f
 s_i s_j / L,\$\$ \$\$E^{ZI}\_{i\zeta} = -f s_i / L, \qquad
-E^{ZI}\_{\zeta\zeta} = -(1-f)^2/L - (1-f)/(1-\zeta),\$\$ the observed
-Hessian at zero cancelling from the first, and the derivatives follow
-with \\\partial_c f = f s_c\\ and \\\partial_c s_i = H\_{ic}\\. For the
-zero-adjusted discrete family, with \\q = 1 - f\\ and \\\pi\\ the
-probability of zero, \$\$E^{ZA}\_{ij} = (1-\pi)\\\[E\_{ij}/q + f s_i s_j
-/ q^2\], \qquad E^{ZA}\_{\pi\pi} = -1/(\pi(1-\pi)),\$\$ the mixed block
-being zero; for the continuous one \\E^{ZA}\_{ij} = (1-\pi) E\_{ij}\\.
+E^{ZI}\_{\zeta\zeta} = -(1-f)^2/L - (1-f)/(1-\zeta),\$\$ where the
+observed Hessian at zero cancels from the first of these expressions.
+The derivatives follow with \\\partial_c f = f s_c\\ and \\\partial_c
+s_i = H\_{ic}\\. For the zero-adjusted discrete family, with \\q = 1 -
+f\\ and \\\pi\\ the probability of zero, the expected information is
+\$\$E^{ZA}\_{ij} = (1-\pi)\\\[E\_{ij}/q + f s_i s_j / q^2\], \qquad
+E^{ZA}\_{\pi\pi} = -1/(\pi(1-\pi)),\$\$ where the mixed block is zero.
+For the continuous family, the entries are \\E^{ZA}\_{ij} = (1-\pi)
+E\_{ij}\\.
 
 Each entry is computed by `zi_dexpected_entry()`,
 `za_disc_dexpected_entry()` or `za_cont_dexpected_entry()`. The scalar

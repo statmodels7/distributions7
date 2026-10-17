@@ -19,7 +19,7 @@ zero-truncated Poisson and keeps the mass at one."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,14 +90,14 @@ returned.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector of probabilities, of the length <code>y</code> and <code>theta</code>
-recycle to.</p>
+    <p>A numeric vector of probabilities, of the length to which <code>y</code> and
+<code>theta</code> recycle.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -115,7 +115,7 @@ branch, and <code><a href="distrib_cdf.TruncatedDiscreteDistrib.html">distrib_cd
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ztp</span> <span class="op">&lt;-</span> <span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Zero is gone; one is not.</span></span></span>
+<span class="r-in"><span><span class="co"># The mass at zero is removed, and the mass at one is kept.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">ztp</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">4</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0000000 0.3130353 0.3130353 0.2086902 0.1043451</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>

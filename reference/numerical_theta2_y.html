@@ -15,7 +15,7 @@ continuous family use mixed_tensor_derivatives() instead."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,18 +70,18 @@ the enumeration and the steps.</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations. Passed to nothing here; <code>inner</code>
-has already closed over it.</p></dd>
+<dd><p>A numeric vector of observations. The function does not use it,
+because <code>inner</code> has already closed over it.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, the point to differentiate at.</p></dd>
+<dd><p>A named list of parameters, the point at which to differentiate.</p></dd>
 
 
 <dt id="arg-inner">inner<a class="anchor" aria-label="anchor" href="#arg-inner"></a></dt>
-<dd><p>A function of <code>theta</code> alone returning the first-order
-components as a list with one entry per parameter, typically
-<code>function(th) distrib_cross_y(distrib, y, th)</code>.</p></dd>
+<dd><p>A function that takes <code>theta</code> as its only argument and returns
+the first-order components as a list with one entry per parameter,
+typically <code>function(th) distrib_cross_y(distrib, y, th)</code>.</p></dd>
 
 
 <dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
@@ -97,11 +97,11 @@ parameters, keyed as <code><a href="hess_names.html">hess_names(distrib@params)<
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The reference is <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> or <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code>, so a
-distribution with a closed form for those pays for exactly one difference
+distribution with a closed form for those requires exactly one difference
 and never differences a difference.</p>
 <p>A mixed pair is differenced in both orders and the two results are averaged.
-They agree in exact arithmetic and differ in floating point, the two steps
-having different sizes, and the average is symmetric in the pair.</p>
+They agree in exact arithmetic and differ in floating point because the two
+steps have different sizes. The average is symmetric in the pair.</p>
 <p>The step is chosen by <code><a href="fd_stable_step.html">fd_stable_step()</a></code> from the two candidates of
 <code><a href="fd_steps.html">fd_steps()</a></code>, so that both evaluation points of the central difference of a
 parameter near a bound stay inside its domain.</p>
@@ -118,7 +118,7 @@ the other.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> and <code><a href="distrib_hess_y_hess.html">distrib_hess_y_hess()</a></code>, the two
-generics it serves, and <code><a href="fd_steps.html">fd_steps()</a></code> for the step rule.</p></div>
+generics that it serves, and <code><a href="fd_steps.html">fd_steps()</a></code> for the step rule.</p></div>
     </div>
 
     <div class="section level2">
@@ -132,12 +132,13 @@ generics it serves, and <code><a href="fd_steps.html">fd_steps()</a></code> for 
 <span class="r-in"><span><span class="va">num</span><span class="op">$</span><span class="va">sigma_sigma</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  2.9410735  0.8403067 -3.3612268</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against the gaussian's own closed form, which this family does not need</span></span></span>
-<span class="r-in"><span><span class="co"># the fallback for.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with the gaussian's own closed form, for which this</span></span></span>
+<span class="r-in"><span><span class="co"># family does not need the fallback.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">num</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y_hess.html">distrib_grad_y_hess</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.191043e-10</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A family that takes the default continuous method, checked against numDeriv.</span></span></span>
+<span class="r-in"><span><span class="co"># A family that takes the default continuous method is checked against</span></span></span>
+<span class="r-in"><span><span class="co"># numDeriv.</span></span></span>
 <span class="r-in"><span><span class="va">dg</span> <span class="op">&lt;-</span> <span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">yg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">thg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>

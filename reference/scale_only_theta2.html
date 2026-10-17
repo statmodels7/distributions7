@@ -15,7 +15,7 @@ location, only that \(\sigma\) is a scale."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,8 +89,8 @@ is <code>1</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector as long as <code>y</code>: the scale's own pair alone, not a
-list.</p>
+    <p>A numeric vector as long as <code>y</code> that contains only the scale's own
+pair, not a list.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -100,9 +100,9 @@ $$\frac{\partial^2\ell^{(y)}}{\partial\sigma^2}
   \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
   = \frac{z^2B'' + 6zB' + 6B}{\sigma^4},$$
 and the primed quantities are the family's own third and fourth response
-derivatives times a power of \(\sigma\), so no further differentiation is
-needed. A parameter beyond the scale is a shape and is not covered;
-<code><a href="scale_only_theta2_methods.html">scale_only_theta2_methods()</a></code> differences those.</p>
+derivatives times a power of \(\sigma\), so the formulas do not need
+further differentiation. A parameter beyond the scale is a shape and is not
+covered; <code><a href="scale_only_theta2_methods.html">scale_only_theta2_methods()</a></code> differences those.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -130,7 +130,7 @@ where there is no location and \((y-\mu)/\sigma\) where there is.</p>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">scale_only_theta2</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="fl">1L</span>, <span class="fl">1L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5925926 -0.5925926 -0.5925926</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The identity written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The identity is written out.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">1.5</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">/</span> <span class="va">s</span></span></span>
 <span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">*</span> <span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
@@ -139,7 +139,7 @@ where there is no location and \((y-\mu)/\sigma\) where there is.</p>
 <span class="r-in"><span><span class="op">(</span><span class="va">z</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="va">A2</span> <span class="op">+</span> <span class="fl">4</span> <span class="op">*</span> <span class="va">z</span> <span class="op">*</span> <span class="va">A1</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">A</span><span class="op">)</span> <span class="op">/</span> <span class="va">s</span><span class="op">^</span><span class="fl">3</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5925926 -0.5925926 -0.5925926</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And what the family's own method reports.</span></span></span>
+<span class="r-in"><span><span class="co"># The family's own method returns the same value.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_grad_y_hess.html">distrib_grad_y_hess</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5925926 -0.5925926 -0.5925926</span>
 </code></pre></div>

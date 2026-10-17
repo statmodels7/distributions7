@@ -17,7 +17,7 @@ score mean zero, which the parent's own score does not have here."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@ applies the link scale to the value that the method returns.</p></dd>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -118,7 +118,8 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu      sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.5193428 -0.3639437 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical derivative of the truncated log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># The gradient is compared with a numerical derivative of the truncated</span></span></span>
+<span class="r-in"><span><span class="co"># log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">tn</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

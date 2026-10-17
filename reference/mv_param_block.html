@@ -17,7 +17,7 @@ summary reports beside the standard deviations."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,14 +79,21 @@ summary reports beside the standard deviations.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>NULL</code> where the parametrization declares nothing, or a named list
 in the shape of the return value of <code><a href="mv_derived.html">mv_derived()</a></code>: <code>value</code>, <code>jacobian</code>,
-<code>transform</code> and <code>block</code>, with the Jacobian as wide as <code>distrib@params</code>.</p>
+<code>transform</code> and <code>block</code>, with the Jacobian as wide as <code>distrib@params</code>,
+and a logical attribute <code>precision</code>, <code>TRUE</code> when the quantities describe
+a precision.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A parametrization that declares nothing gives <code>NULL</code>, and the summary is
 then the result of <code><a href="mv_derived.html">mv_derived()</a></code> without it. The label ends in
-<code>(precision)</code> when the distribution is inverted, because the parametrization
-itself does not record whether its matrix is a covariance or a precision.</p>
+<code>(precision)</code> when the declared quantities describe a precision, because the
+parametrization itself does not record whether its matrix is a covariance or
+a precision. They describe a precision when the distribution is inverted and
+the parametrization is not an inverse one, or the other way round: an inverse
+parametrization such as <code><a href="https://statmodels7.github.io/parameters7/reference/ar1_inv.html" class="external-link">parameters7::ar1_inv()</a></code> declares, with
+<code>inverse = TRUE</code>, the quantities of the matrix that it inverts, so under an
+inverted distribution they describe the covariance.</p>
 <p>The positions of the free values are found by name: the family names each
 free value with a prefix followed by the free name, after the location for
 the gaussian and the Student t and first for the Dirichlet and the

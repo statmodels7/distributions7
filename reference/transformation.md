@@ -29,7 +29,7 @@ transformation(distrib, transformer, new_name = NULL)
   object, such as
   [`log_transform()`](https://statmodels7.github.io/distributions7/reference/log_transform.md),
   `bc_transform(0.5)` or `affine_transform(1, 2)`. It is rejected where
-  its own `valid_support` says it does not apply to `distrib@bounds`.
+  its own `valid_support` returns `FALSE` for `distrib@bounds`.
 
 - new_name:
 
@@ -44,27 +44,27 @@ carrying `parent_distrib` and `transformer`. Its `params`,
 `params_bounds` and `link_params` are the parent's unchanged; `bounds`
 is the transformer's image of the parent's; `params_interpretation`
 names the parent's scale in brackets; and `params_smooth` is the
-parent's, a kink in the parameters surviving a change of variables in
-the response untouched.
+parent's, because a kink in the parameters survives a change of
+variables in the response untouched.
 
 ## What comes from where
 
 The distribution function, the quantile function and the generator are
-obtained by mapping through \\g\\, with the tails swapped for a
-decreasing transformation. Since \\g\\ does not depend on the
-parameters, the score, the observed Hessian and the expected Hessian
-COINCIDE with the parent's, evaluated at \\x = g^{-1}(y)\\; nothing is
-recomputed and no accuracy is lost. The moments are available
+obtained by mapping through \\g\\, and for a decreasing transformation
+the tails are swapped. Since \\g\\ does not depend on the parameters,
+the score, the observed Hessian and the expected Hessian COINCIDE with
+the parent's, evaluated at \\x = g^{-1}(y)\\. The function does not
+recompute them and loses no accuracy. The moments are available
 numerically through
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md).
 
 ## What is rejected
 
-A parent that is not continuous (discrete or multivariate), since a
-change of variables of one coordinate needs a continuous density; a
-`transformer` argument that is not a `transformer` object; a transformer
-that is not valid on the parent's support, which the transformer itself
-decides through its `valid_support`; and a `new_name` that is not a
+The function rejects a parent that is not continuous (discrete or
+multivariate), since a change of variables of one coordinate needs a
+continuous density; a `transformer` argument that is not a `transformer`
+object; a transformer that is not valid on the parent's support, as its
+`valid_support` function determines; and a `new_name` that is not a
 single non-empty string. A map that is not injective, such as the
 absolute value, cannot be a transformer at all and is
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
@@ -72,12 +72,13 @@ instead.
 
 ## Naming the result
 
-Several standard families are a transformation of one already here, and
-`new_name` lets the result carry the name it is known by instead of the
-recipe that produced it: the reciprocal of a gamma is an inverse gamma,
-the exponential of a logistic a log-logistic, the exponential of an
-exponential a Pareto. Only the printed name changes, and nothing about
-the distribution depends on it.
+Several standard families are a transformation of another family that
+the package already provides, and `new_name` sets the name that the
+result carries, in place of the default name that records the recipe
+that produced it. The reciprocal of a gamma is an inverse gamma, the
+exponential of a logistic is a log-logistic, and the exponential of an
+exponential is a Pareto. Only the printed name changes, and the
+distribution does not depend on it.
 
 ## Notation
 
@@ -102,7 +103,7 @@ for the other wrappers.
 ## Examples
 
 ``` r
-# A lognormal built by transformation, equal to lognormal1_distrib() with
+# A lognormal built by transformation is equal to lognormal1_distrib() with
 # its second parameter read as a variance.
 logn <- transformation(gaussian1_distrib(), exp_transform())
 logn@params
@@ -111,7 +112,8 @@ c(built = distrib_pdf(logn, 2, list(mu = 0, sigma = 1)), dlnorm = dlnorm(2))
 #>    built   dlnorm 
 #> 0.156874 0.156874 
 
-# The reciprocal of a gamma is an inverse gamma, and can say so.
+# The reciprocal of a gamma is an inverse gamma, and new_name gives the
+# result that name.
 ig <- transformation(gamma2_distrib(), inverse_transform(),
                      new_name = "inverse gamma")
 ig@distrib_name
@@ -127,7 +129,7 @@ rbind(transformed = coef(fit_distrib(logn, y)),
 #> transformed    0.02264409 1.010916
 #> parent_on_logs 0.02264409 1.010916
 
-# Three errors, each naming the condition that failed.
+# Three errors follow, and each message names the condition that failed.
 try(transformation(poisson_distrib(), log_transform()))
 #> Error : transformation() currently supports only continuous distributions.
 try(transformation(gaussian1_distrib(), log_transform()))

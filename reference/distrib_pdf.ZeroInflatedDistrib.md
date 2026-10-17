@@ -4,8 +4,8 @@ Computes the zero-inflated mass function \$\$P(Y = y) =
 \zeta\\\mathbb{I}(y = 0) + (1-\zeta)\\ f(y; \theta),\$\$ with \\f\\ the
 parent's mass function. Inflation can only ADD zeros: the mass at zero
 is \\\zeta + (1-\zeta)f(0)\\, which exceeds \\f(0)\\ for every \\\zeta
-\> 0\\, and no single observed zero can be attributed to one mechanism
-or the other.
+\> 0\\, and a single observed zero cannot be attributed to one mechanism
+or to the other.
 
 ## Arguments
 
@@ -21,9 +21,9 @@ or the other.
 
 - theta:
 
-  A named list with the parent's parameters followed by `zi`, each a
-  numeric vector of length 1 or of the length of `y`. `zi` must lie
-  strictly inside \\(0, 1)\\.
+  A named list with the parent's parameters followed by `zi`; each
+  element is a numeric vector of length 1 or of the length of `y`. `zi`
+  must lie strictly inside \\(0, 1)\\.
 
 - log:
 
@@ -68,12 +68,12 @@ theta <- list(mu = 3, zi = 0.25)
 distrib_pdf(d, 0:5, theta)
 #> [1] 0.28734030 0.11202090 0.16803136 0.16803136 0.12602352 0.07561411
 
-# Which is the mixture written out.
+# The mass function is the mixture written out.
 y <- 0:5
 all.equal(distrib_pdf(d, y, theta), 0.25 * (y == 0) + 0.75 * dpois(y, 3))
 #> [1] TRUE
 
-# The mass at zero exceeds the parent's, inflation adding to it.
+# The mass at zero exceeds the parent's because inflation adds to it.
 c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
 #>   inflated     parent 
 #> 0.28734030 0.04978707 

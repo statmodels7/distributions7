@@ -2,7 +2,7 @@
 
 Computes \\d^B Z = d^B F(U) - d^B F(L^-)\\ from the parent's cdf
 derivatives, or returns `NULL` when that route is not available.
-Dividing the result by \\Z\\ gives the truncated expectations
+Dividing the result by \\Z\\ gives the truncated expectations that
 [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
 and
 [`trunc_M()`](https://statmodels7.github.io/distributions7/reference/trunc_M.md)
@@ -38,11 +38,11 @@ or `NULL` when the route is declined.
 
 ## The discrete correction
 
-The lower endpoint is included in the truncated support, so what leaves
-\\Z\\ is \\F(L)\\ minus the mass at \\L\\. Its derivatives lose that
-mass's derivatives with it, \\d^I F(L^-) = d^I F(L) - f(L) B_I\\, where
-\\B_I\\ is the complete Bell polynomial in the parent's log-mass
-derivatives that
+The lower endpoint is included in the truncated support, so the lower
+tail subtracted in \\Z\\ is \\F(L)\\ minus the mass at \\L\\. Its
+derivatives are reduced in the same way by the derivatives of that mass,
+\\d^I F(L^-) = d^I F(L) - f(L) B_I\\, where \\B_I\\ is the complete Bell
+polynomial in the parent's log-mass derivatives that
 [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
 assembles.
 
@@ -50,15 +50,15 @@ assembles.
 
 `NULL` is returned, and the caller falls back to quadrature, when the
 order exceeds four, the highest order of a cdf derivative, and in two
-further situations. The first is accuracy, and is decided by
+further situations. One concerns accuracy and is tested by
 [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md).
-The second is correctness: a mixed parent with an atom sitting exactly
-on the lower endpoint, whose mass derivative is not the parent's own
-mass function.
+The other concerns correctness and arises for a mixed parent with an
+atom sitting exactly on the lower endpoint, because the derivative of
+that mass is not the parent's own mass function.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -89,7 +89,7 @@ unlist(dZ) / Z
 #>          mu       sigma 
 #>  0.08052166 -0.47667927 
 
-# The same numbers the quadrature route returns, to machine precision.
+# The quadrature route returns the same numbers, to machine precision.
 unlist(distributions7:::trunc_score_mean_quad(tn, theta))
 #>          mu       sigma 
 #>  0.08052166 -0.47667927 

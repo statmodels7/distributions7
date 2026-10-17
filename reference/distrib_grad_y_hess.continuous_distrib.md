@@ -1,6 +1,6 @@
 # Default Hyperparameter Hessian of the Response Gradient
 
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through
 [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md):
 a central difference of an analytic
@@ -58,7 +58,7 @@ which does the work.
 ## Examples
 
 ``` r
-# The gamma writes no closed form, so this method answers for it.
+# The gamma has no closed form of its own, so this method is used for it.
 d <- gamma2_distrib()
 y <- c(0.5, 1, 2)
 theta <- list(mu = 2, sigma2 = 1)
@@ -82,7 +82,7 @@ g <- distrib_grad_y_hess(d, y, theta)
 c(g$mu_mu[1], g$mu_sigma2[1], g$sigma2_sigma2[1])
 #> [1]  4 -7 12
 
-# Against a numerical Hessian of the response gradient.
+# The result is compared with a numerical Hessian of the response gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(2, 1))
 #>      [,1] [,2]

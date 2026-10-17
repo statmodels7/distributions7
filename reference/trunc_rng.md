@@ -5,8 +5,8 @@ Draws by inverse transform through
 \\Y = Q_T(V)\\ with \\V\\ uniform on \\(0, 1)\\. A draw needs one
 evaluation of the parent's quantile function whatever \\Z\\ is, where
 rejection sampling from the parent would need \\1/Z\\ draws on average,
-and an interval in the upper tail is inverted there. One of the shared
-bodies, registered on both classes.
+and an interval in the upper tail is inverted there. The body is shared
+and is registered on both classes.
 
 ## Usage
 
@@ -39,7 +39,7 @@ A numeric vector of `n` draws, every one inside \\\[L, U\]\\.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

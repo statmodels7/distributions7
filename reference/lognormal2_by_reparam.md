@@ -1,6 +1,6 @@
 # Lognormal Distribution in the Mean and Variance of Y, Obtained
 
-The same family as
+Returns the same family as
 [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md),
 obtained through
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)

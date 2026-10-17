@@ -27,20 +27,20 @@ mapped_theta2(distrib, parent, th_par, maps, y, first, second)
 - th_par:
 
   A named list of the parent's parameters, evaluated at the new ones.
-  Not read by this function; the callers use it to compute `first` and
-  `second`.
+  This function does not read it; the callers use it to compute `first`
+  and `second`.
 
 - maps:
 
   The map's keyed partial tables, from
   [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md):
-  one entry per parent parameter, each a list keyed by new-parameter
-  index.
+  one entry per parent parameter, and each entry is a list keyed by
+  new-parameter index.
 
 - y:
 
-  A numeric vector of observations. Not used; present so that the
-  signature matches the callers'.
+  A numeric vector of observations. This function does not use it; it is
+  present so that the signature matches the callers'.
 
 - first:
 
@@ -59,10 +59,10 @@ parameters, keyed as
 
 ## The expansion
 
-A derivative in the RESPONSE does not see the parameters, so a
-reparametrization acts on the \\\theta\\ side alone and the ordinary
-two-term expansion applies: \$\$\frac{\partial^2 f}{\partial\alpha_a
-\partial\alpha_b} = \sum\_{i,j}
+A derivative in the RESPONSE does not interact with a reparametrization
+of the parameters, so a reparametrization acts only on the \\\theta\\
+side and the ordinary two-term expansion applies: \$\$\frac{\partial^2
+f}{\partial\alpha_a \partial\alpha_b} = \sum\_{i,j}
 \frac{\partial\theta_i}{\partial\alpha_a}
 \frac{\partial\theta_j}{\partial\alpha_b} f\_{ij} + \sum_i
 \frac{\partial^2\theta_i}{\partial\alpha_a\partial\alpha_b} f_i,\$\$
@@ -75,7 +75,7 @@ under the indices of the new parameters, `"1"` for a first partial and
 
 ## What `first` and `second` are
 
-They are the same quantity at two orders in \\\theta\\, and which
+They are the SAME quantity at two orders in \\\theta\\, and which
 quantity depends on the caller:
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 with
@@ -118,8 +118,8 @@ vapply(g, function(z) z[1], numeric(1))
 #>         mu_mu sigma2_sigma2     mu_sigma2 
 #>     0.0000000     0.6697960    -0.4822531 
 
-# Against a numerical Hessian of the response gradient in the NEW
-# parameters, which shares none of the map's arithmetic.
+# The result is compared with a numerical Hessian of the response gradient
+# in the NEW parameters, which does not share any of the map's arithmetic.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(0.3, 1.44))
 #>               [,1]       [,2]

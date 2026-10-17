@@ -17,7 +17,7 @@ distrib_hess_y_hess(), and it derives nothing new."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,14 +147,14 @@ first order in \(\theta\), and <code><a href="distrib_grad_y_hess.html">distrib_
 <span class="r-in"><span><span class="va">blk</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.09632533  0.00000000  0.10125089</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The identity written out: A'' / sigma^3, with A'' the family's own third</span></span></span>
-<span class="r-in"><span><span class="co"># response derivative scaled.</span></span></span>
+<span class="r-in"><span><span class="co"># The identity is written out as A'' / sigma^3, where A'' is the family's</span></span></span>
+<span class="r-in"><span><span class="co"># own third response derivative, scaled.</span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fl">1.2</span></span></span>
 <span class="r-in"><span><span class="va">A2</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">^</span><span class="fl">3</span> <span class="op">*</span> <span class="fu"><a href="distrib_deriv3_y.html">distrib_deriv3_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">A2</span> <span class="op">/</span> <span class="va">s</span><span class="op">^</span><span class="fl">3</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.09632533  0.00000000  0.10125089</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And the scale pair, which carries all three of A, A' and A''.</span></span></span>
+<span class="r-in"><span><span class="co"># The scale pair carries all three of A, A' and A''.</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">/</span> <span class="va">s</span></span></span>
 <span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="va">s</span> <span class="op">*</span> <span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">A1</span> <span class="op">&lt;-</span> <span class="va">s</span><span class="op">^</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="distrib_hess_y.html">distrib_hess_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>

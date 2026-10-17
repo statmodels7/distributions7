@@ -2,8 +2,8 @@
 
 Computes \\F_Y(q) = (1-\pi)F_W(q;\theta) + \pi\\\mathbb{I}(q \ge 0)\\,
 the parent's own distribution function scaled by \\1-\pi\\ with a JUMP
-of size \\\pi\\ added at zero. That jump is the whole of what makes the
-law mixed, and its height is exactly the probability
+of size \\\pi\\ added at zero. The jump is the only feature that makes
+the law mixed, and its height is exactly the probability that
 [`distrib_atoms.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ZeroAdjustedContinuousDistrib.md)
 reports.
 

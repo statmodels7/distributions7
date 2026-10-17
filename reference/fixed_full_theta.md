@@ -1,7 +1,7 @@
 # Splice the Fixed Values Back Into a Full Parameter List
 
 Combines the wrapper's free `theta` with its fixed values into the full
-parameter list the PARENT expects, in the parent's own order. Every
+parameter list that the PARENT expects, in the parent's own order. Every
 method of every `Fixed*` class begins with this call and then delegates,
 so it is the single point at which the two parameter sets are
 reconciled.
@@ -45,7 +45,7 @@ str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
 #>  $ mu   : num 0
 #>  $ sigma: num 2
 
-# Which is exactly what the parent is then called at.
+# The parent is then called at exactly this list.
 all.equal(distrib_pdf(d, c(-1, 1), list(sigma = 2)),
           distrib_pdf(gaussian1_distrib(), c(-1, 1),
                       distributions7:::fixed_full_theta(d, list(sigma = 2))))

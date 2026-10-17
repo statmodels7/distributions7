@@ -56,8 +56,8 @@ chain_derivatives(
 
 - expected:
 
-  Should the expected derivatives be carried? A single logical, `FALSE`
-  by default.
+  Should the expected derivatives be carried? It is a single logical,
+  with default `FALSE`.
 
 - approx, nsim:
 
@@ -74,16 +74,16 @@ A named list of numeric vectors, keyed as
 
 \$\$\ell^{(I)}(\psi) = \sum\_{\pi} \sum\_{i_1 \dots i\_{\|\pi\|}}
 \ell^{(i_1 \dots i\_{\|\pi\|})}(\theta) \prod\_{B \in \pi}
-\frac{\partial^{\|B\|}\theta\_{i_B}}{\partial\psi_B},\$\$ the sum over
-set partitions of the multi-index. Every order that the parent has in
-closed form therefore survives in closed form.
+\frac{\partial^{\|B\|}\theta\_{i_B}}{\partial\psi_B}.\$\$ The outer sum
+runs over set partitions of the multi-index. Every order that the parent
+has in closed form therefore survives in closed form.
 
 ## Under expectation
 
 Expectation is linear and the map deterministic, so the expected
 derivatives obey the same formula, and the term carrying the parent's
-score drops because the score has mean zero. That is why `D[[1]]` is
-left `NULL` when `expected` is `TRUE`: a parent with an exact expected
+score drops because the score has mean zero. Therefore `D[[1]]` is left
+`NULL` when `expected` is `TRUE`, and a parent with an exact expected
 information gives an exact one here.
 
 ## Notation
@@ -95,7 +95,7 @@ information gives an exact one here.
 ## See also
 
 [`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md),
-the sum it delegates to;
+to which it delegates the sum;
 [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md),
 its caller for a
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)

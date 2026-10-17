@@ -23,18 +23,18 @@ numerical_theta2_y(distrib, y, theta, inner, h_rel = .Machine$double.eps^(1/3))
 
 - y:
 
-  A numeric vector of observations. Passed to nothing here; `inner` has
-  already closed over it.
+  A numeric vector of observations. The function does not use it,
+  because `inner` has already closed over it.
 
 - theta:
 
-  A named list of parameters, the point to differentiate at.
+  A named list of parameters, the point at which to differentiate.
 
 - inner:
 
-  A function of `theta` alone returning the first-order components as a
-  list with one entry per parameter, typically
-  `function(th) distrib_cross_y(distrib, y, th)`.
+  A function that takes `theta` as its only argument and returns the
+  first-order components as a list with one entry per parameter,
+  typically `function(th) distrib_cross_y(distrib, y, th)`.
 
 - h_rel:
 
@@ -53,12 +53,12 @@ The reference is
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 or
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
-so a distribution with a closed form for those pays for exactly one
+so a distribution with a closed form for those requires exactly one
 difference and never differences a difference.
 
 A mixed pair is differenced in both orders and the two results are
-averaged. They agree in exact arithmetic and differ in floating point,
-the two steps having different sizes, and the average is symmetric in
+averaged. They agree in exact arithmetic and differ in floating point
+because the two steps have different sizes. The average is symmetric in
 the pair.
 
 The step is chosen by
@@ -80,7 +80,7 @@ to the other.
 [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
 and
 [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md),
-the two generics it serves, and
+the two generics that it serves, and
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
 for the step rule.
 
@@ -96,12 +96,13 @@ num <- numerical_theta2_y(d, y, theta,
 num$sigma_sigma
 #> [1]  2.9410735  0.8403067 -3.3612268
 
-# Against the gaussian's own closed form, which this family does not need
-# the fallback for.
+# The result is compared with the gaussian's own closed form, for which this
+# family does not need the fallback.
 max(abs(unlist(num) - unlist(distrib_grad_y_hess(d, y, theta))))
 #> [1] 4.191043e-10
 
-# A family that takes the default continuous method, checked against numDeriv.
+# A family that takes the default continuous method is checked against
+# numDeriv.
 dg <- gamma2_distrib()
 yg <- c(0.5, 1, 2)
 thg <- list(mu = 2, sigma2 = 1)

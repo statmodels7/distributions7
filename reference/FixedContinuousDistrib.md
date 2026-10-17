@@ -169,27 +169,27 @@ The free parameters are the parent's minus the fixed ones, IN THE
 PARENT'S ORDER. Every method splices the fixed values back into `theta`
 at their positions and delegates to the parent, so the parent's closed
 forms are used wherever they exist, and a derivative method then keeps
-only the components in which every index is a free parameter. No method
-of this class computes anything of its own, and none is faster or more
-accurate than the parent's.
+only the components in which every index is a free parameter. Every
+method of this class delegates its computation to the parent, so the
+speed and the accuracy of each method are those of the parent's method.
 
 ## Why the components can be subset by name
 
 The free set preserves the parent's ORDER, so a combination of free
 parameters produces the same name string under the parent's enumeration
 as under the wrapper's. Subsetting by name therefore cannot pair a
-component with the wrong indices. That is the mistake re-parsing a name
-by splitting on the underscore commits, for a parameter whose own name
-contains one.
+component with the wrong indices. Re-parsing a name by splitting on the
+underscore makes this mistake for a parameter whose own name contains an
+underscore.
 
 ## The methods carry no documentation pages
 
-The continuous and discrete branches register theirs inside a loop over
-the two classes, so there is no top-level assignment for roxygen to
-attach a block to. The multivariate branch registers its own at the top
-level and is left undocumented to match, every one of them being the
-same delegation. Read the parent's page for what a method computes and
-this page for what the wrapper does to it.
+The continuous and discrete branches register their methods inside a
+loop over the two classes, so roxygen has no top-level assignment to
+which it can attach a block. The multivariate branch registers its
+methods at the top level and leaves them undocumented to match, because
+each of them is the same delegation. Read the parent's page for what a
+method computes and this page for what the wrapper does to it.
 
 ## See also
 
@@ -205,7 +205,7 @@ whose half-normal is a fixed folded gaussian.
 ## Examples
 
 ``` r
-# A gaussian centered at zero: one free parameter instead of two.
+# A gaussian centered at zero has one free parameter instead of two.
 d <- fixed(gaussian1_distrib(), mu = 0)
 d@params
 #> [1] "sigma"
@@ -229,7 +229,7 @@ names(distrib_gradient(d, y, list(sigma = 2)))
 names(distrib_deriv3(d, y, list(sigma = 2)))
 #> [1] "sigma_sigma_sigma"
 
-# Fixing everything is legal and gives a fully known law.
+# Fixing every parameter is allowed and gives a fully known law.
 d0 <- fixed(gaussian1_distrib(), mu = 0, sigma = 1)
 c(n_params = d0@n_params, density = distrib_pdf(d0, 0, list()))
 #>  n_params   density 

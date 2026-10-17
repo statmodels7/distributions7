@@ -1,7 +1,8 @@
 # S7 Class for Transformed Distributions
 
-The S7 class of the distribution of \\Y = g(X)\\, where \\X\\ follows a
-wrapped continuous distribution and \\g\\ is a BIJECTIVE
+`TransformedDistrib` is the S7 class of the distribution of \\Y =
+g(X)\\, where \\X\\ follows a wrapped continuous distribution and \\g\\
+is a BIJECTIVE
 [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md).
 Its density is the change-of-variables formula \$\$f_Y(y) =
 f_X(g^{-1}(y))\\\lvert J(y)\rvert, \qquad J(y) =
@@ -97,9 +98,10 @@ An S7 object of class `TransformedDistrib`, inheriting from
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md),
 `params`, `params_bounds` and `link_params` are the parent's unchanged;
 `bounds` is the transformer's image of the parent's;
-`params_interpretation` is the parent's with the parent's name appended
-in brackets, since a mean on the transformed scale is not the parent's
-mean; and `distrib_name` is `"g(parent)"` or whatever `new_name` said.
+`params_interpretation` is the parent's, and the parent's name is
+appended in brackets because a mean on the transformed scale is not the
+parent's mean; and `distrib_name` is `"g(parent)"`, or the value of
+`new_name` if that argument is given.
 
 ## Why the derivatives are the parent's
 
@@ -196,7 +198,7 @@ all.equal(distrib_pdf(d, y, theta),
                       list(mu = 0.5, sigma2 = 0.8^2)))
 #> [1] TRUE
 
-# The interpretation says which scale a parameter lives on.
+# The interpretation records the scale on which each parameter is defined.
 d@params_interpretation
 #>                                     mu                                  sigma 
 #>               "mean (gaussian1 scale)" "standard deviation (gaussian1 scale)" 

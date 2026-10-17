@@ -1,10 +1,10 @@
 # Folded Random Generation
 
 Draws `n` values from the parent and takes the absolute value. That is
-the DEFINITION of the folded variable, not an approximation of it, so
-the draws are exact whatever route the parent's own generator takes.
-They consume whatever the parent consumes from R's stream, and are
-reproducible under
+the DEFINITION of the folded variable and not an approximation of it, so
+the draws are exact regardless of the route that the parent's own
+generator uses. They consume whatever the parent consumes from R's
+stream, and are reproducible under
 [`base::set.seed()`](https://rdrr.io/r/base/Random.html).
 
 ## Arguments

@@ -1,6 +1,6 @@
 # Student t Distribution in the Standard Deviation, Obtained
 
-The same family as
+Returns the same family as
 [`student_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t2_distrib.md),
 obtained through
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)

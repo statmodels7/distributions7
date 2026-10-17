@@ -6,8 +6,8 @@
 and
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
 all delegate to the parent at the mapped parameters. A reparametrization
-does not change the law, so it does not change a moment; what changes is
-the coordinates the moment is computed from. Delegating keeps the
+does not change the law, so it does not change a moment; it changes only
+the coordinates from which the moment is computed. Delegating keeps the
 parent's closed forms, where falling through to the `distrib` default
 would run a quadrature.
 
@@ -49,15 +49,15 @@ and the standardized third and fourth moments for
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md)
 and
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md),
-the excess in the last case. `NaN` or `Inf` wherever the parent's own
-method gives one.
+the excess in the last case. An element is `NaN` or `Inf` wherever the
+parent's own method gives one.
 
 ## See also
 
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
-for the numerical route the parent may take;
+for the numerical route that the parent may take;
 [`mean.distrib()`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md)
-for the default this replaces;
+for the default that this replaces;
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md).
 
 ## Examples
@@ -73,7 +73,7 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# The parent's closed forms, in the new coordinates.
+# The values are the parent's closed forms, in the new coordinates.
 c(mean(d, th), variance(d, th), skewness(d, th), kurtosis(d, th))
 #> [1] 1 4 0 0
 ```

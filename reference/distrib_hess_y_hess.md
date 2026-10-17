@@ -1,10 +1,10 @@
 # Hyperparameter Hessian of the Response Curvature
 
 Computes \\\partial^4 \ell / \partial y^2\\ \partial\theta_i
-\partial\theta_j\\, one component per unordered pair of parameters, each
-a vector along `y`. It gives the second derivative, in the parameters,
-of the response curvature, and it is the fourth-order entry of the mixed
-grid below.
+\partial\theta_j\\, with one component per unordered pair of parameters,
+and each component is a vector along `y`. It gives the second
+derivative, in the parameters, of the response curvature, and it is the
+fourth-order entry of the mixed grid below.
 
 ## Usage
 
@@ -42,8 +42,8 @@ distrib_hess_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 ## Value
 
-A named list with one numeric vector per unordered pair of parameters,
-each as long as `y`, keyed as
+A named list with one numeric vector per unordered pair of parameters.
+Each vector is as long as `y`, and the list is keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
 
 ## Details
@@ -54,23 +54,30 @@ column is
 and
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md):
 
-|  |  |  |  |
-|----|----|----|----|
-|  | \\\partial^0/\partial\theta^0\\ | \\\partial^1/\partial\theta^1\\ | \\\partial^2/\partial\theta^2\\ |
-| \\\partial/\partial y\\ | [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md) | [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md) | [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md) |
-| \\\partial^2/\partial y^2\\ | [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md) | [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md) | `distrib_hess_y_hess()` |
+\| \| \\\partial^0/\partial\theta^0\\ \| \\\partial^1/\partial\theta^1\\
+\| \\\partial^2/\partial\theta^2\\ \| \|—\|—\|—\|—\| \|
+\\\partial/\partial y\\ \|
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
+\|
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+\|
+[`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+\| \| \\\partial^2/\partial y^2\\ \|
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
+\|
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
+\| `distrib_hess_y_hess()` \|
 
-The right-hand column is the one that the second derivative of a
-marginal criterion requires from a penalty. A penalty is a negative
-log-density read at the coefficients, so
-\\\partial^2\rho/\partial\beta^2\\ carries the density's response
-curvature and the two mixed derivatives above carry
+The second derivative of a marginal criterion requires the right-hand
+column from a penalty. A penalty is a negative log-density read at the
+coefficients, so \\\partial^2\rho/\partial\beta^2\\ carries the
+density's response curvature and the two mixed derivatives above carry
 \\\partial^3\rho/\partial\beta\\\partial\theta^2\\ and
 \\\partial^4\rho/\partial\beta^2\partial\theta^2\\.
 
 The components are keyed by
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-the same enumeration
+the same enumeration that
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 uses.
 
@@ -80,9 +87,10 @@ Each component is multiplied by \\h_i'(\eta_i) h_j'(\eta_j)\\ and, on a
 diagonal pair, gains \\h_i''(\eta_i)\\ times the corresponding
 first-order component from
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md).
-That is the same diagonal chain rule
+That is the same diagonal chain rule that
 [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
-obeys, with the first-order quantity taken one order higher in \\y\\.
+obeys, except that the first-order quantity is differentiated one order
+higher in \\y\\.
 
 ## Where the numbers come from
 
@@ -109,7 +117,7 @@ to the other.
 for the third-order twin,
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
 for the first-order column, and
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md)
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
 for the fallback.
 
 ## Examples
@@ -134,7 +142,8 @@ distrib_hess_y_hess(d, y, theta)
 -6 / 1.3^4
 #> [1] -2.100767
 
-# Against a numerical Hessian of the response curvature in the parameters.
+# The result is compared with a numerical Hessian of the response curvature
+# in the parameters.
 h <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(h, c(0.4, 1.3))
 #>               [,1]          [,2]

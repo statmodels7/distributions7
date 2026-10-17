@@ -1,9 +1,10 @@
 # Truncated Third Derivatives, Discrete Parent
 
-The same construction as for a continuous parent, \\\ell_T = \ell - \log
-Z\\ with \\d^I \log Z\\ from the moment-to-cumulant expansion over set
-partitions, with every expectation taken by summation over the retained
-support in place of a quadrature.
+The method uses the same construction as for a continuous parent,
+\\\ell_T = \ell - \log Z\\ with \\d^I \log Z\\ from the
+moment-to-cumulant expansion over set partitions, but it takes every
+expectation by summation over the retained support in place of a
+quadrature.
 
 When both endpoints are finite, the support of a truncated discrete
 family is finite, so each block is a finite sum of terms that the parent

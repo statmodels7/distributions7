@@ -1,7 +1,8 @@
 # Derivatives of log(p) and log(1 - p)
 
-The two elementary logarithmic derivatives the zero wrappers need: \\d^k
-\log p = (-1)^{k-1}(k-1)!/p^k\\ and \\d^k \log(1-p) = -(k-1)!/(1-p)^k\\.
+Computes the two elementary logarithmic derivatives that the zero
+wrappers need: \\d^k \log p = (-1)^{k-1}(k-1)!/p^k\\ and \\d^k \log(1-p)
+= -(k-1)!/(1-p)^k\\.
 
 ## Usage
 

@@ -40,7 +40,7 @@ observed zero came from the parent, \\s\\ the parent's score and
 ## See also
 
 [`distrib_pdf.ZeroInflatedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ZeroInflatedDistrib.md)
-for the mass function these are drawn from, and
+for the mass function from which these are drawn, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 for the generic.
 

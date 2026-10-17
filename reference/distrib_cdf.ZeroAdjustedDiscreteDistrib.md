@@ -3,12 +3,12 @@
 Computes the hurdle distribution function \$\$F\_{ZA}(q) = \pi +
 (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)} \quad (q \ge
 0),\$\$ the parent's own distribution function shifted and rescaled by
-the truncation, with \\1 - f(0)\\ formed from the log-mass at zero.
-Where \\f(0) \> 1/2\\, and for the upper tail, the positive part is read
-from the parent's survival function wherever \\S(q)/\\1 - f(0)\\\\ is
-below one half, so that neither tail is a difference of two numbers near
-one. The result is `0` below zero and is clamped to \\\[0, 1\]\\ against
-rounding.
+the truncation. The constant \\1 - f(0)\\ is formed from the log-mass at
+zero. Where \\f(0) \> 1/2\\, and for the upper tail, the positive part
+is read from the parent's survival function wherever \\S(q)/\\1 -
+f(0)\\\\ is below one half, so that each tail avoids a difference of two
+numbers near one. The result is `0` below zero and is clamped to \\\[0,
+1\]\\ against rounding.
 
 ## Arguments
 
@@ -77,7 +77,7 @@ c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
 #>       cdf    summed 
 #> 0.9470111 0.9470111 
 
-# Both tails and the logarithm.
+# Both tails and the logarithm are also available.
 distrib_cdf(d, 2, theta, lower.tail = FALSE)
 #> [1] 0.3642194
 distrib_cdf(d, 2, theta, log.p = TRUE)

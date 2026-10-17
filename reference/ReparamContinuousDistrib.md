@@ -1,10 +1,10 @@
 # S7 Classes for a Reparametrized Distribution
 
-What
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
-returns: the same law as its parent, written in different coordinates.
-There is one class per kind of parent, so that a continuous parent keeps
-the defaults registered on
+returns objects of these classes. Each of them represents the same law
+as its parent, written in different coordinates. There is one class per
+kind of parent, so that a continuous parent keeps the defaults
+registered on
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 and a discrete one those of
 [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
@@ -57,7 +57,7 @@ ReparamDiscreteDistrib(
 
 - dimension:
 
-  `"univariate"` or `"multivariate"`. Always the first for a
+  `"univariate"` or `"multivariate"`. It is always `"univariate"` for a
   reparametrization, since
   [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
   signals an error for a multivariate parent.
@@ -80,24 +80,24 @@ ReparamDiscreteDistrib(
 
 - params_bounds:
 
-  A named list of length-two numeric vectors, the open interval each new
-  parameter lives in.
+  A named list of length-two numeric vectors, each of which gives the
+  open interval in which the corresponding new parameter lies.
 
 - link_params:
 
-  A named list of linkfunctions7 links, one per new parameter. Note the
-  name: it is `link_params` on the object and `links` in
+  A named list of linkfunctions7 links, one per new parameter. The name
+  is `link_params` on the object and `links` in
   [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)'s
   signature.
 
 - params_smooth:
 
-  A named logical vector saying which parameters the log-density is
-  differentiable in.
+  A named logical vector indicating the parameters with respect to which
+  the log-density is differentiable.
 
 - parent_distrib:
 
-  The distribution being rewritten.
+  The distribution that is rewritten.
 
 - reparam_map:
 
@@ -118,14 +118,14 @@ the three above.
 
 ## Details
 
-The three properties beyond a distribution's own are what the methods
-read. `parent_distrib` is the law being rewritten and is delegated to
-for the density, the distribution function, the quantile function, the
-generator and the response derivatives, all of which a change of
-parametrization leaves alone. `reparam_map` carries the new parameters
-to the parent's, and `reparam_derivs` carries the map's partial
-derivatives, which is where the exactness of the parameter derivatives
-comes from.
+The methods read three properties beyond a distribution's own.
+`parent_distrib` is the law that is rewritten, and the methods delegate
+to it for the density, the distribution function, the quantile function,
+the generator and the response derivatives, all of which a change of
+parametrization leaves unchanged. `reparam_map` carries the new
+parameters to the parent's, and `reparam_derivs` carries the map's
+partial derivatives, on which the exactness of the parameter derivatives
+depends.
 
 ## See also
 
@@ -141,7 +141,7 @@ the two readers.
 ## Examples
 
 ``` r
-# The class a continuous parent gives.
+# The class below is the one that a continuous parent gives.
 d <- reparametrize(
   gaussian1_distrib(),
   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),

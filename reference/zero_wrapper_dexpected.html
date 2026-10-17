@@ -17,7 +17,7 @@ central difference for the others."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,8 @@ probability.</p></dd>
 
 <dt id="arg-i-j-c">i, j, c<a class="anchor" aria-label="anchor" href="#arg-i-j-c"></a></dt>
 <dd><p>The indices of one entry: the pair and the parameter
-differentiated, the parent's parameters first and the probability last.</p></dd>
+differentiated. The parent's parameters come first and the probability
+last.</p></dd>
 
 
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
@@ -136,13 +137,14 @@ derivatives, \(\zeta\) the zero-inflation probability and
 $$E^{ZI}_{ij} = (1-\zeta) E_{ij} + \zeta(1-\zeta) f s_i s_j / L,$$
 $$E^{ZI}_{i\zeta} = -f s_i / L, \qquad
   E^{ZI}_{\zeta\zeta} = -(1-f)^2/L - (1-f)/(1-\zeta),$$
-the observed Hessian at zero cancelling from the first, and the
-derivatives follow with \(\partial_c f = f s_c\) and
+where the observed Hessian at zero cancels from the first of these
+expressions. The derivatives follow with \(\partial_c f = f s_c\) and
 \(\partial_c s_i = H_{ic}\). For the zero-adjusted discrete family, with
-\(q = 1 - f\) and \(\pi\) the probability of zero,
+\(q = 1 - f\) and \(\pi\) the probability of zero, the expected
+information is
 $$E^{ZA}_{ij} = (1-\pi)\,[E_{ij}/q + f s_i s_j / q^2], \qquad
   E^{ZA}_{\pi\pi} = -1/(\pi(1-\pi)),$$
-the mixed block being zero; for the continuous one
+where the mixed block is zero. For the continuous family, the entries are
 \(E^{ZA}_{ij} = (1-\pi) E_{ij}\).</p>
 <p>Each entry is computed by <code>zi_dexpected_entry()</code>, <code>za_disc_dexpected_entry()</code>
 or <code>za_cont_dexpected_entry()</code>. The scalar registry (<code>pt_wrappers.h</code>) writes

@@ -64,7 +64,7 @@ positive, which happens only when it underflows.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -100,7 +100,7 @@ c(Z = cz$Z, direct = 1 - dpois(0, 2), Fl = cz$Fl)
 #>         Z    direct        Fl 
 #> 0.8646647 0.8646647 0.1353353 
 
-# Vectorized in theta.
+# The function is vectorized in theta.
 distributions7:::trunc_constants(tn, list(mu = c(0, 0.5), sigma = 1.2))$Z
 #> [1] 0.7498813 0.7887005
 

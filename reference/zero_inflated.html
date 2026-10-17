@@ -5,7 +5,7 @@ the new parameter zi:
 $$P(Y = y; \theta, \zeta) = \begin{cases}
   \zeta + (1 - \zeta)f(0; \theta) &amp;amp; y = 0 \\
   (1 - \zeta)f(y; \theta) &amp;amp; y &amp;gt; 0. \end{cases}$$
-It is the wrapper to reach for when the data carry MORE zeros than the
+It is the wrapper to use when the data carry MORE zeros than the
 parent can produce and a zero may plausibly have come either from the count
 process or from a mechanism that switches it off."><meta property="og:description" content="Wraps a DISCRETE distribution into a mixture that keeps the parent intact
 and adds a second source of zeros, with probability \(\zeta\) carried by
@@ -13,7 +13,7 @@ the new parameter zi:
 $$P(Y = y; \theta, \zeta) = \begin{cases}
   \zeta + (1 - \zeta)f(0; \theta) &amp;amp; y = 0 \\
   (1 - \zeta)f(y; \theta) &amp;amp; y &amp;gt; 0. \end{cases}$$
-It is the wrapper to reach for when the data carry MORE zeros than the
+It is the wrapper to use when the data carry MORE zeros than the
 parent can produce and a zero may plausibly have come either from the count
 process or from a mechanism that switches it off."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@ process or from a mechanism that switches it off."><meta property="og:image" con
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ the new parameter <code>zi</code>:
 $$P(Y = y; \theta, \zeta) = \begin{cases}
   \zeta + (1 - \zeta)f(0; \theta) &amp; y = 0 \\
   (1 - \zeta)f(y; \theta) &amp; y &gt; 0. \end{cases}$$
-It is the wrapper to reach for when the data carry MORE zeros than the
+It is the wrapper to use when the data carry MORE zeros than the
 parent can produce and a zero may plausibly have come either from the count
 process or from a mechanism that switches it off.</p>
     </div>
@@ -80,8 +80,8 @@ process or from a mechanism that switches it off.</p>
 <dd><p>An object inheriting from <code>discrete_distrib</code> whose support
 includes 0, such as <code><a href="poisson_distrib.html">poisson_distrib()</a></code> or <code><a href="negbin2_distrib.html">negbin2_distrib()</a></code>. A
 continuous distribution, an already-wrapped one, and a support of fewer
-than <code>n_params + 2</code> points are each rejected with an error saying which
-condition failed.</p></dd>
+than <code>n_params + 2</code> points are each rejected with an error that names the
+condition that failed.</p></dd>
 
 
 <dt id="arg-link-zi">link_zi<a class="anchor" aria-label="anchor" href="#arg-link-zi"></a></dt>
@@ -102,19 +102,19 @@ condition failed.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="zero-inflation-against-zero-adjustment">Zero-inflation against zero-adjustment<a class="anchor" aria-label="anchor" href="#zero-inflation-against-zero-adjustment"></a></h2>
-    <p>The two wrappers differ in what they do to the mass the parent already
+    <p>The two wrappers differ in what they do to the mass that the parent already
 places at zero. Zero-inflation ADDS to it, so
 \(P(Y = 0) = \zeta + (1-\zeta)f(0) &gt; f(0)\): the model can produce more
 zeros than the parent and never fewer, and the observed zeros are a mixture
-of structural and sampling ones that no single observation can be assigned
-to. Zero-adjustment REPLACES it: the parent is truncated away from zero and
-the mass there becomes a free parameter, which may sit above or below
-\(f(0)\).</p>
+of structural and sampling ones, so a single observation cannot be assigned
+to either kind. Zero-adjustment REPLACES it: the parent is truncated away
+from zero and the mass there becomes a free parameter, which may sit above or
+below \(f(0)\).</p>
 <p>A hurdle model therefore also handles UNDER-dispersed zeros, and its
 likelihood factorizes into a binary part and a positive-count part that can
 be read separately. Zero-inflation keeps the parent's interpretation, so
-\(\theta\) still describes the count process the non-structural
-observations come from, while the hurdle re-interprets \(\theta\) as the
+\(\theta\) still describes the count process from which the non-structural
+observations come, while the hurdle re-interprets \(\theta\) as the
 parameters of a truncated law.</p>
     </div>
     <div class="section level2">
@@ -137,11 +137,12 @@ sufficient. If \(\mu\) is large enough that \(f(0)\) underflows, or
     </div>
     <div class="section level2">
     <h2 id="what-the-result-supports">What the result supports<a class="anchor" aria-label="anchor" href="#what-the-result-supports"></a></h2>
-    <p>The mass function, the distribution function, the quantile function, the
-generator, the analytic score, the observed and the expected Hessian, and the
-third, fourth and fifth derivatives from the shared wrapper machinery. The
-derivatives with respect to the response are not defined for a discrete
-family. The moments are computed numerically by <code><a href="moment.html">moment()</a></code>.</p>
+    <p>The result provides the mass function, the distribution function, the
+quantile function, the generator, the analytic score, the observed and the
+expected Hessian, and the third, fourth and fifth derivatives from the shared
+wrapper machinery. The derivatives with respect to the response are not
+defined for a discrete family. The moments are computed numerically by
+<code><a href="moment.html">moment()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -168,8 +169,8 @@ interval, and <code><a href="check_distrib.html">check_distrib()</a></code> to v
 <span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">zip</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.23982965 0.11948896 0.17923345 0.17923345 0.13442508 0.08065505</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># More mass at zero than the Poisson alone can put there, and the rest of</span></span></span>
-<span class="r-in"><span><span class="co"># the mass function shrunk by 1 - zi.</span></span></span>
+<span class="r-in"><span><span class="co"># The mass at zero is larger than the Poisson alone can put there, and the</span></span></span>
+<span class="r-in"><span><span class="co"># rest of the mass function is shrunk by 1 - zi.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>inflated <span class="op">=</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">zip</span>, <span class="fl">0</span>, <span class="va">theta</span><span class="op">)</span>, poisson <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   inflated    poisson </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.23982965 0.04978707 </span>
@@ -180,7 +181,7 @@ interval, and <code><a href="check_distrib.html">check_distrib()</a></code> to v
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">zip</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">200</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A fit recovers both parameters, the extra zeros identifying zi.</span></span></span>
+<span class="r-in"><span><span class="co"># A fit recovers both parameters, because the extra zeros identify zi.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">zip</span>, <span class="fl">2000</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">zip</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></span>
@@ -200,8 +201,8 @@ interval, and <code><a href="check_distrib.html">check_distrib()</a></code> to v
 <span class="r-out co"><span class="r-pr">#&gt;</span>   so the likelihood is flat along a direction and any optimizer will wander</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   along that ridge. Apply exactly one zero wrapper to a plain distribution.</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Nor can a continuous parent be inflated: there is no mass at zero to add</span></span></span>
-<span class="r-in"><span><span class="co"># to, and the message names the wrapper that does apply.</span></span></span>
+<span class="r-in"><span><span class="co"># Nor can a continuous parent be inflated: there is no mass at zero for the</span></span></span>
+<span class="r-in"><span><span class="co"># inflation to increase, and the message names the wrapper that does apply.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">zero_inflated</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : zero_inflated() requires a discrete distribution: a continuous one has</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   P(Y = 0) = 0, so there is no mass at zero to inflate. To place a point mass</span>

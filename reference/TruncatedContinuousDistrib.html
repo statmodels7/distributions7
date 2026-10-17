@@ -13,7 +13,7 @@ parent's parameter metadata; calling the class directly does none of that."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,12 +130,12 @@ support.</p></dd>
     <h2 id="what-truncation-adds-and-what-it-does-not">What truncation adds, and what it does not<a class="anchor" aria-label="anchor" href="#what-truncation-adds-and-what-it-does-not"></a></h2>
     <p>It adds NO parameter. The endpoints are known constants, like a binomial's
 <code>size</code>, so the truncated object carries exactly the parent's <code>params</code>,
-<code>params_bounds</code> and <code>link_params</code>. What it adds is the
+<code>params_bounds</code> and <code>link_params</code>. It does add the
 \(\theta\)-dependent normalizing constant \(Z\), and every derivative of
 \(\ell_T = \ell - \log Z\) carries its contribution.</p>
-<p>The support does not move with \(\theta\). That is the condition under
-which \(Z\) may be differentiated under the integral sign, and it is what
-keeps truncation at fixed points a regular problem.</p>
+<p>The support does not move with \(\theta\). This condition allows \(Z\)
+to be differentiated under the integral sign and keeps truncation at fixed
+points a regular problem.</p>
     </div>
     <div class="section level2">
     <h2 id="a-mixed-parent">A mixed parent<a class="anchor" aria-label="anchor" href="#a-mixed-parent"></a></h2>
@@ -154,7 +154,7 @@ serves both truncation classes.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and

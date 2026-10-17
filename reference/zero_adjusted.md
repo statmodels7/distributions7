@@ -8,15 +8,15 @@ depends on the parent's type, and the constructor dispatches on it:
   that the parent puts at zero is removed, the parent is renormalized
   over the positive values, and \\\pi\\ takes its place.
 
-- a CONTINUOUS parent gives a MIXED distribution. Nothing has to be
-  removed, \\P(Y = 0)\\ being zero already; a point mass \\\pi\\ is
+- a CONTINUOUS parent gives a MIXED distribution. The wrapper removes
+  nothing, because \\P(Y = 0)\\ is already zero; a point mass \\\pi\\ is
   placed at zero and the density is scaled by \\1-\pi\\.
 
 The wrapper applies when the zeros come from a mechanism of their own
-(for example, no claim is filed or no rain falls) and the parent
+(for example, a claim is not filed or rain does not fall) and the parent
 describes only the observations produced after that mechanism has
 allowed a positive outcome. Where the zeros come partly from the parent
-and partly from a separate source, so that no single zero can be
+and partly from a separate source, so that a single zero cannot be
 attributed,
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
 is the model.
@@ -34,7 +34,7 @@ zero_adjusted(distrib, link_za = logit_link())
   An object inheriting from `discrete_distrib` with 0 in its support, or
   from `continuous_distrib`. An already-wrapped parent and a discrete
   support of fewer than `n_params + 2` points are rejected with an error
-  saying which condition failed.
+  that names the condition that failed.
 
 - link_za:
 
@@ -60,9 +60,9 @@ parent's.
 
 \$\$P(Y = y; \theta, \pi) = \begin{cases} \pi & y = 0 \\ (1 -
 \pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} & y \> 0. \end{cases}\$\$ The
-division by \\1 - f(0;\theta)\\ is the TRUNCATION, and it is what
-separates this from zero-inflation: it makes \\\theta\\ the parameters
-of a law on the positive integers instead of the original count process.
+division by \\1 - f(0;\theta)\\ is the TRUNCATION. It separates this
+model from zero-inflation, because it makes \\\theta\\ the parameters of
+a law on the positive integers instead of the original count process.
 The log-likelihood separates into a Bernoulli part in \\\pi\\ and a
 truncated part in \\\theta\\, so every mixed block of the information is
 exactly zero and the two halves could be fitted separately.
@@ -73,19 +73,19 @@ exactly zero and the two halves could be fitted separately.
 0).\$\$ Here \\f_Y\\ is a density against Lebesgue measure plus a point
 mass, so it integrates to \\1 - \pi\\; the remainder is the atom, which
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
-reports and
+reports and which
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-accounts for. The classical members have a parent on \\(0, \infty)\\ or
-\\(0, 1)\\, where zero sits on the boundary: the zero-adjusted gamma,
-inverse gaussian or lognormal for semicontinuous data, and the
-zero-adjusted beta for proportions.
+takes into account. The classical members have a parent on \\(0,
+\infty)\\ or \\(0, 1)\\, where zero sits on the boundary: the
+zero-adjusted gamma, inverse gaussian or lognormal for semicontinuous
+data, and the zero-adjusted beta for proportions.
 
 ## Choosing between the two wrappers
 
-Zero-inflation can only ADD zeros, \\P(Y = 0) = \zeta + (1-\zeta)f(0)\\
-exceeding \\f(0)\\; the hurdle replaces \\f(0)\\ outright and so also
-covers FEWER zeros than the parent implies. Where both apply they are
-not nested, and they differ in interpretation more than in fit:
+Zero-inflation can only ADD zeros, because \\P(Y = 0) = \zeta +
+(1-\zeta)f(0)\\ exceeds \\f(0)\\; the hurdle replaces \\f(0)\\ outright
+and so also covers FEWER zeros than the parent implies. Where both apply
+they are not nested, and they differ in interpretation more than in fit:
 zero-inflation keeps \\\theta\\ as the parameters of the original count
 process, the hurdle re-reads them as those of a truncated one. Prefer
 the hurdle when a zero is observable evidence of a distinct decision,
@@ -132,7 +132,7 @@ and
 [ZeroAdjustedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/ZeroAdjustedContinuousDistrib.md)
 for the two classes,
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
-for the atom the continuous branch declares, and
+for the atom that the continuous branch declares, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 to validate the result.
 
@@ -160,7 +160,7 @@ y <- distrib_rng(zap, 300, theta)
 all(distrib_hessian(zap, y, theta)$mu_za == 0)
 #> [1] TRUE
 
-# Semicontinuous data: a spike at zero and a gamma above it.
+# Semicontinuous data are modeled with a spike at zero and a gamma above it.
 zag <- zero_adjusted(gamma2_distrib())
 distrib_atoms(zag, list(mu = 2, sigma2 = 1, za = 0.3))
 #> $y
@@ -170,14 +170,16 @@ distrib_atoms(zag, list(mu = 2, sigma2 = 1, za = 0.3))
 #> [1] 0.3
 #> 
 
-# A fit recovers both halves, each from its own part of the data.
+# A fit recovers both halves, and each half comes from its own part of the
+# data.
 set.seed(5)
 yg <- distrib_rng(zag, 2000, list(mu = 2, sigma2 = 1, za = 0.3))
 round(coef(fit_distrib(zag, yg)), 3)
 #>     mu sigma2     za 
 #>  2.029  1.016  0.302 
 
-# Two errors, each naming the condition that failed.
+# These two calls signal errors, and each error names the condition that
+# failed.
 try(zero_adjusted(bernoulli_distrib()))
 #> Error : zero_adjusted() cannot wrap 'bernoulli': its support has 2 points, so the family has 1 free
 #>   probability, while the wrapped distribution would have 2 parameters. They are not

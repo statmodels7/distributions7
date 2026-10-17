@@ -1,7 +1,8 @@
 # Exponential Transformation
 
-Transformer for \\Y = e^X\\: maps the real line to \\(0, \infty)\\.
-Inverse \\X = \log(Y)\\, Jacobian \\\|J\| = 1/Y\\.
+Returns the transformer for \\Y = e^X\\, which maps the real line to
+\\(0, \infty)\\. The inverse is \\X = \log(Y)\\ and the Jacobian is
+\\\|J\| = 1/Y\\.
 
 ## Usage
 

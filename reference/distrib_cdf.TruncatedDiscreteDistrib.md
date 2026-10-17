@@ -2,8 +2,8 @@
 
 Evaluates \\F_T(q) = \\F(q;\theta) - F(L^-;\theta)\\/Z(\theta)\\,
 clamped to \\\[0, 1\]\\. The lower tail subtracted is \\F(L) - f(L)\\,
-the mass at \\L\\ being retained, so the truncated distribution function
-is already positive at \\L\\ itself.
+because the mass at \\L\\ is retained, so the truncated distribution
+function is already positive at \\L\\ itself.
 
 ## Arguments
 
@@ -36,7 +36,7 @@ A numeric vector of cumulative probabilities.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -58,11 +58,12 @@ for the continuous branch.
 ztp <- truncated(poisson_distrib(), lower = 1)
 theta <- list(mu = 2)
 
-# Zero below the interval, and already positive at the lower endpoint.
+# The value is zero below the interval and already positive at the lower
+# endpoint.
 distrib_cdf(ztp, 0:4, theta)
 #> [1] 0.0000000 0.3130353 0.6260706 0.8347608 0.9391059
 
-# The cumulative sums of the truncated mass function.
+# The cumulative sums of the truncated mass function give the same values.
 cumsum(distrib_pdf(ztp, 1:4, theta))
 #> [1] 0.3130353 0.6260706 0.8347608 0.9391059
 ```

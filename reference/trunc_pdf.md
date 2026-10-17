@@ -4,8 +4,8 @@ Evaluates the parent's density divided by the retained mass \\Z\\, and
 zero outside \\\[L, U\]\\. This is one of the shared method bodies:
 truncation treats the two kinds of parent identically once
 [`trunc_constants()`](https://statmodels7.github.io/distributions7/reference/trunc_constants.md)
-has resolved the one place they differ, so the body is written once and
-registered on both classes.
+has resolved the one place where they differ, so the body is written
+once and registered on both classes.
 
 ## Usage
 
@@ -38,17 +38,17 @@ trunc_pdf(distrib, y, theta, log = FALSE, ...)
 
 ## Value
 
-A numeric vector, of the length `y` and `theta` recycle to.
+A numeric vector, of the length to which `y` and `theta` recycle.
 
 ## Details
 
-The division is done on the LOG scale and the outside is set to
+The body divides by \\Z\\ on the LOG scale and sets the outside to
 \\-\infty\\ there, so a point far in a tail keeps its precision instead
 of underflowing to zero before the division.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -72,12 +72,12 @@ theta <- list(mu = 0.3, sigma = 1.2)
 distrib_pdf(tn, c(-2, 0, 1, 3), theta)
 #> [1] 0.0000000 0.4118505 0.3584437 0.0000000
 
-# The parent's density divided by the retained mass.
+# The result is the parent's density divided by the retained mass.
 Z <- distributions7:::trunc_constants(tn, theta)$Z
 dnorm(c(0, 1), 0.3, 1.2) / Z
 #> [1] 0.4118505 0.3584437
 
-# Outside the interval, zero, and -Inf on the log scale.
+# Outside the interval the density is zero and the log-density is -Inf.
 distrib_pdf(tn, c(-2, 3), theta, log = TRUE)
 #> [1] -Inf -Inf
 

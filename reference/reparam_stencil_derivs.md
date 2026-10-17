@@ -6,7 +6,8 @@ every partial of the map is one central stencil of
 [`numericals7::fd_derivative()`](https://statmodels7.github.io/numericals7/reference/fd_derivative.html)
 in each direction, applied to the analytic map, iterated across distinct
 directions. A cross-variable composition of two first differences is one
-mixed stencil and not the same-variable nesting the toolkit forbids.
+mixed stencil and is not a nesting in the same variable, which is not
+allowed in the toolkit.
 
 ## Usage
 
@@ -33,7 +34,7 @@ reparam_stencil_derivs(map, params, parent_params)
 ## Value
 
 A function of the new parameters and the highest order to form, usable
-as an object's `reparam_derivs`, returning the keyed tables
+as an object's `reparam_derivs`, returning the keyed tables that
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
 describes.
 
@@ -43,8 +44,8 @@ The accuracy is of the order of \\10^{-11}\\ at first order and falls
 quickly with the order (see
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)),
 which is why a family fitted in earnest supplies `map_derivs` instead.
-What the fallback buys is that a user's own reparametrization works
-immediately, with no derivatives written, as
+The fallback lets a user's own reparametrization work immediately
+without derivatives, as
 [`distrib_grad_y.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.md)
 does for a density-only family.
 

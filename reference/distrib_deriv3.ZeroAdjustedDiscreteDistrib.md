@@ -4,13 +4,13 @@ The hurdle likelihood factorizes into a binary part and a positive part,
 so at every order the mixed components in `za` and a parent parameter
 are exactly zero, and the two halves are differentiated separately. The
 \\\theta\\ part is the parent's derivative less that of the truncation
-constant \\\log(1 - f_0)\\, which is the mass the parent puts at zero
-and the hurdle removes.
+constant \\\log(1 - f_0)\\, which is the mass that the parent puts at
+zero and that the hurdle removes.
 
 This is the structural difference from
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
 where the mixed block is not zero, because inflation adds to the
-parent's mass at zero and no single zero can be attributed to one
+parent's mass at zero and a zero cannot be attributed to a single
 mechanism.
 
 ## Arguments
@@ -48,11 +48,11 @@ on the parent's parameters and `za`, each a numeric vector of length
 ## See also
 
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
-for the wrapper and the counting rule it enforces;
+for the wrapper and the counting rule that it enforces;
 [`distrib_deriv4.ZeroAdjustedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroAdjustedDiscreteDistrib.md)
 for the order above;
 [`distrib_deriv3.ZeroInflatedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroInflatedDistrib.md)
-for the model this is not.
+for the model that this is not.
 
 ## Examples
 

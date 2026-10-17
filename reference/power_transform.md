@@ -1,12 +1,13 @@
 # Power Transformation
 
-Transformer for \\Y = X^p\\. Inverse \\X = Y^{1/p}\\, Jacobian \\\|J\| =
-\frac{1}{\|p\|}\|Y\|^{1/p - 1}\\. Fractional powers require a
-non-negative support; even integer powers require a support that does
-not straddle 0, and on a support at or below zero
+Returns the transformer for \\Y = X^p\\. The inverse is \\X = Y^{1/p}\\
+and the Jacobian is \\\|J\| = \frac{1}{\|p\|}\|Y\|^{1/p - 1}\\.
+Fractional powers require a non-negative support; even integer powers
+require a support that does not straddle 0, and on a support at or below
+zero
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
 uses the negative root \\X = -Y^{1/p}\\ as the inverse; negative powers
-require a support that excludes 0, its endpoints included.
+require a support that does not contain 0, not even as an endpoint.
 
 ## Usage
 
@@ -18,7 +19,7 @@ power_transform(p = 2)
 
 - p:
 
-  Numeric. The exponent. Defaults to 2.
+  A numeric exponent. Defaults to 2.
 
 ## Value
 

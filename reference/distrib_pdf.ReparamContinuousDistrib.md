@@ -1,6 +1,6 @@
 # Density of a Reparametrized Distribution
 
-The parent's density, evaluated at the mapped parameters. A change of
+Evaluates the parent's density at the mapped parameters. A change of
 parametrization does not change the law, so the density is not
 recomputed here: the new parameters go through
 [`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)
@@ -29,8 +29,8 @@ reparam_pdf(distrib, y, theta, log = FALSE, ...)
 
 - log:
 
-  Should the log-density be returned? A single logical, `FALSE` by
-  default.
+  Should the log-density be returned? It is a single logical, with
+  default `FALSE`.
 
 - ...:
 
@@ -38,8 +38,8 @@ reparam_pdf(distrib, y, theta, log = FALSE, ...)
 
 ## Value
 
-A numeric vector of densities, the length of `y` recycled against
-`theta`.
+A numeric vector of densities, whose length is that of `y` after it is
+recycled against `theta`.
 
 ## See also
 
@@ -62,7 +62,7 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# The same numbers as the family written out by hand.
+# The result equals that of the family written out by hand.
 all.equal(distrib_pdf(d, c(0, 1, 2), th),
           distrib_pdf(gaussian2_distrib(), c(0, 1, 2), th))
 #> [1] TRUE

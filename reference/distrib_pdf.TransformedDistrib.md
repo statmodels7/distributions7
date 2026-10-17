@@ -43,10 +43,11 @@ A numeric vector of the recycled length of `y` and `theta`.
 Two singular cases are handled explicitly. A parent log-density that is
 `+Inf`, which a density with a pole produces, is clamped to
 `log(.Machine$double.xmax)`, so that a quadrature over the transformed
-density meets a large number instead of `Inf - Inf`. A parent density of
-exactly zero WINS over an infinite Jacobian, so the result is `-Inf`.
-The point is on the boundary or outside the transformed support, and the
-result is `-Inf` where the unguarded sum would give `NaN`.
+density meets a large number instead of `Inf - Inf`. If the parent
+density is exactly zero, the result is `-Inf` even where the Jacobian is
+infinite. Such a point is on the boundary or outside the transformed
+support, and the result is `-Inf` where the unguarded sum would give
+`NaN`.
 
 ## Notation
 
@@ -80,7 +81,8 @@ all.equal(distrib_pdf(d, y, theta), dlnorm(y, 0.5, 0.8))
 integrate(function(z) distrib_pdf(d, z, theta), 0, Inf)$value
 #> [1] 1
 
-# Written out, the parent's density at the preimage times the Jacobian.
+# Written out, the density is the parent's density at the preimage times the
+# Jacobian.
 tr <- d@transformer
 all.equal(distrib_pdf(d, y, theta),
           dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y, log = FALSE))

@@ -1,14 +1,14 @@
 # Second-Order Mixed Derivatives With a Shape Parameter
 
-The
+Implements the
 [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
 and
 [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
 method bodies for a family carrying shape parameters beyond its location
 and scale. The three pairs in \\(\mu, \sigma)\\ come from
 [`loc_scale_theta2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.md)
-in closed form, and every pair touching a shape parameter from one
-central difference of the first-order component,
+in closed form, and every pair that touches a shape parameter comes from
+one central difference of the first-order component, which is
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 for the third-order body and
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
@@ -74,9 +74,10 @@ keyed as
 
 ## Details
 
-Registered on the two pseudo-Huber parametrizations, the skew normal and
-the skew t. The Student t's methods, documented on this page as well,
-call compiled kernels of their own and do not use these bodies.
+Both bodies are registered on the two pseudo-Huber parametrizations, the
+skew normal and the skew t. The Student t's methods, documented on this
+page as well, call compiled kernels of their own and do not use these
+bodies.
 
 ## Notation
 
@@ -112,8 +113,9 @@ vapply(g3, function(z) z[1], numeric(1))
 #>       mu_mu sigma_sigma alpha_alpha    mu_sigma    mu_alpha sigma_alpha 
 #>  0.03060209  4.59301048  1.09678158 -1.60525989  0.76774711 -1.77660202 
 
-# Against a numerical Hessian of the response gradient. The three pairs in
-# (mu, sigma) are closed and the three touching alpha are differenced.
+# The result is compared with a numerical Hessian of the response gradient.
+# The three pairs in (mu, sigma) are closed and the three touching alpha are
+# differenced.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2],
                                               alpha = v[3]))
 numDeriv::hessian(f, c(0.3, 1.2, 0.7))

@@ -1,14 +1,14 @@
 # Does a Distribution Declare Atoms
 
-Answers whether a distribution registers
+Returns `TRUE` when a distribution registers a
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
-for itself, which is how
+method of its own.
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
-decides that a parent carries a point mass and must be rejected. The
-function examines the class on which the method is registered and not a
-value: a distribution with an atom declares one at every parameter
-setting, whereas a value taken at one setting could be empty by
-accident.
+uses the result to detect that a parent carries a point mass, in which
+case the parent is rejected. The function examines the class on which
+the method is registered and not a value: a distribution with an atom
+declares one at every parameter setting, whereas a value taken at one
+setting could be empty by accident.
 
 ## Usage
 
@@ -41,16 +41,13 @@ and
 register
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
 on their continuous classes only to report the parent's atoms, so their
-registration says nothing about the wrapped family. For these classes
-the function is applied to `parent@parent_distrib` instead, and a
-wrapper of a family without atoms declares none.
+registration does not indicate whether the wrapped family has atoms. For
+these classes the function is applied to `parent@parent_distrib`
+instead, and a wrapper of a family without atoms declares none.
 
-The argument is named `parent` deliberately. The base class of this
-package is called `distrib`, and an argument of that name would shadow
-it: the comparison meant for the base class would then be against the
-object. That The argument is named `parent` because an argument named
-`distrib` would shadow the base class `distrib` in the comparison with
-the class.
+The argument is named `parent` because an argument named `distrib` would
+shadow the base class `distrib`, and the comparison meant for the base
+class would then be against the object.
 
 ## See also
 
@@ -59,7 +56,7 @@ for the generic,
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
 which consults this, and
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md),
-which produces a parent it rejects.
+which produces a parent that it rejects.
 
 ## Examples
 
@@ -72,13 +69,13 @@ distributions7:::declares_atoms(gaussian1_distrib())
 distributions7:::declares_atoms(zero_adjusted(gaussian1_distrib()))
 #> [1] TRUE
 
-# Which is why folded() rejects the second by name.
+# For this reason folded() rejects the second by name.
 try(folded(zero_adjusted(gaussian1_distrib())))
 #> Error : 'zero-adjusted gaussian1' carries an atom, and folding would misplace it: zero is its own
 #>   preimage while every other point has two, so an atom at zero would be
 #>   counted twice and one elsewhere moved onto its reflection.
 
-# A wrapper declares atoms exactly when the family it wraps does.
+# A wrapper declares atoms exactly when the family that it wraps does.
 distributions7:::declares_atoms(fixed(gaussian1_distrib(), sigma = 1.2))
 #> [1] FALSE
 distributions7:::declares_atoms(fixed(zero_adjusted(gaussian1_distrib()),

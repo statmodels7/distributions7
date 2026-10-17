@@ -16,12 +16,13 @@ variable places no mass, so the density is exactly `0` and its logarithm
 - y:
 
   A numeric vector of observations. Negative values return `0` without
-  an error, the folded support being \\\[0, \infty)\\.
+  an error, because the folded support is \\\[0, \infty)\\.
 
 - theta:
 
-  A named list of the PARENT's parameters, each a numeric vector of
-  length 1 or of the length of `y`. Folding adds and removes nothing.
+  A named list of the PARENT's parameters, in which each element is a
+  numeric vector of length 1 or of the length of `y`. Folding adds and
+  removes nothing.
 
 - log:
 
@@ -40,9 +41,9 @@ A numeric vector of the recycled length of `y` and `theta`.
 ## Details
 
 At \\x = 0\\ the two preimages coincide and the folded density is twice
-the parent's. The addition is what separates a fold from a change of
-variable: the map is two to one, so there is no Jacobian to divide by,
-and
+the parent's. A fold differs from a change of variable because it adds
+the two preimages: the map is two to one, so the density has no Jacobian
+factor to divide out, and
 [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md)
 cannot express it.
 
@@ -71,7 +72,7 @@ theta <- list(mu = 0.5, sigma = 1.2)
 distrib_pdf(d, c(0, 0.5, 2), theta)
 #> [1] 0.6096206 0.5673785 0.1901609
 
-# Which is the parent's density at the two preimages, added.
+# The folded density is the sum of the parent's density at the two preimages.
 y <- c(0, 0.5, 2)
 all.equal(distrib_pdf(d, y, theta),
           dnorm(y, 0.5, 1.2) + dnorm(-y, 0.5, 1.2))

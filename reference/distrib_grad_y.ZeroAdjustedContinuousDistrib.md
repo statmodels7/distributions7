@@ -1,10 +1,10 @@
 # Zero-Adjusted Continuous Response Gradient
 
 Returns \\\partial\ell/\partial y\\, which equals the PARENT's for \\y
-\ne 0\\, the factor \\1-\pi\\ not depending on \\y\\. At the atom the
-log-density jumps and no derivative exists, so `NaN` is returned. The
-numerical fallback would difference across the jump and return a finite
-number.
+\ne 0\\, because the factor \\1-\pi\\ does not depend on \\y\\. At the
+atom the log-density jumps and the derivative does not exist, so `NaN`
+is returned. The numerical fallback would difference across the jump and
+return a finite number.
 
 ## Arguments
 

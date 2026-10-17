@@ -7,8 +7,8 @@ constants, or `NULL` when the parent has no route or is not a
 location-scale family on the real line (possibly with some parameters
 fixed by
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)),
-the expected information's quadrature reading the parent's center and
-scale.
+because the quadrature of the expected information reads the parent's
+center and scale.
 
 ## Usage
 

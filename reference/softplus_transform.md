@@ -1,10 +1,11 @@
 # Softplus Transformation
 
-Transformer for the inverse-softplus map \\Y = \frac{1}{a}\log(e^{aX} -
-1)\\, sending \\(0, \infty)\\ to the real line, evaluated as \\X +
-\frac{1}{a}\log(1 - e^{-aX})\\ so that it does not overflow at a large
-argument. Inverse (softplus) \\X = \frac{1}{a}\log(1 + e^{aY})\\,
-Jacobian \\\|J\| = \text{plogis}(aY)\\.
+Returns the transformer for the inverse-softplus map \\Y =
+\frac{1}{a}\log(e^{aX} - 1)\\, which sends \\(0, \infty)\\ to the real
+line and is evaluated as \\X + \frac{1}{a}\log(1 - e^{-aX})\\ so that it
+does not overflow at a large argument. The inverse (softplus) is \\X =
+\frac{1}{a}\log(1 + e^{aY})\\ and the Jacobian is \\\|J\| =
+\text{plogis}(aY)\\.
 
 ## Usage
 
@@ -16,7 +17,7 @@ softplus_transform(a = 1)
 
 - a:
 
-  Numeric. Positive scale parameter. Defaults to 1.
+  The numeric scale parameter, which must be positive. Defaults to 1.
 
 ## Value
 

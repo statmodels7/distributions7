@@ -13,7 +13,7 @@ rounding and set to zero below the support. The upper tail is \(P(|Y| &amp;gt; q
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,12 +119,12 @@ generic.</p></div>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0000000 0.5558891 0.9796206</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Which is the difference of the parent's own distribution function.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is a difference of the parent's own distribution function.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">q</span>, <span class="va">theta</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="va">q</span>, <span class="fl">0.5</span>, <span class="fl">1.2</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="op">-</span><span class="va">q</span>, <span class="fl">0.5</span>, <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Both tails and the logarithm.</span></span></span>
+<span class="r-in"><span><span class="co"># Both tails and the logarithm are available through arguments.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">1</span>, <span class="va">theta</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4441109</span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">1</span>, <span class="va">theta</span>, log.p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>

@@ -1,11 +1,12 @@
 # Faa di Bruno Over Set Partitions, on Tables
 
-The partition sum of
+Computes the partition sum of
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md),
 taking the inner derivatives as tables instead of fetching them from a
-distribution. With the two split, a family whose derivatives are easiest
-in coordinates it does not expose can carry them into the ones it does,
-without a second copy of the enumeration.
+distribution. Because the two functions are separate, a family whose
+derivatives are easiest in coordinates that it does not expose can carry
+them into the coordinates that it does expose, without a second copy of
+the enumeration.
 
 ## Usage
 
@@ -43,8 +44,8 @@ chain_assemble(D, inner_params, maps, new_params, order, n)
 
 - n:
 
-  The length to recycle a constant component to, so that every component
-  comes back one value per observation.
+  The length to which a constant component is recycled, so that every
+  component comes back one value per observation.
 
 ## Value
 
@@ -54,11 +55,11 @@ A named list of numeric vectors, keyed as
 ## Details
 
 [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
-is the case the split was made for: its derivatives are compact in the
-two rates \\(a, c)\\ and the family is parametrized by \\(\lambda,
-\alpha)\\, which is a bilinear map away. The same function also serves
-the location-scale cdf derivatives, whose inner coordinate is the
-standardized quantile.
+is the case for which the split was made: its derivatives are compact in
+the two rates \\(a, c)\\, and the family is parametrized by \\(\lambda,
+\alpha)\\, which are related to \\(a, c)\\ by a bilinear map. The same
+function also serves the location-scale cdf derivatives, whose inner
+coordinate is the standardized quantile.
 
 The key into an inner table is built from the parameter names and never
 parsed out of one, so a parameter whose own name contains an underscore

@@ -3,7 +3,7 @@
 Declares the single point mass at zero, with probability \\\pi\\. This
 declaration marks the object as a MIXED distribution: its density
 integrates to \\1 - \pi\\, and the remaining probability \\\pi\\ is the
-mass of the atom. A function that ignores the atom finds a total
+mass of the atom. A function that ignores the atom obtains a total
 probability of \\1 - \pi\\.
 
 ## Arguments
@@ -38,7 +38,7 @@ and
 changes the checks that fail on a mixed law: the density integrates to
 \\1-\pi\\ plus the atom, the quantile round trip cannot close inside the
 jump, and a central difference in \\y\\ across the atom has no
-derivative to converge to.
+derivative to which it can converge.
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
 keeps the atoms of the parent that lie inside the truncation interval.
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
@@ -61,8 +61,10 @@ the value of `za`.
 for the generic,
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 and
-[`expectation.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/expectation.ZeroAdjustedContinuousDistrib.md)
-for the two consumers, and
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
+which read the declaration,
+[`expectation.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/expectation.ZeroAdjustedContinuousDistrib.md),
+which splits the integral at zero, and
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
 which rejects a parent that declares one.
 
@@ -89,7 +91,7 @@ distrib_atoms(gaussian1_distrib(), theta[c("mu", "sigma")])
 #> numeric(0)
 #> 
 
-# The declaration is what folded() rejects.
+# A parent that has this declaration is rejected by folded().
 try(folded(d))
 #> Error : 'zero-adjusted gaussian1' carries an atom, and folding would misplace it: zero is its own
 #>   preimage while every other point has two, so an atom at zero would be

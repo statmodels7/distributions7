@@ -1,10 +1,10 @@
 # Zero-Adjusted Third Derivatives, Continuous Parent
 
-A continuous parent puts no mass at zero, so there is nothing to
-truncate away and no normalizing constant to differentiate. Away from
-the atom the log-likelihood is \\\log(1 - \pi) + \ell(y;\theta)\\: the
-\\\theta\\ derivatives are the parent's unchanged, and every component
-mixing `za` with a parent parameter is exactly zero.
+A continuous parent puts no mass at zero, so the method truncates
+nothing and differentiates no normalizing constant. Away from the atom
+the log-likelihood is \\\log(1 - \pi) + \ell(y;\theta)\\: the \\\theta\\
+derivatives are the parent's unchanged, and every component mixing `za`
+with a parent parameter is exactly zero.
 
 The object is a mixed distribution, a density on the positive line plus
 an atom at zero, and it declares that atom through
@@ -22,7 +22,7 @@ tests it correctly: the density integrates to \\1 - \pi\\, not to 1.
 
 - y:
 
-  A numeric vector of observations, zero included.
+  A numeric vector of observations, which may include zero.
 
 - theta:
 
@@ -32,7 +32,7 @@ tests it correctly: the density integrates to \\1 - \pi\\, not to 1.
 - expected:
 
   Logical of length 1. `TRUE` takes the expectation over the mixed law,
-  atom included.
+  which includes the atom.
 
 - ...:
 

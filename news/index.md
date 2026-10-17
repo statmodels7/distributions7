@@ -1,5 +1,93 @@
 # Changelog
 
+## distributions7 0.80.2
+
+- [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+  and
+  [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+  with `expected = TRUE` and `scale = "link"` fill the first-order slot
+  with
+  [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md)
+  zeros. For a multivariate family they used one zero per cell of the
+  response matrix, so some components had length instead of , with the
+  terms of length recycled into them.
+- The multivariate gaussian has
+  [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
+  [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
+  and
+  [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)
+  methods, which return arrays of zeros without an observation
+  dimension, like its
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md).
+  The calls stopped with “Can’t find method”, also through
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md).
+- [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+  of the multivariate gaussian and Student t runs at three dimensions
+  and above. It stopped with an error in the cache of
+  [`numericals7::fd_tensor()`](https://statmodels7.github.io/numericals7/reference/fd_tensor.html),
+  repaired in numericals7 0.23.3, which is now required.
+
+## distributions7 0.80.1
+
+- Documentation, third part: the pages of the wrappers
+  ([`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),
+  [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md),
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
+  [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md))
+  and of their derivative routes rewritten without relative clauses
+  lacking their pronoun, stranded prepositions, absolute constructions,
+  sentences without a verb (example captions included) and personified
+  descriptions of the code. The heading “Writing your own” of
+  [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md)
+  reads “User-defined transformers”.
+- Corrections in the same pages: the fallback of
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
+  is
+  [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md);
+  the atoms of a zero-adjusted continuous family are read by
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  and
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
+  not by
+  [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md);
+  two wrong counts, of the callers of
+  [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
+  and of the methods that
+  [`za_y_deriv()`](https://statmodels7.github.io/distributions7/reference/za_y_deriv.md)
+  serves, are removed.
+- The error messages of
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  and
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  for a missing argument, and those of
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  that list the parameters, are reworded.
+
+## distributions7 0.80.0
+
+- [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
+  and
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  of the multivariate gaussian and Student t compute the pairs of
+  parameters once per call, in place of once per pair. At 100 dimensions
+  (102 parameters, 5253 pairs) each call took about 60 s and takes 0.2
+  s; the results are unchanged.
+- The summary of a multivariate family with an inverse parametrization
+  ([`parameters7::ar1_inv()`](https://statmodels7.github.io/parameters7/reference/ar1_inv.html),
+  `autoregressive_inv()`, `inverse_of()`) reports the quantities of the
+  matrix that the parametrization inverts. A
+  [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  with `ar1_inv()` reports the standard deviation and the lag-one
+  correlation of the AR(1), as
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  with `ar1()` does, in place of every conditional variance and every
+  partial correlation. Requires parameters7 0.26.0.
+
 ## distributions7 0.79.2
 
 - Documentation, second part: the pages of the families from inverse

@@ -4,13 +4,13 @@ $$\mathbb{E}\left[\frac{\partial^2 \ell_T}
   {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),$$
 the covariance of the PARENT's score under the truncated law. This is the
 second Bartlett identity for the truncated model: the parent's expected
-Hessian cancels exactly against the term it contributes to the second
+Hessian cancels exactly against the term that it contributes to the second
 derivative of \(\log Z\)."><meta property="og:description" content="Computes
 $$\mathbb{E}\left[\frac{\partial^2 \ell_T}
   {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),$$
 the covariance of the PARENT's score under the truncated law. This is the
 second Bartlett identity for the truncated model: the parent's expected
-Hessian cancels exactly against the term it contributes to the second
+Hessian cancels exactly against the term that it contributes to the second
 derivative of \(\log Z\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -19,7 +19,7 @@ derivative of \(\log Z\)."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,7 @@ $$\mathbb{E}\left[\frac{\partial^2 \ell_T}
   {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),$$
 the covariance of the PARENT's score under the truncated law. This is the
 second Bartlett identity for the truncated model: the parent's expected
-Hessian cancels exactly against the term it contributes to the second
+Hessian cancels exactly against the term that it contributes to the second
 derivative of \(\log Z\).</p>
     </div>
 
@@ -106,11 +106,11 @@ scalar parameters.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The cdf derivatives of the parent give only
-\(\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]\), not the second term
-alone, so the expected Hessian reads separately computed sums of \(s_i
-  s_j\). For a parent with a scalar route, <code><a href="trunc_route_parts.html">trunc_route_parts()</a></code> computes them
-by the compiled rule; otherwise <code><a href="expectation.html">expectation()</a></code> is called for each
-component. The cdf derivatives give
+\(\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]\), and not the second term
+separately, so the expected Hessian is computed from sums of \(s_i
+  s_j\) that are computed separately. For a parent with a scalar route,
+<code><a href="trunc_route_parts.html">trunc_route_parts()</a></code> computes them by the compiled rule; otherwise
+<code><a href="expectation.html">expectation()</a></code> is called for each component. The cdf derivatives give
 \(\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]\) and the covariance needs
 the second term on its own. The components do not depend on the data. Each
 returned vector is constant when the parameters are scalars, and varies with
@@ -120,7 +120,7 @@ the parameters when they vary by observation.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -143,7 +143,8 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.29072798 -0.14498150 -0.07605547 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Minus the covariance of the parent's score under the truncated law.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected Hessian is minus the covariance of the parent's score under</span></span></span>
+<span class="r-in"><span><span class="co"># the truncated law.</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_score_mean.html">trunc_score_mean</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ES</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_score_prod_mean.html">trunc_score_prod_mean</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu_mu <span class="op">=</span> <span class="op">-</span><span class="op">(</span><span class="va">ES</span><span class="op">$</span><span class="va">mu_mu</span> <span class="op">-</span> <span class="va">m</span><span class="op">$</span><span class="va">mu</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span></span>
@@ -152,7 +153,8 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.29072798 -0.14498150 -0.07605547 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And what averaging the observed Hessian gives.</span></span></span>
+<span class="r-in"><span><span class="co"># The average of the observed Hessian over simulated draws approximates</span></span></span>
+<span class="r-in"><span><span class="co"># the expected Hessian.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">tn</span>, <span class="fl">200000</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">ys</span>, <span class="va">theta</span><span class="op">)</span>, <span class="va">mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></span>

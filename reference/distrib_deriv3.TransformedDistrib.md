@@ -1,7 +1,7 @@
 # Transformed Third Derivatives
 
-Exactly the parent's third derivatives, read at the preimage \\x =
-g^{-1}(y)\\. A transformation of the response contributes
+Returns exactly the parent's third derivatives, read at the preimage \\x
+= g^{-1}(y)\\. A transformation of the response contributes
 \\\log\|dg^{-1}/dy\|\\ to the log-density, and that Jacobian does not
 depend on \\\theta\\, so it vanishes from every derivative in \\\theta\\
 and leaves the parent's untouched.
@@ -27,8 +27,8 @@ the fourth.
 
 - expected:
 
-  Logical of length 1. Passed to the parent, so the parent decides
-  whether an expectation is closed or approximated.
+  Logical of length 1. The value is passed to the parent, which computes
+  the expectation in closed form or approximates it.
 
 - ...:
 
@@ -52,7 +52,7 @@ for the generic.
 ## Examples
 
 ``` r
-# A lognormal built by transforming a Gaussian.
+# A lognormal is built by transforming a Gaussian.
 logn <- transformation(gaussian1_distrib(), exp_transform())
 y <- c(1.2, 2.5)
 th <- list(mu = 0.3, sigma = 1.1)

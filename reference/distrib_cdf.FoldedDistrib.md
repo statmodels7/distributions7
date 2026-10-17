@@ -71,12 +71,12 @@ q <- c(0, 1, 3)
 distrib_cdf(d, q, theta)
 #> [1] 0.0000000 0.5558891 0.9796206
 
-# Which is the difference of the parent's own distribution function.
+# The result is a difference of the parent's own distribution function.
 all.equal(distrib_cdf(d, q, theta),
           pnorm(q, 0.5, 1.2) - pnorm(-q, 0.5, 1.2))
 #> [1] TRUE
 
-# Both tails and the logarithm.
+# Both tails and the logarithm are available through arguments.
 distrib_cdf(d, 1, theta, lower.tail = FALSE)
 #> [1] 0.4441109
 distrib_cdf(d, 1, theta, log.p = TRUE)

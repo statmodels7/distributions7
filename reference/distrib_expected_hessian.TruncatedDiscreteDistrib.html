@@ -17,7 +17,7 @@ parent the expectations behind it are exact sums over that support."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,7 @@ scalar parameters.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -126,13 +126,15 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
 <span class="r-in"><span><span class="va">EH</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.3972434</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Minus the variance of the parent's score over the retained support.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected Hessian is minus the variance of the parent's score over the</span></span></span>
+<span class="r-in"><span><span class="co"># retained support.</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_score_mean.html">trunc_score_mean</a></span><span class="op">(</span><span class="va">ztp</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span></span></span>
 <span class="r-in"><span><span class="va">ES</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_score_prod_mean.html">trunc_score_prod_mean</a></span><span class="op">(</span><span class="va">ztp</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span></span></span>
 <span class="r-in"><span><span class="op">-</span><span class="op">(</span><span class="va">ES</span> <span class="op">-</span> <span class="va">m</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.3972434</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And what averaging the observed Hessian gives.</span></span></span>
+<span class="r-in"><span><span class="co"># The average of the observed Hessian over simulated draws approximates</span></span></span>
+<span class="r-in"><span><span class="co"># the expected Hessian.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">ztp</span>, <span class="fl">200000</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>sampled <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">ztp</span>, <span class="va">ys</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span><span class="op">)</span>,</span></span>

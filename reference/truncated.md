@@ -1,7 +1,7 @@
 # Truncated Distribution Object
 
 Restricts an existing distribution to \\\[L, U\]\\ and renormalizes it,
-so that the probability the parent placed outside the interval is
+so that the probability that the parent placed outside the interval is
 redistributed inside it. Either endpoint may be omitted, giving
 one-sided truncation, and at least one must be given. Discrete and
 continuous parents are both accepted.
@@ -26,10 +26,10 @@ truncated(distrib, lower = NULL, upper = NULL)
 
 - lower, upper:
 
-  The truncation points \\L\\ and \\U\\, each a single number or `NULL`
-  for no truncation on that side. At least one must be supplied, and for
-  a discrete parent a finite one must be a whole number. Both are
-  included in the resulting support.
+  The truncation points \\L\\ and \\U\\. Each is a single number or
+  `NULL` for no truncation on that side. At least one must be supplied,
+  and for a discrete parent a finite one must be a whole number. Both
+  are included in the resulting support.
 
 ## Value
 
@@ -48,30 +48,29 @@ Write \\Z(\theta) = P(L \le Y \le U)\\ for the retained mass. Then
 \$\$f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U),
 \qquad F_T(q) = \frac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)}, \qquad
 Q_T(p) = Q\\F(L^-;\theta) + pZ(\theta)\\,\$\$ with \\F(L^-) = F(L)\\ for
-a continuous parent and \\F(L) - f(L)\\ for a discrete one, the lower
-endpoint being kept. The quantile function inverts \\F_T\\ through the
-parent's own, so drawing from the truncated law is a one-pass inverse
-transform. An interval in the upper tail is handled through the parent's
-survival function, in \\Z\\, in the distribution function and in the
-quantile function.
+a continuous parent and \\F(L) - f(L)\\ for a discrete one, because the
+lower endpoint is kept. The quantile function inverts \\F_T\\ through
+the parent's own, so drawing from the truncated law is a one-pass
+inverse transform. An interval in the upper tail is handled through the
+parent's survival function, in \\Z\\, in the distribution function and
+in the quantile function.
 
 ## Truncation adds no parameter
 
 The endpoints are known constants, like a binomial's `size`, so the
-result carries exactly the parent's parameters, domains and links. What
-it adds is the \\\theta\\-dependent normalizing constant, which
-contributes to every derivative of \\\ell_T = \ell - \log Z\\. Writing
-\$\$m_i = \mathbb{E}\_T\[s_i\], \qquad M\_{ij} =
-\mathbb{E}\_T\[H\_{ij} + s_i s_j\],\$\$ with both expectations taken
-under the TRUNCATED law, \$\$\frac{\partial \ell_T}{\partial\theta_i} =
-s_i(y) - m_i, \qquad
+result carries exactly the parent's parameters, domains and links. It
+adds the \\\theta\\-dependent normalizing constant, which contributes to
+every derivative of \\\ell_T = \ell - \log Z\\. Writing \$\$m_i =
+\mathbb{E}\_T\[s_i\], \qquad M\_{ij} = \mathbb{E}\_T\[H\_{ij} + s_i
+s_j\],\$\$ where both expectations are taken under the TRUNCATED law,
+\$\$\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
 \frac{\partial^{2}\ell_T}{\partial\theta_i\partial\theta_j} =
 H\_{ij}(y) - M\_{ij} + m_i m_j,\$\$
 \$\$\mathbb{E}\left\[\frac{\partial^{2}\ell_T}
 {\partial\theta_i\partial\theta_j}\right\] = -\mathrm{Cov}\_T(s_i,
-s_j).\$\$ The score is the parent's recentered at its truncated mean,
-and the expected Hessian is minus the covariance of that score. This is
-the second Bartlett identity for the truncated model, and
+s_j).\$\$ The score is the parent's score recentered at its truncated
+mean, and the expected Hessian is minus the covariance of that score.
+This is the second Bartlett identity for the truncated model, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 evaluates it directly.
 
@@ -97,8 +96,8 @@ per distinct block otherwise.
 
 ## What the constructor rejects
 
-- Both endpoints `NULL`. There is nothing to do, and returning the
-  parent silently would hide the missing argument.
+- Both endpoints `NULL`. The call requests no truncation, and returning
+  the parent silently would hide the missing argument.
 
 - `lower >= upper`.
 
@@ -130,7 +129,7 @@ avoids computing the normalizing constant twice.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\,
 \\F\\ and \\Q\\ are the parent's density, distribution and quantile
 functions; \\s_i\\ and \\H\_{ij}\\ are the parent's score and observed
@@ -155,7 +154,7 @@ to validate the result.
 ## Examples
 
 ``` r
-# The zero-truncated Poisson: the lower endpoint is kept.
+# The zero-truncated Poisson keeps the lower endpoint.
 ztp <- truncated(poisson_distrib(), lower = 1)
 distrib_pdf(ztp, 0:4, list(mu = 2))
 #> [1] 0.0000000 0.3130353 0.3130353 0.2086902 0.1043451
@@ -165,7 +164,7 @@ c(fitted_mean = mean(ztp, list(mu = 2)), theory = 2 / (1 - exp(-2)))
 #> fitted_mean      theory 
 #>    2.313035    2.313035 
 
-# A gaussian restricted to an interval. Truncation adds no parameter.
+# A gaussian is restricted to an interval, and truncation adds no parameter.
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 theta <- list(mu = 0.3, sigma = 1.2)
 identical(tn@params, gaussian1_distrib()@params)
@@ -197,7 +196,7 @@ distrib_atoms(tz, list(mu = 2, sigma2 = 1, za = 0.3))
 #> [1] 0.3021864
 #> 
 
-# Three errors, each stating the condition that failed.
+# Each of three errors states the condition that failed.
 try(truncated(gamma2_distrib(), lower = -2))
 #> Error : truncated() was given lower = -2, which is at or below the lower bound of the
 #>   support of 'gamma2' (0). Truncating there removes no probability mass and the

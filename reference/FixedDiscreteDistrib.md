@@ -5,8 +5,8 @@ of the wrapped distribution are held at known values. It behaves exactly
 as
 [FixedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md)
 does; the split into three classes exists so that the wrapper inherits
-the right base class, and with it the right defaults for anything the
-parent does not register. Build one with
+the right base class, and with it the right defaults for anything that
+the parent does not register. Build one with
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
 which picks the class from the parent.
 
@@ -164,27 +164,27 @@ The free parameters are the parent's minus the fixed ones, IN THE
 PARENT'S ORDER. Every method splices the fixed values back into `theta`
 at their positions and delegates to the parent, so the parent's closed
 forms are used wherever they exist, and a derivative method then keeps
-only the components in which every index is a free parameter. No method
-of this class computes anything of its own, and none is faster or more
-accurate than the parent's.
+only the components in which every index is a free parameter. Every
+method of this class delegates its computation to the parent, so the
+speed and the accuracy of each method are those of the parent's method.
 
 ## Why the components can be subset by name
 
 The free set preserves the parent's ORDER, so a combination of free
 parameters produces the same name string under the parent's enumeration
 as under the wrapper's. Subsetting by name therefore cannot pair a
-component with the wrong indices. That is the mistake re-parsing a name
-by splitting on the underscore commits, for a parameter whose own name
-contains one.
+component with the wrong indices. Re-parsing a name by splitting on the
+underscore makes this mistake for a parameter whose own name contains an
+underscore.
 
 ## The methods carry no documentation pages
 
-The continuous and discrete branches register theirs inside a loop over
-the two classes, so there is no top-level assignment for roxygen to
-attach a block to. The multivariate branch registers its own at the top
-level and is left undocumented to match, every one of them being the
-same delegation. Read the parent's page for what a method computes and
-this page for what the wrapper does to it.
+The continuous and discrete branches register their methods inside a
+loop over the two classes, so roxygen has no top-level assignment to
+which it can attach a block. The multivariate branch registers its
+methods at the top level and leaves them undocumented to match, because
+each of them is the same delegation. Read the parent's page for what a
+method computes and this page for what the wrapper does to it.
 
 ## See also
 
@@ -200,7 +200,7 @@ one of whose own parameters can usefully be held.
 ## Examples
 
 ``` r
-# A Poisson with its mean known: no free parameter at all.
+# A Poisson with its mean known has no free parameter at all.
 d <- fixed(poisson_distrib(), mu = 3)
 c(n_params = d@n_params, class = class(d)[1])
 #>                               n_params                                  class 
@@ -208,8 +208,8 @@ c(n_params = d@n_params, class = class(d)[1])
 all.equal(distrib_pdf(d, 0:3, list()), dpois(0:3, 3))
 #> [1] TRUE
 
-# A wrapper's OWN parameter can be held, which is what makes a
-# zero-inflated model with a known inflation rate.
+# A wrapper's OWN parameter can be held, so a zero-inflated model can have
+# a known inflation rate.
 zi <- fixed(zero_inflated(poisson_distrib()), zi = 0.3)
 zi@params
 #> [1] "mu"

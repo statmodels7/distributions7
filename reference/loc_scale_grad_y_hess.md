@@ -1,15 +1,15 @@
 # Second-Order Mixed Derivatives of a Location-Scale Family
 
-The
+Implements the
 [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
 and
 [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
 method bodies shared by the families that are location-scale in BOTH
 their parameters. Each one calls
 [`loc_scale_theta2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.md)
-at its own order and returns the three components in
+at its own order, returns the three components in
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)'s
-order, so neither derives anything of its own.
+order, and does not derive anything of its own.
 
 ## Usage
 
@@ -50,8 +50,8 @@ A named list of three numeric vectors, keyed as
 
 ## Details
 
-Registered on the logistic, Cauchy, Gumbel and Laplace. A family
-carrying a shape parameter beyond the two takes
+Both bodies are registered on the logistic, Cauchy, Gumbel and Laplace.
+A family carrying a shape parameter beyond the two takes
 [`partial_loc_scale_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.md)
 instead, where the pairs touching that shape are differenced.
 
@@ -94,7 +94,7 @@ vapply(g3, function(z) z[1], numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>    1.331583    6.869081   -3.772819 
 
-# Against a numerical Hessian of the response gradient.
+# The result is compared with a numerical Hessian of the response gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(f, c(0.3, 1.2))
 #>           [,1]      [,2]

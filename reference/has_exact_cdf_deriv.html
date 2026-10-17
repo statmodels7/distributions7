@@ -13,7 +13,7 @@ route only where this is TRUE, and falls back to quadrature otherwise."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,23 +78,23 @@ route only where this is <code>TRUE</code>, and falls back to quadrature otherwi
     <p>Reading \(d^B Z\) off the parent's cdf derivatives replaces one quadrature
 per component with two calls on the parent. Where the parent has no
 closed-form cdf derivative, that route differences its distribution function
-and has a larger relative error than the quadrature it would replace. The
-error passes into <code><a href="numerical_deriv4.html">numerical_deriv4()</a></code>, which differentiates the analytical
-Hessian, and enlarges the error of the reference used in the fourth-order
-check.</p>
+and has a larger relative error than the quadrature that it would replace.
+The error passes into <code><a href="numerical_deriv4.html">numerical_deriv4()</a></code>, which differentiates the
+analytical Hessian, and enlarges the error of the reference used in the
+fourth-order check.</p>
     </div>
     <div class="section level2">
     <h2 id="how-a-genuine-method-is-recognized">How a genuine method is recognized<a class="anchor" aria-label="anchor" href="#how-a-genuine-method-is-recognized"></a></h2>
-    <p><code>attr(m, "signature")[[1]]</code> is the class the method was registered on, so an
-inherited fallback answers with a base class. <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code> on the method
-object cannot be used for this, S7 wrapping it. The third- and
+    <p><code>attr(m, "signature")[[1]]</code> is the class on which the method was registered,
+so for an inherited fallback it is a base class. <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code> on the method
+object cannot be used for this, because S7 wraps the method. The third- and
 fourth-order defaults sit on <code>distrib</code> where the first two sit on
 <code>continuous_distrib</code>, so both base classes are excluded or a stencil would
 be read as a closed form.</p>
-<p>The test reads the class that owns the method, so a family that registers a
-method combining closed components with a stencil in one direction answers
-<code>TRUE</code>. That is the intended reading: what the gate protects against is the
-generic differencing the cdf itself.</p>
+<p>The test uses the class that owns the method, so for a family that registers
+a method combining closed components with a stencil in one direction the
+result is <code>TRUE</code>. This behavior is intended, because the gate protects
+against the generic method differencing the cdf itself.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -104,18 +104,18 @@ generic differencing the cdf itself.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A discrete family answers TRUE at every order: its cdf derivatives are an</span></span></span>
-<span class="r-in"><span><span class="co"># exact sum.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># For a discrete family the result is TRUE at every order, because its cdf</span></span></span>
+<span class="r-in"><span><span class="co"># derivatives are an exact sum.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">has_exact_cdf_deriv</span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">k</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE TRUE TRUE TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The gaussian writes all four out.</span></span></span>
+<span class="r-in"><span><span class="co"># The gaussian has closed forms for all four orders.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">has_exact_cdf_deriv</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">k</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE TRUE TRUE TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The gamma's cdf derivatives are compiled, so it answers TRUE as well.</span></span></span>
+<span class="r-in"><span><span class="co"># The gamma's cdf derivatives are compiled, so the result is TRUE as well.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">has_exact_cdf_deriv</span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">k</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE TRUE TRUE TRUE</span>

@@ -3,15 +3,15 @@
 block is the negative of the Bernoulli information, \(-1/\{\pi(1-\pi)\}\),
 the mixed blocks are exactly zero, and the parent block is \((1-\pi)\)
 times the truncated parent's own expected Hessian: a positive observation
-arrives with probability \(1-\pi\) and carries the whole of what
-\(\theta\) is estimated from. The components do not depend on the observed
+arrives with probability \(1-\pi\) and carries all of the information from
+which \(\theta\) is estimated. The components do not depend on the observed
 values, so each returned vector is constant whenever the parent's expected
 Hessian is."><meta property="og:description" content="Computes the expectation of the observed Hessian in closed form. The hurdle
 block is the negative of the Bernoulli information, \(-1/\{\pi(1-\pi)\}\),
 the mixed blocks are exactly zero, and the parent block is \((1-\pi)\)
 times the truncated parent's own expected Hessian: a positive observation
-arrives with probability \(1-\pi\) and carries the whole of what
-\(\theta\) is estimated from. The components do not depend on the observed
+arrives with probability \(1-\pi\) and carries all of the information from
+which \(\theta\) is estimated. The components do not depend on the observed
 values, so each returned vector is constant whenever the parent's expected
 Hessian is."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +21,7 @@ Hessian is."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,8 +58,8 @@ Hessian is."><meta property="og:image" content="https://statmodels7.github.io/di
 block is the negative of the Bernoulli information, \(-1/\{\pi(1-\pi)\}\),
 the mixed blocks are exactly zero, and the parent block is \((1-\pi)\)
 times the truncated parent's own expected Hessian: a positive observation
-arrives with probability \(1-\pi\) and carries the whole of what
-\(\theta\) is estimated from. The components do not depend on the observed
+arrives with probability \(1-\pi\) and carries all of the information from
+which \(\theta\) is estimated. The components do not depend on the observed
 values, so each returned vector is constant whenever the parent's expected
 Hessian is.</p>
     </div>
@@ -106,17 +106,19 @@ it returns for the parent.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors of length <code>length(y)</code>, keyed as
-<code><a href="hess_names.html">hess_names(distrib@params)</a></code>. Constant across observations
-when the parent's own expected information is, which is always true for a
-family reaching this method with the default <code>approx = "opg"</code> and a
-closed-form parent; a parent evaluated by an approximation can vary by
-observation, <code>h_orig_exp</code> being read at the actual <code>y</code> rather than at
+<code><a href="hess_names.html">hess_names(distrib@params)</a></code>. The vectors are constant across
+observations when the parent's own expected information is constant, which
+is always true for a family that reaches this method with the default
+<code>approx = "opg"</code> and a closed-form parent. If the parent's expected
+information is evaluated by an approximation, the vectors can vary by
+observation, because <code>h_orig_exp</code> is read at the actual <code>y</code> rather than at
 zero.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The block diagonal is why a hurdle model is cheap to fit: the two halves can
-be estimated independently, and the information matrix inverts blockwise.
+    <p>Because the information matrix is block diagonal, a hurdle model is cheap to
+fit: the two halves can be estimated independently, and the matrix inverts
+blockwise.
 <code>approx</code> and <code>nsim</code> are forwarded to the expected Hessian of the parent and
 are used only where the parent has no closed form. The remaining blocks are
 exact, and the whole expectation is exact when the parent's is.</p>
@@ -154,7 +156,7 @@ matrix, <code><a href="fit_distrib.html">fit_distrib()</a></code>, whose Fisher 
 <span class="r-out co"><span class="r-pr">#&gt;</span>  reported bernoulli     mixed </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -4.166667 -4.166667  0.000000 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># It is what summing the observed Hessian against the mass function gives.</span></span></span>
+<span class="r-in"><span><span class="co"># The closed form equals the observed Hessian summed against the mass function.</span></span></span>
 <span class="r-in"><span><span class="va">sup</span> <span class="op">&lt;-</span> <span class="fl">0</span><span class="op">:</span><span class="fl">400</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">sup</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Hs</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">sup</span>, <span class="va">theta</span><span class="op">)</span></span></span>

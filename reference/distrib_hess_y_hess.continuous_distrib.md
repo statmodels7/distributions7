@@ -1,6 +1,6 @@
 # Default Hyperparameter Hessian of the Response Curvature
 
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through
 [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md).
 It is
@@ -46,7 +46,7 @@ keyed as
 for the generic,
 [`distrib_grad_y_hess.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.md)
 for the third-order twin, and
-[`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md),
+[`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md),
 which does the work.
 
 ## Examples
@@ -59,7 +59,7 @@ h <- distrib_hess_y_hess(d, y, theta)
 c(h$mu_mu[1], h$mu_sigma2[1], h$sigma2_sigma2[1])
 #> [1]  -8  16 -32
 
-# Against a numerical Hessian of the response curvature.
+# The result is compared with a numerical Hessian of the response curvature.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(2, 1))
 #>      [,1] [,2]

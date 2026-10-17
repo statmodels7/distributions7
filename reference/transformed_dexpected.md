@@ -4,7 +4,7 @@ Returns the parent family's first (`k = 1`) or second (`k = 2`)
 derivatives of the expected information on the parameter scale. A
 transformation of the response leaves the expected information unchanged
 as a function of the parameters, so its derivatives are the parent's.
-Registered through
+The function is registered through
 [`register_dexpected()`](https://statmodels7.github.io/distributions7/reference/register_dexpected.md).
 
 ## Usage

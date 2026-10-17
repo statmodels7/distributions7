@@ -9,7 +9,7 @@ transformation()."><meta property="og:image" content="https://statmodels7.github
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,10 +65,10 @@ transformation()."><meta property="og:image" content="https://statmodels7.github
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>There is nothing to do. The Jacobian does not depend on \(\theta\), so every
-derivative of the transformed log-likelihood is the parent's evaluated at
-\(x = g^{-1}(y)\). The methods exist only so that the numerical fallback is
-never reached.</p>
+    <p>The Jacobian does not depend on \(\theta\), so the method applies no
+correction: every derivative of the transformed log-likelihood is the
+parent's evaluated at \(x = g^{-1}(y)\). The methods exist only so that the
+numerical fallback is never reached.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

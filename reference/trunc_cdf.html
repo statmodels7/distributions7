@@ -4,16 +4,16 @@ F(q))/Z\), clamped to \([0, 1]\). The lower tail of an interval with
 \(F(L^-) \le 1/2\) is the first difference as written. Otherwise, and for
 the upper tail, each difference is formed from the parent's distribution
 function while \(F(q) \le 1/2\) and from its survival function beyond, as
-\((S(L^-) - S(q))/Z\) and \((S(q) - S(U))/Z\), so that neither tail is a
-difference of two numbers near one. One of the shared method bodies,
-registered on both truncated classes."><meta property="og:description" content="Evaluates \(F_T(q) = (F(q) - F(L^-))/Z\) and the upper tail \((F(U) -
+\((S(L^-) - S(q))/Z\) and \((S(q) - S(U))/Z\), so that each tail avoids a
+difference of two numbers near one. The body is shared and is registered on
+both truncated classes."><meta property="og:description" content="Evaluates \(F_T(q) = (F(q) - F(L^-))/Z\) and the upper tail \((F(U) -
 F(q))/Z\), clamped to \([0, 1]\). The lower tail of an interval with
 \(F(L^-) \le 1/2\) is the first difference as written. Otherwise, and for
 the upper tail, each difference is formed from the parent's distribution
 function while \(F(q) \le 1/2\) and from its survival function beyond, as
-\((S(L^-) - S(q))/Z\) and \((S(q) - S(U))/Z\), so that neither tail is a
-difference of two numbers near one. One of the shared method bodies,
-registered on both truncated classes."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\((S(L^-) - S(q))/Z\) and \((S(q) - S(U))/Z\), so that each tail avoids a
+difference of two numbers near one. The body is shared and is registered on
+both truncated classes."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ registered on both truncated classes."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,9 +59,9 @@ F(q))/Z\), clamped to \([0, 1]\). The lower tail of an interval with
 \(F(L^-) \le 1/2\) is the first difference as written. Otherwise, and for
 the upper tail, each difference is formed from the parent's distribution
 function while \(F(q) \le 1/2\) and from its survival function beyond, as
-\((S(L^-) - S(q))/Z\) and \((S(q) - S(U))/Z\), so that neither tail is a
-difference of two numbers near one. One of the shared method bodies,
-registered on both truncated classes.</p>
+\((S(L^-) - S(q))/Z\) and \((S(q) - S(U))/Z\), so that each tail avoids a
+difference of two numbers near one. The body is shared and is registered on
+both truncated classes.</p>
     </div>
 
     <div class="section level2">
@@ -101,22 +101,22 @@ returned on the log scale.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector of probabilities, of the length <code>q</code> and <code>theta</code>
-recycle to.</p>
+    <p>A numeric vector of probabilities, of the length to which <code>q</code> and
+<code>theta</code> recycle.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The clamp is there to make the endpoints exact. It returns <code>0</code> below \(L\)
-and <code>1</code> at and above \(U\), where the unclamped ratio would give a small
-negative number or one plus a rounding. At \(L\) itself the value is <code>0</code>
-for a continuous parent and \(f(L)/Z\), the mass of the lower endpoint, for
-a discrete one.</p>
+    <p>The clamp makes the endpoints exact. The function returns <code>0</code> below \(L\)
+and <code>1</code> at and above \(U\), where the ratio before clamping would give a
+small negative number or one plus a rounding. At \(L\) itself the value is
+<code>0</code> for a continuous parent and \(f(L)/Z\), the mass of the lower endpoint,
+for a discrete one.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -134,11 +134,11 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">tn</span> <span class="op">&lt;-</span> <span class="fu"><a href="truncated.html">truncated</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span>, sigma <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Exactly 0 and 1 at the endpoints.</span></span></span>
+<span class="r-in"><span><span class="co"># The values at the endpoints are exactly 0 and 1.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">tn</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0000000 0.4609908 1.0000000</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against the ratio written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The ratio written out gives the same value at 0.3.</span></span></span>
 <span class="r-in"><span><span class="va">cs</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_constants.html">trunc_constants</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.3</span>, <span class="fl">1.2</span><span class="op">)</span> <span class="op">-</span> <span class="va">cs</span><span class="op">$</span><span class="va">Fl</span><span class="op">)</span> <span class="op">/</span> <span class="va">cs</span><span class="op">$</span><span class="va">Z</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4609908</span>

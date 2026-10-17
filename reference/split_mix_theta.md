@@ -1,10 +1,10 @@
 # Split a Wrapper's Parameter From Its Parent's
 
 Separates a full `theta` into the parent distribution's parameters and
-the single mixing parameter the wrapper adds. Both zero wrappers append
-their parameter last, so the split is positional and uses no parameter
-names. The constructors reject a parent that already has a parameter
-with the wrapper's name (`zi` or `za`).
+the single mixing parameter that the wrapper adds. Both zero wrappers
+append their parameter last, so the split is positional and uses no
+parameter names. The constructors reject a parent that already has a
+parameter with the wrapper's name (`zi` or `za`).
 
 ## Usage
 
@@ -21,8 +21,8 @@ split_mix_theta(distrib, theta)
 
 - theta:
 
-  A named list of parameters, already aligned, the parent's followed by
-  the wrapper's.
+  A named list of parameters, already aligned, in which the parent's
+  parameters are followed by the wrapper's.
 
 ## Value
 
@@ -49,7 +49,7 @@ str(p)
 #>   ..$ mu: num 3
 #>  $ mix : num 0.25
 
-# The first block is exactly what the parent expects.
+# The first block has exactly the form that the parent's methods require.
 all.equal(distrib_pdf(d@parent_distrib, 0:3, p$orig), dpois(0:3, 3))
 #> [1] TRUE
 ```

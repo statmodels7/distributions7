@@ -1,9 +1,9 @@
 # Zero-Adjusted Continuous Random Number Generator
 
 Draws zeros with probability \\\pi\\ and otherwise samples from the
-parent unchanged. No truncation is involved, unlike the discrete branch:
-a continuous parent produces an exact zero with probability zero, so a
-draw from it never collides with the atom.
+parent unchanged. Unlike the discrete branch, this method does not
+truncate: a continuous parent produces an exact zero with probability
+zero, so a draw from it never collides with the atom.
 
 ## Arguments
 
@@ -38,7 +38,7 @@ observation.
 ## See also
 
 [`distrib_pdf.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ZeroAdjustedContinuousDistrib.md)
-for the law these are drawn from,
+for the law from which these are drawn,
 [`distrib_rng.ZeroAdjustedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ZeroAdjustedDiscreteDistrib.md),
 which does truncate, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)

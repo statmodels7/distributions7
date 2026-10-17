@@ -1,9 +1,9 @@
 # Gradient of a Reparametrized Distribution
 
-The parent's score carried by the Jacobian of the map, \$\$\ell^{(a)} =
-\sum_i \ell^{(i)}\\ \frac{\partial\theta_i}{\partial\psi_a}.\$\$ It is
-exact whenever the parent's score is, and the map's partials are
-whatever
+Carries the parent's score through the Jacobian of the map,
+\$\$\ell^{(a)} = \sum_i \ell^{(i)}\\
+\frac{\partial\theta_i}{\partial\psi_a}.\$\$ It is exact whenever the
+parent's score is, and the map's partials are whatever
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
 supplies: a hand-written table where the family has one, and one stencil
 per partial otherwise.
@@ -31,9 +31,9 @@ reparam_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 - scale:
 
-  Either `"parameter"` (the default) or `"link"`. Handled by the
-  generic, which applies the chain rule onto the link scale after this
-  method has returned; the method itself always answers on the parameter
+  Either `"parameter"` (the default) or `"link"`. The generic handles it
+  and applies the chain rule onto the link scale after this method has
+  returned; the method itself always returns values on the parameter
   scale.
 
 - ...:
@@ -42,8 +42,8 @@ reparam_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 ## Value
 
-A named list of numeric vectors, one per new parameter, each the length
-of `y` recycled against `theta`.
+A named list of numeric vectors, one per new parameter, where each
+vector has the length of `y` after it is recycled against `theta`.
 
 ## Notation
 
@@ -71,8 +71,8 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# The same numbers as the family written out by hand, to 1e-12: the map's
-# partials are differenced here and written out there.
+# The result equals that of the family written out by hand, to 1e-12: the
+# map's partials are differenced here and written out there.
 a <- distrib_gradient(d, c(0, 1, 2), th)
 b <- distrib_gradient(gaussian2_distrib(), c(0, 1, 2), th)
 max(abs(unlist(a[names(b)]) - unlist(b)))

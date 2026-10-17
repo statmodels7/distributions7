@@ -33,12 +33,12 @@ zero-truncated Poisson and keeps the mass at one.
 
 ## Value
 
-A numeric vector of probabilities, of the length `y` and `theta` recycle
-to.
+A numeric vector of probabilities, of the length to which `y` and
+`theta` recycle.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -60,7 +60,7 @@ for the continuous branch, and
 ztp <- truncated(poisson_distrib(), lower = 1)
 theta <- list(mu = 2)
 
-# Zero is gone; one is not.
+# The mass at zero is removed, and the mass at one is kept.
 distrib_pdf(ztp, 0:4, theta)
 #> [1] 0.0000000 0.3130353 0.3130353 0.2086902 0.1043451
 dpois(1:4, 2) / (1 - dpois(0, 2))

@@ -44,7 +44,7 @@ order.
 A positive observation carries no information about \\\zeta\\ beyond the
 \\(1-\zeta)\\ factor, which is why its \\\zeta\\ component is the same
 number at every such point. A zero carries all of it, and its weight
-\\w\\ is what shares the credit between the two mechanisms.
+\\w\\ shares the credit between the two mechanisms.
 
 ## Notation
 
@@ -76,7 +76,7 @@ vapply(g, sum, numeric(1))
 #>        mu        zi 
 #> -3.299986 53.511184 
 
-# Against a numerical derivative of the log-likelihood.
+# The sums are compared with a numerical derivative of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

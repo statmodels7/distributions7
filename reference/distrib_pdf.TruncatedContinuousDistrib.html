@@ -3,13 +3,13 @@
 $$f_T(y) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U), \qquad
   f_T(y) = 0 \ \text{ otherwise},$$
 with \(Z(\theta) = F(U;\theta) - F(L;\theta)\) the retained mass. The
-division is carried out on the log scale, so a point far in a tail keeps its
-precision instead of underflowing before the division."><meta property="og:description" content="Evaluates
+density is divided by \(Z\) on the log scale, so a point far in a tail
+keeps its precision instead of underflowing before the division."><meta property="og:description" content="Evaluates
 $$f_T(y) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U), \qquad
   f_T(y) = 0 \ \text{ otherwise},$$
 with \(Z(\theta) = F(U;\theta) - F(L;\theta)\) the retained mass. The
-division is carried out on the log scale, so a point far in a tail keeps its
-precision instead of underflowing before the division."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+density is divided by \(Z\) on the log scale, so a point far in a tail
+keeps its precision instead of underflowing before the division."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ precision instead of underflowing before the division."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ precision instead of underflowing before the division."><meta property="og:image
 $$f_T(y) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U), \qquad
   f_T(y) = 0 \ \text{ otherwise},$$
 with \(Z(\theta) = F(U;\theta) - F(L;\theta)\) the retained mass. The
-division is carried out on the log scale, so a point far in a tail keeps its
-precision instead of underflowing before the division.</p>
+density is divided by \(Z\) on the log scale, so a point far in a tail
+keeps its precision instead of underflowing before the division.</p>
     </div>
 
 
@@ -87,14 +87,14 @@ returned.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector of density values, of the length <code>y</code> and <code>theta</code>
-recycle to.</p>
+    <p>A numeric vector of density values, of the length to which <code>y</code> and
+<code>theta</code> recycle.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -115,7 +115,8 @@ and <code><a href="distrib_cdf.TruncatedContinuousDistrib.html">distrib_cdf.Trun
 <span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">tn</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0000000 0.4118505 0.3584437 0.0000000</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The parent's density lifted by the reciprocal of the retained mass.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is the parent's density lifted by the reciprocal of the</span></span></span>
+<span class="r-in"><span><span class="co"># retained mass.</span></span></span>
 <span class="r-in"><span><span class="va">Z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.3</span>, <span class="fl">1.2</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">pnorm</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">1.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.3</span>, <span class="fl">1.2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.3</span>, <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">Z</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4118505 0.3584437</span>

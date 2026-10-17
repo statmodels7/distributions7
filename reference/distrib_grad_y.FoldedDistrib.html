@@ -15,7 +15,7 @@ rule through the reflected preimage: moving \(x\) up moves \(-x\) down."><meta p
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,13 +103,15 @@ and <code><a href="distrib_grad_y.html">distrib_grad_y()</a></code> for the gene
 <span class="r-in"><span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1148149 -0.5785036 -1.8130051</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical derivative of the folded log-density.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a numerical derivative of the folded</span></span></span>
+<span class="r-in"><span><span class="co"># log-density.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">y</span>, <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">numDeriv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/numDeriv/man/grad.html" class="external-link">grad</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">theta</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="va">v</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.1148149 -0.5785036 -1.8130051</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The minus sign written out: the reflected preimage pushes the other way.</span></span></span>
+<span class="r-in"><span><span class="co"># The minus sign is written out here: the reflected preimage pushes the</span></span></span>
+<span class="r-in"><span><span class="co"># other way.</span></span></span>
 <span class="r-in"><span><span class="va">g0</span> <span class="op">&lt;-</span> <span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="fold_parts.html">fold_parts</a></span><span class="op">(</span><span class="va">g0</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">w</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span>,</span></span>

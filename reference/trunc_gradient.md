@@ -2,9 +2,8 @@
 
 Computes the parent's score recentered by its truncated mean,
 \$\$\frac{\partial \ell_T}{\partial \theta_i} = s_i(y) - m_i, \qquad m_i
-= \mathbb{E}\_T\[s_i\],\$\$ the subtraction being the derivative of
-\\-\log Z\\. One of the shared bodies, registered on both truncated
-classes.
+= \mathbb{E}\_T\[s_i\].\$\$ The subtraction is the derivative of \\-\log
+Z\\. The body is shared and is registered on both truncated classes.
 
 ## Usage
 
@@ -42,16 +41,16 @@ A named list of numeric vectors, one component per parameter, in
 
 ## Details
 
-Truncation adds no parameter, the endpoints being constants, so the
-returned list has exactly the parent's components. What it adds is the
-\\\theta\\-dependent normalizing constant, and the recentering is that
-constant's whole contribution at first order. The support does not
+Truncation adds no parameter because the endpoints are constants, so the
+returned list has exactly the parent's components. Truncation does add
+the \\\theta\\-dependent normalizing constant, and the recentering is
+that constant's whole contribution at first order. The support does not
 depend on \\\theta\\, which licenses differentiating \\Z\\ under the
 integral sign and keeps truncation at fixed points a regular problem.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -80,7 +79,8 @@ vapply(g, sum, numeric(1))
 #>         mu      sigma 
 #> -0.5193428 -0.3639437 
 
-# Against a numerical derivative of the truncated log-likelihood.
+# The gradient is compared with a numerical derivative of the truncated
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- tn@params
   sum(distrib_pdf(tn, y, t2, log = TRUE))

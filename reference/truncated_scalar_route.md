@@ -7,8 +7,9 @@ family, `"TruncatedDiscreteDistrib|<inner name>"` or
 constants followed by the truncation points `lower` and `upper`, as
 [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md)
 describes, or `NULL` when the parent has no route. A continuous parent
-needs a family with a compiled distribution function and at most four
-parameters, which may be wrapped by any chain of
+has a route only if it is a family with a compiled distribution function
+and at most four parameters; such a family may be wrapped by any chain
+of
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
 and

@@ -44,8 +44,8 @@ parameters, keyed as
 ## Details
 
 A response derivative does not interact with a reparametrization of
-\\\theta\\, so nothing on the \\y\\ side is touched and the whole
-correction is the map's. The partials come from
+\\\theta\\, so the \\y\\ side is left unchanged and the map supplies the
+whole correction. The partials come from
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md),
 which a family supplies through `map_derivs` or, failing that, through
 one stencil per partial.
@@ -69,7 +69,8 @@ for the wrapper.
 ## Examples
 
 ``` r
-# A gaussian obtained in its variance rather than written out.
+# The gaussian is obtained in its variance through reparametrize() rather
+# than written out.
 d <- reparametrize(
   gaussian1_distrib(),
   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
@@ -86,14 +87,15 @@ vapply(g3, function(z) z[1], numeric(1))
 #>         mu_mu sigma2_sigma2     mu_sigma2 
 #>     0.0000000     0.6697960    -0.4822531 
 
-# Against the family written out by hand, which shares none of the map's
-# arithmetic. The map's partials are stencils here, no map_derivs having
-# been given, so the two agree to about 1e-09.
+# The result is compared with the family written out by hand, which does not
+# share any of the map's arithmetic. The map's partials are stencils here
+# because map_derivs is not supplied, so the two agree to about 1e-09.
 max(abs(unlist(g3) -
         unlist(distrib_grad_y_hess(gaussian2_distrib(), y, theta))))
 #> [1] 1.844296e-09
 
-# And against a numerical Hessian of the response gradient.
+# The result is also compared with a numerical Hessian of the response
+# gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::hessian(f, c(0.3, 1.44))
 #>               [,1]       [,2]

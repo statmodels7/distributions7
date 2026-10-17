@@ -3,8 +3,8 @@
 Computes every fourth derivative of the folded log-density from the same
 partition sums as
 [`distrib_deriv3.FoldedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.FoldedDistrib.md),
-one order up: the block ratios \\d^B L/L = w\\(d^B f(x)/f(x)) +
-(1-w)\\(d^B f(-x)/f(-x))\\ handed to
+one order up. The block ratios \\d^B L/L = w\\(d^B f(x)/f(x)) +
+(1-w)\\(d^B f(-x)/f(-x))\\ are handed to
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md).
 A parent with closed forms to fourth order gives the folded family
 closed forms to fourth order.
@@ -37,14 +37,14 @@ closed forms to fourth order.
 
 - approx:
 
-  The strategy
+  The strategy that
   [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  uses when `expected = TRUE`. Ignored otherwise.
+  uses when `expected = TRUE`. It is ignored otherwise.
 
 - nsim:
 
   The Monte Carlo sample size when `approx = "mc"`. Defaults to `10000`.
-  Ignored otherwise.
+  It is ignored otherwise.
 
 - ...:
 
@@ -87,7 +87,7 @@ d4 <- distrib_deriv4(d, y, theta)
 length(d4)
 #> [1] 5
 
-# Against one stencil on the analytic third order.
+# The result is compared with one stencil on the analytic third order.
 h <- 1e-4
 tp <- theta; tp$sigma <- tp$sigma + h
 tm <- theta; tm$sigma <- tm$sigma - h

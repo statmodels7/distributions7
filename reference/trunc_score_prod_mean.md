@@ -7,9 +7,9 @@ adds it to
 [`trunc_hess_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_hess_mean.md)
 where the cdf route is unavailable, and
 [`trunc_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/trunc_expected_hessian.md)
-uses it for a parent without a scalar route, the expected Hessian being
-\\-\mathrm{Cov}\_T(s_i, s_j)\\. For a parent with a scalar route, the
-sums \\S\_{ij}\\ come from
+uses it for a parent without a scalar route, because the expected
+Hessian is \\-\mathrm{Cov}\_T(s_i, s_j)\\. For a parent with a scalar
+route, the sums \\S\_{ij}\\ come from
 [`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md).
 
 ## Usage
@@ -36,15 +36,15 @@ parameters, keyed as
 
 ## Details
 
-This is the quantity that keeps a truncated expected information
-expensive even for a parent with closed-form cdf derivatives. Those give
-\\d\_{ij} Z\\, which is \\\mathbb{E}\_T\[H\_{ij}\] + \mathbb{E}\_T\[s_i
-s_j\]\\, and no rearrangement separates the two terms; the covariance
-needs the second alone.
+This quantity keeps a truncated expected information expensive even for
+a parent with closed-form cdf derivatives. Those give \\d\_{ij} Z\\,
+which is \\\mathbb{E}\_T\[H\_{ij}\] + \mathbb{E}\_T\[s_i s_j\]\\, and
+the two terms cannot be separated by rearrangement; the covariance needs
+only the second.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -70,7 +70,7 @@ unlist(ES)
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  0.29721172  0.37220463  0.03767246 
 
-# Against the same expectation taken by simulation.
+# The result is compared with the same expectation taken by simulation.
 set.seed(1)
 ys <- distrib_rng(tn, 100000, theta)
 g <- distrib_gradient(gaussian1_distrib(), ys, theta)

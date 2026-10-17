@@ -43,8 +43,8 @@ The Hessian of the fold has no formula of its own.
 [`fold_ratio()`](https://statmodels7.github.io/distributions7/reference/fold_ratio.md)
 supplies the ratios and
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
-turns them into derivatives of \\\log L\\, the same two functions the
-third and fourth orders use. Each ratio is a complete Bell polynomial in
+turns them into derivatives of \\\log L\\; the third and fourth orders
+use the same two functions. Each ratio is a complete Bell polynomial in
 the parent's own log-derivatives, so a parent with closed forms gives
 the folded family closed forms.
 
@@ -78,7 +78,8 @@ vapply(H, sum, numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  -0.2363048 -53.5849052 -24.9136187 
 
-# Against a numerical Hessian of the folded log-likelihood.
+# The result is compared with a numerical Hessian of the folded
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

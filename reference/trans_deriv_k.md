@@ -21,7 +21,7 @@ A function suitable for registering as an S7 method.
 
 ## Details
 
-There is nothing to do. The Jacobian does not depend on \\\theta\\, so
-every derivative of the transformed log-likelihood is the parent's
-evaluated at \\x = g^{-1}(y)\\. The methods exist only so that the
-numerical fallback is never reached.
+The Jacobian does not depend on \\\theta\\, so the method applies no
+correction: every derivative of the transformed log-likelihood is the
+parent's evaluated at \\x = g^{-1}(y)\\. The methods exist only so that
+the numerical fallback is never reached.

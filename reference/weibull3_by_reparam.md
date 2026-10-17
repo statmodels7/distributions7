@@ -1,6 +1,6 @@
 # Weibull Distribution in the Mean, Obtained
 
-The same family as
+Returns the same family as
 [`weibull3_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md),
 obtained through
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)

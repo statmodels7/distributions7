@@ -3,11 +3,11 @@
 NaN at it. Away from zero the \(1-\pi\) factor is a constant in \(y\),
 so the parent's own derivative is exact and needs no correction; at zero the
 log-density jumps, \(\log\pi\) on one side and
-\(\log\{(1-\pi)f(y)\}\) on the other, and no derivative exists."><meta property="og:description" content="Evaluates a response derivative of the PARENT away from the atom and returns
+\(\log\{(1-\pi)f(y)\}\) on the other, and the derivative does not exist."><meta property="og:description" content="Evaluates a response derivative of the PARENT away from the atom and returns
 NaN at it. Away from zero the \(1-\pi\) factor is a constant in \(y\),
 so the parent's own derivative is exact and needs no correction; at zero the
 log-density jumps, \(\log\pi\) on one side and
-\(\log\{(1-\pi)f(y)\}\) on the other, and no derivative exists."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(\log\{(1-\pi)f(y)\}\) on the other, and the derivative does not exist."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +15,7 @@ log-density jumps, \(\log\pi\) on one side and
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ log-density jumps, \(\log\pi\) on one side and
 <code>NaN</code> at it. Away from zero the \(1-\pi\) factor is a constant in \(y\),
 so the parent's own derivative is exact and needs no correction; at zero the
 log-density jumps, \(\log\pi\) on one side and
-\(\log\{(1-\pi)f(y)\}\) on the other, and no derivative exists.</p>
+\(\log\{(1-\pi)f(y)\}\) on the other, and the derivative does not exist.</p>
     </div>
 
     <div class="section level2">
@@ -91,7 +91,8 @@ parent's derivative elsewhere.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>At the atom the function returns <code>NaN</code>, because no derivative exists there.
+    <p>At the atom the function returns <code>NaN</code>, because the derivative does not
+exist there.
 The finite-difference default inherited from <code><a href="continuous_distrib.html">continuous_distrib()</a></code> would
 difference across the jump and return a finite number. It serves the response
 derivatives of orders one to four; <code><a href="za_y_list.html">za_y_list()</a></code> applies the same rule to the
@@ -107,8 +108,8 @@ mixed derivatives, which are zero in <code>za</code>.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_grad_y.ZeroAdjustedContinuousDistrib.html">distrib_grad_y.ZeroAdjustedContinuousDistrib()</a></code> and
-<code><a href="distrib_hess_y.ZeroAdjustedContinuousDistrib.html">distrib_hess_y.ZeroAdjustedContinuousDistrib()</a></code>, the two methods that it
-serves.</p></div>
+<code><a href="distrib_hess_y.ZeroAdjustedContinuousDistrib.html">distrib_hess_y.ZeroAdjustedContinuousDistrib()</a></code>, which are among the
+methods that it serves.</p></div>
     </div>
 
     <div class="section level2">
@@ -116,7 +117,7 @@ serves.</p></div>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="zero_adjusted.html">zero_adjusted</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">2</span>, za <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># NaN at the atom, the parent's derivative elsewhere.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is NaN at the atom and the parent's derivative elsewhere.</span></span></span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">za_y_deriv</span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">theta</span>, <span class="va">distrib_grad_y</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.50   NaN -0.25</span>
 <span class="r-in"><span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">theta</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mu"</span>, <span class="st">"sigma"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>

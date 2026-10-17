@@ -1,9 +1,10 @@
 # Fourth-Order Derivatives of a Reparametrized Distribution
 
-The partition sum at order four, observed or expected. A marginal
-criterion reads this order in its exact Hessian, so a reparametrized
-family used inside a penalized fit reaches it through this method. The
-fifth derivative has no method registered on the reparametrized classes:
+Computes the partition sum at order four, observed or expected. A
+marginal criterion reads this order in its exact Hessian, so a
+reparametrized family used inside a penalized fit reaches it through
+this method. The fifth derivative has no method registered on the
+reparametrized classes:
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
 dispatches to the base method, which differences the lower orders
 numerically.
@@ -40,8 +41,8 @@ reparam_deriv4(
 
 - expected:
 
-  Should the expected derivatives be carried? A single logical, `FALSE`
-  by default.
+  Should the expected derivatives be carried? It is a single logical,
+  `FALSE` by default.
 
 - scale:
 
@@ -52,12 +53,12 @@ reparam_deriv4(
 
   The strategy that the parent uses for an expected derivative for which
   it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"` or
-  `"opg"`. Passed straight through.
+  `"opg"`. The value is passed straight through.
 
 - nsim:
 
-  The number of draws for `approx = "mc"`, 10000 by default. Passed
-  through.
+  The number of draws for `approx = "mc"`, 10000 by default. The value
+  is passed through.
 
 - ...:
 
@@ -66,8 +67,8 @@ reparam_deriv4(
 ## Value
 
 A named list of numeric vectors keyed as
-[`deriv_names(distrib@params, 4)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
-each the length of `y` recycled against `theta`.
+[`deriv_names(distrib@params, 4)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
+Each has the length of `y` after it is recycled against `theta`.
 
 ## See also
 
@@ -92,7 +93,7 @@ d <- reparametrize(
 )
 th <- list(mu = 1, sigma2 = 4)
 
-# Five components for a two-parameter family.
+# The result has five components for a two-parameter family.
 names(distrib_deriv4(d, c(0, 1, 2), th))
 #> [1] "mu_mu_mu_mu"                 "mu_mu_mu_sigma2"            
 #> [3] "mu_mu_sigma2_sigma2"         "mu_sigma2_sigma2_sigma2"    

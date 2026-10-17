@@ -15,7 +15,7 @@ copy of it: the hand-written second parametrizations all do."><meta property="og
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,8 +102,8 @@ and orders the result.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
-<dd><p>Should the expected derivatives be carried? A single
-logical, <code>FALSE</code> by default.</p></dd>
+<dd><p>Should the expected derivatives be carried? It is a single
+logical, with default <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
@@ -121,17 +121,17 @@ is one of <code>"opg"</code> (the default), <code>"bartlett"</code>, <code>"inte
     <h2 id="the-identity">The identity<a class="anchor" aria-label="anchor" href="#the-identity"></a></h2>
     <p>$$\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
-      \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B},$$
-the sum over set partitions of the multi-index. Every order that the parent
-has in closed form therefore survives in closed form.</p>
+      \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B}.$$
+The outer sum runs over set partitions of the multi-index. Every order that
+the parent has in closed form therefore survives in closed form.</p>
     </div>
     <div class="section level2">
     <h2 id="under-expectation">Under expectation<a class="anchor" aria-label="anchor" href="#under-expectation"></a></h2>
     <p>Expectation is linear and the map deterministic, so the expected derivatives
 obey the same formula, and the term carrying the parent's score drops
-because the score has mean zero. That is why <code>D[[1]]</code> is left <code>NULL</code> when
-<code>expected</code> is <code>TRUE</code>: a parent with an exact expected information gives an
-exact one here.</p>
+because the score has mean zero. Therefore <code>D[[1]]</code> is left <code>NULL</code> when
+<code>expected</code> is <code>TRUE</code>, and a parent with an exact expected information gives
+an exact one here.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -143,7 +143,7 @@ exact one here.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="chain_assemble.html">chain_assemble()</a></code>, the sum it delegates to;
+    <div class="dont-index"><p><code><a href="chain_assemble.html">chain_assemble()</a></code>, to which it delegates the sum;
 <code><a href="reparam_chain.html">reparam_chain()</a></code>, its caller for a <code><a href="reparametrize.html">reparametrize()</a></code> object;
 <code><a href="chain_cdf_deriv.html">chain_cdf_deriv()</a></code>, the same construction on the distribution function.</p></div>
     </div>

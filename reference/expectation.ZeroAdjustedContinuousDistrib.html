@@ -15,7 +15,7 @@ return \((1-\pi)\mathbb{E}_W[f]\), silently."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,10 +87,10 @@ holds scalars.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>f</code> receives the FULL <code>theta</code>, <code>za</code> included, even though the integral runs
+    <p><code>f</code> receives the FULL <code>theta</code>, including <code>za</code>, even though the integral runs
 over the parent. The method re-attaches the atom probability inside a
-wrapper, so a caller's <code>f</code> sees the same parameter list at the atom and away
-from it.</p>
+wrapper, so a caller's <code>f</code> receives the same parameter list at the atom and
+away from it.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -102,9 +102,9 @@ variable and \(Y\) the zero-adjusted one.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="expectation.html">expectation()</a></code> for the generic,
-<code><a href="distrib_atoms.ZeroAdjustedContinuousDistrib.html">distrib_atoms.ZeroAdjustedContinuousDistrib()</a></code> for the declaration this
-rests on, and <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">base::mean()</a></code> and <code><a href="variance.html">variance()</a></code>, the two moments built on
-it.</p></div>
+<code><a href="distrib_atoms.ZeroAdjustedContinuousDistrib.html">distrib_atoms.ZeroAdjustedContinuousDistrib()</a></code> for the declaration on
+which this rests, and <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">base::mean()</a></code> and <code><a href="variance.html">variance()</a></code>, the two moments
+built on it.</p></div>
     </div>
 
     <div class="section level2">
@@ -112,7 +112,7 @@ it.</p></div>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="zero_adjusted.html">zero_adjusted</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">2</span>, za <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The first two moments, against the split written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The first two moments are compared with the split written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>computed <span class="op">=</span> <span class="fu"><a href="expectation.html">expectation</a></span><span class="op">(</span><span class="va">d</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">theta</span><span class="op">)</span> <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  theory <span class="op">=</span> <span class="fl">0.7</span> <span class="op">*</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> computed   theory </span>

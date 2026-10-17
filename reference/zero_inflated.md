@@ -4,10 +4,10 @@ Wraps a DISCRETE distribution into a mixture that keeps the parent
 intact and adds a second source of zeros, with probability \\\zeta\\
 carried by the new parameter `zi`: \$\$P(Y = y; \theta, \zeta) =
 \begin{cases} \zeta + (1 - \zeta)f(0; \theta) & y = 0 \\ (1 - \zeta)f(y;
-\theta) & y \> 0. \end{cases}\$\$ It is the wrapper to reach for when
-the data carry MORE zeros than the parent can produce and a zero may
-plausibly have come either from the count process or from a mechanism
-that switches it off.
+\theta) & y \> 0. \end{cases}\$\$ It is the wrapper to use when the data
+carry MORE zeros than the parent can produce and a zero may plausibly
+have come either from the count process or from a mechanism that
+switches it off.
 
 ## Usage
 
@@ -25,8 +25,8 @@ zero_inflated(distrib, link_zi = logit_link())
   or
   [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md).
   A continuous distribution, an already-wrapped one, and a support of
-  fewer than `n_params + 2` points are each rejected with an error
-  saying which condition failed.
+  fewer than `n_params + 2` points are each rejected with an error that
+  names the condition that failed.
 
 - link_zi:
 
@@ -50,21 +50,21 @@ followed by the parent's.
 
 ## Zero-inflation against zero-adjustment
 
-The two wrappers differ in what they do to the mass the parent already
-places at zero. Zero-inflation ADDS to it, so \\P(Y = 0) = \zeta +
-(1-\zeta)f(0) \> f(0)\\: the model can produce more zeros than the
-parent and never fewer, and the observed zeros are a mixture of
-structural and sampling ones that no single observation can be assigned
-to. Zero-adjustment REPLACES it: the parent is truncated away from zero
-and the mass there becomes a free parameter, which may sit above or
-below \\f(0)\\.
+The two wrappers differ in what they do to the mass that the parent
+already places at zero. Zero-inflation ADDS to it, so \\P(Y = 0) =
+\zeta + (1-\zeta)f(0) \> f(0)\\: the model can produce more zeros than
+the parent and never fewer, and the observed zeros are a mixture of
+structural and sampling ones, so a single observation cannot be assigned
+to either kind. Zero-adjustment REPLACES it: the parent is truncated
+away from zero and the mass there becomes a free parameter, which may
+sit above or below \\f(0)\\.
 
 A hurdle model therefore also handles UNDER-dispersed zeros, and its
 likelihood factorizes into a binary part and a positive-count part that
 can be read separately. Zero-inflation keeps the parent's
-interpretation, so \\\theta\\ still describes the count process the
-non-structural observations come from, while the hurdle re-interprets
-\\\theta\\ as the parameters of a truncated law.
+interpretation, so \\\theta\\ still describes the count process from
+which the non-structural observations come, while the hurdle
+re-interprets \\\theta\\ as the parameters of a truncated law.
 
 ## What the parent must be
 
@@ -94,11 +94,12 @@ reports are large.
 
 ## What the result supports
 
-The mass function, the distribution function, the quantile function, the
-generator, the analytic score, the observed and the expected Hessian,
-and the third, fourth and fifth derivatives from the shared wrapper
-machinery. The derivatives with respect to the response are not defined
-for a discrete family. The moments are computed numerically by
+The result provides the mass function, the distribution function, the
+quantile function, the generator, the analytic score, the observed and
+the expected Hessian, and the third, fourth and fifth derivatives from
+the shared wrapper machinery. The derivatives with respect to the
+response are not defined for a discrete family. The moments are computed
+numerically by
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md).
 
 ## Notation
@@ -129,8 +130,8 @@ zip@params
 distrib_pdf(zip, 0:5, theta)
 #> [1] 0.23982965 0.11948896 0.17923345 0.17923345 0.13442508 0.08065505
 
-# More mass at zero than the Poisson alone can put there, and the rest of
-# the mass function shrunk by 1 - zi.
+# The mass at zero is larger than the Poisson alone can put there, and the
+# rest of the mass function is shrunk by 1 - zi.
 c(inflated = distrib_pdf(zip, 0, theta), poisson = dpois(0, 3))
 #>   inflated    poisson 
 #> 0.23982965 0.04978707 
@@ -141,7 +142,7 @@ all.equal(distrib_pdf(zip, 1:5, theta), 0.8 * dpois(1:5, 3))
 sum(distrib_pdf(zip, 0:200, theta))
 #> [1] 1
 
-# A fit recovers both parameters, the extra zeros identifying zi.
+# A fit recovers both parameters, because the extra zeros identify zi.
 set.seed(1)
 y <- distrib_rng(zip, 2000, theta)
 round(coef(fit_distrib(zip, y)), 3)
@@ -161,8 +162,8 @@ try(zero_inflated(zero_adjusted(poisson_distrib())))
 #>   so the likelihood is flat along a direction and any optimizer will wander
 #>   along that ridge. Apply exactly one zero wrapper to a plain distribution.
 
-# Nor can a continuous parent be inflated: there is no mass at zero to add
-# to, and the message names the wrapper that does apply.
+# Nor can a continuous parent be inflated: there is no mass at zero for the
+# inflation to increase, and the message names the wrapper that does apply.
 try(zero_inflated(gaussian1_distrib()))
 #> Error : zero_inflated() requires a discrete distribution: a continuous one has
 #>   P(Y = 0) = 0, so there is no mass at zero to inflate. To place a point mass

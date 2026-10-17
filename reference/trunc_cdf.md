@@ -6,8 +6,8 @@ F(q))/Z\\, clamped to \\\[0, 1\]\\. The lower tail of an interval with
 for the upper tail, each difference is formed from the parent's
 distribution function while \\F(q) \le 1/2\\ and from its survival
 function beyond, as \\(S(L^-) - S(q))/Z\\ and \\(S(q) - S(U))/Z\\, so
-that neither tail is a difference of two numbers near one. One of the
-shared method bodies, registered on both truncated classes.
+that each tail avoids a difference of two numbers near one. The body is
+shared and is registered on both truncated classes.
 
 ## Usage
 
@@ -45,20 +45,20 @@ trunc_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...)
 
 ## Value
 
-A numeric vector of probabilities, of the length `q` and `theta` recycle
-to.
+A numeric vector of probabilities, of the length to which `q` and
+`theta` recycle.
 
 ## Details
 
-The clamp is there to make the endpoints exact. It returns `0` below
-\\L\\ and `1` at and above \\U\\, where the unclamped ratio would give a
-small negative number or one plus a rounding. At \\L\\ itself the value
-is `0` for a continuous parent and \\f(L)/Z\\, the mass of the lower
-endpoint, for a discrete one.
+The clamp makes the endpoints exact. The function returns `0` below
+\\L\\ and `1` at and above \\U\\, where the ratio before clamping would
+give a small negative number or one plus a rounding. At \\L\\ itself the
+value is `0` for a continuous parent and \\f(L)/Z\\, the mass of the
+lower endpoint, for a discrete one.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -79,11 +79,11 @@ for the inverse.
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 theta <- list(mu = 0.3, sigma = 1.2)
 
-# Exactly 0 and 1 at the endpoints.
+# The values at the endpoints are exactly 0 and 1.
 distrib_cdf(tn, c(-1, 0.3, 2), theta)
 #> [1] 0.0000000 0.4609908 1.0000000
 
-# Against the ratio written out.
+# The ratio written out gives the same value at 0.3.
 cs <- distributions7:::trunc_constants(tn, theta)
 (pnorm(0.3, 0.3, 1.2) - cs$Fl) / cs$Z
 #> [1] 0.4609908

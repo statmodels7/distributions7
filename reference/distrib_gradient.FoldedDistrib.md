@@ -39,10 +39,10 @@ order, which is the parent's order.
 
 ## Details
 
-The weight is where the folded score departs from the parent's. Near
-zero \\w\\ is one half and the two preimages contribute equally; far
-into the tail of a parent centered above zero \\w\\ approaches one and
-the folded score approaches the parent's.
+The folded score departs from the parent's through the weight. Near zero
+\\w\\ is one half and the two preimages contribute equally; far into the
+tail of a parent centered above zero \\w\\ approaches one and the folded
+score approaches the parent's.
 
 ## Notation
 
@@ -72,7 +72,8 @@ vapply(g, sum, numeric(1))
 #>        mu     sigma 
 #>  4.649657 10.488692 
 
-# Against a numerical derivative of the folded log-likelihood.
+# The result is compared with a numerical derivative of the folded
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

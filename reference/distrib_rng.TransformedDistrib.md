@@ -31,7 +31,7 @@ A numeric vector of length `n`, on the transformed scale.
 ## See also
 
 [`distrib_pdf.TransformedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.TransformedDistrib.md)
-for the density these are drawn from, and
+for the density from which these are drawn, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 for the generic.
 

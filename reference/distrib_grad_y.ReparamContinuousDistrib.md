@@ -1,8 +1,9 @@
 # Response Derivative of a Reparametrized Distribution
 
-The parent's, unchanged. A reparametrization touches the parameters and
-leaves the response alone, so \\\partial\log f/\partial y\\ is the
-parent's at the mapped parameters and no chain rule enters.
+Returns the parent's response derivative, unchanged. A reparametrization
+touches the parameters and leaves the response alone, so \\\partial\log
+f/\partial y\\ is the parent's at the mapped parameters, and the
+derivative does not involve a chain rule.
 
 ## Arguments
 
@@ -30,8 +31,8 @@ A numeric vector, the length of `y` recycled against `theta`.
 ## Details
 
 Only the continuous class registers this. A discrete family has no
-response derivative, and no method is registered for it on the base
-class, so there is nothing for a discrete reparametrization to delegate.
+response derivative, and the base class does not register a method for
+it, so a discrete reparametrization does not delegate anything.
 
 ## See also
 
@@ -53,7 +54,7 @@ d <- reparametrize(
                sigma2 = linkfunctions7::log_link())
 )
 
-# Identical to the parent's at the mapped parameters.
+# The result is identical to the parent's at the mapped parameters.
 all.equal(distrib_grad_y(d, c(0, 1, 2), list(mu = 1, sigma2 = 4)),
           distrib_grad_y(gaussian1_distrib(), c(0, 1, 2),
                          list(mu = 1, sigma = 2)))

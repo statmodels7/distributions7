@@ -98,13 +98,13 @@ An S7 object of class `TruncatedContinuousDistrib`, inheriting from
 
 It adds NO parameter. The endpoints are known constants, like a
 binomial's `size`, so the truncated object carries exactly the parent's
-`params`, `params_bounds` and `link_params`. What it adds is the
+`params`, `params_bounds` and `link_params`. It does add the
 \\\theta\\-dependent normalizing constant \\Z\\, and every derivative of
 \\\ell_T = \ell - \log Z\\ carries its contribution.
 
-The support does not move with \\\theta\\. That is the condition under
-which \\Z\\ may be differentiated under the integral sign, and it is
-what keeps truncation at fixed points a regular problem.
+The support does not move with \\\theta\\. This condition allows \\Z\\
+to be differentiated under the integral sign and keeps truncation at
+fixed points a regular problem.
 
 ## A mixed parent
 
@@ -125,7 +125,7 @@ an ordinary continuous parent) and serves both truncation classes.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

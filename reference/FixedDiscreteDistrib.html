@@ -3,13 +3,13 @@
 the wrapped distribution are held at known values. It behaves exactly as
 FixedContinuousDistrib does; the split into three classes exists so that
 the wrapper inherits the right base class, and with it the right defaults for
-anything the parent does not register. Build one with fixed(), which picks
-the class from the parent."><meta property="og:description" content="This is the S7 class of a DISCRETE distribution in which some parameters of
+anything that the parent does not register. Build one with fixed(), which
+picks the class from the parent."><meta property="og:description" content="This is the S7 class of a DISCRETE distribution in which some parameters of
 the wrapped distribution are held at known values. It behaves exactly as
 FixedContinuousDistrib does; the split into three classes exists so that
 the wrapper inherits the right base class, and with it the right defaults for
-anything the parent does not register. Build one with fixed(), which picks
-the class from the parent."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+anything that the parent does not register. Build one with fixed(), which
+picks the class from the parent."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ the class from the parent."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ the class from the parent."><meta property="og:image" content="https://statmodel
 the wrapped distribution are held at known values. It behaves exactly as
 <a href="FixedContinuousDistrib.html">FixedContinuousDistrib</a> does; the split into three classes exists so that
 the wrapper inherits the right base class, and with it the right defaults for
-anything the parent does not register. Build one with <code><a href="fixed.html">fixed()</a></code>, which picks
-the class from the parent.</p>
+anything that the parent does not register. Build one with <code><a href="fixed.html">fixed()</a></code>, which
+picks the class from the parent.</p>
     </div>
 
     <div class="section level2">
@@ -174,23 +174,25 @@ and <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()
 ORDER. Every method splices the fixed values back into <code>theta</code> at their
 positions and delegates to the parent, so the parent's closed forms are used
 wherever they exist, and a derivative method then keeps only the components
-in which every index is a free parameter. No method of this class computes
-anything of its own, and none is faster or more accurate than the parent's.</p>
+in which every index is a free parameter. Every method of this class
+delegates its computation to the parent, so the speed and the accuracy of
+each method are those of the parent's method.</p>
     </div>
     <div class="section level2">
     <h2 id="why-the-components-can-be-subset-by-name">Why the components can be subset by name<a class="anchor" aria-label="anchor" href="#why-the-components-can-be-subset-by-name"></a></h2>
     <p>The free set preserves the parent's ORDER, so a combination of free
 parameters produces the same name string under the parent's enumeration as
 under the wrapper's. Subsetting by name therefore cannot pair a component
-with the wrong indices. That is the mistake re-parsing a name by splitting
-on the underscore commits, for a parameter whose own name contains one.</p>
+with the wrong indices. Re-parsing a name by splitting on the underscore
+makes this mistake for a parameter whose own name contains an underscore.</p>
     </div>
     <div class="section level2">
     <h2 id="the-methods-carry-no-documentation-pages">The methods carry no documentation pages<a class="anchor" aria-label="anchor" href="#the-methods-carry-no-documentation-pages"></a></h2>
-    <p>The continuous and discrete branches register theirs inside a loop over the
-two classes, so there is no top-level assignment for roxygen to attach a
-block to. The multivariate branch registers its own at the top level and is
-left undocumented to match, every one of them being the same delegation.
+    <p>The continuous and discrete branches register their methods inside a loop
+over the two classes, so roxygen has no top-level assignment to which it can
+attach a block. The multivariate branch registers its methods at the top
+level and leaves them undocumented to match, because each of them is the
+same delegation.
 Read the parent's page for what a method computes and this page for what the
 wrapper does to it.</p>
     </div>
@@ -203,7 +205,7 @@ one of whose own parameters can usefully be held.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A Poisson with its mean known: no free parameter at all.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A Poisson with its mean known has no free parameter at all.</span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, mu <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>n_params <span class="op">=</span> <span class="va">d</span><span class="op">@</span><span class="va">n_params</span>, class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                               n_params                                  class </span>
@@ -211,8 +213,8 @@ one of whose own parameters can usefully be held.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">dpois</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A wrapper's OWN parameter can be held, which is what makes a</span></span></span>
-<span class="r-in"><span><span class="co"># zero-inflated model with a known inflation rate.</span></span></span>
+<span class="r-in"><span><span class="co"># A wrapper's OWN parameter can be held, so a zero-inflated model can have</span></span></span>
+<span class="r-in"><span><span class="co"># a known inflation rate.</span></span></span>
 <span class="r-in"><span><span class="va">zi</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="fu"><a href="zero_inflated.html">zero_inflated</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, zi <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">zi</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu"</span>

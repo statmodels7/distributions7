@@ -4,7 +4,7 @@ Evaluates a response derivative of the PARENT at the observations inside
 \\\[L, U\]\\ and returns `NaN` outside. The normalizing constant does
 not depend on \\y\\, so inside the interval the parent's derivative is
 exact and needs no correction; outside, the log-density is \\-\infty\\
-and no derivative exists.
+and the derivative does not exist.
 
 ## Usage
 
@@ -52,7 +52,7 @@ observations before the parent is called, so that the parent receives a
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

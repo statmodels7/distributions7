@@ -1,10 +1,10 @@
 # S7 Class for Zero-Adjusted Discrete (Hurdle) Distributions
 
-The S7 class of the hurdle version of a discrete distribution, with mass
-function \$\$P(Y = y) = \begin{cases} \pi & y = 0 \\ (1-\pi)\dfrac{f(y;
-\theta)}{1 - f(0; \theta)} & y \> 0. \end{cases}\$\$ The mass at zero is
-REPLACED by the free parameter \\\pi\\, carried by `za`, and the parent
-is truncated away from zero. Unlike
+This S7 class represents the hurdle version of a discrete distribution,
+with mass function \$\$P(Y = y) = \begin{cases} \pi & y = 0 \\
+(1-\pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} & y \> 0. \end{cases}\$\$
+The mass at zero is REPLACED by the free parameter \\\pi\\, carried by
+`za`, and the parent is truncated away from zero. Unlike
 [ZeroInflatedDistrib](https://statmodels7.github.io/distributions7/reference/ZeroInflatedDistrib.md),
 the model can produce FEWER zeros than the parent as well as more.
 
@@ -96,8 +96,9 @@ the parameters are the parent's followed by `za`, whose bound is \\(0,
 The likelihood factorizes into a binary part in \\\pi\\ and a
 positive-count part in \\\theta\\. Every mixed block of the Hessian is
 exactly zero for that reason, and the two halves can be read separately.
-It also re-interprets \\\theta\\: they are now the parameters of a
-TRUNCATED law, not of the count process the observations come from.
+It also re-interprets \\\theta\\: these are now the parameters of a
+TRUNCATED law, not of the count process from which the observations
+come.
 
 Build one with
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md),

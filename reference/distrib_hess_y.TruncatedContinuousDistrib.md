@@ -1,9 +1,9 @@
 # Truncated Continuous Response Hessian
 
 Returns \\\partial^2\ell_T/\partial y^2\\, which inside \\\[L, U\]\\ is
-the PARENT's and is `NaN` outside, for the reason
+the PARENT's and is `NaN` outside, as
 [`distrib_grad_y.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.TruncatedContinuousDistrib.md)
-gives: the log-density is \\-\infty\\ there and has no derivative.
+explains: the log-density is \\-\infty\\ there and has no derivative.
 
 ## Arguments
 
@@ -31,7 +31,7 @@ A numeric vector as long as `y`.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

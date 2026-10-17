@@ -1,6 +1,6 @@
 # Second-Response Mixed Derivatives of a Location-Scale Family
 
-The
+These functions are the
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
 method bodies shared by the families whose response enters only through
 \\z = (y-\mu)/\sigma\\. `loc_scale_cross2_y()` serves a family that is
@@ -58,12 +58,13 @@ A named list with one numeric vector per parameter, keyed by
 
 ## Details
 
-Registered on the logistic, Cauchy, Gumbel and Laplace for the first
-body, and on the two pseudo-Huber parametrizations, the skew normal and
-the skew t for the second. The gaussian and the Student t have methods
-of their own, as do several other families (the exponential, the
-Weibull, the generalized Pareto and the lognormal among them), and a
-continuous family with no method of its own takes
+`loc_scale_cross2_y()` is registered on the logistic, Cauchy, Gumbel and
+Laplace, and `partial_loc_scale_cross2_y()` is registered on the two
+pseudo-Huber parametrizations, the skew normal and the skew t. The
+gaussian and the Student t have methods of their own, as do several
+other families (the exponential, the Weibull, the generalized Pareto and
+the lognormal among them), and a continuous family with no method of its
+own takes
 [`distrib_cross2_y.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.continuous_distrib.md).
 
 ## Notation
@@ -88,14 +89,15 @@ for the generic.
 ``` r
 y <- c(-0.7, 0.3, 1.4)
 
-# Fully location-scale: both components closed.
+# A fully location-scale family has both components in closed form.
 d <- cauchy_distrib()
 theta <- list(mu = 0.3, sigma = 1.2)
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #>         mu      sigma 
 #>  0.9141734 -0.5154616 
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::grad(f, c(0.3, 1.2))
 #> [1]  0.9141734 -0.5154616

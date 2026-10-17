@@ -1,9 +1,9 @@
 # Box-Cox Transformation
 
-Transformer for the one-parameter Box-Cox transformation \\Y =
-(X^\lambda - 1)/\lambda\\ (with \\Y = \log X\\ for \\\lambda = 0\\).
-Requires \\X \> 0\\. The map is increasing for every \\\lambda\\, its
-derivative being \\X^{\lambda - 1}\\.
+Returns the transformer for the one-parameter Box-Cox transformation \\Y
+= (X^\lambda - 1)/\lambda\\ (with \\Y = \log X\\ for \\\lambda = 0\\).
+It requires \\X \> 0\\. The map is increasing for every \\\lambda\\,
+because its derivative is \\X^{\lambda - 1}\\.
 
 ## Usage
 
@@ -15,7 +15,7 @@ bc_transform(lambda)
 
 - lambda:
 
-  Numeric. The transformation parameter.
+  The numeric transformation parameter.
 
 ## Value
 

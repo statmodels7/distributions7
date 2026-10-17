@@ -1,10 +1,10 @@
 # Gaussian Hyperparameter Hessian of the Response Curvature
 
-Closed form, and nearly all of it zero. The gaussian's response
-curvature is \\-1/\sigma^2\\, which carries no location at all, so
-\$\$\frac{\partial^4\ell}{\partial y^2\partial\sigma^2} =
--\frac{6}{\sigma^4}\$\$ is the only component that does not vanish, and
-it does not vary with the data either.
+Computes the closed form, in which nearly every component is zero. The
+gaussian's response curvature is \\-1/\sigma^2\\, which carries no
+location at all, so \$\$\frac{\partial^4\ell}{\partial
+y^2\partial\sigma^2} = -\frac{6}{\sigma^4}\$\$ is the only component
+that does not vanish, and it does not vary with the data either.
 
 ## Arguments
 
@@ -69,12 +69,12 @@ h
 #> [1] 0 0 0
 #> 
 
-# One surviving component, constant along y.
+# One component survives, and it is constant along y.
 c(reported = h$sigma_sigma[1], formula = -6 / 1.3^4)
 #>  reported   formula 
 #> -2.100767 -2.100767 
 
-# Against a numerical Hessian of the response curvature.
+# The result is compared with a numerical Hessian of the response curvature.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(f, c(0.4, 1.3))
 #>               [,1]          [,2]

@@ -4,7 +4,7 @@ Computes \$\$\mathbb{E}\left\[\frac{\partial^2 \ell_T}
 {\partial\theta_i\partial\theta_j}\right\] = -\mathrm{Cov}\_T(s_i,
 s_j),\$\$ the covariance of the PARENT's score under the truncated law.
 This is the second Bartlett identity for the truncated model: the
-parent's expected Hessian cancels exactly against the term it
+parent's expected Hessian cancels exactly against the term that it
 contributes to the second derivative of \\\log Z\\.
 
 ## Arguments
@@ -49,9 +49,9 @@ each vector is constant for scalar parameters.
 ## Details
 
 The cdf derivatives of the parent give only \\\mathbb{E}\_T\[H\_{ij}\] +
-\mathbb{E}\_T\[s_i s_j\]\\, not the second term alone, so the expected
-Hessian reads separately computed sums of \\s_i s_j\\. For a parent with
-a scalar route,
+\mathbb{E}\_T\[s_i s_j\]\\, and not the second term separately, so the
+expected Hessian is computed from sums of \\s_i s_j\\ that are computed
+separately. For a parent with a scalar route,
 [`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md)
 computes them by the compiled rule; otherwise
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
@@ -64,7 +64,7 @@ observation.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -91,7 +91,8 @@ unlist(EH)
 #>       mu_mu sigma_sigma    mu_sigma 
 #> -0.29072798 -0.14498150 -0.07605547 
 
-# Minus the covariance of the parent's score under the truncated law.
+# The expected Hessian is minus the covariance of the parent's score under
+# the truncated law.
 m <- distributions7:::trunc_score_mean(tn, theta)
 ES <- distributions7:::trunc_score_prod_mean(tn, theta)
 c(mu_mu = -(ES$mu_mu - m$mu^2),
@@ -100,7 +101,8 @@ c(mu_mu = -(ES$mu_mu - m$mu^2),
 #>       mu_mu sigma_sigma    mu_sigma 
 #> -0.29072798 -0.14498150 -0.07605547 
 
-# And what averaging the observed Hessian gives.
+# The average of the observed Hessian over simulated draws approximates
+# the expected Hessian.
 set.seed(1)
 ys <- distrib_rng(tn, 200000, theta)
 round(vapply(distrib_hessian(tn, ys, theta), mean, numeric(1)), 3)

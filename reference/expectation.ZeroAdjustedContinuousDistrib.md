@@ -38,10 +38,10 @@ holds scalars.
 
 ## Details
 
-`f` receives the FULL `theta`, `za` included, even though the integral
+`f` receives the FULL `theta`, including `za`, even though the integral
 runs over the parent. The method re-attaches the atom probability inside
-a wrapper, so a caller's `f` sees the same parameter list at the atom
-and away from it.
+a wrapper, so a caller's `f` receives the same parameter list at the
+atom and away from it.
 
 ## Notation
 
@@ -53,7 +53,7 @@ variable and \\Y\\ the zero-adjusted one.
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
 for the generic,
 [`distrib_atoms.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ZeroAdjustedContinuousDistrib.md)
-for the declaration this rests on, and
+for the declaration on which this rests, and
 [`base::mean()`](https://rdrr.io/r/base/mean.html) and
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),
 the two moments built on it.
@@ -64,7 +64,7 @@ the two moments built on it.
 d <- zero_adjusted(gaussian1_distrib())
 theta <- list(mu = 1, sigma = 2, za = 0.3)
 
-# The first two moments, against the split written out.
+# The first two moments are compared with the split written out.
 c(computed = expectation(d, function(y, theta) y, theta),
   theory = 0.7 * 1)
 #> computed   theory 

@@ -2,13 +2,15 @@
 
 Returns `TRUE` for a distribution produced by
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
-in any of its three forms, which is how
+in any of its three forms.
+[`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+uses it to COLLAPSE a
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
 of a
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
-COLLAPSES into one wrapper. The two describe the same law either way,
-and nesting would leave the inner object's free set to be reconstructed
-at every call.
+into one wrapper. The two describe the same law either way, and nesting
+would leave the inner object's free set to be reconstructed at every
+call.
 
 ## Usage
 
@@ -44,7 +46,7 @@ c(plain = distributions7:::is_fixed(gaussian1_distrib()),
 #>        plain        fixed multivariate 
 #>        FALSE         TRUE         TRUE 
 
-# Which is why two calls collapse into one wrapper holding both values.
+# Two calls therefore collapse into one wrapper that holds both values.
 d <- fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)
 c(class = class(d)[1], held = paste(names(d@fixed_params), collapse = ", "))
 #>                                    class 

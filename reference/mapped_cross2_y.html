@@ -3,11 +3,11 @@
 by the first-order chain rule,
 \(\sum_i (\partial\theta_i/\partial\alpha_a)\,
 \partial\ell^{(yy)}/\partial\theta_i\). It is the same expansion
-mapped_cross_y() takes, read one derivative further in the response."><meta property="og:description" content="Carries the parent's distrib_cross2_y() block onto a new parametrization
+that mapped_cross_y() takes, read one derivative further in the response."><meta property="og:description" content="Carries the parent's distrib_cross2_y() block onto a new parametrization
 by the first-order chain rule,
 \(\sum_i (\partial\theta_i/\partial\alpha_a)\,
 \partial\ell^{(yy)}/\partial\theta_i\). It is the same expansion
-mapped_cross_y() takes, read one derivative further in the response."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+that mapped_cross_y() takes, read one derivative further in the response."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +15,7 @@ mapped_cross_y() takes, read one derivative further in the response."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ mapped_cross_y() takes, read one derivative further in the response."><meta prop
 by the first-order chain rule,
 \(\sum_i (\partial\theta_i/\partial\alpha_a)\,
 \partial\ell^{(yy)}/\partial\theta_i\). It is the same expansion
-<code><a href="mapped_cross_y.html">mapped_cross_y()</a></code> takes, read one derivative further in the response.</p>
+that <code><a href="mapped_cross_y.html">mapped_cross_y()</a></code> takes, read one derivative further in the response.</p>
     </div>
 
     <div class="section level2">
@@ -93,7 +93,7 @@ ones.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Only the map's FIRST partials enter, so the second-partial tables
+    <p>Only the map's FIRST partials enter, so the second-partial tables that
 <code><a href="mapped_theta2.html">mapped_theta2()</a></code> needs are never touched. A missing key is an exact zero
 and is skipped.</p>
     </div>
@@ -125,7 +125,7 @@ of the PARENT and \(\alpha_a\) one of the new parametrization, so that
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mu    sigma2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.0000000 0.4822531 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The parent's own block, carried by that one factor.</span></span></span>
+<span class="r-in"><span><span class="co"># The parent's own block is carried by that one factor.</span></span></span>
 <span class="r-in"><span><span class="va">par_block</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_cross2_y.html">distrib_cross2_y</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>,</span></span>
 <span class="r-in"><span>                              <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.3</span>, sigma <span class="op">=</span> <span class="fl">1.2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">par_block</span><span class="op">$</span><span class="va">mu</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, sigma2 <span class="op">=</span> <span class="va">par_block</span><span class="op">$</span><span class="va">sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1.44</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

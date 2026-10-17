@@ -3,7 +3,7 @@
 Builds the
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
 method body for a family with a scale and no location. The scale's
-component is the identity
+component is the identity that
 [`loc_scale_cross2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross2_block.md)
 uses, read at \\z = y/\sigma\\: \\-(zB' + 2B)/\sigma^3\\ with \\B =
 \sigma^2\ell^{(yy)}\\ and \\B' = \sigma^3\ell^{(yyy)}\\. Any shape
@@ -31,9 +31,9 @@ signature, returning a named list with one numeric vector per parameter.
 
 ## Details
 
-A one-parameter family returns the closed component alone. Registered on
-the exponential and the Weibull; the generalized Pareto has a compiled
-method of its own.
+A one-parameter family returns only the closed component. The body is
+registered on the exponential and the Weibull; the generalized Pareto
+has a compiled method of its own.
 
 ## Notation
 
@@ -56,19 +56,21 @@ for the generic.
 ``` r
 y <- c(0.4, 1.1, 2.3)
 
-# The Weibull: a scale and a shape.
+# The Weibull has a scale and a shape.
 d <- weibull1_distrib()
 theta <- list(mu = 1.5, sigma = 1.3)
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #>         mu      sigma 
 #>  0.3789275 -7.4658361 
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::grad(f, c(1.5, 1.3))
 #> [1]  0.3789275 -7.4658361
 
-# The exponential has one parameter, so nothing is differenced.
+# The exponential has one parameter, so the method does not difference
+# anything.
 distrib_cross2_y(exponential_distrib(), y, list(mu = 1.5))
 #> $mu
 #> [1] 0 0 0

@@ -4,12 +4,12 @@ $$\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
   m_i = \mathbb{E}_T[s_i],$$
 the parent's score recentered at its mean over the retained support points.
 For a discrete parent \(m_i\) is an exact finite sum, not a quadrature,
-the parent's cdf derivatives being exact sums themselves."><meta property="og:description" content="Computes
+because the parent's cdf derivatives are exact sums themselves."><meta property="og:description" content="Computes
 $$\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
   m_i = \mathbb{E}_T[s_i],$$
 the parent's score recentered at its mean over the retained support points.
 For a discrete parent \(m_i\) is an exact finite sum, not a quadrature,
-the parent's cdf derivatives being exact sums themselves."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+because the parent's cdf derivatives are exact sums themselves."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ the parent's cdf derivatives being exact sums themselves."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,7 @@ $$\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
   m_i = \mathbb{E}_T[s_i],$$
 the parent's score recentered at its mean over the retained support points.
 For a discrete parent \(m_i\) is an exact finite sum, not a quadrature,
-the parent's cdf derivatives being exact sums themselves.</p>
+because the parent's cdf derivatives are exact sums themselves.</p>
     </div>
 
 
@@ -94,7 +94,7 @@ applies the link scale to the value that the method returns.</p></dd>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -117,13 +117,14 @@ and \(H_{ij}\) are the parent's score and observed Hessian; and
 <span class="r-in"><span><span class="va">g</span><span class="op">$</span><span class="va">mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.6565176 -0.1565176  0.3434824  0.8434824</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The parent's score, shifted by one number.</span></span></span>
+<span class="r-in"><span><span class="co"># The truncated score is the parent's score shifted by one number.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.5  0.0  0.5  1.0</span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_score_mean.html">trunc_score_mean</a></span><span class="op">(</span><span class="va">ztp</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1565176</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical derivative of the truncated log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># The sum of the gradient is compared with a numerical derivative of the</span></span></span>
+<span class="r-in"><span><span class="co"># truncated log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">ztp</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">ztp</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

@@ -1,10 +1,10 @@
 # Gaussian Hyperparameter Hessian of the Response Gradient
 
-Closed form. With \\r = y - \mu\\ the response gradient is
-\\-r/\sigma^2\\, so differentiating it twice in the parameters gives
-\$\$\frac{\partial^3\ell}{\partial y\\\partial\mu^2} = 0, \qquad
-\frac{\partial^3\ell}{\partial y\\\partial\mu\\\partial\sigma} =
--\frac{2}{\sigma^3}, \qquad \frac{\partial^3\ell}{\partial
+Computes the derivative in closed form. With \\r = y - \mu\\ the
+response gradient is \\-r/\sigma^2\\, so differentiating it twice in the
+parameters gives \$\$\frac{\partial^3\ell}{\partial y\\\partial\mu^2} =
+0, \qquad \frac{\partial^3\ell}{\partial y\\\partial\mu\\\partial\sigma}
+= -\frac{2}{\sigma^3}, \qquad \frac{\partial^3\ell}{\partial
 y\\\partial\sigma^2} = -\frac{6r}{\sigma^4}.\$\$ The location pair
 vanishes because the response gradient is LINEAR in \\\mu\\, and only
 the scale pair varies with the data.
@@ -71,13 +71,13 @@ g
 #> [1] -0.9103323 -0.9103323 -0.9103323
 #> 
 
-# The three formulas written out.
+# The three formulas are written out.
 r <- y - 0.4
 c(mu_mu = 0, mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
 #>       mu_mu    mu_sigma sigma_sigma 
 #>   0.0000000  -0.9103323   2.9410735 
 
-# Against a numerical Hessian of the response gradient.
+# The result is compared with a numerical Hessian of the response gradient.
 f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::hessian(f, c(0.4, 1.3))
 #>               [,1]       [,2]

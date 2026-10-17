@@ -5,14 +5,14 @@ $$\mathbb{E}\left[\frac{\partial^2 \ell_T}{\partial\theta_i
 the second Bartlett identity under the truncated law. The truncated-law mean
 of the parent's Hessian, \(\mathbb{E}_T[H_{ij}]\), cancels against the same
 quantity in \(M_{ij}\), which enters the second derivative of \(\log Z\),
-and \(-\mathrm{Cov}_T(s_i, s_j)\) remains. One of the shared bodies,
+and \(-\mathrm{Cov}_T(s_i, s_j)\) remains. The body is shared and is
 registered on both truncated classes."><meta property="og:description" content="Computes
 $$\mathbb{E}\left[\frac{\partial^2 \ell_T}{\partial\theta_i
   \partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),$$
 the second Bartlett identity under the truncated law. The truncated-law mean
 of the parent's Hessian, \(\mathbb{E}_T[H_{ij}]\), cancels against the same
 quantity in \(M_{ij}\), which enters the second derivative of \(\log Z\),
-and \(-\mathrm{Cov}_T(s_i, s_j)\) remains. One of the shared bodies,
+and \(-\mathrm{Cov}_T(s_i, s_j)\) remains. The body is shared and is
 registered on both truncated classes."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -21,7 +21,7 @@ registered on both truncated classes."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@ $$\mathbb{E}\left[\frac{\partial^2 \ell_T}{\partial\theta_i
 the second Bartlett identity under the truncated law. The truncated-law mean
 of the parent's Hessian, \(\mathbb{E}_T[H_{ij}]\), cancels against the same
 quantity in \(M_{ij}\), which enters the second derivative of \(\log Z\),
-and \(-\mathrm{Cov}_T(s_i, s_j)\) remains. One of the shared bodies,
+and \(-\mathrm{Cov}_T(s_i, s_j)\) remains. The body is shared and is
 registered on both truncated classes.</p>
     </div>
 
@@ -127,15 +127,16 @@ covariance needs the second term on its own. For a parent with a scalar route
 the sums come from <code><a href="trunc_route_parts.html">trunc_route_parts()</a></code>.</p>
 <p>The components do not depend on the data, so for a single parameter vector
 every returned vector is constant; if a parameter varies by observation, the
-components vary with it. <code>approx</code> and <code>nsim</code> are accepted so that the
-signature matches the generic's, and neither is read: the identity above is
-exact, and what it rests on is computed by quadrature whatever <code>approx</code> says.</p>
+components vary with it. The arguments <code>approx</code> and <code>nsim</code> are accepted so
+that the signature matches the generic's, and the method does not read them:
+the identity above is exact, and the quantities on which it rests are
+computed by quadrature for every value of <code>approx</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(L\) and \(U\) are the truncation endpoints, both included in the
+<p>\(L\) and \(U\) are the truncation endpoints, which both belong to the
 support; \(Z(\theta) = P(L \le Y \le U)\) is the retained mass; \(f\)
 and \(F\) are the parent's density and distribution function; \(s_i\)
 and \(H_{ij}\) are the parent's score and observed Hessian; and
@@ -160,7 +161,8 @@ registrations.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.29072798 -0.14498150 -0.07605547 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Minus the covariance of the parent's score under the truncated law.</span></span></span>
+<span class="r-in"><span><span class="co"># The result equals minus the covariance of the parent's score under the</span></span></span>
+<span class="r-in"><span><span class="co"># truncated law.</span></span></span>
 <span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_score_mean.html">trunc_score_mean</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ES</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="trunc_score_prod_mean.html">trunc_score_prod_mean</a></span><span class="op">(</span><span class="va">tn</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu_mu <span class="op">=</span> <span class="op">-</span><span class="op">(</span><span class="va">ES</span><span class="op">$</span><span class="va">mu_mu</span> <span class="op">-</span> <span class="va">m</span><span class="op">$</span><span class="va">mu</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>,</span></span>

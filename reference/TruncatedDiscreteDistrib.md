@@ -6,7 +6,7 @@ endpoints are INCLUDED, so `truncated(poisson_distrib(), lower = 1)` is
 the zero-truncated Poisson on \\\\1, 2, \dots\\\\ and keeps the mass at
 one. Construct one with
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md);
-calling the class directly skips every validation the constructor
+calling the class directly skips every validation that the constructor
 performs.
 
 ## Usage
@@ -88,7 +88,7 @@ TruncatedDiscreteDistrib(
 
 - lower, upper:
 
-  The truncation points, `L` and `U`, both included in the support.
+  The truncation points, `L` and `U`, which both belong to the support.
   Either may be infinite, and a finite one must be a whole number.
 
 ## Value
@@ -109,7 +109,7 @@ and
 applies the matching correction to the derivatives of \\Z\\.
 
 Truncation adds no parameter, so the object carries exactly the parent's
-`params`, `params_bounds` and `link_params`. What it can remove is
+`params`, `params_bounds` and `link_params`. It can, however, remove
 IDENTIFIABILITY: \\k\\ retained support points carry \\k-1\\ free
 probabilities, so
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
@@ -117,7 +117,7 @@ rejects an interval leaving fewer than `n_params + 1` of them.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

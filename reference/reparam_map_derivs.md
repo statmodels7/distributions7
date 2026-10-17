@@ -2,10 +2,11 @@
 
 Each function returns, for its family's map \\\theta = h(\psi)\\, the
 non-zero partials \\\partial^B \theta_i / \partial \psi_B\\ up to order
-`order`: a list over parent parameters, each a list keyed by the sorted
-tuple of \\\psi\\ positions. A missing key is an exact zero. A partial
-of higher order than `order` is not formed. Every formula is derived by
-hand and validated against one numerical pass per order in the tests.
+`order`: a list over parent parameters, in which each entry is a list
+keyed by the sorted tuple of \\\psi\\ positions. A missing key is an
+exact zero. A partial of higher order than `order` is not formed. Every
+formula is derived by hand and validated against one numerical pass per
+order in the tests.
 
 ## Usage
 

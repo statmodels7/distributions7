@@ -64,7 +64,7 @@ distrib_quantile(d, p, theta)
 all.equal(distrib_quantile(d, p, theta), qlnorm(p, 0.5, 0.8))
 #> [1] TRUE
 
-# The round trip closes, the transformation being a bijection.
+# The round trip closes, because the transformation is a bijection.
 max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
 #> [1] 5.551115e-17
 

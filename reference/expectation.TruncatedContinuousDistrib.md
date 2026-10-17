@@ -1,9 +1,9 @@
 # Expectation for Truncated Continuous Distributions
 
 Computes \\\mathbb{E}\[f(Y)\]\\ by integrating the density over \\\[L,
-U\]\\ and then adding each surviving atom's contribution. The integral
-alone is what the inherited continuous method gives, and it is correct
-unless the parent carries point masses, as
+U\]\\ and then adding each surviving atom's contribution. The inherited
+continuous method gives only the integral, which is correct unless the
+parent carries point masses, as
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
 of a continuous distribution does.
 
@@ -42,7 +42,7 @@ method's.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -53,14 +53,14 @@ and \\H\_{ij}\\ are the parent's score and observed Hessian; and
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
 for the generic,
 [`distrib_atoms.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.TruncatedContinuousDistrib.md)
-for the masses it adds, and
+for the masses that it adds, and
 [`expectation.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/expectation.ZeroAdjustedContinuousDistrib.md),
 which splits the same way before truncation.
 
 ## Examples
 
 ``` r
-# A mixed parent: the mass at zero is part of the answer.
+# A mixed parent has a mass at zero, and the mass is part of the answer.
 tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
 th <- list(mu = 2, sigma2 = 1, za = 0.3)
 
@@ -68,7 +68,8 @@ th <- list(mu = 2, sigma2 = 1, za = 0.3)
 expectation(tz, function(y, theta) rep(1, length(y)), th)
 #> [1] 1
 
-# Which is what mean() and variance() are built on.
+# The functions mean() and variance() are computed from expectations of
+# this kind.
 c(mean = mean(tz, th), variance = variance(tz, th))
 #>     mean variance 
 #> 1.368951 1.414969 

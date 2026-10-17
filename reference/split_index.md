@@ -1,7 +1,7 @@
 # Split a Multi-Index Into Parent and Wrapper Parts
 
-Separates a multi-index into the parent's parameters and the number of
-times the wrapper's own parameter appears.
+Separates a multi-index into the parent's parameters and a count of the
+occurrences of the wrapper's own parameter.
 
 ## Usage
 
@@ -25,5 +25,5 @@ A list with `theta`, the parent part, and `n_mix`, a count.
 
 ## Details
 
-The wrapper's parameter is always the last one it declares, so the split
-needs only its name.
+The wrapper's parameter is always the last one that the wrapper
+declares, so the split needs only its name.

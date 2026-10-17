@@ -1,9 +1,9 @@
 # Atoms of a Reparametrized Distribution
 
-The parent's, unchanged: a reparametrization does not move mass.
-Delegating matters because
+Returns the parent's atoms, unchanged, because a reparametrization does
+not move mass. Delegating matters because
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-consults this to decide which of its checks apply, and a reparametrized
+uses the atoms to select which of its checks apply, and a reparametrized
 mixed family would otherwise be validated as though it were purely
 continuous.
 

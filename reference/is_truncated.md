@@ -6,7 +6,7 @@ tests the object before wrapping, and collapses a nested truncation into
 a single object over the intersection of the two intervals. Nesting
 would be correct but would pay the quadrature cost of
 [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
-twice for a law one truncation already describes.
+twice for a law that one truncation already describes.
 
 ## Usage
 
@@ -32,7 +32,7 @@ which uses it, and
 [TruncatedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/TruncatedContinuousDistrib.md)
 and
 [TruncatedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/TruncatedDiscreteDistrib.md),
-the two classes it recognizes.
+the two classes that it recognizes.
 
 ## Examples
 

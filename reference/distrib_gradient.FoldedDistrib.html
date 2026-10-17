@@ -17,7 +17,7 @@ score, evaluated at \(+x\) and at \(-x\)."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,7 @@ the parent's, so the two scales differ exactly where the parent's do.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The weight is where the folded score departs from the parent's. Near zero
+    <p>The folded score departs from the parent's through the weight. Near zero
 \(w\) is one half and the two preimages contribute equally; far into the
 tail of a parent centered above zero \(w\) approaches one and the folded
 score approaches the parent's.</p>
@@ -123,7 +123,8 @@ the folded log-density.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        mu     sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  4.649657 10.488692 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical derivative of the folded log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a numerical derivative of the folded</span></span></span>
+<span class="r-in"><span><span class="co"># log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

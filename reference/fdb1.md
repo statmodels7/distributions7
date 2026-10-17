@@ -1,8 +1,9 @@
 # Univariate Composition, One Order
 
-The derivative of order `order` of \\h(u(x))\\ for scalar chains, Faa di
-Bruno written out: \\(h \circ u)'' = h''u_1^2 + h'u_2\\ and so on to
-order four. Each order is its own formula and forms nothing above it.
+Computes the derivative of order `order` of \\h(u(x))\\ for scalar
+chains by the Faa di Bruno formula written out: \\(h \circ u)'' =
+h''u_1^2 + h'u_2\\ and so on to order four. Each order is its own
+formula and does not form any derivative of higher order.
 
 ## Usage
 

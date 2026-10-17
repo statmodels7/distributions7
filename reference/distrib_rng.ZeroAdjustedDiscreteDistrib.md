@@ -1,7 +1,7 @@
 # Zero-Adjusted Discrete Random Number Generator
 
 Draws zeros with probability \\\pi\\ and otherwise samples from the
-zero-truncated parent, so no draw from the positive part is ever zero.
+zero-truncated parent, so a draw from the positive part is never zero.
 The truncated draw is taken by inverting the parent's distribution
 function in its upper tail, at \\(1 - U)\\1 - f(0)\\\\ with \\U\\
 uniform, at the rows of the observations. It needs no rejection loop and
@@ -40,7 +40,7 @@ the log-mass of one observation.
 ## See also
 
 [`distrib_pdf.ZeroAdjustedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ZeroAdjustedDiscreteDistrib.md)
-for the mass function these are drawn from,
+for the mass function from which these are drawn,
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
 for the general truncation wrapper (the method here draws the positive
 part by inversion and does not call it), and
@@ -57,7 +57,7 @@ set.seed(1)
 distrib_rng(d, 10, theta)
 #>  [1] 0 0 2 2 0 4 2 4 3 0
 
-# A large sample reproduces the mass at zero, and no positive draw is zero.
+# A large sample reproduces the mass at zero, and a positive draw is never zero.
 set.seed(1)
 big <- distrib_rng(d, 20000, theta)
 c(sampled_zero = mean(big == 0), parameter = 0.4,

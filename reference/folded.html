@@ -19,7 +19,7 @@ folded normal proper is folded(gaussian1_distrib())."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@ folded normal proper is <code>folded(gaussian1_distrib())</code>.</p>
 <dd><p>A <code>continuous_distrib</code> object whose support reaches below
 zero and which declares no atom. A discrete distribution, a distribution
 supported on \([0, \infty)\), an already folded distribution, and a
-zero-adjusted continuous one are each rejected with an error saying which
-condition failed.</p></dd>
+zero-adjusted continuous one are each rejected with an error whose message
+names the condition that failed.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -99,18 +99,19 @@ one, so a parent with an atom is rejected (see below).</p>
 machinery consumes are
 $$\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
       + (1-w) \frac{d^B f(-x)}{f(-x)},$$
-each term a complete Bell polynomial in the parent's own log-derivatives,
-one at \(+x\) and one at \(-x\); \(\log L\) then follows by the
+where each term is a complete Bell polynomial in the parent's own
+log-derivatives, evaluated at \(+x\) for one term and at \(-x\) for the
+other; \(\log L\) then follows by the
 moment-to-cumulant relation. At first order this reads
-\(w s(x) + (1-w) s(-x)\), the score of a two-component mixture, which is
-what a fold is. A parent analytic to fourth order gives a folded family
-analytic to fourth order.</p>
+\(w s(x) + (1-w) s(-x)\), the score of a two-component mixture, and a
+fold has the form of such a mixture. A parent analytic to fourth order gives
+a folded family analytic to fourth order.</p>
     </div>
     <div class="section level2">
     <h2 id="what-is-rejected">What is rejected<a class="anchor" aria-label="anchor" href="#what-is-rejected"></a></h2>
     <p>A parent whose support lies in \([0, \infty)\) is mapped to itself by the
 absolute value, so <code>folded()</code> rejects it with an error; the same check
-rejects <code>folded()</code> of a folded distribution. an error. A parent with an atom
+rejects <code>folded()</code> of a folded distribution. A parent with an atom
 is rejected too: zero is its own preimage while every other point has two, so
 an atom at zero would be counted twice by the sum above and one elsewhere
 would be moved onto its reflection. A discrete parent is rejected outright.</p>
@@ -122,14 +123,14 @@ would be moved onto its reflection. A discrete parent is rejected outright.</p>
 EXACTLY even in \(\mu\). A fit converges to \(+\hat\mu\) or
 \(-\hat\mu\) according to where it started, at the same maximized value to
 every digit. The example below fits the same sample from starting values of
-opposite sign. The invariance belongs to the model and not to the fitting,
-and <code>folded()</code> does not reject it, since the folded normal is a standard
-family; what is estimable is \(|\mu|\) together with the remaining
-parameters. Holding the location at zero removes the question and gives the
-half-normal. A parent that is not symmetric about its location, such as
-<code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code>, is invariant only under the joint change of sign of
-the location and of the shape, so the sign of the location is identified once
-the shape is held fixed.</p>
+opposite sign. The invariance is a property of the model and does not depend
+on the fitting routine, and <code>folded()</code> does not reject it, since the folded
+normal is a standard family. The estimable quantities are \(|\mu|\) and
+the remaining parameters. Holding the location at zero removes the question
+and gives the half-normal. A parent that is not symmetric about its location,
+such as <code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code>, is invariant only under the joint change of
+sign of the location and of the shape, so the sign of the location is
+identified once the shape is held fixed.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -153,8 +154,8 @@ map that IS one to one, and <a href="FoldedDistrib.html">FoldedDistrib</a> for t
 <span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7041307 0.6409130 0.1470459</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The half-normal: a folded gaussian with its location held at zero, whose</span></span></span>
-<span class="r-in"><span><span class="co"># density is twice the gaussian's and whose mean is sigma sqrt(2 / pi).</span></span></span>
+<span class="r-in"><span><span class="co"># The half-normal is a folded gaussian whose location is held at zero; its</span></span></span>
+<span class="r-in"><span><span class="co"># density is twice the gaussian's and its mean is sigma sqrt(2 / pi).</span></span></span>
 <span class="r-in"><span><span class="va">hn</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="fu">folded</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, mu <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hn</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sigma"</span>
@@ -177,7 +178,7 @@ map that IS one to one, and <a href="FoldedDistrib.html">FoldedDistrib</a> for t
 <span class="r-out co"><span class="r-pr">#&gt;</span> from_plus   1.504939 1.041631 -511.2516</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> from_minus -1.504939 1.041631 -511.2516</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># With the shape held at 3, a skew-normal parent has no such invariance in</span></span></span>
+<span class="r-in"><span><span class="co"># If the shape is held at 3, a skew-normal parent has no such invariance in</span></span></span>
 <span class="r-in"><span><span class="co"># the location alone (the joint sign change of mu and alpha leaves the</span></span></span>
 <span class="r-in"><span><span class="co"># likelihood unchanged).</span></span></span>
 <span class="r-in"><span><span class="va">sn</span> <span class="op">&lt;-</span> <span class="fu">folded</span><span class="op">(</span><span class="fu"><a href="skewnormal1_distrib.html">skewnormal1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -189,7 +190,8 @@ map that IS one to one, and <a href="FoldedDistrib.html">FoldedDistrib</a> for t
 <span class="r-out co"><span class="r-pr">#&gt;</span>  at_plus_1 at_minus_1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -266.6752 -1044.9657 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Three rejections, each naming the condition that failed.</span></span></span>
+<span class="r-in"><span><span class="co"># Three calls are rejected, and each error message names the condition that</span></span></span>
+<span class="r-in"><span><span class="co"># failed.</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">folded</span><span class="op">(</span><span class="fu"><a href="gamma1_distrib.html">gamma1_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'gamma1' is supported on [0, Inf], which the absolute value leaves alone.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   folded() would return the same distribution, so the call has no effect</span>

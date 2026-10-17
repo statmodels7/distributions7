@@ -63,7 +63,7 @@ za_cont_d2expected_entry(i, j, c, d, tm)
 - i, j, c, d:
 
   The indices of one entry: the pair \\(i,j)\\ and the pair \\(c,d)\\
-  differentiated, the parent's parameters first and the probability
+  differentiated. The parent's parameters come first and the probability
   last.
 
 ## Value

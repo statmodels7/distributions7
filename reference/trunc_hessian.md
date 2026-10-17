@@ -1,9 +1,9 @@
 # Observed Hessian of a Truncated Distribution
 
 Computes \$\$\frac{\partial^2 \ell_T}{\partial\theta_i \partial\theta_j}
-= H\_{ij}(y) - M\_{ij} + m_i m_j,\$\$ the subtracted part \\M\_{ij} -
-m_i m_j\\ being the second derivative of \\\log Z\\. One of the shared
-bodies, registered on both truncated classes.
+= H\_{ij}(y) - M\_{ij} + m_i m_j.\$\$ The subtracted part \\M\_{ij} -
+m_i m_j\\ is the second derivative of \\\log Z\\. The body is shared and
+is registered on both truncated classes.
 
 ## Usage
 
@@ -42,11 +42,11 @@ unordered pair of parameters, keyed as
 
 ## Details
 
-Only \\H\_{ij}(y)\\ varies with the data; the correction is a function
-of \\\theta\\ and the endpoints alone, so it is computed once and
-recycled to the length of `y`. For a discrete parent whose retained mass
-sits at the lower endpoint, \\f(L)/Z \> 0.9\\, the two terms cancel to a
-number much smaller than either, and the Hessian there is taken from
+Only \\H\_{ij}(y)\\ varies with the data; the correction depends only on
+\\\theta\\ and the endpoints, so it is computed once and recycled to the
+length of `y`. For a discrete parent whose retained mass sits at the
+lower endpoint, \\f(L)/Z \> 0.9\\, the two terms cancel to a number much
+smaller than either, and the Hessian there is taken from
 [`head_derivs()`](https://statmodels7.github.io/distributions7/reference/head_derivs.md)
 through
 [`head_override()`](https://statmodels7.github.io/distributions7/reference/head_override.md);
@@ -54,7 +54,7 @@ the score and the third to fifth derivatives are treated the same way.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -85,7 +85,8 @@ vapply(H, sum, numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  -0.8721839   0.4749147   0.6374049 
 
-# Against a numerical Hessian of the truncated log-likelihood.
+# The Hessian is compared with a numerical Hessian of the truncated
+# log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- tn@params
   sum(distrib_pdf(tn, y, t2, log = TRUE))

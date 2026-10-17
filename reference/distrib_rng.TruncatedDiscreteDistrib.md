@@ -3,8 +3,8 @@
 Draws by inverse transform on the parent, through
 [`distrib_quantile.TruncatedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.TruncatedDiscreteDistrib.md)
 at \\V\\ uniform on \\(0, 1)\\. Every draw is a support point in \\\[L,
-U\]\\, in one pass and with no rejection, an interval in the upper tail
-included.
+U\]\\, obtained in one pass and without rejection, and this holds also
+for an interval in the upper tail.
 
 ## Arguments
 
@@ -29,7 +29,7 @@ A numeric vector of `n` random draws, every one a support point in
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

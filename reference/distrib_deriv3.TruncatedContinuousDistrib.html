@@ -8,8 +8,8 @@ $$d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].$$
 Each distinct block that has no closed-form cdf derivative costs one
 quadrature, memoized across the partition sum. Where the parent has
-closed-form cdf derivatives of the block's order, the block is read from them
-and no quadrature is taken."><meta property="og:description" content="Truncation adds no parameter and one \(\theta\)-dependent normalizing
+closed-form cdf derivatives of the block's order, the method reads the block
+from them and does not evaluate a quadrature."><meta property="og:description" content="Truncation adds no parameter and one \(\theta\)-dependent normalizing
 constant: \(\ell_T = \ell - \log Z\) with
 \(Z(\theta) = F(U) - F(L^-)\). The derivatives of \(\log Z\) follow from
 the moment-to-cumulant expansion over set partitions, read on the truncated
@@ -18,8 +18,8 @@ $$d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].$$
 Each distinct block that has no closed-form cdf derivative costs one
 quadrature, memoized across the partition sum. Where the parent has
-closed-form cdf derivatives of the block's order, the block is read from them
-and no quadrature is taken."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+closed-form cdf derivatives of the block's order, the method reads the block
+from them and does not evaluate a quadrature."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +27,7 @@ and no quadrature is taken."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@ $$d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].$$</p>
 <p>Each distinct block that has no closed-form cdf derivative costs one
 quadrature, memoized across the partition sum. Where the parent has
-closed-form cdf derivatives of the block's order, the block is read from them
-and no quadrature is taken.</p>
+closed-form cdf derivatives of the block's order, the method reads the block
+from them and does not evaluate a quadrature.</p>
     </div>
 
 
@@ -88,7 +88,7 @@ and no quadrature is taken.</p>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of the parent's parameters; truncation adds
-none, the endpoints being constants.</p></dd>
+none, because the endpoints are constants.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -121,7 +121,7 @@ numeric vector of length <code>length(y)</code>.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">tr</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">[[</span><span class="st">"mu_mu_mu"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.144835 -0.144835 -0.144835</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># log Z is what separates it from the parent: the parent's third derivative</span></span></span>
+<span class="r-in"><span><span class="co"># log Z separates it from the parent: the parent's third derivative</span></span></span>
 <span class="r-in"><span><span class="co"># in mu is identically zero and the truncated one is not.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>truncated <span class="op">=</span> <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">tr</span>, <span class="fl">1</span>, <span class="va">th</span><span class="op">)</span><span class="op">[[</span><span class="st">"mu_mu_mu"</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  parent <span class="op">=</span> <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>, <span class="va">th</span><span class="op">)</span><span class="op">[[</span><span class="st">"mu_mu_mu"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>

@@ -1,11 +1,11 @@
 # Parameter Derivatives of a Reparametrized Distribution
 
-The body that the four derivative methods share: it aligns the new
+The body that the derivative methods share: it aligns the new
 parameters, maps them to the parent's, fetches the map's tables and
 hands all three to
 [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md).
-The `order` and `expected` arguments are what separate the four
-registrations.
+The registrations differ in the `order` and `expected` arguments that
+they pass.
 
 ## Usage
 
@@ -41,9 +41,9 @@ reparam_chain(
 
 - expected:
 
-  Should the expected derivatives be carried? A single logical, `FALSE`
-  by default. `TRUE` is meaningful from order 2 up, the score having
-  mean zero.
+  Should the expected derivatives be carried? It is a single logical,
+  with default `FALSE`. `TRUE` is meaningful from order 2 up, because
+  the score has mean zero.
 
 - approx, nsim:
 

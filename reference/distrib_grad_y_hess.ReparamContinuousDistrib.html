@@ -17,7 +17,7 @@ distrib_hess_y_hess() of the parent instead."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,8 +92,8 @@ parameters, keyed as <code><a href="hess_names.html">hess_names(distrib@params)<
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A response derivative does not interact with a reparametrization of
-\(\theta\), so nothing on the \(y\) side is touched and the whole
-correction is the map's. The partials come from <code><a href="reparam_tables.html">reparam_tables()</a></code>, which a
+\(\theta\), so the \(y\) side is left unchanged and the map supplies the
+whole correction. The partials come from <code><a href="reparam_tables.html">reparam_tables()</a></code>, which a
 family supplies through <code>map_derivs</code> or, failing that, through one stencil
 per partial.</p>
     </div>
@@ -115,7 +115,8 @@ of the PARENT and \(\alpha_a\) one of the new parametrization, so that
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A gaussian obtained in its variance rather than written out.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The gaussian is obtained in its variance through reparametrize() rather</span></span></span>
+<span class="r-in"><span><span class="co"># than written out.</span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="reparametrize.html">reparametrize</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  map <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">psi</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">psi</span><span class="op">$</span><span class="va">mu</span>, sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">psi</span><span class="op">$</span><span class="va">sigma2</span><span class="op">)</span><span class="op">)</span>,</span></span>
@@ -132,14 +133,15 @@ of the PARENT and \(\alpha_a\) one of the new parametrization, so that
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu_mu sigma2_sigma2     mu_sigma2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.0000000     0.6697960    -0.4822531 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against the family written out by hand, which shares none of the map's</span></span></span>
-<span class="r-in"><span><span class="co"># arithmetic. The map's partials are stencils here, no map_derivs having</span></span></span>
-<span class="r-in"><span><span class="co"># been given, so the two agree to about 1e-09.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with the family written out by hand, which does not</span></span></span>
+<span class="r-in"><span><span class="co"># share any of the map's arithmetic. The map's partials are stencils here</span></span></span>
+<span class="r-in"><span><span class="co"># because map_derivs is not supplied, so the two agree to about 1e-09.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">g3</span><span class="op">)</span> <span class="op">-</span></span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y_hess.html">distrib_grad_y_hess</a></span><span class="op">(</span><span class="fu"><a href="gaussian2_distrib.html">gaussian2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.844296e-09</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And against a numerical Hessian of the response gradient.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is also compared with a numerical Hessian of the response</span></span></span>
+<span class="r-in"><span><span class="co"># gradient.</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, sigma2 <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">numDeriv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/numDeriv/man/hessian.html" class="external-link">hessian</a></span><span class="op">(</span><span class="va">f</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1.44</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               [,1]       [,2]</span>

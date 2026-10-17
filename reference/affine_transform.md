@@ -1,8 +1,8 @@
 # Affine (Location-Scale) Transformation
 
-Transformer for \\Y = \text{loc} + \text{scale} \cdot X\\. Inverse \\X =
-(Y - \text{loc})/\text{scale}\\, Jacobian \\\|J\| =
-1/\|\text{scale}\|\\.
+Returns the transformer for \\Y = \text{loc} + \text{scale} \cdot X\\.
+The inverse is \\X = (Y - \text{loc})/\text{scale}\\ and the Jacobian is
+\\\|J\| = 1/\|\text{scale}\|\\.
 
 ## Usage
 
@@ -14,11 +14,11 @@ affine_transform(loc = 0, scale = 1)
 
 - loc:
 
-  Numeric. The location shift. Defaults to 0.
+  The numeric location shift. Defaults to 0.
 
 - scale:
 
-  Numeric. The scale multiplier (non-zero). Defaults to 1.
+  The numeric scale multiplier, which must be non-zero. Defaults to 1.
 
 ## Value
 

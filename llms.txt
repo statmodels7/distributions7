@@ -2917,6 +2917,11 @@ transforms that make it work on a divergent density.
   [`distrib_deriv4_cdf.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.distrib.md)
   : Default Third and Fourth Log-CDF Derivatives
 
+- [`distrib_deriv3_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvGaussianDistrib.md)
+  [`distrib_deriv4_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvGaussianDistrib.md)
+  [`distrib_cross3_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvGaussianDistrib.md)
+  : Multivariate Gaussian Third and Fourth Response Derivatives
+
 - [`distrib_deriv3_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvStudentTDistrib.md)
   [`distrib_deriv4_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.MvStudentTDistrib.md)
   : Multivariate Student t Third and Fourth Response Derivatives
@@ -4221,7 +4226,7 @@ transforms that make it work on a divergent density.
   : Look Up the Parent's Derivative Components by Block
 
 - [`parent_mass_at()`](https://statmodels7.github.io/distributions7/reference/parent_mass_at.md)
-  : Probability the Parent Puts on a Single Point
+  : Probability that the Parent Puts on a Single Point
 
 - [`partial_loc_scale_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md)
   : Higher Log-CDF Derivatives When Only Some Parameters Are

@@ -47,7 +47,8 @@ trunc_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...)
 
 ## Value
 
-A numeric vector of quantiles, of the length `p` and `theta` recycle to.
+A numeric vector of quantiles, of the length to which `p` and `theta`
+recycle.
 
 ## Details
 
@@ -58,7 +59,7 @@ disagree.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

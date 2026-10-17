@@ -1,8 +1,8 @@
 # Inverse Hyperbolic Sine Transformation
 
-Transformer for \\Y = \text{asinh}(X)\\, a log-like transformation that
-handles zero and negative values. Inverse \\X = \sinh(Y)\\, Jacobian
-\\\|J\| = \cosh(Y)\\.
+Returns the transformer for \\Y = \text{asinh}(X)\\, a log-like
+transformation that is defined at zero and at negative values. The
+inverse is \\X = \sinh(Y)\\ and the Jacobian is \\\|J\| = \cosh(Y)\\.
 
 ## Usage
 

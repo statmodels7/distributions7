@@ -1,7 +1,7 @@
 # S7 Class for Zero-Adjusted Continuous Distributions
 
-The S7 class of a continuous distribution with a point mass at zero:
-\$\$P(Y = 0) = \pi, \qquad f_Y(y) = (1-\pi) f(y; \theta) \\ (y \ne
+This S7 class represents a continuous distribution with a point mass at
+zero: \$\$P(Y = 0) = \pi, \qquad f_Y(y) = (1-\pi) f(y; \theta) \\ (y \ne
 0).\$\$ The result is a MIXED distribution, a density plus an atom, and
 it declares that atom through
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md).
@@ -96,11 +96,12 @@ beside the parent's properties, with `za` added last.
 
 ## Details
 
-No truncation is needed here. A continuous parent has \\P(Y = 0) = 0\\,
-so there is no mass to remove before placing the atom, and the density
-is simply scaled by \\1-\pi\\. That is the whole difference from
+Here the parent needs no truncation. A continuous parent has \\P(Y = 0)
+= 0\\, so the atom can be placed without removing any mass, and the
+density is simply scaled by \\1-\pi\\. That is the whole difference from
 [ZeroAdjustedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/ZeroAdjustedDiscreteDistrib.md),
-whose parent must be truncated away from the point it already occupies.
+whose parent must be truncated away from the point that it already
+occupies.
 
 The likelihood factorizes completely: the mixed blocks of the Hessian
 are exactly zero, \\\pi\\ is estimated by the proportion of zeros and
@@ -180,7 +181,7 @@ to build one,
 [ZeroAdjustedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/ZeroAdjustedDiscreteDistrib.md)
 for the discrete branch,
 [`distrib_atoms.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ZeroAdjustedContinuousDistrib.md)
-for the atom it declares, and
+for the atom that it declares, and
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
 which REJECTS a parent of this class for exactly that atom.
 
@@ -206,7 +207,7 @@ c(at_zero = distrib_pdf(d, 0, theta),
 #>       at_zero     elsewhere scaled_parent 
 #>     0.3000000     0.1232229     0.1232229 
 
-# The density part integrates to 1 - pi, the atom carrying the rest.
+# The density part integrates to 1 - pi, and the atom carries the rest.
 integrate(function(z) ifelse(z == 0, 0, distrib_pdf(d, z, theta)),
           -Inf, Inf)$value
 #> [1] 0.7

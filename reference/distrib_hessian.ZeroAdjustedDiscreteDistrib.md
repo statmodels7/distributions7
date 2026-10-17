@@ -79,7 +79,7 @@ vapply(H, sum, numeric(1))
 #>       mu_mu       za_za       mu_za 
 #>   -48.17993 -1298.61111     0.00000 
 
-# Against a numerical Hessian of the log-likelihood.
+# The Hessian is compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

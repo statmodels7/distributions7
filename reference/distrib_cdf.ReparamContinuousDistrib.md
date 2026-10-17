@@ -1,6 +1,6 @@
 # Distribution Function of a Reparametrized Distribution
 
-The parent's distribution function, evaluated at the mapped parameters.
+Evaluates the parent's distribution function at the mapped parameters.
 The `lower.tail` and `log.p` arguments are passed through and applied by
 the parent, so they are not applied twice.
 
@@ -27,13 +27,13 @@ reparam_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...)
 
 - lower.tail:
 
-  Should probabilities be \\P(Y \le q)\\? A single logical, `TRUE` by
-  default.
+  Should probabilities be \\P(Y \le q)\\? It is a single logical, with
+  default `TRUE`.
 
 - log.p:
 
-  Should log-probabilities be returned? A single logical, `FALSE` by
-  default.
+  Should log-probabilities be returned? It is a single logical, with
+  default `FALSE`.
 
 - ...:
 
@@ -41,8 +41,8 @@ reparam_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...)
 
 ## Value
 
-A numeric vector of probabilities, the length of `q` recycled against
-`theta`.
+A numeric vector of probabilities, whose length is that of `q` after it
+is recycled against `theta`.
 
 ## See also
 

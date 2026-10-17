@@ -1,8 +1,8 @@
 # Quantile Function of a Reparametrized Distribution
 
-The parent's quantile function, evaluated at the mapped parameters.
-Where the parent inverts its distribution function numerically, so does
-this; the map costs one evaluation and does not enter the search.
+Evaluates the parent's quantile function at the mapped parameters. Where
+the parent inverts its distribution function numerically, so does this;
+the map costs one evaluation and does not enter the search.
 
 ## Usage
 
@@ -28,12 +28,13 @@ reparam_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...)
 
 - lower.tail:
 
-  Are the probabilities \\P(Y \le q)\\? A single logical, `TRUE` by
-  default.
+  Are the probabilities \\P(Y \le q)\\? It is a single logical, with
+  default `TRUE`.
 
 - log.p:
 
-  Is `p` a log-probability? A single logical, `FALSE` by default.
+  Is `p` a log-probability? It is a single logical, with default
+  `FALSE`.
 
 - ...:
 
@@ -41,8 +42,8 @@ reparam_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...)
 
 ## Value
 
-A numeric vector of quantiles, the length of `p` recycled against
-`theta`.
+A numeric vector of quantiles, whose length is that of `p` after it is
+recycled against `theta`.
 
 ## See also
 

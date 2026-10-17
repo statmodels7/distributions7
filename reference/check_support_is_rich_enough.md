@@ -36,10 +36,10 @@ This rules out, among the shipped families, the Bernoulli,
 of 1 or 2 (which have two parameters and need four support points).
 Zero-adjusting a Bernoulli leaves the truncated part on the single point
 \\\\1\\\\ and `mu` disappears: the mass function is literally the same
-at `mu = 0.2` and at `mu = 0.9`. None of this is visible at run time,
-the mass summing to one and
+at `mu = 0.2` and at `mu = 0.9`. The mass function still sums to one and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-passing, so the constructor is the only place it can be caught.
+still passes, so these problems are not visible at run time, and the
+constructor is the only place where they can be caught.
 
 A support with enough points is necessary for identification but not
 sufficient. If the mean is large enough that the parent puts almost no
@@ -62,7 +62,7 @@ the two callers.
 distributions7:::check_support_is_rich_enough(poisson_distrib(),
                                               "zero_inflated()")
 
-# A Bernoulli does not, and neither does a one-trial binomial.
+# A Bernoulli and a one-trial binomial do not have room.
 try(zero_inflated(bernoulli_distrib()))
 #> Error : zero_inflated() cannot wrap 'bernoulli': its support has 2 points, so the family has 1 free
 #>   probability, while the wrapped distribution would have 2 parameters. They are not

@@ -5,7 +5,7 @@ Computes the hurdle mass function \$\$P(Y = 0) = \pi, \qquad P(Y = y) =
 at zero is the parameter itself, so it may sit ABOVE or BELOW the
 parent's \\f(0)\\; the positive part is the parent renormalized away
 from zero. Everything is computed on the log scale and exponentiated at
-the end, with the normalizing constant \\1 - f(0)\\ formed from the
+the end, and the normalizing constant \\1 - f(0)\\ is formed from the
 parent's log-mass at zero as `-expm1(log f(0))`, so that a parent with
 almost all its mass at zero keeps its digits.
 
@@ -22,9 +22,9 @@ almost all its mass at zero keeps its digits.
 
 - theta:
 
-  A named list with the parent's parameters followed by `za`, each a
-  numeric vector of length 1 or of the length of `y`. `za` must lie
-  strictly inside \\(0, 1)\\.
+  A named list with the parent's parameters followed by `za`; each
+  element is a numeric vector of length 1 or of the length of `y`. `za`
+  must lie strictly inside \\(0, 1)\\.
 
 - log:
 

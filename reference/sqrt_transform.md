@@ -1,7 +1,7 @@
 # Square Root Transformation
 
-Transformer for \\Y = \sqrt{X}\\ (requires \\X \ge 0\\). Inverse \\X =
-Y^2\\, Jacobian \\\|J\| = 2Y\\.
+Returns the transformer for \\Y = \sqrt{X}\\, which requires \\X \ge
+0\\. The inverse is \\X = Y^2\\ and the Jacobian is \\\|J\| = 2Y\\.
 
 ## Usage
 

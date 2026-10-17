@@ -1,9 +1,9 @@
 # Random Generation from a Reparametrized Distribution
 
-The parent's generator, at the mapped parameters. The draws come from
-the parent's own method and consume its random numbers, so a seed set
-before the call gives the same sample the parent would give at the
-mapped values.
+Generates draws from the parent's generator at the mapped parameters.
+The draws come from the parent's own method and consume its random
+numbers, so a seed set before the call gives the same sample that the
+parent would give at the mapped values.
 
 ## Usage
 
@@ -53,7 +53,7 @@ d <- reparametrize(
                sigma2 = linkfunctions7::log_link())
 )
 
-# The same draws the parent gives at the mapped parameters.
+# The draws equal those that the parent gives at the mapped parameters.
 set.seed(1); a <- distrib_rng(d, 5, list(mu = 1, sigma2 = 4))
 set.seed(1); b <- distrib_rng(gaussian1_distrib(), 5,
                               list(mu = 1, sigma = 2))

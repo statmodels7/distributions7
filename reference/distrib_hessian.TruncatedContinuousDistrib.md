@@ -2,7 +2,7 @@
 
 Computes \$\$\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
 = H\_{ij}(y) - M\_{ij} + m_i m_j, \qquad M\_{ij} =
-\mathbb{E}\_T\[H\_{ij} + s_i s_j\],\$\$ the subtracted part being the
+\mathbb{E}\_T\[H\_{ij} + s_i s_j\],\$\$ where the subtracted part is the
 second derivative of \\\log Z\\. Only \\H\_{ij}(y)\\ depends on the
 data. The correction depends on \\\theta\\ alone, so it is one number
 per component for a scalar \\\theta\\ and one number per distinct
@@ -40,7 +40,7 @@ unordered pair of parameters, keyed as
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -68,7 +68,8 @@ vapply(H, sum, numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  -0.8721839   0.4749147   0.6374049 
 
-# Against a numerical Hessian of the truncated log-likelihood.
+# The sums of the Hessian components are compared with a numerical Hessian
+# of the truncated log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- tn@params
   sum(distrib_pdf(tn, y, t2, log = TRUE))

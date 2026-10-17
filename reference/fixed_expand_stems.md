@@ -2,8 +2,8 @@
 
 Replaces a name that is not a parameter but is the stem of the
 parameters `stem1, ..., stemk` by those parameters, recycling a single
-value or taking one value per coordinate. It is what lets
-`fixed(mvgaussian1_distrib(3), mu = 0)` hold the whole mean at zero.
+value or taking one value per coordinate. With this expansion,
+`fixed(mvgaussian1_distrib(3), mu = 0)` holds the whole mean at zero.
 
 ## Usage
 
@@ -20,7 +20,7 @@ fixed_expand_stems(fix, params)
 
 - params:
 
-  The parameter names of the distribution being fixed.
+  The parameter names of the distribution that is being fixed.
 
 ## Value
 

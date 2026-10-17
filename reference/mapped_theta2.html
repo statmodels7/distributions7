@@ -13,7 +13,7 @@ reparametrized family, and it differentiates nothing itself."><meta property="og
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,18 +72,19 @@ reparametrized family, and it differentiates nothing itself.</p>
 
 <dt id="arg-th-par">th_par<a class="anchor" aria-label="anchor" href="#arg-th-par"></a></dt>
 <dd><p>A named list of the parent's parameters, evaluated at the new
-ones. Not read by this function; the callers use it to compute <code>first</code>
-and <code>second</code>.</p></dd>
+ones. This function does not read it; the callers use it to compute
+<code>first</code> and <code>second</code>.</p></dd>
 
 
 <dt id="arg-maps">maps<a class="anchor" aria-label="anchor" href="#arg-maps"></a></dt>
 <dd><p>The map's keyed partial tables, from <code><a href="reparam_tables.html">reparam_tables()</a></code>: one
-entry per parent parameter, each a list keyed by new-parameter index.</p></dd>
+entry per parent parameter, and each entry is a list keyed by
+new-parameter index.</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>A numeric vector of observations. Not used; present so that the
-signature matches the callers'.</p></dd>
+<dd><p>A numeric vector of observations. This function does not use it;
+it is present so that the signature matches the callers'.</p></dd>
 
 
 <dt id="arg-first">first<a class="anchor" aria-label="anchor" href="#arg-first"></a></dt>
@@ -103,9 +104,9 @@ parameters, keyed as <code><a href="hess_names.html">hess_names(distrib@params)<
     </div>
     <div class="section level2">
     <h2 id="the-expansion">The expansion<a class="anchor" aria-label="anchor" href="#the-expansion"></a></h2>
-    <p>A derivative in the RESPONSE does not see the parameters, so a
-reparametrization acts on the \(\theta\) side alone and the ordinary
-two-term expansion applies:
+    <p>A derivative in the RESPONSE does not interact with a reparametrization of
+the parameters, so a reparametrization acts only on the \(\theta\) side
+and the ordinary two-term expansion applies:
 $$\frac{\partial^2 f}{\partial\alpha_a \partial\alpha_b}
   = \sum_{i,j} \frac{\partial\theta_i}{\partial\alpha_a}
     \frac{\partial\theta_j}{\partial\alpha_b} f_{ij}
@@ -117,7 +118,7 @@ partial and <code>"1,2"</code> for a second, so this function only combines them
     </div>
     <div class="section level2">
     <h2 id="what-first-and-second-are">What <code>first</code> and <code>second</code> are<a class="anchor" aria-label="anchor" href="#what-first-and-second-are"></a></h2>
-    <p>They are the same quantity at two orders in \(\theta\), and which
+    <p>They are the SAME quantity at two orders in \(\theta\), and which
 quantity depends on the caller: <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> with
 <code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> for the third-order derivative, and
 <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code> with <code><a href="distrib_hess_y_hess.html">distrib_hess_y_hess()</a></code> for the fourth.</p>
@@ -152,8 +153,8 @@ of the PARENT and \(\alpha_a\) one of the new parametrization, so that
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mu_mu sigma2_sigma2     mu_sigma2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     0.0000000     0.6697960    -0.4822531 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical Hessian of the response gradient in the NEW</span></span></span>
-<span class="r-in"><span><span class="co"># parameters, which shares none of the map's arithmetic.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a numerical Hessian of the response gradient</span></span></span>
+<span class="r-in"><span><span class="co"># in the NEW parameters, which does not share any of the map's arithmetic.</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, sigma2 <span class="op">=</span> <span class="va">v</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">numDeriv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/numDeriv/man/hessian.html" class="external-link">hessian</a></span><span class="op">(</span><span class="va">f</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">1.44</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               [,1]       [,2]</span>

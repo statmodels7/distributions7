@@ -9,8 +9,9 @@ delegate to the parent at the spliced theta, and mv_derived() reports the
 parent's quantities with the Jacobian columns of the fixed parameters
 removed.
 The motivating case is a CENTERED PRIOR: holding the mean components of a
-multivariate family at zero leaves the matrix parameter alone, and a matrix
-parameter alone is what a random effect is distributed by."><meta property="og:description" content="This is the S7 class of a MULTIVARIATE distribution in which some parameters
+multivariate family at zero leaves only the matrix parameter, and a random
+effect is distributed according to a law with this matrix as its only
+parameter."><meta property="og:description" content="This is the S7 class of a MULTIVARIATE distribution in which some parameters
 of the wrapped distribution are held at known values. It follows
 FixedContinuousDistrib in splicing the held values into theta and
 delegating to the parent. It has no distribution function, quantile or atoms,
@@ -20,8 +21,9 @@ delegate to the parent at the spliced theta, and mv_derived() reports the
 parent's quantities with the Jacobian columns of the fixed parameters
 removed.
 The motivating case is a CENTERED PRIOR: holding the mean components of a
-multivariate family at zero leaves the matrix parameter alone, and a matrix
-parameter alone is what a random effect is distributed by."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+multivariate family at zero leaves only the matrix parameter, and a random
+effect is distributed according to a law with this matrix as its only
+parameter."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +31,7 @@ parameter alone is what a random effect is distributed by."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +74,9 @@ delegate to the parent at the spliced <code>theta</code>, and <code><a href="mv_
 parent's quantities with the Jacobian columns of the fixed parameters
 removed.</p>
 <p>The motivating case is a CENTERED PRIOR: holding the mean components of a
-multivariate family at zero leaves the matrix parameter alone, and a matrix
-parameter alone is what a random effect is distributed by.</p>
+multivariate family at zero leaves only the matrix parameter, and a random
+effect is distributed according to a law with this matrix as its only
+parameter.</p>
     </div>
 
     <div class="section level2">
@@ -137,7 +140,7 @@ parameter alone is what a random effect is distributed by.</p>
 <dt id="arg-n-dim">n_dim<a class="anchor" aria-label="anchor" href="#arg-n-dim"></a></dt>
 <dd><p>The number of coordinates, carried from the parent: fixing a
 parameter removes it from the parameter set and leaves the dimension of
-the response alone.</p></dd>
+the response unchanged.</p></dd>
 
 
 <dt id="arg-parent-distrib">parent_distrib<a class="anchor" aria-label="anchor" href="#arg-parent-distrib"></a></dt>
@@ -195,44 +198,46 @@ and <code><a href="distrib_rng.html">distrib_rng()</a></code>;</p></li>
 ORDER. Every method splices the fixed values back into <code>theta</code> at their
 positions and delegates to the parent, so the parent's closed forms are used
 wherever they exist, and a derivative method then keeps only the components
-in which every index is a free parameter. No method of this class computes
-anything of its own, and none is faster or more accurate than the parent's.</p>
+in which every index is a free parameter. Every method of this class
+delegates its computation to the parent, so the speed and the accuracy of
+each method are those of the parent's method.</p>
     </div>
     <div class="section level2">
     <h2 id="why-the-components-can-be-subset-by-name">Why the components can be subset by name<a class="anchor" aria-label="anchor" href="#why-the-components-can-be-subset-by-name"></a></h2>
     <p>The free set preserves the parent's ORDER, so a combination of free
 parameters produces the same name string under the parent's enumeration as
 under the wrapper's. Subsetting by name therefore cannot pair a component
-with the wrong indices. That is the mistake re-parsing a name by splitting
-on the underscore commits, for a parameter whose own name contains one.</p>
+with the wrong indices. Re-parsing a name by splitting on the underscore
+makes this mistake for a parameter whose own name contains an underscore.</p>
     </div>
     <div class="section level2">
     <h2 id="the-methods-carry-no-documentation-pages">The methods carry no documentation pages<a class="anchor" aria-label="anchor" href="#the-methods-carry-no-documentation-pages"></a></h2>
-    <p>The continuous and discrete branches register theirs inside a loop over the
-two classes, so there is no top-level assignment for roxygen to attach a
-block to. The multivariate branch registers its own at the top level and is
-left undocumented to match, every one of them being the same delegation.
+    <p>The continuous and discrete branches register their methods inside a loop
+over the two classes, so roxygen has no top-level assignment to which it can
+attach a block. The multivariate branch registers its methods at the top
+level and leaves them undocumented to match, because each of them is the
+same delegation.
 Read the parent's page for what a method computes and this page for what the
 wrapper does to it.</p>
     </div>
     <div class="section level2">
     <h2 id="generics-that-are-rejected">Generics that are rejected<a class="anchor" aria-label="anchor" href="#generics-that-are-rejected"></a></h2>
     <p>The multivariate branch sits BESIDE the continuous and discrete ones rather
-than under either, so the generics a multivariate family rejects by design,
-the distribution function and the quantile, are inherited unregistered and
-go on rejecting through this wrapper.</p>
+than under either, so the generics that a multivariate family rejects by
+design, the distribution function and the quantile, are inherited
+unregistered and go on rejecting through this wrapper.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="fixed.html">fixed()</a></code> to build one, <a href="FixedContinuousDistrib.html">FixedContinuousDistrib</a> and
 <a href="FixedDiscreteDistrib.html">FixedDiscreteDistrib</a> for the two siblings, <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> for a
-parent, and <code><a href="mv_summary.html">mv_summary()</a></code> for the quantities a fit of one reports.</p></div>
+parent, and <code><a href="mv_summary.html">mv_summary()</a></code> for the quantities that a fit of one reports.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A centered two-dimensional gaussian: the matrix alone, which is what a</span></span></span>
-<span class="r-in"><span><span class="co"># random effect is distributed by.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A centered two-dimensional gaussian has only the matrix parameter, as the</span></span></span>
+<span class="r-in"><span><span class="co"># law of a random effect does.</span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  </span>

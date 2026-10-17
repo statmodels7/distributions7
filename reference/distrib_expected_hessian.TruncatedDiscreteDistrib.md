@@ -48,7 +48,7 @@ each vector is constant for scalar parameters.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -74,13 +74,15 @@ EH <- distrib_expected_hessian(ztp, 1, theta)
 EH$mu_mu
 #> [1] -0.3972434
 
-# Minus the variance of the parent's score over the retained support.
+# The expected Hessian is minus the variance of the parent's score over the
+# retained support.
 m <- distributions7:::trunc_score_mean(ztp, theta)$mu
 ES <- distributions7:::trunc_score_prod_mean(ztp, theta)$mu_mu
 -(ES - m^2)
 #> [1] -0.3972434
 
-# And what averaging the observed Hessian gives.
+# The average of the observed Hessian over simulated draws approximates
+# the expected Hessian.
 set.seed(9)
 ys <- distrib_rng(ztp, 200000, theta)
 c(sampled = mean(distrib_hessian(ztp, ys, theta)$mu_mu),

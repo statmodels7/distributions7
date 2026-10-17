@@ -5,9 +5,9 @@ hurdle block is the negative of the Bernoulli information,
 \\-1/\\\pi(1-\pi)\\\\, the mixed blocks are exactly zero, and the parent
 block is \\(1-\pi)\\ times the truncated parent's own expected Hessian:
 a positive observation arrives with probability \\1-\pi\\ and carries
-the whole of what \\\theta\\ is estimated from. The components do not
-depend on the observed values, so each returned vector is constant
-whenever the parent's expected Hessian is.
+all of the information from which \\\theta\\ is estimated. The
+components do not depend on the observed values, so each returned vector
+is constant whenever the parent's expected Hessian is.
 
 ## Arguments
 
@@ -51,20 +51,21 @@ whenever the parent's expected Hessian is.
 
 A named list of numeric vectors of length `length(y)`, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
-Constant across observations when the parent's own expected information
-is, which is always true for a family reaching this method with the
-default `approx = "opg"` and a closed-form parent; a parent evaluated by
-an approximation can vary by observation, `h_orig_exp` being read at the
-actual `y` rather than at zero.
+The vectors are constant across observations when the parent's own
+expected information is constant, which is always true for a family that
+reaches this method with the default `approx = "opg"` and a closed-form
+parent. If the parent's expected information is evaluated by an
+approximation, the vectors can vary by observation, because `h_orig_exp`
+is read at the actual `y` rather than at zero.
 
 ## Details
 
-The block diagonal is why a hurdle model is cheap to fit: the two halves
-can be estimated independently, and the information matrix inverts
-blockwise. `approx` and `nsim` are forwarded to the expected Hessian of
-the parent and are used only where the parent has no closed form. The
-remaining blocks are exact, and the whole expectation is exact when the
-parent's is.
+Because the information matrix is block diagonal, a hurdle model is
+cheap to fit: the two halves can be estimated independently, and the
+matrix inverts blockwise. `approx` and `nsim` are forwarded to the
+expected Hessian of the parent and are used only where the parent has no
+closed form. The remaining blocks are exact, and the whole expectation
+is exact when the parent's is.
 
 ## Notation
 
@@ -100,7 +101,7 @@ c(reported = EH$za_za[1], bernoulli = -1 / (0.4 * 0.6),
 #>  reported bernoulli     mixed 
 #> -4.166667 -4.166667  0.000000 
 
-# It is what summing the observed Hessian against the mass function gives.
+# The closed form equals the observed Hessian summed against the mass function.
 sup <- 0:400
 m <- distrib_pdf(d, sup, theta)
 Hs <- distrib_hessian(d, sup, theta)

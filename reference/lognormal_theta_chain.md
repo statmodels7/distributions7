@@ -7,8 +7,8 @@ mixed methods,
 [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
 and
 [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md),
-with `order` selecting the response derivative and `second` the order in
-\\\theta\\.
+where `order` selects the response derivative and `second` selects the
+order in \\\theta\\.
 
 ## Usage
 
@@ -51,7 +51,7 @@ log-Jacobian, \\\ell(y) = \ell_N(t;\mu,\sigma^2) - \log y\\. The
 transformation carries NO parameter, so \\t\\ does not move with
 \\\theta\\ and every \\\theta\\-derivative is the gaussian's own at
 \\t\\. The parent is `gaussian2`, which carries the same \\(\mu,
-\sigma^2)\\ the lognormal does, so `theta` needs no map at all.
+\sigma^2)\\ that the lognormal carries, so `theta` needs no map at all.
 
 ## What the Jacobian does carry
 
@@ -75,8 +75,8 @@ prime denotes a derivative in \\t\\.
 [`distrib_cross2_y.Lognormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md),
 the three methods that it serves, and
 [`mapped_theta2()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2.md),
-the route a family whose transformation DOES carry a parameter takes
-instead.
+the route taken instead by a family whose transformation carries a
+parameter.
 
 ## Examples
 
@@ -93,7 +93,7 @@ distributions7:::lognormal_theta_chain(y, theta, 2L, FALSE)
 #> [1] 36.7411585  2.5360189  0.1927593
 #> 
 
-# Which is what the family's distrib_cross2_y reports.
+# The family's distrib_cross2_y returns the same value.
 distrib_cross2_y(d, y, theta)
 #> $mu
 #> [1] -10.4166667  -1.3774105  -0.3150599

@@ -65,12 +65,13 @@ vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #>        mu    sigma2 
 #> -10.41667  36.74116 
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::grad(f, c(0.2, 0.6))
 #> [1] -10.41667  36.74116
 
-# The second order in theta, and its numerical Hessian.
+# The second order in theta is compared with its numerical Hessian.
 g3 <- distrib_grad_y_hess(d, y, theta)
 vapply(g3, function(z) z[1], numeric(1))
 #>         mu_mu sigma2_sigma2     mu_sigma2 

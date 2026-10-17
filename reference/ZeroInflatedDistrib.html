@@ -8,7 +8,7 @@ and rides a link of its own.
 Build one with zero_inflated(), which checks that the parent is discrete,
 is not already a zero wrapper, and has enough support points for the extra
 parameter to be identified. This page documents the raw S7 constructor,
-which checks none of that."><meta property="og:description" content="The S7 class of the zero-inflated version of a discrete distribution, with
+which does not perform these checks."><meta property="og:description" content="The S7 class of the zero-inflated version of a discrete distribution, with
 mass function
 $$P(Y = y) = \zeta\,\mathbb{I}(y = 0) + (1 - \zeta)\, f(y; \theta).$$
 It inherits from discrete_distrib and carries the parent's parameters
@@ -17,7 +17,7 @@ and rides a link of its own.
 Build one with zero_inflated(), which checks that the parent is discrete,
 is not already a zero wrapper, and has enough support points for the extra
 parameter to be identified. This page documents the raw S7 constructor,
-which checks none of that."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+which does not perform these checks."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +25,7 @@ which checks none of that."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ and rides a link of its own.</p>
 <p>Build one with <code><a href="zero_inflated.html">zero_inflated()</a></code>, which checks that the parent is discrete,
 is not already a zero wrapper, and has enough support points for the extra
 parameter to be identified. This page documents the raw S7 constructor,
-which checks none of that.</p>
+which does not perform these checks.</p>
     </div>
 
     <div class="section level2">
@@ -169,7 +169,7 @@ and <code><a href="distrib_scalar_route.html">distrib_scalar_route()</a></code>.
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="zero_inflated.html">zero_inflated()</a></code> to build one, <a href="ZeroAdjustedDiscreteDistrib.html">ZeroAdjustedDiscreteDistrib</a> for
 the wrapper that REPLACES the mass at zero where this one adds to it, and
-<code><a href="zero_adjusted.html">zero_adjusted()</a></code>, the constructor to reach for with a continuous
+<code><a href="zero_adjusted.html">zero_adjusted()</a></code>, the constructor that applies to a continuous
 parent.</p></div>
     </div>
 
@@ -180,7 +180,8 @@ parent.</p></div>
 <span class="r-in"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7_inherits</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">discrete_distrib</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The parent's parameters, then zi last with its own link and bound.</span></span></span>
+<span class="r-in"><span><span class="co"># The parent's parameters come first, and zi comes last with its own link</span></span></span>
+<span class="r-in"><span><span class="co"># and bound.</span></span></span>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu" "zi"</span>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">params_bounds</span><span class="op">$</span><span class="va">zi</span></span></span>

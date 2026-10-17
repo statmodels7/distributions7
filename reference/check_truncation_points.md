@@ -4,7 +4,7 @@ Checks that the interval is well formed and that truncating this parent
 there removes some, but not all, of its probability.
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
 calls it before building anything, so every rejection names the endpoint
-and the support it was compared against.
+and the support against which the endpoint was compared.
 
 ## Usage
 
@@ -29,9 +29,9 @@ check_truncation_points(distrib, lower, upper, is_disc)
 
 - is_disc:
 
-  A single logical saying whether the parent is discrete, which the
-  caller has already determined. It governs the whole-number check
-  alone.
+  A single logical that indicates whether the parent is discrete. The
+  caller has already determined this value. It governs only the
+  whole-number check.
 
 ## Value
 
@@ -42,10 +42,11 @@ argument; the errors about the support also name the parent's support.
 
 Four conditions are tested, in order: each endpoint is a single
 non-missing number; a finite endpoint on a discrete parent is a whole
-number, a fractional one being ambiguous between the support points
-either side; `lower` is strictly below `upper`; and neither endpoint
-sits outside the parent's support, where truncation would either remove
-nothing, so that the result is the parent itself, or remove everything.
+number, because a fractional one is ambiguous between the support points
+on either side; `lower` is strictly below `upper`; and each endpoint
+lies within the parent's support, because an endpoint outside it would
+make the truncation either remove nothing, so that the result is the
+parent itself, or remove everything.
 
 Two further conditions are left to
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
@@ -56,7 +57,7 @@ parameters.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and

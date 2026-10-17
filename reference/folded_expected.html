@@ -13,7 +13,7 @@ law."><meta property="og:image" content="https://statmodels7.github.io/distribut
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,7 +92,7 @@ derivatives, <code>2L</code> for its first and second derivatives.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list keyed as <code><a href="hess_names.html">hess_names()</a></code> (<code>order = 0</code>),
 <code><a href="dexpected_names.html">dexpected_names()</a></code> (<code>order = 1</code>), or <code><a href="dexpected_names.html">dexpected_names()</a></code> followed by
-<code><a href="d2expected_names.html">d2expected_names()</a></code> (<code>order = 2</code>), each component of length
+<code><a href="d2expected_names.html">d2expected_names()</a></code> (<code>order = 2</code>), in which each component has length
 <code>length(y)</code>.</p>
     </div>
     <div class="section level2">
@@ -101,17 +101,17 @@ derivatives, <code>2L</code> for its first and second derivatives.</p></dd>
 against the folded density \(f(y) + f(-y)\). The integrand turns
 sharply near zero, where the weight
 \(f(y)/(f(y)+f(-y))\) goes from one half to one over a width of order
-\(s^2/|c|\), \(c\) and \(s\) a center and a scale of the parent
-read from the scalar registry. The integral is taken over \(y &gt; 0\) by a
-tanh-sinh rule on \([0, |c|]\), whose nodes cluster at both ends, and
-the rule of <code><a href="loc_scale_rule.html">loc_scale_rule()</a></code> scaled by \(s\) on \([|c|, \infty)\);
-the split at \(|c|\) also takes in a parent with a kink at its center.
-The nodes are the scalar registry's. The expectations are formed through
-the second Bartlett identity,
+\(s^2/|c|\), where \(c\) and \(s\) are a center and a scale of the
+parent, read from the scalar registry. The integral is taken over \(y &gt; 0\)
+by a tanh-sinh rule on \([0, |c|]\), whose nodes cluster at both ends, and
+the rule of <code><a href="loc_scale_rule.html">loc_scale_rule()</a></code> scaled by \(s\) on \([|c|, \infty)\); the
+split at \(|c|\) also takes in a parent with a kink at its center. The
+nodes are the scalar registry's. The expectations are formed through the
+second Bartlett identity,
 $$E[\ell_{ij}] = -E[\ell_i \ell_j], \qquad
   \partial_c E[\ell_{ij}] = -E[\ell_{ic}\ell_j + \ell_i\ell_{jc} +
   \ell_i\ell_j\ell_c],$$
-so that the folded score and Hessian are all it reads at orders 0 and 1.
+so that only the folded score and Hessian are read at orders 0 and 1.
 The second derivatives differentiate \(-E[G]\), \(G = \ell_i\ell_j\),
 twice under the integral,
 $$\partial_{cd} E[G] = E[G_{cd} + G_c\ell_d + G_d\ell_c +
@@ -127,22 +127,22 @@ square of the machine epsilon, the folded variable is the parent or its
 mirror image, and the expectations are the parent's own expected Hessian and
 its derivatives, which the quadrature around the fold does not resolve at a
 center many scales away. A kink at a center of exactly zero is read as the
-one-sided limit, the quantities being even or odd in the center.</p>
+one-sided limit, because the quantities are even or odd in the center.</p>
 <p>A parent with a kink at its center \(c\) (a parameter that is not
 smooth, as in <code><a href="laplace_distrib.html">laplace_distrib()</a></code>, <code><a href="laplace2_distrib.html">laplace2_distrib()</a></code> and
 <code><a href="enet_distrib.html">enet_distrib()</a></code>) gives a folded score that jumps at \(y^* = |c|\),
-a point that moves with \(c\). With \(F = L\,G\) the integrand,
-\(J(X) = X(y^{*-}) - X(y^{*+})\) and \(a_k = \partial y^*/\partial
-\theta_k = \mathrm{sign}(c)\) for the center and zero otherwise,
+a point that moves with \(c\). Let \(F = L\,G\) be the integrand, let
+\(J(X) = X(y^{*-}) - X(y^{*+})\), and let \(a_k = \partial y^*/\partial
+\theta_k = \mathrm{sign}(c)\) for the center and zero otherwise. Then
 $$\partial_k \int F = \int \partial_k F + J(F)\,a_k,$$
 $$\partial_{kl} \int F = \int \partial_{kl} F + J(\partial_k F)\,a_l
   + J(\partial_l F)\,a_k + J(\partial_y F)\,a_k a_l,$$
-the one-sided values read four units in the last place either side of
-\(y^*\). <code>fold_kink_parts()</code> returns those values: the folded density at
-\(y^*\), the folded score and Hessian, and, at order 2, the response
-derivative \(\ell_y\) and the mixed derivatives \(\ell_{iy}\) from
-the parent's at the two preimages, or <code>NULL</code> where the parent has no kink
-or \(c = 0\).</p>
+where the one-sided values are read four units in the last place on either
+side of \(y^*\). <code>fold_kink_parts()</code> returns those values: the folded
+density at \(y^*\), the folded score and Hessian, and, at order 2, the
+response derivative \(\ell_y\) and the mixed derivatives \(\ell_{iy}\)
+from the parent's at the two preimages, or <code>NULL</code> where the parent has no
+kink or \(c = 0\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

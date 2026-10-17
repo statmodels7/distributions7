@@ -15,7 +15,7 @@ at \((p - \pi)/(1-\pi)\)."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,8 +121,8 @@ and <code><a href="distrib_quantile.html">distrib_quantile()</a></code> for the 
 <span class="r-in"><span><span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span><span class="op">)</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.135141  0.000000  0.000000  3.135141</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># An interval of probabilities of width pi maps to zero, which is what</span></span></span>
-<span class="r-in"><span><span class="co"># inverting across a jump means.</span></span></span>
+<span class="r-in"><span><span class="co"># An interval of probabilities of width pi maps to zero, as inversion</span></span></span>
+<span class="r-in"><span><span class="co"># across a jump requires.</span></span></span>
 <span class="r-in"><span><span class="va">lo</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="op">-</span><span class="fl">1e-9</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>just_below <span class="op">=</span> <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">lo</span> <span class="op">-</span> <span class="fl">1e-6</span>, <span class="va">theta</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  inside <span class="op">=</span> <span class="fu"><a href="distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">lo</span> <span class="op">+</span> <span class="fl">0.15</span>, <span class="va">theta</span><span class="op">)</span>,</span></span>

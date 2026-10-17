@@ -13,7 +13,7 @@ no code for links."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.79.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,8 +67,8 @@ no code for links.</p>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>The response. Unused, and present so that the signature reads like
-its callers'.</p></dd>
+<dd><p>The response. It is unused and is present so that the signature
+matches that of the callers.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -92,15 +92,16 @@ for the fourth.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The chain rule is DIAGONAL, each parameter carrying its own link, so a pair
-\((i, j)\) becomes
+    <p>The chain rule is DIAGONAL because each parameter carries its own link, so a
+pair \((i, j)\) becomes
 $$\frac{\partial^2}{\partial\eta_i \partial\eta_j}
   = h_i'(\eta_i)\, h_j'(\eta_j) \frac{\partial^2}{\partial\theta_i
     \partial\theta_j}
   + \delta_{ij}\, h_i''(\eta_i) \frac{\partial}{\partial\theta_i}.$$
-The response derivatives do not enter: a reparametrization of \(\theta\)
-leaves them alone, which is why <code>first</code> and <code>second</code> are the SAME quantity
-at two orders in \(\theta\) and no third argument is needed.</p>
+The response derivatives do not enter, because a reparametrization of
+\(\theta\) leaves them alone. For that reason <code>first</code> and <code>second</code> are the
+same quantity at two orders in \(\theta\), and the function takes no third
+argument.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -123,7 +124,7 @@ callers, and <code><a href="inverse_link_derivs.html">inverse_link_derivs()</a><
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># What the generic does with scale = "link".</span></span></span>
+<span class="r-in"><span><span class="co"># The generic applies the same computation when scale = "link".</span></span></span>
 <span class="r-in"><span><span class="va">second</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_grad_y_hess.html">distrib_grad_y_hess</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">first</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_cross_y.html">distrib_cross_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">linked</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">theta2_link_scale</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">second</span>, <span class="va">first</span><span class="op">)</span></span></span>

@@ -43,7 +43,8 @@ scale_only_theta2(distrib, y, theta, order = 1L, at = 1L)
 
 ## Value
 
-A numeric vector as long as `y`: the scale's own pair alone, not a list.
+A numeric vector as long as `y` that contains only the scale's own pair,
+not a list.
 
 ## Details
 
@@ -52,9 +53,9 @@ With \\A = \sigma\ell^{(y)}\\ and \\B = \sigma^2\ell^{(yy)}\\,
 4zA' + 2A}{\sigma^3}, \qquad
 \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2} = \frac{z^2B'' + 6zB' +
 6B}{\sigma^4},\$\$ and the primed quantities are the family's own third
-and fourth response derivatives times a power of \\\sigma\\, so no
-further differentiation is needed. A parameter beyond the scale is a
-shape and is not covered;
+and fourth response derivatives times a power of \\\sigma\\, so the
+formulas do not need further differentiation. A parameter beyond the
+scale is a shape and is not covered;
 [`scale_only_theta2_methods()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2_methods.md)
 differences those.
 
@@ -85,7 +86,7 @@ theta <- list(mu = 1.5)
 distributions7:::scale_only_theta2(d, y, theta, 1L, 1L)
 #> [1] -0.5925926 -0.5925926 -0.5925926
 
-# The identity written out.
+# The identity is written out.
 s <- 1.5
 z <- y / s
 A <- s * distrib_grad_y(d, y, theta)
@@ -94,7 +95,7 @@ A2 <- s^3 * distrib_deriv3_y(d, y, theta)
 (z^2 * A2 + 4 * z * A1 + 2 * A) / s^3
 #> [1] -0.5925926 -0.5925926 -0.5925926
 
-# And what the family's own method reports.
+# The family's own method returns the same value.
 distrib_grad_y_hess(d, y, theta)$mu_mu
 #> [1] -0.5925926 -0.5925926 -0.5925926
 ```

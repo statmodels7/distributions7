@@ -2,10 +2,10 @@
 
 A `transformer` records the mathematical rules of a change of variables
 \\Y = g(X)\\: the map, its inverse, the Jacobian of that inverse and the
-two derivatives of the Jacobian's logarithm, together with the
-bookkeeping that says which supports the map applies to and what it does
-to them. It carries no distribution and answers no distribution generic;
-it is consumed by
+two derivatives of the Jacobian's logarithm. It also records the
+supports on which the map is valid and the transformed support that
+results. It carries no distribution and defines no method for the
+distribution generics; it is consumed by
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md),
 which returns a
 [TransformedDistrib](https://statmodels7.github.io/distributions7/reference/TransformedDistrib.md).
@@ -73,13 +73,14 @@ transformer(
 - valid_support:
 
   A function of the parent's `bounds` returning a single logical:
-  whether the map applies there. It is what
-  `transformation(gaussian1_distrib(), log_transform())` fails on.
+  whether the map applies there. The call
+  `transformation(gaussian1_distrib(), log_transform())` fails because
+  this function returns `FALSE` for the support of the Gaussian.
 
 - decreasing:
 
-  Logical of length 1. `TRUE` for a monotonically decreasing map, which
-  swaps the tails in the distribution and quantile functions.
+  Logical of length 1. It is `TRUE` for a monotonically decreasing map,
+  which swaps the tails in the distribution and quantile functions.
 
 ## Value
 
@@ -89,12 +90,12 @@ and nothing else.
 ## Requirements on the map
 
 \\g\\ has to be BIJECTIVE on the parent's support. A map that is two to
-one, such as the absolute value, has no inverse to carry a density
-through and cannot be a transformer at all;
+one, such as the absolute value, has no inverse through which a density
+could be carried and cannot be a transformer at all;
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
 handles that case by adding the two preimages instead.
 
-## Writing your own
+## User-defined transformers
 
 The constructor accepts any subset of the ten properties and gives the
 others empty defaults, but
@@ -103,12 +104,12 @@ needs all of them to be functions of the stated form, and
 `trans_abs_jac` must accept a `log` argument, because
 [`distrib_pdf.TransformedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.TransformedDistrib.md)
 works on the log scale throughout. `valid_support` takes the parent's
-`bounds` and answers whether the map applies; `bounds_fun` takes the
-same and returns the transformed support. Nothing validates the
-derivatives, so
+`bounds` and returns a logical value that indicates whether the map
+applies; `bounds_fun` takes the same argument and returns the
+transformed support. Because the derivatives are not validated, a
+transcription error in them is detected by applying
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-on the resulting distribution is what catches a transcription error in
-them.
+to the resulting distribution.
 
 ## Notation
 
@@ -117,14 +118,14 @@ the parent's variable and \\Y = g(X)\\ the transformed one.
 
 ## Methods
 
-None. A `transformer` is a description of a change of variables, not a
-distribution. It is consumed by
+A `transformer` has no methods. It is a description of a change of
+variables, not a distribution. It is consumed by
 [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md),
 which returns a
 [TransformedDistrib](https://statmodels7.github.io/distributions7/reference/TransformedDistrib.md)
-carrying the full set of distribution methods.
+that carries the full set of distribution methods.
 
-The twelve ready-made transformers:
+The twelve ready-made transformers are
 [`log_transform()`](https://statmodels7.github.io/distributions7/reference/log_transform.md),
 [`exp_transform()`](https://statmodels7.github.io/distributions7/reference/exp_transform.md),
 [`sqrt_transform()`](https://statmodels7.github.io/distributions7/reference/sqrt_transform.md),
@@ -162,13 +163,15 @@ S7::prop_names(tr)
 #>  [7] "hess_log_jac"      "bounds_fun"        "valid_support"    
 #> [10] "decreasing"       
 
-# The map, its inverse and the Jacobian of that inverse.
+# The map, its inverse and the Jacobian of that inverse are evaluated at one
+# point.
 c(forward = tr@trans_fun(exp(1)), inverse = tr@trans_inv(1),
   log_jacobian = tr@trans_abs_jac(1, log = TRUE))
 #>      forward      inverse log_jacobian 
 #>     1.000000     2.718282     1.000000 
 
-# It says which supports it applies to, and what it does to them.
+# The transformer records the supports on which the map is valid and the
+# transformed support.
 c(on_positives = tr@valid_support(c(0, Inf)),
   on_the_line = tr@valid_support(c(-Inf, Inf)))
 #> on_positives  on_the_line 
@@ -176,7 +179,8 @@ c(on_positives = tr@valid_support(c(0, Inf)),
 tr@bounds_fun(c(0, Inf))
 #> [1] -Inf  Inf
 
-# And a decreasing map declares itself, which swaps the tails downstream.
+# The `decreasing` property is TRUE for a decreasing map, which swaps the
+# tails downstream.
 vapply(list(log_transform(), inverse_transform(), expit_transform()),
        function(z) z@decreasing, TRUE)
 #> [1] FALSE  TRUE FALSE

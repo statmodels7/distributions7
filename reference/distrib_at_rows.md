@@ -1,9 +1,9 @@
 # A Family at Selected Observations
 
 Returns `distrib` with every constant that varies by observation (a
-binomial's or a beta-binomial's `size`), its parents' included, taken at
-the observations `idx`, so that the family can be evaluated at points
-that belong to those observations.
+binomial's or a beta-binomial's `size`), including the constants of its
+parents, taken at the observations `idx`, so that the family can be
+evaluated at points that belong to those observations.
 
 ## Usage
 
@@ -23,7 +23,7 @@ distrib_at_rows(distrib, idx, n)
 
 - n:
 
-  The number of observations the constants are recycled to.
+  The number of observations to which the constants are recycled.
 
 ## Value
 

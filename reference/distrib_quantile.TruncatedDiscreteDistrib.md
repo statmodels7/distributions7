@@ -37,7 +37,7 @@ U\]\\; a probability of zero gives \\L\\.
 
 ## Notation
 
-\\L\\ and \\U\\ are the truncation endpoints, both included in the
+\\L\\ and \\U\\ are the truncation endpoints, which both belong to the
 support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
 and \\F\\ are the parent's density and distribution function; \\s_i\\
 and \\H\_{ij}\\ are the parent's score and observed Hessian; and
@@ -62,7 +62,8 @@ theta <- list(mu = 2)
 distrib_quantile(ztp, c(0.1, 0.5, 0.9), theta)
 #> [1] 1 2 4
 
-# Never below the lower endpoint, whatever the probability.
+# The quantiles stay at or above the lower endpoint, whatever the
+# probability.
 distrib_quantile(ztp, c(0, 1e-12, 0.5), theta)
 #> [1] 1 1 2
 ```

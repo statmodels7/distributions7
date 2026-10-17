@@ -1,10 +1,11 @@
 # S7 Class for Folded Distributions
 
-The S7 class of the distribution of \\\|Y\|\\ when \\Y\\ follows the
-wrapped continuous distribution, with density \$\$L(x; \theta) = f(x;
-\theta) + f(-x; \theta), \qquad x \ge 0,\$\$ the two preimages of \\x\\
-added together. It inherits from `continuous_distrib` and carries the
-SAME parameters as its parent: folding adds none and removes none.
+This is the S7 class of the distribution of \\\|Y\|\\ when \\Y\\ follows
+the wrapped continuous distribution. Its density is \$\$L(x; \theta) =
+f(x; \theta) + f(-x; \theta), \qquad x \ge 0,\$\$ which adds the
+parent's density at the two preimages of \\x\\. It inherits from
+`continuous_distrib` and carries the SAME parameters as its parent:
+folding adds none and removes none.
 
 Build one with
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),

@@ -1,11 +1,12 @@
 # Zero-Inflated Fourth Derivatives
 
-The same two regimes as at third order, one order along. At \\y \> 0\\
-the log-likelihood separates into \\\log(1-\zeta)\\ and the parent's, so
-a component mixing \\\zeta\\ with a parent parameter is exactly zero; at
-\\y = 0\\ the moment-to-cumulant sum over the partitions of a four-index
-set gives \\d^I \log L_0\\, with every block naming \\\zeta\\ twice
-contributing nothing because \\L_0\\ is affine in it.
+The method uses the same two regimes as the third-order method, at one
+order higher. At \\y \> 0\\ the log-likelihood separates into
+\\\log(1-\zeta)\\ and the parent's, so a component mixing \\\zeta\\ with
+a parent parameter is exactly zero; at \\y = 0\\ the moment-to-cumulant
+sum over the partitions of a four-index set gives \\d^I \log L_0\\, and
+every block that names \\\zeta\\ twice contributes nothing because
+\\L_0\\ is affine in \\\zeta\\.
 
 The partitions of four indices number fifteen against five for three, so
 the partition sum has three times as many terms at this order. The same
