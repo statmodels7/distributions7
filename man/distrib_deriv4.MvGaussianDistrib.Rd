@@ -9,7 +9,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. With
 \code{expected = TRUE} only its row count is used.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation of each
 component is returned. Defaults to \code{FALSE}.}
@@ -61,7 +62,7 @@ length(d4)
 # Four mean indices vanish, as three already did.
 d4[["mu1_mu1_mu2_mu2"]]
 
-# Against one stencil on the analytic third order.
+# The result is compared with one stencil on the analytic third order.
 h <- 1e-4
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h

@@ -7,10 +7,11 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and one column per
-category, each row a vector of counts summing to \code{distrib@size}.}
+category, where each row is a vector of counts that sum to
+\code{distrib@size}.}
 
-\item{theta}{A named list of parameters, each component a single number:
-\code{probs_alr1}, ..., \code{probs_alr(p-1)}.}
+\item{theta}{A named list of parameters, where each component is a single
+number: \code{probs_alr1}, ..., \code{probs_alr(p-1)}.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
 in closed form (see Details). Defaults to \code{FALSE}.}
@@ -64,7 +65,7 @@ y <- distrib_rng(d, 5, theta)
 d4 <- distrib_deriv4(d, y, theta)
 names(d4)
 
-# Against a central difference of the third order.
+# The result is compared with a central difference of the third order.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h

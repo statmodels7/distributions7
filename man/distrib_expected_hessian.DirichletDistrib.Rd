@@ -7,8 +7,8 @@
 \item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
 \item{y}{A numeric matrix of observations. Only its row count is read
-through \code{\link[=n_obs]{n_obs()}}, the expectation not depending on the data; the values
-are ignored.}
+through \code{\link[=n_obs]{n_obs()}}, because the expectation does not depend on the data;
+the values are ignored.}
 
 \item{theta}{A named list of parameters on the parameter scale: the mean's
 free values followed by \code{phi}, each of length 1.}
@@ -71,12 +71,13 @@ set.seed(3)
 Z <- distrib_rng(d, 3e5, th)
 vapply(distrib_hessian(d, Z, th), mean, numeric(1))
 
-# The two zero sums the derivation rests on, read off the simplex itself.
+# The two zero sums on which the derivation rests are read off the simplex
+# itself.
 eta <- c(0.3, -0.2)
 colSums(do.call(cbind, parameters7::param_d1(d@param, eta)))
 vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument is inert because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
 }
 \seealso{

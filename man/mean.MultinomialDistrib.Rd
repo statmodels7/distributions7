@@ -8,7 +8,7 @@
 argument is named \code{x} because the generic is \code{\link[base:mean]{base::mean()}}.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1.}
+scale, and each value has length 1.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

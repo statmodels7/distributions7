@@ -2,7 +2,8 @@
 % Please edit documentation in R/mvstudent_t_distrib.R
 \name{mvt_dpieces}
 \alias{mvt_dpieces}
-\title{The Pieces Every Mixed Response Derivative of the t Is Written In}
+\title{The Pieces in Which Every Mixed Response Derivative of the t Is
+Written}
 \usage{
 mvt_dpieces(distrib, y, theta)
 }
@@ -13,7 +14,8 @@ mvt_dpieces(distrib, y, theta)
 \item{y}{An \eqn{n \times p} numeric matrix of observations, already coerced
 by \code{\link[=as_mv_matrix]{as_mv_matrix()}}.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, in which each component is a single
+number.}
 }
 \value{
 A named list of the quantities above, indexed by parameter position:
@@ -58,10 +60,11 @@ The arrays \eqn{P_k} and \eqn{\Sigma^{-1}B_{kl}\Sigma^{-1}} are the first and
 second derivatives of \eqn{\Sigma^{-1}}, read from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} and
 not formed from the derivatives of \eqn{\Sigma}; the derivatives in \eqn{s}
 and \eqn{w} are quadratic and linear forms in them. \eqn{c} and \eqn{d}
-follow by the quotient rule, \eqn{\nu+p} being linear in \eqn{\nu} and
-constant in everything else; the derivative of \eqn{c} in \eqn{\nu} is
-written as \eqn{(q-p)/s^2} and its second derivative as \eqn{2(p-q)/s^3}, the
-two terms of the quotient rule agreeing to leading order as \eqn{\nu} grows.
+follow by the quotient rule, because \eqn{\nu+p} is linear in \eqn{\nu} and
+constant in everything else. The derivative of \eqn{c} in \eqn{\nu} is
+written as \eqn{(q-p)/s^2} and its second derivative as \eqn{2(p-q)/s^3},
+because the two terms of the quotient rule agree to leading order as
+\eqn{\nu} grows.
 }
 
 \section{Notation}{
@@ -82,13 +85,14 @@ y <- distrib_rng(d, 4, theta)
 z <- distributions7:::mvt_dpieces(d, y, theta)
 names(z)
 
-# Six parameters, so six first-derivative entries per quantity.
+# There are six parameters, so each quantity has six first-derivative
+# entries.
 c(npar = z$npar, n_sa = length(z$sa), n_wa = length(z$wa))
 
-# ds/dnu is exactly one, s being nu + q.
+# ds/dnu is exactly one, because s is nu + q.
 z$sa[[6]]
 
-# And ds/dmu1 is -2 w1, against a difference of q + nu.
+# ds/dmu1 is -2 w1, and the result is compared with a difference of q + nu.
 h <- 1e-5
 sfun <- function(m1) {
   t2 <- theta; t2$mu1 <- m1
@@ -103,6 +107,6 @@ max(abs(z$sa[[1]] - (sfun(0.5 + h) - sfun(0.5 - h)) / (2 * h)))
 \code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y.MvStudentTDistrib()}},
 \code{\link[=distrib_grad_y_hess.MvStudentTDistrib]{distrib_grad_y_hess.MvStudentTDistrib()}} and
 \code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}}, the four consumers, and
-\code{\link[=mvt_weights]{mvt_weights()}} for the values these differentiate.
+\code{\link[=mvt_weights]{mvt_weights()}} for the values that these differentiate.
 }
 \keyword{internal}

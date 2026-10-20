@@ -11,7 +11,7 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,12 +33,12 @@ response, one array per observation. With \eqn{w = \Sigma^{-1}(y-\mu)},
   - \frac{8N}{s^3}\sum_{(xy)(zt)}\Omega_{xy}w_zw_t
   + \frac{48N}{s^4}\,w_iw_jw_kw_l,}
 where the middle sum runs over the six ways of choosing the pair
-\eqn{(x, y)} from \eqn{\{i, j, k, l\}}, the other two indices taking the
+\eqn{(x, y)} from \eqn{\{i, j, k, l\}}, and the other two indices take the
 \eqn{w}s. Each follows from the order below by \eqn{\partial s/\partial y =
 2w} and \eqn{\partial w/\partial y = \Omega}. Every term is evaluated in
-\eqn{w/s} and \eqn{1/s} (see \code{\link[=mvt_yscaled]{mvt_yscaled()}}), so no power of \eqn{s} is
-formed and the arrays stay finite for an observation as far as \eqn{10^{300}}
-from the location.
+\eqn{w/s} and \eqn{1/s} (see \code{\link[=mvt_yscaled]{mvt_yscaled()}}), so the method forms no power
+of \eqn{s} and the arrays stay finite for an observation as far as
+\eqn{10^{300}} from the location.
 }
 \details{
 A multivariate Student t prior over a block of coefficients has a Hessian
@@ -56,7 +56,8 @@ y <- distrib_rng(d, 3, theta)
 d3 <- distrib_deriv3_y(d, y, theta)
 dim(d3)
 
-# Against a difference of the response Hessian along the first coordinate.
+# The result is compared with a difference of the response Hessian along the
+# first coordinate.
 h <- 1e-5
 yp <- y; yp[, 1] <- yp[, 1] + h
 ym <- y; ym[, 1] <- ym[, 1] - h

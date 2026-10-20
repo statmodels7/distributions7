@@ -20,19 +20,20 @@ Enumerates the index multisets of exactly \code{order} indices drawn from \code{
 in the order that \code{parameters7::param_tuple_indices()} uses. It takes a count
 of variables in place of a parametrization, so a composite index set formed
 by appending a coordinate can be enumerated without building an object of
-that shape. The Dirichlet needs this for its simplex free values followed by
+that shape. The Dirichlet uses it for its simplex free values followed by
 its concentration. The work is done by \code{numericals7::tuple_indices()}, which
 this function wraps.
 }
 \examples{
-# Two indices over three variables: the three repeats then the three pairs.
+# Two indices over three variables give the three repeats, then the three
+# pairs.
 distributions7:::tuple_indices_upto(3, 2)
 
 # The count is choose(d + order - 1, order).
 c(got = length(distributions7:::tuple_indices_upto(4, 3)),
   expected = choose(4 + 3 - 1, 3))
 
-# Every tuple is sorted, which is what makes a comma-joined key canonical.
+# Every tuple is sorted, so a comma-joined key is canonical.
 all(vapply(distributions7:::tuple_indices_upto(3, 3),
            function(t) !is.unsorted(t), TRUE))
 

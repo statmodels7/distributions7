@@ -8,18 +8,19 @@
 \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. Only its row
-count is used: the expectation is taken over the law, so no observation
-enters any component.}
+count is used: the expectation is taken over the law, so the observations
+do not enter any component.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
 result. The two differ here, because \code{nu} carries a log link by default.}
 
-\item{approx}{Ignored: the expectation is exact and no approximation
-strategy is consulted. \code{\link[=fit_distrib]{fit_distrib()}} rejects a \code{fisher_scoring(approx =)}
-for this family for that reason.}
+\item{approx}{Ignored: the expectation is exact, so the method does not
+consult an approximation strategy. \code{\link[=fit_distrib]{fit_distrib()}} rejects a
+\code{fisher_scoring(approx =)} for this family for that reason.}
 
 \item{nsim}{Ignored, for the same reason.}
 
@@ -27,17 +28,18 @@ for this family for that reason.}
 }
 \value{
 A named list of numeric vectors of length \eqn{n}, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant. The
+\code{\link[=hess_names]{hess_names(distrib@params)}}, in which each vector is
+constant. The
 returned quantities are the expected second derivatives, so the
 information is their negative.
 }
 \description{
 Computes the expectation of the observed Hessian in closed form, taken from
 the family's own scale mixture. Every component is a Beta moment or a
-polygamma, so nothing is sampled and no quadrature runs, and two calls at the
-same parameters return the same numbers. The components do not depend on the
-data, so every returned vector is constant across rows and \code{y} is used only
-for its row count.
+polygamma, so the function draws no sample, runs no quadrature, and returns
+the same numbers in two calls at the same parameters. The components do not
+depend on the data, so every returned vector is constant across rows and
+\code{y} is used only for its row count.
 }
 \section{Why the expectations separate}{
 Writing \eqn{q = z^\top\Sigma^{-1}z} and \eqn{c = (\nu+p)/(\nu+q)}, the
@@ -62,17 +64,18 @@ With \eqn{t_k = \operatorname{tr}(\Sigma^{-1}A_k)} and
   I_{k\nu} = \frac{-t_k}{(\nu+p)(\nu+p+2)},}
 \deqn{I_{\nu\nu} = \frac{\psi'(\nu/2) - \psi'\{(\nu+p)/2\}}{4}
   - \frac{p}{\nu(\nu+p)} + \frac{p}{2\nu(\nu+p+2)}.}
-The location is orthogonal to everything else, every cross-expectation with
-it being odd in \eqn{z}.
+The location is orthogonal to everything else, because every
+cross-expectation with it is odd in \eqn{z}.
 }
 
 \section{The gaussian limit}{
 Each block reduces to the gaussian's as \eqn{\nu \to \infty}: \eqn{I_{\mu\mu}
-\to \Sigma^{-1}}, \eqn{I_{kl} \to T_{kl}/2}, and \eqn{I_{\nu\nu} \to 0}, the
-degrees of freedom ceasing to be identified in the limit; \eqn{I_{\nu\nu}} is
-of order \eqn{\nu^{-4}}, so the standard error of \eqn{\nu} is large unless
-the tail is heavy. Its terms as written above are of order \eqn{\nu^{-2}} and
-cancel, so the block is computed by \code{\link[=mvt_info_nunu]{mvt_info_nunu()}}.
+\to \Sigma^{-1}}, \eqn{I_{kl} \to T_{kl}/2}, and \eqn{I_{\nu\nu} \to 0}, so
+the degrees of freedom cease to be identified in the limit;
+\eqn{I_{\nu\nu}} is of order \eqn{\nu^{-4}}, so the standard error of
+\eqn{\nu} is large unless the tail is heavy. Its terms as written above are
+of order \eqn{\nu^{-2}} and cancel, so the block is computed by
+\code{\link[=mvt_info_nunu]{mvt_info_nunu()}}.
 }
 
 \section{Notation}{
@@ -99,7 +102,8 @@ identical(EH, distrib_expected_hessian(d, matrix(0, 3, 2), theta))
 orth <- grep("^mu[0-9]+_(sigma|nu)", names(EH), value = TRUE)
 vapply(EH[orth], function(z) z[1], numeric(1))
 
-# And the closed form is what averaging the observed Hessian converges to.
+# The average of the observed Hessian over many draws converges to the
+# closed form.
 set.seed(3)
 big <- distrib_rng(d, 50000, theta)
 round(rbind(sampled = vapply(distrib_hessian(d, big, theta), mean, numeric(1)),

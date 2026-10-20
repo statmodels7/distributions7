@@ -7,8 +7,8 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}},
 read for its \code{size} and \code{n_dim}.}
 
-\item{theta}{Ignored. The support is a property of \eqn{n} and \eqn{p}
-alone, so any value, \code{NULL} included, gives the same answer.}
+\item{theta}{Ignored. The support depends only on \eqn{n} and \eqn{p},
+so any value, including \code{NULL}, gives the same answer.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -23,10 +23,10 @@ summing to the trial count \eqn{n}, one row per point. These are the weak
 compositions of \eqn{n} into \eqn{p} parts, supplied by
 \code{\link[numericals7:compositions]{numericals7::compositions()}}.
 
-With the support in hand every expectation is an exact sum. \code{\link[=check_distrib]{check_distrib()}}
-uses it to test that the mass adds to one, an equality with tolerance
-\code{1e-10}; an importance-sampling check compares only against Monte Carlo
-error, and a normalization wrong by a thousandth would pass it.
+Because the support is enumerated, every expectation is an exact sum.
+\code{\link[=check_distrib]{check_distrib()}} uses it to test that the mass adds to one, an equality with
+tolerance \code{1e-10}; an importance-sampling check compares only against Monte
+Carlo error, and a normalization wrong by a thousandth would pass it.
 }
 \examples{
 d <- multinomial_distrib(3, size = 5)

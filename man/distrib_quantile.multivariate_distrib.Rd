@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{p}{A numeric vector of probabilities. Not read: the error is signalled
-first.}
+\item{p}{A numeric vector of probabilities. It is not read, because the
+error is signalled first.}
 
 \item{theta}{A named list of parameters. It is not read.}
 

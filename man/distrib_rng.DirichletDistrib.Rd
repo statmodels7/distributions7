@@ -14,7 +14,7 @@ free values followed by \code{phi}, each of length 1.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric matrix with \code{n} rows and \eqn{p} columns, each row summing
+A numeric matrix with \code{n} rows and \eqn{p} columns, and each row sums
 to one. A coordinate whose value is below the smallest double rounds to
 zero, which happens at a concentration of order 0.01 or below; such a row
 is off the open simplex and has density zero.

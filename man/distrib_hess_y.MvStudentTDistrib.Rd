@@ -10,13 +10,13 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A \eqn{p \times p \times n} numeric array, slice \eqn{i} holding
-\eqn{\partial^2\ell_i/\partial y_i\partial y_i^\top}. Compare
+A \eqn{p \times p \times n} numeric array in which slice \eqn{i}
+holds \eqn{\partial^2\ell_i/\partial y_i\partial y_i^\top}. Compare
 \code{\link[=distrib_hess_y.MvGaussianDistrib]{distrib_hess_y.MvGaussianDistrib()}}, which returns a
 \eqn{p \times p} matrix and no third dimension at all.
 }
@@ -49,7 +49,7 @@ y <- distrib_rng(d, 4, theta)
 hy <- distrib_hess_y(d, y, theta)
 dim(hy)
 
-# Against a numerical Hessian at one observation.
+# The result is compared with a numerical Hessian at one observation.
 max(abs(hy[, , 1] -
         numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
                           y[1, ])))

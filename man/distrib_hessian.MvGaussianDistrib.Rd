@@ -9,7 +9,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -34,9 +35,9 @@ r^\top P_{kl} r.} The mean block does not depend on the response, so it is
 constant across rows; the mixed and matrix blocks do. \eqn{P_k} and
 \eqn{P_{kl}} are read from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}, exact for
 \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}} where the covariance is nearly singular;
-written as products of \eqn{\Sigma^{-1}} and the derivatives of \eqn{\Sigma},
-the matrix block cancels there for an observation away from the degenerate
-direction.
+when written as products of \eqn{\Sigma^{-1}} and the derivatives of
+\eqn{\Sigma}, the matrix block cancels there for an observation away from the
+degenerate direction.
 }
 \section{Notation}{
 
@@ -60,7 +61,7 @@ names(H)
 c(H$mu1_mu1[1], H$mu1_mu2[1])
 -solve(mv_sigma(d, theta))[1, ]
 
-# Against a numerical Hessian of the log-likelihood.
+# The result is compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

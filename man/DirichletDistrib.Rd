@@ -42,8 +42,9 @@ integer. The validator rejects any other value, and also a \code{dimension}
 property other than \code{"multivariate"}.}
 
 \item{param}{The \code{parameters7} \code{\link[parameters7:simplex]{parameters7::simplex()}} carrying the mean.
-Its \code{n_free} is \eqn{p-1}, one fewer than the number of coordinates, the
-simplex being a set of dimension \eqn{p-1} in \eqn{\mathbb{R}^p}.}
+Its \code{n_free} is \eqn{p-1}, one fewer than the number of coordinates,
+because the simplex is a set of dimension \eqn{p-1} in
+\eqn{\mathbb{R}^p}.}
 }
 \value{
 An S7 object of class \code{DirichletDistrib}, inheriting from
@@ -53,7 +54,7 @@ are the parent's: \code{distrib_name}, \code{dimension}, \code{n_dim}, \code{bou
 \code{link_params} and \code{params_smooth}. For an object built by
 \code{\link[=dirichlet_distrib]{dirichlet_distrib()}} \code{params} is \code{c("mean_<free names>", "phi")},
 \code{n_params} is \eqn{p}, and every mean coordinate carries an identity link,
-its free value being unconstrained already.
+because its free value is already unconstrained.
 }
 \description{
 This is the S7 class of the Dirichlet family on the open simplex of \eqn{p}
@@ -63,7 +64,7 @@ coordinates, parametrized by a mean vector \eqn{\mu} carried on a
 an error and are not approximated.
 
 The class carries an extra property beyond the parent's, \code{param}: the
-\code{parameters7} simplex the mean lies on, whose free names become the
+\code{parameters7} simplex on which the mean lies, whose free names become the
 family's own parameter names prefixed by \code{mean_}. Build one with
 \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}, which validates the simplex against \code{n_dim}, supplies
 the concentration's link and fills the properties in. This page documents the
@@ -104,7 +105,8 @@ and the kurtosis.
 d <- dirichlet_distrib(3)
 S7::S7_inherits(d, multivariate_distrib)
 
-# Three coordinates, so two free mean values plus the concentration.
+# With three coordinates, there are two free mean values plus the
+# concentration.
 d@n_dim
 d@params
 d@params_interpretation

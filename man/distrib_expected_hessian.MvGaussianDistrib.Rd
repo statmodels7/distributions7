@@ -7,18 +7,20 @@
 \item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. Only its row
-count is used: the expectation is taken over the law, so no observation
-enters any component.}
+count is used: the expectation is taken over the law, so the components
+do not depend on any observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
 result. Every link of this family is the identity, so the two scales
 coincide.}
 
-\item{approx}{Ignored: the expectation is exact and no approximation strategy
-is consulted. It is present so that the signature matches the generic's.}
+\item{approx}{Ignored: the expectation is exact, so the method does not use
+an approximation strategy. It is present so that the signature matches
+the generic's.}
 
 \item{nsim}{Ignored, for the same reason.}
 
@@ -26,7 +28,7 @@ is consulted. It is present so that the signature matches the generic's.}
 }
 \value{
 A named list of numeric vectors of length \eqn{n}, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
+\code{\link[=hess_names]{hess_names(distrib@params)}}; each vector is constant.
 }
 \description{
 Computes the expectation of the observed Hessian in closed form, which for
@@ -78,7 +80,8 @@ c(EH$mu1_mu1[1], EH$mu1_mu2[1])
 mixed <- grep("^mu[0-9]+_sigma", names(EH), value = TRUE)
 vapply(EH[mixed], function(z) z[1], numeric(1))
 
-# And the closed form is what averaging the observed Hessian converges to.
+# The average of the observed Hessian over a large sample converges to the
+# closed form.
 set.seed(4)
 big <- distrib_rng(d, 50000, theta)
 emp <- vapply(distrib_hessian(d, big, theta), mean, numeric(1))

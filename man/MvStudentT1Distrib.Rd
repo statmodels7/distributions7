@@ -54,8 +54,8 @@ MvStudentT2Distrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-integer.}
+\item{n_dim}{The dimension \eqn{p} of one observation. It is a single
+positive integer.}
 
 \item{param}{A \pkg{parameters7} parametrization of the scale matrix or of
 its inverse, according to \code{inverted}, inheriting from
@@ -64,11 +64,12 @@ scalar parameters of the distribution.}
 
 \item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the inverse
 scale matrix \eqn{\Sigma^{-1}} and \code{FALSE} when it carries the scale matrix
-\eqn{\Sigma}. It decides which derivative arrays are the parametrization's
-own and which are obtained from them (see \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign
-of the log-determinant, the prefix of the free names and the quantities
-that \code{\link[=mv_summary]{mv_summary()}} reports. The same \eqn{\Sigma} gives the same law
-either way, and neither matrix is a moment of the response.}
+\eqn{\Sigma}. Its value determines which derivative arrays are the
+parametrization's own and which are obtained from them (see
+\code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign of the log-determinant, the prefix of the
+free names and the quantities that \code{\link[=mv_summary]{mv_summary()}} reports. The same
+\eqn{\Sigma} gives the same law either way, and the two matrices are not
+moments of the response.}
 }
 \value{
 An object of class \code{MvStudentT1Distrib} or \code{MvStudentT2Distrib}, a
@@ -82,12 +83,13 @@ parametrization is its inverse \eqn{\Sigma^{-1}}. Both inherit from
 their free values describe, and the computations are shared.
 }
 \details{
-Neither matrix is a covariance or a precision of the response; they differ
-from those by a factor in \eqn{\nu} that \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} writes
-out. The numbering is the package's convention, the one that separates
-\code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} from \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}} and
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}: a parametrization decides
-what a linear predictor acts on, so it has a name of its own.
+The scale matrix and its inverse differ from the covariance and the
+precision of the response by a factor in \eqn{\nu} that
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} writes out. The numbering is the package's
+convention, the one that separates \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} from
+\code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} from
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}: each parametrization determines the quantity on
+which a linear predictor acts, so each has a name of its own.
 }
 \examples{
 c(scale = S7::S7_inherits(mvstudent_t1_distrib(2), MvStudentT1Distrib),

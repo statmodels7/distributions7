@@ -13,7 +13,7 @@ has_mv_grad_y(x)
 A single logical.
 }
 \description{
-\code{TRUE} when \code{\link[=distrib_grad_y]{distrib_grad_y()}} comes from the family and not from the
+Returns \code{TRUE} when \code{\link[=distrib_grad_y]{distrib_grad_y()}} comes from the family and not from the
 base class, whose method signals an error.
 }
 \seealso{

@@ -7,10 +7,11 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and one column per
-category, each row a vector of counts summing to \code{distrib@size}.}
+category, where each row is a vector of counts that sum to
+\code{distrib@size}.}
 
-\item{theta}{A named list of parameters, each component a single number:
-\code{probs_alr1}, ..., \code{probs_alr(p-1)}.}
+\item{theta}{A named list of parameters, where each component is a single
+number: \code{probs_alr1}, ..., \code{probs_alr(p-1)}.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
 in closed form (see Details). Defaults to \code{FALSE}.}
@@ -30,7 +31,7 @@ generic's.}
 \value{
 A named list of numeric vectors of length \eqn{n}, keyed and ordered
 as \code{deriv_names(distrib@params, 3)}. At \eqn{p = 3} there are four
-components, the simplex spending \eqn{p - 1} free values. With
+components, because the simplex has \eqn{p - 1} free values. With
 \code{expected = TRUE} every vector is constant.
 }
 \description{
@@ -71,7 +72,7 @@ y <- distrib_rng(d, 5, theta)
 d3 <- distrib_deriv3(d, y, theta)
 vapply(d3, sum, numeric(1))
 
-# Against a central difference of the Hessian.
+# The result is compared with a central difference of the Hessian.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h

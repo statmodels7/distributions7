@@ -56,8 +56,8 @@ An S7 object of class \code{MultinomialDistrib}, inheriting from
 properties are the parent's. For an object built by
 \code{\link[=multinomial_distrib]{multinomial_distrib()}}, \code{params} is the simplex's free names prefixed by
 \code{probs_}, \code{n_params} is \eqn{p-1}, \code{bounds} is \code{c(0, size)}, and every
-parameter carries an identity link, its free value being unconstrained
-already. The family has no dispersion parameter.
+parameter carries an identity link, because its free value is already
+unconstrained. The family has no dispersion parameter.
 }
 \description{
 This is the S7 class of the multinomial family on \eqn{p} categories and
@@ -106,7 +106,7 @@ and the kurtosis.
 d <- multinomial_distrib(3, size = 5)
 S7::S7_inherits(d, multivariate_distrib)
 
-# Three categories and five trials, so two free probabilities.
+# Three categories and five trials give two free probabilities.
 c(categories = d@n_dim, trials = d@size, parameters = d@n_params)
 d@params
 

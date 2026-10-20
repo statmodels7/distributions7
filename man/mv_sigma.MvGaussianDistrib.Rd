@@ -19,7 +19,7 @@ parametrization's free values. Where the parametrization carries the
 precision the matrix is inverted first, so the result is the covariance
 either way. For this family the matrix is both the scale matrix of the
 density and the variance of the law, so \code{\link[=variance.MvGaussianDistrib]{variance.MvGaussianDistrib()}}
-returns the same matrix; the two part company in the heavy-tailed sibling.
+returns the same matrix; the two differ in the heavy-tailed sibling.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

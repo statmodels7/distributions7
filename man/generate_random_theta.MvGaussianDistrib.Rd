@@ -13,11 +13,12 @@ A named list of \code{distrib@n_params} single numbers, named and ordered
 as \code{distrib@params}.
 }
 \description{
-Draws a parameter vector for testing: each mean uniform on \eqn{(-1, 1)} and
-each free value of the matrix parametrization uniform on \eqn{(-0.4, 0.4)},
-which for the default log-Cholesky parametrization puts the matrix near the
-identity. The method of the base class draws every unbounded parameter
-uniformly on \eqn{(-3, 3)}, which on a log-Cholesky diagonal gives variances
+Draws a parameter vector for testing. Each mean is drawn uniformly on
+\eqn{(-1, 1)} and each free value of the matrix parametrization uniformly on
+\eqn{(-0.4, 0.4)}; for the default log-Cholesky parametrization this puts
+the matrix near the identity. The method of the base class draws every
+unbounded parameter uniformly on \eqn{(-3, 3)}, which on a log-Cholesky
+diagonal gives variances
 between \eqn{e^{-6}} and \eqn{e^{6}} and a poorly conditioned covariance; the
 narrow band keeps the matrices that \code{\link[=check_distrib]{check_distrib()}} draws for this family
 well conditioned.
@@ -34,8 +35,8 @@ set.seed(12)
 many <- replicate(500, unlist(generate_random_theta(d)))
 round(apply(many, 1, range), 2)
 
-# Every draw gives a positive definite covariance, the parametrization
-# having no boundary to reach.
+# Every draw gives a positive definite covariance, because the
+# parametrization has no boundary to reach.
 set.seed(13)
 all(replicate(50, min(eigen(mv_sigma(d, generate_random_theta(d)),
                             only.values = TRUE)$values) > 0))

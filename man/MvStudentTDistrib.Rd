@@ -38,8 +38,8 @@ MvStudentTDistrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-integer.}
+\item{n_dim}{The dimension \eqn{p} of one observation. It is a single
+positive integer.}
 
 \item{param}{A \pkg{parameters7} parametrization of the scale matrix or of
 its inverse, according to \code{inverted}, inheriting from
@@ -48,11 +48,12 @@ scalar parameters of the distribution.}
 
 \item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the inverse
 scale matrix \eqn{\Sigma^{-1}} and \code{FALSE} when it carries the scale matrix
-\eqn{\Sigma}. It decides which derivative arrays are the parametrization's
-own and which are obtained from them (see \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign
-of the log-determinant, the prefix of the free names and the quantities
-that \code{\link[=mv_summary]{mv_summary()}} reports. The same \eqn{\Sigma} gives the same law
-either way, and neither matrix is a moment of the response.}
+\eqn{\Sigma}. Its value determines which derivative arrays are the
+parametrization's own and which are obtained from them (see
+\code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign of the log-determinant, the prefix of the
+free names and the quantities that \code{\link[=mv_summary]{mv_summary()}} reports. The same
+\eqn{\Sigma} gives the same law either way, and the two matrices are not
+moments of the response.}
 }
 \value{
 An S7 object of class \code{MvStudentTDistrib}, inheriting from
@@ -77,7 +78,7 @@ function signal an error.
 Build one with \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}, which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which runs only the validators of \code{multivariate_distrib} and
-\code{distrib}; nothing checks \code{param}.
+\code{distrib} and does not check \code{param}.
 }
 \section{Methods}{
 
@@ -125,8 +126,8 @@ skewness and the kurtosis.
 d <- mvstudent_t1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 
-# Six parameters: two locations, three free values of the scale matrix, and
-# the degrees of freedom last.
+# The family has six parameters: two locations, three free values of the
+# scale matrix, and the degrees of freedom last.
 d@params
 d@params_interpretation
 

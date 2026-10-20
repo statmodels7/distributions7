@@ -49,12 +49,13 @@ The function sets \code{mfrow}, \code{mar} and \code{mgp} for the panel matrix a
 restores the previous values on exit.
 }
 \description{
-The shared engine of \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} and the multivariate
-branch of \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}. It lays out one panel per ordered pair of
-the chosen coordinates: the marginal density on the diagonal, contours of
-the bivariate marginal below it, and the implied correlation printed above
-it. The density panels come from \code{\link[=mv_marginal]{mv_marginal()}}, so nothing is
-integrated; the printed correlation comes from \code{\link[=mv_sigma]{mv_sigma()}}.
+This function is the shared engine of \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} and the
+multivariate branch of \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}. It lays out one panel per
+ordered pair of the chosen coordinates: the marginal density on the
+diagonal, contours of the bivariate marginal below it, and the implied
+correlation printed above it. The density panels come from \code{\link[=mv_marginal]{mv_marginal()}},
+so the function does not integrate anything; the printed correlation comes
+from \code{\link[=mv_sigma]{mv_sigma()}}.
 }
 \details{
 When \code{data} is supplied the diagonal also carries a kernel density estimate
@@ -74,7 +75,7 @@ d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
               sigma_log_L2 = 0, sigma_L2.1 = 0.6)
 
-# Without data: the density alone.
+# Without data, the plot shows the density alone.
 op <- graphics::par(no.readonly = TRUE)
 distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222", data = NULL)
 graphics::par(op)

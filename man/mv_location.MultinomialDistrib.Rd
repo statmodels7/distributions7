@@ -7,7 +7,7 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1.}
+scale, and each value has length 1.}
 }
 \value{
 A numeric vector of length \eqn{p}, without names, summing to the

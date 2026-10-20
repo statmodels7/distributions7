@@ -10,7 +10,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -43,8 +44,8 @@ nearly singular.
 \details{
 The \eqn{\nu} component is not evaluated in the form printed above. Both of
 its bracketed pairs cancel to leading order as \eqn{\nu} grows, so it is
-assembled as \eqn{A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)}, with \code{\link[=mvt_A]{mvt_A()}} and
-\code{\link[=mvt_D]{mvt_D()}} carrying out each cancellation exactly.
+assembled as \eqn{A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)}, where \code{\link[=mvt_A]{mvt_A()}} and
+\code{\link[=mvt_D]{mvt_D()}} carry out each cancellation exactly.
 }
 \section{Notation}{
 
@@ -65,7 +66,7 @@ y <- distrib_rng(d, 25, theta)
 g <- distrib_gradient(d, y, theta)
 vapply(g, sum, numeric(1))
 
-# Against a numerical derivative of the log-likelihood.
+# The score is compared with a numerical derivative of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -83,7 +84,7 @@ vapply(c(1e3, 1e6, 1e10), function(nu) {
   distrib_gradient(d, y[1, ], t2)$nu
 }, numeric(1))
 
-# And the link scale differs, this family having one link that is not the
+# The link scale differs because this family has one link that is not the
 # identity.
 c(parameter = sum(g$nu),
   link = sum(distrib_gradient(d, y, theta, scale = "link")$nu))

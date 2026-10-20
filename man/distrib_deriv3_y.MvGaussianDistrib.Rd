@@ -12,7 +12,8 @@ or \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}}.}
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. Every link of
 this family is the identity, so the two scales coincide.}
@@ -20,8 +21,8 @@ this family is the identity, so the two scales coincide.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-\code{distrib_deriv3_y()} a \eqn{p \times p \times p} array of zeros,
-\code{distrib_deriv4_y()} a \eqn{p \times p \times p \times p} one, and
+\code{distrib_deriv3_y()} returns a \eqn{p \times p \times p} array of
+zeros, \code{distrib_deriv4_y()} a \eqn{p \times p \times p \times p} one, and
 \code{distrib_cross3_y()} a named list of \eqn{p \times p \times p} arrays of
 zeros, one per parameter, in \code{distrib@params} order.
 }

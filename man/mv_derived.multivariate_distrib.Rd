@@ -29,11 +29,11 @@ are variances and covariances, where a closed-form method reports standard
 deviations and correlations.
 }
 \details{
-The diagonal entries are variances and are intervalled on the log scale; the
-off-diagonal ones are unconstrained given the diagonal and are intervalled on
-their own scale. The closed-form methods report correlations on Fisher's
-\eqn{z}, whose intervals stay inside \eqn{(-1, 1)}; the interval of a
-covariance has no such bound.
+The diagonal entries are variances and their intervals are built on the log
+scale; the off-diagonal ones are unconstrained given the diagonal and their
+intervals are built on their own scale. The closed-form methods report
+correlations on Fisher's \eqn{z}, whose intervals stay inside \eqn{(-1, 1)};
+the interval of a covariance has no such bound.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -49,8 +49,8 @@ d0$transform
 # The entries are the lower triangle of the matrix.
 mv_sigma(d, theta)
 
-# Against the closed-form method, which reports standard deviations and a
-# correlation in place of variances and a covariance.
+# The closed-form method reports standard deviations and a correlation in
+# place of variances and a covariance.
 mv_derived(d, theta)$value
 
 # The Dirichlet uses this method: its covariance, then its probabilities.

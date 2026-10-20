@@ -28,8 +28,8 @@ theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
 th <- distributions7:::align_theta(d, theta)
 distributions7:::mv_leading_location(d, th)
 
-# It is what mv_location() returns for this family, the method being this
-# function.
+# mv_location() returns the same vector for this family, because its method
+# is this function.
 mv_location(d, theta)
 
 }

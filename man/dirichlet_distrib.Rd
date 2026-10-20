@@ -56,8 +56,8 @@ with
 \deqn{\mathbb{E}[Y_j] = \mu_j, \qquad
       \operatorname{Cov}(Y_i, Y_j) = \frac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}.}
 So \eqn{\phi} is a precision: the larger it is, the tighter the draws
-sit about the mean. The covariance is singular, the coordinates summing to
-one, and every off-diagonal entry is negative.
+sit about the mean. The covariance is singular because the coordinates sum
+to one, and every off-diagonal entry is negative.
 
 The parametrization follows the design of the multivariate gaussian. The
 constrained object, here a point of the simplex, is carried by a
@@ -70,7 +70,7 @@ prefixed by \code{mean_}, followed by \code{phi}.
 \section{A family without location and scale}{
 The family has no location and scale to separate: the support is a set of
 dimension \eqn{p-1}, not a Euclidean space, and the covariance is singular by
-construction. Two methods follow from this. \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal.DirichletDistrib()}}
+construction. For this reason \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal.DirichletDistrib()}}
 returns a beta distribution, and \code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw.DirichletDistrib()}}
 replaces the gaussian proposal of the base class with the uniform
 distribution on the simplex, which the normalization check of
@@ -78,7 +78,8 @@ distribution on the simplex, which the normalization check of
 }
 
 \section{The expected information}{
-Two identities make it closed form. Differentiating \eqn{\sum_j \mu_j = 1}
+The expected information is closed form because of two identities.
+Differentiating \eqn{\sum_j \mu_j = 1}
 once shows that the columns of \eqn{A = \partial\mu/\partial\eta} sum to
 zero, and twice that every second-derivative vector of the simplex does; and
 \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)} makes
@@ -101,7 +102,7 @@ error that states the reason.
 \section{Estimation}{
 \code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale, over the free
 values of the simplex and the link of \eqn{\phi} (\eqn{\log\phi} by default).
-No estimate is closed form.
+The estimates are not available in closed form.
 }
 
 \section{Notation}{
@@ -116,7 +117,8 @@ chart and \eqn{\psi} the digamma function.
 d <- dirichlet_distrib(3)
 d
 
-# Two free mean values and a concentration, all on the parameter scale.
+# The parameters are two free mean values and a concentration, all on the
+# parameter scale.
 th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
 mv_location(d, th)
 round(mv_sigma(d, th), 6)
@@ -151,8 +153,8 @@ Chapman and Hall, London.
 \code{\link[=beta1_distrib]{beta1_distrib()}} for a coordinate's marginal and the two-coordinate case
 seen on the line; \code{\link[=multinomial_distrib]{multinomial_distrib()}} for the discrete family on the same
 simplex; \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for the elliptical multivariate family;
-\code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the mean rides; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined family
-against the same battery that this one passes; \link{DirichletDistrib} for the
-class.
+\code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart on which the mean rides;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+user-defined family against the same battery that this one passes;
+\link{DirichletDistrib} for the class.
 }

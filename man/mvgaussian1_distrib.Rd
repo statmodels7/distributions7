@@ -23,8 +23,8 @@ dimension \code{n_dim} and of full rank. Defaults to
 }
 \value{
 An S7 object of class \link{MvGaussian1Distrib} or \link{MvGaussian2Distrib},
-with \code{param} the parametrization supplied and \code{inverted} recording which
-side it carries. Its \code{params} are \code{mu1}, ..., \code{mup} followed by the
+whose \code{param} is the parametrization supplied and whose \code{inverted} records
+which side it carries. Its \code{params} are \code{mu1}, ..., \code{mup} followed by the
 prefixed free names, \code{n_params} is \code{p + param@n_free}, every entry of
 \code{params_bounds} is \eqn{(-\infty, \infty)} and every link is the identity.
 }
@@ -43,8 +43,8 @@ has \code{p * (p + 1) / 2} free values.
 The numbering is the package's convention, the one that separates
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} and \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}: one
 name per parametrization, because in a modeling framework a parametrization
-decides what a linear predictor acts on. Here the choice can change the model
-as well as the coordinates. A matrix parametrization is closed under
+determines what a linear predictor acts on. Here the choice can change the
+model as well as the coordinates. A matrix parametrization is closed under
 inversion when the inverse of every matrix that it produces is one of its
 own; \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}}, \code{\link[parameters7:matrix_log]{parameters7::matrix_log()}},
 \code{\link[parameters7:diagonal_matrix]{parameters7::diagonal_matrix()}}, \code{\link[parameters7:scalar_matrix]{parameters7::scalar_matrix()}},
@@ -82,8 +82,8 @@ gaussian on an unstructured covariance therefore has the five parameters
 \code{mu1}, \code{mu2}, \code{sigma_log_L1}, \code{sigma_log_L2} and \code{sigma_L2.1}, while the
 same parametrization on the precision gives \code{omega_log_L1} and the rest. The
 prefix distinguishes the two models in a printed table, since the name of a
-free value gives the construction of the matrix and does not say which
-matrix it is.
+free value identifies the construction of the matrix and does not identify
+which matrix it is.
 
 All of these parameters are unconstrained, so all of the links are the
 identity. The constraint that makes the matrix positive definite is carried
@@ -112,10 +112,10 @@ serve as a penalty but does not define a density.
 }
 
 \section{The response}{
-An \eqn{n \times p} matrix, one row per observation. A plain vector of
-length \eqn{p} is read as a single observation. A parameter may not vary from
-observation to observation here, the parametrization describing one matrix
-for the whole sample.
+The response is an \eqn{n \times p} matrix with one row per observation. A
+plain vector of length \eqn{p} is read as a single observation. A parameter
+may not vary from observation to observation here, because the
+parametrization describes one matrix for the whole sample.
 }
 
 \section{The distribution}{
@@ -140,13 +140,13 @@ d
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 
-# The covariance that the free values describe, positive definite for any
+# The covariance that the free values describe is positive definite for any
 # five numbers.
 S <- mv_sigma(d, theta)
 round(S, 4)
 eigen(S, only.values = TRUE)$values
 
-# The density, against the formula written out.
+# The density is compared with the formula written out.
 y <- rbind(c(0, 0), c(1, -1))
 mu <- c(0.5, -0.3)
 ref <- apply(y, 1, function(r)
@@ -166,8 +166,8 @@ th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.1,
 Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
 all.equal(mv_sigma(o, th_o), solve(Om), check.attributes = FALSE)
 
-# The conditional variance of the first coordinate given the second, and
-# the marginal variance beside it.
+# The conditional variance of the first coordinate given the second appears
+# beside the marginal variance.
 c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 
 # An AR(1) covariance and an AR(1) precision are different models, and the

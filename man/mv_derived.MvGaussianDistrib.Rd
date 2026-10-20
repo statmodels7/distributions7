@@ -22,7 +22,7 @@ correlations for a precision.
 Returns the quantities that the chosen parametrization describes, with their
 Jacobian. Where the matrix parametrization declares its own block through
 \code{parameters7::param_readable()} (a compound symmetry, an AR(1), an AR(p)),
-that block alone is returned, with the common variance \code{scale} reported as
+only that block is returned, and the common variance \code{scale} is reported as
 its square root \code{sd} on the covariance side. Otherwise a covariance
 parametrization reports the standard deviations and the correlations, and a
 precision parametrization reports the conditional variances
@@ -52,7 +52,7 @@ partial correlation equals the correlation.
 \eqn{\Sigma} is the covariance, \eqn{\Omega = \Sigma^{-1}} the precision,
 \eqn{p} the dimension, \eqn{R_j^2} the coefficient of determination of the
 regression of coordinate \eqn{j} on the others, and \eqn{Y_{-j}} the
-response with that coordinate removed.
+response without that coordinate.
 }
 
 \examples{

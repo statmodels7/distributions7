@@ -7,12 +7,12 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1.}
+scale, and each value has length 1.}
 
-\item{which}{A single integer in \eqn{1, \dots, p}, the category wanted. A
-vector of two or more distinct categories signals an error explaining why;
-an empty, duplicated, non-integer or out-of-range \code{which} is rejected
-earlier by \code{\link[=mv_marginal]{mv_marginal()}}.}
+\item{which}{A single integer in \eqn{1, \dots, p}, the category whose
+marginal is returned. A vector of two or more distinct categories signals
+an error explaining why; an empty, duplicated, non-integer or out-of-range
+\code{which} is rejected earlier by \code{\link[=mv_marginal]{mv_marginal()}}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

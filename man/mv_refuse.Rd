@@ -13,8 +13,8 @@ quoted in the message.}
 \item{what}{The name of the quantity, a single string without parentheses,
 such as \code{"distrib_cdf"} or \code{"skewness"}. The \verb{()} is appended here.}
 
-\item{why}{One sentence saying what is missing, a single string without a
-leading capital. It is placed after a colon and carries its own final
+\item{why}{One sentence that states what is missing, a single string without
+a leading capital. It is placed after a colon and carries its own final
 period.}
 }
 \value{
@@ -22,21 +22,22 @@ Does not return: it signals an error, with \code{call. = FALSE} so that
 the message is not prefixed by the internal call.
 }
 \description{
-Signals the error that a multivariate distribution gives for a quantity that
-has no multivariate counterpart, in one wording: the name of the quantity,
-the family, and a sentence saying what is missing. Every method of the class
-that signals such an error calls this function, so the messages share one
-form and no method returns a number of the wrong shape.
+Signals the error of a multivariate distribution for a quantity that has no
+multivariate counterpart. The message has one wording and consists of the
+name of the quantity, the family, and a sentence that states what is
+missing. Every method of the class that signals such an error calls this
+function, so the messages share one form and a method does not return a
+number of the wrong shape.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
 
-# The wording of these errors. The name carries no parentheses; they are
-# appended here.
+# This call shows the wording of these errors. The name carries no
+# parentheses; they are appended here.
 try(distributions7:::mv_refuse(d, "some_quantity",
                                "there is no such thing in p dimensions."))
 
-# The same wording from a generic.
+# A generic signals the error with the same wording.
 try(distrib_cdf(d, rbind(c(0, 0)),
                 list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                      sigma_log_L2 = 0, sigma_L2.1 = 0)))

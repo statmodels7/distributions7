@@ -7,8 +7,8 @@
 \item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
-each row on the open simplex. A single observation may be given as a plain
-vector.}
+and each row lies on the open simplex. A single observation may be given as
+a plain vector.}
 
 \item{theta}{A named list of parameters on the parameter scale: the mean's
 free values followed by \code{phi}, each of length 1.}
@@ -34,14 +34,15 @@ observation, in closed form. With \eqn{g_j = \log y_j - \psi(\alpha_j)},
       \ell^{(\eta_k\phi)} = -\phi\sum_{j} t_j \mu_j A_{jk}
         + \sum_{j} g_j A_{jk},}
 \deqn{\ell^{(\phi\phi)} = \psi'(\phi) - \sum_{j} t_j \mu_j^2.}
-The pure-concentration entry does not depend on the data, the family being an
-exponential family in \eqn{\log y} whose concentration multiplies a statistic
-linearly; it therefore equals its own expectation at every observation. The
-other two carry the data through \eqn{g}. On the additive log-ratio chart the
-matrix is computed by the route of the higher orders, \code{\link[=dirichlet_higher]{dirichlet_higher()}},
-which writes \eqn{-\log\Gamma(\alpha_j)} as \eqn{\log\alpha_j - \log\Gamma(1
-+ \alpha_j)}: written in \eqn{\psi'(\alpha_j)}, the two blocks of a
-coordinate whose shape is small cancel to the order of that shape.
+The pure-concentration entry does not depend on the data, because the family
+is an exponential family in \eqn{\log y} whose concentration multiplies a
+statistic linearly; it therefore equals its own expectation at every
+observation. The other two carry the data through \eqn{g}. On the additive
+log-ratio chart the matrix is computed by the route of the higher orders,
+\code{\link[=dirichlet_higher]{dirichlet_higher()}}, which writes \eqn{-\log\Gamma(\alpha_j)} as
+\eqn{\log\alpha_j - \log\Gamma(1 + \alpha_j)}: written in
+\eqn{\psi'(\alpha_j)}, the two blocks of a coordinate whose shape is small
+cancel to the order of that shape.
 }
 \section{Notation}{
 

@@ -13,7 +13,7 @@ has_mv_support(x)
 A single logical.
 }
 \description{
-\code{TRUE} when the family registers \code{\link[=mv_support]{mv_support()}}, which a discrete
+Returns \code{TRUE} when the family registers \code{\link[=mv_support]{mv_support()}}, which a discrete
 multivariate family does and a continuous one cannot.
 }
 \details{

@@ -22,8 +22,8 @@ multivariate method branches on whether a component belongs to the mean
 block, the matrix block or the mixed block, which depends on position.
 }
 \details{
-\code{\link[=hess_pairs]{hess_pairs()}} answers the same question with parameter names, which suits a
-univariate method looking a closed-form component up in a table. Here the
+\code{\link[=hess_pairs]{hess_pairs()}} returns the same pairs as parameter names, which suits a
+univariate method that looks a closed-form component up in a table. Here the
 names are matched back to positions, so the two orderings come from one
 enumeration and cannot drift apart.
 }
@@ -32,12 +32,12 @@ d <- mvgaussian1_distrib(2)
 idx <- distributions7:::mv_hess_indices(d)
 length(idx) == length(hess_names(d@params))
 
-# Key by key, the positions name the parameters the key is built from.
+# Key by key, the positions name the parameters from which the key is built.
 head(data.frame(key = hess_names(d@params),
                 a = vapply(idx, `[`, integer(1), 1L),
                 b = vapply(idx, `[`, integer(1), 2L)), 6)
 
-# Which is the same enumeration hess_pairs() gives as names.
+# This is the same enumeration that hess_pairs() gives as names.
 all.equal(lapply(idx, function(p) d@params[p]),
           distributions7:::hess_pairs(d@params),
           check.attributes = FALSE)

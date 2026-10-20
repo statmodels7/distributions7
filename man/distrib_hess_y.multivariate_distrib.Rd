@@ -16,9 +16,10 @@
 Does not return: it signals an error naming the family.
 }
 \description{
-Signals an error, for the reason that \code{\link[=distrib_grad_y.multivariate_distrib]{distrib_grad_y.multivariate_distrib()}}
-gives: the univariate numerical fallback differences along a line and would
-produce a scalar where a \eqn{p \times p} matrix is wanted. A family that can
+Signals an error, for the same reason as
+\code{\link[=distrib_grad_y.multivariate_distrib]{distrib_grad_y.multivariate_distrib()}}: the univariate numerical fallback
+differences along a line and would produce a scalar where a
+\eqn{p \times p} matrix is required. A family that can
 supply \eqn{\partial^2\ell/\partial y\,\partial y^\top} registers its own
 method.
 }

@@ -17,8 +17,9 @@ A numeric vector of length \code{K + 1}, the coefficients of
 }
 \description{
 Returns the Taylor coefficients at \eqn{t = 0} of
-\eqn{g(t) = (1 - e^{-pt})/(1 - e^{-2t})}, from which every quantity of
-\eqn{\nu} alone of a multivariate t follows by a Laplace transform. With
+\eqn{g(t) = (1 - e^{-pt})/(1 - e^{-2t})}, from which every quantity of a
+multivariate t depending on \eqn{\nu} only follows by a Laplace transform.
+With
 \eqn{c_p(\nu) = \log\Gamma\{(\nu+p)/2\} - \log\Gamma(\nu/2) - (p/2)\log\nu},
 \deqn{c_p'(\nu) = \int_0^\infty e^{-\nu t}\{g(t) - p/2\}\,dt,}
 so that \eqn{c_p'(\nu) = \sum_{n \ge 1} g_n\, n!/\nu^{n+1}}, a series that

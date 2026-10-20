@@ -9,7 +9,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. With
 \code{expected = TRUE} only its row count is used.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation of each
 component is returned. Defaults to \code{FALSE}.}
@@ -32,10 +33,12 @@ is constant.
 \description{
 Computes every third derivative of the log-density in the parameters, in
 closed form. Writing \eqn{r = y - \mu} and \eqn{P_t} for the derivative of
-the precision over the matrix indices of the tuple: three mean indices give
-exactly zero, the log-density being quadratic in \eqn{\mu}; two give
-\eqn{-P_t[i, j]}; one gives \eqn{(r P_t)_i}; none gives
-\eqn{\pm\tfrac{1}{2}\,\partial^3\log\lvert M\rvert - \tfrac{1}{2} r^\top P_t r}.
+the precision over the matrix indices of the tuple, a tuple with three mean
+indices gives exactly zero, because the log-density is quadratic in
+\eqn{\mu}; a tuple with two gives \eqn{-P_t[i, j]}; a tuple with one gives
+\eqn{(r P_t)_i}; and a tuple without mean indices gives
+\eqn{\pm\tfrac{1}{2}\,\partial^3\log\lvert M\rvert -
+\tfrac{1}{2} r^\top P_t r}.
 The arrays \eqn{P_t} come from \code{\link[=mvg_ptensors]{mvg_ptensors()}}.
 }
 \details{
@@ -65,7 +68,7 @@ length(d3)
 # Any component naming three means is exactly zero.
 d3[["mu1_mu1_mu2"]]
 
-# Against one stencil on the analytic Hessian.
+# The result is compared with one stencil on the analytic Hessian.
 h <- 1e-4
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
@@ -73,7 +76,8 @@ c(exact = sum(d3[["mu1_mu2_sigma_L2.1"]]),
   stencil = (sum(distrib_hessian(d, y, tp)[["mu1_mu2"]]) -
              sum(distrib_hessian(d, y, tm)[["mu1_mu2"]])) / (2 * h))
 
-# The expectation in closed form, against an average over a large sample.
+# The expectation in closed form is compared with an average over a large
+# sample.
 e3 <- distrib_deriv3(d, y, theta, expected = TRUE)
 set.seed(9)
 big <- distrib_deriv3(d, distrib_rng(d, 50000, theta), theta)

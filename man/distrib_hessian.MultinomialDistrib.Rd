@@ -7,11 +7,11 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
-each row on the support. A single observation may be given as a plain
-vector.}
+and each row is on the support. A single observation may be given as a
+plain vector.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1.}
+scale, and each value has length 1.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
@@ -20,8 +20,9 @@ scale, each of length 1.}
 }
 \value{
 A named list of numeric vectors, one per distinct entry of the
-symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, each of length
-\code{nrow(y)}. For \eqn{p} categories there are \eqn{p(p-1)/2} of them.
+symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, and each vector
+has length \code{nrow(y)}. For \eqn{p} categories there are \eqn{p(p-1)/2} of
+them.
 }
 \description{
 Computes the distinct second derivatives of the multinomial log-mass with

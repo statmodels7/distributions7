@@ -9,8 +9,8 @@ mv_reference_draw(distrib, theta, n, ...)
 \arguments{
 \item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters, each component a single
-number.}
+\item{theta}{A named list or vector of parameters, in which each component
+is a single number.}
 
 \item{n}{The number of draws, a single positive whole number.}
 
@@ -62,7 +62,8 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 set.seed(1)
 str(mv_reference_draw(d, theta, 5))
 
-# The estimate it is built for: the density over the proposal, averaged.
+# This is the estimate for which the proposal is built: the density over
+# the proposal, averaged.
 set.seed(2)
 r <- mv_reference_draw(d, theta, 20000)
 mean(exp(distrib_pdf(d, r$y, theta, log = TRUE) - r$logd))

@@ -11,7 +11,7 @@ fd_second(f, x, k, l, h_rel = NULL)
 
 \item{x}{The point.}
 
-\item{k, l}{The coordinates to differentiate in.}
+\item{k, l}{The coordinates with respect to which \code{f} is differentiated.}
 
 \item{h_rel}{Deprecated and unused; the step is
 \code{\link[numericals7:fd_step]{numericals7::fd_step()}}'s at order two.}
@@ -20,8 +20,8 @@ fd_second(f, x, k, l, h_rel = NULL)
 A single number.
 }
 \description{
-The mixed or repeated second derivative of a scalar function, from a single
-stencil, without nested first differences.
+Computes the mixed or repeated second derivative of a scalar function from
+a single stencil, without nested first differences.
 }
 \details{
 The nodes, the weights and the step are those of \pkg{numericals7}. Where the

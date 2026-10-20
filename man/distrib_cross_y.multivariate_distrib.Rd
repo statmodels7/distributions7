@@ -11,7 +11,7 @@
 \item{theta}{A named list of parameters. It is not read.}
 
 \item{scale}{One of \code{"parameter"} or \code{"link"}. The generic applies the link
-scale to the result of a method. Not read here.}
+scale to the result of a method. It is not read here.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,7 +33,7 @@ set.seed(1)
 y <- distrib_rng(d, 3, theta)
 try(distrib_cross_y(d, y, theta))
 
-# The shape that a method returns: one n by p matrix per parameter.
+# A method returns one n by p matrix per parameter.
 g <- mvgaussian1_distrib(2)
 th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
            sigma_L2.1 = 0.5)

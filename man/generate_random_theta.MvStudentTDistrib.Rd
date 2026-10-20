@@ -28,7 +28,7 @@ d <- mvstudent_t1_distrib(2)
 set.seed(11)
 unlist(generate_random_theta(d))
 
-# The three bands, over 400 draws.
+# The ranges of the three bands are shown over 400 draws.
 set.seed(12)
 round(apply(replicate(400, unlist(generate_random_theta(d))), 1, range), 2)
 

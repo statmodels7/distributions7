@@ -7,8 +7,8 @@
 \item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
-each row on the open simplex. A single observation may be given as a plain
-vector.}
+and each row lies on the open simplex. A single observation may be given as
+a plain vector.}
 
 \item{theta}{A named list of parameters on the parameter scale: the mean's
 free values followed by \code{phi}, each of length 1.}
@@ -20,7 +20,7 @@ free values followed by \code{phi}, each of length 1.}
 }
 \value{
 A named list with one numeric vector per parameter, in the order
-\code{distrib@params} gives, each of length \code{nrow(y)}.
+that \code{distrib@params} gives, each of length \code{nrow(y)}.
 }
 \description{
 Computes the first derivatives of the Dirichlet log-density with respect to
@@ -30,13 +30,13 @@ closed form. Writing \eqn{g_j = \log y_j - \psi(\alpha_j)} and
 \deqn{\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum_{j} g_j A_{jk},
       \qquad
       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_{j} g_j \mu_j.}
-The data enter only through \eqn{\log y}, the family being an exponential
-family in that statistic.
+The data enter only through \eqn{\log y}, because the family is an
+exponential family in that statistic.
 
 With \code{scale = "link"} the generic applies the chain rule for the links of the
 family to the result of the method. Every mean coordinate takes the identity
-link, its free value being unconstrained already, so only the component of
-the concentration changes.
+link because its free value is already unconstrained, so only the component
+of the concentration changes.
 }
 \section{Notation}{
 

@@ -5,7 +5,7 @@
 \title{A Uniform Proposal on the Simplex}
 \arguments{
 \item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}, read
-for its \code{n_dim} alone.}
+only for its \code{n_dim}.}
 
 \item{theta}{A named list of parameters. Ignored: the proposal is uniform
 and does not depend on where the family sits.}

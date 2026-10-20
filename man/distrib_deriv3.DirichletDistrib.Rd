@@ -7,12 +7,12 @@
 \item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and one column per
-coordinate, each row a point of the open simplex. A row with a zero
-coordinate is outside the support and gives a non-finite component through
-\eqn{\log y_j}.}
+coordinate, where each row is a point of the open simplex. A row with a
+zero coordinate is outside the support and gives a non-finite component
+through \eqn{\log y_j}.}
 
-\item{theta}{A named list of parameters, each component a single number:
-\code{mean_alr1}, ..., \code{mean_alr(p-1)} and \code{phi}.}
+\item{theta}{A named list of parameters, where each component is a single
+number: \code{mean_alr1}, ..., \code{mean_alr(p-1)} and \code{phi}.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
 in closed form (see Details). Defaults to \code{FALSE}.}
@@ -59,7 +59,8 @@ of the categorical law (see \code{\link[=mn_cumulant]{mn_cumulant()}}) on a comp
 the free values of the mean. The second part is regular at a small shape, so
 the partition sum runs over \eqn{\psi^{(m-1)}(1 + \alpha_j)}. Applied to
 \eqn{\log\Gamma(\alpha_j)} directly, the chain rule would cancel at a small
-shape, terms of order one leaving a result of the order of \eqn{\alpha_j}. On
+shape: terms of order one would cancel and leave a result of the order of
+\eqn{\alpha_j}. On
 another chart a coordinate with \eqn{\alpha_j < 1} is scaled by
 \eqn{\alpha_j} through
 \eqn{\alpha^m\psi^{(m-1)}(\alpha) = (-1)^m(m-1)! + \alpha^m\psi^{(m-1)}(1 + \alpha)},
@@ -86,7 +87,7 @@ y <- distrib_rng(d, 5, theta)
 d3 <- distrib_deriv3(d, y, theta)
 names(d3)
 
-# Against a central difference of the Hessian in phi.
+# The result is compared with a central difference of the Hessian in phi.
 h <- 1e-4
 tp <- theta; tp$phi <- tp$phi + h
 tm <- theta; tm$phi <- tm$phi - h

@@ -10,13 +10,14 @@ mvstudent_t1_distrib(n_dim, sigma = NULL, link_nu = linkfunctions7::log_link())
 mvstudent_t2_distrib(n_dim, omega = NULL, link_nu = linkfunctions7::log_link())
 }
 \arguments{
-\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
-whole number, finite and at least 1. Any other value signals an error.}
+\item{n_dim}{The dimension \eqn{p} of one observation. The value must be a
+single positive whole number, finite and at least 1. Any other value
+signals an error.}
 
 \item{sigma}{A \pkg{parameters7} parametrization of the scale matrix, of
 dimension \code{n_dim} and of full rank. Defaults to
 \code{parameters7::log_cholesky(n_dim)}. A rank-deficient parametrization is
-rejected, the density not normalizing.}
+rejected because the density does not normalize.}
 
 \item{link_nu}{The link carrying the degrees of freedom to the
 unconstrained scale, a \code{linkfunctions7::link} object. Defaults to
@@ -30,10 +31,10 @@ only up to the factor \eqn{(\nu-2)/\nu}; see Details.}
 }
 \value{
 An S7 object of class \link{MvStudentT1Distrib} or \link{MvStudentT2Distrib},
-with \code{param} the parametrization supplied and \code{inverted} recording which
-matrix it carries. Its \code{params} are \code{mu1}, ..., \code{mup}, the prefixed
-free names, then \code{nu}; \code{n_params} is \code{p + param@n_free + 1}; every
-\code{params_bounds} entry is \eqn{(-\infty, \infty)} except that of \code{nu},
+whose \code{param} is the parametrization supplied and whose \code{inverted}
+records which matrix \code{param} carries. Its \code{params} are \code{mu1}, ..., \code{mup},
+the prefixed free names, then \code{nu}; \code{n_params} is \code{p + param@n_free + 1};
+every \code{params_bounds} entry is \eqn{(-\infty, \infty)} except that of \code{nu},
 which is \eqn{(0, \infty)}; and every link is the identity except that of
 \code{nu}.
 }
@@ -51,9 +52,9 @@ the log-Cholesky parametrization, which has \code{p * (p + 1) / 2} free values,
 and to a log link on \code{nu}.
 }
 \section{The two matrices}{
-Neither matrix is a covariance, and neither is a precision. \eqn{\Sigma} is
-the scale matrix, the matrix in the quadratic form of the density, and
-the moments are obtained from it by scaling in \eqn{\nu}:
+Each of the two matrices is neither a covariance nor a precision.
+\eqn{\Sigma} is the scale matrix, the matrix in the quadratic form of the
+density, and the moments are obtained from it by scaling in \eqn{\nu}:
 
 \deqn{\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\,\Sigma \quad (\nu > 2),
   \qquad
@@ -98,7 +99,7 @@ describe the same laws in different coordinates. Where it is not they are
 different models: \code{mvstudent_t2_distrib(p, parameters7::ar1(p))} is the
 family whose inverse scale matrix has the entries \eqn{\sigma^2\rho^{|i-j|}},
 with \eqn{\sigma^2} the scale of \code{ar1()}, and it is a valid law. The AR(1)
-pattern on the scale matrix with the other side parametrized is
+pattern on the scale matrix, in the family that parametrizes the inverse, is
 \code{mvstudent_t2_distrib(p, parameters7::ar1_inv(p))}, whose parametrization is
 that inverse.
 }
@@ -115,16 +116,18 @@ every derivative in \code{nu}.
 }
 
 \section{The weight of an observation}{
-A gaussian fitted to data with a few outlying rows inflates its covariance
-to cover them. A \eqn{t} with \eqn{\nu} estimated does not: an observation at
-squared Mahalanobis distance \eqn{q} enters every derivative through the
-weight \eqn{c = (\nu+p)/(\nu+q)}, which falls as \eqn{1/q}. The gaussian is
-the limit \eqn{\nu \to \infty}, where \eqn{c \equiv 1}.
+When a gaussian is fitted to data with a few outlying rows, the estimated
+covariance grows until it covers them. A \eqn{t} whose \eqn{\nu} is estimated
+does not: an observation at squared Mahalanobis distance \eqn{q} enters every
+derivative through the weight \eqn{c = (\nu+p)/(\nu+q)}, which falls as
+\eqn{1/q}. The gaussian is the limit \eqn{\nu \to \infty}, where \eqn{c
+\equiv 1}.
 }
 
 \section{The expected information}{
-Closed form, from the family's own scale mixture; see
-\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the four blocks.
+The expected information has a closed form, obtained from the family's own
+scale mixture; see \code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the
+four blocks.
 \code{\link[=fit_distrib]{fit_distrib()}} therefore rejects an \code{approx} argument on
 \code{\link[=fisher_scoring]{fisher_scoring()}} for this family, as it does for any family that computes
 its expected information exactly.
@@ -141,18 +144,18 @@ response's exactly.
 }
 
 \section{Degrees of freedom far from the gaussian limit and close to it}{
-Every quantity of \eqn{\nu} alone (the constant of the density and its
-derivatives, and the expected information in \eqn{\nu}) is computed by
-\code{\link[=mvt_cp_d]{mvt_cp_d()}} and \code{\link[=mvt_info_nunu]{mvt_info_nunu()}} without the cancellation of the direct
+Every quantity that depends only on \eqn{\nu} (the constant of the density
+and its derivatives, and the expected information in \eqn{\nu}) is computed
+by \code{\link[=mvt_cp_d]{mvt_cp_d()}} and \code{\link[=mvt_info_nunu]{mvt_info_nunu()}} without the cancellation of the direct
 difference of gamma and polygamma functions, and the part that carries the
 data by \code{\link[=mvt_h_d]{mvt_h_d()}}; all of them vanish as \eqn{\nu} grows, while the terms
 of the direct forms do not.
 }
 
 \section{The response}{
-An \eqn{n \times p} matrix, one row per observation. A plain vector of
-length \eqn{p} is read as a single observation. A parameter may not vary
-from observation to observation.
+The response is an \eqn{n \times p} matrix with one row per observation. A
+plain vector of length \eqn{p} is read as a single observation. A parameter
+may not vary from observation to observation.
 }
 
 \section{The distribution}{
@@ -177,8 +180,8 @@ d
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 
-# The scale matrix is what the parametrization carries; the covariance is a
-# moment and is larger by nu / (nu - 2).
+# The parametrization carries the scale matrix; the covariance is a moment
+# and is larger by nu / (nu - 2).
 mv_sigma(d, theta)
 all.equal(variance(d, theta), (6 / 4) * mv_sigma(d, theta))
 

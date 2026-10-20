@@ -7,7 +7,8 @@
 \item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} or
 \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}}.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{which}{An integer vector of distinct coordinates to keep, between 1 and
 \eqn{p}. The generic \code{\link[=mv_marginal]{mv_marginal()}} checks it before dispatch.}
@@ -22,8 +23,8 @@ named list.
 }
 \description{
 Returns the marginal law of a subset of coordinates, which for a gaussian is
-again a gaussian: the mean is the subvector and the covariance the
-corresponding block, with nothing to integrate. The result is a fresh
+again a gaussian: the mean is the subvector and the covariance is the
+corresponding block, without any integration. The result is a fresh
 \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} of the reduced dimension (an \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}}
 when the parent is written on the precision), whose parameters are its own
 and need not be a subset of the ones passed in.

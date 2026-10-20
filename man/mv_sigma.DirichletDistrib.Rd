@@ -18,12 +18,13 @@ Returns the covariance matrix of the family,
 \deqn{\operatorname{Cov}(Y_i, Y_j)
       = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1},}
 so the coordinate variances are \eqn{\mu_j(1-\mu_j)/(\phi+1)} and every
-covariance is negative, the coordinates summing to one.
+covariance is negative, because the coordinates sum to one.
 
 The matrix is singular: the coordinates sum to one, so the vector of ones is
 in its null space and the rank is \eqn{p-1}. A computation that inverts a
 covariance works with the marginals or with the free vector instead. The
-concentration acts as a precision, every entry falling as \eqn{1/(\phi+1)}.
+concentration acts as a precision, and every entry falls as
+\eqn{1/(\phi+1)}.
 }
 \examples{
 d <- dirichlet_distrib(3)

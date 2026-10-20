@@ -18,7 +18,7 @@ A \eqn{p \times p} numeric matrix.
 Reads the component of the second derivative array of \eqn{\Sigma^{-1}}
 that \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} supplies, for the pair of free values
 \eqn{(k, l)}. The key is built from the sorted pair of free names, so the
-result does not depend on the order of the two positions. Shared by the
-gaussian and the Student t.
+result does not depend on the order of the two positions. The gaussian and
+the Student t share this function.
 }
 \keyword{internal}

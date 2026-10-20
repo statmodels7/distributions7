@@ -28,10 +28,11 @@ NULL
 #' @param order The highest order required, a single whole number from 1 to 4.
 #'   A larger value signals an error.
 #'
-#' @return A named list of numeric vectors, each as long as the simplex has
-#'   coordinates, keyed `"1"`, `"2"`, `"1,1"`, `"1,2"` and so on, with the
-#'   indices sorted and comma-separated. Its length is the number of index
-#'   multisets of width 1 to `order`.
+#' @return A named list of numeric vectors, in which each vector is as long as
+#'   the simplex has coordinates. The names are `"1"`, `"2"`, `"1,1"`, `"1,2"`
+#'   and so on, and the indices in each name are sorted and comma-separated.
+#'   The length of the list is the number of index multisets of width 1 to
+#'   `order`.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the point of the simplex that the parametrization produces,
@@ -51,8 +52,8 @@ NULL
 #' mt[["1"]]
 #' as.numeric(parameters7::param_d1(s, eta)[[1]])
 #'
-#' # Every derivative of a point on the simplex sums to zero, the value
-#' # summing to one at every eta.
+#' # Every derivative of a point on the simplex sums to zero, because the
+#' # value sums to one at every eta.
 #' vapply(mt, sum, numeric(1))
 #'
 #' @keywords internal
@@ -78,8 +79,9 @@ simplex_map_tensors <- function(s, eta, order) {
 #' coordinate, by the partition form of Faa di Bruno
 #' \deqn{\partial^{S} f(u) = \sum_{\pi} f^{(\lvert\pi\rvert)}(u)
 #'       \prod_{B \in \pi} \partial^{B} u,}
-#' the sum running over the set partitions of the multiset \eqn{S}. Everything
-#' is vectorized over the coordinates, so one call serves every \eqn{j} at once.
+#' where the sum runs over the set partitions of the multiset \eqn{S}.
+#' Everything is vectorized over the coordinates, so one call serves every
+#' \eqn{j} at once.
 #'
 #' @details
 #' The two simplex-valued families use this at orders three and four. Their
@@ -92,8 +94,9 @@ simplex_map_tensors <- function(s, eta, order) {
 #'
 #' @param tuple An integer vector of free-value indices, with repeats allowed.
 #'   Its length is the derivative order.
-#' @param fd A list whose \eqn{m}-th element is \eqn{f^{(m)}} evaluated at every
-#'   coordinate, a numeric vector each. It must run to `length(tuple)`.
+#' @param fd A list whose \eqn{m}-th element is a numeric vector holding
+#'   \eqn{f^{(m)}} evaluated at every coordinate. It must run to
+#'   `length(tuple)`.
 #' @param ud A named list of the map's derivative arrays, keyed by sorted tuple
 #'   as [simplex_map_tensors()] returns them. Every block of every partition of
 #'   `tuple` must have a key in it.
@@ -103,9 +106,10 @@ simplex_map_tensors <- function(s, eta, order) {
 #'
 #' @section Notation:
 #' \eqn{S} is a multiset of free-value indices, \eqn{\pi} a set partition of it,
-#' \eqn{B} a block of that partition, and \eqn{u} the map being composed with.
+#' \eqn{B} a block of that partition, and \eqn{u} the inner map of the
+#' composition.
 #'
-#' @seealso [index_partitions()] for the enumeration it sums over,
+#' @seealso [index_partitions()] for the enumeration over which it sums,
 #'   [simplex_map_tensors()] for the argument, and [dirichlet_higher()] and
 #'   [multinomial_higher()] for the consumers.
 #'
@@ -118,11 +122,12 @@ simplex_map_tensors <- function(s, eta, order) {
 #' u <- as.numeric(parameters7::param_value(s, eta))
 #' fd <- list(1 / u, -1 / u^2)
 #'
-#' # The mixed second derivative of log(mu_j) in the two free values.
+#' # This is the mixed second derivative of log(mu_j) in the two free values.
 #' got <- distributions7:::chain_univariate(c(1L, 2L), fd, ud)
 #' got
 #'
-#' # Against a difference of the first-order chain rule, taken directly.
+#' # The result is compared with a difference of the first-order chain rule,
+#' # taken directly.
 #' h <- 1e-5
 #' d1 <- function(e) {
 #'   uu <- as.numeric(parameters7::param_value(s, e))
@@ -165,9 +170,9 @@ chain_univariate <- function(tuple, fd, ud) {
 #' @section Notation:
 #' \eqn{\alpha} is the Dirichlet's shape vector, \eqn{\phi} its concentration,
 #' \eqn{\mu} the mean on the simplex, \eqn{\eta} the mean's free vector, and
-#' \eqn{S'} the multiset \eqn{S} with its one \eqn{\phi} index removed.
+#' \eqn{S'} the multiset \eqn{S} without its one \eqn{\phi} index.
 #'
-#' @seealso [simplex_map_tensors()] for the arrays it lifts,
+#' @seealso [simplex_map_tensors()] for the arrays that it lifts,
 #'   [tuple_indices_upto()] for the enumeration over the composite index set,
 #'   and [dirichlet_higher()] for the consumer.
 #'
@@ -181,7 +186,7 @@ chain_univariate <- function(tuple, fd, ud) {
 #' dt[["3"]]
 #' as.numeric(parameters7::param_value(s, eta))
 #'
-#' # Naming phi twice gives exactly zero, alpha being linear in it.
+#' # Naming phi twice gives exactly zero, because alpha is linear in it.
 #' dt[["3,3"]]
 #'
 #' # And a key naming no phi is phi times the mean's own derivative.
@@ -218,7 +223,7 @@ dirichlet_map_tensors <- function(s, eta, phi, order) {
 #' in the order that `parameters7::param_tuple_indices()` uses. It takes a count
 #' of variables in place of a parametrization, so a composite index set formed
 #' by appending a coordinate can be enumerated without building an object of
-#' that shape. The Dirichlet needs this for its simplex free values followed by
+#' that shape. The Dirichlet uses it for its simplex free values followed by
 #' its concentration. The work is done by `numericals7::tuple_indices()`, which
 #' this function wraps.
 #'
@@ -233,14 +238,15 @@ dirichlet_map_tensors <- function(s, eta, phi, order) {
 #'   same enumeration rendered as component names.
 #'
 #' @examples
-#' # Two indices over three variables: the three repeats then the three pairs.
+#' # Two indices over three variables give the three repeats, then the three
+#' # pairs.
 #' distributions7:::tuple_indices_upto(3, 2)
 #'
 #' # The count is choose(d + order - 1, order).
 #' c(got = length(distributions7:::tuple_indices_upto(4, 3)),
 #'   expected = choose(4 + 3 - 1, 3))
 #'
-#' # Every tuple is sorted, which is what makes a comma-joined key canonical.
+#' # Every tuple is sorted, so a comma-joined key is canonical.
 #' all(vapply(distributions7:::tuple_indices_upto(3, 3),
 #'            function(t) !is.unsorted(t), TRUE))
 #'
@@ -342,7 +348,8 @@ tuple_indices_upto <- function(d, order) {
 #' the free values of the mean. The second part is regular at a small shape, so
 #' the partition sum runs over \eqn{\psi^{(m-1)}(1 + \alpha_j)}. Applied to
 #' \eqn{\log\Gamma(\alpha_j)} directly, the chain rule would cancel at a small
-#' shape, terms of order one leaving a result of the order of \eqn{\alpha_j}. On
+#' shape: terms of order one would cancel and leave a result of the order of
+#' \eqn{\alpha_j}. On
 #' another chart a coordinate with \eqn{\alpha_j < 1} is scaled by
 #' \eqn{\alpha_j} through
 #' \eqn{\alpha^m\psi^{(m-1)}(\alpha) = (-1)^m(m-1)! + \alpha^m\psi^{(m-1)}(1 + \alpha)},
@@ -354,11 +361,11 @@ tuple_indices_upto <- function(d, order) {
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
-#'   coordinate, each row a point of the open simplex. A row with a zero
-#'   coordinate is outside the support and gives a non-finite component through
-#'   \eqn{\log y_j}.
-#' @param theta A named list of parameters, each component a single number:
-#'   `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
+#'   coordinate, where each row is a point of the open simplex. A row with a
+#'   zero coordinate is outside the support and gives a non-finite component
+#'   through \eqn{\log y_j}.
+#' @param theta A named list of parameters, where each component is a single
+#'   number: `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
 #'   in closed form (see Details). Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
@@ -393,7 +400,7 @@ tuple_indices_upto <- function(d, order) {
 #' d3 <- distrib_deriv3(d, y, theta)
 #' names(d3)
 #'
-#' # Against a central difference of the Hessian in phi.
+#' # The result is compared with a central difference of the Hessian in phi.
 #' h <- 1e-4
 #' tp <- theta; tp$phi <- tp$phi + h
 #' tm <- theta; tm$phi <- tm$phi - h
@@ -440,11 +447,11 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #'
 #' @param distrib A `DirichletDistrib` object, from [dirichlet_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
-#'   coordinate, each row a point of the open simplex. A row with a zero
-#'   coordinate is outside the support and gives a non-finite component through
-#'   \eqn{\log y_j}.
-#' @param theta A named list of parameters, each component a single number:
-#'   `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
+#'   coordinate, where each row is a point of the open simplex. A row with a
+#'   zero coordinate is outside the support and gives a non-finite component
+#'   through \eqn{\log y_j}.
+#' @param theta A named list of parameters, where each component is a single
+#'   number: `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
 #'   in closed form (see Details). Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
@@ -477,7 +484,8 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, theta)
 #' length(d4)
 #'
-#' # Against a central difference of the third order in phi.
+#' # The result is compared with a central difference of the third order in
+#' # phi.
 #' h <- 1e-4
 #' tp <- theta; tp$phi <- tp$phi + h
 #' tm <- theta; tm$phi <- tm$phi - h
@@ -614,9 +622,10 @@ dirichlet_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
-#'   category, each row a vector of counts summing to `distrib@size`.
-#' @param theta A named list of parameters, each component a single number:
-#'   `probs_alr1`, ..., `probs_alr(p-1)`.
+#'   category, where each row is a vector of counts that sum to
+#'   `distrib@size`.
+#' @param theta A named list of parameters, where each component is a single
+#'   number: `probs_alr1`, ..., `probs_alr(p-1)`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
 #'   in closed form (see Details). Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
@@ -629,7 +638,7 @@ dirichlet_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 3} there are four
-#'   components, the simplex spending \eqn{p - 1} free values. With
+#'   components, because the simplex has \eqn{p - 1} free values. With
 #'   `expected = TRUE` every vector is constant.
 #'
 #' @section Notation:
@@ -650,7 +659,7 @@ dirichlet_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #' d3 <- distrib_deriv3(d, y, theta)
 #' vapply(d3, sum, numeric(1))
 #'
-#' # Against a central difference of the Hessian.
+#' # The result is compared with a central difference of the Hessian.
 #' h <- 1e-4
 #' tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 #' tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
@@ -693,9 +702,10 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #'
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
 #' @param y A numeric matrix with one row per observation and one column per
-#'   category, each row a vector of counts summing to `distrib@size`.
-#' @param theta A named list of parameters, each component a single number:
-#'   `probs_alr1`, ..., `probs_alr(p-1)`.
+#'   category, where each row is a vector of counts that sum to
+#'   `distrib@size`.
+#' @param theta A named list of parameters, where each component is a single
+#'   number: `probs_alr1`, ..., `probs_alr(p-1)`.
 #' @param expected Logical of length 1. When `TRUE` the expectation is returned,
 #'   in closed form (see Details). Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
@@ -728,7 +738,7 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, theta)
 #' names(d4)
 #'
-#' # Against a central difference of the third order.
+#' # The result is compared with a central difference of the third order.
 #' h <- 1e-4
 #' tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 #' tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
@@ -937,7 +947,7 @@ mvt_q_deriv <- function(b, r, pget, p) {
 #' @description
 #' Splits a component into its mean-and-matrix part and its \eqn{\nu} part. The
 #' log-determinant contributes only to a component whose indices all name the
-#' matrix, with the sign set by the orientation of the chart (see
+#' matrix, and the orientation of the chart sets its sign (see
 #' [mvg_ptensors()]). A component whose indices all name \eqn{\nu} is computed
 #' by [mvt_cp_d()] and [mvt_h_d()], which avoid the cancellation of the direct
 #' forms at large \eqn{\nu}. Every other component is a univariate chain rule
@@ -1026,12 +1036,12 @@ mvt_higher <- function(distrib, y, theta, order) {
 #' @description
 #' Computes every third derivative of the log-density in the parameters, in
 #' closed form. The log-density carries `lgamma`, a logarithm and a quadratic
-#' form, each elementary in \eqn{\nu}. The location-and-matrix part of a
-#' component is handled by the array expansion that the gaussian uses through
-#' [mvg_ptensors()], and the \eqn{\nu} part by differentiating
+#' form, and each of them is elementary in \eqn{\nu}. The location-and-matrix
+#' part of a component is handled by the array expansion that the gaussian uses
+#' through [mvg_ptensors()], and the \eqn{\nu} part by differentiating
 #' \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^m} against the linear prefactor
-#' \eqn{(\nu+p)/2}. The components in \eqn{\nu} alone come from [mvt_cp_d()]
-#' and [mvt_h_d()].
+#' \eqn{(\nu+p)/2}. The components in \eqn{\nu} alone come from [mvt_cp_d()] and
+#' [mvt_h_d()].
 #'
 #' @details
 #' Run at orders one and two, the same assembly reproduces
@@ -1051,17 +1061,18 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'   or [mvstudent_t2_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
-#' @param theta A named list of parameters, each component a single number.
-#' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by sampling: `nsim` draws are made and the observed components averaged.
-#'   Defaults to `FALSE`.
+#' @param theta A named list of parameters, where each component is a single
+#'   number.
+#' @param expected Logical of length 1. When `TRUE` the method returns the
+#'   expectation, which it takes by sampling: it makes `nsim` draws and
+#'   averages the observed components. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. The two differ here, because `nu` carries a log link by default.
 #' @param approx Not read: `expected = TRUE` always takes the expectation by
 #'   sampling. It is present so that the signature matches the generic's.
 #' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Not read otherwise.
+#'   `10000`. It is not read when `expected = FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 2} on an unstructured
@@ -1093,7 +1104,7 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'   gaussian = sum(distrib_deriv3(mvgaussian1_distrib(2), y,
 #'                                 theta[1:5])[["mu1_mu1_mu1"]]))
 #'
-#' # Against a central difference of the Hessian in nu.
+#' # The result is compared with a central difference of the Hessian in nu.
 #' h <- 1e-4
 #' tp <- theta; tp$nu <- tp$nu + h
 #' tm <- theta; tm$nu <- tm$nu - h
@@ -1138,17 +1149,18 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #'   or [mvstudent_t2_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
-#' @param theta A named list of parameters, each component a single number.
-#' @param expected Logical of length 1. When `TRUE` the expectation is returned,
-#'   by sampling: `nsim` draws are made and the observed components averaged.
-#'   Defaults to `FALSE`.
+#' @param theta A named list of parameters, where each component is a single
+#'   number.
+#' @param expected Logical of length 1. When `TRUE` the method returns the
+#'   expectation, which it takes by sampling: it makes `nsim` draws and
+#'   averages the observed components. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. The two differ here, because `nu` carries a log link by default.
 #' @param approx Not read: `expected = TRUE` always takes the expectation by
 #'   sampling. It is present so that the signature matches the generic's.
 #' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. Not read otherwise.
+#'   `10000`. It is not read when `expected = FALSE`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 2} on an unstructured
@@ -1174,7 +1186,8 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #' d4 <- distrib_deriv4(d, y, theta)
 #' length(d4)
 #'
-#' # Against a central difference of the third order in nu.
+#' # The result is compared with a central difference of the third order in
+#' # nu.
 #' h <- 1e-4
 #' tp <- theta; tp$nu <- tp$nu + h
 #' tm <- theta; tm$nu <- tm$nu - h

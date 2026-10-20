@@ -47,7 +47,8 @@ An S7 object of class \code{multivariate_distrib}, inheriting from
 \code{link_params} and \code{params_smooth}, it carries \code{n_dim}.
 }
 \description{
-The subclass of \code{distrib} for distributions whose observations are vectors.
+Defines the subclass of \code{distrib} for distributions whose observations are
+vectors.
 The response is an \eqn{n \times p} matrix, one row per observation, and
 \code{n_dim} records \eqn{p}. The class is a sibling of \code{\link[=continuous_distrib]{continuous_distrib()}} and
 \code{\link[=discrete_distrib]{discrete_distrib()}} and not a subclass of either, so it inherits none of

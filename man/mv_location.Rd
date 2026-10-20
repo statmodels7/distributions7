@@ -9,8 +9,8 @@ mv_location(distrib, theta)
 \arguments{
 \item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters, each component a single
-number. The generic aligns it before dispatch.}
+\item{theta}{A named list or vector of parameters, in which each component
+is a single number. The generic aligns it before dispatch.}
 }
 \value{
 A numeric vector of length \eqn{p}. The elliptical families name it
@@ -29,9 +29,9 @@ is the mean for a gaussian and, for a Student t, the mean only when
 \eqn{\nu > 1}; they register \code{\link[=mv_leading_location]{mv_leading_location()}}. The Dirichlet returns
 its mean vector, and the multinomial its mean vector of counts, the
 probabilities times the number of trials. The method of the class signals an
-error for a family without a method of its own, the first \eqn{p} parameters
-of a family not being a location in general. \code{\link[base:mean]{base::mean()}} is the generic
-for the moment.
+error for a family without a method of its own, because the first \eqn{p}
+parameters of a family are not in general a location. \code{\link[base:mean]{base::mean()}} is the
+generic for the moment.
 }
 \section{Notation}{
 

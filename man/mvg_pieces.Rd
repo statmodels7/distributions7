@@ -24,11 +24,11 @@ A named list with \code{mu} (numeric of length \eqn{p}), \code{eta} (the
 matrix parametrization's free vector), \code{p}, \code{s} (the parametrization
 itself) and the elements of \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}: \code{sigma} and \code{sigma_inv}
 (\eqn{p \times p} matrices), \code{logdet} (the log-determinant of
-\eqn{\Sigma}) and \code{inverted}; with derivatives requested also \code{a} and \code{ai}
-(the first derivative arrays of \eqn{\Sigma} and of \eqn{\Sigma^{-1}}, one
-per free value) and \code{dlogdet}; with \code{derivs2} also \code{a2}, \code{ai2} (one array
-per unordered pair in \code{parameters7::param_tuple_indices()} order) and
-\code{d2logdet}.
+\eqn{\Sigma}) and \code{inverted}; when derivatives are requested,
+the list also holds \code{a} and \code{ai} (the first derivative arrays of
+\eqn{\Sigma} and of \eqn{\Sigma^{-1}}, one per free value) and \code{dlogdet};
+when \code{derivs2} is set, it also holds \code{a2}, \code{ai2} (one array per unordered
+pair in \code{parameters7::param_tuple_indices()} order) and \code{d2logdet}.
 }
 \description{
 Assembles, once per call, the mean, the covariance, the inverse covariance
@@ -62,7 +62,7 @@ names(pc)
 all.equal(pc$sigma \%*\% pc$sigma_inv, diag(2), check.attributes = FALSE)
 all.equal(pc$logdet, log(det(pc$sigma)))
 
-# One derivative array per free value of the parametrization.
+# There is one derivative array per free value of the parametrization.
 length(pc$a)
 round(pc$a[[3]], 4)
 

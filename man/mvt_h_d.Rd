@@ -37,7 +37,8 @@ The two terms of \eqn{B_k} agree to first order in \eqn{u}, so below
 most one digit.
 }
 \examples{
-# Against the direct form at nu = 1e9, where its terms cancel.
+# The result is compared with the direct form at nu = 1e9, where its terms
+# cancel.
 nu <- 1e9; q <- 1.25; p <- 2
 h <- function(v) (v + p) / 2 * log1p(q / v)
 distributions7:::mvt_h_d(q / nu, nu, p, 2L)
@@ -45,7 +46,8 @@ distributions7:::mvt_h_d(q / nu, nu, p, 2L)
 
 }
 \seealso{
-\code{\link[=mvt_cp_d]{mvt_cp_d()}} for the part of \eqn{\nu} alone; the derivative of the
-log-density in \eqn{\nu} alone is \eqn{c_p^{(k)} - h^{(k)}}.
+\code{\link[=mvt_cp_d]{mvt_cp_d()}} for the part that depends on \eqn{\nu} only; the
+derivative of the log-density in \eqn{\nu} only is
+\eqn{c_p^{(k)} - h^{(k)}}.
 }
 \keyword{internal}

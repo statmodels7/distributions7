@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list of parameters. Not read: the error is signalled
-first.}
+\item{theta}{A named list of parameters. It is not read, because the error is
+signalled first.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -24,8 +24,8 @@ does not return one of them under the bare name.
 \code{\link[=mv_marginal]{mv_marginal()}} gives a coordinatewise skewness where the marginal is a
 univariate object. A Dirichlet's marginal is a beta and has a skewness; an
 elliptical family's marginal is a one-dimensional object of its own class
-and signals the same error. Applying the generic to a marginal states which
-quantity is meant.
+and signals the same error. Applying the generic to a marginal specifies
+which quantity is computed.
 }
 \examples{
 d <- mvgaussian1_distrib(2)

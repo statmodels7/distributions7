@@ -9,8 +9,8 @@ mv_sigma(distrib, theta)
 \arguments{
 \item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters, each component a single
-number. The generic aligns it before dispatch.}
+\item{theta}{A named list or vector of parameters, in which each component
+is a single number. The generic aligns it before dispatch.}
 }
 \value{
 A \eqn{p \times p} symmetric numeric matrix: positive definite, with
@@ -31,7 +31,7 @@ Where the parametrization carries the precision, as for
 \code{mvgaussian2_distrib()} and \code{mvstudent_t2_distrib()}, the matrix is inverted
 here, so the result is the covariance or the scale matrix either way.
 
-No method is registered on the class, so a family without a method of its
+The class has no registered method, so a family without a method of its
 own fails in dispatch.
 }
 \section{Notation}{
@@ -61,6 +61,6 @@ c(scale = mv_sigma(t2, th2)[1, 1], covariance = variance(t2, th2)[1, 1])
 \seealso{
 \code{\link[=variance]{variance()}} for the moment, \code{\link[=mv_location]{mv_location()}} for the location,
 \code{\link[=mv_summary]{mv_summary()}} for the standard deviations and correlations of a fit, and
-\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} and \code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for two
-methods.
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} and \code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the
+methods of the gaussian and the Student t.
 }

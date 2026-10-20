@@ -10,7 +10,8 @@ mv_support(distrib, theta, ...)
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list or vector of parameters. The shipped method does
-not read it, the support of the multinomial not depending on them.}
+not read it, because the support of the multinomial does not depend on
+them.}
 
 \item{...}{Passed to methods. The shipped method does not read it.}
 }
@@ -59,7 +60,7 @@ d <- multinomial_distrib(3, size = 4)
 theta <- list(probs_alr1 = 0.4, probs_alr2 = -0.3)
 sup <- mv_support(d, theta)
 
-# One row per point, every row summing to the number of trials.
+# Each row is one point, and each row sums to the number of trials.
 dim(sup)
 unique(rowSums(sup))
 head(sup, 4)

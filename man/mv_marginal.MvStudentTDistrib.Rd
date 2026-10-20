@@ -7,11 +7,11 @@
 \item{distrib}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}
 or \code{\link[=mvstudent_t2_distrib]{mvstudent_t2_distrib()}}.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
-\item{which}{An integer vector of distinct coordinates to keep, each between
-1 and \eqn{p}, already checked by the generic \code{\link[=mv_marginal]{mv_marginal()}}. The marginal
-follows the order given.}
+\item{which}{An integer vector of distinct coordinates to keep, which lie
+between 1 and \eqn{p} and which the generic \code{\link[=mv_marginal]{mv_marginal()}} has already
+checked. The marginal follows the order given.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -61,7 +61,8 @@ c(ours = distrib_pdf(m1$distrib, 2.4, m1$theta, log = TRUE),
 
 }
 \seealso{
-\code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the matrix it takes a block of,
+\code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the matrix of which it takes a
+block,
 \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}, whose diagonal panels are these marginals,
 and \code{\link[=mv_marginal]{mv_marginal()}} for the generic.
 }

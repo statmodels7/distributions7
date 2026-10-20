@@ -63,8 +63,8 @@ into scalar parameters of the distribution.}
 
 \item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the
 precision \eqn{\Omega = \Sigma^{-1}} and \code{FALSE} when it carries the
-covariance \eqn{\Sigma}. It decides which derivative arrays are the
-parametrization's own and which are obtained from them (see
+covariance \eqn{\Sigma}. Its value determines which derivative arrays are
+the parametrization's own and which are obtained from them (see
 \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}), the sign of the log-determinant, the prefix of the
 free names, and the quantities that \code{\link[=mv_summary]{mv_summary()}} reports. The same matrix
 \eqn{\Sigma} gives the same law either way.}

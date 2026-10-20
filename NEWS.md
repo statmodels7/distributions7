@@ -1,3 +1,21 @@
+# distributions7 0.80.3
+
+* Documentation, fourth part: the pages of the multivariate families
+  (`check_distrib_mv()`, the Dirichlet, the multinomial, the gaussian and
+  Student t, the higher derivatives, the summaries and the plot) rewritten
+  without relative clauses lacking their pronoun, stranded prepositions,
+  absolute constructions, sentences without a verb (example captions
+  included) and personified descriptions of the code. The title of
+  `n_obs()` reads "Number of Observations in a Response".
+* Correction in the page of `distrib_cross2_y()` for the multivariate
+  gaussian: the page said that \eqn{A_k = \partial\Sigma/\partial\eta_k} is
+  \eqn{-P_k}. The matrix equal to \eqn{-P_k} is \eqn{B_k = \Sigma^{-1}A_k\Sigma^{-1}},
+  which is what the code returns.
+* The message of `plot()` for a missing `theta` reads "The plot uses random
+  parameters", and the messages of the multivariate gaussian and Student t
+  for a rank-deficient matrix end "Such a structure can be used as a penalty
+  but not as a distribution".
+
 # distributions7 0.80.2
 
 * `distrib_deriv3()` and `distrib_deriv4()` with `expected = TRUE` and

@@ -34,7 +34,7 @@ exactly zero when it names two or more.
 
 \eqn{\alpha} is the Dirichlet's shape vector, \eqn{\phi} its concentration,
 \eqn{\mu} the mean on the simplex, \eqn{\eta} the mean's free vector, and
-\eqn{S'} the multiset \eqn{S} with its one \eqn{\phi} index removed.
+\eqn{S'} the multiset \eqn{S} without its one \eqn{\phi} index.
 }
 
 \examples{
@@ -47,7 +47,7 @@ names(dt)
 dt[["3"]]
 as.numeric(parameters7::param_value(s, eta))
 
-# Naming phi twice gives exactly zero, alpha being linear in it.
+# Naming phi twice gives exactly zero, because alpha is linear in it.
 dt[["3,3"]]
 
 # And a key naming no phi is phi times the mean's own derivative.
@@ -55,7 +55,7 @@ all.equal(dt[["1"]], 8 * as.numeric(parameters7::param_d1(s, eta)[[1]]))
 
 }
 \seealso{
-\code{\link[=simplex_map_tensors]{simplex_map_tensors()}} for the arrays it lifts,
+\code{\link[=simplex_map_tensors]{simplex_map_tensors()}} for the arrays that it lifts,
 \code{\link[=tuple_indices_upto]{tuple_indices_upto()}} for the enumeration over the composite index set,
 and \code{\link[=dirichlet_higher]{dirichlet_higher()}} for the consumer.
 }

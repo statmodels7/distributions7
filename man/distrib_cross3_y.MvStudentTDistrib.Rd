@@ -8,7 +8,7 @@
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -43,7 +43,8 @@ set.seed(1)
 y <- distrib_rng(d, 3, theta)
 c3 <- distrib_cross3_y(d, y, theta)
 
-# Against a difference of the third response derivative in nu.
+# The result is compared with a difference of the third response derivative
+# in nu.
 h <- 1e-5
 tp <- theta; tp$nu <- 6 + h
 tm <- theta; tm$nu <- 6 - h

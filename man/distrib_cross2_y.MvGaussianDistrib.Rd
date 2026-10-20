@@ -6,10 +6,11 @@
 \arguments{
 \item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} numeric matrix of observations. Not read: no
-component of this derivative depends on the response.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. It is not read,
+because every component of this derivative is independent of the response.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -30,13 +31,14 @@ one \eqn{p \times p} matrix per parameter. The response Hessian is
 is exactly the zero matrix; the matrix components are
 \deqn{\frac{\partial^3\ell}{\partial y\,\partial y^\top\partial\eta_k}
   = B_k = \Sigma^{-1}A_k\Sigma^{-1},}
-with \eqn{A_k = \partial\Sigma/\partial\eta_k}, which is \eqn{-P_k} and is
-read as such from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}. The components do not depend on the
+with \eqn{A_k = \partial\Sigma/\partial\eta_k}. The matrix \eqn{B_k} is
+\eqn{-P_k}, and the method reads it as such from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}. The
+components do not depend on the
 observation, so one matrix is returned per parameter and \code{y} is not read.
 }
 \details{
 This is one of the three derivatives that a marginal criterion reads when the
-family is a prior over a coefficient block, the other two being
+family is a prior over a coefficient block. The other two are
 \code{\link[=distrib_hess_y_hess.MvGaussianDistrib]{distrib_hess_y_hess.MvGaussianDistrib()}} and
 \code{\link[=distrib_grad_y_hess.MvGaussianDistrib]{distrib_grad_y_hess.MvGaussianDistrib()}}.
 }
@@ -56,11 +58,11 @@ y <- matrix(0, 4, 2)
 c2 <- distrib_cross2_y(d, y, theta)
 names(c2)
 
-# Every mean component is the zero matrix, the response Hessian carrying
-# no mean at all.
+# Every mean component is the zero matrix, because the response Hessian
+# does not involve the mean.
 c2$mu1
 
-# A matrix component against a difference of the response Hessian.
+# A matrix component is compared with a difference of the response Hessian.
 h <- 1e-5
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h

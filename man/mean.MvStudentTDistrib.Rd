@@ -6,7 +6,7 @@
 \arguments{
 \item{x}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

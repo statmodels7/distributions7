@@ -9,7 +9,8 @@
 \item{n}{The number of observations to draw. A single non-negative whole
 number; \code{n = 0} returns a matrix with zero rows.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -46,8 +47,8 @@ round(mv_sigma(d, theta), 3)
 
 }
 \seealso{
-\code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf.MvGaussianDistrib()}} for the density this draws from,
-\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} for the covariance, and \code{\link[=distrib_rng]{distrib_rng()}}
-for the generic.
+\code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf.MvGaussianDistrib()}} for the density from which this
+method draws, \code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} for the covariance, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }
 \keyword{internal}

@@ -8,7 +8,8 @@
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. It is not read.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -57,7 +58,8 @@ length(hh) == length(hess_names(d@params))
 # Any pair naming a mean gives the zero matrix.
 hh$mu1_sigma_L2.1
 
-# A matrix pair against a second difference of the response Hessian.
+# A matrix pair is compared with a second difference of the response
+# Hessian.
 h <- 1e-4
 f <- function(a, b) {
   t2 <- theta

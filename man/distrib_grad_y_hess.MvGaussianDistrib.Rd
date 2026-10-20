@@ -9,7 +9,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -59,15 +60,15 @@ y <- distrib_rng(d, 4, theta)
 gh <- distrib_grad_y_hess(d, y, theta)
 dim(gh$sigma_log_L1_sigma_L2.1)
 
-# Two mean parameters give exactly zero, the response gradient being linear
-# in the mean.
+# Two mean parameters give exactly zero, because the response gradient is
+# linear in the mean.
 gh$mu1_mu2
 
 # A mixed pair repeats one row; a matrix pair does not.
 gh$mu1_sigma_L2.1
 round(gh$sigma_log_L1_sigma_L2.1, 4)
 
-# Against a second difference of the response gradient.
+# The result is compared with a second difference of the response gradient.
 h <- 1e-4
 f <- function(a, b) {
   t2 <- theta

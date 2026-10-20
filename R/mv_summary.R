@@ -20,13 +20,14 @@ NULL
 #' do and supplies \eqn{\partial g/\partial\theta}, so that [mv_summary()] can
 #' apply the delta method to them.
 #'
-#' # The interval scale each quantity declares
+#' # The interval scale that each quantity declares
 #'
 #' Each quantity carries the scale on which its interval is built, as
 #' [fit_distrib()] builds a univariate interval on the link scale and maps it
-#' back. A standard deviation is intervalled on the log scale, so the interval
-#' cannot reach zero; a correlation on Fisher's \eqn{z = \mathrm{artanh}(\rho)},
-#' so it cannot leave \eqn{(-1, 1)}; an unconstrained quantity on its own scale.
+#' back. The interval of a standard deviation is built on the log scale, so it
+#' cannot reach zero; that of a correlation on Fisher's
+#' \eqn{z = \mathrm{artanh}(\rho)}, so it cannot leave \eqn{(-1, 1)}; that of an
+#' unconstrained quantity on its own scale.
 #' On the raw scale the interval of a correlation can exceed one.
 #'
 #' # What the default method reports
@@ -42,8 +43,9 @@ NULL
 #' probabilities of the simplex.
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()].
-#' @param theta A named list or vector of parameters, each component a single
-#'   number. Aligned by the generic before dispatch, so any order is accepted.
+#' @param theta A named list or vector of parameters, where each component is a
+#'   single number. The generic aligns it before dispatch, so any order is
+#'   accepted.
 #' @param ... Passed to methods. The methods of the package do not use it.
 #'
 #' @return A named list with
@@ -52,10 +54,10 @@ NULL
 #'     \item{`jacobian`}{a numeric matrix with one row per quantity and one
 #'       column per parameter of `distrib`, in `distrib@params` order;}
 #'     \item{`transform`}{a character vector, one of `"identity"`, `"log"`,
-#'       `"atanh"` or `"logit"` per quantity, naming the scale its interval is
-#'       built on;}
-#'     \item{`block`}{a character vector labeling the group each quantity
-#'       belongs to, by which the printed summary is laid out.}
+#'       `"atanh"` or `"logit"` per quantity, naming the scale on which its
+#'       interval is built;}
+#'     \item{`block`}{a character vector labeling the group to which each
+#'       quantity belongs and by which the printed summary is laid out.}
 #'   }
 #'   All four are named after the quantities and are the same length.
 #'
@@ -273,10 +275,11 @@ mv_param_block <- function(distrib, theta) {
 #'
 #' @details
 #' The standard deviation is \eqn{\sqrt{s}} with \eqn{s} the `scale`, so its
-#' Jacobian row is the `scale` row times \eqn{1/(2\sqrt{s})}; it is intervalled
-#' on the log scale, as `scale` was. Where the declared quantities describe a
-#' precision (the attribute `precision` of the result of [mv_param_block()])
-#' the `scale` is a precision's common diagonal and is reported as it is.
+#' Jacobian row is the `scale` row times \eqn{1/(2\sqrt{s})}; its interval is
+#' built on the log scale, as that of `scale` was. Where the declared quantities
+#' describe a precision (the attribute `precision` of the result of
+#' [mv_param_block()]) the `scale` is a precision's common diagonal and is
+#' reported as it is.
 #'
 #' @param distrib A multivariate distribution object.
 #' @param theta Its parameters, aligned.
@@ -370,11 +373,11 @@ mv_append_block <- function(out, extra) {
 #' deviations and correlations.
 #'
 #' @details
-#' The diagonal entries are variances and are intervalled on the log scale; the
-#' off-diagonal ones are unconstrained given the diagonal and are intervalled on
-#' their own scale. The closed-form methods report correlations on Fisher's
-#' \eqn{z}, whose intervals stay inside \eqn{(-1, 1)}; the interval of a
-#' covariance has no such bound.
+#' The diagonal entries are variances and their intervals are built on the log
+#' scale; the off-diagonal ones are unconstrained given the diagonal and their
+#' intervals are built on their own scale. The closed-form methods report
+#' correlations on Fisher's \eqn{z}, whose intervals stay inside \eqn{(-1, 1)};
+#' the interval of a covariance has no such bound.
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()] that has
 #'   no method of its own.
@@ -405,8 +408,8 @@ mv_append_block <- function(out, extra) {
 #' # The entries are the lower triangle of the matrix.
 #' mv_sigma(d, theta)
 #'
-#' # Against the closed-form method, which reports standard deviations and a
-#' # correlation in place of variances and a covariance.
+#' # The closed-form method reports standard deviations and a correlation in
+#' # place of variances and a covariance.
 #' mv_derived(d, theta)$value
 #'
 #' # The Dirichlet uses this method: its covariance, then its probabilities.
@@ -450,8 +453,8 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #'
 #' @description
 #' Turns a symmetric positive definite matrix and the derivatives of its
-#' entries into standard deviations and correlations, with the Jacobian
-#' written out. Writing \eqn{\Sigma = DRD} with \eqn{D} the
+#' entries into standard deviations and correlations and computes the Jacobian
+#' explicitly. Writing \eqn{\Sigma = DRD} with \eqn{D} the
 #' diagonal of standard deviations,
 #' \deqn{\frac{\partial s_j}{\partial\theta_k} = \frac{A_k[j,j]}{2 s_j},
 #'   \qquad
@@ -459,20 +462,20 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #'     = \frac{A_k[j,l]}{s_j s_l}
 #'       - \frac{\rho_{jl}}{2}\left(\frac{A_k[j,j]}{\Sigma_{jj}}
 #'         + \frac{A_k[l,l]}{\Sigma_{ll}}\right),}
-#' with \eqn{A_k = \partial\Sigma/\partial\theta_k}. No further derivative is
-#' computed: the arrays are those that the caller obtained from the
+#' with \eqn{A_k = \partial\Sigma/\partial\theta_k}. The function computes no
+#' further derivative: the arrays are those that the caller obtained from the
 #' parametrization.
 #'
 #' @param sigma A \eqn{p \times p} symmetric positive definite numeric matrix.
 #' @param a A list of \eqn{p \times p} numeric matrices, one per parameter of
 #'   the distribution and in `params` order, holding
-#'   \eqn{\partial\Sigma/\partial\theta_k}. For a parameter that the matrix
-#'   does not depend on, the entry is `NULL` or a matrix of zeros; both are
+#'   \eqn{\partial\Sigma/\partial\theta_k}. For a parameter that does not
+#'   affect the matrix, the entry is `NULL` or a matrix of zeros; both are
 #'   accepted.
 #' @param params The distribution's parameter names, which become the column
 #'   names of the Jacobian.
 #' @param sd_label The prefix for the diagonal quantities. Defaults to `"sd"`;
-#'   the Student t passes `"scale_sd"`, its diagonal quantities not being
+#'   the Student t passes `"scale_sd"`, because its diagonal quantities are not
 #'   standard deviations of the response.
 #' @param cor_label The prefix for the off-diagonal quantities. Defaults to
 #'   `"cor"`.
@@ -489,7 +492,7 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #' \eqn{\rho_{jl}} a correlation, \eqn{\theta} the parameter vector and
 #' \eqn{A_k = \partial\Sigma/\partial\theta_k}.
 #'
-#' @seealso [mv_sigma_derivs()] for the arrays it takes,
+#' @seealso [mv_sigma_derivs()] for the arrays that it takes,
 #'   [mv_derived.MvGaussianDistrib()] and [mv_derived.MvStudentTDistrib()] for
 #'   the two callers, and [mv_entry_index()] for the labeling.
 #'
@@ -509,7 +512,7 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #' # correlations off it.
 #' c(sqrt(diag(S)), S[2, 1] / sqrt(S[1, 1] * S[2, 2]))
 #'
-#' # The Jacobian against a numerical one taken through mv_sigma().
+#' # The Jacobian is compared with a numerical one taken through mv_sigma().
 #' g <- function(v) {
 #'   t2 <- as.list(v); names(t2) <- d@params
 #'   M <- mv_sigma(d, t2)
@@ -653,7 +656,7 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' Returns the quantities that the chosen parametrization describes, with their
 #' Jacobian. Where the matrix parametrization declares its own block through
 #' `parameters7::param_readable()` (a compound symmetry, an AR(1), an AR(p)),
-#' that block alone is returned, with the common variance `scale` reported as
+#' only that block is returned, and the common variance `scale` is reported as
 #' its square root `sd` on the covariance side. Otherwise a covariance
 #' parametrization reports the standard deviations and the correlations, and a
 #' precision parametrization reports the conditional variances
@@ -694,7 +697,7 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' \eqn{\Sigma} is the covariance, \eqn{\Omega = \Sigma^{-1}} the precision,
 #' \eqn{p} the dimension, \eqn{R_j^2} the coefficient of determination of the
 #' regression of coordinate \eqn{j} on the others, and \eqn{Y_{-j}} the
-#' response with that coordinate removed.
+#' response without that coordinate.
 #'
 #' @seealso [mv_sd_cor()] for the closed-form Jacobian,
 #'   [mv_own_block()] for the structure's own block, [mv_summary()] for the
@@ -790,7 +793,7 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' deviations"`.
 #'
 #' The rule of [mv_derived.MvGaussianDistrib()] holds here as well: a
-#' structured parametrization reports its own block alone, its `scale` as the
+#' structured parametrization reports only its own block, its `scale` as the
 #' square root `scale_sd` on the scale-matrix side, and the inverse
 #' parametrization reports the conditional scales \eqn{1/M_{jj}} and the
 #' partial correlations and nothing of the scale matrix.
@@ -835,8 +838,8 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' c(scale_sd = der$value[["scale_sd_v1"]],
 #'   response_sd = sqrt(variance(d, theta)[1, 1]))
 #'
-#' # The correlation is the same either way, the two matrices being positive
-#' # multiples of each other.
+#' # The correlation is the same either way, because the two matrices are
+#' # positive multiples of each other.
 #' cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
 #' c(reported = der$value[["cor_v1_v2"]],
 #'   from_covariance = cv(variance(d, theta)))
@@ -925,17 +928,17 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #' \deqn{\widehat{\mathrm{Var}}\{g(\hat\theta)\}
 #'   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
 #'   \qquad J = \partial g/\partial\theta,}
-#' with \eqn{J} taken from [mv_derived()], in closed form for the multivariate
-#' gaussian and Student \eqn{t} and by one central difference for the
-#' Dirichlet, the multinomial and any other family.
+#' where \eqn{J} is taken from [mv_derived()], in closed form for the
+#' multivariate gaussian and Student \eqn{t} and by one central difference for
+#' the Dirichlet, the multinomial and any other family.
 #'
 #' # Where each interval is built
 #'
 #' Each interval is built on the scale that its quantity declares and then
-#' mapped back, as [fit_distrib()] does for a univariate parameter. A standard
-#' deviation is intervalled on the log scale and a correlation on Fisher's
-#' \eqn{z}, so neither interval can leave the set in which its quantity lies. An
-#' interval on the raw scale can put a correlation above one.
+#' mapped back, as [fit_distrib()] does for a univariate parameter. The interval
+#' of a standard deviation is built on the log scale and that of a correlation
+#' on Fisher's \eqn{z}, so each interval stays inside the set in which its
+#' quantity lies. An interval on the raw scale can put a correlation above one.
 #'
 #' The standard error is carried onto that scale by the transform's own
 #' derivative, so the reported `Std. Error` column stays on the quantity's
@@ -949,10 +952,10 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #'
 #' @return A data frame with one row per quantity and four columns:
 #'   `Estimate`, `Std. Error`, and the two confidence limits, named after the
-#'   percentiles they are (`2.5%` and `97.5%` at the default level). Its row
-#'   names are the quantity names, and it carries the attribute `"block"`, a
-#'   character vector naming the group each row belongs to, by which `print()`
-#'   lays the summary out.
+#'   percentiles that they represent (`2.5%` and `97.5%` at the default level).
+#'   Its row names are the quantity names, and it carries the attribute
+#'   `"block"`, a character vector naming the group to which each row belongs
+#'   and by which `print()` lays the summary out.
 #'
 #' @section Notation:
 #' \eqn{\theta} is the parameter vector, \eqn{g} the map to the reported
@@ -971,10 +974,10 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #' y <- distrib_rng(d, 500, truth)
 #' fit <- fit_distrib(d, y)
 #'
-#' # The standard deviations and the correlation.
+#' # The summary reports the standard deviations and the correlation.
 #' mv_summary(fit)
 #'
-#' # The coordinates the fit was estimated on, beside them.
+#' # The coordinates on which the fit was estimated are shown beside them.
 #' confint(fit)
 #'
 #' # Every interval stays inside the set of its quantity: the standard

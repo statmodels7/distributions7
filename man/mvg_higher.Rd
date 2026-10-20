@@ -12,7 +12,8 @@ mvg_higher(distrib, y, theta, order, expected = FALSE)
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{order}{The derivative order, \code{3L} or \code{4L}.}
 
@@ -31,16 +32,17 @@ Computes every third- or fourth-order derivative of the log-density in the
 parameters. It enumerates the parameter tuples the way \code{\link[=deriv_names]{deriv_names()}} does,
 splits each into mean indices and matrix indices, and reads the surviving
 cases off the gaussian's algebra. Writing \eqn{r = y - \mu} and \eqn{P_t}
-for the precision's derivative array over the matrix indices \eqn{t}, a
-tuple with
+for the precision's derivative array over the matrix indices \eqn{t}, the
+cases are as follows.
 \itemize{
-\item three or more mean indices is exactly zero, the quadratic form being
-quadratic in \eqn{\mu};
-\item two mean indices \eqn{(i, j)} gives \eqn{-P_t[i, j]};
-\item one mean index \eqn{i} gives \eqn{(r P_t)_i}, one value per observation;
-\item no mean index gives
+\item A tuple with three or more mean indices is exactly zero, because the
+quadratic form is quadratic in \eqn{\mu}.
+\item A tuple with two mean indices \eqn{(i, j)} gives \eqn{-P_t[i, j]}.
+\item A tuple with one mean index \eqn{i} gives \eqn{(r P_t)_i}, one value per
+observation.
+\item A tuple without mean indices gives
 \eqn{\pm\tfrac{1}{2}\,\partial^{\lvert t\rvert}\log\lvert M\rvert
-  - \tfrac{1}{2}\, r^\top P_t\, r}, the sign following which side the
+  - \tfrac{1}{2}\, r^\top P_t\, r}, where the sign depends on which side the
 parametrization carries.
 }
 }
@@ -53,7 +55,7 @@ expectation is exact.
 }
 \section{Notation}{
 
-\eqn{\mu} is the mean, \eqn{M} the matrix the parametrization carries,
+\eqn{\mu} is the mean, \eqn{M} the matrix that the parametrization carries,
 \eqn{P = \Sigma^{-1}} the precision, \eqn{\eta} the free vector,
 \eqn{r = y - \mu} the centered response and \eqn{P_t} the precision's
 derivative array over the multiset of free values \eqn{t}.
@@ -74,8 +76,8 @@ length(distributions7:::mvg_higher(d, y, theta, 4L))
 vapply(d3[grep("^mu[0-9]+_mu[0-9]+_mu[0-9]+$", names(d3))],
        function(z) max(abs(z)), numeric(1))
 
-# Against one stencil on the analytic Hessian, which shares no algebra
-# with the expansion.
+# The result is compared with one stencil on the analytic Hessian, which
+# shares no algebra with the expansion.
 h <- 1e-4
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h

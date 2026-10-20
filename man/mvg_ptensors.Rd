@@ -14,7 +14,7 @@ list carrying \code{s} (the parametrization), \code{eta} (its free vector) and
 \item{order}{The highest order wanted, a single whole number from 1 to 4.
 Every array up to that order is computed.}
 
-\item{inverted}{Logical of length 1. \code{TRUE} when the free values
+\item{inverted}{Logical of length 1. It is \code{TRUE} when the free values
 parametrize the precision. Defaults to \code{FALSE}.}
 }
 \value{

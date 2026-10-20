@@ -10,11 +10,12 @@ or \code{\link[=mvstudent_t2_distrib]{mvstudent_t2_distrib()}}.}
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, where each component is a single
+number.}
 
-\item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
-by sampling: \code{nsim} draws are made and the observed components averaged.
-Defaults to \code{FALSE}.}
+\item{expected}{Logical of length 1. When \code{TRUE} the method returns the
+expectation, which it takes by sampling: it makes \code{nsim} draws and
+averages the observed components. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -24,7 +25,7 @@ result. The two differ here, because \code{nu} carries a log link by default.}
 sampling. It is present so that the signature matches the generic's.}
 
 \item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Not read otherwise.}
+\code{10000}. It is not read when \code{expected = FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -68,7 +69,8 @@ y <- distrib_rng(d, 4, theta)
 d4 <- distrib_deriv4(d, y, theta)
 length(d4)
 
-# Against a central difference of the third order in nu.
+# The result is compared with a central difference of the third order in
+# nu.
 h <- 1e-4
 tp <- theta; tp$nu <- tp$nu + h
 tm <- theta; tm$nu <- tm$nu - h

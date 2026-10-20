@@ -10,7 +10,7 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -20,8 +20,8 @@ result. The two differ here.}
 }
 \value{
 A named list of \eqn{p \times p \times n} numeric arrays, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}. Every slice is symmetric, the
-derivative of a symmetric matrix being symmetric.
+\code{\link[=hess_names]{hess_names(distrib@params)}}. Every slice is symmetric,
+because it is the derivative of a symmetric matrix.
 }
 \description{
 Computes \eqn{\partial^4\ell/\partial y\,\partial y^\top
@@ -57,8 +57,8 @@ dim(hh$nu_nu)
 # Every slice is symmetric.
 all(vapply(seq_len(4), function(i) isSymmetric(hh$nu_nu[, , i]), TRUE))
 
-# Against a second difference of the response Hessian, with the reference's
-# own h^-2 amplification beside it.
+# The result is compared with a second difference of the response Hessian,
+# and the reference's own h^-2 amplification is shown beside the gap.
 h <- 1e-5
 f <- function(a, b) {
   t2 <- theta

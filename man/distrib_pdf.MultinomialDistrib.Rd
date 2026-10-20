@@ -7,14 +7,15 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
-each row a vector of non-negative integers summing to the object's \code{size}.
-A single observation may be given as a plain vector and is read as one
-row. A row off the support gives a mass of 0, or \code{-Inf} with
+and each row is a vector of non-negative integers summing to the object's
+\code{size}. A single observation may be given as a plain vector and is read as
+one row. A row off the support gives a mass of 0, or \code{-Inf} with
 \code{log = TRUE}.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1. A parameter may not vary by observation here, the
-probability vector being one point of the simplex for the whole sample.}
+scale, and each value has length 1. A parameter may not vary by
+observation here, because the probability vector is one point of the
+simplex for the whole sample.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned.
 Defaults to \code{FALSE}.}
@@ -58,8 +59,8 @@ all.equal(distrib_pdf(d, supp, th),
 distrib_pdf(d, rbind(c(1, 1, 1), c(-1, 3, 3), c(1.5, 1.5, 2)), th)
 }
 \seealso{
-\code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the points the mass sits on,
-\code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient.MultinomialDistrib()}} for the derivatives of the
+\code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the points on which the mass
+sits, \code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient.MultinomialDistrib()}} for the derivatives of the
 log-mass, \code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal.MultinomialDistrib()}} for a coordinate's binomial
 marginal, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

@@ -15,8 +15,8 @@ read.}
 }
 \value{
 A named list with \code{r} and \code{w}, each an \eqn{n \times p} numeric
-matrix. Row \eqn{i} of \code{w} is \eqn{\Sigma^{-1}(y_i - \mu)}, the
-right-multiplication of \code{r} by \code{sigma_inv} giving the same rows because
+matrix. Row \eqn{i} of \code{w} is \eqn{\Sigma^{-1}(y_i - \mu)};
+right-multiplying \code{r} by \code{sigma_inv} gives the same rows because
 \eqn{\Sigma^{-1}} is symmetric.
 }
 \description{

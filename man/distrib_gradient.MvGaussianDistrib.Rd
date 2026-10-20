@@ -9,7 +9,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -32,10 +33,11 @@ Computes the first derivatives of the log-density in closed form. With \eqn{r
 \log\lvert\Sigma\rvert}{\partial \eta_k} - \frac{1}{2}\, r^\top P_k r,} which
 is \eqn{\tfrac{1}{2} w^\top A_k w} in the second term, with \eqn{A_k} the
 derivative of \eqn{\Sigma}. The first term of the matrix component is the
-parametrization's own \code{param_dlogdet()}, so no trace is formed here; its sign
-is flipped where the parametrization carries the precision. \eqn{P_k} is read
-from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} and not formed as \eqn{-\Sigma^{-1}A_k\Sigma^{-1}},
-a product that cancels where the covariance is nearly singular.
+parametrization's own \code{param_dlogdet()}, so the method does not form a trace
+here; its sign is flipped where the parametrization carries the precision.
+\eqn{P_k} is read from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}} and not formed as
+\eqn{-\Sigma^{-1}A_k\Sigma^{-1}}, a product that cancels where the covariance
+is nearly singular.
 }
 \section{Notation}{
 
@@ -57,8 +59,8 @@ g <- distrib_gradient(d, y, theta)
 names(g)
 vapply(g, sum, numeric(1))
 
-# Against a numerical derivative of the log-likelihood, which shares no
-# arithmetic with the closed form.
+# The score is compared with a numerical derivative of the log-likelihood,
+# which shares no arithmetic with the closed form.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

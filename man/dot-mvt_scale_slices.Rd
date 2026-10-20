@@ -21,7 +21,7 @@ Multiplies the \eqn{i}th slice of a \eqn{p \times p \times n} array by
 \code{v[i]}, which is how a term whose matrix part is the same at every
 observation but whose scalar part is not enters an assembled derivative.
 The multiplication is one vectorized recycle over the flattened array, so
-nothing loops over the observations.
+the function does not loop over the observations.
 }
 \examples{
 arr <- array(1, c(2, 2, 3))
@@ -34,8 +34,8 @@ all.equal(s[, , 2], -a[, , 2])
 
 }
 \seealso{
-\code{\link[=.mvt_const_slices]{.mvt_const_slices()}} for the case where the matrix is what stays
-constant, \code{\link[=mv_outer_rows]{mv_outer_rows()}} for the array these are combined with, and
-\code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y.MvStudentTDistrib()}} for the consumer.
+\code{\link[=.mvt_const_slices]{.mvt_const_slices()}} for the case in which the matrix stays
+constant, \code{\link[=mv_outer_rows]{mv_outer_rows()}} for the array with which these are combined,
+and \code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y.MvStudentTDistrib()}} for the consumer.
 }
 \keyword{internal}

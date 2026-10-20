@@ -8,8 +8,8 @@ mv_outer_rows(a, b)
 }
 \arguments{
 \item{a, b}{Numeric matrices with the same dimensions, \eqn{n} rows and
-\eqn{p} columns. Not validated: matrices of different dimensions signal the
-error of the arithmetic underneath.}
+\eqn{p} columns. The function does not validate them, and matrices of
+different dimensions signal the error of the arithmetic underneath.}
 }
 \value{
 A \eqn{p \times p \times n} numeric array. It is symmetric slice by
@@ -32,7 +32,7 @@ o[, , 1]
 outer(a[1, ], b[1, ])
 all.equal(o[, , 2], outer(a[2, ], b[2, ]))
 
-# With one matrix given twice, every slice is symmetric.
+# If one matrix is given twice, every slice is symmetric.
 s <- distributions7:::mv_outer_rows(a, a)
 all(vapply(seq_len(dim(s)[3]),
            function(i) isSymmetric(s[, , i]), TRUE))

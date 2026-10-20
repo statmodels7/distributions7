@@ -7,10 +7,11 @@
 \item{distrib}{An \link{MvStudentTDistrib} object, from
 \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
-\item{n}{The number of observations to draw. A single non-negative whole
-number.}
+\item{n}{The number of observations to draw. The value must be a single
+non-negative whole number.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, in which each component is a single
+number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -62,8 +63,8 @@ vapply(c(2000, 20000, 200000),
 
 }
 \seealso{
-\code{\link[=distrib_pdf.MvStudentTDistrib]{distrib_pdf.MvStudentTDistrib()}} for the density this draws from,
-\code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance the sample approaches
-when it exists, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
+\code{\link[=distrib_pdf.MvStudentTDistrib]{distrib_pdf.MvStudentTDistrib()}} for the density from which this
+function draws, \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance that
+the sample approaches when it exists, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }
 \keyword{internal}

@@ -13,13 +13,13 @@ dir_b_index(idx, k, l)
 \item{k, l}{The two free-value positions, in either order.}
 }
 \value{
-A single integer, the position into the second-derivative list. \code{NA}
-if no tuple matches, which cannot happen for indices inside the
-parameter's own range.
+A single integer, the position into the second-derivative list. The
+value is \code{NA} if no tuple matches, which cannot happen for indices inside
+the parameter's own range.
 }
 \description{
 Returns the position of the \eqn{(k, l)} entry in the list of second
-derivatives a \code{parameters7} parameter supplies. That list is keyed by
+derivatives that a \code{parameters7} parameter supplies. That list is keyed by
 unordered tuple rather than by position, so a caller holding two free-value
 indices has to search for the entry naming them, in either order.
 }

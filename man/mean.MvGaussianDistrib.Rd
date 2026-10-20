@@ -6,7 +6,8 @@
 \arguments{
 \item{x}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
-\item{theta}{A named list of parameters, each component a single number.
+\item{theta}{A named list of parameters in which each component is a single
+number.
 Only the \eqn{p} mean components are read.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,8 +19,8 @@ A numeric vector of length \eqn{p}, named \code{v1}, ..., \code{vp}.
 Returns \eqn{\mathbb{E}[Y] = \mu}, the mean vector. For this family the
 expectation is a parameter and needs no integration: the density is
 symmetric about \eqn{\mu} and every coordinate has finite moments of every
-order, so the first moment exists at every parameter value the constructor
-admits.
+order, so the first moment exists at every parameter value that the
+constructor admits.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -28,7 +29,7 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 
 mean(d, theta)
 
-# Which is what a large sample average approaches.
+# A large sample average approaches this vector.
 set.seed(2)
 round(colMeans(distrib_rng(d, 20000, theta)), 3)
 

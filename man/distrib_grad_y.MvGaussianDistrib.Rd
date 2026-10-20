@@ -9,7 +9,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation and gives a one-row result.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -35,12 +36,13 @@ y <- distrib_rng(d, 4, theta)
 
 distrib_grad_y(d, y, theta)
 
-# Against a numerical derivative taken row by row.
+# The result is compared with a numerical derivative taken row by row.
 num <- t(apply(y, 1, function(r)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
 max(abs(distrib_grad_y(d, y, theta) - num))
 
-# And it is minus the score in the mean, this being a location family.
+# It is also minus the score in the mean, because this is a location
+# family.
 g <- distrib_gradient(d, y, theta)
 all.equal(distrib_grad_y(d, y, theta), -cbind(g$mu1, g$mu2),
           check.attributes = FALSE)

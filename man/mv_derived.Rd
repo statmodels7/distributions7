@@ -9,8 +9,9 @@ mv_derived(distrib, theta, ...)
 \arguments{
 \item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters, each component a single
-number. Aligned by the generic before dispatch, so any order is accepted.}
+\item{theta}{A named list or vector of parameters, where each component is a
+single number. The generic aligns it before dispatch, so any order is
+accepted.}
 
 \item{...}{Passed to methods. The methods of the package do not use it.}
 }
@@ -21,10 +22,10 @@ A named list with
 \item{\code{jacobian}}{a numeric matrix with one row per quantity and one
 column per parameter of \code{distrib}, in \code{distrib@params} order;}
 \item{\code{transform}}{a character vector, one of \code{"identity"}, \code{"log"},
-\code{"atanh"} or \code{"logit"} per quantity, naming the scale its interval is
-built on;}
-\item{\code{block}}{a character vector labeling the group each quantity
-belongs to, by which the printed summary is laid out.}
+\code{"atanh"} or \code{"logit"} per quantity, naming the scale on which its
+interval is built;}
+\item{\code{block}}{a character vector labeling the group to which each
+quantity belongs and by which the printed summary is laid out.}
 }
 All four are named after the quantities and are the same length.
 }
@@ -44,12 +45,13 @@ do and supplies \eqn{\partial g/\partial\theta}, so that \code{\link[=mv_summary
 apply the delta method to them.
 }
 
-\section{The interval scale each quantity declares}{
+\section{The interval scale that each quantity declares}{
 Each quantity carries the scale on which its interval is built, as
 \code{\link[=fit_distrib]{fit_distrib()}} builds a univariate interval on the link scale and maps it
-back. A standard deviation is intervalled on the log scale, so the interval
-cannot reach zero; a correlation on Fisher's \eqn{z = \mathrm{artanh}(\rho)},
-so it cannot leave \eqn{(-1, 1)}; an unconstrained quantity on its own scale.
+back. The interval of a standard deviation is built on the log scale, so it
+cannot reach zero; that of a correlation on Fisher's
+\eqn{z = \mathrm{artanh}(\rho)}, so it cannot leave \eqn{(-1, 1)}; that of an
+unconstrained quantity on its own scale.
 On the raw scale the interval of a correlation can exceed one.
 }
 

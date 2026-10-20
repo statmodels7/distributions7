@@ -6,22 +6,22 @@
 \arguments{
 \item{x}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A \eqn{p \times p} numeric matrix with both dimnames \code{v1}, ...,
 \code{vp}: the covariance for \eqn{\nu > 2}, and \code{Inf} in every entry for
-\eqn{\nu \le 2}, the boundary \eqn{\nu = 2} included.
+\eqn{\nu \le 2}, including the boundary \eqn{\nu = 2}.
 }
 \description{
 Returns \eqn{\operatorname{Var}(Y) = \nu\Sigma/(\nu-2)} for \eqn{\nu > 2},
-and a matrix of \code{Inf} otherwise. The scale matrix \eqn{\Sigma} is what the
-parametrization carries and exists at every admissible \eqn{\nu}; the
-covariance is a moment, and the two differ by that factor, which is 3 at
-\eqn{\nu = 3} and approaches 1 as the tail lightens. \code{\link[=mv_sigma]{mv_sigma()}} returns
-the first and this returns the second.
+and a matrix of \code{Inf} otherwise. The parametrization carries the scale
+matrix \eqn{\Sigma}, which exists at every admissible \eqn{\nu}; the
+covariance is a moment, and the two differ by the factor
+\eqn{\nu/(\nu-2)}, which is 3 at \eqn{\nu = 3} and approaches 1 as the tail
+lightens. \code{\link[=mv_sigma]{mv_sigma()}} returns the first and this returns the second.
 }
 \examples{
 d <- mvstudent_t1_distrib(2)

@@ -9,7 +9,7 @@ argument is named \code{x} for consistency with \code{\link[base:mean]{base::mea
 the moment generics follow.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1.}
+scale, and each value has length 1.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,7 +18,7 @@ A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
 }
 \description{
 Returns the covariance matrix of the counts by delegating to
-\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}. It is singular, the counts summing to the
+\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}. It is singular because the counts sum to the
 trial count, so a computation that inverts a covariance works with the
 marginals or with the free vector of the simplex.
 }

@@ -40,8 +40,8 @@ u <- c(1e-8, 1e-5, 1e-3, 0.1, 1)
 # Near zero the value is -u^2 / 2, and it approaches that ratio smoothly.
 cbind(u = u, scaled = distributions7:::mvt_D(u) / (-u^2 / 2))
 
-# Against the direct difference, relatively. The two agree where the
-# difference still has digits and part company as u shrinks.
+# The result is compared with the direct difference, relatively. The two
+# agree where the difference still has digits and part company as u shrinks.
 cbind(u = u,
       rel_gap = abs(distributions7:::mvt_D(u) - (u / (1 + u) - log1p(u))) /
         abs(distributions7:::mvt_D(u)))

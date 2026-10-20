@@ -2,16 +2,16 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_prefixed_names}
 \alias{mv_prefixed_names}
-\title{Prefix a Parametrization's Free Names with the Matrix They Describe}
+\title{Prefix Free Names with the Matrix That a Parametrization Describes}
 \usage{
 mv_prefixed_names(free_names, inverted = FALSE)
 }
 \arguments{
 \item{free_names}{The parametrization's own free names, a character vector.}
 
-\item{inverted}{Logical of length 1. \code{TRUE} for a precision, giving
-\code{"omega_"}; \code{FALSE}, the default, for a covariance or a scale matrix,
-giving \code{"sigma_"}.}
+\item{inverted}{Logical of length 1. It is \code{TRUE} for a precision, which
+gives \code{"omega_"}, and \code{FALSE} (the default) for a covariance or a scale
+matrix, which gives \code{"sigma_"}.}
 }
 \value{
 A character vector as long as \code{free_names}.
@@ -19,8 +19,8 @@ A character vector as long as \code{free_names}.
 \description{
 Returns the free names of a matrix parametrization with \code{"sigma_"} or
 \code{"omega_"} in front, so that a printed parameter table names the matrix to
-which each coordinate belongs. The free name of a value says how the matrix
-is built and not which matrix it is, so without the prefix the same
+which each coordinate belongs. The free name of a value records how the
+matrix is built and not which matrix it is, so without the prefix the same
 parametrization of a covariance and of a precision would give two different
 models the same parameter names.
 }

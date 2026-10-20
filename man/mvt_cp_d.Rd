@@ -28,9 +28,9 @@ For even \eqn{p} the recurrence of the gamma function telescopes into
 \deqn{c_p(\nu) = -\tfrac{p}{2}\log 2 + \sum_{j=1}^{p/2-1}
   \log\!\left(1 + \tfrac{2j}{\nu}\right),}
 whose derivatives are
-\eqn{(-1)^{k-1}(k-1)!\,\nu^{-k}\sum_j \{(1 + 2j/\nu)^{-k} - 1\}}, each term
-formed with \code{\link[base:Log]{base::expm1()}} and \code{\link[base:Log]{base::log1p()}}. For odd \eqn{p} and
-\eqn{\nu \ge \max(20, 4p)} the series of \code{\link[=mvt_nu_coef]{mvt_nu_coef()}} is summed,
+\eqn{(-1)^{k-1}(k-1)!\,\nu^{-k}\sum_j \{(1 + 2j/\nu)^{-k} - 1\}}, in which
+each term is formed with \code{\link[base:Log]{base::expm1()}} and \code{\link[base:Log]{base::log1p()}}. For odd \eqn{p}
+and \eqn{\nu \ge \max(20, 4p)} the series of \code{\link[=mvt_nu_coef]{mvt_nu_coef()}} is summed,
 \deqn{c_p^{(k)}(\nu) = (-1)^{k-1}\sum_{n \ge 1} g_n
   \frac{(n+k-1)!}{\nu^{n+k}}, \qquad
   c_p(\nu) = -\tfrac{p}{2}\log 2 - \sum_{n \ge 1} g_n \frac{(n-1)!}{\nu^n};}
@@ -39,7 +39,8 @@ below that bound the direct form in \code{\link[base:Special]{base::lgamma()}} a
 }
 \examples{
 nu <- c(5, 50, 1e6)
-# Against the direct form, which loses its digits as nu grows.
+# The result is compared with the direct form, which loses its digits as
+# nu grows.
 rbind(exact = distributions7:::mvt_cp_d(nu, 3, 0L),
       direct = lgamma((nu + 3) / 2) - lgamma(nu / 2) - 1.5 * log(nu))
 

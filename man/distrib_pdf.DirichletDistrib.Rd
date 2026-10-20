@@ -7,15 +7,15 @@
 \item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
 \item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
-each row strictly positive and summing to one within \code{1e-8}. A single
-observation may be given as a plain vector and is read as one row. A row
-failing either test gives a density of 0, or \code{-Inf} with \code{log = TRUE}, and
-a row with a missing coordinate gives \code{NA}.}
+in which each row is strictly positive and sums to one within \code{1e-8}. A
+single observation may be given as a plain vector and is read as one row. A
+row failing either test gives a density of 0, or \code{-Inf} with \code{log = TRUE},
+and a row with a missing coordinate gives \code{NA}.}
 
 \item{theta}{A named list of parameters on the parameter scale: the mean's
 free values followed by \code{phi}, each of length 1. A parameter may not vary
-by observation here, the mean being one point of the simplex for the whole
-sample.}
+by observation here, because the mean is one point of the simplex for the
+whole sample.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
 Defaults to \code{FALSE}.}
@@ -31,7 +31,8 @@ Computes the Dirichlet density
 \deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_{j=1}^{p} \Gamma(\alpha_j)}
       \prod_{j=1}^{p} y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,}
 one value per row of \code{y}, with respect to Lebesgue measure on the first
-\eqn{p-1} coordinates, the last being \eqn{1 - \sum_{j<p} y_j}.
+\eqn{p-1} coordinates, where the last coordinate is
+\eqn{1 - \sum_{j<p} y_j}.
 
 The support is tested before the logarithm is taken: a negative coordinate
 would make \code{\link[base:Log]{base::log()}} warn, and a density evaluated off its support is 0.
@@ -49,7 +50,7 @@ d <- dirichlet_distrib(3)
 th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
 mu <- mv_location(d, th)
 
-# The density at four draws, against the formula written out.
+# The density at four draws is compared with the formula written out.
 set.seed(1)
 Y <- distrib_rng(d, 4, th)
 al <- 12 * mu

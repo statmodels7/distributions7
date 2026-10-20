@@ -20,11 +20,11 @@ mvgaussian_build(n_dim, s, inverted, cls)
 An object of class \code{cls}.
 }
 \description{
-The body that \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} and \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}} share. The
-two differ in the class that they instantiate, in the \code{inverted} property,
-in the prefix of their free names, in the tag of \code{distrib_name} (\verb{sigma=} or
-\verb{omega=}) and in what \code{params_interpretation} calls the matrix. Every method
-is registered on \link{MvGaussianDistrib}, the parent of both.
+Implements the body that \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} and \code{\link[=mvgaussian2_distrib]{mvgaussian2_distrib()}}
+share. The two differ in the class that they instantiate, in the \code{inverted}
+property, in the prefix of their free names, in the tag of \code{distrib_name}
+(\verb{sigma=} or \verb{omega=}) and in what \code{params_interpretation} calls the matrix.
+Every method is registered on \link{MvGaussianDistrib}, the parent of both.
 }
 \seealso{
 \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}, the constructors that it serves.

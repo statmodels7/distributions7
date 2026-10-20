@@ -22,7 +22,7 @@ A named list of numeric vectors of length \eqn{n}, keyed as
 \description{
 Splits a component into its mean-and-matrix part and its \eqn{\nu} part. The
 log-determinant contributes only to a component whose indices all name the
-matrix, with the sign set by the orientation of the chart (see
+matrix, and the orientation of the chart sets its sign (see
 \code{\link[=mvg_ptensors]{mvg_ptensors()}}). A component whose indices all name \eqn{\nu} is computed
 by \code{\link[=mvt_cp_d]{mvt_cp_d()}} and \code{\link[=mvt_h_d]{mvt_h_d()}}, which avoid the cancellation of the direct
 forms at large \eqn{\nu}. Every other component is a univariate chain rule

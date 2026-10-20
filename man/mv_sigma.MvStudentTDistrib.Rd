@@ -7,9 +7,9 @@
 \item{distrib}{An \link{MvStudentTDistrib} object, from
 \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
-\item{theta}{A named list of parameters, each component a single number. The
-generic requires every parameter and checks \code{nu} against its domain; the
-location components and \code{nu} do not enter the result.}
+\item{theta}{A named list of parameters; each component is a single number.
+The generic requires every parameter and checks \code{nu} against its domain;
+the location components and \code{nu} do not enter the result.}
 }
 \value{
 A \eqn{p \times p} symmetric positive definite numeric matrix, with
@@ -21,8 +21,8 @@ parametrization's free values. This is the matrix in the density, and it is
 not the covariance: the covariance is \eqn{\nu\Sigma/(\nu-2)} and exists
 only for \eqn{\nu > 2}, while the scale matrix exists at every admissible
 \eqn{\nu}. \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} returns the covariance. The
-correlations read off either are the same, a positive multiple of a matrix
-leaving them alone.
+correlations read off either matrix are the same, because a positive
+multiple of a matrix leaves them unchanged.
 }
 \examples{
 d <- mvstudent_t1_distrib(2)
@@ -31,7 +31,7 @@ theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 
 mv_sigma(d, theta)
 
-# Positive definite whatever the free values are.
+# The matrix is positive definite whatever the free values are.
 eigen(mv_sigma(d, theta), only.values = TRUE)$values
 
 # It does not move with nu, where the covariance does.

@@ -10,8 +10,9 @@ chain_univariate(tuple, fd, ud)
 \item{tuple}{An integer vector of free-value indices, with repeats allowed.
 Its length is the derivative order.}
 
-\item{fd}{A list whose \eqn{m}-th element is \eqn{f^{(m)}} evaluated at every
-coordinate, a numeric vector each. It must run to \code{length(tuple)}.}
+\item{fd}{A list whose \eqn{m}-th element is a numeric vector holding
+\eqn{f^{(m)}} evaluated at every coordinate. It must run to
+\code{length(tuple)}.}
 
 \item{ud}{A named list of the map's derivative arrays, keyed by sorted tuple
 as \code{\link[=simplex_map_tensors]{simplex_map_tensors()}} returns them. Every block of every partition of
@@ -26,8 +27,9 @@ Evaluates \eqn{\partial^{S} f(u(v))} for a scalar function \eqn{f} of one
 coordinate, by the partition form of Faa di Bruno
 \deqn{\partial^{S} f(u) = \sum_{\pi} f^{(\lvert\pi\rvert)}(u)
       \prod_{B \in \pi} \partial^{B} u,}
-the sum running over the set partitions of the multiset \eqn{S}. Everything
-is vectorized over the coordinates, so one call serves every \eqn{j} at once.
+where the sum runs over the set partitions of the multiset \eqn{S}.
+Everything is vectorized over the coordinates, so one call serves every
+\eqn{j} at once.
 }
 \details{
 The two simplex-valued families use this at orders three and four. Their
@@ -41,7 +43,8 @@ log-ratio one, where its derivatives are cumulants (see \code{\link[=mn_cumulant
 \section{Notation}{
 
 \eqn{S} is a multiset of free-value indices, \eqn{\pi} a set partition of it,
-\eqn{B} a block of that partition, and \eqn{u} the map being composed with.
+\eqn{B} a block of that partition, and \eqn{u} the inner map of the
+composition.
 }
 
 \examples{
@@ -53,11 +56,12 @@ ud <- distributions7:::simplex_map_tensors(s, eta, 2)
 u <- as.numeric(parameters7::param_value(s, eta))
 fd <- list(1 / u, -1 / u^2)
 
-# The mixed second derivative of log(mu_j) in the two free values.
+# This is the mixed second derivative of log(mu_j) in the two free values.
 got <- distributions7:::chain_univariate(c(1L, 2L), fd, ud)
 got
 
-# Against a difference of the first-order chain rule, taken directly.
+# The result is compared with a difference of the first-order chain rule,
+# taken directly.
 h <- 1e-5
 d1 <- function(e) {
   uu <- as.numeric(parameters7::param_value(s, e))
@@ -67,7 +71,7 @@ max(abs(got - (d1(eta + c(0, h)) - d1(eta - c(0, h))) / (2 * h)))
 
 }
 \seealso{
-\code{\link[=index_partitions]{index_partitions()}} for the enumeration it sums over,
+\code{\link[=index_partitions]{index_partitions()}} for the enumeration over which it sums,
 \code{\link[=simplex_map_tensors]{simplex_map_tensors()}} for the argument, and \code{\link[=dirichlet_higher]{dirichlet_higher()}} and
 \code{\link[=multinomial_higher]{multinomial_higher()}} for the consumers.
 }

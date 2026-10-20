@@ -10,11 +10,12 @@ or \code{\link[=mvstudent_t2_distrib]{mvstudent_t2_distrib()}}.}
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, where each component is a single
+number.}
 
-\item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
-by sampling: \code{nsim} draws are made and the observed components averaged.
-Defaults to \code{FALSE}.}
+\item{expected}{Logical of length 1. When \code{TRUE} the method returns the
+expectation, which it takes by sampling: it makes \code{nsim} draws and
+averages the observed components. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -24,7 +25,7 @@ result. The two differ here, because \code{nu} carries a log link by default.}
 sampling. It is present so that the signature matches the generic's.}
 
 \item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. Not read otherwise.}
+\code{10000}. It is not read when \code{expected = FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -37,12 +38,12 @@ is constant.
 \description{
 Computes every third derivative of the log-density in the parameters, in
 closed form. The log-density carries \code{lgamma}, a logarithm and a quadratic
-form, each elementary in \eqn{\nu}. The location-and-matrix part of a
-component is handled by the array expansion that the gaussian uses through
-\code{\link[=mvg_ptensors]{mvg_ptensors()}}, and the \eqn{\nu} part by differentiating
+form, and each of them is elementary in \eqn{\nu}. The location-and-matrix
+part of a component is handled by the array expansion that the gaussian uses
+through \code{\link[=mvg_ptensors]{mvg_ptensors()}}, and the \eqn{\nu} part by differentiating
 \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^m} against the linear prefactor
-\eqn{(\nu+p)/2}. The components in \eqn{\nu} alone come from \code{\link[=mvt_cp_d]{mvt_cp_d()}}
-and \code{\link[=mvt_h_d]{mvt_h_d()}}.
+\eqn{(\nu+p)/2}. The components in \eqn{\nu} alone come from \code{\link[=mvt_cp_d]{mvt_cp_d()}} and
+\code{\link[=mvt_h_d]{mvt_h_d()}}.
 }
 \details{
 Run at orders one and two, the same assembly reproduces
@@ -80,7 +81,7 @@ c(t = sum(d3[["mu1_mu1_mu1"]]),
   gaussian = sum(distrib_deriv3(mvgaussian1_distrib(2), y,
                                 theta[1:5])[["mu1_mu1_mu1"]]))
 
-# Against a central difference of the Hessian in nu.
+# The result is compared with a central difference of the Hessian in nu.
 h <- 1e-4
 tp <- theta; tp$nu <- tp$nu + h
 tm <- theta; tm$nu <- tm$nu - h

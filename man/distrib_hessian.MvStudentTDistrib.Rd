@@ -10,7 +10,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -21,8 +22,8 @@ result. The two differ here, because \code{nu} carries a log link by default.}
 \value{
 A named list of numeric vectors of length \eqn{n}, one per unordered
 pair of parameters, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}. Unlike the gaussian's, no
-block here is constant across rows.
+\code{\link[=hess_names]{hess_names(distrib@params)}}. Unlike the gaussian's, every
+block here varies across rows.
 }
 \description{
 Computes the second derivatives of the log-density in closed form, by
@@ -37,13 +38,14 @@ every mixed block.
 }
 \details{
 The pure \eqn{\nu} component is \eqn{c_p''(\nu) - h''(\nu)}, with
-\code{\link[=mvt_cp_d]{mvt_cp_d()}} for the part of \eqn{\nu} alone and \code{\link[=mvt_h_d]{mvt_h_d()}} for the part
-that carries the data, each written without the cancellation of its direct
-form; the result stays finite and accurate as \eqn{\nu} grows. The blocks in
-the matrix read the derivatives \eqn{P_k} and \eqn{P_{kl}} of
-\eqn{\Sigma^{-1}} from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}: with \eqn{q_k = r^\top P_k r},
-the matrix block is \eqn{-\tfrac{1}{2}\partial_{kl}\log\lvert\Sigma\rvert +
-c\,q_kq_l/(2d) - \tfrac{c}{2}\, r^\top P_{kl} r}.
+\code{\link[=mvt_cp_d]{mvt_cp_d()}} for the part that depends on \eqn{\nu} only and \code{\link[=mvt_h_d]{mvt_h_d()}} for
+the part that carries the data, and each of them is written without the
+cancellation of its direct form; the result stays finite and accurate as
+\eqn{\nu} grows. The blocks in the matrix read the derivatives \eqn{P_k} and
+\eqn{P_{kl}} of \eqn{\Sigma^{-1}} from \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}: with \eqn{q_k =
+r^\top P_k r}, the matrix block is
+\eqn{-\tfrac{1}{2}\partial_{kl}\log\lvert\Sigma\rvert + c\,q_kq_l/(2d) -
+\tfrac{c}{2}\, r^\top P_{kl} r}.
 }
 \section{Notation}{
 
@@ -65,7 +67,7 @@ y <- distrib_rng(d, 25, theta)
 H <- distrib_hessian(d, y, theta)
 vapply(H, sum, numeric(1))
 
-# Against a numerical Hessian of the log-likelihood.
+# The result is compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

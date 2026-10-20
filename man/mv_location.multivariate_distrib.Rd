@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters. Not read: the error is signalled
-first.}
+\item{theta}{A named list of parameters. It is not read, because the error is
+signalled first.}
 }
 \value{
 Does not return: it signals an error naming the family.
@@ -15,9 +15,10 @@ Does not return: it signals an error naming the family.
 \description{
 Signals an error. The first \eqn{p} parameters of a family are not a
 location in general, so the class has no default. The shipped families
-register their own methods: the elliptical families \code{\link[=mv_leading_location]{mv_leading_location()}},
-the Dirichlet and the multinomial their mean vector. A family written
-elsewhere registers its own method.
+register their own methods: the elliptical families register
+\code{\link[=mv_leading_location]{mv_leading_location()}}, and the Dirichlet and the multinomial register
+methods that return their mean vector. A family written elsewhere registers
+its own method.
 }
 \examples{
 # Every shipped family registers a method, so the method of the class is

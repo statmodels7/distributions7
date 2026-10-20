@@ -17,10 +17,10 @@ quantities and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} is the 
 \value{
 A data frame with one row per quantity and four columns:
 \code{Estimate}, \verb{Std. Error}, and the two confidence limits, named after the
-percentiles they are (\verb{2.5\%} and \verb{97.5\%} at the default level). Its row
-names are the quantity names, and it carries the attribute \code{"block"}, a
-character vector naming the group each row belongs to, by which \code{print()}
-lays the summary out.
+percentiles that they represent (\verb{2.5\%} and \verb{97.5\%} at the default level).
+Its row names are the quantity names, and it carries the attribute
+\code{"block"}, a character vector naming the group to which each row belongs
+and by which \code{print()} lays the summary out.
 }
 \description{
 Reports the standard deviations, correlations and the other quantities that
@@ -35,17 +35,17 @@ quantities that do.
 \deqn{\widehat{\mathrm{Var}}\{g(\hat\theta)\}
   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
   \qquad J = \partial g/\partial\theta,}
-with \eqn{J} taken from \code{\link[=mv_derived]{mv_derived()}}, in closed form for the multivariate
-gaussian and Student \eqn{t} and by one central difference for the
-Dirichlet, the multinomial and any other family.
+where \eqn{J} is taken from \code{\link[=mv_derived]{mv_derived()}}, in closed form for the
+multivariate gaussian and Student \eqn{t} and by one central difference for
+the Dirichlet, the multinomial and any other family.
 }
 
 \section{Where each interval is built}{
 Each interval is built on the scale that its quantity declares and then
-mapped back, as \code{\link[=fit_distrib]{fit_distrib()}} does for a univariate parameter. A standard
-deviation is intervalled on the log scale and a correlation on Fisher's
-\eqn{z}, so neither interval can leave the set in which its quantity lies. An
-interval on the raw scale can put a correlation above one.
+mapped back, as \code{\link[=fit_distrib]{fit_distrib()}} does for a univariate parameter. The interval
+of a standard deviation is built on the log scale and that of a correlation
+on Fisher's \eqn{z}, so each interval stays inside the set in which its
+quantity lies. An interval on the raw scale can put a correlation above one.
 
 The standard error is carried onto that scale by the transform's own
 derivative, so the reported \verb{Std. Error} column stays on the quantity's
@@ -67,10 +67,10 @@ truth <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
 y <- distrib_rng(d, 500, truth)
 fit <- fit_distrib(d, y)
 
-# The standard deviations and the correlation.
+# The summary reports the standard deviations and the correlation.
 mv_summary(fit)
 
-# The coordinates the fit was estimated on, beside them.
+# The coordinates on which the fit was estimated are shown beside them.
 confint(fit)
 
 # Every interval stays inside the set of its quantity: the standard

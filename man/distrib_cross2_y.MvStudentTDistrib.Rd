@@ -10,7 +10,7 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -29,7 +29,7 @@ one \eqn{p \times p \times n} array per parameter. Writing
 \eqn{c = (\nu+p)/s}, \eqn{d = (\nu+p)/s^2} and \eqn{s = \nu+q},
 \deqn{\partial_a M = -c_a\Sigma^{-1} - c\,\partial_a\Sigma^{-1}
   + 2d_a ww^\top + 2d\left(w_aw^\top + ww_a^\top\right),}
-every piece coming from \code{\link[=mvt_dpieces]{mvt_dpieces()}}.
+where every piece comes from \code{\link[=mvt_dpieces]{mvt_dpieces()}}.
 }
 \details{
 For the gaussian the response Hessian is \eqn{-\Sigma^{-1}}, one matrix for
@@ -65,7 +65,7 @@ dim(c2$sigma_L2.1)
 c2$mu1[, , 1]
 distrib_cross2_y(mvgaussian1_distrib(2), y, theta[1:5])$mu1
 
-# Against a difference of the response Hessian.
+# The result is compared with a difference of the response Hessian.
 h <- 1e-5
 vapply(seq_along(d@params), function(k) {
   tp <- theta; tp[[k]] <- tp[[k]] + h
@@ -78,7 +78,7 @@ vapply(seq_along(d@params), function(k) {
 \seealso{
 \code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y.MvStudentTDistrib()}}, whose derivative in the
 parameters this is, \code{\link[=distrib_grad_y_hess.MvStudentTDistrib]{distrib_grad_y_hess.MvStudentTDistrib()}} and
-\code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}} for the other two a marginal
+\code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}} for the other two that a marginal
 criterion reads, \code{\link[=mvt_dpieces]{mvt_dpieces()}} for the assembly, and
 \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic.
 }

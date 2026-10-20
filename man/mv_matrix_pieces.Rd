@@ -13,8 +13,9 @@ mv_matrix_pieces(s, eta, inverted, derivs = FALSE, derivs2 = FALSE)
 
 \item{inverted}{\code{TRUE} when \code{s} carries \eqn{\Sigma^{-1}}.}
 
-\item{derivs, derivs2}{Whether the first and second derivative arrays are
-wanted. \code{derivs2 = TRUE} computes the first derivatives as well.}
+\item{derivs, derivs2}{Logical flags that request the first and the second
+derivative arrays. \code{derivs2 = TRUE} computes the first derivatives as
+well.}
 }
 \value{
 A list with \code{sigma}, \code{sigma_inv}, \code{logdet} (of \eqn{\Sigma}) and

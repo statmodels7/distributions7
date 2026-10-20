@@ -23,10 +23,10 @@ A named list with \code{mu} (numeric of length \eqn{p}), \code{eta} (the
 matrix parametrization's free vector), \code{nu} (a single number), \code{p}, \code{s}
 (the parametrization itself) and the elements of \code{\link[=mv_matrix_pieces]{mv_matrix_pieces()}}:
 \code{sigma} and \code{sigma_inv} (\eqn{p \times p} matrices), \code{logdet} (the
-log-determinant of \eqn{\Sigma}) and \code{inverted}; with derivatives
-requested also \code{a} and \code{ai} (the first derivative arrays of \eqn{\Sigma}
-and of \eqn{\Sigma^{-1}}) and \code{dlogdet}; with \code{derivs2} also \code{a2}, \code{ai2}
-and \code{d2logdet}.
+log-determinant of \eqn{\Sigma}) and \code{inverted}. When derivatives are
+requested, the list also holds \code{a} and \code{ai} (the first derivative arrays
+of \eqn{\Sigma} and of \eqn{\Sigma^{-1}}) and \code{dlogdet}; when \code{derivs2} is
+\code{TRUE}, it also holds \code{a2}, \code{ai2} and \code{d2logdet}.
 }
 \description{
 Assembles, once per call, the location, the scale matrix, its inverse, the

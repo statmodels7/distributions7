@@ -8,7 +8,8 @@
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. It is not read.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -32,10 +33,11 @@ y <- distrib_rng(d, 4, theta)
 distrib_hess_y(d, y, theta)
 -solve(mv_sigma(d, theta))
 
-# One matrix whatever the sample size, the same at every observation.
+# One matrix is returned whatever the sample size, and it is the same at
+# every observation.
 identical(distrib_hess_y(d, y, theta), distrib_hess_y(d, y[1, ], theta))
 
-# Against a numerical Hessian at one observation.
+# The result is compared with a numerical Hessian at one observation.
 max(abs(distrib_hess_y(d, y, theta) -
         numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
                           y[1, ])))

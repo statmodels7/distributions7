@@ -9,7 +9,8 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters in which each component is a single
+number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -67,7 +68,7 @@ dim(cy$sigma_L2.1)
 cy$mu1
 solve(mv_sigma(d, theta))[1, ]
 
-# The matrix block against a difference of the response gradient.
+# The matrix block is compared with a difference of the response gradient.
 h <- 1e-5
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h

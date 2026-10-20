@@ -8,17 +8,17 @@
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations, one row each.
 A plain numeric vector of length \eqn{p} is read as a single observation.
-Every point of \eqn{\mathbb{R}^p} is in the support, so no row is
-rejected. A matrix with zero rows returns \code{numeric(0)}.}
+Every point of \eqn{\mathbb{R}^p} is in the support, so the method does
+not reject any row. A matrix with zero rows returns \code{numeric(0)}.}
 
-\item{theta}{A named list of parameters, each component a single number:
-\code{mu1}, ..., \code{mup} and the matrix parametrization's prefixed free values.
-A parameter may not vary by observation here, and a component longer than
-one is an error.}
+\item{theta}{A named list of parameters in which each component is a single
+number: \code{mu1}, ..., \code{mup} and the matrix parametrization's prefixed free
+values. A parameter may not vary by observation here, and a component
+longer than one is an error.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned,
-which stays finite for a point the density itself underflows at. Defaults
-to \code{FALSE}.}
+which stays finite for a point at which the density itself underflows.
+Defaults to \code{FALSE}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -30,11 +30,12 @@ Computes the multivariate gaussian log-density
 \deqn{\ell = -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\lvert\Sigma\rvert
   - \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),}
 row by row, and exponentiates it unless \code{log = TRUE}. The log-determinant
-comes from the matrix parametrization's own \code{param_logdet()}, so no
-determinant is formed. The quadratic form is the squared norm of the residual
-whitened by the parametrization's factor (see \code{\link[=mv_quad]{mv_quad()}}), which keeps its
-digits where the covariance is nearly singular. The matrix quantities are
-computed once per call, since the matrix does not vary with the response.
+comes from the matrix parametrization's own \code{param_logdet()}, so the
+method does not form a determinant. The quadratic form is the squared norm of
+the residual whitened by the parametrization's factor (see \code{\link[=mv_quad]{mv_quad()}}),
+which keeps its digits where the covariance is nearly singular. The matrix
+quantities are computed once per call, since the matrix does not vary with
+the response.
 }
 \examples{
 d <- mvgaussian1_distrib(2)
@@ -44,7 +45,8 @@ y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
 
 distrib_pdf(d, y, theta)
 
-# Against the formula written out with an explicit inverse.
+# The result is compared with the formula written out with an explicit
+# inverse.
 S <- mv_sigma(d, theta)
 mu <- c(0.5, -0.3)
 ref <- -0.5 * (2 * log(2 * pi) + log(det(S)) + mahalanobis(y, mu, S))
@@ -61,7 +63,7 @@ distrib_pdf(d, c(60, -60), theta, log = TRUE)
 \seealso{
 \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} for the derivatives of this
 log-density, \code{\link[=distrib_rng.MvGaussianDistrib]{distrib_rng.MvGaussianDistrib()}} to draw from it,
-\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} for the covariance it uses, and
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} for the covariance that it uses, and
 \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }
 \keyword{internal}

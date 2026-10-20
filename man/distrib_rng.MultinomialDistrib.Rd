@@ -10,13 +10,13 @@
 is the object's \code{size} property.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1.}
+scale, and each value has length 1.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric matrix with \code{n} rows and \eqn{p} columns, each row a
-vector of non-negative integers summing to the object's \code{size}.
+A numeric matrix with \code{n} rows and \eqn{p} columns, and each row is
+a vector of non-negative integers summing to the object's \code{size}.
 }
 \description{
 Draws \code{n} independent multinomial counts by calling \code{\link[stats:Multinom]{stats::rmultinom()}} and
@@ -28,7 +28,7 @@ observation. The draws depend on \code{.Random.seed} in the usual way.
 d <- multinomial_distrib(3, size = 5)
 th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
 
-# One row per observation, each summing to the trial count.
+# Each row is one observation and sums to the trial count.
 set.seed(1)
 Y <- distrib_rng(d, 4, th)
 Y
@@ -42,7 +42,7 @@ rbind(sample = c(colMeans(Z), diag(var(Z))),
 }
 \seealso{
 \code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf.MultinomialDistrib()}} for the mass,
-\code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the points it can land on,
+\code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the points on which it can land,
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the probabilities back from a sample, and
 \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

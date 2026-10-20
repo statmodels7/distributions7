@@ -47,8 +47,8 @@ with
 \deqn{\mathbb{E}[Y_j] = n p_j, \qquad
       \operatorname{Var}(Y_j) = n p_j (1 - p_j), \qquad
       \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.}
-The family has no dispersion parameter: its parameters are the probabilities,
-\eqn{p-1} of them free.
+The family has no dispersion parameter, and its parameters are the
+probabilities, of which \eqn{p-1} are free.
 
 The probabilities are carried by a \code{parameters7} simplex and flattened into
 scalars with identity links, as a covariance is for the multivariate
@@ -88,8 +88,8 @@ derivatives.
 }
 
 \section{Marginals and conjugacy}{
-Coordinate \eqn{j} is \eqn{\mathrm{Binomial}(n, p_j)}, the other categories
-collapsing into a single failure, so
+Coordinate \eqn{j} is \eqn{\mathrm{Binomial}(n, p_j)}, because the other
+categories collapse into a single failure, so
 \code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal.MultinomialDistrib()}} returns an object. The Dirichlet is the
 conjugate prior for the probability vector, and
 \code{\link[=dirichlet_distrib]{dirichlet_distrib()}} is written on the same simplex.
@@ -113,7 +113,8 @@ second-derivative arrays.
 d <- multinomial_distrib(3, size = 5)
 d
 
-# Two free probabilities for three categories; no dispersion parameter.
+# Three categories give two free probabilities, and the family has no
+# dispersion parameter.
 th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
 mv_location(d, th)
 
@@ -121,7 +122,7 @@ mv_location(d, th)
 supp <- mv_support(d, th)
 c(points = nrow(supp), mass = sum(distrib_pdf(d, supp, th)))
 
-# The covariance is singular, its diagonal the binomial variances.
+# The covariance is singular, and its diagonal holds the binomial variances.
 pr <- mv_location(d, th) / 5
 S <- mv_sigma(d, th)
 c(rank = qr(S)$rank, dim = 3)
@@ -149,9 +150,9 @@ Wiley, Hoboken.
 \code{\link[=binomial_distrib]{binomial_distrib()}} for a category's marginal and the two-category case;
 \code{\link[=dirichlet_distrib]{dirichlet_distrib()}} for the conjugate family on the same simplex;
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the overdispersed two-category count;
-\code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the probabilities ride;
+\code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart that carries the probabilities;
 \code{\link[numericals7:compositions]{numericals7::compositions()}} for the support enumeration; \code{\link[=fit_distrib]{fit_distrib()}} to
-estimate the probabilities; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your
-own against the same battery that this one passes; \link{MultinomialDistrib} for
-the class.
+estimate the probabilities; \code{\link[=check_distrib]{check_distrib()}} to validate a user-defined
+family against the same battery that this one passes; \link{MultinomialDistrib}
+for the class.
 }

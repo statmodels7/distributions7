@@ -15,8 +15,8 @@ first.}
 Does not return: it signals an error naming the family.
 }
 \description{
-Signals an error, for the reason that \code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}}
-gives: a scalar kurtosis of a vector response is a choice among Mardia's,
+Signals an error, for the same reason as \code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}}:
+a scalar kurtosis of a vector response is a choice among Mardia's,
 Malkovich and Afifi's and the vector of the coordinatewise marginal
 kurtoses, which are different numbers. A coordinatewise kurtosis is the
 kurtosis of a marginal, where the marginal is a univariate object: a

@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters. Not read: the error is signalled
-first.}
+\item{theta}{A named list of parameters. It is not read, because the error
+is signalled first.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -26,7 +26,7 @@ theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0)
 try(mv_support(d, theta))
 
-# The test that check_distrib() applies first.
+# check_distrib() applies this test first.
 c(gaussian = distributions7:::has_mv_support(d),
   multinomial = distributions7:::has_mv_support(
     multinomial_distrib(3, size = 4)))

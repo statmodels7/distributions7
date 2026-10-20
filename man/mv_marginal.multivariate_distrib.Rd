@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters. Not read: the error is signalled
-first.}
+\item{theta}{A named list of parameters. It is not read, because the error is
+signalled first.}
 
 \item{which}{An integer vector of coordinates, already validated by the
 generic. It is not read.}

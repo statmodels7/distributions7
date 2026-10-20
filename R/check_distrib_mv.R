@@ -207,7 +207,7 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
 #' Whether a Multivariate Family Enumerates Its Support
 #'
 #' @description
-#' `TRUE` when the family registers [mv_support()], which a discrete
+#' Returns `TRUE` when the family registers [mv_support()], which a discrete
 #' multivariate family does and a continuous one cannot.
 #'
 #' @details
@@ -235,7 +235,7 @@ has_mv_support <- function(x) {
 #' Whether a Multivariate Family Implements Its Response Derivatives
 #'
 #' @description
-#' `TRUE` when [distrib_grad_y()] comes from the family and not from the
+#' Returns `TRUE` when [distrib_grad_y()] comes from the family and not from the
 #' base class, whose method signals an error.
 #'
 #' @param x An object inheriting from class [multivariate_distrib()].
@@ -255,8 +255,8 @@ has_mv_grad_y <- function(x) {
 #' A Central-Difference Gradient Without a Dependency
 #'
 #' @description
-#' One central difference per coordinate, which is enough for the multivariate
-#' checks and keeps \pkg{numDeriv} out of the hard dependencies.
+#' Computes one central difference per coordinate, which is enough for the
+#' multivariate checks and keeps \pkg{numDeriv} out of the hard dependencies.
 #'
 #' @details
 #' The nodes, the weights and the step are \pkg{numericals7}'s.
@@ -294,8 +294,8 @@ numDeriv_grad <- function(f, x, h_rel = NULL) {
 #' A Second Derivative From One Stencil
 #'
 #' @description
-#' The mixed or repeated second derivative of a scalar function, from a single
-#' stencil, without nested first differences.
+#' Computes the mixed or repeated second derivative of a scalar function from
+#' a single stencil, without nested first differences.
 #'
 #' @details
 #' The nodes, the weights and the step are those of \pkg{numericals7}. Where the
@@ -306,7 +306,7 @@ numDeriv_grad <- function(f, x, h_rel = NULL) {
 #'
 #' @param f A function of a numeric vector, returning one number.
 #' @param x The point.
-#' @param k,l The coordinates to differentiate in.
+#' @param k,l The coordinates with respect to which `f` is differentiated.
 #' @param h_rel Deprecated and unused; the step is
 #'   [numericals7::fd_step()]'s at order two.
 #'

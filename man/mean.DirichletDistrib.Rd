@@ -18,8 +18,8 @@ A numeric vector of length \eqn{p}, without names, summing to one.
 \description{
 Returns the mean vector \eqn{\mathbb{E}[Y] = \mu}, which for this family is
 a parameter and needs no computation: the method delegates to
-\code{\link[=mv_location.DirichletDistrib]{mv_location.DirichletDistrib()}}. The result sums to one, being a point of
-the simplex.
+\code{\link[=mv_location.DirichletDistrib]{mv_location.DirichletDistrib()}}. The result sums to one because it is a
+point of the simplex.
 }
 \seealso{
 \code{\link[=variance.DirichletDistrib]{variance.DirichletDistrib()}} for the covariance,

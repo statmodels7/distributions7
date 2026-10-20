@@ -18,8 +18,8 @@ A named list with \code{y}, an \eqn{n \times p} numeric matrix, and
 \code{logd}, a numeric vector of length \eqn{n}.
 }
 \description{
-The default proposal: a gaussian with the family's mean and twice its
-covariance, drawn as \eqn{\mu + Lz} with \eqn{LL^\top = 2\Sigma}. For a
+Draws from the default proposal, a gaussian with the family's mean and twice
+its covariance, as \eqn{\mu + Lz} with \eqn{LL^\top = 2\Sigma}. For a
 gaussian family a proposal with the family's own covariance would make every
 importance ratio one, and the inflation keeps the ratio informative.
 }

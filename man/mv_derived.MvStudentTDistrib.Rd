@@ -29,7 +29,7 @@ not standard deviations of the response, and for that reason they are named
 \code{scale_sd_v1}, ..., \code{scale_sd_vp} and blocked as \code{"Scale standard deviations"}.
 
 The rule of \code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} holds here as well: a
-structured parametrization reports its own block alone, its \code{scale} as the
+structured parametrization reports only its own block, its \code{scale} as the
 square root \code{scale_sd} on the scale-matrix side, and the inverse
 parametrization reports the conditional scales \eqn{1/M_{jj}} and the
 partial correlations and nothing of the scale matrix.
@@ -59,8 +59,8 @@ der$block
 c(scale_sd = der$value[["scale_sd_v1"]],
   response_sd = sqrt(variance(d, theta)[1, 1]))
 
-# The correlation is the same either way, the two matrices being positive
-# multiples of each other.
+# The correlation is the same either way, because the two matrices are
+# positive multiples of each other.
 cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
 c(reported = der$value[["cor_v1_v2"]],
   from_covariance = cv(variance(d, theta)))

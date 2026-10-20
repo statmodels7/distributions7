@@ -2,7 +2,7 @@
 % Please edit documentation in R/dirichlet_distrib.R
 \name{dir_parts}
 \alias{dir_parts}
-\title{The Pieces a Dirichlet Derivative Needs}
+\title{The Pieces That a Dirichlet Derivative Needs}
 \usage{
 dir_parts(distrib, theta)
 }
@@ -31,9 +31,9 @@ shares them.
 Two identities keep every formula on the family's pages short, and both
 follow from differentiating \eqn{\sum_j \mu_j = 1}: once, the columns of
 \eqn{A = \partial\mu/\partial\eta} sum to zero; twice, so does every
-second-derivative vector \eqn{B_{\cdot,kl}}. They are what makes the
-expected information closed form, since every term carrying the data is a
-constant times one of those zero sums and drops out under expectation.
+second-derivative vector \eqn{B_{\cdot,kl}}. Together they make the
+expected information closed form, because every term that carries the data
+is a constant times one of those zero sums and drops out under expectation.
 }
 \seealso{
 \code{\link[=dir_b_index]{dir_b_index()}} for locating an entry of \code{B},

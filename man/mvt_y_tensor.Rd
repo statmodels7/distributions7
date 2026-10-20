@@ -34,7 +34,7 @@ A numeric array with \eqn{n} as its last dimension.
 \code{mvt_y_tensor()} assembles the third or fourth response derivative of
 \code{\link[=distrib_deriv3_y.MvStudentTDistrib]{distrib_deriv3_y.MvStudentTDistrib()}} from the scaled quantities of
 \code{\link[=mvt_yscaled]{mvt_yscaled()}}, one observation at a time: every term is written in
-\eqn{w/s} and \eqn{1/s}, so no power of \eqn{s} is formed.
+\eqn{w/s} and \eqn{1/s}, so the function forms no power of \eqn{s}.
 \code{mvt_y_tensor3_d()} assembles the derivative of the third one in a
 parameter, given that parameter's derivatives of \eqn{N}, \eqn{s}, \eqn{w}
 and \eqn{\Omega}.

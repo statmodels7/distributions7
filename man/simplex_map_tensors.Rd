@@ -15,10 +15,11 @@ simplex_map_tensors(s, eta, order)
 A larger value signals an error.}
 }
 \value{
-A named list of numeric vectors, each as long as the simplex has
-coordinates, keyed \code{"1"}, \code{"2"}, \code{"1,1"}, \code{"1,2"} and so on, with the
-indices sorted and comma-separated. Its length is the number of index
-multisets of width 1 to \code{order}.
+A named list of numeric vectors, in which each vector is as long as
+the simplex has coordinates. The names are \code{"1"}, \code{"2"}, \code{"1,1"}, \code{"1,2"}
+and so on, and the indices in each name are sorted and comma-separated.
+The length of the list is the number of index multisets of width 1 to
+\code{order}.
 }
 \description{
 Collects \eqn{\partial^{S}\mu_j} for every multiset \eqn{S} of free indices
@@ -44,8 +45,8 @@ names(mt)
 mt[["1"]]
 as.numeric(parameters7::param_d1(s, eta)[[1]])
 
-# Every derivative of a point on the simplex sums to zero, the value
-# summing to one at every eta.
+# Every derivative of a point on the simplex sums to zero, because the
+# value sums to one at every eta.
 vapply(mt, sum, numeric(1))
 
 }

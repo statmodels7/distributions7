@@ -7,8 +7,8 @@
 mvt_A(nu, p)
 }
 \arguments{
-\item{nu}{The degrees of freedom, a numeric vector of positive values. Not
-validated.}
+\item{nu}{The degrees of freedom, a numeric vector of positive values. The
+function does not validate it.}
 
 \item{p}{The dimension, a single positive whole number.}
 }
@@ -33,7 +33,7 @@ loses its significant digits as \eqn{\nu} grows and eventually has the wrong
 sign. For even \eqn{p} the recurrence \eqn{\psi(x+1) = \psi(x) + 1/x} gives
 a sum whose terms carry one sign,
 \deqn{A_p(\nu) = -\sum_{j=0}^{p/2-1} \frac{4j}{\nu(\nu+2j)},}
-exactly zero at \eqn{p = 2}; for odd \eqn{p} \code{\link[=mvt_cp_d]{mvt_cp_d()}} sums an
+which is exactly zero at \eqn{p = 2}; for odd \eqn{p} \code{\link[=mvt_cp_d]{mvt_cp_d()}} sums an
 asymptotic series above \eqn{\nu = \max(20, 4p)}.
 }
 \section{Notation}{

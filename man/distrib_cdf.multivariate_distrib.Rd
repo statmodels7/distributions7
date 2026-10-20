@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{q}{A numeric matrix of quantiles, one row per point. Not read: the
-error is signalled first.}
+\item{q}{A numeric matrix of quantiles, one row per point. It is not read,
+because the error is signalled first.}
 
 \item{theta}{A named list of parameters. It is not read.}
 

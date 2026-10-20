@@ -8,9 +8,10 @@
 its own.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations; only its row
-count is used, the expectation being over the law.}
+count is used, because the expectation is over the law.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, in which each component is a
+single number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the result of the method.}
@@ -25,11 +26,13 @@ falls as its square root.}
 }
 \value{
 A named list of numeric vectors of length \eqn{n}, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
+\code{\link[=hess_names]{hess_names(distrib@params)}}, in which each vector is
+constant.
 }
 \description{
-The fallback for a multivariate family without a closed form: an average
-over a sample drawn from the family. Every shipped multivariate class
+Computes the expected information of a multivariate family without a closed
+form as an average over a sample drawn from the family. Every shipped
+multivariate class
 registers its own closed form, so this method runs only for a family written
 elsewhere.
 }
@@ -65,7 +68,7 @@ exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
 round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
             closed = vapply(exact, function(z) z[1], numeric(1))), 3)
 
-# Two seeds give two values, the result being a sample.
+# Two seeds give two values, because the result is a sample.
 set.seed(2)
 again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
               approx = "mc", nsim = 4000)

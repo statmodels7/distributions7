@@ -10,7 +10,7 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -29,9 +29,9 @@ gradient is \eqn{\ell^{(y)} = -c\,w}, so a second derivative in the
 parameters is the ordinary product rule
 \deqn{\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},}
 with every piece from \code{\link[=mvt_dpieces]{mvt_dpieces()}}. For a gaussian the pair of two
-location parameters is exactly zero, its response gradient being linear in
-the location; the response gradient of the t is not, and these pairs are not
-zero in general.
+location parameters is exactly zero, because its response gradient is linear
+in the location; the response gradient of the t is not, and these pairs are
+not zero in general.
 }
 \section{Notation}{
 
@@ -54,9 +54,9 @@ dim(gh$mu1_mu2)
 gh$mu1_mu2
 distrib_grad_y_hess(mvgaussian1_distrib(2), y, theta[1:5])$mu1_mu2
 
-# Against a second difference of the response gradient. The reference
-# amplifies rounding by h^-2, so 1e-6 on a quantity of order 1 is its own
-# accuracy rather than a disagreement.
+# The result is compared with a second difference of the response gradient.
+# The reference amplifies rounding by h^-2, so 1e-6 on a quantity of order 1
+# is its own accuracy rather than a disagreement.
 h <- 1e-5
 f <- function(a, b) {
   t2 <- theta; t2$mu1 <- t2$mu1 + a; t2$mu2 <- t2$mu2 + b

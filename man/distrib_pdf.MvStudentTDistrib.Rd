@@ -9,12 +9,12 @@
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations, one row each.
 A plain numeric vector of length \eqn{p} is read as a single observation.
-Every point of \eqn{\mathbb{R}^p} is in the support, so no row is
-rejected. A matrix with zero rows returns \code{numeric(0)}.}
+Every point of \eqn{\mathbb{R}^p} is in the support, so the method
+accepts every row. A matrix with zero rows returns \code{numeric(0)}.}
 
-\item{theta}{A named list of parameters, each component a single number:
-\code{mu1}, ..., \code{mup}, the matrix parametrization's prefixed free values, and
-\code{nu}, which must be strictly positive.}
+\item{theta}{A named list of parameters, in which each component is a
+single number: \code{mu1}, ..., \code{mup}, the matrix parametrization's prefixed
+free values, and \code{nu}, which must be strictly positive.}
 
 \item{log}{Logical of length 1. When \code{TRUE} the log-density is returned,
 which stays finite far into a tail. Defaults to \code{FALSE}.}
@@ -53,7 +53,7 @@ y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
 
 distrib_pdf(d, y, theta)
 
-# Against the formula written out.
+# The log-density is compared with the formula written out.
 S <- mv_sigma(d, theta)
 q <- mahalanobis(y, c(0.5, -0.3), S)
 ref <- lgamma(4) - lgamma(3) - log(6 * pi) - 0.5 * log(det(S)) -

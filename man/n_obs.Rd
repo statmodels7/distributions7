@@ -2,13 +2,13 @@
 % Please edit documentation in R/multivariate.R
 \name{n_obs}
 \alias{n_obs}
-\title{How Many Observations a Response Holds}
+\title{Number of Observations in a Response}
 \usage{
 n_obs(distrib, y)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}. Only its class is used,
-to decide which reading of \code{y} applies.}
+to select the reading of \code{y} that applies.}
 
 \item{y}{The response: a numeric vector for a univariate distribution, or an
 \eqn{n \times p} numeric matrix for a multivariate one.}
@@ -29,7 +29,8 @@ on it would require parameters of length \eqn{np}.
 # A univariate response is counted by length.
 n_obs(gaussian1_distrib(), c(1.2, -0.4, 0.8))
 
-# A multivariate one by rows, where length() gives the number of entries.
+# A multivariate response is counted by rows, where length() gives the
+# number of entries.
 y <- matrix(0, 5, 2)
 c(n_obs = n_obs(mvgaussian1_distrib(2), y), length = length(y))
 

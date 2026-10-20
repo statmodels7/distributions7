@@ -19,15 +19,15 @@ mv_sd_cor(
 
 \item{a}{A list of \eqn{p \times p} numeric matrices, one per parameter of
 the distribution and in \code{params} order, holding
-\eqn{\partial\Sigma/\partial\theta_k}. For a parameter that the matrix
-does not depend on, the entry is \code{NULL} or a matrix of zeros; both are
+\eqn{\partial\Sigma/\partial\theta_k}. For a parameter that does not
+affect the matrix, the entry is \code{NULL} or a matrix of zeros; both are
 accepted.}
 
 \item{params}{The distribution's parameter names, which become the column
 names of the Jacobian.}
 
 \item{sd_label}{The prefix for the diagonal quantities. Defaults to \code{"sd"};
-the Student t passes \code{"scale_sd"}, its diagonal quantities not being
+the Student t passes \code{"scale_sd"}, because its diagonal quantities are not
 standard deviations of the response.}
 
 \item{cor_label}{The prefix for the off-diagonal quantities. Defaults to
@@ -43,8 +43,8 @@ scale and \eqn{p(p-1)/2} off-diagonal ones on Fisher's \eqn{z}.
 }
 \description{
 Turns a symmetric positive definite matrix and the derivatives of its
-entries into standard deviations and correlations, with the Jacobian
-written out. Writing \eqn{\Sigma = DRD} with \eqn{D} the
+entries into standard deviations and correlations and computes the Jacobian
+explicitly. Writing \eqn{\Sigma = DRD} with \eqn{D} the
 diagonal of standard deviations,
 \deqn{\frac{\partial s_j}{\partial\theta_k} = \frac{A_k[j,j]}{2 s_j},
   \qquad
@@ -52,8 +52,8 @@ diagonal of standard deviations,
     = \frac{A_k[j,l]}{s_j s_l}
       - \frac{\rho_{jl}}{2}\left(\frac{A_k[j,j]}{\Sigma_{jj}}
         + \frac{A_k[l,l]}{\Sigma_{ll}}\right),}
-with \eqn{A_k = \partial\Sigma/\partial\theta_k}. No further derivative is
-computed: the arrays are those that the caller obtained from the
+with \eqn{A_k = \partial\Sigma/\partial\theta_k}. The function computes no
+further derivative: the arrays are those that the caller obtained from the
 parametrization.
 }
 \section{Notation}{
@@ -80,7 +80,7 @@ sc$transform
 # correlations off it.
 c(sqrt(diag(S)), S[2, 1] / sqrt(S[1, 1] * S[2, 2]))
 
-# The Jacobian against a numerical one taken through mv_sigma().
+# The Jacobian is compared with a numerical one taken through mv_sigma().
 g <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   M <- mv_sigma(d, t2)
@@ -90,7 +90,7 @@ max(abs(sc$jacobian - numDeriv::jacobian(g, unlist(theta))))
 
 }
 \seealso{
-\code{\link[=mv_sigma_derivs]{mv_sigma_derivs()}} for the arrays it takes,
+\code{\link[=mv_sigma_derivs]{mv_sigma_derivs()}} for the arrays that it takes,
 \code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} and \code{\link[=mv_derived.MvStudentTDistrib]{mv_derived.MvStudentTDistrib()}} for
 the two callers, and \code{\link[=mv_entry_index]{mv_entry_index()}} for the labeling.
 }

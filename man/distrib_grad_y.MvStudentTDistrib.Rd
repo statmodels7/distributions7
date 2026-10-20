@@ -10,12 +10,13 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters, in which each component is a single
+number.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-An \eqn{n \times p} numeric matrix, row \eqn{i} holding
+An \eqn{n \times p} numeric matrix in which row \eqn{i} holds
 \eqn{\partial\ell_i/\partial y_i}.
 }
 \description{
@@ -25,9 +26,9 @@ Computes the derivative of the log-density in the response,
 the family's weight in front of it. A gaussian's response gradient grows
 without limit as the observation moves away; this one rises, turns and decays
 like \eqn{1/\lVert y\rVert}, the redescending score of a heavy-tailed family.
-It is minus the score in the location, this being a location family. It is
-computed as \eqn{-(\nu+p)\,w/s} with \eqn{s = \nu + q} (see \code{\link[=mvt_yscaled]{mvt_yscaled()}}),
-which stays finite for a distant observation.
+It is minus the score in the location, because the family is a location
+family. It is computed as \eqn{-(\nu+p)\,w/s} with \eqn{s = \nu + q} (see
+\code{\link[=mvt_yscaled]{mvt_yscaled()}}), which stays finite for a distant observation.
 }
 \section{Notation}{
 
@@ -45,7 +46,7 @@ y <- distrib_rng(d, 4, theta)
 
 distrib_grad_y(d, y, theta)
 
-# Against a numerical derivative taken row by row.
+# The result is compared with a numerical derivative taken row by row.
 num <- t(apply(y, 1, function(r)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
 max(abs(distrib_grad_y(d, y, theta) - num))

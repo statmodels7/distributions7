@@ -7,11 +7,11 @@
 \item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
 \item{y}{A numeric matrix of observations. Only its row count is read
-through \code{\link[=n_obs]{n_obs()}}, the expectation not depending on the data; the values
-are ignored.}
+through \code{\link[=n_obs]{n_obs()}}, because the expectation does not depend on the data; the
+values are ignored.}
 
 \item{theta}{A named list of the simplex's free values on the parameter
-scale, each of length 1.}
+scale, and each value has length 1.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
@@ -26,8 +26,8 @@ so that the signature matches the generic's, where it selects between
 }
 \value{
 A named list of numeric vectors, one per distinct entry of the
-symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, each of length
-\code{n_obs(distrib, y)} and constant along it.
+symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, and each vector
+has length \code{n_obs(distrib, y)} and is constant along it.
 }
 \description{
 Returns the expectation of the observed Hessian under the model, in closed
@@ -35,7 +35,7 @@ form and with no quadrature, simulation or summation over the support:
 \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}]
       = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},}
 with \eqn{A = \partial p/\partial\eta}; on the additive log-ratio chart it is
-computed as \eqn{-n(\delta_{kl}p_k - p_kp_l)}, the form below. \code{approx} and
+computed as \eqn{-n(\delta_{kl}p_k - p_kp_l)}, as shown below. \code{approx} and
 \code{nsim} are not read.
 }
 \section{The second-derivative term}{
@@ -83,13 +83,14 @@ S <- mv_sigma(d, th)
 rbind(information = -vapply(eh, function(v) v[1], numeric(1)),
       covariance = c(S[1, 1], S[2, 2], S[1, 2]))
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument is inert, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, matrix(0, 1, 3), th,
                                        approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian.MultinomialDistrib()}} for the quantity this is the
-expectation of, \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}} for the covariance it
-coincides with, \code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the exact sum it can
-be checked against, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
+\code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian.MultinomialDistrib()}} for the quantity whose
+expectation this is, \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}} for the covariance
+with which it coincides, \code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the exact
+sum against which it can be checked, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for
+the generic.
 }

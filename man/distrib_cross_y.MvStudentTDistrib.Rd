@@ -10,7 +10,7 @@
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters, each component a single number.}
+\item{theta}{A named list of parameters; each component is a single number.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
@@ -26,7 +26,7 @@ parameter, in \code{distrib@params} order.
 Computes \eqn{\partial^2\ell/\partial y\,\partial\theta_k}, one
 \eqn{n \times p} matrix per parameter. The response gradient is
 \eqn{-c\,w}, so every component carries the derivative of the weight beside
-the gaussian term it multiplies. With
+the gaussian term that it multiplies. With
 \eqn{A_k = \partial\Sigma/\partial\eta_k},
 \deqn{\frac{\partial^2\ell}{\partial y\,\partial\mu_j}
     = c\,\Sigma^{-1}e_j - \frac{\partial c}{\partial\mu_j}\,w,
@@ -39,8 +39,8 @@ the gaussian term it multiplies. With
 \deqn{\frac{\partial^2\ell}{\partial y\,\partial\nu}
     = -\frac{(q-p)\,w}{(\nu+q)^2}.}
 For the gaussian the location block, \eqn{\Sigma^{-1}e_j}, is the same for
-every row; here every component varies with the row, the location block
-carrying the observation through \eqn{c}.
+every row; here every component varies with the row, and the location block
+carries the observation through \eqn{c}.
 }
 \details{
 The log-density contains no distribution function, only \code{lgamma}, a logarithm
@@ -67,7 +67,8 @@ y <- distrib_rng(d, 4, theta)
 cy <- distrib_cross_y(d, y, theta)
 names(cy)
 
-# Against a difference of the response gradient, parameter by parameter.
+# The result is compared, parameter by parameter, with a difference of the
+# response gradient.
 h <- 1e-5
 vapply(seq_along(d@params), function(k) {
   tp <- theta; tp[[k]] <- tp[[k]] + h
