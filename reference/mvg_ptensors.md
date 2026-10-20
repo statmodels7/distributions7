@@ -39,7 +39,7 @@ mvg_ptensors(pc, order, inverted = FALSE)
 
 - inverted:
 
-  Logical of length 1. `TRUE` when the free values parametrize the
+  Logical of length 1. It is `TRUE` when the free values parametrize the
   precision. Defaults to `FALSE`.
 
 ## Value

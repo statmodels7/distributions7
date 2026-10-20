@@ -1,15 +1,15 @@
 # Variance of a Multivariate Gaussian
 
-Returns \\\operatorname{Var}(Y) = \Sigma\\, the covariance matrix the
-matrix parametrization carries, inverted first where that
+Returns \\\operatorname{Var}(Y) = \Sigma\\, the covariance matrix that
+the matrix parametrization carries, inverted first where that
 parametrization carries the precision. For this family the scale matrix
 of the density is the covariance of the law, so the value agrees with
 [`mv_sigma.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md);
 the two part company in the heavy-tailed sibling, where the scale matrix
 exists at every \\\nu\\ and the covariance does not.
 
-The result is a matrix, the second central moment of a vector being a
-matrix, where a univariate family returns a numeric vector.
+The result is a matrix, because the second central moment of a vector is
+a matrix, whereas a univariate family returns a numeric vector.
 
 ## Arguments
 
@@ -22,8 +22,8 @@ matrix, where a univariate family returns a numeric vector.
 
 - theta:
 
-  A named list of parameters, each component a single number. The \\p\\
-  mean components are ignored.
+  A named list of parameters in which each component is a single number.
+  The \\p\\ mean components are ignored.
 
 - ...:
 
@@ -61,7 +61,7 @@ variance(d, theta)
 identical(variance(d, theta), mv_sigma(d, theta))
 #> [1] TRUE
 
-# Which a large sample covariance approaches.
+# A large sample covariance approaches this matrix.
 set.seed(2)
 round(var(distrib_rng(d, 20000, theta)), 3)
 #>       v1    v2

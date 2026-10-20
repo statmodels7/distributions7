@@ -23,7 +23,7 @@ family."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,8 +121,8 @@ with
 $$\mathbb{E}[Y_j] = \mu_j, \qquad
       \operatorname{Cov}(Y_i, Y_j) = \frac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}.$$
 So \(\phi\) is a precision: the larger it is, the tighter the draws
-sit about the mean. The covariance is singular, the coordinates summing to
-one, and every off-diagonal entry is negative.</p>
+sit about the mean. The covariance is singular because the coordinates sum
+to one, and every off-diagonal entry is negative.</p>
 <p>The parametrization follows the design of the multivariate gaussian. The
 constrained object, here a point of the simplex, is carried by a
 <code>parameters7</code> parameter and flattened into scalars with identity links, so
@@ -134,7 +134,7 @@ prefixed by <code>mean_</code>, followed by <code>phi</code>.</p>
     <h2 id="a-family-without-location-and-scale">A family without location and scale<a class="anchor" aria-label="anchor" href="#a-family-without-location-and-scale"></a></h2>
     <p>The family has no location and scale to separate: the support is a set of
 dimension \(p-1\), not a Euclidean space, and the covariance is singular by
-construction. Two methods follow from this. <code><a href="mv_marginal.DirichletDistrib.html">mv_marginal.DirichletDistrib()</a></code>
+construction. For this reason <code><a href="mv_marginal.DirichletDistrib.html">mv_marginal.DirichletDistrib()</a></code>
 returns a beta distribution, and <code><a href="mv_reference_draw.DirichletDistrib.html">mv_reference_draw.DirichletDistrib()</a></code>
 replaces the gaussian proposal of the base class with the uniform
 distribution on the simplex, which the normalization check of
@@ -142,7 +142,8 @@ distribution on the simplex, which the normalization check of
     </div>
     <div class="section level2">
     <h2 id="the-expected-information">The expected information<a class="anchor" aria-label="anchor" href="#the-expected-information"></a></h2>
-    <p>Two identities make it closed form. Differentiating \(\sum_j \mu_j = 1\)
+    <p>The expected information is closed form because of two identities.
+Differentiating \(\sum_j \mu_j = 1\)
 once shows that the columns of \(A = \partial\mu/\partial\eta\) sum to
 zero, and twice that every second-derivative vector of the simplex does; and
 \(\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)\) makes
@@ -165,7 +166,7 @@ error that states the reason.</p>
     <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
     <p><code><a href="fit_distrib.html">fit_distrib()</a></code> maximizes the log-likelihood on the link scale, over the free
 values of the simplex and the link of \(\phi\) (\(\log\phi\) by default).
-No estimate is closed form.</p>
+The estimates are not available in closed form.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -189,10 +190,10 @@ Chapman and Hall, London.</p>
     <div class="dont-index"><p><code><a href="beta1_distrib.html">beta1_distrib()</a></code> for a coordinate's marginal and the two-coordinate case
 seen on the line; <code><a href="multinomial_distrib.html">multinomial_distrib()</a></code> for the discrete family on the same
 simplex; <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> for the elliptical multivariate family;
-<code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code> for the chart the mean rides; <code><a href="fit_distrib.html">fit_distrib()</a></code> to
-estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a user-defined family
-against the same battery that this one passes; <a href="DirichletDistrib.html">DirichletDistrib</a> for the
-class.</p></div>
+<code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code> for the chart on which the mean rides;
+<code><a href="fit_distrib.html">fit_distrib()</a></code> to estimate the parameters; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a
+user-defined family against the same battery that this one passes;
+<a href="DirichletDistrib.html">DirichletDistrib</a> for the class.</p></div>
     </div>
 
     <div class="section level2">
@@ -208,7 +209,8 @@ class.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   mean_alr2 (mean)               | Link: identity   | Domain: (-Inf, Inf)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   phi       (concentration)      | Link: log        | Domain: (0, Inf)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Two free mean values and a concentration, all on the parameter scale.</span></span></span>
+<span class="r-in"><span><span class="co"># The parameters are two free mean values and a concentration, all on the</span></span></span>
+<span class="r-in"><span><span class="co"># parameter scale.</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean_alr1 <span class="op">=</span> <span class="fl">0.3</span>, mean_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>, phi <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="mv_location.html">mv_location</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4260125 0.2583897 0.3155978</span>

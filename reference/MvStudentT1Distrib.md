@@ -96,7 +96,8 @@ MvStudentT2Distrib(
 
 - n_dim:
 
-  The dimension \\p\\ of one observation. A single positive integer.
+  The dimension \\p\\ of one observation. It is a single positive
+  integer.
 
 - param:
 
@@ -110,14 +111,14 @@ MvStudentT2Distrib(
 
   Logical of length 1. `TRUE` when `param` carries the inverse scale
   matrix \\\Sigma^{-1}\\ and `FALSE` when it carries the scale matrix
-  \\\Sigma\\. It decides which derivative arrays are the
+  \\\Sigma\\. Its value determines which derivative arrays are the
   parametrization's own and which are obtained from them (see
   [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
   the sign of the log-determinant, the prefix of the free names and the
   quantities that
   [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-  reports. The same \\\Sigma\\ gives the same law either way, and
-  neither matrix is a moment of the response.
+  reports. The same \\\Sigma\\ gives the same law either way, and the
+  two matrices are not moments of the response.
 
 ## Value
 
@@ -128,8 +129,8 @@ adding no properties of its own.
 
 ## Details
 
-Neither matrix is a covariance or a precision of the response; they
-differ from those by a factor in \\\nu\\ that
+The scale matrix and its inverse differ from the covariance and the
+precision of the response by a factor in \\\nu\\ that
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 writes out. The numbering is the package's convention, the one that
 separates
@@ -140,8 +141,8 @@ and
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 from
 [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md):
-a parametrization decides what a linear predictor acts on, so it has a
-name of its own.
+each parametrization determines the quantity on which a linear predictor
+acts, so each has a name of its own.
 
 ## See also
 

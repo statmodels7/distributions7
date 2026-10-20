@@ -28,7 +28,7 @@ so it neither underflows nor overflows for a distant observation.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - ...:
 
@@ -36,7 +36,7 @@ so it neither underflows nor overflows for a distant observation.
 
 ## Value
 
-A \\p \times p \times n\\ numeric array, slice \\i\\ holding
+A \\p \times p \times n\\ numeric array in which slice \\i\\ holds
 \\\partial^2\ell_i/\partial y_i\partial y_i^\top\\. Compare
 [`distrib_hess_y.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvGaussianDistrib.md),
 which returns a \\p \times p\\ matrix and no third dimension at all.
@@ -69,11 +69,11 @@ hy <- distrib_hess_y(d, y, theta)
 dim(hy)
 #> [1] 2 2 4
 
-# Against a numerical Hessian at one observation.
+# The result is compared with a numerical Hessian at one observation.
 max(abs(hy[, , 1] -
         numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
                           y[1, ])))
-#> [1] 6.853185e-11
+#> [1] 6.846601e-11
 
 # Far out along one coordinate the curvature turns positive, where a
 # gaussian's never does.

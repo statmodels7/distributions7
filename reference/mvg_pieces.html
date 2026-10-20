@@ -19,7 +19,7 @@ component."><meta property="og:image" content="https://statmodels7.github.io/dis
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,11 +96,11 @@ set. Defaults to <code>FALSE</code>.</p></dd>
 matrix parametrization's free vector), <code>p</code>, <code>s</code> (the parametrization
 itself) and the elements of <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>: <code>sigma</code> and <code>sigma_inv</code>
 (\(p \times p\) matrices), <code>logdet</code> (the log-determinant of
-\(\Sigma\)) and <code>inverted</code>; with derivatives requested also <code>a</code> and <code>ai</code>
-(the first derivative arrays of \(\Sigma\) and of \(\Sigma^{-1}\), one
-per free value) and <code>dlogdet</code>; with <code>derivs2</code> also <code>a2</code>, <code>ai2</code> (one array
-per unordered pair in <code><a href="https://statmodels7.github.io/parameters7/reference/param_tuple_indices.html" class="external-link">parameters7::param_tuple_indices()</a></code> order) and
-<code>d2logdet</code>.</p>
+\(\Sigma\)) and <code>inverted</code>; when derivatives are requested,
+the list also holds <code>a</code> and <code>ai</code> (the first derivative arrays of
+\(\Sigma\) and of \(\Sigma^{-1}\), one per free value) and <code>dlogdet</code>;
+when <code>derivs2</code> is set, it also holds <code>a2</code>, <code>ai2</code> (one array per unordered
+pair in <code><a href="https://statmodels7.github.io/parameters7/reference/param_tuple_indices.html" class="external-link">parameters7::param_tuple_indices()</a></code> order) and <code>d2logdet</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -139,7 +139,7 @@ consumer.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">logdet</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/det.html" class="external-link">det</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">sigma</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># One derivative array per free value of the parametrization.</span></span></span>
+<span class="r-in"><span><span class="co"># There is one derivative array per free value of the parametrization.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">a</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">pc</span><span class="op">$</span><span class="va">a</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, <span class="fl">4</span><span class="op">)</span></span></span>

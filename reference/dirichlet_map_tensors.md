@@ -47,12 +47,12 @@ vector of zeros.
 
 \\\alpha\\ is the Dirichlet's shape vector, \\\phi\\ its concentration,
 \\\mu\\ the mean on the simplex, \\\eta\\ the mean's free vector, and
-\\S'\\ the multiset \\S\\ with its one \\\phi\\ index removed.
+\\S'\\ the multiset \\S\\ without its one \\\phi\\ index.
 
 ## See also
 
 [`simplex_map_tensors()`](https://statmodels7.github.io/distributions7/reference/simplex_map_tensors.md)
-for the arrays it lifts,
+for the arrays that it lifts,
 [`tuple_indices_upto()`](https://statmodels7.github.io/distributions7/reference/tuple_indices_upto.md)
 for the enumeration over the composite index set, and
 [`dirichlet_higher()`](https://statmodels7.github.io/distributions7/reference/dirichlet_higher.md)
@@ -73,7 +73,7 @@ dt[["3"]]
 as.numeric(parameters7::param_value(s, eta))
 #> [1] 0.4260125 0.2583897 0.3155978
 
-# Naming phi twice gives exactly zero, alpha being linear in it.
+# Naming phi twice gives exactly zero, because alpha is linear in it.
 dt[["3,3"]]
 #> [1] 0 0 0
 

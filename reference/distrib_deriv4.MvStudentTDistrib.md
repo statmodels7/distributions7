@@ -31,13 +31,13 @@ and
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, where each component is a single number.
 
 - expected:
 
-  Logical of length 1. When `TRUE` the expectation is returned, by
-  sampling: `nsim` draws are made and the observed components averaged.
-  Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the method returns the expectation,
+  which it takes by sampling: it makes `nsim` draws and averages the
+  observed components. Defaults to `FALSE`.
 
 - scale:
 
@@ -53,7 +53,7 @@ and
 - nsim:
 
   The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  Not read otherwise.
+  It is not read when `expected = FALSE`.
 
 - ...:
 
@@ -103,7 +103,8 @@ d4 <- distrib_deriv4(d, y, theta)
 length(d4)
 #> [1] 126
 
-# Against a central difference of the third order in nu.
+# The result is compared with a central difference of the third order in
+# nu.
 h <- 1e-4
 tp <- theta; tp$nu <- tp$nu + h
 tm <- theta; tm$nu <- tm$nu - h

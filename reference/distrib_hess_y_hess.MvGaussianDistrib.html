@@ -33,7 +33,7 @@ components do not depend on the observation, so y is not read."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,8 @@ components do not depend on the observation, so <code>y</code> is not read.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -148,7 +149,8 @@ with one response index, and <code><a href="distrib_hess_y_hess.html">distrib_he
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A matrix pair against a second difference of the response Hessian.</span></span></span>
+<span class="r-in"><span><span class="co"># A matrix pair is compared with a second difference of the response</span></span></span>
+<span class="r-in"><span><span class="co"># Hessian.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="va">theta</span></span></span>

@@ -3,7 +3,7 @@
 Returns the mean vector \\\mathbb{E}\[Y\] = \mu\\, which for this family
 is a parameter and needs no computation: the method delegates to
 [`mv_location.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_location.DirichletDistrib.md).
-The result sums to one, being a point of the simplex.
+The result sums to one because it is a point of the simplex.
 
 ## Arguments
 

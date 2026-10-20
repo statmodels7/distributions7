@@ -19,7 +19,7 @@ is then far from 1. This method replaces that proposal.
 
   A `DirichletDistrib` object, from
   [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md),
-  read for its `n_dim` alone.
+  read only for its `n_dim`.
 
 - theta:
 

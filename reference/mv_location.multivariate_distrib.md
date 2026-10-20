@@ -2,10 +2,10 @@
 
 Signals an error. The first \\p\\ parameters of a family are not a
 location in general, so the class has no default. The shipped families
-register their own methods: the elliptical families
+register their own methods: the elliptical families register
 [`mv_leading_location()`](https://statmodels7.github.io/distributions7/reference/mv_leading_location.md),
-the Dirichlet and the multinomial their mean vector. A family written
-elsewhere registers its own method.
+and the Dirichlet and the multinomial register methods that return their
+mean vector. A family written elsewhere registers its own method.
 
 ## Arguments
 
@@ -17,7 +17,8 @@ elsewhere registers its own method.
 
 - theta:
 
-  A named list of parameters. Not read: the error is signalled first.
+  A named list of parameters. It is not read, because the error is
+  signalled first.
 
 ## Value
 

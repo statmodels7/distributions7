@@ -32,14 +32,14 @@ family), so they are not a subset of the original's.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - which:
 
-  An integer vector of distinct coordinates to keep, each between 1 and
-  \\p\\, already checked by the generic
-  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md).
-  The marginal follows the order given.
+  An integer vector of distinct coordinates to keep, which lie between 1
+  and \\p\\ and which the generic
+  [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
+  has already checked. The marginal follows the order given.
 
 - ...:
 
@@ -59,7 +59,7 @@ degrees of freedom and \\p\\ the dimension of the full law.
 ## See also
 
 [`mv_sigma.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md)
-for the matrix it takes a block of,
+for the matrix of which it takes a block,
 [`plot.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md),
 whose diagonal panels are these marginals, and
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)

@@ -1,6 +1,6 @@
 # A Central-Difference Gradient Without a Dependency
 
-One central difference per coordinate, which is enough for the
+Computes one central difference per coordinate, which is enough for the
 multivariate checks and keeps numDeriv out of the hard dependencies.
 
 ## Usage

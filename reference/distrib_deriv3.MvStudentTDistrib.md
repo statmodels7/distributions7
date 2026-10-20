@@ -2,9 +2,9 @@
 
 Computes every third derivative of the log-density in the parameters, in
 closed form. The log-density carries `lgamma`, a logarithm and a
-quadratic form, each elementary in \\\nu\\. The location-and-matrix part
-of a component is handled by the array expansion that the gaussian uses
-through
+quadratic form, and each of them is elementary in \\\nu\\. The
+location-and-matrix part of a component is handled by the array
+expansion that the gaussian uses through
 [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md),
 and the \\\nu\\ part by differentiating \\(-1)^{m-1}(m-1)!/(\nu+q)^m\\
 against the linear prefactor \\(\nu+p)/2\\. The components in \\\nu\\
@@ -31,13 +31,13 @@ and
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, where each component is a single number.
 
 - expected:
 
-  Logical of length 1. When `TRUE` the expectation is returned, by
-  sampling: `nsim` draws are made and the observed components averaged.
-  Defaults to `FALSE`.
+  Logical of length 1. When `TRUE` the method returns the expectation,
+  which it takes by sampling: it makes `nsim` draws and averages the
+  observed components. Defaults to `FALSE`.
 
 - scale:
 
@@ -53,7 +53,7 @@ and
 - nsim:
 
   The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  Not read otherwise.
+  It is not read when `expected = FALSE`.
 
 - ...:
 
@@ -121,7 +121,7 @@ c(t = sum(d3[["mu1_mu1_mu1"]]),
 #>        t gaussian 
 #>  1.36229  0.00000 
 
-# Against a central difference of the Hessian in nu.
+# The result is compared with a central difference of the Hessian in nu.
 h <- 1e-4
 tp <- theta; tp$nu <- tp$nu + h
 tm <- theta; tm$nu <- tm$nu - h

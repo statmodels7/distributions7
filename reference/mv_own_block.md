@@ -38,8 +38,8 @@ possibly with one row renamed and transformed, or `NULL`.
 ## Details
 
 The standard deviation is \\\sqrt{s}\\ with \\s\\ the `scale`, so its
-Jacobian row is the `scale` row times \\1/(2\sqrt{s})\\; it is
-intervalled on the log scale, as `scale` was. Where the declared
+Jacobian row is the `scale` row times \\1/(2\sqrt{s})\\; its interval is
+built on the log scale, as that of `scale` was. Where the declared
 quantities describe a precision (the attribute `precision` of the result
 of
 [`mv_param_block()`](https://statmodels7.github.io/distributions7/reference/mv_param_block.md))

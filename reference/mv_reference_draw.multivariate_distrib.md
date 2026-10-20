@@ -1,7 +1,7 @@
 # An Inflated Gaussian Proposal
 
-The default proposal: a gaussian with the family's mean and twice its
-covariance, drawn as \\\mu + Lz\\ with \\LL^\top = 2\Sigma\\. For a
+Draws from the default proposal, a gaussian with the family's mean and
+twice its covariance, as \\\mu + Lz\\ with \\LL^\top = 2\Sigma\\. For a
 gaussian family a proposal with the family's own covariance would make
 every importance ratio one, and the inflation keeps the ratio
 informative.

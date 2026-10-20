@@ -1,6 +1,6 @@
 # Build One of the Two Multivariate Gaussian Families
 
-The body that
+Implements the body that
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 and
 [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)

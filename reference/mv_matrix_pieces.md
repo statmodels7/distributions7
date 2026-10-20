@@ -28,7 +28,7 @@ mv_matrix_pieces(s, eta, inverted, derivs = FALSE, derivs2 = FALSE)
 
 - derivs, derivs2:
 
-  Whether the first and second derivative arrays are wanted.
+  Logical flags that request the first and the second derivative arrays.
   `derivs2 = TRUE` computes the first derivatives as well.
 
 ## Value

@@ -33,7 +33,7 @@ pairs repeat one row.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - scale:
 
@@ -80,8 +80,8 @@ gh <- distrib_grad_y_hess(d, y, theta)
 dim(gh$sigma_log_L1_sigma_L2.1)
 #> [1] 4 2
 
-# Two mean parameters give exactly zero, the response gradient being linear
-# in the mean.
+# Two mean parameters give exactly zero, because the response gradient is
+# linear in the mean.
 gh$mu1_mu2
 #>      [,1] [,2]
 #> [1,]    0    0
@@ -103,7 +103,7 @@ round(gh$sigma_log_L1_sigma_L2.1, 4)
 #> [3,] -1.8923  1.2466
 #> [4,]  1.7681 -2.3799
 
-# Against a second difference of the response gradient.
+# The result is compared with a second difference of the response gradient.
 h <- 1e-4
 f <- function(a, b) {
   t2 <- theta

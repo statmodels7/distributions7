@@ -4,7 +4,7 @@ Computes the Dirichlet density \$\$f(y) =
 \dfrac{\Gamma(\phi)}{\prod\_{j=1}^{p} \Gamma(\alpha_j)} \prod\_{j=1}^{p}
 y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,\$\$ one value per row of
 `y`, with respect to Lebesgue measure on the first \\p-1\\ coordinates,
-the last being \\1 - \sum\_{j\<p} y_j\\.
+where the last coordinate is \\1 - \sum\_{j\<p} y_j\\.
 
 The support is tested before the logarithm is taken: a negative
 coordinate would make [`base::log()`](https://rdrr.io/r/base/Log.html)
@@ -21,18 +21,18 @@ coordinate gives `NA`, as
 
 - y:
 
-  A numeric matrix with one row per observation and \\p\\ columns, each
-  row strictly positive and summing to one within `1e-8`. A single
-  observation may be given as a plain vector and is read as one row. A
-  row failing either test gives a density of 0, or `-Inf` with
+  A numeric matrix with one row per observation and \\p\\ columns, in
+  which each row is strictly positive and sums to one within `1e-8`. A
+  single observation may be given as a plain vector and is read as one
+  row. A row failing either test gives a density of 0, or `-Inf` with
   `log = TRUE`, and a row with a missing coordinate gives `NA`.
 
 - theta:
 
   A named list of parameters on the parameter scale: the mean's free
   values followed by `phi`, each of length 1. A parameter may not vary
-  by observation here, the mean being one point of the simplex for the
-  whole sample.
+  by observation here, because the mean is one point of the simplex for
+  the whole sample.
 
 - log:
 
@@ -71,7 +71,7 @@ d <- dirichlet_distrib(3)
 th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
 mu <- mv_location(d, th)
 
-# The density at four draws, against the formula written out.
+# The density at four draws is compared with the formula written out.
 set.seed(1)
 Y <- distrib_rng(d, 4, th)
 al <- 12 * mu

@@ -23,7 +23,7 @@ every mixed block."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,8 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters, in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -100,19 +101,20 @@ result. The two differ here, because <code>nu</code> carries a log link by defau
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors of length \(n\), one per unordered
 pair of parameters, keyed as
-<code><a href="hess_names.html">hess_names(distrib@params)</a></code>. Unlike the gaussian's, no
-block here is constant across rows.</p>
+<code><a href="hess_names.html">hess_names(distrib@params)</a></code>. Unlike the gaussian's, every
+block here varies across rows.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The pure \(\nu\) component is \(c_p''(\nu) - h''(\nu)\), with
-<code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> for the part of \(\nu\) alone and <code><a href="mvt_h_d.html">mvt_h_d()</a></code> for the part
-that carries the data, each written without the cancellation of its direct
-form; the result stays finite and accurate as \(\nu\) grows. The blocks in
-the matrix read the derivatives \(P_k\) and \(P_{kl}\) of
-\(\Sigma^{-1}\) from <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>: with \(q_k = r^\top P_k r\),
-the matrix block is \(-\tfrac{1}{2}\partial_{kl}\log\lvert\Sigma\rvert +
-c\,q_kq_l/(2d) - \tfrac{c}{2}\, r^\top P_{kl} r\).</p>
+<code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> for the part that depends on \(\nu\) only and <code><a href="mvt_h_d.html">mvt_h_d()</a></code> for
+the part that carries the data, and each of them is written without the
+cancellation of its direct form; the result stays finite and accurate as
+\(\nu\) grows. The blocks in the matrix read the derivatives \(P_k\) and
+\(P_{kl}\) of \(\Sigma^{-1}\) from <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>: with \(q_k =
+r^\top P_k r\), the matrix block is
+\(-\tfrac{1}{2}\partial_{kl}\log\lvert\Sigma\rvert + c\,q_kq_l/(2d) -
+\tfrac{c}{2}\, r^\top P_{kl} r\).</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -159,7 +161,7 @@ generic.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   sigma_log_L2_sigma_L2.1           sigma_log_L2_nu             sigma_L2.1_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               -2.70003054                0.25235942                0.01410377 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical Hessian of the log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a numerical Hessian of the log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -169,7 +171,7 @@ generic.</p></div>
 <span class="r-in"><span>              <span class="kw">function</span><span class="op">(</span><span class="va">q</span><span class="op">)</span> <span class="va">Hn</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">q</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">d</span><span class="op">@</span><span class="va">params</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">q</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="va">d</span><span class="op">@</span><span class="va">params</span><span class="op">)</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>              <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">H</span>, <span class="va">sum</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="va">ref</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.208612e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.206509e-09</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The location block moves with the observation, where a gaussian's does</span></span></span>
 <span class="r-in"><span><span class="co"># not: the curvature at a far row is smaller.</span></span></span>

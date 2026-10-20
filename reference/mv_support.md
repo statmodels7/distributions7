@@ -23,7 +23,7 @@ mv_support(distrib, theta, ...)
 - theta:
 
   A named list or vector of parameters. The shipped method does not read
-  it, the support of the multinomial not depending on them.
+  it, because the support of the multinomial does not depend on them.
 
 - ...:
 
@@ -82,7 +82,7 @@ d <- multinomial_distrib(3, size = 4)
 theta <- list(probs_alr1 = 0.4, probs_alr2 = -0.3)
 sup <- mv_support(d, theta)
 
-# One row per point, every row summing to the number of trials.
+# Each row is one point, and each row sums to the number of trials.
 dim(sup)
 #> [1] 15  3
 unique(rowSums(sup))

@@ -3,7 +3,7 @@
 Evaluates \\\partial^{S} f(u(v))\\ for a scalar function \\f\\ of one
 coordinate, by the partition form of Faa di Bruno \$\$\partial^{S} f(u)
 = \sum\_{\pi} f^{(\lvert\pi\rvert)}(u) \prod\_{B \in \pi} \partial^{B}
-u,\$\$ the sum running over the set partitions of the multiset \\S\\.
+u,\$\$ where the sum runs over the set partitions of the multiset \\S\\.
 Everything is vectorized over the coordinates, so one call serves every
 \\j\\ at once.
 
@@ -22,8 +22,8 @@ chain_univariate(tuple, fd, ud)
 
 - fd:
 
-  A list whose \\m\\-th element is \\f^{(m)}\\ evaluated at every
-  coordinate, a numeric vector each. It must run to `length(tuple)`.
+  A list whose \\m\\-th element is a numeric vector holding \\f^{(m)}\\
+  evaluated at every coordinate. It must run to `length(tuple)`.
 
 - ud:
 
@@ -50,13 +50,13 @@ additive log-ratio one, where its derivatives are cumulants (see
 ## Notation
 
 \\S\\ is a multiset of free-value indices, \\\pi\\ a set partition of
-it, \\B\\ a block of that partition, and \\u\\ the map being composed
-with.
+it, \\B\\ a block of that partition, and \\u\\ the inner map of the
+composition.
 
 ## See also
 
 [`index_partitions()`](https://statmodels7.github.io/distributions7/reference/index_partitions.md)
-for the enumeration it sums over,
+for the enumeration over which it sums,
 [`simplex_map_tensors()`](https://statmodels7.github.io/distributions7/reference/simplex_map_tensors.md)
 for the argument, and
 [`dirichlet_higher()`](https://statmodels7.github.io/distributions7/reference/dirichlet_higher.md)
@@ -75,12 +75,13 @@ ud <- distributions7:::simplex_map_tensors(s, eta, 2)
 u <- as.numeric(parameters7::param_value(s, eta))
 fd <- list(1 / u, -1 / u^2)
 
-# The mixed second derivative of log(mu_j) in the two free values.
+# This is the mixed second derivative of log(mu_j) in the two free values.
 got <- distributions7:::chain_univariate(c(1L, 2L), fd, ud)
 got
 #> [1] 0.1100772 0.1100772 0.1100772
 
-# Against a difference of the first-order chain rule, taken directly.
+# The result is compared with a difference of the first-order chain rule,
+# taken directly.
 h <- 1e-5
 d1 <- function(e) {
   uu <- as.numeric(parameters7::param_value(s, e))

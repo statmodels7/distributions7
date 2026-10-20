@@ -1,4 +1,4 @@
-# The Pieces Every Mixed Response Derivative of the t Is Written In
+# The Pieces in Which Every Mixed Response Derivative of the t Is Written
 
 Assembles, once per call, the first and second derivatives in the
 parameters of the quantities from which every mixed response derivative
@@ -31,7 +31,8 @@ mvt_dpieces(distrib, y, theta)
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, in which each component is a single
+  number.
 
 ## Value
 
@@ -68,11 +69,11 @@ and second derivatives of \\\Sigma^{-1}\\, read from
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
 and not formed from the derivatives of \\\Sigma\\; the derivatives in
 \\s\\ and \\w\\ are quadratic and linear forms in them. \\c\\ and \\d\\
-follow by the quotient rule, \\\nu+p\\ being linear in \\\nu\\ and
-constant in everything else; the derivative of \\c\\ in \\\nu\\ is
+follow by the quotient rule, because \\\nu+p\\ is linear in \\\nu\\ and
+constant in everything else. The derivative of \\c\\ in \\\nu\\ is
 written as \\(q-p)/s^2\\ and its second derivative as \\2(p-q)/s^3\\,
-the two terms of the quotient rule agreeing to leading order as \\\nu\\
-grows.
+because the two terms of the quotient rule agree to leading order as
+\\\nu\\ grows.
 
 ## Notation
 
@@ -91,7 +92,7 @@ and
 [`distrib_hess_y_hess.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.MvStudentTDistrib.md),
 the four consumers, and
 [`mvt_weights()`](https://statmodels7.github.io/distributions7/reference/mvt_weights.md)
-for the values these differentiate.
+for the values that these differentiate.
 
 ## Examples
 
@@ -106,16 +107,17 @@ names(z)
 #>  [1] "p"    "n"    "npar" "si"   "w"    "s"    "cw"   "dw"   "sa"   "wa"  
 #> [11] "Sa"   "ca"   "da"   "pair"
 
-# Six parameters, so six first-derivative entries per quantity.
+# There are six parameters, so each quantity has six first-derivative
+# entries.
 c(npar = z$npar, n_sa = length(z$sa), n_wa = length(z$wa))
 #> npar n_sa n_wa 
 #>    6    6    6 
 
-# ds/dnu is exactly one, s being nu + q.
+# ds/dnu is exactly one, because s is nu + q.
 z$sa[[6]]
 #> [1] 1 1 1 1
 
-# And ds/dmu1 is -2 w1, against a difference of q + nu.
+# ds/dmu1 is -2 w1, and the result is compared with a difference of q + nu.
 h <- 1e-5
 sfun <- function(m1) {
   t2 <- theta; t2$mu1 <- m1

@@ -3,7 +3,7 @@
 Returns \\\mathbb{E}\[Y\] = \mu\\, the mean vector. For this family the
 expectation is a parameter and needs no integration: the density is
 symmetric about \\\mu\\ and every coordinate has finite moments of every
-order, so the first moment exists at every parameter value the
+order, so the first moment exists at every parameter value that the
 constructor admits.
 
 ## Arguments
@@ -17,8 +17,8 @@ constructor admits.
 
 - theta:
 
-  A named list of parameters, each component a single number. Only the
-  \\p\\ mean components are read.
+  A named list of parameters in which each component is a single number.
+  Only the \\p\\ mean components are read.
 
 - ...:
 
@@ -47,7 +47,7 @@ mean(d, theta)
 #>   v1   v2 
 #>  0.5 -0.3 
 
-# Which is what a large sample average approaches.
+# A large sample average approaches this vector.
 set.seed(2)
 round(colMeans(distrib_rng(d, 20000, theta)), 3)
 #>     v1     v2 

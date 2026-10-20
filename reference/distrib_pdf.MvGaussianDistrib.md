@@ -4,9 +4,9 @@ Computes the multivariate gaussian log-density \$\$\ell =
 -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\lvert\Sigma\rvert -
 \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),\$\$ row by row, and
 exponentiates it unless `log = TRUE`. The log-determinant comes from the
-matrix parametrization's own `param_logdet()`, so no determinant is
-formed. The quadratic form is the squared norm of the residual whitened
-by the parametrization's factor (see
+matrix parametrization's own `param_logdet()`, so the method does not
+form a determinant. The quadratic form is the squared norm of the
+residual whitened by the parametrization's factor (see
 [`mv_quad()`](https://statmodels7.github.io/distributions7/reference/mv_quad.md)),
 which keeps its digits where the covariance is nearly singular. The
 matrix quantities are computed once per call, since the matrix does not
@@ -25,21 +25,21 @@ vary with the response.
 
   An \\n \times p\\ numeric matrix of observations, one row each. A
   plain numeric vector of length \\p\\ is read as a single observation.
-  Every point of \\\mathbb{R}^p\\ is in the support, so no row is
-  rejected. A matrix with zero rows returns `numeric(0)`.
+  Every point of \\\mathbb{R}^p\\ is in the support, so the method does
+  not reject any row. A matrix with zero rows returns `numeric(0)`.
 
 - theta:
 
-  A named list of parameters, each component a single number: `mu1`,
-  ..., `mup` and the matrix parametrization's prefixed free values. A
-  parameter may not vary by observation here, and a component longer
-  than one is an error.
+  A named list of parameters in which each component is a single number:
+  `mu1`, ..., `mup` and the matrix parametrization's prefixed free
+  values. A parameter may not vary by observation here, and a component
+  longer than one is an error.
 
 - log:
 
   Logical of length 1. When `TRUE` the log-density is returned, which
-  stays finite for a point the density itself underflows at. Defaults to
-  `FALSE`.
+  stays finite for a point at which the density itself underflows.
+  Defaults to `FALSE`.
 
 - ...:
 
@@ -56,7 +56,7 @@ for the derivatives of this log-density,
 [`distrib_rng.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvGaussianDistrib.md)
 to draw from it,
 [`mv_sigma.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md)
-for the covariance it uses, and
+for the covariance that it uses, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 for the generic.
 
@@ -71,7 +71,8 @@ y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
 distrib_pdf(d, y, theta)
 #> [1] 0.13361803 0.08899957 0.17589341
 
-# Against the formula written out with an explicit inverse.
+# The result is compared with the formula written out with an explicit
+# inverse.
 S <- mv_sigma(d, theta)
 mu <- c(0.5, -0.3)
 ref <- -0.5 * (2 * log(2 * pi) + log(det(S)) + mahalanobis(y, mu, S))

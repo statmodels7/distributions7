@@ -19,7 +19,7 @@ concentration."><meta property="og:image" content="https://statmodels7.github.io
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,14 +72,14 @@ concentration.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric matrix with one row per observation and one column per
-coordinate, each row a point of the open simplex. A row with a zero
-coordinate is outside the support and gives a non-finite component through
-\(\log y_j\).</p></dd>
+coordinate, where each row is a point of the open simplex. A row with a
+zero coordinate is outside the support and gives a non-finite component
+through \(\log y_j\).</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number:
-<code>mean_alr1</code>, ..., <code>mean_alr(p-1)</code> and <code>phi</code>.</p></dd>
+<dd><p>A named list of parameters, where each component is a single
+number: <code>mean_alr1</code>, ..., <code>mean_alr(p-1)</code> and <code>phi</code>.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -148,7 +148,8 @@ generic.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">d4</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the third order in phi.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a central difference of the third order in</span></span></span>
+<span class="r-in"><span><span class="co"># phi.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="va">tp</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tp</span><span class="op">$</span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="va">tp</span><span class="op">$</span><span class="va">phi</span> <span class="op">+</span> <span class="va">h</span></span></span>
 <span class="r-in"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tm</span><span class="op">$</span><span class="va">phi</span> <span class="op">&lt;-</span> <span class="va">tm</span><span class="op">$</span><span class="va">phi</span> <span class="op">-</span> <span class="va">h</span></span></span>

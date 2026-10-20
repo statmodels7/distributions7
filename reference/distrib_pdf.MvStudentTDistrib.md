@@ -28,14 +28,14 @@ squared norm of the residual whitened by the parametrization's factor
 
   An \\n \times p\\ numeric matrix of observations, one row each. A
   plain numeric vector of length \\p\\ is read as a single observation.
-  Every point of \\\mathbb{R}^p\\ is in the support, so no row is
-  rejected. A matrix with zero rows returns `numeric(0)`.
+  Every point of \\\mathbb{R}^p\\ is in the support, so the method
+  accepts every row. A matrix with zero rows returns `numeric(0)`.
 
 - theta:
 
-  A named list of parameters, each component a single number: `mu1`,
-  ..., `mup`, the matrix parametrization's prefixed free values, and
-  `nu`, which must be strictly positive.
+  A named list of parameters, in which each component is a single
+  number: `mu1`, ..., `mup`, the matrix parametrization's prefixed free
+  values, and `nu`, which must be strictly positive.
 
 - log:
 
@@ -78,7 +78,7 @@ y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
 distrib_pdf(d, y, theta)
 #> [1] 0.12386429 0.07758092 0.17589341
 
-# Against the formula written out.
+# The log-density is compared with the formula written out.
 S <- mv_sigma(d, theta)
 q <- mahalanobis(y, c(0.5, -0.3), S)
 ref <- lgamma(4) - lgamma(3) - log(6 * pi) - 0.5 * log(det(S)) -

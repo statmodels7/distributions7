@@ -19,7 +19,7 @@ not once per component."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,10 +95,10 @@ are computed, and the first ones with them. Defaults to <code>FALSE</code>.</p><
 matrix parametrization's free vector), <code>nu</code> (a single number), <code>p</code>, <code>s</code>
 (the parametrization itself) and the elements of <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>:
 <code>sigma</code> and <code>sigma_inv</code> (\(p \times p\) matrices), <code>logdet</code> (the
-log-determinant of \(\Sigma\)) and <code>inverted</code>; with derivatives
-requested also <code>a</code> and <code>ai</code> (the first derivative arrays of \(\Sigma\)
-and of \(\Sigma^{-1}\)) and <code>dlogdet</code>; with <code>derivs2</code> also <code>a2</code>, <code>ai2</code>
-and <code>d2logdet</code>.</p>
+log-determinant of \(\Sigma\)) and <code>inverted</code>. When derivatives are
+requested, the list also holds <code>a</code> and <code>ai</code> (the first derivative arrays
+of \(\Sigma\) and of \(\Sigma^{-1}\)) and <code>dlogdet</code>; when <code>derivs2</code> is
+<code>TRUE</code>, it also holds <code>a2</code>, <code>ai2</code> and <code>d2logdet</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

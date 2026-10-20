@@ -15,8 +15,8 @@ The result sums to the trial count, not to one.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 - ...:
 

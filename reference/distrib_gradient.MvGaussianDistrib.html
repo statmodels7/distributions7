@@ -7,10 +7,11 @@ $$\frac{\partial \ell}{\partial \mu} = w, \qquad \frac{\partial
 \log\lvert\Sigma\rvert}{\partial \eta_k} - \frac{1}{2}\, r^\top P_k r,$$ which
 is \(\tfrac{1}{2} w^\top A_k w\) in the second term, with \(A_k\) the
 derivative of \(\Sigma\). The first term of the matrix component is the
-parametrization's own param_dlogdet(), so no trace is formed here; its sign
-is flipped where the parametrization carries the precision. \(P_k\) is read
-from mv_matrix_pieces() and not formed as \(-\Sigma^{-1}A_k\Sigma^{-1}\),
-a product that cancels where the covariance is nearly singular."><meta property="og:description" content="Computes the first derivatives of the log-density in closed form. With \(r
+parametrization's own param_dlogdet(), so the method does not form a trace
+here; its sign is flipped where the parametrization carries the precision.
+\(P_k\) is read from mv_matrix_pieces() and not formed as
+\(-\Sigma^{-1}A_k\Sigma^{-1}\), a product that cancels where the covariance
+is nearly singular."><meta property="og:description" content="Computes the first derivatives of the log-density in closed form. With \(r
 = y - \mu\), \(w = \Sigma^{-1}r\) and \(P_k\) the derivative of
 \(\Sigma^{-1}\) in the \(k\)-th free value of the matrix parametrization,
 $$\frac{\partial \ell}{\partial \mu} = w, \qquad \frac{\partial
@@ -18,10 +19,11 @@ $$\frac{\partial \ell}{\partial \mu} = w, \qquad \frac{\partial
 \log\lvert\Sigma\rvert}{\partial \eta_k} - \frac{1}{2}\, r^\top P_k r,$$ which
 is \(\tfrac{1}{2} w^\top A_k w\) in the second term, with \(A_k\) the
 derivative of \(\Sigma\). The first term of the matrix component is the
-parametrization's own param_dlogdet(), so no trace is formed here; its sign
-is flipped where the parametrization carries the precision. \(P_k\) is read
-from mv_matrix_pieces() and not formed as \(-\Sigma^{-1}A_k\Sigma^{-1}\),
-a product that cancels where the covariance is nearly singular."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+parametrization's own param_dlogdet(), so the method does not form a trace
+here; its sign is flipped where the parametrization carries the precision.
+\(P_k\) is read from mv_matrix_pieces() and not formed as
+\(-\Sigma^{-1}A_k\Sigma^{-1}\), a product that cancels where the covariance
+is nearly singular."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +31,7 @@ a product that cancels where the covariance is nearly singular."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,10 +72,11 @@ $$\frac{\partial \ell}{\partial \mu} = w, \qquad \frac{\partial
 \log\lvert\Sigma\rvert}{\partial \eta_k} - \frac{1}{2}\, r^\top P_k r,$$ which
 is \(\tfrac{1}{2} w^\top A_k w\) in the second term, with \(A_k\) the
 derivative of \(\Sigma\). The first term of the matrix component is the
-parametrization's own <code>param_dlogdet()</code>, so no trace is formed here; its sign
-is flipped where the parametrization carries the precision. \(P_k\) is read
-from <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code> and not formed as \(-\Sigma^{-1}A_k\Sigma^{-1}\),
-a product that cancels where the covariance is nearly singular.</p>
+parametrization's own <code>param_dlogdet()</code>, so the method does not form a trace
+here; its sign is flipped where the parametrization carries the precision.
+\(P_k\) is read from <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code> and not formed as
+\(-\Sigma^{-1}A_k\Sigma^{-1}\), a product that cancels where the covariance
+is nearly singular.</p>
     </div>
 
 
@@ -91,7 +94,8 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -144,8 +148,8 @@ and <code><a href="distrib_gradient.html">distrib_gradient()</a></code> for the 
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    3.4591533    0.9841865   -2.1249520  -13.0020520   -1.2473141 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical derivative of the log-likelihood, which shares no</span></span></span>
-<span class="r-in"><span><span class="co"># arithmetic with the closed form.</span></span></span>
+<span class="r-in"><span><span class="co"># The score is compared with a numerical derivative of the log-likelihood,</span></span></span>
+<span class="r-in"><span><span class="co"># which shares no arithmetic with the closed form.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>

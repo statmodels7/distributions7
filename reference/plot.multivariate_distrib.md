@@ -20,8 +20,8 @@ plot signals the error of
 
 - theta:
 
-  A named list or vector of parameters, each component a single number.
-  When missing, parameters are drawn by
+  A named list or vector of parameters in which each component is a
+  single number. When missing, parameters are drawn by
   [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
   and reported in a message. A component of length greater than one is
   an error.
@@ -72,14 +72,14 @@ the range of the density on the grid.
 
 A univariate [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
 method reads a `theta` component of length \\k\\ as \\k\\ settings drawn
-over one another. Here the picture is already a matrix of panels, with
-no axis left to overlay them on, so a component longer than one signals
+over one another. Here the picture is already a matrix of panels and has
+no axis on which to overlay them, so a component longer than one signals
 an error that names it.
 
 ## The plotting range
 
 Each coordinate is drawn over three standard deviations either side of
-the location, with the spread taken from the matrix that the
+the location, and the spread is taken from the matrix that the
 parametrization carries (see
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)).
 A multivariate Student \\t\\ with \\\nu \le 2\\ has an infinite
@@ -110,8 +110,8 @@ plot(d, theta)
 
 graphics::par(op)
 
-# Two coordinates of a heavy-tailed family, whose contours are wider than a
-# gaussian's at the same matrix.
+# Two coordinates of a heavy-tailed family are drawn, and its contours are
+# wider than a gaussian's at the same matrix.
 t2 <- mvstudent_t1_distrib(3)
 th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
 op <- graphics::par(no.readonly = TRUE)
@@ -119,7 +119,7 @@ plot(t2, th2, which = c(1, 2))
 
 graphics::par(op)
 
-# Four coordinates would be sixteen panels, which signals an error.
+# Four coordinates would give sixteen panels, so the call signals an error.
 d4 <- mvgaussian1_distrib(4)
 th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
 try(plot(d4, th4))

@@ -37,7 +37,7 @@ observation; the mixed pairs repeat one row."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,7 +103,8 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -151,8 +152,8 @@ a marginal criterion reads, and <code><a href="distrib_grad_y_hess.html">distrib
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">gh</span><span class="op">$</span><span class="va">sigma_log_L1_sigma_L2.1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4 2</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Two mean parameters give exactly zero, the response gradient being linear</span></span></span>
-<span class="r-in"><span><span class="co"># in the mean.</span></span></span>
+<span class="r-in"><span><span class="co"># Two mean parameters give exactly zero, because the response gradient is</span></span></span>
+<span class="r-in"><span><span class="co"># linear in the mean.</span></span></span>
 <span class="r-in"><span><span class="va">gh</span><span class="op">$</span><span class="va">mu1_mu2</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0</span>
@@ -174,7 +175,7 @@ a marginal criterion reads, and <code><a href="distrib_grad_y_hess.html">distrib
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,] -1.8923  1.2466</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]  1.7681 -2.3799</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a second difference of the response gradient.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a second difference of the response gradient.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="va">theta</span></span></span>

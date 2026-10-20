@@ -33,7 +33,7 @@ nearly singular."><meta property="og:image" content="https://statmodels7.github.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,7 +98,8 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters, in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -122,8 +123,8 @@ free value of the matrix parametrization, then <code>nu</code>.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The \(\nu\) component is not evaluated in the form printed above. Both of
 its bracketed pairs cancel to leading order as \(\nu\) grows, so it is
-assembled as \(A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)\), with <code><a href="mvt_A.html">mvt_A()</a></code> and
-<code><a href="mvt_D.html">mvt_D()</a></code> carrying out each cancellation exactly.</p>
+assembled as \(A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)\), where <code><a href="mvt_A.html">mvt_A()</a></code> and
+<code><a href="mvt_D.html">mvt_D()</a></code> carry out each cancellation exactly.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -156,7 +157,7 @@ function and \(\ell\) the log-density of one observation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1           nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    5.8944688    0.5141700   -2.8238795   -9.5932528    2.2949745    0.2040964 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical derivative of the log-likelihood.</span></span></span>
+<span class="r-in"><span><span class="co"># The score is compared with a numerical derivative of the log-likelihood.</span></span></span>
 <span class="r-in"><span><span class="va">ll</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t2</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">t2</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -177,7 +178,7 @@ function and \(\ell\) the log-density of one observation.</p>
 <span class="r-in"><span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.393052e-07 3.394278e-13 3.394279e-21</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And the link scale differs, this family having one link that is not the</span></span></span>
+<span class="r-in"><span><span class="co"># The link scale differs because this family has one link that is not the</span></span></span>
 <span class="r-in"><span><span class="co"># identity.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">nu</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  link <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span><span class="op">$</span><span class="va">nu</span><span class="op">)</span><span class="op">)</span></span></span>

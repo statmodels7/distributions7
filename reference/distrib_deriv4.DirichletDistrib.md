@@ -21,13 +21,13 @@ whose indices all name the concentration.
 - y:
 
   A numeric matrix with one row per observation and one column per
-  coordinate, each row a point of the open simplex. A row with a zero
-  coordinate is outside the support and gives a non-finite component
-  through \\\log y_j\\.
+  coordinate, where each row is a point of the open simplex. A row with
+  a zero coordinate is outside the support and gives a non-finite
+  component through \\\log y_j\\.
 
 - theta:
 
-  A named list of parameters, each component a single number:
+  A named list of parameters, where each component is a single number:
   `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
 
 - expected:
@@ -98,7 +98,8 @@ d4 <- distrib_deriv4(d, y, theta)
 length(d4)
 #> [1] 15
 
-# Against a central difference of the third order in phi.
+# The result is compared with a central difference of the third order in
+# phi.
 h <- 1e-4
 tp <- theta; tp$phi <- tp$phi + h
 tm <- theta; tm$phi <- tm$phi - h

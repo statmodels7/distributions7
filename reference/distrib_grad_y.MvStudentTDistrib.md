@@ -7,7 +7,7 @@ expression with the family's weight in front of it. A gaussian's
 response gradient grows without limit as the observation moves away;
 this one rises, turns and decays like \\1/\lVert y\rVert\\, the
 redescending score of a heavy-tailed family. It is minus the score in
-the location, this being a location family. It is computed as
+the location, because the family is a location family. It is computed as
 \\-(\nu+p)\\w/s\\ with \\s = \nu + q\\ (see
 [`mvt_yscaled()`](https://statmodels7.github.io/distributions7/reference/mvt_yscaled.md)),
 which stays finite for a distant observation.
@@ -28,7 +28,8 @@ which stays finite for a distant observation.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, in which each component is a single
+  number.
 
 - ...:
 
@@ -36,7 +37,7 @@ which stays finite for a distant observation.
 
 ## Value
 
-An \\n \times p\\ numeric matrix, row \\i\\ holding
+An \\n \times p\\ numeric matrix in which row \\i\\ holds
 \\\partial\ell_i/\partial y_i\\.
 
 ## Notation
@@ -72,7 +73,7 @@ distrib_grad_y(d, y, theta)
 #> [3,]  1.422240 -0.8714900
 #> [4,] -1.037485 -0.8375372
 
-# Against a numerical derivative taken row by row.
+# The result is compared with a numerical derivative taken row by row.
 num <- t(apply(y, 1, function(r)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
 max(abs(distrib_grad_y(d, y, theta) - num))

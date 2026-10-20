@@ -36,16 +36,16 @@ mv_summary(object, level = object@level)
 
 A data frame with one row per quantity and four columns: `Estimate`,
 `Std. Error`, and the two confidence limits, named after the percentiles
-they are (`2.5%` and `97.5%` at the default level). Its row names are
-the quantity names, and it carries the attribute `"block"`, a character
-vector naming the group each row belongs to, by which
+that they represent (`2.5%` and `97.5%` at the default level). Its row
+names are the quantity names, and it carries the attribute `"block"`, a
+character vector naming the group to which each row belongs and by which
 [`print()`](https://rdrr.io/r/base/print.html) lays the summary out.
 
 ## The delta method
 
 \$\$\widehat{\mathrm{Var}}\\g(\hat\theta)\\ = J \\
 \widehat{\mathrm{Var}}(\hat\theta) \\ J^\top, \qquad J = \partial
-g/\partial\theta,\$\$ with \\J\\ taken from
+g/\partial\theta,\$\$ where \\J\\ is taken from
 [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md),
 in closed form for the multivariate gaussian and Student \\t\\ and by
 one central difference for the Dirichlet, the multinomial and any other
@@ -56,10 +56,10 @@ family.
 Each interval is built on the scale that its quantity declares and then
 mapped back, as
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-does for a univariate parameter. A standard deviation is intervalled on
-the log scale and a correlation on Fisher's \\z\\, so neither interval
-can leave the set in which its quantity lies. An interval on the raw
-scale can put a correlation above one.
+does for a univariate parameter. The interval of a standard deviation is
+built on the log scale and that of a correlation on Fisher's \\z\\, so
+each interval stays inside the set in which its quantity lies. An
+interval on the raw scale can put a correlation above one.
 
 The standard error is carried onto that scale by the transform's own
 derivative, so the reported `Std. Error` column stays on the quantity's
@@ -90,14 +90,14 @@ truth <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
 y <- distrib_rng(d, 500, truth)
 fit <- fit_distrib(d, y)
 
-# The standard deviations and the correlation.
+# The summary reports the standard deviations and the correlation.
 mv_summary(fit)
 #>            Estimate Std. Error      2.5%     97.5%
 #> sd_v1     1.0109159 0.03196797 0.9501620 1.0755544
 #> sd_v2     1.2469079 0.03943069 1.1719714 1.3266358
 #> cor_v1_v2 0.5325916 0.03203598 0.4669039 0.5924342
 
-# The coordinates the fit was estimated on, beside them.
+# The coordinates on which the fit was estimated are shown beside them.
 confint(fit)
 #>                      2.5%      97.5%
 #> mu1          -0.065964967 0.11125314

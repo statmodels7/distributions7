@@ -24,8 +24,8 @@ mv_marginal(distrib, theta, which, ...)
 
 - theta:
 
-  A named list or vector of parameters, each component a single number.
-  The generic aligns it before dispatch.
+  A named list or vector of parameters, in which each component is a
+  single number. The generic aligns it before dispatch.
 
 - which:
 
@@ -58,14 +58,14 @@ mass is added.
 
 ## The returned object
 
-A new distribution of the reduced dimension, whose parameters are its
-own. The elliptical families return an object of their own class on an
-unstructured log-Cholesky matrix, carrying the covariance or the
-precision as the parent does, so a gaussian's one-coordinate marginal is
-a one-dimensional `MvGaussian1Distrib` and signals an error for the
-distribution function. The simplex-valued families return univariate
-objects, a beta and a binomial, which have every method of a univariate
-family.
+The method returns a new distribution of the reduced dimension, whose
+parameters are its own. The elliptical families return an object of
+their own class on an unstructured log-Cholesky matrix, carrying the
+covariance or the precision as the parent does, so a gaussian's
+one-coordinate marginal is a one-dimensional `MvGaussian1Distrib` and
+signals an error for the distribution function. The simplex-valued
+families return univariate objects, a beta and a binomial, which have
+every method of a univariate family.
 
 ## The plot
 

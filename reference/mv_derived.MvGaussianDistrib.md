@@ -4,9 +4,9 @@ Returns the quantities that the chosen parametrization describes, with
 their Jacobian. Where the matrix parametrization declares its own block
 through
 [`parameters7::param_readable()`](https://statmodels7.github.io/parameters7/reference/param_readable.html)
-(a compound symmetry, an AR(1), an AR(p)), that block alone is returned,
-with the common variance `scale` reported as its square root `sd` on the
-covariance side. Otherwise a covariance parametrization reports the
+(a compound symmetry, an AR(1), an AR(p)), only that block is returned,
+and the common variance `scale` is reported as its square root `sd` on
+the covariance side. Otherwise a covariance parametrization reports the
 standard deviations and the correlations, and a precision
 parametrization reports the conditional variances \\1/\Omega\_{jj} =
 \operatorname{Var}(Y_j \mid Y\_{-j})\\ and the partial correlations
@@ -66,7 +66,7 @@ the partial correlation equals the correlation.
 \\\Sigma\\ is the covariance, \\\Omega = \Sigma^{-1}\\ the precision,
 \\p\\ the dimension, \\R_j^2\\ the coefficient of determination of the
 regression of coordinate \\j\\ on the others, and \\Y\_{-j}\\ the
-response with that coordinate removed.
+response without that coordinate.
 
 ## See also
 

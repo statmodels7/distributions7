@@ -2,7 +2,7 @@
 
 Returns the marginal law of a subset of coordinates, which for a
 gaussian is again a gaussian: the mean is the subvector and the
-covariance the corresponding block, with nothing to integrate. The
+covariance is the corresponding block, without any integration. The
 result is a fresh
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 of the reduced dimension (an
@@ -23,7 +23,7 @@ own and need not be a subset of the ones passed in.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - which:
 

@@ -29,7 +29,7 @@ supplies it.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - scale:
 
@@ -98,7 +98,7 @@ solve(mv_sigma(d, theta))[1, ]
 #>         v1         v2 
 #>  1.0141552 -0.5399435 
 
-# The matrix block against a difference of the response gradient.
+# The matrix block is compared with a difference of the response gradient.
 h <- 1e-5
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h

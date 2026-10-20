@@ -23,7 +23,7 @@ has p * (p + 1) / 2 free values."><meta property="og:image" content="https://sta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,8 +98,8 @@ dimension <code>n_dim</code> and of full rank. Defaults to
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An S7 object of class <a href="MvGaussian1Distrib.html">MvGaussian1Distrib</a> or <a href="MvGaussian1Distrib.html">MvGaussian2Distrib</a>,
-with <code>param</code> the parametrization supplied and <code>inverted</code> recording which
-side it carries. Its <code>params</code> are <code>mu1</code>, ..., <code>mup</code> followed by the
+whose <code>param</code> is the parametrization supplied and whose <code>inverted</code> records
+which side it carries. Its <code>params</code> are <code>mu1</code>, ..., <code>mup</code> followed by the
 prefixed free names, <code>n_params</code> is <code>p + param@n_free</code>, every entry of
 <code>params_bounds</code> is \((-\infty, \infty)\) and every link is the identity.</p>
     </div>
@@ -108,8 +108,8 @@ prefixed free names, <code>n_params</code> is <code>p + param@n_free</code>, eve
     <p>The numbering is the package's convention, the one that separates
 <code><a href="gaussian1_distrib.html">gaussian1_distrib()</a></code>, <code><a href="gaussian2_distrib.html">gaussian2_distrib()</a></code> and <code><a href="gaussian3_distrib.html">gaussian3_distrib()</a></code>: one
 name per parametrization, because in a modeling framework a parametrization
-decides what a linear predictor acts on. Here the choice can change the model
-as well as the coordinates. A matrix parametrization is closed under
+determines what a linear predictor acts on. Here the choice can change the
+model as well as the coordinates. A matrix parametrization is closed under
 inversion when the inverse of every matrix that it produces is one of its
 own; <code><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">parameters7::log_cholesky()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/matrix_log.html" class="external-link">parameters7::matrix_log()</a></code>,
 <code><a href="https://statmodels7.github.io/parameters7/reference/diagonal_matrix.html" class="external-link">parameters7::diagonal_matrix()</a></code>, <code><a href="https://statmodels7.github.io/parameters7/reference/scalar_matrix.html" class="external-link">parameters7::scalar_matrix()</a></code>,
@@ -145,8 +145,8 @@ gaussian on an unstructured covariance therefore has the five parameters
 <code>mu1</code>, <code>mu2</code>, <code>sigma_log_L1</code>, <code>sigma_log_L2</code> and <code>sigma_L2.1</code>, while the
 same parametrization on the precision gives <code>omega_log_L1</code> and the rest. The
 prefix distinguishes the two models in a printed table, since the name of a
-free value gives the construction of the matrix and does not say which
-matrix it is.</p>
+free value identifies the construction of the matrix and does not identify
+which matrix it is.</p>
 <p>All of these parameters are unconstrained, so all of the links are the
 identity. The constraint that makes the matrix positive definite is carried
 by the matrix parametrization, which needs no link to express it. The
@@ -174,10 +174,10 @@ serve as a penalty but does not define a density.</p>
     </div>
     <div class="section level2">
     <h2 id="the-response">The response<a class="anchor" aria-label="anchor" href="#the-response"></a></h2>
-    <p>An \(n \times p\) matrix, one row per observation. A plain vector of
-length \(p\) is read as a single observation. A parameter may not vary from
-observation to observation here, the parametrization describing one matrix
-for the whole sample.</p>
+    <p>The response is an \(n \times p\) matrix with one row per observation. A
+plain vector of length \(p\) is read as a single observation. A parameter
+may not vary from observation to observation here, because the
+parametrization describes one matrix for the whole sample.</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
@@ -224,7 +224,7 @@ parametrization, the unconstrained coordinates that an optimizer moves.</p>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0.5</span>, mu2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.3</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
 <span class="r-in"><span>              sigma_log_L2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The covariance that the free values describe, positive definite for any</span></span></span>
+<span class="r-in"><span><span class="co"># The covariance that the free values describe is positive definite for any</span></span></span>
 <span class="r-in"><span><span class="co"># five numbers.</span></span></span>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">S</span>, <span class="fl">4</span><span class="op">)</span></span></span>
@@ -234,7 +234,7 @@ parametrization, the unconstrained coordinates that an optimizer moves.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="va">S</span>, only.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">values</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.5092462 0.5424766</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The density, against the formula written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The density is compared with the formula written out.</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ref</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
@@ -258,8 +258,8 @@ parametrization, the unconstrained coordinates that an optimizer moves.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">o</span>, <span class="va">th_o</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">Om</span><span class="op">)</span>, check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The conditional variance of the first coordinate given the second, and</span></span></span>
-<span class="r-in"><span><span class="co"># the marginal variance beside it.</span></span></span>
+<span class="r-in"><span><span class="co"># The conditional variance of the first coordinate given the second appears</span></span></span>
+<span class="r-in"><span><span class="co"># beside the marginal variance.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>conditional <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">Om</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span>, marginal <span class="op">=</span> <span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">o</span>, <span class="va">th_o</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> conditional    marginal </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   0.8187308   1.0141552 </span>

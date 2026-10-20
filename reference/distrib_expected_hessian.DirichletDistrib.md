@@ -20,7 +20,8 @@ A\_{jk}A\_{jl}, \qquad \mathbb{E}\[\ell^{(\eta_k\phi)}\] =
 
   A numeric matrix of observations. Only its row count is read through
   [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md),
-  the expectation not depending on the data; the values are ignored.
+  because the expectation does not depend on the data; the values are
+  ignored.
 
 - theta:
 
@@ -103,7 +104,8 @@ vapply(distrib_hessian(d, Z, th), mean, numeric(1))
 #>       mean_alr1_phi       mean_alr2_phi 
 #>         0.013532593        -0.011055574 
 
-# The two zero sums the derivation rests on, read off the simplex itself.
+# The two zero sums on which the derivation rests are read off the simplex
+# itself.
 eta <- c(0.3, -0.2)
 colSums(do.call(cbind, parameters7::param_d1(d@param, eta)))
 #>         alr1         alr2 
@@ -112,7 +114,7 @@ vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
 #>     alr1:alr1     alr2:alr2     alr1:alr2 
 #>  6.938894e-18  1.387779e-17 -2.081668e-17 
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument is inert because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
 #> [1] TRUE
 ```

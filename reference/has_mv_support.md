@@ -1,6 +1,6 @@
 # Whether a Multivariate Family Enumerates Its Support
 
-`TRUE` when the family registers
+Returns `TRUE` when the family registers
 [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md),
 which a discrete multivariate family does and a continuous one cannot.
 

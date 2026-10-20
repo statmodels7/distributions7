@@ -56,8 +56,8 @@ The mass on the weak compositions of \\n\\ into \\p\\ parts is \$\$P(Y =
 y) = \frac{n!}{\prod\_{j=1}^{p} y_j!}\prod\_{j=1}^{p} p_j^{y_j},\$\$
 with \$\$\mathbb{E}\[Y_j\] = n p_j, \qquad \operatorname{Var}(Y_j) = n
 p_j (1 - p_j), \qquad \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.\$\$ The
-family has no dispersion parameter: its parameters are the
-probabilities, \\p-1\\ of them free.
+family has no dispersion parameter, and its parameters are the
+probabilities, of which \\p-1\\ are free.
 
 The probabilities are carried by a `parameters7` simplex and flattened
 into scalars with identity links, as a covariance is for the
@@ -100,8 +100,8 @@ gives finite derivatives.
 
 ## Marginals and conjugacy
 
-Coordinate \\j\\ is \\\mathrm{Binomial}(n, p_j)\\, the other categories
-collapsing into a single failure, so
+Coordinate \\j\\ is \\\mathrm{Binomial}(n, p_j)\\, because the other
+categories collapse into a single failure, so
 [`mv_marginal.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MultinomialDistrib.md)
 returns an object. The Dirichlet is the conjugate prior for the
 probability vector, and
@@ -139,13 +139,13 @@ for the conjugate family on the same simplex;
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
 for the overdispersed two-category count;
 [`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)
-for the chart the probabilities ride;
+for the chart that carries the probabilities;
 [`numericals7::compositions()`](https://statmodels7.github.io/numericals7/reference/compositions.html)
 for the support enumeration;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the probabilities;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-to validate a family of your own against the same battery that this one
+to validate a user-defined family against the same battery that this one
 passes;
 [MultinomialDistrib](https://statmodels7.github.io/distributions7/reference/MultinomialDistrib.md)
 for the class.
@@ -163,7 +163,8 @@ d
 #>   probs_alr1 (probability)        | Link: identity   | Domain: (-Inf, Inf)
 #>   probs_alr2 (probability)        | Link: identity   | Domain: (-Inf, Inf)
 
-# Two free probabilities for three categories; no dispersion parameter.
+# Three categories give two free probabilities, and the family has no
+# dispersion parameter.
 th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
 mv_location(d, th)
 #> [1] 2.130063 1.291948 1.577989
@@ -174,7 +175,7 @@ c(points = nrow(supp), mass = sum(distrib_pdf(d, supp, th)))
 #> points   mass 
 #>     21      1 
 
-# The covariance is singular, its diagonal the binomial variances.
+# The covariance is singular, and its diagonal holds the binomial variances.
 pr <- mv_location(d, th) / 5
 S <- mv_sigma(d, th)
 c(rank = qr(S)$rank, dim = 3)

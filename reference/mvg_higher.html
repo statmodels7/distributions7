@@ -3,30 +3,32 @@
 parameters. It enumerates the parameter tuples the way deriv_names() does,
 splits each into mean indices and matrix indices, and reads the surviving
 cases off the gaussian's algebra. Writing \(r = y - \mu\) and \(P_t\)
-for the precision's derivative array over the matrix indices \(t\), a
-tuple with
-three or more mean indices is exactly zero, the quadratic form being
-quadratic in \(\mu\);
-two mean indices \((i, j)\) gives \(-P_t[i, j]\);
-one mean index \(i\) gives \((r P_t)_i\), one value per observation;
-no mean index gives
+for the precision's derivative array over the matrix indices \(t\), the
+cases are as follows.
+A tuple with three or more mean indices is exactly zero, because the
+quadratic form is quadratic in \(\mu\).
+A tuple with two mean indices \((i, j)\) gives \(-P_t[i, j]\).
+A tuple with one mean index \(i\) gives \((r P_t)_i\), one value per
+observation.
+A tuple without mean indices gives
 \(\pm\tfrac{1}{2}\,\partial^{\lvert t\rvert}\log\lvert M\rvert
-  - \tfrac{1}{2}\, r^\top P_t\, r\), the sign following which side the
+  - \tfrac{1}{2}\, r^\top P_t\, r\), where the sign depends on which side the
 parametrization carries.
 
 "><meta property="og:description" content="Computes every third- or fourth-order derivative of the log-density in the
 parameters. It enumerates the parameter tuples the way deriv_names() does,
 splits each into mean indices and matrix indices, and reads the surviving
 cases off the gaussian's algebra. Writing \(r = y - \mu\) and \(P_t\)
-for the precision's derivative array over the matrix indices \(t\), a
-tuple with
-three or more mean indices is exactly zero, the quadratic form being
-quadratic in \(\mu\);
-two mean indices \((i, j)\) gives \(-P_t[i, j]\);
-one mean index \(i\) gives \((r P_t)_i\), one value per observation;
-no mean index gives
+for the precision's derivative array over the matrix indices \(t\), the
+cases are as follows.
+A tuple with three or more mean indices is exactly zero, because the
+quadratic form is quadratic in \(\mu\).
+A tuple with two mean indices \((i, j)\) gives \(-P_t[i, j]\).
+A tuple with one mean index \(i\) gives \((r P_t)_i\), one value per
+observation.
+A tuple without mean indices gives
 \(\pm\tfrac{1}{2}\,\partial^{\lvert t\rvert}\log\lvert M\rvert
-  - \tfrac{1}{2}\, r^\top P_t\, r\), the sign following which side the
+  - \tfrac{1}{2}\, r^\top P_t\, r\), where the sign depends on which side the
 parametrization carries.
 
 "><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -37,7 +39,7 @@ parametrization carries.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,14 +76,15 @@ parametrization carries.
 parameters. It enumerates the parameter tuples the way <code><a href="deriv_names.html">deriv_names()</a></code> does,
 splits each into mean indices and matrix indices, and reads the surviving
 cases off the gaussian's algebra. Writing \(r = y - \mu\) and \(P_t\)
-for the precision's derivative array over the matrix indices \(t\), a
-tuple with</p><ul><li><p>three or more mean indices is exactly zero, the quadratic form being
-quadratic in \(\mu\);</p></li>
-<li><p>two mean indices \((i, j)\) gives \(-P_t[i, j]\);</p></li>
-<li><p>one mean index \(i\) gives \((r P_t)_i\), one value per observation;</p></li>
-<li><p>no mean index gives
+for the precision's derivative array over the matrix indices \(t\), the
+cases are as follows.</p><ul><li><p>A tuple with three or more mean indices is exactly zero, because the
+quadratic form is quadratic in \(\mu\).</p></li>
+<li><p>A tuple with two mean indices \((i, j)\) gives \(-P_t[i, j]\).</p></li>
+<li><p>A tuple with one mean index \(i\) gives \((r P_t)_i\), one value per
+observation.</p></li>
+<li><p>A tuple without mean indices gives
 \(\pm\tfrac{1}{2}\,\partial^{\lvert t\rvert}\log\lvert M\rvert
-  - \tfrac{1}{2}\, r^\top P_t\, r\), the sign following which side the
+  - \tfrac{1}{2}\, r^\top P_t\, r\), where the sign depends on which side the
 parametrization carries.</p></li>
 </ul></div>
 
@@ -104,7 +107,8 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
@@ -136,7 +140,7 @@ expectation is exact.</p>
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
 
 
-<p>\(\mu\) is the mean, \(M\) the matrix the parametrization carries,
+<p>\(\mu\) is the mean, \(M\) the matrix that the parametrization carries,
 \(P = \Sigma^{-1}\) the precision, \(\eta\) the free vector,
 \(r = y - \mu\) the centered response and \(P_t\) the precision's
 derivative array over the multiset of free values \(t\).</p>
@@ -168,8 +172,8 @@ derivative array over the multiset of free values \(t\).</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu1_mu1_mu1 mu1_mu1_mu2 mu1_mu2_mu2 mu2_mu2_mu2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           0           0           0           0 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against one stencil on the analytic Hessian, which shares no algebra</span></span></span>
-<span class="r-in"><span><span class="co"># with the expansion.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with one stencil on the analytic Hessian, which</span></span></span>
+<span class="r-in"><span><span class="co"># shares no algebra with the expansion.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="va">tp</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tp</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">&lt;-</span> <span class="va">tp</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">+</span> <span class="va">h</span></span></span>
 <span class="r-in"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tm</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">&lt;-</span> <span class="va">tm</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">-</span> <span class="va">h</span></span></span>

@@ -47,7 +47,7 @@ unlist(generate_random_theta(d))
 #>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1           nu 
 #> -0.445500412 -0.998963374  0.008486698 -0.388761673 -0.348248179 11.683944578 
 
-# The three bands, over 400 draws.
+# The ranges of the three bands are shown over 400 draws.
 set.seed(12)
 round(apply(replicate(400, unlist(generate_random_theta(d))), 1, range), 2)
 #>      mu1   mu2 sigma_log_L1 sigma_log_L2 sigma_L2.1    nu

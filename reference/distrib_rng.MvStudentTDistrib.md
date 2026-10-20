@@ -25,12 +25,13 @@ under [`base::set.seed()`](https://rdrr.io/r/base/Random.html).
 
 - n:
 
-  The number of observations to draw. A single non-negative whole
-  number.
+  The number of observations to draw. The value must be a single
+  non-negative whole number.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, in which each component is a single
+  number.
 
 - ...:
 
@@ -50,9 +51,9 @@ degrees of freedom and \\L\\ a factor of \\\Sigma\\, \\LL^\top =
 ## See also
 
 [`distrib_pdf.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvStudentTDistrib.md)
-for the density this draws from,
+for the density from which this function draws,
 [`variance.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md)
-for the covariance the sample approaches when it exists, and
+for the covariance that the sample approaches when it exists, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 for the generic.
 

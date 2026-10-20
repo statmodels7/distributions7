@@ -1,4 +1,4 @@
-# The Pieces a Dirichlet Derivative Needs
+# The Pieces That a Dirichlet Derivative Needs
 
 Evaluates the mean vector, the concentration, the shapes \\\alpha =
 \phi\mu\\ and the simplex's first two derivative arrays once, so that a
@@ -38,9 +38,10 @@ tuple; `idx`, those tuples; and `k`, the number of free mean values.
 Two identities keep every formula on the family's pages short, and both
 follow from differentiating \\\sum_j \mu_j = 1\\: once, the columns of
 \\A = \partial\mu/\partial\eta\\ sum to zero; twice, so does every
-second-derivative vector \\B\_{\cdot,kl}\\. They are what makes the
-expected information closed form, since every term carrying the data is
-a constant times one of those zero sums and drops out under expectation.
+second-derivative vector \\B\_{\cdot,kl}\\. Together they make the
+expected information closed form, because every term that carries the
+data is a constant times one of those zero sums and drops out under
+expectation.
 
 ## See also
 

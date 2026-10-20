@@ -19,7 +19,7 @@ repeat them."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,10 +90,11 @@ transformed, or <code>NULL</code>.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The standard deviation is \(\sqrt{s}\) with \(s\) the <code>scale</code>, so its
-Jacobian row is the <code>scale</code> row times \(1/(2\sqrt{s})\); it is intervalled
-on the log scale, as <code>scale</code> was. Where the declared quantities describe a
-precision (the attribute <code>precision</code> of the result of <code><a href="mv_param_block.html">mv_param_block()</a></code>)
-the <code>scale</code> is a precision's common diagonal and is reported as it is.</p>
+Jacobian row is the <code>scale</code> row times \(1/(2\sqrt{s})\); its interval is
+built on the log scale, as that of <code>scale</code> was. Where the declared quantities
+describe a precision (the attribute <code>precision</code> of the result of
+<code><a href="mv_param_block.html">mv_param_block()</a></code>) the <code>scale</code> is a precision's common diagonal and is
+reported as it is.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

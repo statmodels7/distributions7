@@ -3,7 +3,7 @@
 Computes \\\partial^2\ell/\partial y\\\partial\theta_k\\, one \\n \times
 p\\ matrix per parameter. The response gradient is \\-c\\w\\, so every
 component carries the derivative of the weight beside the gaussian term
-it multiplies. With \\A_k = \partial\Sigma/\partial\eta_k\\,
+that it multiplies. With \\A_k = \partial\Sigma/\partial\eta_k\\,
 \$\$\frac{\partial^2\ell}{\partial y\\\partial\mu_j} =
 c\\\Sigma^{-1}e_j - \frac{\partial c}{\partial\mu_j}\\w, \qquad
 \frac{\partial c}{\partial\mu_j} = \frac{2(\nu+p)\\w_j}{(\nu+q)^2},\$\$
@@ -13,8 +13,8 @@ c\\\Sigma^{-1}A_k w - \frac{\partial c}{\partial\eta_k}\\w, \qquad
 w}{(\nu+q)^2},\$\$ \$\$\frac{\partial^2\ell}{\partial y\\\partial\nu} =
 -\frac{(q-p)\\w}{(\nu+q)^2}.\$\$ For the gaussian the location block,
 \\\Sigma^{-1}e_j\\, is the same for every row; here every component
-varies with the row, the location block carrying the observation through
-\\c\\.
+varies with the row, and the location block carries the observation
+through \\c\\.
 
 ## Arguments
 
@@ -32,7 +32,7 @@ varies with the row, the location block carrying the observation through
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - scale:
 
@@ -90,7 +90,8 @@ names(cy)
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
 #> [6] "nu"          
 
-# Against a difference of the response gradient, parameter by parameter.
+# The result is compared, parameter by parameter, with a difference of the
+# response gradient.
 h <- 1e-5
 vapply(seq_along(d@params), function(k) {
   tp <- theta; tp[[k]] <- tp[[k]] + h
@@ -98,7 +99,7 @@ vapply(seq_along(d@params), function(k) {
   max(abs(cy[[k]] -
           (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 1.909717e-11 3.402589e-11 8.014878e-11 7.280865e-11 5.279199e-11
+#> [1] 1.909717e-11 3.402589e-11 7.158119e-11 7.280865e-11 5.279199e-11
 #> [6] 2.539313e-11
 
 # As nu grows every shared component approaches the gaussian's.

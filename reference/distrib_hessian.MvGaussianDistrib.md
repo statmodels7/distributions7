@@ -12,7 +12,7 @@ it is constant across rows; the mixed and matrix blocks do. \\P_k\\ and
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md),
 exact for
 [`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html)
-where the covariance is nearly singular; written as products of
+where the covariance is nearly singular; when written as products of
 \\\Sigma^{-1}\\ and the derivatives of \\\Sigma\\, the matrix block
 cancels there for an observation away from the degenerate direction.
 
@@ -32,7 +32,7 @@ cancels there for an observation away from the degenerate direction.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - scale:
 
@@ -94,7 +94,7 @@ c(H$mu1_mu1[1], H$mu1_mu2[1])
 #>         v1         v2 
 #> -1.0141552  0.5399435 
 
-# Against a numerical Hessian of the log-likelihood.
+# The result is compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

@@ -2,9 +2,9 @@
 
 Returns the covariance matrix of the counts by delegating to
 [`mv_sigma.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md).
-It is singular, the counts summing to the trial count, so a computation
-that inverts a covariance works with the marginals or with the free
-vector of the simplex.
+It is singular because the counts sum to the trial count, so a
+computation that inverts a covariance works with the marginals or with
+the free vector of the simplex.
 
 ## Arguments
 
@@ -18,8 +18,8 @@ vector of the simplex.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 - ...:
 

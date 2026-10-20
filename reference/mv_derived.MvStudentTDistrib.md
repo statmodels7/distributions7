@@ -12,8 +12,8 @@ are named `scale_sd_v1`, ..., `scale_sd_vp` and blocked as
 
 The rule of
 [`mv_derived.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md)
-holds here as well: a structured parametrization reports its own block
-alone, its `scale` as the square root `scale_sd` on the scale-matrix
+holds here as well: a structured parametrization reports only its own
+block, its `scale` as the square root `scale_sd` on the scale-matrix
 side, and the inverse parametrization reports the conditional scales
 \\1/M\_{jj}\\ and the partial correlations and nothing of the scale
 matrix.
@@ -93,8 +93,8 @@ c(scale_sd = der$value[["scale_sd_v1"]],
 #>    scale_sd response_sd 
 #>    1.000000    1.224745 
 
-# The correlation is the same either way, the two matrices being positive
-# multiples of each other.
+# The correlation is the same either way, because the two matrices are
+# positive multiples of each other.
 cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
 c(reported = der$value[["cor_v1_v2"]],
   from_covariance = cv(variance(d, theta)))

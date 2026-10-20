@@ -13,7 +13,7 @@ block, the matrix block or the mixed block, which depends on position."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@ long as <code>hess_names(distrib@params)</code> and in that order. Each pair is
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code><a href="hess_pairs.html">hess_pairs()</a></code> answers the same question with parameter names, which suits a
-univariate method looking a closed-form component up in a table. Here the
+    <p><code><a href="hess_pairs.html">hess_pairs()</a></code> returns the same pairs as parameter names, which suits a
+univariate method that looks a closed-form component up in a table. Here the
 names are matched back to positions, so the two orderings come from one
 enumeration and cannot drift apart.</p>
     </div>
@@ -93,7 +93,7 @@ consumer.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">idx</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="hess_names.html">hess_names</a></span><span class="op">(</span><span class="va">d</span><span class="op">@</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Key by key, the positions name the parameters the key is built from.</span></span></span>
+<span class="r-in"><span><span class="co"># Key by key, the positions name the parameters from which the key is built.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>key <span class="op">=</span> <span class="fu"><a href="hess_names.html">hess_names</a></span><span class="op">(</span><span class="va">d</span><span class="op">@</span><span class="va">params</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">idx</span>, <span class="va">`[`</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">1L</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">idx</span>, <span class="va">`[`</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">2L</span><span class="op">)</span><span class="op">)</span>, <span class="fl">6</span><span class="op">)</span></span></span>
@@ -105,7 +105,7 @@ consumer.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma_L2.1_sigma_L2.1         sigma_L2.1_sigma_L2.1 5 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu1_mu2                                     mu1_mu2 1 2</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Which is the same enumeration hess_pairs() gives as names.</span></span></span>
+<span class="r-in"><span><span class="co"># This is the same enumeration that hess_pairs() gives as names.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">idx</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="va">d</span><span class="op">@</span><span class="va">params</span><span class="op">[</span><span class="va">p</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="hess_pairs.html">hess_pairs</a></span><span class="op">(</span><span class="va">d</span><span class="op">@</span><span class="va">params</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>

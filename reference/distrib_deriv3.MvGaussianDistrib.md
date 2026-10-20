@@ -2,9 +2,10 @@
 
 Computes every third derivative of the log-density in the parameters, in
 closed form. Writing \\r = y - \mu\\ and \\P_t\\ for the derivative of
-the precision over the matrix indices of the tuple: three mean indices
-give exactly zero, the log-density being quadratic in \\\mu\\; two give
-\\-P_t\[i, j\]\\; one gives \\(r P_t)\_i\\; none gives
+the precision over the matrix indices of the tuple, a tuple with three
+mean indices gives exactly zero, because the log-density is quadratic in
+\\\mu\\; a tuple with two gives \\-P_t\[i, j\]\\; a tuple with one gives
+\\(r P_t)\_i\\; and a tuple without mean indices gives
 \\\pm\tfrac{1}{2}\\\partial^3\log\lvert M\rvert - \tfrac{1}{2} r^\top
 P_t r\\. The arrays \\P_t\\ come from
 [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md).
@@ -25,7 +26,7 @@ P_t r\\. The arrays \\P_t\\ come from
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - expected:
 
@@ -98,7 +99,7 @@ length(d3)
 d3[["mu1_mu1_mu2"]]
 #> [1] 0 0 0 0
 
-# Against one stencil on the analytic Hessian.
+# The result is compared with one stencil on the analytic Hessian.
 h <- 1e-4
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
@@ -108,7 +109,8 @@ c(exact = sum(d3[["mu1_mu2_sigma_L2.1"]]),
 #>    exact  stencil 
 #> 5.399435 5.399435 
 
-# The expectation in closed form, against an average over a large sample.
+# The expectation in closed form is compared with an average over a large
+# sample.
 e3 <- distrib_deriv3(d, y, theta, expected = TRUE)
 set.seed(9)
 big <- distrib_deriv3(d, distrib_rng(d, 50000, theta), theta)

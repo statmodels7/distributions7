@@ -27,7 +27,7 @@ subset of the original's."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,13 +84,13 @@ or <code><a href="mvstudent_t1_distrib.html">mvstudent_t2_distrib()</a></code>.<
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters; each component is a single number.</p></dd>
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
-<dd><p>An integer vector of distinct coordinates to keep, each between
-1 and \(p\), already checked by the generic <code><a href="mv_marginal.html">mv_marginal()</a></code>. The marginal
-follows the order given.</p></dd>
+<dd><p>An integer vector of distinct coordinates to keep, which lie
+between 1 and \(p\) and which the generic <code><a href="mv_marginal.html">mv_marginal()</a></code> has already
+checked. The marginal follows the order given.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -112,7 +112,8 @@ degrees of freedom and \(p\) the dimension of the full law.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mv_sigma.MvStudentTDistrib.html">mv_sigma.MvStudentTDistrib()</a></code> for the matrix it takes a block of,
+    <div class="dont-index"><p><code><a href="mv_sigma.MvStudentTDistrib.html">mv_sigma.MvStudentTDistrib()</a></code> for the matrix of which it takes a
+block,
 <code><a href="plot.multivariate_distrib.html">plot.multivariate_distrib()</a></code>, whose diagonal panels are these marginals,
 and <code><a href="mv_marginal.html">mv_marginal()</a></code> for the generic.</p></div>
     </div>

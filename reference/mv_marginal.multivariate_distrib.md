@@ -16,7 +16,8 @@ does.
 
 - theta:
 
-  A named list of parameters. Not read: the error is signalled first.
+  A named list of parameters. It is not read, because the error is
+  signalled first.
 
 - which:
 

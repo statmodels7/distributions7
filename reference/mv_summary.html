@@ -19,7 +19,7 @@ quantities that do."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,27 +85,27 @@ quantities and <code><a href="confint.distrib_fit.html">confint.distrib_fit()</a
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data frame with one row per quantity and four columns:
 <code>Estimate</code>, <code>Std. Error</code>, and the two confidence limits, named after the
-percentiles they are (<code>2.5%</code> and <code>97.5%</code> at the default level). Its row
-names are the quantity names, and it carries the attribute <code>"block"</code>, a
-character vector naming the group each row belongs to, by which <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>
-lays the summary out.</p>
+percentiles that they represent (<code>2.5%</code> and <code>97.5%</code> at the default level).
+Its row names are the quantity names, and it carries the attribute
+<code>"block"</code>, a character vector naming the group to which each row belongs
+and by which <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> lays the summary out.</p>
     </div>
     <div class="section level2">
     <h2 id="the-delta-method">The delta method<a class="anchor" aria-label="anchor" href="#the-delta-method"></a></h2>
     <p>$$\widehat{\mathrm{Var}}\{g(\hat\theta)\}
   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
   \qquad J = \partial g/\partial\theta,$$
-with \(J\) taken from <code><a href="mv_derived.html">mv_derived()</a></code>, in closed form for the multivariate
-gaussian and Student \(t\) and by one central difference for the
-Dirichlet, the multinomial and any other family.</p>
+where \(J\) is taken from <code><a href="mv_derived.html">mv_derived()</a></code>, in closed form for the
+multivariate gaussian and Student \(t\) and by one central difference for
+the Dirichlet, the multinomial and any other family.</p>
     </div>
     <div class="section level2">
     <h2 id="where-each-interval-is-built">Where each interval is built<a class="anchor" aria-label="anchor" href="#where-each-interval-is-built"></a></h2>
     <p>Each interval is built on the scale that its quantity declares and then
-mapped back, as <code><a href="fit_distrib.html">fit_distrib()</a></code> does for a univariate parameter. A standard
-deviation is intervalled on the log scale and a correlation on Fisher's
-\(z\), so neither interval can leave the set in which its quantity lies. An
-interval on the raw scale can put a correlation above one.</p>
+mapped back, as <code><a href="fit_distrib.html">fit_distrib()</a></code> does for a univariate parameter. The interval
+of a standard deviation is built on the log scale and that of a correlation
+on Fisher's \(z\), so each interval stays inside the set in which its
+quantity lies. An interval on the raw scale can put a correlation above one.</p>
 <p>The standard error is carried onto that scale by the transform's own
 derivative, so the reported <code>Std. Error</code> column stays on the quantity's
 natural scale while the limits are computed on the transformed one.</p>
@@ -134,14 +134,14 @@ correlation.</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">500</span>, <span class="va">truth</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The standard deviations and the correlation.</span></span></span>
+<span class="r-in"><span><span class="co"># The summary reports the standard deviations and the correlation.</span></span></span>
 <span class="r-in"><span><span class="fu">mv_summary</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Estimate Std. Error      2.5%     97.5%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sd_v1     1.0109159 0.03196797 0.9501620 1.0755544</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sd_v2     1.2469079 0.03943069 1.1719714 1.3266358</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cor_v1_v2 0.5325916 0.03203598 0.4669039 0.5924342</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The coordinates the fit was estimated on, beside them.</span></span></span>
+<span class="r-in"><span><span class="co"># The coordinates on which the fit was estimated are shown beside them.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      2.5%      97.5%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu1          -0.065964967 0.11125314</span>

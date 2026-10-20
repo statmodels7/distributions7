@@ -13,7 +13,7 @@ first order, so below \(\lvert u\rvert = 10^{-3}\) the expansion
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,8 +107,8 @@ for the higher derivatives of the data term, and
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1e-01 0.8802178</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5,] 1e+00 0.3862944</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against the direct difference, relatively. The two agree where the</span></span></span>
-<span class="r-in"><span><span class="co"># difference still has digits and part company as u shrinks.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with the direct difference, relatively. The two</span></span></span>
+<span class="r-in"><span><span class="co"># agree where the difference still has digits and part company as u shrinks.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>u <span class="op">=</span> <span class="va">u</span>,</span></span>
 <span class="r-in"><span>      rel_gap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mvt_D</span><span class="op">(</span><span class="va">u</span><span class="op">)</span> <span class="op">-</span> <span class="op">(</span><span class="va">u</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">u</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="va">u</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span></span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mvt_D</span><span class="op">(</span><span class="va">u</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

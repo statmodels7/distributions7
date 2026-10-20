@@ -19,7 +19,7 @@ checked as an exact sum."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,8 +109,8 @@ with
 $$\mathbb{E}[Y_j] = n p_j, \qquad
       \operatorname{Var}(Y_j) = n p_j (1 - p_j), \qquad
       \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.$$
-The family has no dispersion parameter: its parameters are the probabilities,
-\(p-1\) of them free.</p>
+The family has no dispersion parameter, and its parameters are the
+probabilities, of which \(p-1\) are free.</p>
 <p>The probabilities are carried by a <code>parameters7</code> simplex and flattened into
 scalars with identity links, as a covariance is for the multivariate
 gaussian. The constraint that they be positive and sum to one is carried by
@@ -147,8 +147,8 @@ derivatives.</p>
     </div>
     <div class="section level2">
     <h2 id="marginals-and-conjugacy">Marginals and conjugacy<a class="anchor" aria-label="anchor" href="#marginals-and-conjugacy"></a></h2>
-    <p>Coordinate \(j\) is \(\mathrm{Binomial}(n, p_j)\), the other categories
-collapsing into a single failure, so
+    <p>Coordinate \(j\) is \(\mathrm{Binomial}(n, p_j)\), because the other
+categories collapse into a single failure, so
 <code><a href="mv_marginal.MultinomialDistrib.html">mv_marginal.MultinomialDistrib()</a></code> returns an object. The Dirichlet is the
 conjugate prior for the probability vector, and
 <code><a href="dirichlet_distrib.html">dirichlet_distrib()</a></code> is written on the same simplex.</p>
@@ -180,11 +180,11 @@ Wiley, Hoboken.</p>
     <div class="dont-index"><p><code><a href="binomial_distrib.html">binomial_distrib()</a></code> for a category's marginal and the two-category case;
 <code><a href="dirichlet_distrib.html">dirichlet_distrib()</a></code> for the conjugate family on the same simplex;
 <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code> for the overdispersed two-category count;
-<code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code> for the chart the probabilities ride;
+<code><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">parameters7::simplex()</a></code> for the chart that carries the probabilities;
 <code><a href="https://statmodels7.github.io/numericals7/reference/compositions.html" class="external-link">numericals7::compositions()</a></code> for the support enumeration; <code><a href="fit_distrib.html">fit_distrib()</a></code> to
-estimate the probabilities; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a family of your
-own against the same battery that this one passes; <a href="MultinomialDistrib.html">MultinomialDistrib</a> for
-the class.</p></div>
+estimate the probabilities; <code><a href="check_distrib.html">check_distrib()</a></code> to validate a user-defined
+family against the same battery that this one passes; <a href="MultinomialDistrib.html">MultinomialDistrib</a>
+for the class.</p></div>
     </div>
 
     <div class="section level2">
@@ -199,7 +199,8 @@ the class.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   probs_alr1 (probability)        | Link: identity   | Domain: (-Inf, Inf)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   probs_alr2 (probability)        | Link: identity   | Domain: (-Inf, Inf)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Two free probabilities for three categories; no dispersion parameter.</span></span></span>
+<span class="r-in"><span><span class="co"># Three categories give two free probabilities, and the family has no</span></span></span>
+<span class="r-in"><span><span class="co"># dispersion parameter.</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs_alr1 <span class="op">=</span> <span class="fl">0.3</span>, probs_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="mv_location.html">mv_location</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.130063 1.291948 1.577989</span>
@@ -210,7 +211,7 @@ the class.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> points   mass </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     21      1 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The covariance is singular, its diagonal the binomial variances.</span></span></span>
+<span class="r-in"><span><span class="co"># The covariance is singular, and its diagonal holds the binomial variances.</span></span></span>
 <span class="r-in"><span><span class="va">pr</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_location.html">mv_location</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span> <span class="op">/</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>rank <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/qr.html" class="external-link">qr</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span><span class="op">$</span><span class="va">rank</span>, dim <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>

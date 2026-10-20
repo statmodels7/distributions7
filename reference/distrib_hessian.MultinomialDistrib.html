@@ -29,7 +29,7 @@ need not combine in this way."><meta property="og:image" content="https://statmo
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,13 +87,13 @@ need not combine in this way.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric matrix with one row per observation and \(p\) columns,
-each row on the support. A single observation may be given as a plain
-vector.</p></dd>
+and each row is on the support. A single observation may be given as a
+plain vector.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of the simplex's free values on the parameter
-scale, each of length 1.</p></dd>
+scale, and each value has length 1.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -108,8 +108,9 @@ scale, each of length 1.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors, one per distinct entry of the
-symmetric matrix and named as <code><a href="hess_names.html">hess_names()</a></code> names them, each of length
-<code>nrow(y)</code>. For \(p\) categories there are \(p(p-1)/2\) of them.</p>
+symmetric matrix and named as <code><a href="hess_names.html">hess_names()</a></code> names them, and each vector
+has length <code>nrow(y)</code>. For \(p\) categories there are \(p(p-1)/2\) of
+them.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

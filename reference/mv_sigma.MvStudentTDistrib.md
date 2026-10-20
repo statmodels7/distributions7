@@ -6,8 +6,8 @@ is not the covariance: the covariance is \\\nu\Sigma/(\nu-2)\\ and
 exists only for \\\nu \> 2\\, while the scale matrix exists at every
 admissible \\\nu\\.
 [`variance.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md)
-returns the covariance. The correlations read off either are the same, a
-positive multiple of a matrix leaving them alone.
+returns the covariance. The correlations read off either matrix are the
+same, because a positive multiple of a matrix leaves them unchanged.
 
 ## Arguments
 
@@ -20,7 +20,7 @@ positive multiple of a matrix leaving them alone.
 
 - theta:
 
-  A named list of parameters, each component a single number. The
+  A named list of parameters; each component is a single number. The
   generic requires every parameter and checks `nu` against its domain;
   the location components and `nu` do not enter the result.
 
@@ -53,7 +53,7 @@ mv_sigma(d, theta)
 #> v1 1.2214028 0.4420684
 #> v2 0.4420684 0.8303200
 
-# Positive definite whatever the free values are.
+# The matrix is positive definite whatever the free values are.
 eigen(mv_sigma(d, theta), only.values = TRUE)$values
 #> [1] 1.5092462 0.5424766
 

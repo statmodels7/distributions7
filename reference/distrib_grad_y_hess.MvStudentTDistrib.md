@@ -7,9 +7,9 @@ unordered pair of parameters. The response gradient is \\\ell^{(y)} =
 product rule \$\$\partial\_{ab}\ell^{(y)} = -c\_{ab}w - c_aw_b -
 c_bw_a - c\\w\_{ab},\$\$ with every piece from
 [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md).
-For a gaussian the pair of two location parameters is exactly zero, its
-response gradient being linear in the location; the response gradient of
-the t is not, and these pairs are not zero in general.
+For a gaussian the pair of two location parameters is exactly zero,
+because its response gradient is linear in the location; the response
+gradient of the t is not, and these pairs are not zero in general.
 
 ## Arguments
 
@@ -27,7 +27,7 @@ the t is not, and these pairs are not zero in general.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - scale:
 
@@ -88,9 +88,9 @@ distrib_grad_y_hess(mvgaussian1_distrib(2), y, theta[1:5])$mu1_mu2
 #> [3,]    0    0
 #> [4,]    0    0
 
-# Against a second difference of the response gradient. The reference
-# amplifies rounding by h^-2, so 1e-6 on a quantity of order 1 is its own
-# accuracy rather than a disagreement.
+# The result is compared with a second difference of the response gradient.
+# The reference amplifies rounding by h^-2, so 1e-6 on a quantity of order 1
+# is its own accuracy rather than a disagreement.
 h <- 1e-5
 f <- function(a, b) {
   t2 <- theta; t2$mu1 <- t2$mu1 + a; t2$mu2 <- t2$mu2 + b

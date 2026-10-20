@@ -24,8 +24,8 @@ mv_sigma(distrib, theta)
 
 - theta:
 
-  A named list or vector of parameters, each component a single number.
-  The generic aligns it before dispatch.
+  A named list or vector of parameters, in which each component is a
+  single number. The generic aligns it before dispatch.
 
 ## Value
 
@@ -43,8 +43,8 @@ and
 the matrix is inverted here, so the result is the covariance or the
 scale matrix either way.
 
-No method is registered on the class, so a family without a method of
-its own fails in dispatch.
+The class has no registered method, so a family without a method of its
+own fails in dispatch.
 
 ## Notation
 
@@ -62,7 +62,7 @@ for the standard deviations and correlations of a fit, and
 [`mv_sigma.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md)
 and
 [`mv_sigma.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md)
-for two methods.
+for the methods of the gaussian and the Student t.
 
 ## Examples
 

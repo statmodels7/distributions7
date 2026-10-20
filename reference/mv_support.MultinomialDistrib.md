@@ -5,7 +5,7 @@ integers summing to the trial count \\n\\, one row per point. These are
 the weak compositions of \\n\\ into \\p\\ parts, supplied by
 [`numericals7::compositions()`](https://statmodels7.github.io/numericals7/reference/compositions.html).
 
-With the support in hand every expectation is an exact sum.
+Because the support is enumerated, every expectation is an exact sum.
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 uses it to test that the mass adds to one, an equality with tolerance
 `1e-10`; an importance-sampling check compares only against Monte Carlo
@@ -21,8 +21,8 @@ error, and a normalization wrong by a thousandth would pass it.
 
 - theta:
 
-  Ignored. The support is a property of \\n\\ and \\p\\ alone, so any
-  value, `NULL` included, gives the same answer.
+  Ignored. The support depends only on \\n\\ and \\p\\, so any value,
+  including `NULL`, gives the same answer.
 
 - ...:
 

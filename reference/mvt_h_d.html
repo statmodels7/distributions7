@@ -23,7 +23,7 @@ mvt_D()."><meta property="og:image" content="https://statmodels7.github.io/distr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,13 +106,15 @@ most one digit.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> for the part of \(\nu\) alone; the derivative of the
-log-density in \(\nu\) alone is \(c_p^{(k)} - h^{(k)}\).</p></div>
+    <div class="dont-index"><p><code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> for the part that depends on \(\nu\) only; the
+derivative of the log-density in \(\nu\) only is
+\(c_p^{(k)} - h^{(k)}\).</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Against the direct form at nu = 1e9, where its terms cancel.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The result is compared with the direct form at nu = 1e9, where its terms</span></span></span>
+<span class="r-in"><span><span class="co"># cancel.</span></span></span>
 <span class="r-in"><span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">1e9</span>; <span class="va">q</span> <span class="op">&lt;-</span> <span class="fl">1.25</span>; <span class="va">p</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="op">(</span><span class="va">v</span> <span class="op">+</span> <span class="va">p</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log1p</a></span><span class="op">(</span><span class="va">q</span> <span class="op">/</span> <span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mvt_h_d</span><span class="op">(</span><span class="va">q</span> <span class="op">/</span> <span class="va">nu</span>, <span class="va">nu</span>, <span class="va">p</span>, <span class="fl">2L</span><span class="op">)</span></span></span>

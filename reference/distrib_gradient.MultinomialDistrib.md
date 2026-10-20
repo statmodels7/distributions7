@@ -7,13 +7,13 @@ form. With \\A = \partial p/\partial\eta\\ the Jacobian of the chart,
 \dfrac{y_j}{p_j}A\_{jk}.\$\$ The factorial term of the mass carries no
 parameter, and the data enter only through the counts. On the additive
 log-ratio chart, where \\A\_{jk} = p_j(\delta\_{jk} - p_k)\\, the sum is
-computed as \\y_k - N p_k\\ with \\N\\ the total of the row, which
-divides by no probability.
+computed as \\y_k - N p_k\\ with \\N\\ the total of the row, without
+dividing by a probability.
 
 With `scale = "link"` the generic applies the chain rule for the links
 of the family to the result of the method. Every parameter takes the
-identity link here, its free value being unconstrained already, so the
-two scales coincide.
+identity link here, because its free value is already unconstrained, so
+the two scales coincide.
 
 ## Arguments
 
@@ -24,14 +24,14 @@ two scales coincide.
 
 - y:
 
-  A numeric matrix with one row per observation and \\p\\ columns, each
-  row on the support. A single observation may be given as a plain
-  vector.
+  A numeric matrix with one row per observation and \\p\\ columns, and
+  each row is on the support. A single observation may be given as a
+  plain vector.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 - scale:
 
@@ -45,8 +45,8 @@ two scales coincide.
 
 ## Value
 
-A named list with one numeric vector per free value, in the order
-`distrib@params` gives, each of length `nrow(y)`.
+A named list with one numeric vector per free value, in the order that
+`distrib@params` gives, and each vector has length `nrow(y)`.
 
 ## Notation
 

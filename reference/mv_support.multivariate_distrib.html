@@ -13,7 +13,7 @@ the shipped families the multinomial does."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +62,8 @@ the shipped families the multinomial does.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters. Not read: the error is signalled
-first.</p></dd>
+<dd><p>A named list of parameters. It is not read, because the error
+is signalled first.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -92,7 +92,7 @@ continuous family.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   and a discrete one whose support is infinite has no finite matrix to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   return; a family that does have one registers this generic.</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The test that check_distrib() applies first.</span></span></span>
+<span class="r-in"><span><span class="co"># check_distrib() applies this test first.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>gaussian <span class="op">=</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="has_mv_support.html">has_mv_support</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  multinomial <span class="op">=</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="has_mv_support.html">has_mv_support</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="multinomial_distrib.html">multinomial_distrib</a></span><span class="op">(</span><span class="fl">3</span>, size <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

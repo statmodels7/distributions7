@@ -302,7 +302,7 @@ its scale matrix or in the inverse of that.
 - [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
   : Interpretable Estimates of a Multivariate Fit
 - [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md)
-  : How Many Observations a Response Holds
+  : Number of Observations in a Response
 
 ## Classes
 
@@ -2301,7 +2301,7 @@ transforms that make it work on a divergent density.
   : The Position of a Second-Derivative Block
 
 - [`dir_parts()`](https://statmodels7.github.io/distributions7/reference/dir_parts.md)
-  : The Pieces a Dirichlet Derivative Needs
+  : The Pieces That a Dirichlet Derivative Needs
 
 - [`dirichlet_higher()`](https://statmodels7.github.io/distributions7/reference/dirichlet_higher.md)
   : Assemble a Dirichlet's Higher Derivatives
@@ -3663,7 +3663,7 @@ transforms that make it work on a divergent density.
   : Quantities Declared by the Matrix Parametrization
 
 - [`mv_prefixed_names()`](https://statmodels7.github.io/distributions7/reference/mv_prefixed_names.md)
-  : Prefix a Parametrization's Free Names with the Matrix They Describe
+  : Prefix Free Names with the Matrix That a Parametrization Describes
 
 - [`mv_quad()`](https://statmodels7.github.io/distributions7/reference/mv_quad.md)
   : The Quadratic Form of a Residual, Through the Chart's Factor
@@ -3727,7 +3727,8 @@ transforms that make it work on a divergent density.
   : The Constant of a Multivariate t and Its Derivatives in nu
 
 - [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md)
-  : The Pieces Every Mixed Response Derivative of the t Is Written In
+  : The Pieces in Which Every Mixed Response Derivative of the t Is
+  Written
 
 - [`mvt_h_d()`](https://statmodels7.github.io/distributions7/reference/mvt_h_d.md)
   : The Data Term of a Multivariate t and Its Derivatives in nu

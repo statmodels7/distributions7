@@ -27,7 +27,7 @@ base::set.seed()."><meta property="og:image" content="https://statmodels7.github
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,12 +84,13 @@ R's own generators, in that order, so the stream is reproducible under
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>The number of observations to draw. A single non-negative whole
-number.</p></dd>
+<dd><p>The number of observations to draw. The value must be a single
+non-negative whole number.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters, in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -111,9 +112,9 @@ degrees of freedom and \(L\) a factor of \(\Sigma\), \(LL^\top =
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_pdf.MvStudentTDistrib.html">distrib_pdf.MvStudentTDistrib()</a></code> for the density this draws from,
-<code><a href="variance.MvStudentTDistrib.html">variance.MvStudentTDistrib()</a></code> for the covariance the sample approaches
-when it exists, and <code><a href="distrib_rng.html">distrib_rng()</a></code> for the generic.</p></div>
+    <div class="dont-index"><p><code><a href="distrib_pdf.MvStudentTDistrib.html">distrib_pdf.MvStudentTDistrib()</a></code> for the density from which this
+function draws, <code><a href="variance.MvStudentTDistrib.html">variance.MvStudentTDistrib()</a></code> for the covariance that
+the sample approaches when it exists, and <code><a href="distrib_rng.html">distrib_rng()</a></code> for the generic.</p></div>
     </div>
 
     <div class="section level2">

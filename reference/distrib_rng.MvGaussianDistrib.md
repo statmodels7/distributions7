@@ -29,7 +29,7 @@ is reproducible under
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - ...:
 
@@ -43,7 +43,7 @@ An \\n \times p\\ numeric matrix, one draw per row, with column names
 ## See also
 
 [`distrib_pdf.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvGaussianDistrib.md)
-for the density this draws from,
+for the density from which this method draws,
 [`mv_sigma.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md)
 for the covariance, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)

@@ -115,8 +115,8 @@ properties are the parent's. For an object built by
 [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md),
 `params` is the simplex's free names prefixed by `probs_`, `n_params` is
 \\p-1\\, `bounds` is `c(0, size)`, and every parameter carries an
-identity link, its free value being unconstrained already. The family
-has no dispersion parameter.
+identity link, because its free value is already unconstrained. The
+family has no dispersion parameter.
 
 ## Methods
 
@@ -173,7 +173,7 @@ d <- multinomial_distrib(3, size = 5)
 S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 
-# Three categories and five trials, so two free probabilities.
+# Three categories and five trials give two free probabilities.
 c(categories = d@n_dim, trials = d@size, parameters = d@n_params)
 #> categories     trials parameters 
 #>          3          5          2 

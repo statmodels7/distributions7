@@ -24,15 +24,16 @@ mvstudent_t2_distrib(n_dim, omega = NULL, link_nu = linkfunctions7::log_link())
 
 - n_dim:
 
-  The dimension \\p\\ of one observation. A single positive whole
-  number, finite and at least 1. Any other value signals an error.
+  The dimension \\p\\ of one observation. The value must be a single
+  positive whole number, finite and at least 1. Any other value signals
+  an error.
 
 - sigma:
 
   A parameters7 parametrization of the scale matrix, of dimension
   `n_dim` and of full rank. Defaults to
   `parameters7::log_cholesky(n_dim)`. A rank-deficient parametrization
-  is rejected, the density not normalizing.
+  is rejected because the density does not normalize.
 
 - link_nu:
 
@@ -56,18 +57,18 @@ An S7 object of class
 [MvStudentT1Distrib](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md)
 or
 [MvStudentT2Distrib](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md),
-with `param` the parametrization supplied and `inverted` recording which
-matrix it carries. Its `params` are `mu1`, ..., `mup`, the prefixed free
-names, then `nu`; `n_params` is `p + param@n_free + 1`; every
-`params_bounds` entry is \\(-\infty, \infty)\\ except that of `nu`,
-which is \\(0, \infty)\\; and every link is the identity except that of
-`nu`.
+whose `param` is the parametrization supplied and whose `inverted`
+records which matrix `param` carries. Its `params` are `mu1`, ...,
+`mup`, the prefixed free names, then `nu`; `n_params` is
+`p + param@n_free + 1`; every `params_bounds` entry is \\(-\infty,
+\infty)\\ except that of `nu`, which is \\(0, \infty)\\; and every link
+is the identity except that of `nu`.
 
 ## The two matrices
 
-Neither matrix is a covariance, and neither is a precision. \\\Sigma\\
-is the scale matrix, the matrix in the quadratic form of the density,
-and the moments are obtained from it by scaling in \\\nu\\:
+Each of the two matrices is neither a covariance nor a precision.
+\\\Sigma\\ is the scale matrix, the matrix in the quadratic form of the
+density, and the moments are obtained from it by scaling in \\\nu\\:
 
 \$\$\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\\\Sigma \quad (\nu \> 2),
 \qquad \operatorname{Var}(Y)^{-1} = \frac{\nu-2}{\nu}\\\Sigma^{-1}.\$\$
@@ -118,8 +119,8 @@ not they are different models:
 `mvstudent_t2_distrib(p, parameters7::ar1(p))` is the family whose
 inverse scale matrix has the entries \\\sigma^2\rho^{\|i-j\|}\\, with
 \\\sigma^2\\ the scale of `ar1()`, and it is a valid law. The AR(1)
-pattern on the scale matrix with the other side parametrized is
-`mvstudent_t2_distrib(p, parameters7::ar1_inv(p))`, whose
+pattern on the scale matrix, in the family that parametrizes the
+inverse, is `mvstudent_t2_distrib(p, parameters7::ar1_inv(p))`, whose
 parametrization is that inverse.
 
 ## Parameters
@@ -136,16 +137,17 @@ rule of the log link to every derivative in `nu`.
 
 ## The weight of an observation
 
-A gaussian fitted to data with a few outlying rows inflates its
-covariance to cover them. A \\t\\ with \\\nu\\ estimated does not: an
-observation at squared Mahalanobis distance \\q\\ enters every
-derivative through the weight \\c = (\nu+p)/(\nu+q)\\, which falls as
-\\1/q\\. The gaussian is the limit \\\nu \to \infty\\, where \\c \equiv
-1\\.
+When a gaussian is fitted to data with a few outlying rows, the
+estimated covariance grows until it covers them. A \\t\\ whose \\\nu\\
+is estimated does not: an observation at squared Mahalanobis distance
+\\q\\ enters every derivative through the weight \\c =
+(\nu+p)/(\nu+q)\\, which falls as \\1/q\\. The gaussian is the limit
+\\\nu \to \infty\\, where \\c \equiv 1\\.
 
 ## The expected information
 
-Closed form, from the family's own scale mixture; see
+The expected information has a closed form, obtained from the family's
+own scale mixture; see
 [`distrib_expected_hessian.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md)
 for the four blocks.
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
@@ -167,8 +169,9 @@ correlations `pcor_vj_vk`, which are the response's exactly.
 
 ## Degrees of freedom far from the gaussian limit and close to it
 
-Every quantity of \\\nu\\ alone (the constant of the density and its
-derivatives, and the expected information in \\\nu\\) is computed by
+Every quantity that depends only on \\\nu\\ (the constant of the density
+and its derivatives, and the expected information in \\\nu\\) is
+computed by
 [`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
 and
 [`mvt_info_nunu()`](https://statmodels7.github.io/distributions7/reference/mvt_info_nunu.md)
@@ -180,9 +183,9 @@ do not.
 
 ## The response
 
-An \\n \times p\\ matrix, one row per observation. A plain vector of
-length \\p\\ is read as a single observation. A parameter may not vary
-from observation to observation.
+The response is an \\n \times p\\ matrix with one row per observation. A
+plain vector of length \\p\\ is read as a single observation. A
+parameter may not vary from observation to observation.
 
 ## The distribution
 
@@ -233,8 +236,8 @@ d
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 
-# The scale matrix is what the parametrization carries; the covariance is a
-# moment and is larger by nu / (nu - 2).
+# The parametrization carries the scale matrix; the covariance is a moment
+# and is larger by nu / (nu - 2).
 mv_sigma(d, theta)
 #>           v1        v2
 #> v1 1.2214028 0.4420684

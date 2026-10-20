@@ -61,8 +61,8 @@ cbind(u = u, scaled = distributions7:::mvt_D(u) / (-u^2 / 2))
 #> [4,] 1e-01 0.8802178
 #> [5,] 1e+00 0.3862944
 
-# Against the direct difference, relatively. The two agree where the
-# difference still has digits and part company as u shrinks.
+# The result is compared with the direct difference, relatively. The two
+# agree where the difference still has digits and part company as u shrinks.
 cbind(u = u,
       rel_gap = abs(distributions7:::mvt_D(u) - (u / (1 + u) - log1p(u))) /
         abs(distributions7:::mvt_D(u)))

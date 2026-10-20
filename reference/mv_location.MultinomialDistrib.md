@@ -15,8 +15,8 @@ delegates here.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 ## Value
 

@@ -1,15 +1,16 @@
 # Standard Deviations and Correlations of a Structured Matrix
 
 Turns a symmetric positive definite matrix and the derivatives of its
-entries into standard deviations and correlations, with the Jacobian
-written out. Writing \\\Sigma = DRD\\ with \\D\\ the diagonal of
+entries into standard deviations and correlations and computes the
+Jacobian explicitly. Writing \\\Sigma = DRD\\ with \\D\\ the diagonal of
 standard deviations, \$\$\frac{\partial s_j}{\partial\theta_k} =
 \frac{A_k\[j,j\]}{2 s_j}, \qquad \frac{\partial
 \rho\_{jl}}{\partial\theta_k} = \frac{A_k\[j,l\]}{s_j s_l} -
 \frac{\rho\_{jl}}{2}\left(\frac{A_k\[j,j\]}{\Sigma\_{jj}} +
 \frac{A_k\[l,l\]}{\Sigma\_{ll}}\right),\$\$ with \\A_k =
-\partial\Sigma/\partial\theta_k\\. No further derivative is computed:
-the arrays are those that the caller obtained from the parametrization.
+\partial\Sigma/\partial\theta_k\\. The function computes no further
+derivative: the arrays are those that the caller obtained from the
+parametrization.
 
 ## Usage
 
@@ -35,8 +36,8 @@ mv_sd_cor(
 
   A list of \\p \times p\\ numeric matrices, one per parameter of the
   distribution and in `params` order, holding
-  \\\partial\Sigma/\partial\theta_k\\. For a parameter that the matrix
-  does not depend on, the entry is `NULL` or a matrix of zeros; both are
+  \\\partial\Sigma/\partial\theta_k\\. For a parameter that does not
+  affect the matrix, the entry is `NULL` or a matrix of zeros; both are
   accepted.
 
 - params:
@@ -47,7 +48,7 @@ mv_sd_cor(
 - sd_label:
 
   The prefix for the diagonal quantities. Defaults to `"sd"`; the
-  Student t passes `"scale_sd"`, its diagonal quantities not being
+  Student t passes `"scale_sd"`, because its diagonal quantities are not
   standard deviations of the response.
 
 - cor_label:
@@ -75,7 +76,7 @@ correlation, \\\theta\\ the parameter vector and \\A_k =
 ## See also
 
 [`mv_sigma_derivs()`](https://statmodels7.github.io/distributions7/reference/mv_sigma_derivs.md)
-for the arrays it takes,
+for the arrays that it takes,
 [`mv_derived.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md)
 and
 [`mv_derived.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvStudentTDistrib.md)
@@ -107,7 +108,7 @@ c(sqrt(diag(S)), S[2, 1] / sqrt(S[1, 1] * S[2, 2]))
 #>        v1        v2           
 #> 1.0000000 1.1180340 0.4472136 
 
-# The Jacobian against a numerical one taken through mv_sigma().
+# The Jacobian is compared with a numerical one taken through mv_sigma().
 g <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   M <- mv_sigma(d, t2)

@@ -1,7 +1,7 @@
 # A Second Derivative From One Stencil
 
-The mixed or repeated second derivative of a scalar function, from a
-single stencil, without nested first differences.
+Computes the mixed or repeated second derivative of a scalar function
+from a single stencil, without nested first differences.
 
 ## Usage
 
@@ -21,7 +21,7 @@ fd_second(f, x, k, l, h_rel = NULL)
 
 - k, l:
 
-  The coordinates to differentiate in.
+  The coordinates with respect to which `f` is differentiated.
 
 - h_rel:
 

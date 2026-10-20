@@ -25,7 +25,7 @@ matrix per parameter, as the gaussian and the Student t do.
 - scale:
 
   One of `"parameter"` or `"link"`. The generic applies the link scale
-  to the result of a method. Not read here.
+  to the result of a method. It is not read here.
 
 - ...:
 
@@ -55,7 +55,7 @@ y <- distrib_rng(d, 3, theta)
 try(distrib_cross_y(d, y, theta))
 #> Error : distrib_cross_y() is not defined for 'dirichlet [3d, mean=simplex]': register a closed form on the family, returning one n-by-p matrix per parameter as the gaussian and the Student t do.
 
-# The shape that a method returns: one n by p matrix per parameter.
+# A method returns one n by p matrix per parameter.
 g <- mvgaussian1_distrib(2)
 th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
            sigma_L2.1 = 0.5)

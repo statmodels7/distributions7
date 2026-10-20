@@ -39,11 +39,11 @@ declares any.
 
 ## Details
 
-The diagonal entries are variances and are intervalled on the log scale;
-the off-diagonal ones are unconstrained given the diagonal and are
-intervalled on their own scale. The closed-form methods report
-correlations on Fisher's \\z\\, whose intervals stay inside \\(-1, 1)\\;
-the interval of a covariance has no such bound.
+The diagonal entries are variances and their intervals are built on the
+log scale; the off-diagonal ones are unconstrained given the diagonal
+and their intervals are built on their own scale. The closed-form
+methods report correlations on Fisher's \\z\\, whose intervals stay
+inside \\(-1, 1)\\; the interval of a covariance has no such bound.
 
 ## See also
 
@@ -79,8 +79,8 @@ mv_sigma(d, theta)
 #> v1 1.0 0.50
 #> v2 0.5 1.25
 
-# Against the closed-form method, which reports standard deviations and a
-# correlation in place of variances and a covariance.
+# The closed-form method reports standard deviations and a correlation in
+# place of variances and a covariance.
 mv_derived(d, theta)$value
 #>     sd_v1     sd_v2 cor_v1_v2 
 #> 1.0000000 1.1180340 0.4472136 

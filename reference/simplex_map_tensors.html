@@ -17,7 +17,7 @@ chain rule in chain_univariate() look a block up by its index multiset."><meta p
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,10 +82,11 @@ A larger value signals an error.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of numeric vectors, each as long as the simplex has
-coordinates, keyed <code>"1"</code>, <code>"2"</code>, <code>"1,1"</code>, <code>"1,2"</code> and so on, with the
-indices sorted and comma-separated. Its length is the number of index
-multisets of width 1 to <code>order</code>.</p>
+    <p>A named list of numeric vectors, in which each vector is as long as
+the simplex has coordinates. The names are <code>"1"</code>, <code>"2"</code>, <code>"1,1"</code>, <code>"1,2"</code>
+and so on, and the indices in each name are sorted and comma-separated.
+The length of the list is the number of index multisets of width 1 to
+<code>order</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
@@ -115,8 +116,8 @@ well, and <code><a href="https://statmodels7.github.io/parameters7/reference/sim
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/param_d1.html" class="external-link">param_d1</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">eta</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.2445259 -0.1100772 -0.1344486</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Every derivative of a point on the simplex sums to zero, the value</span></span></span>
-<span class="r-in"><span><span class="co"># summing to one at every eta.</span></span></span>
+<span class="r-in"><span><span class="co"># Every derivative of a point on the simplex sums to zero, because the</span></span></span>
+<span class="r-in"><span><span class="co"># value sums to one at every eta.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">mt</span>, <span class="va">sum</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             1             2           1,1           2,2           1,2 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2.775558e-17  2.775558e-17  6.938894e-18  1.387779e-17 -2.081668e-17 </span>

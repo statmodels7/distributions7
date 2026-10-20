@@ -18,11 +18,12 @@ counts as weights, on another chart.
 - y:
 
   A numeric matrix with one row per observation and one column per
-  category, each row a vector of counts summing to `distrib@size`.
+  category, where each row is a vector of counts that sum to
+  `distrib@size`.
 
 - theta:
 
-  A named list of parameters, each component a single number:
+  A named list of parameters, where each component is a single number:
   `probs_alr1`, ..., `probs_alr(p-1)`.
 
 - expected:
@@ -95,7 +96,7 @@ names(d4)
 #> [4] "probs_alr1_probs_alr2_probs_alr2_probs_alr2"
 #> [5] "probs_alr2_probs_alr2_probs_alr2_probs_alr2"
 
-# Against a central difference of the third order.
+# The result is compared with a central difference of the third order.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h

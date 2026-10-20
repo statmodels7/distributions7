@@ -5,16 +5,18 @@ one \(p \times p\) matrix per parameter. The response Hessian is
 is exactly the zero matrix; the matrix components are
 $$\frac{\partial^3\ell}{\partial y\,\partial y^\top\partial\eta_k}
   = B_k = \Sigma^{-1}A_k\Sigma^{-1},$$
-with \(A_k = \partial\Sigma/\partial\eta_k\), which is \(-P_k\) and is
-read as such from mv_matrix_pieces(). The components do not depend on the
+with \(A_k = \partial\Sigma/\partial\eta_k\). The matrix \(B_k\) is
+\(-P_k\), and the method reads it as such from mv_matrix_pieces(). The
+components do not depend on the
 observation, so one matrix is returned per parameter and y is not read."><meta property="og:description" content="Computes \(\partial^3\ell/\partial y\,\partial y^\top \partial\theta_k\),
 one \(p \times p\) matrix per parameter. The response Hessian is
 \(-\Sigma^{-1}\), which does not involve the mean, so every mean component
 is exactly the zero matrix; the matrix components are
 $$\frac{\partial^3\ell}{\partial y\,\partial y^\top\partial\eta_k}
   = B_k = \Sigma^{-1}A_k\Sigma^{-1},$$
-with \(A_k = \partial\Sigma/\partial\eta_k\), which is \(-P_k\) and is
-read as such from mv_matrix_pieces(). The components do not depend on the
+with \(A_k = \partial\Sigma/\partial\eta_k\). The matrix \(B_k\) is
+\(-P_k\), and the method reads it as such from mv_matrix_pieces(). The
+components do not depend on the
 observation, so one matrix is returned per parameter and y is not read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +25,7 @@ observation, so one matrix is returned per parameter and y is not read."><meta p
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +64,9 @@ one \(p \times p\) matrix per parameter. The response Hessian is
 is exactly the zero matrix; the matrix components are
 $$\frac{\partial^3\ell}{\partial y\,\partial y^\top\partial\eta_k}
   = B_k = \Sigma^{-1}A_k\Sigma^{-1},$$
-with \(A_k = \partial\Sigma/\partial\eta_k\), which is \(-P_k\) and is
-read as such from <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>. The components do not depend on the
+with \(A_k = \partial\Sigma/\partial\eta_k\). The matrix \(B_k\) is
+\(-P_k\), and the method reads it as such from <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>. The
+components do not depend on the
 observation, so one matrix is returned per parameter and <code>y</code> is not read.</p>
     </div>
 
@@ -77,12 +80,13 @@ observation, so one matrix is returned per parameter and <code>y</code> is not r
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
-<dd><p>An \(n \times p\) numeric matrix of observations. Not read: no
-component of this derivative depends on the response.</p></dd>
+<dd><p>An \(n \times p\) numeric matrix of observations. It is not read,
+because every component of this derivative is independent of the response.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -105,7 +109,7 @@ zero matrix.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This is one of the three derivatives that a marginal criterion reads when the
-family is a prior over a coefficient block, the other two being
+family is a prior over a coefficient block. The other two are
 <code><a href="distrib_hess_y_hess.MvGaussianDistrib.html">distrib_hess_y_hess.MvGaussianDistrib()</a></code> and
 <code><a href="distrib_grad_y_hess.MvGaussianDistrib.html">distrib_grad_y_hess.MvGaussianDistrib()</a></code>.</p>
     </div>
@@ -137,14 +141,14 @@ generic.</p></div>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">c2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Every mean component is the zero matrix, the response Hessian carrying</span></span></span>
-<span class="r-in"><span><span class="co"># no mean at all.</span></span></span>
+<span class="r-in"><span><span class="co"># Every mean component is the zero matrix, because the response Hessian</span></span></span>
+<span class="r-in"><span><span class="co"># does not involve the mean.</span></span></span>
 <span class="r-in"><span><span class="va">c2</span><span class="op">$</span><span class="va">mu1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A matrix component against a difference of the response Hessian.</span></span></span>
+<span class="r-in"><span><span class="co"># A matrix component is compared with a difference of the response Hessian.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="va">tp</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tp</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">&lt;-</span> <span class="va">tp</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">+</span> <span class="va">h</span></span></span>
 <span class="r-in"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tm</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">&lt;-</span> <span class="va">tm</span><span class="op">$</span><span class="va">sigma_L2.1</span> <span class="op">-</span> <span class="va">h</span></span></span>

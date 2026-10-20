@@ -22,14 +22,14 @@ in this way.
 
 - y:
 
-  A numeric matrix with one row per observation and \\p\\ columns, each
-  row on the support. A single observation may be given as a plain
-  vector.
+  A numeric matrix with one row per observation and \\p\\ columns, and
+  each row is on the support. A single observation may be given as a
+  plain vector.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 - scale:
 
@@ -46,8 +46,8 @@ in this way.
 A named list of numeric vectors, one per distinct entry of the symmetric
 matrix and named as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
-names them, each of length `nrow(y)`. For \\p\\ categories there are
-\\p(p-1)/2\\ of them.
+names them, and each vector has length `nrow(y)`. For \\p\\ categories
+there are \\p(p-1)/2\\ of them.
 
 ## Notation
 

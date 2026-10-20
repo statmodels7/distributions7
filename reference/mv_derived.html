@@ -15,7 +15,7 @@ of each one is built."><meta property="og:image" content="https://statmodels7.gi
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,9 @@ of each one is built.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list or vector of parameters, each component a single
-number. Aligned by the generic before dispatch, so any order is accepted.</p></dd>
+<dd><p>A named list or vector of parameters, where each component is a
+single number. The generic aligns it before dispatch, so any order is
+accepted.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -88,12 +89,12 @@ column per parameter of <code>distrib</code>, in <code>distrib@params</code> ord
 
 <dt><code>transform</code></dt>
 <dd><p>a character vector, one of <code>"identity"</code>, <code>"log"</code>,
-<code>"atanh"</code> or <code>"logit"</code> per quantity, naming the scale its interval is
-built on;</p></dd>
+<code>"atanh"</code> or <code>"logit"</code> per quantity, naming the scale on which its
+interval is built;</p></dd>
 
 <dt><code>block</code></dt>
-<dd><p>a character vector labeling the group each quantity
-belongs to, by which the printed summary is laid out.</p></dd>
+<dd><p>a character vector labeling the group to which each
+quantity belongs and by which the printed summary is laid out.</p></dd>
 
 
 </dl><p>All four are named after the quantities and are the same length.</p>
@@ -108,12 +109,13 @@ do and supplies \(\partial g/\partial\theta\), so that <code><a href="mv_summary
 apply the delta method to them.</p>
     </div>
     <div class="section level2">
-    <h2 id="the-interval-scale-each-quantity-declares">The interval scale each quantity declares<a class="anchor" aria-label="anchor" href="#the-interval-scale-each-quantity-declares"></a></h2>
+    <h2 id="the-interval-scale-that-each-quantity-declares">The interval scale that each quantity declares<a class="anchor" aria-label="anchor" href="#the-interval-scale-that-each-quantity-declares"></a></h2>
     <p>Each quantity carries the scale on which its interval is built, as
 <code><a href="fit_distrib.html">fit_distrib()</a></code> builds a univariate interval on the link scale and maps it
-back. A standard deviation is intervalled on the log scale, so the interval
-cannot reach zero; a correlation on Fisher's \(z = \mathrm{artanh}(\rho)\),
-so it cannot leave \((-1, 1)\); an unconstrained quantity on its own scale.
+back. The interval of a standard deviation is built on the log scale, so it
+cannot reach zero; that of a correlation on Fisher's
+\(z = \mathrm{artanh}(\rho)\), so it cannot leave \((-1, 1)\); that of an
+unconstrained quantity on its own scale.
 On the raw scale the interval of a correlation can exceed one.</p>
     </div>
     <div class="section level2">

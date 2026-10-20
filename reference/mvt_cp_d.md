@@ -35,8 +35,9 @@ A numeric vector as long as `nu`.
 For even \\p\\ the recurrence of the gamma function telescopes into
 \$\$c_p(\nu) = -\tfrac{p}{2}\log 2 + \sum\_{j=1}^{p/2-1} \log\\\left(1 +
 \tfrac{2j}{\nu}\right),\$\$ whose derivatives are
-\\(-1)^{k-1}(k-1)!\\\nu^{-k}\sum_j \\(1 + 2j/\nu)^{-k} - 1\\\\, each
-term formed with [`base::expm1()`](https://rdrr.io/r/base/Log.html) and
+\\(-1)^{k-1}(k-1)!\\\nu^{-k}\sum_j \\(1 + 2j/\nu)^{-k} - 1\\\\, in which
+each term is formed with
+[`base::expm1()`](https://rdrr.io/r/base/Log.html) and
 [`base::log1p()`](https://rdrr.io/r/base/Log.html). For odd \\p\\ and
 \\\nu \ge \max(20, 4p)\\ the series of
 [`mvt_nu_coef()`](https://statmodels7.github.io/distributions7/reference/mvt_nu_coef.md)
@@ -60,7 +61,8 @@ for the series.
 
 ``` r
 nu <- c(5, 50, 1e6)
-# Against the direct form, which loses its digits as nu grows.
+# The result is compared with the direct form, which loses its digits as
+# nu grows.
 rbind(exact = distributions7:::mvt_cp_d(nu, 3, 0L),
       direct = lgamma((nu + 3) / 2) - lgamma(nu / 2) - 1.5 * log(nu))
 #>              [,1]      [,2]     [,3]

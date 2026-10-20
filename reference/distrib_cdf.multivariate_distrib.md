@@ -19,8 +19,8 @@ package does not provide it.
 
 - q:
 
-  A numeric matrix of quantiles, one row per point. Not read: the error
-  is signalled first.
+  A numeric matrix of quantiles, one row per point. It is not read,
+  because the error is signalled first.
 
 - theta:
 

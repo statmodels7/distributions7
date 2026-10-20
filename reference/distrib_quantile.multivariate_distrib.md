@@ -16,8 +16,8 @@ and they differ.
 
 - p:
 
-  A numeric vector of probabilities. Not read: the error is signalled
-  first.
+  A numeric vector of probabilities. It is not read, because the error
+  is signalled first.
 
 - theta:
 

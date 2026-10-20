@@ -46,8 +46,8 @@ distributions7:::mv_leading_location(d, th)
 #>   v1   v2   v3 
 #>  1.0 -2.0  0.5 
 
-# It is what mv_location() returns for this family, the method being this
-# function.
+# mv_location() returns the same vector for this family, because its method
+# is this function.
 mv_location(d, theta)
 #>   v1   v2   v3 
 #>  1.0 -2.0  0.5 

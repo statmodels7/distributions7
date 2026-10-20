@@ -3,17 +3,17 @@
 summing to the trial count \(n\), one row per point. These are the weak
 compositions of \(n\) into \(p\) parts, supplied by
 numericals7::compositions().
-With the support in hand every expectation is an exact sum. check_distrib()
-uses it to test that the mass adds to one, an equality with tolerance
-1e-10; an importance-sampling check compares only against Monte Carlo
-error, and a normalization wrong by a thousandth would pass it."><meta property="og:description" content="Enumerates the whole support: every vector of \(p\) non-negative integers
+Because the support is enumerated, every expectation is an exact sum.
+check_distrib() uses it to test that the mass adds to one, an equality with
+tolerance 1e-10; an importance-sampling check compares only against Monte
+Carlo error, and a normalization wrong by a thousandth would pass it."><meta property="og:description" content="Enumerates the whole support: every vector of \(p\) non-negative integers
 summing to the trial count \(n\), one row per point. These are the weak
 compositions of \(n\) into \(p\) parts, supplied by
 numericals7::compositions().
-With the support in hand every expectation is an exact sum. check_distrib()
-uses it to test that the mass adds to one, an equality with tolerance
-1e-10; an importance-sampling check compares only against Monte Carlo
-error, and a normalization wrong by a thousandth would pass it."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Because the support is enumerated, every expectation is an exact sum.
+check_distrib() uses it to test that the mass adds to one, an equality with
+tolerance 1e-10; an importance-sampling check compares only against Monte
+Carlo error, and a normalization wrong by a thousandth would pass it."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ error, and a normalization wrong by a thousandth would pass it."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,10 +58,10 @@ error, and a normalization wrong by a thousandth would pass it."><meta property=
 summing to the trial count \(n\), one row per point. These are the weak
 compositions of \(n\) into \(p\) parts, supplied by
 <code><a href="https://statmodels7.github.io/numericals7/reference/compositions.html" class="external-link">numericals7::compositions()</a></code>.</p>
-<p>With the support in hand every expectation is an exact sum. <code><a href="check_distrib.html">check_distrib()</a></code>
-uses it to test that the mass adds to one, an equality with tolerance
-<code>1e-10</code>; an importance-sampling check compares only against Monte Carlo
-error, and a normalization wrong by a thousandth would pass it.</p>
+<p>Because the support is enumerated, every expectation is an exact sum.
+<code><a href="check_distrib.html">check_distrib()</a></code> uses it to test that the mass adds to one, an equality with
+tolerance <code>1e-10</code>; an importance-sampling check compares only against Monte
+Carlo error, and a normalization wrong by a thousandth would pass it.</p>
     </div>
 
 
@@ -75,8 +75,8 @@ read for its <code>size</code> and <code>n_dim</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>Ignored. The support is a property of \(n\) and \(p\)
-alone, so any value, <code>NULL</code> included, gives the same answer.</p></dd>
+<dd><p>Ignored. The support depends only on \(n\) and \(p\),
+so any value, including <code>NULL</code>, gives the same answer.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

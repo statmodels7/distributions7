@@ -6,20 +6,24 @@ $$\dfrac{\partial\ell}{\partial\eta_k} = \sum_{j=1}^{p}
 \dfrac{y_j}{p_j}A_{jk}.$$ The factorial term of the mass carries no parameter,
 and the data enter only through the counts. On the additive log-ratio chart,
 where \(A_{jk} = p_j(\delta_{jk} - p_k)\), the sum is computed as \(y_k
-- N p_k\) with \(N\) the total of the row, which divides by no probability.
+- N p_k\) with \(N\) the total of the row, without dividing by a
+probability.
 With scale = "link" the generic applies the chain rule for the links of the
 family to the result of the method. Every parameter takes the identity link
-here, its free value being unconstrained already, so the two scales coincide.'><meta property="og:description" content='Computes the first derivatives of the multinomial log-mass with respect to
+here, because its free value is already unconstrained, so the two scales
+coincide.'><meta property="og:description" content='Computes the first derivatives of the multinomial log-mass with respect to
 the free values of the simplex, one value per observation, in closed form.
 With \(A = \partial p/\partial\eta\) the Jacobian of the chart,
 $$\dfrac{\partial\ell}{\partial\eta_k} = \sum_{j=1}^{p}
 \dfrac{y_j}{p_j}A_{jk}.$$ The factorial term of the mass carries no parameter,
 and the data enter only through the counts. On the additive log-ratio chart,
 where \(A_{jk} = p_j(\delta_{jk} - p_k)\), the sum is computed as \(y_k
-- N p_k\) with \(N\) the total of the row, which divides by no probability.
+- N p_k\) with \(N\) the total of the row, without dividing by a
+probability.
 With scale = "link" the generic applies the chain rule for the links of the
 family to the result of the method. Every parameter takes the identity link
-here, its free value being unconstrained already, so the two scales coincide.'><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+here, because its free value is already unconstrained, so the two scales
+coincide.'><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +31,7 @@ here, its free value being unconstrained already, so the two scales coincide.'><
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,10 +71,12 @@ $$\dfrac{\partial\ell}{\partial\eta_k} = \sum_{j=1}^{p}
 \dfrac{y_j}{p_j}A_{jk}.$$ The factorial term of the mass carries no parameter,
 and the data enter only through the counts. On the additive log-ratio chart,
 where \(A_{jk} = p_j(\delta_{jk} - p_k)\), the sum is computed as \(y_k
-- N p_k\) with \(N\) the total of the row, which divides by no probability.</p>
+- N p_k\) with \(N\) the total of the row, without dividing by a
+probability.</p>
 <p>With <code>scale = "link"</code> the generic applies the chain rule for the links of the
 family to the result of the method. Every parameter takes the identity link
-here, its free value being unconstrained already, so the two scales coincide.</p>
+here, because its free value is already unconstrained, so the two scales
+coincide.</p>
     </div>
 
 
@@ -84,13 +90,13 @@ here, its free value being unconstrained already, so the two scales coincide.</p
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric matrix with one row per observation and \(p\) columns,
-each row on the support. A single observation may be given as a plain
-vector.</p></dd>
+and each row is on the support. A single observation may be given as a
+plain vector.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of the simplex's free values on the parameter
-scale, each of length 1.</p></dd>
+scale, and each value has length 1.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -105,7 +111,7 @@ scale, each of length 1.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list with one numeric vector per free value, in the order
-<code>distrib@params</code> gives, each of length <code>nrow(y)</code>.</p>
+that <code>distrib@params</code> gives, and each vector has length <code>nrow(y)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

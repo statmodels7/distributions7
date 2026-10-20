@@ -21,8 +21,8 @@ way.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 - ...:
 
@@ -30,15 +30,15 @@ way.
 
 ## Value
 
-A numeric matrix with `n` rows and \\p\\ columns, each row a vector of
-non-negative integers summing to the object's `size`.
+A numeric matrix with `n` rows and \\p\\ columns, and each row is a
+vector of non-negative integers summing to the object's `size`.
 
 ## See also
 
 [`distrib_pdf.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MultinomialDistrib.md)
 for the mass,
 [`mv_support.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.md)
-for the points it can land on,
+for the points on which it can land,
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the probabilities back from a sample, and
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
@@ -50,7 +50,7 @@ for the generic.
 d <- multinomial_distrib(3, size = 5)
 th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
 
-# One row per observation, each summing to the trial count.
+# Each row is one observation and sums to the trial count.
 set.seed(1)
 Y <- distrib_rng(d, 4, th)
 Y

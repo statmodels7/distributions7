@@ -23,13 +23,13 @@ indices all name it.
 - y:
 
   A numeric matrix with one row per observation and one column per
-  coordinate, each row a point of the open simplex. A row with a zero
-  coordinate is outside the support and gives a non-finite component
-  through \\\log y_j\\.
+  coordinate, where each row is a point of the open simplex. A row with
+  a zero coordinate is outside the support and gives a non-finite
+  component through \\\log y_j\\.
 
 - theta:
 
-  A named list of parameters, each component a single number:
+  A named list of parameters, where each component is a single number:
   `mean_alr1`, ..., `mean_alr(p-1)` and `phi`.
 
 - expected:
@@ -78,11 +78,12 @@ law (see
 on a component that names only the free values of the mean. The second
 part is regular at a small shape, so the partition sum runs over
 \\\psi^{(m-1)}(1 + \alpha_j)\\. Applied to \\\log\Gamma(\alpha_j)\\
-directly, the chain rule would cancel at a small shape, terms of order
-one leaving a result of the order of \\\alpha_j\\. On another chart a
-coordinate with \\\alpha_j \< 1\\ is scaled by \\\alpha_j\\ through
-\\\alpha^m\psi^{(m-1)}(\alpha) = (-1)^m(m-1)! + \alpha^m\psi^{(m-1)}(1 +
-\alpha)\\, so that \\\psi^{(m-1)}(\alpha_j)\\ does not overflow.
+directly, the chain rule would cancel at a small shape: terms of order
+one would cancel and leave a result of the order of \\\alpha_j\\. On
+another chart a coordinate with \\\alpha_j \< 1\\ is scaled by
+\\\alpha_j\\ through \\\alpha^m\psi^{(m-1)}(\alpha) = (-1)^m(m-1)! +
+\alpha^m\psi^{(m-1)}(1 + \alpha)\\, so that \\\psi^{(m-1)}(\alpha_j)\\
+does not overflow.
 
 With `expected = TRUE` the expectation is exact. The response enters
 only through \\\sum_j(\alpha_j - 1)\log y_j\\, linearly, and
@@ -122,7 +123,7 @@ names(d3)
 #>  [7] "mean_alr2_mean_alr2_mean_alr2" "mean_alr2_mean_alr2_phi"      
 #>  [9] "mean_alr2_phi_phi"             "phi_phi_phi"                  
 
-# Against a central difference of the Hessian in phi.
+# The result is compared with a central difference of the Hessian in phi.
 h <- 1e-4
 tp <- theta; tp$phi <- tp$phi + h
 tm <- theta; tm$phi <- tm$phi - h

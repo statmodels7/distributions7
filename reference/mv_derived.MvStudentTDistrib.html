@@ -7,7 +7,7 @@ multiple of a matrix has the same correlations. The diagonal quantities are
 not standard deviations of the response, and for that reason they are named
 scale_sd_v1, ..., scale_sd_vp and blocked as "Scale standard deviations".
 The rule of mv_derived.MvGaussianDistrib() holds here as well: a
-structured parametrization reports its own block alone, its scale as the
+structured parametrization reports only its own block, its scale as the
 square root scale_sd on the scale-matrix side, and the inverse
 parametrization reports the conditional scales \(1/M_{jj}\) and the
 partial correlations and nothing of the scale matrix.'><meta property="og:description" content='Returns the square roots of the diagonal of the scale matrix and the
@@ -18,7 +18,7 @@ multiple of a matrix has the same correlations. The diagonal quantities are
 not standard deviations of the response, and for that reason they are named
 scale_sd_v1, ..., scale_sd_vp and blocked as "Scale standard deviations".
 The rule of mv_derived.MvGaussianDistrib() holds here as well: a
-structured parametrization reports its own block alone, its scale as the
+structured parametrization reports only its own block, its scale as the
 square root scale_sd on the scale-matrix side, and the inverse
 parametrization reports the conditional scales \(1/M_{jj}\) and the
 partial correlations and nothing of the scale matrix.'><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -29,7 +29,7 @@ partial correlations and nothing of the scale matrix.'><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ multiple of a matrix has the same correlations. The diagonal quantities are
 not standard deviations of the response, and for that reason they are named
 <code>scale_sd_v1</code>, ..., <code>scale_sd_vp</code> and blocked as <code>"Scale standard deviations"</code>.</p>
 <p>The rule of <code><a href="mv_derived.MvGaussianDistrib.html">mv_derived.MvGaussianDistrib()</a></code> holds here as well: a
-structured parametrization reports its own block alone, its <code>scale</code> as the
+structured parametrization reports only its own block, its <code>scale</code> as the
 square root <code>scale_sd</code> on the scale-matrix side, and the inverse
 parametrization reports the conditional scales \(1/M_{jj}\) and the
 partial correlations and nothing of the scale matrix.</p>
@@ -147,8 +147,8 @@ and <code><a href="mv_derived.html">mv_derived()</a></code> for the generic.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    scale_sd response_sd </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    1.000000    1.224745 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The correlation is the same either way, the two matrices being positive</span></span></span>
-<span class="r-in"><span><span class="co"># multiples of each other.</span></span></span>
+<span class="r-in"><span><span class="co"># The correlation is the same either way, because the two matrices are</span></span></span>
+<span class="r-in"><span><span class="co"># positive multiples of each other.</span></span></span>
 <span class="r-in"><span><span class="va">cv</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="va">m</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">m</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="va">m</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>reported <span class="op">=</span> <span class="va">der</span><span class="op">$</span><span class="va">value</span><span class="op">[[</span><span class="st">"cor_v1_v2"</span><span class="op">]</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  from_covariance <span class="op">=</span> <span class="fu">cv</span><span class="op">(</span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

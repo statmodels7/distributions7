@@ -29,7 +29,7 @@ The components do not depend on the observation, so `y` is not read.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - scale:
 
@@ -80,7 +80,8 @@ hh$mu1_sigma_L2.1
 #> [1,]    0    0
 #> [2,]    0    0
 
-# A matrix pair against a second difference of the response Hessian.
+# A matrix pair is compared with a second difference of the response
+# Hessian.
 h <- 1e-4
 f <- function(a, b) {
   t2 <- theta

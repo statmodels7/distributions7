@@ -48,13 +48,14 @@ The two terms of \\B_k\\ agree to first order in \\u\\, so below \\u =
 ## See also
 
 [`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
-for the part of \\\nu\\ alone; the derivative of the log-density in
-\\\nu\\ alone is \\c_p^{(k)} - h^{(k)}\\.
+for the part that depends on \\\nu\\ only; the derivative of the
+log-density in \\\nu\\ only is \\c_p^{(k)} - h^{(k)}\\.
 
 ## Examples
 
 ``` r
-# Against the direct form at nu = 1e9, where its terms cancel.
+# The result is compared with the direct form at nu = 1e9, where its terms
+# cancel.
 nu <- 1e9; q <- 1.25; p <- 2
 h <- function(v) (v + p) / 2 * log1p(q / v)
 distributions7:::mvt_h_d(q / nu, nu, p, 2L)

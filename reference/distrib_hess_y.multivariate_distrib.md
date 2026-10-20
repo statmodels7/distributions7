@@ -1,9 +1,9 @@
 # Response Hessian of a Multivariate Family Without a Method
 
-Signals an error, for the reason that
-[`distrib_grad_y.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.md)
-gives: the univariate numerical fallback differences along a line and
-would produce a scalar where a \\p \times p\\ matrix is wanted. A family
+Signals an error, for the same reason as
+[`distrib_grad_y.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.md):
+the univariate numerical fallback differences along a line and would
+produce a scalar where a \\p \times p\\ matrix is required. A family
 that can supply \\\partial^2\ell/\partial y\\\partial y^\top\\ registers
 its own method.
 

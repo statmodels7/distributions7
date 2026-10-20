@@ -1,12 +1,13 @@
 # The Taylor Coefficients Behind a Multivariate t's Degrees of Freedom
 
 Returns the Taylor coefficients at \\t = 0\\ of \\g(t) = (1 -
-e^{-pt})/(1 - e^{-2t})\\, from which every quantity of \\\nu\\ alone of
-a multivariate t follows by a Laplace transform. With \\c_p(\nu) =
-\log\Gamma\\(\nu+p)/2\\ - \log\Gamma(\nu/2) - (p/2)\log\nu\\,
-\$\$c_p'(\nu) = \int_0^\infty e^{-\nu t}\\g(t) - p/2\\\\dt,\$\$ so that
-\\c_p'(\nu) = \sum\_{n \ge 1} g_n\\ n!/\nu^{n+1}\\, a series that
-converges for even \\p\\ and is asymptotic for odd \\p\\.
+e^{-pt})/(1 - e^{-2t})\\, from which every quantity of a multivariate t
+depending on \\\nu\\ only follows by a Laplace transform. With
+\\c_p(\nu) = \log\Gamma\\(\nu+p)/2\\ - \log\Gamma(\nu/2) -
+(p/2)\log\nu\\, \$\$c_p'(\nu) = \int_0^\infty e^{-\nu t}\\g(t) -
+p/2\\\\dt,\$\$ so that \\c_p'(\nu) = \sum\_{n \ge 1} g_n\\
+n!/\nu^{n+1}\\, a series that converges for even \\p\\ and is asymptotic
+for odd \\p\\.
 
 ## Usage
 

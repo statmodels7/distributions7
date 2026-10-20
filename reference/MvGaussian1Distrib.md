@@ -109,7 +109,7 @@ MvGaussian2Distrib(
 
   Logical of length 1. `TRUE` when `param` carries the precision
   \\\Omega = \Sigma^{-1}\\ and `FALSE` when it carries the covariance
-  \\\Sigma\\. It decides which derivative arrays are the
+  \\\Sigma\\. Its value determines which derivative arrays are the
   parametrization's own and which are obtained from them (see
   [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
   the sign of the log-determinant, the prefix of the free names, and the

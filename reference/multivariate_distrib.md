@@ -1,7 +1,7 @@
 # S7 Class for Multivariate Distributions
 
-The subclass of `distrib` for distributions whose observations are
-vectors. The response is an \\n \times p\\ matrix, one row per
+Defines the subclass of `distrib` for distributions whose observations
+are vectors. The response is an \\n \times p\\ matrix, one row per
 observation, and `n_dim` records \\p\\. The class is a sibling of
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 and

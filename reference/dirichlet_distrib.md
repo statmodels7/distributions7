@@ -65,8 +65,8 @@ Writing \\\alpha = \phi\mu\\ for the shapes, the density on the simplex
 y_j^{\alpha_j - 1},\$\$ with \$\$\mathbb{E}\[Y_j\] = \mu_j, \qquad
 \operatorname{Cov}(Y_i, Y_j) = \frac{\delta\_{ij}\mu_i -
 \mu_i\mu_j}{\phi + 1}.\$\$ So \\\phi\\ is a precision: the larger it is,
-the tighter the draws sit about the mean. The covariance is singular,
-the coordinates summing to one, and every off-diagonal entry is
+the tighter the draws sit about the mean. The covariance is singular
+because the coordinates sum to one, and every off-diagonal entry is
 negative.
 
 The parametrization follows the design of the multivariate gaussian. The
@@ -83,7 +83,7 @@ simplex prefixed by `mean_`, followed by `phi`.
 
 The family has no location and scale to separate: the support is a set
 of dimension \\p-1\\, not a Euclidean space, and the covariance is
-singular by construction. Two methods follow from this.
+singular by construction. For this reason
 [`mv_marginal.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.DirichletDistrib.md)
 returns a beta distribution, and
 [`mv_reference_draw.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.DirichletDistrib.md)
@@ -94,15 +94,16 @@ needs.
 
 ## The expected information
 
-Two identities make it closed form. Differentiating \\\sum_j \mu_j = 1\\
-once shows that the columns of \\A = \partial\mu/\partial\eta\\ sum to
-zero, and twice that every second-derivative vector of the simplex does;
-and \\\mathbb{E}\[\log y_j\] = \psi(\alpha_j) - \psi(\phi)\\ makes
-\\\mathbb{E}\[g_j\] = -\psi(\phi)\\ the same constant for every \\j\\.
-Every term of the observed Hessian that carries the data is that
-constant times one of the two zero sums, and vanishes. The higher
-derivatives depend on the data only linearly in \\\log y\\, so their
-expectations are closed form as well.
+The expected information is closed form because of two identities.
+Differentiating \\\sum_j \mu_j = 1\\ once shows that the columns of \\A
+= \partial\mu/\partial\eta\\ sum to zero, and twice that every
+second-derivative vector of the simplex does; and \\\mathbb{E}\[\log
+y_j\] = \psi(\alpha_j) - \psi(\phi)\\ makes \\\mathbb{E}\[g_j\] =
+-\psi(\phi)\\ the same constant for every \\j\\. Every term of the
+observed Hessian that carries the data is that constant times one of the
+two zero sums, and vanishes. The higher derivatives depend on the data
+only linearly in \\\log y\\, so their expectations are closed form as
+well.
 
 ## Quantities that are not defined
 
@@ -118,8 +119,8 @@ error that states the reason.
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 maximizes the log-likelihood on the link scale, over the free values of
-the simplex and the link of \\\phi\\ (\\\log\phi\\ by default). No
-estimate is closed form.
+the simplex and the link of \\\phi\\ (\\\log\phi\\ by default). The
+estimates are not available in closed form.
 
 ## Notation
 
@@ -147,7 +148,7 @@ for the discrete family on the same simplex;
 [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 for the elliptical multivariate family;
 [`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)
-for the chart the mean rides;
+for the chart on which the mean rides;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
@@ -170,7 +171,8 @@ d
 #>   mean_alr2 (mean)               | Link: identity   | Domain: (-Inf, Inf)
 #>   phi       (concentration)      | Link: log        | Domain: (0, Inf)
 
-# Two free mean values and a concentration, all on the parameter scale.
+# The parameters are two free mean values and a concentration, all on the
+# parameter scale.
 th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
 mv_location(d, th)
 #> [1] 0.4260125 0.2583897 0.3155978

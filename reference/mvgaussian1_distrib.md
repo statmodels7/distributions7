@@ -41,10 +41,11 @@ An S7 object of class
 [MvGaussian1Distrib](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md)
 or
 [MvGaussian2Distrib](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md),
-with `param` the parametrization supplied and `inverted` recording which
-side it carries. Its `params` are `mu1`, ..., `mup` followed by the
-prefixed free names, `n_params` is `p + param@n_free`, every entry of
-`params_bounds` is \\(-\infty, \infty)\\ and every link is the identity.
+whose `param` is the parametrization supplied and whose `inverted`
+records which side it carries. Its `params` are `mu1`, ..., `mup`
+followed by the prefixed free names, `n_params` is `p + param@n_free`,
+every entry of `params_bounds` is \\(-\infty, \infty)\\ and every link
+is the identity.
 
 ## The two families
 
@@ -54,8 +55,8 @@ The numbering is the package's convention, the one that separates
 and
 [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md):
 one name per parametrization, because in a modeling framework a
-parametrization decides what a linear predictor acts on. Here the choice
-can change the model as well as the coordinates. A matrix
+parametrization determines what a linear predictor acts on. Here the
+choice can change the model as well as the coordinates. A matrix
 parametrization is closed under inversion when the inverse of every
 matrix that it produces is one of its own;
 [`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html),
@@ -108,8 +109,8 @@ two-dimensional gaussian on an unstructured covariance therefore has the
 five parameters `mu1`, `mu2`, `sigma_log_L1`, `sigma_log_L2` and
 `sigma_L2.1`, while the same parametrization on the precision gives
 `omega_log_L1` and the rest. The prefix distinguishes the two models in
-a printed table, since the name of a free value gives the construction
-of the matrix and does not say which matrix it is.
+a printed table, since the name of a free value identifies the
+construction of the matrix and does not identify which matrix it is.
 
 All of these parameters are unconstrained, so all of the links are the
 identity. The constraint that makes the matrix positive definite is
@@ -141,10 +142,10 @@ can serve as a penalty but does not define a density.
 
 ## The response
 
-An \\n \times p\\ matrix, one row per observation. A plain vector of
-length \\p\\ is read as a single observation. A parameter may not vary
-from observation to observation here, the parametrization describing one
-matrix for the whole sample.
+The response is an \\n \times p\\ matrix with one row per observation. A
+plain vector of length \\p\\ is read as a single observation. A
+parameter may not vary from observation to observation here, because the
+parametrization describes one matrix for the whole sample.
 
 ## The distribution
 
@@ -194,7 +195,7 @@ d
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 
-# The covariance that the free values describe, positive definite for any
+# The covariance that the free values describe is positive definite for any
 # five numbers.
 S <- mv_sigma(d, theta)
 round(S, 4)
@@ -204,7 +205,7 @@ round(S, 4)
 eigen(S, only.values = TRUE)$values
 #> [1] 1.5092462 0.5424766
 
-# The density, against the formula written out.
+# The density is compared with the formula written out.
 y <- rbind(c(0, 0), c(1, -1))
 mu <- c(0.5, -0.3)
 ref <- apply(y, 1, function(r)
@@ -228,8 +229,8 @@ Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
 all.equal(mv_sigma(o, th_o), solve(Om), check.attributes = FALSE)
 #> [1] TRUE
 
-# The conditional variance of the first coordinate given the second, and
-# the marginal variance beside it.
+# The conditional variance of the first coordinate given the second appears
+# beside the marginal variance.
 c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 #> conditional    marginal 
 #>   0.8187308   1.0141552 

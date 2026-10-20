@@ -20,8 +20,8 @@ mv_location(distrib, theta)
 
 - theta:
 
-  A named list or vector of parameters, each component a single number.
-  The generic aligns it before dispatch.
+  A named list or vector of parameters, in which each component is a
+  single number. The generic aligns it before dispatch.
 
 ## Value
 
@@ -38,9 +38,9 @@ when \\\nu \> 1\\; they register
 The Dirichlet returns its mean vector, and the multinomial its mean
 vector of counts, the probabilities times the number of trials. The
 method of the class signals an error for a family without a method of
-its own, the first \\p\\ parameters of a family not being a location in
-general. [`base::mean()`](https://rdrr.io/r/base/mean.html) is the
-generic for the moment.
+its own, because the first \\p\\ parameters of a family are not in
+general a location. [`base::mean()`](https://rdrr.io/r/base/mean.html)
+is the generic for the moment.
 
 ## Notation
 

@@ -2,7 +2,7 @@
 
 Returns the covariance matrix of the family by delegating to
 [`mv_sigma.DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.DirichletDistrib.md).
-It is singular, the coordinates summing to one, so a computation that
+It is singular because the coordinates sum to one, so a computation that
 inverts a covariance works with the marginals or with the free vector of
 the simplex.
 
@@ -13,8 +13,8 @@ the simplex.
   A `DirichletDistrib` object, from
   [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md).
   The argument is named `x` for consistency with
-  [`base::mean()`](https://rdrr.io/r/base/mean.html), whose signature
-  the moment generics follow.
+  [`base::mean()`](https://rdrr.io/r/base/mean.html), whose signature is
+  the one that the moment generics follow.
 
 - theta:
 

@@ -30,9 +30,9 @@ with `a` and `b` positions in `distrib@params`.
 ## Details
 
 [`hess_pairs()`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md)
-answers the same question with parameter names, which suits a univariate
-method looking a closed-form component up in a table. Here the names are
-matched back to positions, so the two orderings come from one
+returns the same pairs as parameter names, which suits a univariate
+method that looks a closed-form component up in a table. Here the names
+are matched back to positions, so the two orderings come from one
 enumeration and cannot drift apart.
 
 ## See also
@@ -52,7 +52,7 @@ idx <- distributions7:::mv_hess_indices(d)
 length(idx) == length(hess_names(d@params))
 #> [1] TRUE
 
-# Key by key, the positions name the parameters the key is built from.
+# Key by key, the positions name the parameters from which the key is built.
 head(data.frame(key = hess_names(d@params),
                 a = vapply(idx, `[`, integer(1), 1L),
                 b = vapply(idx, `[`, integer(1), 2L)), 6)
@@ -64,7 +64,7 @@ head(data.frame(key = hess_names(d@params),
 #> sigma_L2.1_sigma_L2.1         sigma_L2.1_sigma_L2.1 5 5
 #> mu1_mu2                                     mu1_mu2 1 2
 
-# Which is the same enumeration hess_pairs() gives as names.
+# This is the same enumeration that hess_pairs() gives as names.
 all.equal(lapply(idx, function(p) d@params[p]),
           distributions7:::hess_pairs(d@params),
           check.attributes = FALSE)

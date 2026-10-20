@@ -21,7 +21,7 @@ constant across rows and y is used only for its row count."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,12 +75,13 @@ constant across rows and <code>y</code> is used only for its row count.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>An \(n \times p\) numeric matrix of observations. Only its row
-count is used: the expectation is taken over the law, so no observation
-enters any component.</p></dd>
+count is used: the expectation is taken over the law, so the components
+do not depend on any observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -91,8 +92,9 @@ coincide.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored: the expectation is exact and no approximation strategy
-is consulted. It is present so that the signature matches the generic's.</p></dd>
+<dd><p>Ignored: the expectation is exact, so the method does not use
+an approximation strategy. It is present so that the signature matches
+the generic's.</p></dd>
 
 
 <dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
@@ -106,7 +108,7 @@ is consulted. It is present so that the signature matches the generic's.</p></dd
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors of length \(n\), keyed as
-<code><a href="hess_names.html">hess_names(distrib@params)</a></code>, each vector constant.</p>
+<code><a href="hess_names.html">hess_names(distrib@params)</a></code>; each vector is constant.</p>
     </div>
     <div class="section level2">
     <h2 id="why-the-mixed-block-vanishes">Why the mixed block vanishes<a class="anchor" aria-label="anchor" href="#why-the-mixed-block-vanishes"></a></h2>
@@ -165,7 +167,8 @@ whose Fisher scoring inverts this matrix, and
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu2_sigma_log_L2   mu2_sigma_L2.1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                0                0 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># And the closed form is what averaging the observed Hessian converges to.</span></span></span>
+<span class="r-in"><span><span class="co"># The average of the observed Hessian over a large sample converges to the</span></span></span>
+<span class="r-in"><span><span class="co"># closed form.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">big</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">50000</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">emp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_hessian.html">distrib_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">big</span>, <span class="va">theta</span><span class="op">)</span>, <span class="va">mean</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>

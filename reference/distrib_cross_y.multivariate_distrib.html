@@ -15,7 +15,7 @@ parameter, as the gaussian and the Student t do."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ parameter, as the gaussian and the Student t do.</p>
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>One of <code>"parameter"</code> or <code>"link"</code>. The generic applies the link
-scale to the result of a method. Not read here.</p></dd>
+scale to the result of a method. It is not read here.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -102,7 +102,7 @@ and <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> for the ge
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="distrib_cross_y.html">distrib_cross_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : distrib_cross_y() is not defined for 'dirichlet [3d, mean=simplex]': register a closed form on the family, returning one n-by-p matrix per parameter as the gaussian and the Student t do.</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The shape that a method returns: one n by p matrix per parameter.</span></span></span>
+<span class="r-in"><span><span class="co"># A method returns one n by p matrix per parameter.</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>           sigma_L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>

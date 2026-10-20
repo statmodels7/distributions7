@@ -5,9 +5,8 @@ Enumerates the index multisets of exactly `order` indices drawn from
 [`parameters7::param_tuple_indices()`](https://statmodels7.github.io/parameters7/reference/param_tuple_indices.html)
 uses. It takes a count of variables in place of a parametrization, so a
 composite index set formed by appending a coordinate can be enumerated
-without building an object of that shape. The Dirichlet needs this for
-its simplex free values followed by its concentration. The work is done
-by
+without building an object of that shape. The Dirichlet uses it for its
+simplex free values followed by its concentration. The work is done by
 [`numericals7::tuple_indices()`](https://statmodels7.github.io/numericals7/reference/tuple_indices.html),
 which this function wraps.
 
@@ -44,7 +43,8 @@ for the same enumeration rendered as component names.
 ## Examples
 
 ``` r
-# Two indices over three variables: the three repeats then the three pairs.
+# Two indices over three variables give the three repeats, then the three
+# pairs.
 distributions7:::tuple_indices_upto(3, 2)
 #> [[1]]
 #> [1] 1 1
@@ -71,7 +71,7 @@ c(got = length(distributions7:::tuple_indices_upto(4, 3)),
 #>      got expected 
 #>       20       20 
 
-# Every tuple is sorted, which is what makes a comma-joined key canonical.
+# Every tuple is sorted, so a comma-joined key is canonical.
 all(vapply(distributions7:::tuple_indices_upto(3, 3),
            function(t) !is.unsorted(t), TRUE))
 #> [1] TRUE

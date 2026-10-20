@@ -15,7 +15,7 @@ describe, and the computations are shared."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,8 +142,8 @@ into scalar parameters of the distribution.</p></dd>
 <dt id="arg-inverted">inverted<a class="anchor" aria-label="anchor" href="#arg-inverted"></a></dt>
 <dd><p>Logical of length 1. <code>TRUE</code> when <code>param</code> carries the
 precision \(\Omega = \Sigma^{-1}\) and <code>FALSE</code> when it carries the
-covariance \(\Sigma\). It decides which derivative arrays are the
-parametrization's own and which are obtained from them (see
+covariance \(\Sigma\). Its value determines which derivative arrays are
+the parametrization's own and which are obtained from them (see
 <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>), the sign of the log-determinant, the prefix of the
 free names, and the quantities that <code><a href="mv_summary.html">mv_summary()</a></code> reports. The same matrix
 \(\Sigma\) gives the same law either way.</p></dd>

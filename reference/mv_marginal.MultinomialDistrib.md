@@ -22,15 +22,15 @@ this family.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 - which:
 
-  A single integer in \\1, \dots, p\\, the category wanted. A vector of
-  two or more distinct categories signals an error explaining why; an
-  empty, duplicated, non-integer or out-of-range `which` is rejected
-  earlier by
+  A single integer in \\1, \dots, p\\, the category whose marginal is
+  returned. A vector of two or more distinct categories signals an error
+  explaining why; an empty, duplicated, non-integer or out-of-range
+  `which` is rejected earlier by
   [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md).
 
 - ...:

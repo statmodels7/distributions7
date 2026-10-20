@@ -21,8 +21,9 @@ mv_derived(distrib, theta, ...)
 
 - theta:
 
-  A named list or vector of parameters, each component a single number.
-  Aligned by the generic before dispatch, so any order is accepted.
+  A named list or vector of parameters, where each component is a single
+  number. The generic aligns it before dispatch, so any order is
+  accepted.
 
 - ...:
 
@@ -44,12 +45,13 @@ A named list with
 - `transform`:
 
   a character vector, one of `"identity"`, `"log"`, `"atanh"` or
-  `"logit"` per quantity, naming the scale its interval is built on;
+  `"logit"` per quantity, naming the scale on which its interval is
+  built;
 
 - `block`:
 
-  a character vector labeling the group each quantity belongs to, by
-  which the printed summary is laid out.
+  a character vector labeling the group to which each quantity belongs
+  and by which the printed summary is laid out.
 
 All four are named after the quantities and are the same length.
 
@@ -64,14 +66,14 @@ so that
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
 can apply the delta method to them.
 
-## The interval scale each quantity declares
+## The interval scale that each quantity declares
 
 Each quantity carries the scale on which its interval is built, as
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-builds a univariate interval on the link scale and maps it back. A
-standard deviation is intervalled on the log scale, so the interval
-cannot reach zero; a correlation on Fisher's \\z =
-\mathrm{artanh}(\rho)\\, so it cannot leave \\(-1, 1)\\; an
+builds a univariate interval on the link scale and maps it back. The
+interval of a standard deviation is built on the log scale, so it cannot
+reach zero; that of a correlation on Fisher's \\z =
+\mathrm{artanh}(\rho)\\, so it cannot leave \\(-1, 1)\\; that of an
 unconstrained quantity on its own scale. On the raw scale the interval
 of a correlation can exceed one.
 

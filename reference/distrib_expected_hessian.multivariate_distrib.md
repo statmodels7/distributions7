@@ -1,9 +1,9 @@
 # Expected Information of a Multivariate Distribution, by Sampling
 
-The fallback for a multivariate family without a closed form: an average
-over a sample drawn from the family. Every shipped multivariate class
-registers its own closed form, so this method runs only for a family
-written elsewhere.
+Computes the expected information of a multivariate family without a
+closed form as an average over a sample drawn from the family. Every
+shipped multivariate class registers its own closed form, so this method
+runs only for a family written elsewhere.
 
 ## Arguments
 
@@ -16,11 +16,12 @@ written elsewhere.
 - y:
 
   An \\n \times p\\ numeric matrix of observations; only its row count
-  is used, the expectation being over the law.
+  is used, because the expectation is over the law.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, in which each component is a single
+  number.
 
 - scale:
 
@@ -45,7 +46,7 @@ written elsewhere.
 
 A named list of numeric vectors of length \\n\\, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant.
+in which each vector is constant.
 
 ## The routes
 
@@ -109,7 +110,7 @@ round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
 #> sampled                   0.006
 #> closed                    0.000
 
-# Two seeds give two values, the result being a sample.
+# Two seeds give two values, because the result is a sample.
 set.seed(2)
 again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
               approx = "mc", nsim = 4000)

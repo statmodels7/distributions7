@@ -13,7 +13,7 @@ the location in the shape of the response."><meta property="og:image" content="h
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,8 +66,8 @@ the location in the shape of the response.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list or vector of parameters, each component a single
-number. The generic aligns it before dispatch.</p></dd>
+<dd><p>A named list or vector of parameters, in which each component
+is a single number. The generic aligns it before dispatch.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -83,9 +83,9 @@ is the mean for a gaussian and, for a Student t, the mean only when
 \(\nu &gt; 1\); they register <code><a href="mv_leading_location.html">mv_leading_location()</a></code>. The Dirichlet returns
 its mean vector, and the multinomial its mean vector of counts, the
 probabilities times the number of trials. The method of the class signals an
-error for a family without a method of its own, the first \(p\) parameters
-of a family not being a location in general. <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">base::mean()</a></code> is the generic
-for the moment.</p>
+error for a family without a method of its own, because the first \(p\)
+parameters of a family are not in general a location. <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">base::mean()</a></code> is the
+generic for the moment.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

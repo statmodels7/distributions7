@@ -23,7 +23,7 @@ name."><meta property="og:image" content="https://statmodels7.github.io/distribu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,8 +81,8 @@ name.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list or vector of parameters, each component a single
-number. The generic aligns it before dispatch.</p></dd>
+<dd><p>A named list or vector of parameters, in which each component
+is a single number. The generic aligns it before dispatch.</p></dd>
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
@@ -116,14 +116,13 @@ mass is added.</p>
     </div>
     <div class="section level2">
     <h2 id="the-returned-object">The returned object<a class="anchor" aria-label="anchor" href="#the-returned-object"></a></h2>
-    <p>A new distribution of the reduced dimension, whose parameters are its own.
-The elliptical families return an object of their own class on an
-unstructured log-Cholesky matrix, carrying the covariance or the precision
-as the parent does, so a gaussian's one-coordinate marginal is a
+    <p>The method returns a new distribution of the reduced dimension, whose
+parameters are its own. The elliptical families return an object of their own
+class on an unstructured log-Cholesky matrix, carrying the covariance or the
+precision as the parent does, so a gaussian's one-coordinate marginal is a
 one-dimensional <code>MvGaussian1Distrib</code> and signals an error for the
-distribution function. The simplex-valued families return univariate
-objects, a beta and a binomial, which have every method of a univariate
-family.</p>
+distribution function. The simplex-valued families return univariate objects,
+a beta and a binomial, which have every method of a univariate family.</p>
     </div>
     <div class="section level2">
     <h2 id="the-plot">The plot<a class="anchor" aria-label="anchor" href="#the-plot"></a></h2>

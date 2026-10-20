@@ -17,7 +17,7 @@ no observation dimension."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,8 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -88,8 +89,8 @@ this family is the identity, so the two scales coincide.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> a \(p \times p \times p\) array of zeros,
-<code><a href="distrib_deriv3_y.html">distrib_deriv4_y()</a></code> a \(p \times p \times p \times p\) one, and
+    <p><code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></code> returns a \(p \times p \times p\) array of
+zeros, <code><a href="distrib_deriv3_y.html">distrib_deriv4_y()</a></code> a \(p \times p \times p \times p\) one, and
 <code><a href="distrib_cross3_y.html">distrib_cross3_y()</a></code> a named list of \(p \times p \times p\) arrays of
 zeros, one per parameter, in <code>distrib@params</code> order.</p>
     </div>

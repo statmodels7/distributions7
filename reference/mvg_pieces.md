@@ -47,10 +47,11 @@ parametrization's free vector), `p`, `s` (the parametrization itself)
 and the elements of
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md):
 `sigma` and `sigma_inv` (\\p \times p\\ matrices), `logdet` (the
-log-determinant of \\\Sigma\\) and `inverted`; with derivatives
-requested also `a` and `ai` (the first derivative arrays of \\\Sigma\\
-and of \\\Sigma^{-1}\\, one per free value) and `dlogdet`; with
-`derivs2` also `a2`, `ai2` (one array per unordered pair in
+log-determinant of \\\Sigma\\) and `inverted`; when derivatives are
+requested, the list also holds `a` and `ai` (the first derivative arrays
+of \\\Sigma\\ and of \\\Sigma^{-1}\\, one per free value) and `dlogdet`;
+when `derivs2` is set, it also holds `a2`, `ai2` (one array per
+unordered pair in
 [`parameters7::param_tuple_indices()`](https://statmodels7.github.io/parameters7/reference/param_tuple_indices.html)
 order) and `d2logdet`.
 
@@ -93,7 +94,7 @@ all.equal(pc$sigma %*% pc$sigma_inv, diag(2), check.attributes = FALSE)
 all.equal(pc$logdet, log(det(pc$sigma)))
 #> [1] TRUE
 
-# One derivative array per free value of the parametrization.
+# There is one derivative array per free value of the parametrization.
 length(pc$a)
 #> [1] 3
 round(pc$a[[3]], 4)

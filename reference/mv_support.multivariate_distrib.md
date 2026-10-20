@@ -15,7 +15,8 @@ method; among the shipped families the multinomial does.
 
 - theta:
 
-  A named list of parameters. Not read: the error is signalled first.
+  A named list of parameters. It is not read, because the error is
+  signalled first.
 
 - ...:
 
@@ -47,7 +48,7 @@ try(mv_support(d, theta))
 #>   and a discrete one whose support is infinite has no finite matrix to
 #>   return; a family that does have one registers this generic.
 
-# The test that check_distrib() applies first.
+# check_distrib() applies this test first.
 c(gaussian = distributions7:::has_mv_support(d),
   multinomial = distributions7:::has_mv_support(
     multinomial_distrib(3, size = 4)))

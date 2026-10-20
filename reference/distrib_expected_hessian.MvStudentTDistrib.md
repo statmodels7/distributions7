@@ -2,10 +2,10 @@
 
 Computes the expectation of the observed Hessian in closed form, taken
 from the family's own scale mixture. Every component is a Beta moment or
-a polygamma, so nothing is sampled and no quadrature runs, and two calls
-at the same parameters return the same numbers. The components do not
-depend on the data, so every returned vector is constant across rows and
-`y` is used only for its row count.
+a polygamma, so the function draws no sample, runs no quadrature, and
+returns the same numbers in two calls at the same parameters. The
+components do not depend on the data, so every returned vector is
+constant across rows and `y` is used only for its row count.
 
 ## Arguments
 
@@ -19,12 +19,13 @@ depend on the data, so every returned vector is constant across rows and
 - y:
 
   An \\n \times p\\ numeric matrix of observations. Only its row count
-  is used: the expectation is taken over the law, so no observation
-  enters any component.
+  is used: the expectation is taken over the law, so the observations do
+  not enter any component.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, in which each component is a single
+  number.
 
 - scale:
 
@@ -34,8 +35,8 @@ depend on the data, so every returned vector is constant across rows and
 
 - approx:
 
-  Ignored: the expectation is exact and no approximation strategy is
-  consulted.
+  Ignored: the expectation is exact, so the method does not consult an
+  approximation strategy.
   [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
   rejects a `fisher_scoring(approx =)` for this family for that reason.
 
@@ -51,8 +52,8 @@ depend on the data, so every returned vector is constant across rows and
 
 A named list of numeric vectors of length \\n\\, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant. The returned quantities are the expected second
-derivatives, so the information is their negative.
+in which each vector is constant. The returned quantities are the
+expected second derivatives, so the information is their negative.
 
 ## Why the expectations separate
 
@@ -76,13 +77,13 @@ With \\t_k = \operatorname{tr}(\Sigma^{-1}A_k)\\ and \\T\_{kl} =
 \frac{-t_k}{(\nu+p)(\nu+p+2)},\$\$ \$\$I\_{\nu\nu} =
 \frac{\psi'(\nu/2) - \psi'\\(\nu+p)/2\\}{4} - \frac{p}{\nu(\nu+p)} +
 \frac{p}{2\nu(\nu+p+2)}.\$\$ The location is orthogonal to everything
-else, every cross-expectation with it being odd in \\z\\.
+else, because every cross-expectation with it is odd in \\z\\.
 
 ## The gaussian limit
 
 Each block reduces to the gaussian's as \\\nu \to \infty\\:
 \\I\_{\mu\mu} \to \Sigma^{-1}\\, \\I\_{kl} \to T\_{kl}/2\\, and
-\\I\_{\nu\nu} \to 0\\, the degrees of freedom ceasing to be identified
+\\I\_{\nu\nu} \to 0\\, so the degrees of freedom cease to be identified
 in the limit; \\I\_{\nu\nu}\\ is of order \\\nu^{-4}\\, so the standard
 error of \\\nu\\ is large unless the tail is heavy. Its terms as written
 above are of order \\\nu^{-2}\\ and cancel, so the block is computed by
@@ -143,7 +144,8 @@ vapply(EH[orth], function(z) z[1], numeric(1))
 #> mu2_sigma_log_L1 mu2_sigma_log_L2   mu2_sigma_L2.1           mu2_nu 
 #>                0                0                0                0 
 
-# And the closed form is what averaging the observed Hessian converges to.
+# The average of the observed Hessian over many draws converges to the
+# closed form.
 set.seed(3)
 big <- distrib_rng(d, 50000, theta)
 round(rbind(sampled = vapply(distrib_hessian(d, big, theta), mean, numeric(1)),

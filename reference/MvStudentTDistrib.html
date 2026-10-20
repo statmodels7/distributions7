@@ -12,7 +12,7 @@ function signal an error.
 Build one with mvstudent_t1_distrib(), which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which runs only the validators of multivariate_distrib and
-distrib; nothing checks param."><meta property="og:description" content="The S7 class of the elliptical Student t family on \(\mathbb{R}^p\), with
+distrib and does not check param."><meta property="og:description" content="The S7 class of the elliptical Student t family on \(\mathbb{R}^p\), with
 density
 $$f(y) \propto \lvert\Sigma\rvert^{-1/2}
   \left(1 + \frac{(y-\mu)^\top \Sigma^{-1} (y-\mu)}{\nu}\right)^{-(\nu+p)/2}.$$
@@ -25,7 +25,7 @@ function signal an error.
 Build one with mvstudent_t1_distrib(), which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which runs only the validators of multivariate_distrib and
-distrib; nothing checks param."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+distrib and does not check param."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +33,7 @@ distrib; nothing checks param."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ function signal an error.</p>
 <p>Build one with <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code>, which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which runs only the validators of <code>multivariate_distrib</code> and
-<code>distrib</code>; nothing checks <code>param</code>.</p>
+<code>distrib</code> and does not check <code>param</code>.</p>
     </div>
 
     <div class="section level2">
@@ -141,8 +141,8 @@ constructor, which runs only the validators of <code>multivariate_distrib</code>
 
 
 <dt id="arg-n-dim">n_dim<a class="anchor" aria-label="anchor" href="#arg-n-dim"></a></dt>
-<dd><p>The dimension \(p\) of one observation. A single positive
-integer.</p></dd>
+<dd><p>The dimension \(p\) of one observation. It is a single
+positive integer.</p></dd>
 
 
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
@@ -155,11 +155,12 @@ scalar parameters of the distribution.</p></dd>
 <dt id="arg-inverted">inverted<a class="anchor" aria-label="anchor" href="#arg-inverted"></a></dt>
 <dd><p>Logical of length 1. <code>TRUE</code> when <code>param</code> carries the inverse
 scale matrix \(\Sigma^{-1}\) and <code>FALSE</code> when it carries the scale matrix
-\(\Sigma\). It decides which derivative arrays are the parametrization's
-own and which are obtained from them (see <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>), the sign
-of the log-determinant, the prefix of the free names and the quantities
-that <code><a href="mv_summary.html">mv_summary()</a></code> reports. The same \(\Sigma\) gives the same law
-either way, and neither matrix is a moment of the response.</p></dd>
+\(\Sigma\). Its value determines which derivative arrays are the
+parametrization's own and which are obtained from them (see
+<code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>), the sign of the log-determinant, the prefix of the
+free names and the quantities that <code><a href="mv_summary.html">mv_summary()</a></code> reports. The same
+\(\Sigma\) gives the same law either way, and the two matrices are not
+moments of the response.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -224,8 +225,8 @@ are different matrices here.</p></div>
 <span class="r-in"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7_inherits</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">multivariate_distrib</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Six parameters: two locations, three free values of the scale matrix, and</span></span></span>
-<span class="r-in"><span><span class="co"># the degrees of freedom last.</span></span></span>
+<span class="r-in"><span><span class="co"># The family has six parameters: two locations, three free values of the</span></span></span>
+<span class="r-in"><span><span class="co"># scale matrix, and the degrees of freedom last.</span></span></span>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] "nu"          </span>

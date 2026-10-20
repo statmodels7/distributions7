@@ -25,11 +25,12 @@ chain rule reduces to a univariate partition sum per coordinate, with
 - y:
 
   A numeric matrix with one row per observation and one column per
-  category, each row a vector of counts summing to `distrib@size`.
+  category, where each row is a vector of counts that sum to
+  `distrib@size`.
 
 - theta:
 
-  A named list of parameters, each component a single number:
+  A named list of parameters, where each component is a single number:
   `probs_alr1`, ..., `probs_alr(p-1)`.
 
 - expected:
@@ -59,7 +60,7 @@ chain rule reduces to a univariate partition sum per coordinate, with
 
 A named list of numeric vectors of length \\n\\, keyed and ordered as
 `deriv_names(distrib@params, 3)`. At \\p = 3\\ there are four
-components, the simplex spending \\p - 1\\ free values. With
+components, because the simplex has \\p - 1\\ free values. With
 `expected = TRUE` every vector is constant.
 
 ## Details
@@ -102,7 +103,7 @@ vapply(d3, sum, numeric(1))
 #> probs_alr1_probs_alr2_probs_alr2 probs_alr2_probs_alr2_probs_alr2 
 #>                        2.8642703                       -4.7842481 
 
-# Against a central difference of the Hessian.
+# The result is compared with a central difference of the Hessian.
 h <- 1e-4
 tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
 tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h

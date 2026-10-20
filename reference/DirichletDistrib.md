@@ -7,8 +7,8 @@ from `multivariate_distrib`, so the distribution function and the
 quantile signal an error and are not approximated.
 
 The class carries an extra property beyond the parent's, `param`: the
-`parameters7` simplex the mean lies on, whose free names become the
-family's own parameter names prefixed by `mean_`. Build one with
+`parameters7` simplex on which the mean lies, whose free names become
+the family's own parameter names prefixed by `mean_`. Build one with
 [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md),
 which validates the simplex against `n_dim`, supplies the
 concentration's link and fills the properties in. This page documents
@@ -98,7 +98,7 @@ DirichletDistrib(
   The `parameters7`
   [`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)
   carrying the mean. Its `n_free` is \\p-1\\, one fewer than the number
-  of coordinates, the simplex being a set of dimension \\p-1\\ in
+  of coordinates, because the simplex is a set of dimension \\p-1\\ in
   \\\mathbb{R}^p\\.
 
 ## Value
@@ -110,8 +110,8 @@ are the parent's: `distrib_name`, `dimension`, `n_dim`, `bounds`,
 `link_params` and `params_smooth`. For an object built by
 [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md)
 `params` is `c("mean_<free names>", "phi")`, `n_params` is \\p\\, and
-every mean coordinate carries an identity link, its free value being
-unconstrained already.
+every mean coordinate carries an identity link, because its free value
+is already unconstrained.
 
 ## Methods
 
@@ -170,7 +170,8 @@ d <- dirichlet_distrib(3)
 S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 
-# Three coordinates, so two free mean values plus the concentration.
+# With three coordinates, there are two free mean values plus the
+# concentration.
 d@n_dim
 #> [1] 3
 d@params

@@ -25,18 +25,18 @@ contributes zero, as it should.
 
 - y:
 
-  A numeric matrix with one row per observation and \\p\\ columns, each
-  row a vector of non-negative integers summing to the object's `size`.
-  A single observation may be given as a plain vector and is read as one
-  row. A row off the support gives a mass of 0, or `-Inf` with
-  `log = TRUE`.
+  A numeric matrix with one row per observation and \\p\\ columns, and
+  each row is a vector of non-negative integers summing to the object's
+  `size`. A single observation may be given as a plain vector and is
+  read as one row. A row off the support gives a mass of 0, or `-Inf`
+  with `log = TRUE`.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1. A parameter may not vary by observation here, the
-  probability vector being one point of the simplex for the whole
-  sample.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1. A parameter may not vary by observation here,
+  because the probability vector is one point of the simplex for the
+  whole sample.
 
 - log:
 
@@ -55,7 +55,7 @@ one per observation.
 ## See also
 
 [`mv_support.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.md)
-for the points the mass sits on,
+for the points on which the mass sits,
 [`distrib_gradient.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MultinomialDistrib.md)
 for the derivatives of the log-mass,
 [`mv_marginal.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MultinomialDistrib.md)

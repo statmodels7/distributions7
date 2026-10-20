@@ -15,7 +15,7 @@ of mvt_cp_d()."><meta property="og:image" content="https://statmodels7.github.io
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,8 +65,8 @@ of <code><a href="mvt_cp_d.html">mvt_cp_d()</a></code>.</p>
 
 
 <dl><dt id="arg-nu">nu<a class="anchor" aria-label="anchor" href="#arg-nu"></a></dt>
-<dd><p>The degrees of freedom, a numeric vector of positive values. Not
-validated.</p></dd>
+<dd><p>The degrees of freedom, a numeric vector of positive values. The
+function does not validate it.</p></dd>
 
 
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
@@ -89,7 +89,7 @@ loses its significant digits as \(\nu\) grows and eventually has the wrong
 sign. For even \(p\) the recurrence \(\psi(x+1) = \psi(x) + 1/x\) gives
 a sum whose terms carry one sign,
 $$A_p(\nu) = -\sum_{j=0}^{p/2-1} \frac{4j}{\nu(\nu+2j)},$$
-exactly zero at \(p = 2\); for odd \(p\) <code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> sums an
+which is exactly zero at \(p = 2\); for odd \(p\) <code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> sums an
 asymptotic series above \(\nu = \max(20, 4p)\).</p>
     </div>
     <div class="section level2">

@@ -27,9 +27,8 @@ mvg_residuals(y, pc)
 ## Value
 
 A named list with `r` and `w`, each an \\n \times p\\ numeric matrix.
-Row \\i\\ of `w` is \\\Sigma^{-1}(y_i - \mu)\\, the right-multiplication
-of `r` by `sigma_inv` giving the same rows because \\\Sigma^{-1}\\ is
-symmetric.
+Row \\i\\ of `w` is \\\Sigma^{-1}(y_i - \mu)\\; right-multiplying `r` by
+`sigma_inv` gives the same rows because \\\Sigma^{-1}\\ is symmetric.
 
 ## Notation
 

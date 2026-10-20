@@ -1,14 +1,13 @@
 # Kurtosis of a Multivariate Distribution
 
-Signals an error, for the reason that
-[`skewness.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.multivariate_distrib.md)
-gives: a scalar kurtosis of a vector response is a choice among
-Mardia's, Malkovich and Afifi's and the vector of the coordinatewise
-marginal kurtoses, which are different numbers. A coordinatewise
-kurtosis is the kurtosis of a marginal, where the marginal is a
-univariate object: a Dirichlet's is a beta and has one, while an
-elliptical family's is a one-dimensional object of its own class and
-signals the same error.
+Signals an error, for the same reason as
+[`skewness.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.multivariate_distrib.md):
+a scalar kurtosis of a vector response is a choice among Mardia's,
+Malkovich and Afifi's and the vector of the coordinatewise marginal
+kurtoses, which are different numbers. A coordinatewise kurtosis is the
+kurtosis of a marginal, where the marginal is a univariate object: a
+Dirichlet's is a beta and has one, while an elliptical family's is a
+one-dimensional object of its own class and signals the same error.
 
 ## Arguments
 

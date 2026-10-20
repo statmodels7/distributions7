@@ -34,7 +34,7 @@ finite. The draws depend on `.Random.seed` in the usual way.
 
 ## Value
 
-A numeric matrix with `n` rows and \\p\\ columns, each row summing to
+A numeric matrix with `n` rows and \\p\\ columns, and each row sums to
 one. A coordinate whose value is below the smallest double rounds to
 zero, which happens at a concentration of order 0.01 or below; such a
 row is off the open simplex and has density zero.

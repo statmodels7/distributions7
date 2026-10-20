@@ -19,7 +19,7 @@ with the covariance in check_distrib() needs both."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@ bands, <code><a href="check_distrib.html">check_distrib()</a></code>, which draw
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1           nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.445500412 -0.998963374  0.008486698 -0.388761673 -0.348248179 11.683944578 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The three bands, over 400 draws.</span></span></span>
+<span class="r-in"><span><span class="co"># The ranges of the three bands are shown over 400 draws.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="generate_random_theta.html">generate_random_theta</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">1</span>, <span class="va">range</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      mu1   mu2 sigma_log_L1 sigma_log_L2 sigma_L2.1    nu</span>

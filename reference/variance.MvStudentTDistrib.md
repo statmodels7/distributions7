@@ -1,10 +1,11 @@
 # Covariance of a Multivariate Student t
 
 Returns \\\operatorname{Var}(Y) = \nu\Sigma/(\nu-2)\\ for \\\nu \> 2\\,
-and a matrix of `Inf` otherwise. The scale matrix \\\Sigma\\ is what the
-parametrization carries and exists at every admissible \\\nu\\; the
-covariance is a moment, and the two differ by that factor, which is 3 at
-\\\nu = 3\\ and approaches 1 as the tail lightens.
+and a matrix of `Inf` otherwise. The parametrization carries the scale
+matrix \\\Sigma\\, which exists at every admissible \\\nu\\; the
+covariance is a moment, and the two differ by the factor
+\\\nu/(\nu-2)\\, which is 3 at \\\nu = 3\\ and approaches 1 as the tail
+lightens.
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 returns the first and this returns the second.
 
@@ -19,7 +20,7 @@ returns the first and this returns the second.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - ...:
 
@@ -29,7 +30,7 @@ returns the first and this returns the second.
 
 A \\p \times p\\ numeric matrix with both dimnames `v1`, ..., `vp`: the
 covariance for \\\nu \> 2\\, and `Inf` in every entry for \\\nu \le 2\\,
-the boundary \\\nu = 2\\ included.
+including the boundary \\\nu = 2\\.
 
 ## See also
 

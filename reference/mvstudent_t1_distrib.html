@@ -27,7 +27,7 @@ and to a log link on nu."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,15 +85,16 @@ and to a log link on <code>nu</code>.</p>
 
 
 <dl><dt id="arg-n-dim">n_dim<a class="anchor" aria-label="anchor" href="#arg-n-dim"></a></dt>
-<dd><p>The dimension \(p\) of one observation. A single positive
-whole number, finite and at least 1. Any other value signals an error.</p></dd>
+<dd><p>The dimension \(p\) of one observation. The value must be a
+single positive whole number, finite and at least 1. Any other value
+signals an error.</p></dd>
 
 
 <dt id="arg-sigma">sigma<a class="anchor" aria-label="anchor" href="#arg-sigma"></a></dt>
 <dd><p>A <span class="pkg">parameters7</span> parametrization of the scale matrix, of
 dimension <code>n_dim</code> and of full rank. Defaults to
 <code>parameters7::log_cholesky(n_dim)</code>. A rank-deficient parametrization is
-rejected, the density not normalizing.</p></dd>
+rejected because the density does not normalize.</p></dd>
 
 
 <dt id="arg-link-nu">link_nu<a class="anchor" aria-label="anchor" href="#arg-link-nu"></a></dt>
@@ -113,18 +114,18 @@ only up to the factor \((\nu-2)/\nu\); see Details.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An S7 object of class <a href="MvStudentT1Distrib.html">MvStudentT1Distrib</a> or <a href="MvStudentT1Distrib.html">MvStudentT2Distrib</a>,
-with <code>param</code> the parametrization supplied and <code>inverted</code> recording which
-matrix it carries. Its <code>params</code> are <code>mu1</code>, ..., <code>mup</code>, the prefixed
-free names, then <code>nu</code>; <code>n_params</code> is <code>p + param@n_free + 1</code>; every
-<code>params_bounds</code> entry is \((-\infty, \infty)\) except that of <code>nu</code>,
+whose <code>param</code> is the parametrization supplied and whose <code>inverted</code>
+records which matrix <code>param</code> carries. Its <code>params</code> are <code>mu1</code>, ..., <code>mup</code>,
+the prefixed free names, then <code>nu</code>; <code>n_params</code> is <code>p + param@n_free + 1</code>;
+every <code>params_bounds</code> entry is \((-\infty, \infty)\) except that of <code>nu</code>,
 which is \((0, \infty)\); and every link is the identity except that of
 <code>nu</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-two-matrices">The two matrices<a class="anchor" aria-label="anchor" href="#the-two-matrices"></a></h2>
-    <p>Neither matrix is a covariance, and neither is a precision. \(\Sigma\) is
-the scale matrix, the matrix in the quadratic form of the density, and
-the moments are obtained from it by scaling in \(\nu\):</p>
+    <p>Each of the two matrices is neither a covariance nor a precision.
+\(\Sigma\) is the scale matrix, the matrix in the quadratic form of the
+density, and the moments are obtained from it by scaling in \(\nu\):</p>
 <p>$$\operatorname{Var}(Y) = \frac{\nu}{\nu-2}\,\Sigma \quad (\nu &gt; 2),
   \qquad
   \operatorname{Var}(Y)^{-1} = \frac{\nu-2}{\nu}\,\Sigma^{-1}.$$</p>
@@ -161,7 +162,7 @@ describe the same laws in different coordinates. Where it is not they are
 different models: <code>mvstudent_t2_distrib(p, parameters7::ar1(p))</code> is the
 family whose inverse scale matrix has the entries \(\sigma^2\rho^{|i-j|}\),
 with \(\sigma^2\) the scale of <code>ar1()</code>, and it is a valid law. The AR(1)
-pattern on the scale matrix with the other side parametrized is
+pattern on the scale matrix, in the family that parametrizes the inverse, is
 <code>mvstudent_t2_distrib(p, parameters7::ar1_inv(p))</code>, whose parametrization is
 that inverse.</p>
     </div>
@@ -178,16 +179,18 @@ every derivative in <code>nu</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-weight-of-an-observation">The weight of an observation<a class="anchor" aria-label="anchor" href="#the-weight-of-an-observation"></a></h2>
-    <p>A gaussian fitted to data with a few outlying rows inflates its covariance
-to cover them. A \(t\) with \(\nu\) estimated does not: an observation at
-squared Mahalanobis distance \(q\) enters every derivative through the
-weight \(c = (\nu+p)/(\nu+q)\), which falls as \(1/q\). The gaussian is
-the limit \(\nu \to \infty\), where \(c \equiv 1\).</p>
+    <p>When a gaussian is fitted to data with a few outlying rows, the estimated
+covariance grows until it covers them. A \(t\) whose \(\nu\) is estimated
+does not: an observation at squared Mahalanobis distance \(q\) enters every
+derivative through the weight \(c = (\nu+p)/(\nu+q)\), which falls as
+\(1/q\). The gaussian is the limit \(\nu \to \infty\), where \(c
+\equiv 1\).</p>
     </div>
     <div class="section level2">
     <h2 id="the-expected-information">The expected information<a class="anchor" aria-label="anchor" href="#the-expected-information"></a></h2>
-    <p>Closed form, from the family's own scale mixture; see
-<code><a href="distrib_expected_hessian.MvStudentTDistrib.html">distrib_expected_hessian.MvStudentTDistrib()</a></code> for the four blocks.
+    <p>The expected information has a closed form, obtained from the family's own
+scale mixture; see <code><a href="distrib_expected_hessian.MvStudentTDistrib.html">distrib_expected_hessian.MvStudentTDistrib()</a></code> for the
+four blocks.
 <code><a href="fit_distrib.html">fit_distrib()</a></code> therefore rejects an <code>approx</code> argument on
 <code><a href="fisher_scoring.html">fisher_scoring()</a></code> for this family, as it does for any family that computes
 its expected information exactly.</p>
@@ -204,18 +207,18 @@ response's exactly.</p>
     </div>
     <div class="section level2">
     <h2 id="degrees-of-freedom-far-from-the-gaussian-limit-and-close-to-it">Degrees of freedom far from the gaussian limit and close to it<a class="anchor" aria-label="anchor" href="#degrees-of-freedom-far-from-the-gaussian-limit-and-close-to-it"></a></h2>
-    <p>Every quantity of \(\nu\) alone (the constant of the density and its
-derivatives, and the expected information in \(\nu\)) is computed by
-<code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> and <code><a href="mvt_info_nunu.html">mvt_info_nunu()</a></code> without the cancellation of the direct
+    <p>Every quantity that depends only on \(\nu\) (the constant of the density
+and its derivatives, and the expected information in \(\nu\)) is computed
+by <code><a href="mvt_cp_d.html">mvt_cp_d()</a></code> and <code><a href="mvt_info_nunu.html">mvt_info_nunu()</a></code> without the cancellation of the direct
 difference of gamma and polygamma functions, and the part that carries the
 data by <code><a href="mvt_h_d.html">mvt_h_d()</a></code>; all of them vanish as \(\nu\) grows, while the terms
 of the direct forms do not.</p>
     </div>
     <div class="section level2">
     <h2 id="the-response">The response<a class="anchor" aria-label="anchor" href="#the-response"></a></h2>
-    <p>An \(n \times p\) matrix, one row per observation. A plain vector of
-length \(p\) is read as a single observation. A parameter may not vary
-from observation to observation.</p>
+    <p>The response is an \(n \times p\) matrix with one row per observation. A
+plain vector of length \(p\) is read as a single observation. A parameter
+may not vary from observation to observation.</p>
     </div>
     <div class="section level2">
     <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
@@ -262,8 +265,8 @@ other side, and <code><a href="fit_distrib.html">fit_distrib()</a></code> to est
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0.5</span>, mu2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.3</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
 <span class="r-in"><span>              sigma_log_L2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.4</span>, nu <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The scale matrix is what the parametrization carries; the covariance is a</span></span></span>
-<span class="r-in"><span><span class="co"># moment and is larger by nu / (nu - 2).</span></span></span>
+<span class="r-in"><span><span class="co"># The parametrization carries the scale matrix; the covariance is a moment</span></span></span>
+<span class="r-in"><span><span class="co"># and is larger by nu / (nu - 2).</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           v1        v2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> v1 1.2214028 0.4420684</span>

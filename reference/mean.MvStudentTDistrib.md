@@ -22,7 +22,7 @@ returns \\\mu\\.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - ...:
 

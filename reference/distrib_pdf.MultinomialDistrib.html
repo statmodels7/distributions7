@@ -29,7 +29,7 @@ should."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,16 +87,17 @@ should.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric matrix with one row per observation and \(p\) columns,
-each row a vector of non-negative integers summing to the object's <code>size</code>.
-A single observation may be given as a plain vector and is read as one
-row. A row off the support gives a mass of 0, or <code>-Inf</code> with
+and each row is a vector of non-negative integers summing to the object's
+<code>size</code>. A single observation may be given as a plain vector and is read as
+one row. A row off the support gives a mass of 0, or <code>-Inf</code> with
 <code>log = TRUE</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of the simplex's free values on the parameter
-scale, each of length 1. A parameter may not vary by observation here, the
-probability vector being one point of the simplex for the whole sample.</p></dd>
+scale, and each value has length 1. A parameter may not vary by
+observation here, because the probability vector is one point of the
+simplex for the whole sample.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
@@ -115,8 +116,8 @@ Defaults to <code>FALSE</code>.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mv_support.MultinomialDistrib.html">mv_support.MultinomialDistrib()</a></code> for the points the mass sits on,
-<code><a href="distrib_gradient.MultinomialDistrib.html">distrib_gradient.MultinomialDistrib()</a></code> for the derivatives of the
+    <div class="dont-index"><p><code><a href="mv_support.MultinomialDistrib.html">mv_support.MultinomialDistrib()</a></code> for the points on which the mass
+sits, <code><a href="distrib_gradient.MultinomialDistrib.html">distrib_gradient.MultinomialDistrib()</a></code> for the derivatives of the
 log-mass, <code><a href="mv_marginal.MultinomialDistrib.html">mv_marginal.MultinomialDistrib()</a></code> for a coordinate's binomial
 marginal, and <code><a href="distrib_pdf.html">distrib_pdf()</a></code> for the generic.</p></div>
     </div>

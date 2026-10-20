@@ -2,7 +2,7 @@
 
 Splits a component into its mean-and-matrix part and its \\\nu\\ part.
 The log-determinant contributes only to a component whose indices all
-name the matrix, with the sign set by the orientation of the chart (see
+name the matrix, and the orientation of the chart sets its sign (see
 [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md)).
 A component whose indices all name \\\nu\\ is computed by
 [`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)

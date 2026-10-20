@@ -5,7 +5,7 @@ closed form and with no quadrature, simulation or summation over the
 support: \$\$\mathbb{E}\[\ell^{(\eta_k\eta_l)}\] = -n\sum\_{j=1}^{p}
 \dfrac{A\_{jk}A\_{jl}}{p_j},\$\$ with \\A = \partial p/\partial\eta\\;
 on the additive log-ratio chart it is computed as \\-n(\delta\_{kl}p_k -
-p_kp_l)\\, the form below. `approx` and `nsim` are not read.
+p_kp_l)\\, as shown below. `approx` and `nsim` are not read.
 
 ## Arguments
 
@@ -18,12 +18,13 @@ p_kp_l)\\, the form below. `approx` and `nsim` are not read.
 
   A numeric matrix of observations. Only its row count is read through
   [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md),
-  the expectation not depending on the data; the values are ignored.
+  because the expectation does not depend on the data; the values are
+  ignored.
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 - scale:
 
@@ -50,7 +51,8 @@ p_kp_l)\\, the form below. `approx` and `nsim` are not read.
 A named list of numeric vectors, one per distinct entry of the symmetric
 matrix and named as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
-names them, each of length `n_obs(distrib, y)` and constant along it.
+names them, and each vector has length `n_obs(distrib, y)` and is
+constant along it.
 
 ## The second-derivative term
 
@@ -84,11 +86,11 @@ chart and \\A = \partial p/\partial\eta\\ its Jacobian.
 ## See also
 
 [`distrib_hessian.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MultinomialDistrib.md)
-for the quantity this is the expectation of,
+for the quantity whose expectation this is,
 [`mv_sigma.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md)
-for the covariance it coincides with,
+for the covariance with which it coincides,
 [`mv_support.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.md)
-for the exact sum it can be checked against, and
+for the exact sum against which it can be checked, and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the generic.
 
@@ -118,7 +120,7 @@ rbind(information = -vapply(eh, function(v) v[1], numeric(1)),
 #> information              1.222629             0.9581222            -0.5503861
 #> covariance               1.222629             0.9581222            -0.5503861
 
-# The strategy argument is inert, the expectation being exact.
+# The strategy argument is inert, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, matrix(0, 1, 3), th,
                                        approx = "mc", nsim = 50))
 #> [1] TRUE

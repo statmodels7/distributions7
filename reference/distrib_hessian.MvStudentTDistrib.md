@@ -27,7 +27,8 @@ carries \\\nu\\ into every mixed block.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, in which each component is a single
+  number.
 
 - scale:
 
@@ -44,18 +45,18 @@ carries \\\nu\\ into every mixed block.
 A named list of numeric vectors of length \\n\\, one per unordered pair
 of parameters, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
-Unlike the gaussian's, no block here is constant across rows.
+Unlike the gaussian's, every block here varies across rows.
 
 ## Details
 
 The pure \\\nu\\ component is \\c_p''(\nu) - h''(\nu)\\, with
 [`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
-for the part of \\\nu\\ alone and
+for the part that depends on \\\nu\\ only and
 [`mvt_h_d()`](https://statmodels7.github.io/distributions7/reference/mvt_h_d.md)
-for the part that carries the data, each written without the
-cancellation of its direct form; the result stays finite and accurate as
-\\\nu\\ grows. The blocks in the matrix read the derivatives \\P_k\\ and
-\\P\_{kl}\\ of \\\Sigma^{-1}\\ from
+for the part that carries the data, and each of them is written without
+the cancellation of its direct form; the result stays finite and
+accurate as \\\nu\\ grows. The blocks in the matrix read the derivatives
+\\P_k\\ and \\P\_{kl}\\ of \\\Sigma^{-1}\\ from
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md):
 with \\q_k = r^\top P_k r\\, the matrix block is
 \\-\tfrac{1}{2}\partial\_{kl}\log\lvert\Sigma\rvert + c\\q_kq_l/(2d) -
@@ -109,7 +110,7 @@ vapply(H, sum, numeric(1))
 #>   sigma_log_L2_sigma_L2.1           sigma_log_L2_nu             sigma_L2.1_nu 
 #>               -2.70003054                0.25235942                0.01410377 
 
-# Against a numerical Hessian of the log-likelihood.
+# The result is compared with a numerical Hessian of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -119,7 +120,7 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 2.208612e-09
+#> [1] 2.206509e-09
 
 # The location block moves with the observation, where a gaussian's does
 # not: the curvature at a far row is smaller.

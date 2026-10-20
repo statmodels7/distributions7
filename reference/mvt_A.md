@@ -16,8 +16,8 @@ mvt_A(nu, p)
 
 - nu:
 
-  The degrees of freedom, a numeric vector of positive values. Not
-  validated.
+  The degrees of freedom, a numeric vector of positive values. The
+  function does not validate it.
 
 - p:
 
@@ -38,7 +38,8 @@ is subtracted. In floating point the direct form loses its significant
 digits as \\\nu\\ grows and eventually has the wrong sign. For even
 \\p\\ the recurrence \\\psi(x+1) = \psi(x) + 1/x\\ gives a sum whose
 terms carry one sign, \$\$A_p(\nu) = -\sum\_{j=0}^{p/2-1}
-\frac{4j}{\nu(\nu+2j)},\$\$ exactly zero at \\p = 2\\; for odd \\p\\
+\frac{4j}{\nu(\nu+2j)},\$\$ which is exactly zero at \\p = 2\\; for odd
+\\p\\
 [`mvt_cp_d()`](https://statmodels7.github.io/distributions7/reference/mvt_cp_d.md)
 sums an asymptotic series above \\\nu = \max(20, 4p)\\.
 

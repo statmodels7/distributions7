@@ -5,7 +5,7 @@ Computes \\\partial^3\ell/\partial y\\\partial y^\top
 Writing \\M = \ell^{(yy)} = -c\\\Sigma^{-1} + 2d\\ww^\top\\ with \\c =
 (\nu+p)/s\\, \\d = (\nu+p)/s^2\\ and \\s = \nu+q\\, \$\$\partial_a M =
 -c_a\Sigma^{-1} - c\\\partial_a\Sigma^{-1} + 2d_a ww^\top +
-2d\left(w_aw^\top + ww_a^\top\right),\$\$ every piece coming from
+2d\left(w_aw^\top + ww_a^\top\right),\$\$ where every piece comes from
 [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md).
 
 ## Arguments
@@ -24,7 +24,7 @@ Writing \\M = \ell^{(yy)} = -c\\\Sigma^{-1} + 2d\\ww^\top\\ with \\c =
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - scale:
 
@@ -68,7 +68,7 @@ whose derivative in the parameters this is,
 [`distrib_grad_y_hess.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.MvStudentTDistrib.md)
 and
 [`distrib_hess_y_hess.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.MvStudentTDistrib.md)
-for the other two a marginal criterion reads,
+for the other two that a marginal criterion reads,
 [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md)
 for the assembly, and
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
@@ -98,7 +98,7 @@ distrib_cross2_y(mvgaussian1_distrib(2), y, theta[1:5])$mu1
 #> [1,]    0    0
 #> [2,]    0    0
 
-# Against a difference of the response Hessian.
+# The result is compared with a difference of the response Hessian.
 h <- 1e-5
 vapply(seq_along(d@params), function(k) {
   tp <- theta; tp[[k]] <- tp[[k]] + h
@@ -106,6 +106,6 @@ vapply(seq_along(d@params), function(k) {
   max(abs(c2[[k]] -
           (distrib_hess_y(d, y, tp) - distrib_hess_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 2.428202e-11 6.885559e-11 1.044809e-10 1.811262e-10 1.895260e-10
+#> [1] 2.428202e-11 6.885559e-11 9.892975e-11 1.811262e-10 1.895260e-10
 #> [6] 1.713509e-11
 ```

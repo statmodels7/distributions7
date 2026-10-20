@@ -36,7 +36,8 @@ matrix is nearly singular.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters, in which each component is a single
+  number.
 
 - scale:
 
@@ -59,11 +60,11 @@ the matrix parametrization, then `nu`.
 
 The \\\nu\\ component is not evaluated in the form printed above. Both
 of its bracketed pairs cancel to leading order as \\\nu\\ grows, so it
-is assembled as \\A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)\\, with
+is assembled as \\A_p(\nu) + D(q/\nu) + (p/\nu)u/(1+u)\\, where
 [`mvt_A()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
 and
 [`mvt_D()`](https://statmodels7.github.io/distributions7/reference/mvt_D.md)
-carrying out each cancellation exactly.
+carry out each cancellation exactly.
 
 ## Notation
 
@@ -100,7 +101,7 @@ vapply(g, sum, numeric(1))
 #>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1           nu 
 #>    5.8944688    0.5141700   -2.8238795   -9.5932528    2.2949745    0.2040964 
 
-# Against a numerical derivative of the log-likelihood.
+# The score is compared with a numerical derivative of the log-likelihood.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))
@@ -121,7 +122,7 @@ vapply(c(1e3, 1e6, 1e10), function(nu) {
 }, numeric(1))
 #> [1] 3.393052e-07 3.394278e-13 3.394279e-21
 
-# And the link scale differs, this family having one link that is not the
+# The link scale differs because this family has one link that is not the
 # identity.
 c(parameter = sum(g$nu),
   link = sum(distrib_gradient(d, y, theta, scale = "link")$nu))

@@ -17,7 +17,7 @@ infinite for \(\nu \le 2\), while its scale matrix exists at every
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,8 +72,8 @@ infinite for \(\nu \le 2\), while its scale matrix exists at every
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list or vector of parameters, each component a single
-number. The generic aligns it before dispatch.</p></dd>
+<dd><p>A named list or vector of parameters, in which each component
+is a single number. The generic aligns it before dispatch.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -88,7 +88,7 @@ whose coordinates sum to a constant.</p>
     <p>Where the parametrization carries the precision, as for
 <code><a href="mvgaussian1_distrib.html">mvgaussian2_distrib()</a></code> and <code><a href="mvstudent_t1_distrib.html">mvstudent_t2_distrib()</a></code>, the matrix is inverted
 here, so the result is the covariance or the scale matrix either way.</p>
-<p>No method is registered on the class, so a family without a method of its
+<p>The class has no registered method, so a family without a method of its
 own fails in dispatch.</p>
     </div>
     <div class="section level2">
@@ -102,8 +102,8 @@ degrees of freedom of a Student t and \(p\) the dimension.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="variance.html">variance()</a></code> for the moment, <code><a href="mv_location.html">mv_location()</a></code> for the location,
 <code><a href="mv_summary.html">mv_summary()</a></code> for the standard deviations and correlations of a fit, and
-<code><a href="mv_sigma.MvGaussianDistrib.html">mv_sigma.MvGaussianDistrib()</a></code> and <code><a href="mv_sigma.MvStudentTDistrib.html">mv_sigma.MvStudentTDistrib()</a></code> for two
-methods.</p></div>
+<code><a href="mv_sigma.MvGaussianDistrib.html">mv_sigma.MvGaussianDistrib()</a></code> and <code><a href="mv_sigma.MvStudentTDistrib.html">mv_sigma.MvStudentTDistrib()</a></code> for the
+methods of the gaussian and the Student t.</p></div>
     </div>
 
     <div class="section level2">

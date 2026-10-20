@@ -1,6 +1,6 @@
 # Draw the Panel Matrix of a Multivariate Density
 
-The shared engine of
+This function is the shared engine of
 [`plot.multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md)
 and the multivariate branch of
 [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md).
@@ -9,7 +9,8 @@ marginal density on the diagonal, contours of the bivariate marginal
 below it, and the implied correlation printed above it. The density
 panels come from
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
-so nothing is integrated; the printed correlation comes from
+so the function does not integrate anything; the printed correlation
+comes from
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md).
 
 ## Usage
@@ -117,7 +118,7 @@ d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
               sigma_log_L2 = 0, sigma_L2.1 = 0.6)
 
-# Without data: the density alone.
+# Without data, the plot shows the density alone.
 op <- graphics::par(no.readonly = TRUE)
 distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222", data = NULL)
 

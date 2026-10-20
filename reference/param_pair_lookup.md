@@ -56,8 +56,8 @@ d2 <- parameters7::param_d2(s, c(0.1, -0.2, 0.4))
 setequal(unlist(lk), seq_along(d2))
 #> [1] TRUE
 
-# The array it finds for the pair (1, 3) is the mixed second derivative in
-# those two free values, against a difference of the first derivatives.
+# The array that it finds for the pair (1, 3) is the mixed second derivative
+# in those two free values, against a difference of the first derivatives.
 eta <- c(0.1, -0.2, 0.4)
 h <- 1e-5
 num <- (parameters7::param_d1(s, eta + c(0, 0, h))[[1]] -

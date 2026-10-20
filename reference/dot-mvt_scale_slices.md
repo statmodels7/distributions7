@@ -4,7 +4,7 @@ Multiplies the \\i\\th slice of a \\p \times p \times n\\ array by
 `v[i]`, which is how a term whose matrix part is the same at every
 observation but whose scalar part is not enters an assembled derivative.
 The multiplication is one vectorized recycle over the flattened array,
-so nothing loops over the observations.
+so the function does not loop over the observations.
 
 ## Usage
 
@@ -31,9 +31,9 @@ A \\p \times p \times n\\ numeric array with the same dimensions as
 ## See also
 
 [`.mvt_const_slices()`](https://statmodels7.github.io/distributions7/reference/dot-mvt_const_slices.md)
-for the case where the matrix is what stays constant,
+for the case in which the matrix stays constant,
 [`mv_outer_rows()`](https://statmodels7.github.io/distributions7/reference/mv_outer_rows.md)
-for the array these are combined with, and
+for the array with which these are combined, and
 [`distrib_cross2_y.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.md)
 for the consumer.
 

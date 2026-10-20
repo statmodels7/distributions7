@@ -103,7 +103,7 @@ MvGaussianDistrib(
 
   Logical of length 1. `TRUE` when `param` carries the precision
   \\\Omega = \Sigma^{-1}\\ and `FALSE` when it carries the covariance
-  \\\Sigma\\. It decides which derivative arrays are the
+  \\\Sigma\\. Its value determines which derivative arrays are the
   parametrization's own and which are obtained from them (see
   [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
   the sign of the log-determinant, the prefix of the free names, and the
@@ -184,7 +184,7 @@ to build one,
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 for the heavy-tailed sibling,
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
-for the covariance a parameter vector describes, and
+for the covariance that a parameter vector describes, and
 [`distrib_gradient.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
 for the closed-form score.
 
@@ -195,8 +195,9 @@ d <- mvgaussian1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 
-# Five scalar parameters: two means and the three free values of the
-# log-Cholesky covariance, prefixed by the matrix that they describe.
+# The family has five scalar parameters: two means and the three free
+# values of the log-Cholesky covariance, prefixed by the matrix that they
+# describe.
 d@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
 d@n_dim

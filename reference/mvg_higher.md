@@ -6,18 +6,19 @@ the parameters. It enumerates the parameter tuples the way
 does, splits each into mean indices and matrix indices, and reads the
 surviving cases off the gaussian's algebra. Writing \\r = y - \mu\\ and
 \\P_t\\ for the precision's derivative array over the matrix indices
-\\t\\, a tuple with
+\\t\\, the cases are as follows.
 
-- three or more mean indices is exactly zero, the quadratic form being
-  quadratic in \\\mu\\;
+- A tuple with three or more mean indices is exactly zero, because the
+  quadratic form is quadratic in \\\mu\\.
 
-- two mean indices \\(i, j)\\ gives \\-P_t\[i, j\]\\;
+- A tuple with two mean indices \\(i, j)\\ gives \\-P_t\[i, j\]\\.
 
-- one mean index \\i\\ gives \\(r P_t)\_i\\, one value per observation;
+- A tuple with one mean index \\i\\ gives \\(r P_t)\_i\\, one value per
+  observation.
 
-- no mean index gives \\\pm\tfrac{1}{2}\\\partial^{\lvert
-  t\rvert}\log\lvert M\rvert - \tfrac{1}{2}\\ r^\top P_t\\ r\\, the sign
-  following which side the parametrization carries.
+- A tuple without mean indices gives \\\pm\tfrac{1}{2}\\\partial^{\lvert
+  t\rvert}\log\lvert M\rvert - \tfrac{1}{2}\\ r^\top P_t\\ r\\, where
+  the sign depends on which side the parametrization carries.
 
 ## Usage
 
@@ -41,7 +42,7 @@ mvg_higher(distrib, y, theta, order, expected = FALSE)
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - order:
 
@@ -71,10 +72,10 @@ so the expectation is exact.
 
 ## Notation
 
-\\\mu\\ is the mean, \\M\\ the matrix the parametrization carries, \\P =
-\Sigma^{-1}\\ the precision, \\\eta\\ the free vector, \\r = y - \mu\\
-the centered response and \\P_t\\ the precision's derivative array over
-the multiset of free values \\t\\.
+\\\mu\\ is the mean, \\M\\ the matrix that the parametrization carries,
+\\P = \Sigma^{-1}\\ the precision, \\\eta\\ the free vector, \\r = y -
+\mu\\ the centered response and \\P_t\\ the precision's derivative array
+over the multiset of free values \\t\\.
 
 ## See also
 
@@ -106,8 +107,8 @@ vapply(d3[grep("^mu[0-9]+_mu[0-9]+_mu[0-9]+$", names(d3))],
 #> mu1_mu1_mu1 mu1_mu1_mu2 mu1_mu2_mu2 mu2_mu2_mu2 
 #>           0           0           0           0 
 
-# Against one stencil on the analytic Hessian, which shares no algebra
-# with the expansion.
+# The result is compared with one stencil on the analytic Hessian, which
+# shares no algebra with the expansion.
 h <- 1e-4
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h

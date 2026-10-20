@@ -5,17 +5,17 @@ gradient is \(\ell^{(y)} = -c\,w\), so a second derivative in the
 parameters is the ordinary product rule
 $$\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},$$
 with every piece from mvt_dpieces(). For a gaussian the pair of two
-location parameters is exactly zero, its response gradient being linear in
-the location; the response gradient of the t is not, and these pairs are not
-zero in general."><meta property="og:description" content="Computes \(\partial^3\ell/\partial y\,\partial\theta_a\partial\theta_b\),
+location parameters is exactly zero, because its response gradient is linear
+in the location; the response gradient of the t is not, and these pairs are
+not zero in general."><meta property="og:description" content="Computes \(\partial^3\ell/\partial y\,\partial\theta_a\partial\theta_b\),
 one \(n \times p\) matrix per unordered pair of parameters. The response
 gradient is \(\ell^{(y)} = -c\,w\), so a second derivative in the
 parameters is the ordinary product rule
 $$\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},$$
 with every piece from mvt_dpieces(). For a gaussian the pair of two
-location parameters is exactly zero, its response gradient being linear in
-the location; the response gradient of the t is not, and these pairs are not
-zero in general."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+location parameters is exactly zero, because its response gradient is linear
+in the location; the response gradient of the t is not, and these pairs are
+not zero in general."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ zero in general."><meta property="og:image" content="https://statmodels7.github.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,9 +62,9 @@ gradient is \(\ell^{(y)} = -c\,w\), so a second derivative in the
 parameters is the ordinary product rule
 $$\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},$$
 with every piece from <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code>. For a gaussian the pair of two
-location parameters is exactly zero, its response gradient being linear in
-the location; the response gradient of the t is not, and these pairs are not
-zero in general.</p>
+location parameters is exactly zero, because its response gradient is linear
+in the location; the response gradient of the t is not, and these pairs are
+not zero in general.</p>
     </div>
 
 
@@ -83,7 +83,7 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters; each component is a single number.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -143,9 +143,9 @@ response indices, <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code> for 
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]    0    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,]    0    0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a second difference of the response gradient. The reference</span></span></span>
-<span class="r-in"><span><span class="co"># amplifies rounding by h^-2, so 1e-6 on a quantity of order 1 is its own</span></span></span>
-<span class="r-in"><span><span class="co"># accuracy rather than a disagreement.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a second difference of the response gradient.</span></span></span>
+<span class="r-in"><span><span class="co"># The reference amplifies rounding by h^-2, so 1e-6 on a quantity of order 1</span></span></span>
+<span class="r-in"><span><span class="co"># is its own accuracy rather than a disagreement.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="va">t2</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">t2</span><span class="op">$</span><span class="va">mu1</span> <span class="op">&lt;-</span> <span class="va">t2</span><span class="op">$</span><span class="va">mu1</span> <span class="op">+</span> <span class="va">a</span>; <span class="va">t2</span><span class="op">$</span><span class="va">mu2</span> <span class="op">&lt;-</span> <span class="va">t2</span><span class="op">$</span><span class="va">mu2</span> <span class="op">+</span> <span class="va">b</span></span></span>

@@ -1,11 +1,11 @@
-# Prefix a Parametrization's Free Names with the Matrix They Describe
+# Prefix Free Names with the Matrix That a Parametrization Describes
 
 Returns the free names of a matrix parametrization with `"sigma_"` or
 `"omega_"` in front, so that a printed parameter table names the matrix
-to which each coordinate belongs. The free name of a value says how the
-matrix is built and not which matrix it is, so without the prefix the
-same parametrization of a covariance and of a precision would give two
-different models the same parameter names.
+to which each coordinate belongs. The free name of a value records how
+the matrix is built and not which matrix it is, so without the prefix
+the same parametrization of a covariance and of a precision would give
+two different models the same parameter names.
 
 ## Usage
 
@@ -21,9 +21,9 @@ mv_prefixed_names(free_names, inverted = FALSE)
 
 - inverted:
 
-  Logical of length 1. `TRUE` for a precision, giving `"omega_"`;
-  `FALSE`, the default, for a covariance or a scale matrix, giving
-  `"sigma_"`.
+  Logical of length 1. It is `TRUE` for a precision, which gives
+  `"omega_"`, and `FALSE` (the default) for a covariance or a scale
+  matrix, which gives `"sigma_"`.
 
 ## Value
 

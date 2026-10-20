@@ -25,7 +25,7 @@ and the fourth derivative of the log-determinant.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - expected:
 
@@ -93,7 +93,7 @@ length(d4)
 d4[["mu1_mu1_mu2_mu2"]]
 #> [1] 0 0 0 0
 
-# Against one stencil on the analytic third order.
+# The result is compared with one stencil on the analytic third order.
 h <- 1e-4
 tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
 tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h

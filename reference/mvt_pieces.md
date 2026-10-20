@@ -45,10 +45,10 @@ parametrization's free vector), `nu` (a single number), `p`, `s` (the
 parametrization itself) and the elements of
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md):
 `sigma` and `sigma_inv` (\\p \times p\\ matrices), `logdet` (the
-log-determinant of \\\Sigma\\) and `inverted`; with derivatives
-requested also `a` and `ai` (the first derivative arrays of \\\Sigma\\
-and of \\\Sigma^{-1}\\) and `dlogdet`; with `derivs2` also `a2`, `ai2`
-and `d2logdet`.
+log-determinant of \\\Sigma\\) and `inverted`. When derivatives are
+requested, the list also holds `a` and `ai` (the first derivative arrays
+of \\\Sigma\\ and of \\\Sigma^{-1}\\) and `dlogdet`; when `derivs2` is
+`TRUE`, it also holds `a2`, `ai2` and `d2logdet`.
 
 ## Details
 

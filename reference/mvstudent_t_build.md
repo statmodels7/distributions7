@@ -1,12 +1,12 @@
 # Build One of the Two Multivariate Student t Families
 
-The body that
+Builds the object for both
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 and
-[`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
-share. The two differ in the class that they instantiate, in the
-`inverted` property, in the prefix of their free names, in the tag of
-`distrib_name` (`sigma=` or `omega=`) and in what
+[`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md),
+which share this body. The two differ in the class that they
+instantiate, in the `inverted` property, in the prefix of their free
+names, in the tag of `distrib_name` (`sigma=` or `omega=`) and in what
 `params_interpretation` calls the matrix. Every method is registered on
 [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md),
 the parent of both.

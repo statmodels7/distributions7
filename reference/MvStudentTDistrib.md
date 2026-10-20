@@ -14,8 +14,8 @@ Build one with
 [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md),
 which fills the properties in and checks the rank of the
 parametrization. This page documents the raw S7 constructor, which runs
-only the validators of `multivariate_distrib` and `distrib`; nothing
-checks `param`.
+only the validators of `multivariate_distrib` and `distrib` and does not
+check `param`.
 
 ## Usage
 
@@ -91,7 +91,8 @@ MvStudentTDistrib(
 
 - n_dim:
 
-  The dimension \\p\\ of one observation. A single positive integer.
+  The dimension \\p\\ of one observation. It is a single positive
+  integer.
 
 - param:
 
@@ -105,14 +106,14 @@ MvStudentTDistrib(
 
   Logical of length 1. `TRUE` when `param` carries the inverse scale
   matrix \\\Sigma^{-1}\\ and `FALSE` when it carries the scale matrix
-  \\\Sigma\\. It decides which derivative arrays are the
+  \\\Sigma\\. Its value determines which derivative arrays are the
   parametrization's own and which are obtained from them (see
   [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)),
   the sign of the log-determinant, the prefix of the free names and the
   quantities that
   [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
-  reports. The same \\\Sigma\\ gives the same law either way, and
-  neither matrix is a moment of the response.
+  reports. The same \\\Sigma\\ gives the same law either way, and the
+  two matrices are not moments of the response.
 
 ## Value
 
@@ -197,8 +198,8 @@ d <- mvstudent_t1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 
-# Six parameters: two locations, three free values of the scale matrix, and
-# the degrees of freedom last.
+# The family has six parameters: two locations, three free values of the
+# scale matrix, and the degrees of freedom last.
 d@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
 #> [6] "nu"          

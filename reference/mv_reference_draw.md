@@ -23,7 +23,8 @@ mv_reference_draw(distrib, theta, n, ...)
 
 - theta:
 
-  A named list or vector of parameters, each component a single number.
+  A named list or vector of parameters, in which each component is a
+  single number.
 
 - n:
 
@@ -92,7 +93,8 @@ str(mv_reference_draw(d, theta, 5))
 #>   .. ..$ : chr [1:2] "v1" "v2"
 #>  $ logd: num [1:5] -3.06 -2.67 -3.15 -3.97 -2.63
 
-# The estimate it is built for: the density over the proposal, averaged.
+# This is the estimate for which the proposal is built: the density over
+# the proposal, averaged.
 set.seed(2)
 r <- mv_reference_draw(d, theta, 20000)
 mean(exp(distrib_pdf(d, r$y, theta, log = TRUE) - r$logd))

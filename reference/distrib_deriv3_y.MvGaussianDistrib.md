@@ -25,7 +25,7 @@ they are constant in \\y\\ and carry no observation dimension.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - scale:
 
@@ -39,7 +39,7 @@ they are constant in \\y\\ and carry no observation dimension.
 ## Value
 
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
-a \\p \times p \times p\\ array of zeros,
+returns a \\p \times p \times p\\ array of zeros,
 [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
 a \\p \times p \times p \times p\\ one, and
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md)

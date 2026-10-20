@@ -11,12 +11,12 @@ free of \\y\\, and \$\$\ell\_{ijk} =
 \Omega\_{ik}\Omega\_{jl} + \Omega\_{il}\Omega\_{jk}\right) -
 \frac{8N}{s^3}\sum\_{(xy)(zt)}\Omega\_{xy}w_zw_t +
 \frac{48N}{s^4}\\w_iw_jw_kw_l,\$\$ where the middle sum runs over the
-six ways of choosing the pair \\(x, y)\\ from \\\\i, j, k, l\\\\, the
-other two indices taking the \\w\\s. Each follows from the order below
+six ways of choosing the pair \\(x, y)\\ from \\\\i, j, k, l\\\\, and
+the other two indices take the \\w\\s. Each follows from the order below
 by \\\partial s/\partial y = 2w\\ and \\\partial w/\partial y =
 \Omega\\. Every term is evaluated in \\w/s\\ and \\1/s\\ (see
 [`mvt_yscaled()`](https://statmodels7.github.io/distributions7/reference/mvt_yscaled.md)),
-so no power of \\s\\ is formed and the arrays stay finite for an
+so the method forms no power of \\s\\ and the arrays stay finite for an
 observation as far as \\10^{300}\\ from the location.
 
 ## Arguments
@@ -37,7 +37,7 @@ observation as far as \\10^{300}\\ from the location.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - ...:
 
@@ -80,7 +80,8 @@ d3 <- distrib_deriv3_y(d, y, theta)
 dim(d3)
 #> [1] 2 2 2 3
 
-# Against a difference of the response Hessian along the first coordinate.
+# The result is compared with a difference of the response Hessian along the
+# first coordinate.
 h <- 1e-5
 yp <- y; yp[, 1] <- yp[, 1] + h
 ym <- y; ym[, 1] <- ym[, 1] - h

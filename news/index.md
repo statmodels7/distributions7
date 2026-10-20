@@ -1,5 +1,27 @@
 # Changelog
 
+## distributions7 0.80.3
+
+- Documentation, fourth part: the pages of the multivariate families
+  ([`check_distrib_mv()`](https://statmodels7.github.io/distributions7/reference/check_distrib_mv.md),
+  the Dirichlet, the multinomial, the gaussian and Student t, the higher
+  derivatives, the summaries and the plot) rewritten without relative
+  clauses lacking their pronoun, stranded prepositions, absolute
+  constructions, sentences without a verb (example captions included)
+  and personified descriptions of the code. The title of
+  [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md)
+  reads “Number of Observations in a Response”.
+- Correction in the page of
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
+  for the multivariate gaussian: the page said that is . The matrix
+  equal to is , which is what the code returns.
+- The message of
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) for a missing
+  `theta` reads “The plot uses random parameters”, and the messages of
+  the multivariate gaussian and Student t for a rank-deficient matrix
+  end “Such a structure can be used as a penalty but not as a
+  distribution”.
+
 ## distributions7 0.80.2
 
 - [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)

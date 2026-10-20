@@ -6,13 +6,13 @@ observation, in closed form. Writing \\g_j = \log y_j - \psi(\alpha_j)\\
 and \\A = \partial\mu/\partial\eta\\ for the simplex's own Jacobian,
 \$\$\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum\_{j} g_j A\_{jk},
 \qquad \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum\_{j} g_j
-\mu_j.\$\$ The data enter only through \\\log y\\, the family being an
-exponential family in that statistic.
+\mu_j.\$\$ The data enter only through \\\log y\\, because the family is
+an exponential family in that statistic.
 
 With `scale = "link"` the generic applies the chain rule for the links
 of the family to the result of the method. Every mean coordinate takes
-the identity link, its free value being unconstrained already, so only
-the component of the concentration changes.
+the identity link because its free value is already unconstrained, so
+only the component of the concentration changes.
 
 ## Arguments
 
@@ -23,9 +23,9 @@ the component of the concentration changes.
 
 - y:
 
-  A numeric matrix with one row per observation and \\p\\ columns, each
-  row on the open simplex. A single observation may be given as a plain
-  vector.
+  A numeric matrix with one row per observation and \\p\\ columns, and
+  each row lies on the open simplex. A single observation may be given
+  as a plain vector.
 
 - theta:
 
@@ -44,7 +44,7 @@ the component of the concentration changes.
 
 ## Value
 
-A named list with one numeric vector per parameter, in the order
+A named list with one numeric vector per parameter, in the order that
 `distrib@params` gives, each of length `nrow(y)`.
 
 ## Notation

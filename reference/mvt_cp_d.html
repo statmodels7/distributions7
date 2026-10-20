@@ -15,7 +15,7 @@ of the direct form do not."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,9 +86,9 @@ of the direct form do not.</p>
 $$c_p(\nu) = -\tfrac{p}{2}\log 2 + \sum_{j=1}^{p/2-1}
   \log\!\left(1 + \tfrac{2j}{\nu}\right),$$
 whose derivatives are
-\((-1)^{k-1}(k-1)!\,\nu^{-k}\sum_j \{(1 + 2j/\nu)^{-k} - 1\}\), each term
-formed with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">base::expm1()</a></code> and <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">base::log1p()</a></code>. For odd \(p\) and
-\(\nu \ge \max(20, 4p)\) the series of <code><a href="mvt_nu_coef.html">mvt_nu_coef()</a></code> is summed,
+\((-1)^{k-1}(k-1)!\,\nu^{-k}\sum_j \{(1 + 2j/\nu)^{-k} - 1\}\), in which
+each term is formed with <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">base::expm1()</a></code> and <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">base::log1p()</a></code>. For odd \(p\)
+and \(\nu \ge \max(20, 4p)\) the series of <code><a href="mvt_nu_coef.html">mvt_nu_coef()</a></code> is summed,
 $$c_p^{(k)}(\nu) = (-1)^{k-1}\sum_{n \ge 1} g_n
   \frac{(n+k-1)!}{\nu^{n+k}}, \qquad
   c_p(\nu) = -\tfrac{p}{2}\log 2 - \sum_{n \ge 1} g_n \frac{(n-1)!}{\nu^n};$$
@@ -105,7 +105,8 @@ the series.</p></div>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">50</span>, <span class="fl">1e6</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Against the direct form, which loses its digits as nu grows.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with the direct form, which loses its digits as</span></span></span>
+<span class="r-in"><span><span class="co"># nu grows.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>exact <span class="op">=</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mvt_cp_d</span><span class="op">(</span><span class="va">nu</span>, <span class="fl">3</span>, <span class="fl">0L</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      direct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="op">(</span><span class="va">nu</span> <span class="op">+</span> <span class="fl">3</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">lgamma</a></span><span class="op">(</span><span class="va">nu</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">nu</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              [,1]      [,2]     [,3]</span>

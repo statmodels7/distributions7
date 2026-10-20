@@ -25,7 +25,7 @@ family."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,14 +81,14 @@ family.</p>
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of the simplex's free values on the parameter
-scale, each of length 1.</p></dd>
+scale, and each value has length 1.</p></dd>
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
-<dd><p>A single integer in \(1, \dots, p\), the category wanted. A
-vector of two or more distinct categories signals an error explaining why;
-an empty, duplicated, non-integer or out-of-range <code>which</code> is rejected
-earlier by <code><a href="mv_marginal.html">mv_marginal()</a></code>.</p></dd>
+<dd><p>A single integer in \(1, \dots, p\), the category whose
+marginal is returned. A vector of two or more distinct categories signals
+an error explaining why; an empty, duplicated, non-integer or out-of-range
+<code>which</code> is rejected earlier by <code><a href="mv_marginal.html">mv_marginal()</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

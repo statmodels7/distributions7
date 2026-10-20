@@ -1,12 +1,13 @@
 # Random Parameters for a Multivariate Gaussian
 
-Draws a parameter vector for testing: each mean uniform on \\(-1, 1)\\
-and each free value of the matrix parametrization uniform on \\(-0.4,
-0.4)\\, which for the default log-Cholesky parametrization puts the
-matrix near the identity. The method of the base class draws every
-unbounded parameter uniformly on \\(-3, 3)\\, which on a log-Cholesky
-diagonal gives variances between \\e^{-6}\\ and \\e^{6}\\ and a poorly
-conditioned covariance; the narrow band keeps the matrices that
+Draws a parameter vector for testing. Each mean is drawn uniformly on
+\\(-1, 1)\\ and each free value of the matrix parametrization uniformly
+on \\(-0.4, 0.4)\\; for the default log-Cholesky parametrization this
+puts the matrix near the identity. The method of the base class draws
+every unbounded parameter uniformly on \\(-3, 3)\\, which on a
+log-Cholesky diagonal gives variances between \\e^{-6}\\ and \\e^{6}\\
+and a poorly conditioned covariance; the narrow band keeps the matrices
+that
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 draws for this family well conditioned.
 
@@ -54,8 +55,8 @@ round(apply(many, 1, range), 2)
 #> [1,]  -1 -1.00         -0.4         -0.4      -0.39
 #> [2,]   1  0.98          0.4          0.4       0.40
 
-# Every draw gives a positive definite covariance, the parametrization
-# having no boundary to reach.
+# Every draw gives a positive definite covariance, because the
+# parametrization has no boundary to reach.
 set.seed(13)
 all(replicate(50, min(eigen(mv_sigma(d, generate_random_theta(d)),
                             only.values = TRUE)$values) > 0))

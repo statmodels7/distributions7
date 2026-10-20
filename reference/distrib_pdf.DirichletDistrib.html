@@ -3,14 +3,16 @@
 $$f(y) = \dfrac{\Gamma(\phi)}{\prod_{j=1}^{p} \Gamma(\alpha_j)}
       \prod_{j=1}^{p} y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,$$
 one value per row of y, with respect to Lebesgue measure on the first
-\(p-1\) coordinates, the last being \(1 - \sum_{j&amp;lt;p} y_j\).
+\(p-1\) coordinates, where the last coordinate is
+\(1 - \sum_{j&amp;lt;p} y_j\).
 The support is tested before the logarithm is taken: a negative coordinate
 would make base::log() warn, and a density evaluated off its support is 0.
 A row with a missing coordinate gives NA, as stats::dbeta() does."><meta property="og:description" content="Computes the Dirichlet density
 $$f(y) = \dfrac{\Gamma(\phi)}{\prod_{j=1}^{p} \Gamma(\alpha_j)}
       \prod_{j=1}^{p} y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,$$
 one value per row of y, with respect to Lebesgue measure on the first
-\(p-1\) coordinates, the last being \(1 - \sum_{j&amp;lt;p} y_j\).
+\(p-1\) coordinates, where the last coordinate is
+\(1 - \sum_{j&amp;lt;p} y_j\).
 The support is tested before the logarithm is taken: a negative coordinate
 would make base::log() warn, and a density evaluated off its support is 0.
 A row with a missing coordinate gives NA, as stats::dbeta() does."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -21,7 +23,7 @@ A row with a missing coordinate gives NA, as stats::dbeta() does."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +60,8 @@ A row with a missing coordinate gives NA, as stats::dbeta() does."><meta propert
 $$f(y) = \dfrac{\Gamma(\phi)}{\prod_{j=1}^{p} \Gamma(\alpha_j)}
       \prod_{j=1}^{p} y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,$$
 one value per row of <code>y</code>, with respect to Lebesgue measure on the first
-\(p-1\) coordinates, the last being \(1 - \sum_{j&lt;p} y_j\).</p>
+\(p-1\) coordinates, where the last coordinate is
+\(1 - \sum_{j&lt;p} y_j\).</p>
 <p>The support is tested before the logarithm is taken: a negative coordinate
 would make <code><a href="https://rdrr.io/r/base/Log.html" class="external-link">base::log()</a></code> warn, and a density evaluated off its support is 0.
 A row with a missing coordinate gives <code>NA</code>, as <code><a href="https://rdrr.io/r/stats/Beta.html" class="external-link">stats::dbeta()</a></code> does.</p>
@@ -75,17 +78,17 @@ A row with a missing coordinate gives <code>NA</code>, as <code><a href="https:/
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric matrix with one row per observation and \(p\) columns,
-each row strictly positive and summing to one within <code>1e-8</code>. A single
-observation may be given as a plain vector and is read as one row. A row
-failing either test gives a density of 0, or <code>-Inf</code> with <code>log = TRUE</code>, and
-a row with a missing coordinate gives <code>NA</code>.</p></dd>
+in which each row is strictly positive and sums to one within <code>1e-8</code>. A
+single observation may be given as a plain vector and is read as one row. A
+row failing either test gives a density of 0, or <code>-Inf</code> with <code>log = TRUE</code>,
+and a row with a missing coordinate gives <code>NA</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of parameters on the parameter scale: the mean's
 free values followed by <code>phi</code>, each of length 1. A parameter may not vary
-by observation here, the mean being one point of the simplex for the whole
-sample.</p></dd>
+by observation here, because the mean is one point of the simplex for the
+whole sample.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
@@ -124,7 +127,7 @@ log-density, <code><a href="distrib_rng.DirichletDistrib.html">distrib_rng.Diric
 <span class="r-in"><span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean_alr1 <span class="op">=</span> <span class="fl">0.3</span>, mean_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>, phi <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_location.html">mv_location</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The density at four draws, against the formula written out.</span></span></span>
+<span class="r-in"><span><span class="co"># The density at four draws is compared with the formula written out.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">4</span>, <span class="va">th</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">al</span> <span class="op">&lt;-</span> <span class="fl">12</span> <span class="op">*</span> <span class="va">mu</span></span></span>

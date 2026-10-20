@@ -29,7 +29,7 @@ multivariate_distrib and distrib and does not check size or param."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,8 +159,8 @@ categories.</p></dd>
 properties are the parent's. For an object built by
 <code><a href="multinomial_distrib.html">multinomial_distrib()</a></code>, <code>params</code> is the simplex's free names prefixed by
 <code>probs_</code>, <code>n_params</code> is \(p-1\), <code>bounds</code> is <code>c(0, size)</code>, and every
-parameter carries an identity link, its free value being unconstrained
-already. The family has no dispersion parameter.</p>
+parameter carries an identity link, because its free value is already
+unconstrained. The family has no dispersion parameter.</p>
     </div>
     <div class="section level2">
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
@@ -202,7 +202,7 @@ same simplex, which is conjugate to this one;
 <span class="r-in"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7_inherits</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">multivariate_distrib</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Three categories and five trials, so two free probabilities.</span></span></span>
+<span class="r-in"><span><span class="co"># Three categories and five trials give two free probabilities.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>categories <span class="op">=</span> <span class="va">d</span><span class="op">@</span><span class="va">n_dim</span>, trials <span class="op">=</span> <span class="va">d</span><span class="op">@</span><span class="va">size</span>, parameters <span class="op">=</span> <span class="va">d</span><span class="op">@</span><span class="va">n_params</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> categories     trials parameters </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          3          5          2 </span>

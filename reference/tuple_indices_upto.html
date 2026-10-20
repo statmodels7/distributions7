@@ -3,13 +3,13 @@
 in the order that parameters7::param_tuple_indices() uses. It takes a count
 of variables in place of a parametrization, so a composite index set formed
 by appending a coordinate can be enumerated without building an object of
-that shape. The Dirichlet needs this for its simplex free values followed by
+that shape. The Dirichlet uses it for its simplex free values followed by
 its concentration. The work is done by numericals7::tuple_indices(), which
 this function wraps."><meta property="og:description" content="Enumerates the index multisets of exactly order indices drawn from 1:d,
 in the order that parameters7::param_tuple_indices() uses. It takes a count
 of variables in place of a parametrization, so a composite index set formed
 by appending a coordinate can be enumerated without building an object of
-that shape. The Dirichlet needs this for its simplex free values followed by
+that shape. The Dirichlet uses it for its simplex free values followed by
 its concentration. The work is done by numericals7::tuple_indices(), which
 this function wraps."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -19,7 +19,7 @@ this function wraps."><meta property="og:image" content="https://statmodels7.git
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@ this function wraps."><meta property="og:image" content="https://statmodels7.git
 in the order that <code><a href="https://statmodels7.github.io/parameters7/reference/param_tuple_indices.html" class="external-link">parameters7::param_tuple_indices()</a></code> uses. It takes a count
 of variables in place of a parametrization, so a composite index set formed
 by appending a coordinate can be enumerated without building an object of
-that shape. The Dirichlet needs this for its simplex free values followed by
+that shape. The Dirichlet uses it for its simplex free values followed by
 its concentration. The work is done by <code><a href="https://statmodels7.github.io/numericals7/reference/tuple_indices.html" class="external-link">numericals7::tuple_indices()</a></code>, which
 this function wraps.</p>
     </div>
@@ -92,7 +92,8 @@ same enumeration rendered as component names.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Two indices over three variables: the three repeats then the three pairs.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Two indices over three variables give the three repeats, then the three</span></span></span>
+<span class="r-in"><span><span class="co"># pairs.</span></span></span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">tuple_indices_upto</span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1</span>
@@ -119,7 +120,7 @@ same enumeration rendered as component names.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      got expected </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       20       20 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Every tuple is sorted, which is what makes a comma-joined key canonical.</span></span></span>
+<span class="r-in"><span><span class="co"># Every tuple is sorted, so a comma-joined key is canonical.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">tuple_indices_upto</span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>           <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/is.unsorted.html" class="external-link">is.unsorted</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>

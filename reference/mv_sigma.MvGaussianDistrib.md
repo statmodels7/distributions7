@@ -6,8 +6,7 @@ precision the matrix is inverted first, so the result is the covariance
 either way. For this family the matrix is both the scale matrix of the
 density and the variance of the law, so
 [`variance.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/variance.MvGaussianDistrib.md)
-returns the same matrix; the two part company in the heavy-tailed
-sibling.
+returns the same matrix; the two differ in the heavy-tailed sibling.
 
 ## Arguments
 

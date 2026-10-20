@@ -15,7 +15,8 @@ and the method does not return one of them under the bare name.
 
 - theta:
 
-  A named list of parameters. Not read: the error is signalled first.
+  A named list of parameters. It is not read, because the error is
+  signalled first.
 
 - ...:
 
@@ -32,7 +33,7 @@ gives a coordinatewise skewness where the marginal is a univariate
 object. A Dirichlet's marginal is a beta and has a skewness; an
 elliptical family's marginal is a one-dimensional object of its own
 class and signals the same error. Applying the generic to a marginal
-states which quantity is meant.
+specifies which quantity is computed.
 
 ## See also
 

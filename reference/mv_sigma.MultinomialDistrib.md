@@ -3,10 +3,10 @@
 Returns the covariance matrix of the counts, \$\$\operatorname{Cov}(Y_i,
 Y_j) = n(\delta\_{ij}p_i - p_i p_j),\$\$ so the coordinate variances are
 \\np_j(1-p_j)\\, the binomial ones, and every covariance is negative,
-the counts sharing a fixed total.
+because the counts share a fixed total.
 
-The matrix is singular, the coordinates summing to \\n\\, so the vector
-of ones is in its null space and the rank is \\p-1\\. Its leading
+The matrix is singular, because the coordinates sum to \\n\\, so the
+vector of ones is in its null space and the rank is \\p-1\\. Its leading
 \\(p-1)\times(p-1)\\ block is the expected information on the default
 chart; see
 [`distrib_expected_hessian.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MultinomialDistrib.md).
@@ -20,8 +20,8 @@ chart; see
 
 - theta:
 
-  A named list of the simplex's free values on the parameter scale, each
-  of length 1.
+  A named list of the simplex's free values on the parameter scale, and
+  each value has length 1.
 
 ## Value
 
@@ -51,8 +51,8 @@ round(S, 6)
 #> [2,] -0.550386  0.958122 -0.407736
 #> [3,] -0.672243 -0.407736  1.079979
 
-# Singular by construction: rank p - 1, with the ones vector in the null
-# space.
+# The matrix is singular by construction: its rank is p - 1, and the ones
+# vector is in its null space.
 c(rank = qr(S)$rank, dim = ncol(S))
 #> rank  dim 
 #>    2    3 

@@ -24,7 +24,7 @@ in the response is a numeric vector of length \\n\\; here it is an \\n
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - ...:
 
@@ -60,13 +60,14 @@ distrib_grad_y(d, y, theta)
 #> [3,]  0.9715850 -0.5953472
 #> [4,] -1.1170798 -0.9017918
 
-# Against a numerical derivative taken row by row.
+# The result is compared with a numerical derivative taken row by row.
 num <- t(apply(y, 1, function(r)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
 max(abs(distrib_grad_y(d, y, theta) - num))
-#> [1] 4.958367e-11
+#> [1] 4.958045e-11
 
-# And it is minus the score in the mean, this being a location family.
+# It is also minus the score in the mean, because this is a location
+# family.
 g <- distrib_gradient(d, y, theta)
 all.equal(distrib_grad_y(d, y, theta), -cbind(g$mu1, g$mu2),
           check.attributes = FALSE)

@@ -31,7 +31,7 @@ for the t these pairs are not zero in general.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - scale:
 
@@ -47,8 +47,8 @@ for the t these pairs are not zero in general.
 
 A named list of \\p \times p \times n\\ numeric arrays, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
-Every slice is symmetric, the derivative of a symmetric matrix being
-symmetric.
+Every slice is symmetric, because it is the derivative of a symmetric
+matrix.
 
 ## Notation
 
@@ -84,8 +84,8 @@ dim(hh$nu_nu)
 all(vapply(seq_len(4), function(i) isSymmetric(hh$nu_nu[, , i]), TRUE))
 #> [1] TRUE
 
-# Against a second difference of the response Hessian, with the reference's
-# own h^-2 amplification beside it.
+# The result is compared with a second difference of the response Hessian,
+# and the reference's own h^-2 amplification is shown beside the gap.
 h <- 1e-5
 f <- function(a, b) {
   t2 <- theta
@@ -98,5 +98,5 @@ c(gap = max(abs(hh[[key]] -
                 (f(h, h) - f(h, -h) - f(-h, h) + f(-h, -h)) / (4 * h * h))),
   scale = max(abs(hh[[key]])))
 #>          gap        scale 
-#> 5.841129e-07 1.163532e+00 
+#> 8.103763e-07 1.163532e+00 
 ```

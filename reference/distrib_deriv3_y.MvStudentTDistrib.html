@@ -11,12 +11,12 @@ $$\ell_{ijkl} = \frac{2N}{s^2}\left(\Omega_{ij}\Omega_{kl} +
   - \frac{8N}{s^3}\sum_{(xy)(zt)}\Omega_{xy}w_zw_t
   + \frac{48N}{s^4}\,w_iw_jw_kw_l,$$
 where the middle sum runs over the six ways of choosing the pair
-\((x, y)\) from \(\{i, j, k, l\}\), the other two indices taking the
+\((x, y)\) from \(\{i, j, k, l\}\), and the other two indices take the
 \(w\)s. Each follows from the order below by \(\partial s/\partial y =
 2w\) and \(\partial w/\partial y = \Omega\). Every term is evaluated in
-\(w/s\) and \(1/s\) (see mvt_yscaled()), so no power of \(s\) is
-formed and the arrays stay finite for an observation as far as \(10^{300}\)
-from the location."><meta property="og:description" content="Compute the third and fourth derivatives of the log-density in the
+\(w/s\) and \(1/s\) (see mvt_yscaled()), so the method forms no power
+of \(s\) and the arrays stay finite for an observation as far as
+\(10^{300}\) from the location."><meta property="og:description" content="Compute the third and fourth derivatives of the log-density in the
 response, one array per observation. With \(w = \Sigma^{-1}(y-\mu)\),
 \(q = (y-\mu)^\top w\), \(s = \nu + q\), \(N = \nu + p\) and
 \(\Omega = \Sigma^{-1}\), the log-density is
@@ -28,12 +28,12 @@ $$\ell_{ijkl} = \frac{2N}{s^2}\left(\Omega_{ij}\Omega_{kl} +
   - \frac{8N}{s^3}\sum_{(xy)(zt)}\Omega_{xy}w_zw_t
   + \frac{48N}{s^4}\,w_iw_jw_kw_l,$$
 where the middle sum runs over the six ways of choosing the pair
-\((x, y)\) from \(\{i, j, k, l\}\), the other two indices taking the
+\((x, y)\) from \(\{i, j, k, l\}\), and the other two indices take the
 \(w\)s. Each follows from the order below by \(\partial s/\partial y =
 2w\) and \(\partial w/\partial y = \Omega\). Every term is evaluated in
-\(w/s\) and \(1/s\) (see mvt_yscaled()), so no power of \(s\) is
-formed and the arrays stay finite for an observation as far as \(10^{300}\)
-from the location."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\(w/s\) and \(1/s\) (see mvt_yscaled()), so the method forms no power
+of \(s\) and the arrays stay finite for an observation as far as
+\(10^{300}\) from the location."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -41,7 +41,7 @@ from the location."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,12 +86,12 @@ $$\ell_{ijkl} = \frac{2N}{s^2}\left(\Omega_{ij}\Omega_{kl} +
   - \frac{8N}{s^3}\sum_{(xy)(zt)}\Omega_{xy}w_zw_t
   + \frac{48N}{s^4}\,w_iw_jw_kw_l,$$
 where the middle sum runs over the six ways of choosing the pair
-\((x, y)\) from \(\{i, j, k, l\}\), the other two indices taking the
+\((x, y)\) from \(\{i, j, k, l\}\), and the other two indices take the
 \(w\)s. Each follows from the order below by \(\partial s/\partial y =
 2w\) and \(\partial w/\partial y = \Omega\). Every term is evaluated in
-\(w/s\) and \(1/s\) (see <code><a href="mvt_yscaled.html">mvt_yscaled()</a></code>), so no power of \(s\) is
-formed and the arrays stay finite for an observation as far as \(10^{300}\)
-from the location.</p>
+\(w/s\) and \(1/s\) (see <code><a href="mvt_yscaled.html">mvt_yscaled()</a></code>), so the method forms no power
+of \(s\) and the arrays stay finite for an observation as far as
+\(10^{300}\) from the location.</p>
     </div>
 
 
@@ -110,7 +110,7 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters; each component is a single number.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -149,7 +149,8 @@ parameters, and <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</a></co
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">d3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2 2 2 3</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a difference of the response Hessian along the first coordinate.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a difference of the response Hessian along the</span></span></span>
+<span class="r-in"><span><span class="co"># first coordinate.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
 <span class="r-in"><span><span class="va">yp</span> <span class="op">&lt;-</span> <span class="va">y</span>; <span class="va">yp</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">yp</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="va">h</span></span></span>
 <span class="r-in"><span><span class="va">ym</span> <span class="op">&lt;-</span> <span class="va">y</span>; <span class="va">ym</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">ym</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">-</span> <span class="va">h</span></span></span>

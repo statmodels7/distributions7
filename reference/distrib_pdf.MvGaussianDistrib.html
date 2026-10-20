@@ -3,19 +3,21 @@
 $$\ell = -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\lvert\Sigma\rvert
   - \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),$$
 row by row, and exponentiates it unless log = TRUE. The log-determinant
-comes from the matrix parametrization's own param_logdet(), so no
-determinant is formed. The quadratic form is the squared norm of the residual
-whitened by the parametrization's factor (see mv_quad()), which keeps its
-digits where the covariance is nearly singular. The matrix quantities are
-computed once per call, since the matrix does not vary with the response."><meta property="og:description" content="Computes the multivariate gaussian log-density
+comes from the matrix parametrization's own param_logdet(), so the
+method does not form a determinant. The quadratic form is the squared norm of
+the residual whitened by the parametrization's factor (see mv_quad()),
+which keeps its digits where the covariance is nearly singular. The matrix
+quantities are computed once per call, since the matrix does not vary with
+the response."><meta property="og:description" content="Computes the multivariate gaussian log-density
 $$\ell = -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\lvert\Sigma\rvert
   - \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),$$
 row by row, and exponentiates it unless log = TRUE. The log-determinant
-comes from the matrix parametrization's own param_logdet(), so no
-determinant is formed. The quadratic form is the squared norm of the residual
-whitened by the parametrization's factor (see mv_quad()), which keeps its
-digits where the covariance is nearly singular. The matrix quantities are
-computed once per call, since the matrix does not vary with the response."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+comes from the matrix parametrization's own param_logdet(), so the
+method does not form a determinant. The quadratic form is the squared norm of
+the residual whitened by the parametrization's factor (see mv_quad()),
+which keeps its digits where the covariance is nearly singular. The matrix
+quantities are computed once per call, since the matrix does not vary with
+the response."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +25,7 @@ computed once per call, since the matrix does not vary with the response."><meta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,11 +62,12 @@ computed once per call, since the matrix does not vary with the response."><meta
 $$\ell = -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\lvert\Sigma\rvert
   - \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),$$
 row by row, and exponentiates it unless <code>log = TRUE</code>. The log-determinant
-comes from the matrix parametrization's own <code>param_logdet()</code>, so no
-determinant is formed. The quadratic form is the squared norm of the residual
-whitened by the parametrization's factor (see <code><a href="mv_quad.html">mv_quad()</a></code>), which keeps its
-digits where the covariance is nearly singular. The matrix quantities are
-computed once per call, since the matrix does not vary with the response.</p>
+comes from the matrix parametrization's own <code>param_logdet()</code>, so the
+method does not form a determinant. The quadratic form is the squared norm of
+the residual whitened by the parametrization's factor (see <code><a href="mv_quad.html">mv_quad()</a></code>),
+which keeps its digits where the covariance is nearly singular. The matrix
+quantities are computed once per call, since the matrix does not vary with
+the response.</p>
     </div>
 
 
@@ -79,21 +82,21 @@ computed once per call, since the matrix does not vary with the response.</p>
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>An \(n \times p\) numeric matrix of observations, one row each.
 A plain numeric vector of length \(p\) is read as a single observation.
-Every point of \(\mathbb{R}^p\) is in the support, so no row is
-rejected. A matrix with zero rows returns <code>numeric(0)</code>.</p></dd>
+Every point of \(\mathbb{R}^p\) is in the support, so the method does
+not reject any row. A matrix with zero rows returns <code>numeric(0)</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number:
-<code>mu1</code>, ..., <code>mup</code> and the matrix parametrization's prefixed free values.
-A parameter may not vary by observation here, and a component longer than
-one is an error.</p></dd>
+<dd><p>A named list of parameters in which each component is a single
+number: <code>mu1</code>, ..., <code>mup</code> and the matrix parametrization's prefixed free
+values. A parameter may not vary by observation here, and a component
+longer than one is an error.</p></dd>
 
 
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
 <dd><p>Logical of length 1. When <code>TRUE</code> the log-density is returned,
-which stays finite for a point the density itself underflows at. Defaults
-to <code>FALSE</code>.</p></dd>
+which stays finite for a point at which the density itself underflows.
+Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -108,7 +111,7 @@ to <code>FALSE</code>.</p></dd>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_gradient.MvGaussianDistrib.html">distrib_gradient.MvGaussianDistrib()</a></code> for the derivatives of this
 log-density, <code><a href="distrib_rng.MvGaussianDistrib.html">distrib_rng.MvGaussianDistrib()</a></code> to draw from it,
-<code><a href="mv_sigma.MvGaussianDistrib.html">mv_sigma.MvGaussianDistrib()</a></code> for the covariance it uses, and
+<code><a href="mv_sigma.MvGaussianDistrib.html">mv_sigma.MvGaussianDistrib()</a></code> for the covariance that it uses, and
 <code><a href="distrib_pdf.html">distrib_pdf()</a></code> for the generic.</p></div>
     </div>
 
@@ -122,7 +125,8 @@ log-density, <code><a href="distrib_rng.MvGaussianDistrib.html">distrib_rng.MvGa
 <span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.13361803 0.08899957 0.17589341</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against the formula written out with an explicit inverse.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with the formula written out with an explicit</span></span></span>
+<span class="r-in"><span><span class="co"># inverse.</span></span></span>
 <span class="r-in"><span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ref</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/det.html" class="external-link">det</a></span><span class="op">(</span><span class="va">S</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/mahalanobis.html" class="external-link">mahalanobis</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">mu</span>, <span class="va">S</span><span class="op">)</span><span class="op">)</span></span></span>

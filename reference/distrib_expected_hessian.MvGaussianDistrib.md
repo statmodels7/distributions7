@@ -21,12 +21,12 @@ constant across rows and `y` is used only for its row count.
 - y:
 
   An \\n \times p\\ numeric matrix of observations. Only its row count
-  is used: the expectation is taken over the law, so no observation
-  enters any component.
+  is used: the expectation is taken over the law, so the components do
+  not depend on any observation.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - scale:
 
@@ -36,8 +36,9 @@ constant across rows and `y` is used only for its row count.
 
 - approx:
 
-  Ignored: the expectation is exact and no approximation strategy is
-  consulted. It is present so that the signature matches the generic's.
+  Ignored: the expectation is exact, so the method does not use an
+  approximation strategy. It is present so that the signature matches
+  the generic's.
 
 - nsim:
 
@@ -50,8 +51,8 @@ constant across rows and `y` is used only for its row count.
 ## Value
 
 A named list of numeric vectors of length \\n\\, keyed as
-[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each vector constant.
+[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each vector is constant.
 
 ## Why the mixed block vanishes
 
@@ -112,7 +113,8 @@ vapply(EH[mixed], function(z) z[1], numeric(1))
 #> mu2_sigma_log_L2   mu2_sigma_L2.1 
 #>                0                0 
 
-# And the closed form is what averaging the observed Hessian converges to.
+# The average of the observed Hessian over a large sample converges to the
+# closed form.
 set.seed(4)
 big <- distrib_rng(d, 50000, theta)
 emp <- vapply(distrib_hessian(d, big, theta), mean, numeric(1))

@@ -5,17 +5,17 @@ $$\frac{\partial \ell}{\partial y} = -c\,\Sigma^{-1}(y-\mu), \qquad c =
 the family's weight in front of it. A gaussian's response gradient grows
 without limit as the observation moves away; this one rises, turns and decays
 like \(1/\lVert y\rVert\), the redescending score of a heavy-tailed family.
-It is minus the score in the location, this being a location family. It is
-computed as \(-(\nu+p)\,w/s\) with \(s = \nu + q\) (see mvt_yscaled()),
-which stays finite for a distant observation."><meta property="og:description" content="Computes the derivative of the log-density in the response,
+It is minus the score in the location, because the family is a location
+family. It is computed as \(-(\nu+p)\,w/s\) with \(s = \nu + q\) (see
+mvt_yscaled()), which stays finite for a distant observation."><meta property="og:description" content="Computes the derivative of the log-density in the response,
 $$\frac{\partial \ell}{\partial y} = -c\,\Sigma^{-1}(y-\mu), \qquad c =
 \frac{\nu+p}{\nu+q},$$ one row per observation: the gaussian's expression with
 the family's weight in front of it. A gaussian's response gradient grows
 without limit as the observation moves away; this one rises, turns and decays
 like \(1/\lVert y\rVert\), the redescending score of a heavy-tailed family.
-It is minus the score in the location, this being a location family. It is
-computed as \(-(\nu+p)\,w/s\) with \(s = \nu + q\) (see mvt_yscaled()),
-which stays finite for a distant observation."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+It is minus the score in the location, because the family is a location
+family. It is computed as \(-(\nu+p)\,w/s\) with \(s = \nu + q\) (see
+mvt_yscaled()), which stays finite for a distant observation."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ which stays finite for a distant observation."><meta property="og:image" content
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,9 +62,9 @@ $$\frac{\partial \ell}{\partial y} = -c\,\Sigma^{-1}(y-\mu), \qquad c =
 the family's weight in front of it. A gaussian's response gradient grows
 without limit as the observation moves away; this one rises, turns and decays
 like \(1/\lVert y\rVert\), the redescending score of a heavy-tailed family.
-It is minus the score in the location, this being a location family. It is
-computed as \(-(\nu+p)\,w/s\) with \(s = \nu + q\) (see <code><a href="mvt_yscaled.html">mvt_yscaled()</a></code>),
-which stays finite for a distant observation.</p>
+It is minus the score in the location, because the family is a location
+family. It is computed as \(-(\nu+p)\,w/s\) with \(s = \nu + q\) (see
+<code><a href="mvt_yscaled.html">mvt_yscaled()</a></code>), which stays finite for a distant observation.</p>
     </div>
 
 
@@ -83,7 +83,8 @@ length \(p\) is read as a single observation.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number.</p></dd>
+<dd><p>A named list of parameters, in which each component is a single
+number.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -92,7 +93,7 @@ length \(p\) is read as a single observation.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An \(n \times p\) numeric matrix, row \(i\) holding
+    <p>An \(n \times p\) numeric matrix in which row \(i\) holds
 \(\partial\ell_i/\partial y_i\).</p>
     </div>
     <div class="section level2">
@@ -125,7 +126,7 @@ distance and \(c\) the weight.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  1.422240 -0.8714900</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -1.037485 -0.8375372</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a numerical derivative taken row by row.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a numerical derivative taken row by row.</span></span></span>
 <span class="r-in"><span><span class="va">num</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">y</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">numDeriv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/numDeriv/man/grad.html" class="external-link">grad</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, <span class="va">theta</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="va">r</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span> <span class="op">-</span> <span class="va">num</span><span class="op">)</span><span class="op">)</span></span></span>

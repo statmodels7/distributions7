@@ -4,14 +4,14 @@ parametrization's free values. This is the matrix in the density, and it is
 not the covariance: the covariance is \(\nu\Sigma/(\nu-2)\) and exists
 only for \(\nu &amp;gt; 2\), while the scale matrix exists at every admissible
 \(\nu\). variance.MvStudentTDistrib() returns the covariance. The
-correlations read off either are the same, a positive multiple of a matrix
-leaving them alone."><meta property="og:description" content="Returns the scale matrix \(\Sigma\), assembled from the matrix
+correlations read off either matrix are the same, because a positive
+multiple of a matrix leaves them unchanged."><meta property="og:description" content="Returns the scale matrix \(\Sigma\), assembled from the matrix
 parametrization's free values. This is the matrix in the density, and it is
 not the covariance: the covariance is \(\nu\Sigma/(\nu-2)\) and exists
 only for \(\nu &amp;gt; 2\), while the scale matrix exists at every admissible
 \(\nu\). variance.MvStudentTDistrib() returns the covariance. The
-correlations read off either are the same, a positive multiple of a matrix
-leaving them alone."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+correlations read off either matrix are the same, because a positive
+multiple of a matrix leaves them unchanged."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +19,7 @@ leaving them alone."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,8 +57,8 @@ parametrization's free values. This is the matrix in the density, and it is
 not the covariance: the covariance is \(\nu\Sigma/(\nu-2)\) and exists
 only for \(\nu &gt; 2\), while the scale matrix exists at every admissible
 \(\nu\). <code><a href="variance.MvStudentTDistrib.html">variance.MvStudentTDistrib()</a></code> returns the covariance. The
-correlations read off either are the same, a positive multiple of a matrix
-leaving them alone.</p>
+correlations read off either matrix are the same, because a positive
+multiple of a matrix leaves them unchanged.</p>
     </div>
 
 
@@ -72,9 +72,9 @@ leaving them alone.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number. The
-generic requires every parameter and checks <code>nu</code> against its domain; the
-location components and <code>nu</code> do not enter the result.</p></dd>
+<dd><p>A named list of parameters; each component is a single number.
+The generic requires every parameter and checks <code>nu</code> against its domain;
+the location components and <code>nu</code> do not enter the result.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -101,7 +101,7 @@ as <code>scale_sd_v1</code> and so on, and <code><a href="mv_sigma.html">mv_sigm
 <span class="r-out co"><span class="r-pr">#&gt;</span> v1 1.2214028 0.4420684</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> v2 0.4420684 0.8303200</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Positive definite whatever the free values are.</span></span></span>
+<span class="r-in"><span><span class="co"># The matrix is positive definite whatever the free values are.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="fu"><a href="mv_sigma.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span>, only.values <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">values</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.5092462 0.5424766</span>
 <span class="r-in"><span></span></span>

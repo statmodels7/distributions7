@@ -3,11 +3,11 @@
 v[i], which is how a term whose matrix part is the same at every
 observation but whose scalar part is not enters an assembled derivative.
 The multiplication is one vectorized recycle over the flattened array, so
-nothing loops over the observations."><meta property="og:description" content="Multiplies the \(i\)th slice of a \(p \times p \times n\) array by
+the function does not loop over the observations."><meta property="og:description" content="Multiplies the \(i\)th slice of a \(p \times p \times n\) array by
 v[i], which is how a term whose matrix part is the same at every
 observation but whose scalar part is not enters an assembled derivative.
 The multiplication is one vectorized recycle over the flattened array, so
-nothing loops over the observations."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+the function does not loop over the observations."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +15,7 @@ nothing loops over the observations."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ nothing loops over the observations."><meta property="og:image" content="https:/
 <code>v[i]</code>, which is how a term whose matrix part is the same at every
 observation but whose scalar part is not enters an assembled derivative.
 The multiplication is one vectorized recycle over the flattened array, so
-nothing loops over the observations.</p>
+the function does not loop over the observations.</p>
     </div>
 
     <div class="section level2">
@@ -80,9 +80,9 @@ as <code>arr</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="dot-mvt_const_slices.html">.mvt_const_slices()</a></code> for the case where the matrix is what stays
-constant, <code><a href="mv_outer_rows.html">mv_outer_rows()</a></code> for the array these are combined with, and
-<code><a href="distrib_cross2_y.MvStudentTDistrib.html">distrib_cross2_y.MvStudentTDistrib()</a></code> for the consumer.</p></div>
+    <div class="dont-index"><p><code><a href="dot-mvt_const_slices.html">.mvt_const_slices()</a></code> for the case in which the matrix stays
+constant, <code><a href="mv_outer_rows.html">mv_outer_rows()</a></code> for the array with which these are combined,
+and <code><a href="distrib_cross2_y.MvStudentTDistrib.html">distrib_cross2_y.MvStudentTDistrib()</a></code> for the consumer.</p></div>
     </div>
 
     <div class="section level2">

@@ -8,9 +8,9 @@ parametrization, \$\$\frac{\partial \ell}{\partial \mu} = w, \qquad
 \log\lvert\Sigma\rvert}{\partial \eta_k} - \frac{1}{2}\\ r^\top P_k
 r,\$\$ which is \\\tfrac{1}{2} w^\top A_k w\\ in the second term, with
 \\A_k\\ the derivative of \\\Sigma\\. The first term of the matrix
-component is the parametrization's own `param_dlogdet()`, so no trace is
-formed here; its sign is flipped where the parametrization carries the
-precision. \\P_k\\ is read from
+component is the parametrization's own `param_dlogdet()`, so the method
+does not form a trace here; its sign is flipped where the
+parametrization carries the precision. \\P_k\\ is read from
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
 and not formed as \\-\Sigma^{-1}A_k\Sigma^{-1}\\, a product that cancels
 where the covariance is nearly singular.
@@ -31,7 +31,7 @@ where the covariance is nearly singular.
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters in which each component is a single number.
 
 - scale:
 
@@ -84,8 +84,8 @@ vapply(g, sum, numeric(1))
 #>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1 
 #>    3.4591533    0.9841865   -2.1249520  -13.0020520   -1.2473141 
 
-# Against a numerical derivative of the log-likelihood, which shares no
-# arithmetic with the closed form.
+# The score is compared with a numerical derivative of the log-likelihood,
+# which shares no arithmetic with the closed form.
 ll <- function(v) {
   t2 <- as.list(v); names(t2) <- d@params
   sum(distrib_pdf(d, y, t2, log = TRUE))

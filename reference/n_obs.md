@@ -1,4 +1,4 @@
-# How Many Observations a Response Holds
+# Number of Observations in a Response
 
 Returns the number of observations in `y`: its length for a univariate
 distribution, and its number of rows for a multivariate one. For a
@@ -18,8 +18,8 @@ n_obs(distrib, y)
 
 - distrib:
 
-  An object inheriting from `distrib`. Only its class is used, to decide
-  which reading of `y` applies.
+  An object inheriting from `distrib`. Only its class is used, to select
+  the reading of `y` that applies.
 
 - y:
 
@@ -44,7 +44,8 @@ which puts a response in the shape that this function counts.
 n_obs(gaussian1_distrib(), c(1.2, -0.4, 0.8))
 #> [1] 3
 
-# A multivariate one by rows, where length() gives the number of entries.
+# A multivariate response is counted by rows, where length() gives the
+# number of entries.
 y <- matrix(0, 5, 2)
 c(n_obs = n_obs(mvgaussian1_distrib(2), y), length = length(y))
 #>  n_obs length 

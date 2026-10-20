@@ -21,7 +21,7 @@ mv_marginal()."><meta property="og:image" content="https://statmodels7.github.io
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@ are returned one coordinate at a time, the plot signals the error of
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list or vector of parameters, each component a single
-number. When missing, parameters are drawn by
+<dd><p>A named list or vector of parameters in which each component is
+a single number. When missing, parameters are drawn by
 <code><a href="generate_random_theta.html">generate_random_theta()</a></code> and reported in a message. A component of
 length greater than one is an error.</p></dd>
 
@@ -124,13 +124,13 @@ from <code><a href="https://rdrr.io/r/base/pretty.html" class="external-link">pr
     <h2 id="one-setting-only">One setting only<a class="anchor" aria-label="anchor" href="#one-setting-only"></a></h2>
     <p>A univariate <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method reads a <code>theta</code> component of length \(k\) as
 \(k\) settings drawn over one another. Here the picture is already a matrix
-of panels, with no axis left to overlay them on, so a component longer than
-one signals an error that names it.</p>
+of panels and has no axis on which to overlay them, so a component longer
+than one signals an error that names it.</p>
     </div>
     <div class="section level2">
     <h2 id="the-plotting-range">The plotting range<a class="anchor" aria-label="anchor" href="#the-plotting-range"></a></h2>
     <p>Each coordinate is drawn over three standard deviations either side of the
-location, with the spread taken from the matrix that the parametrization
+location, and the spread is taken from the matrix that the parametrization
 carries (see <code><a href="mv_sigma.html">mv_sigma()</a></code>). A multivariate Student \(t\) with \(\nu \le
 2\) has an infinite variance, so <code><a href="variance.html">variance()</a></code> cannot be the source. For an
 elliptical family the two matrices agree up to a factor, which is enough for
@@ -156,8 +156,8 @@ overlay several settings.</p></div>
 <span class="r-plt img"><img src="plot.multivariate_distrib-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Two coordinates of a heavy-tailed family, whose contours are wider than a</span></span></span>
-<span class="r-in"><span><span class="co"># gaussian's at the same matrix.</span></span></span>
+<span class="r-in"><span><span class="co"># Two coordinates of a heavy-tailed family are drawn, and its contours are</span></span></span>
+<span class="r-in"><span><span class="co"># wider than a gaussian's at the same matrix.</span></span></span>
 <span class="r-in"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">t2</span><span class="op">@</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>no.readonly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
@@ -165,7 +165,7 @@ overlay several settings.</p></div>
 <span class="r-plt img"><img src="plot.multivariate_distrib-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Four coordinates would be sixteen panels, which signals an error.</span></span></span>
+<span class="r-in"><span><span class="co"># Four coordinates would give sixteen panels, so the call signals an error.</span></span></span>
 <span class="r-in"><span><span class="va">d4</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">d4</span><span class="op">@</span><span class="va">n_params</span><span class="op">)</span>, <span class="va">d4</span><span class="op">@</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">d4</span>, <span class="va">th4</span><span class="op">)</span><span class="op">)</span></span></span>

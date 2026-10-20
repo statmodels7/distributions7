@@ -19,7 +19,7 @@ another chart."><meta property="og:image" content="https://statmodels7.github.io
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,12 +72,13 @@ another chart.</p>
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
 <dd><p>A numeric matrix with one row per observation and one column per
-category, each row a vector of counts summing to <code>distrib@size</code>.</p></dd>
+category, where each row is a vector of counts that sum to
+<code>distrib@size</code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each component a single number:
-<code>probs_alr1</code>, ..., <code>probs_alr(p-1)</code>.</p></dd>
+<dd><p>A named list of parameters, where each component is a single
+number: <code>probs_alr1</code>, ..., <code>probs_alr(p-1)</code>.</p></dd>
 
 
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
@@ -148,7 +149,7 @@ the generic.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [4] "probs_alr1_probs_alr2_probs_alr2_probs_alr2"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "probs_alr2_probs_alr2_probs_alr2_probs_alr2"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against a central difference of the third order.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with a central difference of the third order.</span></span></span>
 <span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-4</span></span></span>
 <span class="r-in"><span><span class="va">tp</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tp</span><span class="op">$</span><span class="va">probs_alr2</span> <span class="op">&lt;-</span> <span class="va">tp</span><span class="op">$</span><span class="va">probs_alr2</span> <span class="op">+</span> <span class="va">h</span></span></span>
 <span class="r-in"><span><span class="va">tm</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">tm</span><span class="op">$</span><span class="va">probs_alr2</span> <span class="op">&lt;-</span> <span class="va">tm</span><span class="op">$</span><span class="va">probs_alr2</span> <span class="op">-</span> <span class="va">h</span></span></span>

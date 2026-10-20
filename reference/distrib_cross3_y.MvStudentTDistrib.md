@@ -28,7 +28,7 @@ write \\T\_{ijk} = \Omega\_{ij}w_k + \Omega\_{ik}w_j +
 
 - theta:
 
-  A named list of parameters, each component a single number.
+  A named list of parameters; each component is a single number.
 
 - scale:
 
@@ -61,7 +61,8 @@ set.seed(1)
 y <- distrib_rng(d, 3, theta)
 c3 <- distrib_cross3_y(d, y, theta)
 
-# Against a difference of the third response derivative in nu.
+# The result is compared with a difference of the third response derivative
+# in nu.
 h <- 1e-5
 tp <- theta; tp$nu <- 6 + h
 tm <- theta; tm$nu <- 6 - h

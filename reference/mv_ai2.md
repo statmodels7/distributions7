@@ -5,7 +5,8 @@ that
 [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
 supplies, for the pair of free values \\(k, l)\\. The key is built from
 the sorted pair of free names, so the result does not depend on the
-order of the two positions. Shared by the gaussian and the Student t.
+order of the two positions. The gaussian and the Student t share this
+function.
 
 ## Usage
 

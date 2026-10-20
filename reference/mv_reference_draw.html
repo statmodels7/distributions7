@@ -15,7 +15,7 @@ sum over mv_support() instead."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +69,8 @@ sum over <code><a href="mv_support.html">mv_support()</a></code> instead.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list or vector of parameters, each component a single
-number.</p></dd>
+<dd><p>A named list or vector of parameters, in which each component
+is a single number.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -136,7 +136,8 @@ gamma function.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..$ : chr [1:2] "v1" "v2"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ logd: num [1:5] -3.06 -2.67 -3.15 -3.97 -2.63</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The estimate it is built for: the density over the proposal, averaged.</span></span></span>
+<span class="r-in"><span><span class="co"># This is the estimate for which the proposal is built: the density over</span></span></span>
+<span class="r-in"><span><span class="co"># the proposal, averaged.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu">mv_reference_draw</span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, <span class="fl">20000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">r</span><span class="op">$</span><span class="va">y</span>, <span class="va">theta</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">-</span> <span class="va">r</span><span class="op">$</span><span class="va">logd</span><span class="op">)</span><span class="op">)</span></span></span>
