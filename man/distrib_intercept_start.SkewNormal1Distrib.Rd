@@ -14,9 +14,9 @@
 A named list with \code{mu}, \code{sigma} and \code{alpha}, or an empty list.
 }
 \description{
-Returns the moment estimate of \eqn{(\mu, \sigma, \alpha)}, with the sample
-skewness held at 0.9, when the absolute sample skewness is at least 0.9,
-and an empty list otherwise.
+Returns, when the absolute sample skewness is at least 0.9, the moment
+estimate of \eqn{(\mu, \sigma, \alpha)} in which the sample skewness is
+held at 0.9, and an empty list otherwise.
 }
 \details{
 The skewness of the skew normal is bounded by
@@ -26,7 +26,7 @@ has \eqn{\alpha \to \infty} and \eqn{\mu} at the smallest observation, which
 is the half-normal limit. In the direct parametrization the curvature in
 \eqn{\mu} there grows as \eqn{\alpha^2}, so a regression started from that
 point takes steps of order \eqn{1/\alpha^2} and does not reach its maximum.
-The moment estimate with the skewness held at 0.9 gives \eqn{\alpha = 6.3}
+The moment estimate computed at a skewness of 0.9 gives \eqn{\alpha = 6.3}
 and the matching location and scale.
 }
 \seealso{

@@ -32,7 +32,7 @@ d <- pig2_distrib()
 alpha0 <- sqrt(1 + 2 * 0.5 * 4) / 0.5
 y <- distrib_rng(d, 5000, list(mu = 4, alpha = alpha0))
 
-# The inversion recovers what the sample was drawn from.
+# The inversion recovers the parameters from which the sample was drawn.
 rbind(start = unlist(distrib_start(d, y)[[1]]),
       truth = c(mu = 4, alpha = alpha0))
 
@@ -43,6 +43,6 @@ c(alpha = sqrt(1 + 2 * s * mean(y)) / s)
 }
 \seealso{
 \code{\link[=pig2_distrib]{pig2_distrib()}} for the family;
-\code{\link[=distrib_start.Pig1Distrib]{distrib_start.Pig1Distrib()}} for the estimate this maps;
+\code{\link[=distrib_start.Pig1Distrib]{distrib_start.Pig1Distrib()}} for the estimate that this maps;
 \code{\link[=distrib_start]{distrib_start()}} for the generic.
 }

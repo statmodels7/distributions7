@@ -26,15 +26,15 @@ uses both.}
 \item{...}{Additional arguments passed to the specific method.}
 }
 \value{
-A named list of derivative-component vectors, each of length
-\code{length(y)}, keyed as
-\code{\link[=deriv_names]{deriv_names(distrib@params, 5)}} gives them (e.g.
+A named list of derivative-component vectors, in which each vector
+has length \code{length(y)} and the names are those that
+\code{\link[=deriv_names]{deriv_names(distrib@params, 5)}} gives (e.g.
 \code{"mu_mu_sigma_sigma_sigma"}).
 }
 \description{
-The unique fifth-order partial derivatives of the log-likelihood with
-respect to the distribution's parameters, on the parameter scale or on the
-link scale.
+Computes the unique fifth-order partial derivatives of the log-likelihood
+with respect to the distribution's parameters, on the parameter scale or on
+the link scale.
 }
 \details{
 The order is needed because each order of differentiating the predictor of
@@ -72,6 +72,6 @@ distrib_deriv5(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
 \seealso{
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the order below, \code{\link[=numerical_deriv5]{numerical_deriv5()}} for
-the differencing, and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} for the predicate that says
-whether the quantity being differenced is itself analytic.
+the differencing, and \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} for the predicate that reports
+whether the quantity that is differenced is itself analytic.
 }

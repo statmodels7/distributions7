@@ -8,8 +8,8 @@ Nothing. This page is the index of the generics documented on their
 own pages; the value returned is theirs.
 }
 \description{
-The S7 generics that apply to every \code{distrib} object, grouped by what they
-compute. This page is the index; each generic is documented on its own page,
+This page lists the S7 generics that apply to every \code{distrib} object,
+grouped by what they compute. Each generic is documented on its own page,
 and the method of each family for it on a third.
 
 The only compulsory method is \code{\link[=distrib_pdf]{distrib_pdf()}}. Every other quantity has a
@@ -34,8 +34,8 @@ expected information \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_h
 \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}}.}
 \item{derivatives in the response}{\code{\link[=distrib_grad_y]{distrib_grad_y()}},
 \code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}}, \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}}.
-A discrete family has no method for them, its support having no
-continuous direction to differentiate along, so a call signals an
+A discrete family has no method for them because its support has no
+continuous direction along which to differentiate, so a call signals an
 error.}
 \item{mixed}{\code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}},
 \code{\link[=distrib_cross3_y]{distrib_cross3_y()}}, \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}},
@@ -73,7 +73,7 @@ distrib_cdf(d, 0, th)
 distrib_quantile(d, 0.975, th)
 distrib_gradient(d, c(-1, 1), th)
 
-# theta is reordered by name before dispatch, so the order it is written in
+# theta is reordered by name before dispatch, so the order of its elements
 # does not matter.
 identical(distrib_pdf(d, 1, list(mu = 0, sigma = 2)),
           distrib_pdf(d, 1, list(sigma = 2, mu = 0)))

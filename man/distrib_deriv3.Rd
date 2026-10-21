@@ -34,8 +34,8 @@ See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{approx}{How the expectation is approximated when \code{expected = TRUE}
 and the distribution has no closed-form expected third derivatives; ignored
-otherwise. One of \code{"integrate"} (default), \code{"bartlett"} (equivalently
-\code{"opg"}) or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
+otherwise. The value is one of \code{"integrate"} (default), \code{"bartlett"}
+(equivalently \code{"opg"}) or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
 
 \item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
 
@@ -49,7 +49,7 @@ A named list of derivative-component vectors, keyed as in
 Computes the unique third-order partial derivatives of the log-likelihood with
 respect to the distribution's parameters. Distributions with a closed-form
 implementation provide it directly (in C++); the others fall back to finite
-differences of the highest order the family implements itself (see
+differences of the highest order that the family implements itself (see
 \code{\link[=numerical_deriv3]{numerical_deriv3()}}).
 }
 \examples{

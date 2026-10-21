@@ -1,7 +1,7 @@
 #' S7 Class for Probability Distributions
 #'
 #' @description
-#' The base S7 class for probability distributions.
+#' This class is the base S7 class for probability distributions.
 #' It carries the name, the parameters with their domains and links, and the support.
 #'
 #' @param distrib_name A single character string specifying the name of the distribution (e.g., `"student t"`).
@@ -16,14 +16,15 @@
 #'
 #' @import S7
 #' @section Methods:
-#' Registered on the base class, so every distribution inherits them unless it
-#' registers something more specific. The derivatives of the log-density in the
-#' parameters are computed by finite differences and the expected derivatives
-#' by the strategy named in `approx`, which is why a subclass that implements
-#' nothing but [distrib_pdf()] has every parameter derivative. [distrib_pdf()]
-#' itself has no default: the density is the one quantity that a distribution
-#' must supply. The list below is partial; the base class also registers
-#' [distrib_atoms()] and the derivatives of the cdf of orders 3 and 4.
+#' The methods are registered on the base class, so every distribution inherits
+#' them unless it registers something more specific. The derivatives of the
+#' log-density in the parameters are computed by finite differences and the
+#' expected derivatives by the strategy named in `approx`, so a
+#' subclass that implements nothing but [distrib_pdf()] has every parameter
+#' derivative. [distrib_pdf()] itself has no default: the density is the one
+#' quantity that a distribution must supply. The list below is partial; the base
+#' class also registers [distrib_atoms()] and the derivatives of the cdf of
+#' orders 3 and 4.
 #'
 #'   [`distrib_deriv3()`][distrib_deriv3.distrib],
 #'   [`distrib_deriv4()`][distrib_deriv4.distrib],
@@ -163,16 +164,17 @@ param_smoothness <- function(distrib) {
 
 #' S7 Class for Continuous Distributions
 #'
-#' @description A subclass of `distrib` specifically for continuous probability distributions.
+#' @description This class is a subclass of `distrib` specifically for
+#'   continuous probability distributions.
 #' @inheritParams distrib
 #'
 #' @section Methods:
-#' Defaults for continuous distributions, built from the density alone: the cdf by
-#' quadrature, the quantile function by root finding, the generator by
-#' Generalized Ratio-of-Uniforms ([rng_grou()]) or inverse transform when an
-#' analytical quantile is available, the derivatives in the response and the
-#' mixed derivatives by finite differences, and the derivatives of the cdf by
-#' differencing it. The list below is partial.
+#' The class has defaults for continuous distributions, built only from the
+#' density: the cdf by quadrature, the quantile function by root finding, the
+#' generator by Generalized Ratio-of-Uniforms ([rng_grou()]) or inverse
+#' transform when an analytical quantile is available, the derivatives in the
+#' response and the mixed derivatives by finite differences, and the derivatives
+#' of the cdf by differencing it. The list below is partial.
 #'
 #'   [`distrib_cdf()`][distrib_cdf.continuous_distrib],
 #'   [`distrib_grad_y()`][distrib_grad_y.continuous_distrib],
@@ -198,15 +200,16 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 
 #' S7 Class for Discrete Distributions
 #'
-#' @description A subclass of `distrib` specifically for discrete probability distributions.
+#' @description This class is a subclass of `distrib` specifically for
+#'   discrete probability distributions.
 #' @inheritParams distrib
 #'
 #' @section Methods:
-#' Defaults for discrete distributions, built from the probability mass function
-#' alone by accumulating it over the support, and for the derivatives of the cdf
-#' by exact summation; they require a finite lower bound, which every standard
-#' count distribution has. A discrete distribution has no derivatives in the
-#' response.
+#' The class has defaults for discrete distributions, built only from the
+#' probability mass function by accumulating it over the support, and defaults
+#' for the derivatives of the cdf by exact summation; they require a finite
+#' lower bound, which every standard count distribution has. A discrete
+#' distribution has no derivatives in the response.
 #'
 #'   [`distrib_cdf()`][distrib_cdf.discrete_distrib],
 #'   [`distrib_quantile()`][distrib_quantile.discrete_distrib],

@@ -19,8 +19,8 @@ Each parameter must have length 1 or \code{length(q)}.}
 
 \item{log}{Logical; if \code{TRUE} (default), derivatives of the \emph{log}
 tail probability. With \code{FALSE} the derivatives of the probability
-itself are returned, which interval censoring and the truncation
-constant are built from.}
+itself are returned; interval censoring and the truncation constant are
+built from them.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }

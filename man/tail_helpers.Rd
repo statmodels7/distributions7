@@ -19,8 +19,8 @@ quantile_log_tails(p, lower.tail, log.p)
 \item{log_lower, log_upper}{Numeric vectors, the logarithms of
 \eqn{P(Y \le q)} and \eqn{P(Y > q)}.}
 
-\item{lower.tail, log.p}{Logical of length 1, with the meaning they have in
-\code{\link[=distrib_cdf]{distrib_cdf()}} and \code{\link[=distrib_quantile]{distrib_quantile()}}.}
+\item{lower.tail, log.p}{Logical of length 1, with the meaning that they
+have in \code{\link[=distrib_cdf]{distrib_cdf()}} and \code{\link[=distrib_quantile]{distrib_quantile()}}.}
 
 \item{p}{A numeric vector of probabilities, or of their logarithms when
 \code{log.p = TRUE}.}
@@ -31,14 +31,14 @@ of the length of their input; \code{quantile_log_tails()} returns a list with
 the numeric vectors \code{lower} and \code{upper}.
 }
 \description{
-Three internal helpers for the distribution and quantile functions of the
+Three internal helpers serve the distribution and quantile functions of the
 families with a closed form. \code{log1mexp_neg()} computes
 \eqn{\log(1 - e^a)} for \eqn{a \le 0}, through \code{log(-expm1(a))} when
 \eqn{a > -\log 2} and through \code{log1p(-exp(a))} otherwise, so that the
 result keeps its relative accuracy at both ends (Maechler, 2012).
 \code{cdf_from_log_tails()} returns the probability that \code{lower.tail} and
-\code{log.p} select from the logarithms of the two tails, both computed by the
-caller. \code{quantile_log_tails()} converts a probability given with
+\code{log.p} select from the logarithms of the two tails, and the caller computes
+both logarithms. \code{quantile_log_tails()} converts a probability given with
 \code{lower.tail} and \code{log.p} into the logarithms of the lower and the upper
 tail, without forming \eqn{1 - p} or exponentiating a logarithm; a
 probability outside \eqn{[0, 1]} gives \code{NaN} for both.
@@ -48,7 +48,7 @@ probability outside \eqn{[0, 1]} gives \code{NaN} for both.
 distributions7:::log1mexp_neg(-1e-20)
 log(1 - exp(-1e-20))
 
-# The upper tail of a probability given on the log scale.
+# The upper tail is computed for a probability given on the log scale.
 distributions7:::quantile_log_tails(log(1e-30), lower.tail = FALSE,
                                     log.p = TRUE)
 

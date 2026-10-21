@@ -39,15 +39,16 @@ discrete_distrib(
 An object of class \code{discrete_distrib}.
 }
 \description{
-A subclass of \code{distrib} specifically for discrete probability distributions.
+This class is a subclass of \code{distrib} specifically for
+discrete probability distributions.
 }
 \section{Methods}{
 
-Defaults for discrete distributions, built from the probability mass function
-alone by accumulating it over the support, and for the derivatives of the cdf
-by exact summation; they require a finite lower bound, which every standard
-count distribution has. A discrete distribution has no derivatives in the
-response.
+The class has defaults for discrete distributions, built only from the
+probability mass function by accumulating it over the support, and defaults
+for the derivatives of the cdf by exact summation; they require a finite
+lower bound, which every standard count distribution has. A discrete
+distribution has no derivatives in the response.
 
 \code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf()}},
 \code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile()}},

@@ -42,9 +42,9 @@ test_that("a length that is neither 1 nor k is rejected, not recycled", {
     "length 1 or 3")
   expect_error(
     distributions7:::plot_settings(d, list(mu = numeric(0), sigma = 1)),
-    "Empty parameters")
+    "has empty parameters")
   expect_error(
-    distributions7:::plot_settings(d, list(mu = 0)), "Missing parameters")
+    distributions7:::plot_settings(d, list(mu = 0)), "lacks some parameters")
 })
 
 test_that("several settings are told apart without relying on colour", {

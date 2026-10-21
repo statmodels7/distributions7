@@ -30,7 +30,7 @@ neither \code{NULL} nor a list signals an error naming the argument, because
 \code{start} sits before \code{method} in the signature and an optimizer passed
 positionally lands here.}
 
-\item{method}{How to optimize. One argument taking one of three things:
+\item{method}{How to optimize. The argument takes one of three things:
 \itemize{
 \item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default: Newton's method with the expected
 information in place of the observed Hessian, the object carrying how
@@ -40,19 +40,19 @@ error rather than ignoring it;
 \item an optimizer object from \pkg{optimizers7}, used as given and receiving
 the analytical gradient and the observed Hessian, so that
 \code{method = lbfgs(criterion = crit_grad(1e-12))} selects the algorithm and
-the stopping rule together. A stopping rule the optimizer cannot
+the stopping rule together. A stopping rule that the optimizer cannot
 evaluate is rejected here, where the message can name it;
 \item one of the strings \code{"fisher"}, \code{"newton"} or \code{"bfgs"}, short names for
 the three ready-made strategies. The first two fall back to BFGS if they
-fail to converge; an optimizer the caller chose is never replaced.
+fail to converge; an optimizer that the caller chose is never replaced.
 }
 
 The iteration limit and the stopping rule belong to the method and are set
 there, on an optimizer through its own \code{maxit} and \code{criterion} and on
 \code{\link[=fisher_scoring]{fisher_scoring()}} through the same two arguments. For
 \code{\link[=fisher_scoring]{fisher_scoring()}} and the three strings the rule is
-\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its default tolerance when none is set; an
-optimizer object keeps its own default.}
+\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its default tolerance when the method does
+not set a rule; an optimizer object keeps its own default.}
 
 \item{level}{Confidence level for \code{ci} and \code{ci_eta}, a single number in
 \eqn{(0, 1)}; any other value signals an error. Defaults to 0.95. Any
@@ -61,7 +61,8 @@ refitting.}
 
 \item{n_start}{How many starting values to request from \code{\link[=distrib_start]{distrib_start()}} when
 \code{start} is \code{NULL}. Defaults to 5. A family that returns its own estimate
-returns one and ignores this. Ignored entirely when \code{start} is given.}
+returns one and ignores this. It is ignored entirely when \code{start} is
+given.}
 
 \item{threads}{How many threads the fit may use, as
 \code{\link[numericals7:n_threads]{numericals7::n_threads()}} constructs it. The default, \code{n_threads(1)}, is
@@ -78,18 +79,20 @@ log-likelihood at the estimate, and \code{converged}, \code{score}, \code{iterat
 \code{method}, \code{criterion} and \code{counts} record what the optimizer did. See that
 page for every component.
 
-Signals an error when no starting value produced a usable run, and a
-separate one when every run of a discrete family reached a positive
+Signals an error when every starting value fails to produce a usable run,
+and a separate one when every run of a discrete family reached a positive
 log-likelihood, which is impossible for a product of probabilities and
-says the mass function has broken down at the parameters reached.
+indicates that the mass function has broken down at the parameters
+reached.
 }
 \description{
 Fits a \code{distrib} object to an i.i.d. sample by maximum likelihood and
 returns a \code{\link[=distrib_fit]{distrib_fit()}} carrying the estimates, their standard errors and
 confidence limits on both scales. The optimization runs on the link
-scale, where the parameters are unconstrained, driven by the analytical
-score and information the family supplies at \code{scale = "link"}; the estimates
-are then mapped back and reported on the parameter scale.
+scale, where the parameters are unconstrained, and it is driven by the
+analytical score and information that the family supplies at
+\code{scale = "link"}; the estimates are then mapped back and reported on the
+parameter scale.
 
 On a Gaussian the answer is the closed-form estimate to the printed digit:
 \eqn{\hat\mu = \bar y}, \eqn{\hat\sigma^2 = \frac{1}{n}\sum (y_i - \bar
@@ -107,13 +110,13 @@ family's own derivatives are.
 }
 
 \section{Scaling of the objective}{
-What the optimizer receives is \eqn{-\ell(\eta)/n}, with the gradient and
-the Hessian divided by \eqn{n} with it. Scaling by a positive constant moves
-neither the maximum nor any Newton step, since \eqn{H^{-1}g} is unchanged
-when both are divided by \eqn{n}. What it changes is the meaning of a
-threshold: a tolerance on the gradient of this objective is a tolerance on
-the score per observation whatever the sample size, so the same rule
-means the same thing at \eqn{n = 10} and at \eqn{n = 10^7}. \code{loglik}, the
+The optimizer receives \eqn{-\ell(\eta)/n}, and the gradient and
+the Hessian are divided by \eqn{n} as well. Scaling by a positive constant
+moves neither the maximum nor any Newton step, since \eqn{H^{-1}g} is
+unchanged when both are divided by \eqn{n}. The scaling changes the meaning
+of a threshold: a tolerance on the gradient of this objective is a tolerance
+on the score per observation whatever the sample size, so the same rule means
+the same thing at \eqn{n = 10} and at \eqn{n = 10^7}. \code{loglik}, the
 information and every standard error are recomputed unscaled at the optimum.
 }
 
@@ -139,11 +142,11 @@ negative log-likelihood. A single converged run is not taken as the answer
 because it may be a degenerate stationary point.
 Where fewer than two runs converge every start is tried and the best is
 kept. Fisher scoring and Newton's method fall back to BFGS from
-the same starting value when they fail; an optimizer the caller named does
-not. Among the runs that finish, a converged one beats a non-converged one
-and the objective breaks ties, so the fit reports the best run and not the
-last. A run of a discrete family whose log-likelihood came back positive is
-discarded before any comparison.
+the same starting value when they fail; an optimizer that the caller named
+does not. Among the runs that finish, a run that converged beats one that
+did not converge and the objective breaks ties, so the fit reports the best
+run and not the last. A run of a discrete family whose log-likelihood came
+back positive is discarded before any comparison.
 }
 
 \examples{
@@ -180,7 +183,7 @@ c(fitted = coef(fl)[["sigma"]], mad = mean(abs(yl - median(yl))))
 \code{\link[=distrib_fit]{distrib_fit()}} for the object returned;
 \code{\link[=fisher_scoring]{fisher_scoring()}} for the default method;
 \code{\link[=distrib_start]{distrib_start()}} for where the starting values come from;
-\code{\link[=link_scale_derivatives]{link_scale_derivatives()}} for the chain rule the score uses;
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}} for the chain rule that the score uses;
 \code{\link[=check_distrib]{check_distrib()}} to validate a family before fitting it;
 \code{\link[optimizers7:minimize]{optimizers7::minimize()}}, which runs the search.
 }

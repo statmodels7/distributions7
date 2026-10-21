@@ -15,8 +15,8 @@ has_exact_deriv4(x, ...)
 A single logical.
 }
 \description{
-Whether the family supplies its own fourth-order derivatives, rather than
-reaching one of the base classes' numerical fallbacks.
+Reports whether the family supplies its own fourth-order derivatives, rather
+than reaching one of the base classes' numerical fallbacks.
 }
 \details{
 The numerical fifth order is one central difference of the fourth, so its
@@ -24,7 +24,7 @@ accuracy depends on the quantity that it differences. Where the fourth order
 is the family's own, the result is an ordinary numerical derivative of a
 quantity that the family computes directly. Where the fourth order is the
 numerical fallback of the package, the fifth order is a difference of a
-difference, and no choice of tolerance makes it reliable.
+difference, and it is unreliable whatever the tolerance.
 
 A family in the second case still receives a value, since a distribution
 needs only \code{\link[=distrib_pdf]{distrib_pdf()}}, and the value comes back without a warning. Its
@@ -51,5 +51,5 @@ has_exact_deriv4(truncated(gaussian1_distrib(), lower = 0))
 }
 \seealso{
 \code{\link[=distrib_deriv5]{distrib_deriv5()}}, the consumer; \code{\link[=expected_hessian_exact]{expected_hessian_exact()}},
-the predicate this is modeled on.
+the predicate on which this is modeled.
 }

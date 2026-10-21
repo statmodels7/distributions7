@@ -18,16 +18,16 @@ start_zero_wrapper(distrib, y, n_start = 5L, keep)
 
 \item{n_start}{How many starting values, a single positive integer.}
 
-\item{keep}{A function of the response returning which observations the
-parent's starts are read from.}
+\item{keep}{A function of the response that returns the observations from
+which the parent's starts are read.}
 }
 \value{
 A list of \code{n_start} named parameter lists on the parameter scale,
 in the order of \code{distrib@params}.
 }
 \description{
-Starting values for \code{\link[=zero_adjusted]{zero_adjusted()}} and \code{\link[=zero_inflated]{zero_inflated()}}. The mixing
-probability starts at the observed proportion of zeros \eqn{\hat p_0},
+Computes starting values for \code{\link[=zero_adjusted]{zero_adjusted()}} and \code{\link[=zero_inflated]{zero_inflated()}}. The
+mixing probability starts at the observed proportion of zeros \eqn{\hat p_0},
 kept inside \eqn{[1/(2n), 1 - 1/(2n)]}, and the parent's parameters start
 where \code{\link[=distrib_start]{distrib_start()}} of the PARENT puts them: on the non-zero
 observations for a zero-adjusted family, whose positive part is the parent
@@ -42,13 +42,13 @@ read the starting values of the parent from the observations described
 above instead.
 
 For a zero-adjusted family \eqn{\hat p_0} is the maximum likelihood estimate
-of the mixing probability, the likelihood factorizing into a binomial part
-and a positive part. For a zero-inflated one it over-estimates \eqn{\pi},
-since \eqn{P(Y = 0) = \pi + (1-\pi) f(0) \ge \pi}, and does so from the
-side away from the flat end of the chart; see
-\code{\link[=distrib_intercept_start.ZeroInflatedDistrib]{distrib_intercept_start.ZeroInflatedDistrib()}}. Only the first start
-carries \eqn{\hat p_0}; the others keep a random mixing probability, and
-the parent's own starts in the same order.
+of the mixing probability, because the likelihood factorizes into a binomial
+part and a positive part. For a zero-inflated one it over-estimates
+\eqn{\pi}, since \eqn{P(Y = 0) = \pi + (1-\pi) f(0) \ge \pi}, and does so
+from the side away from the flat end of the chart; see
+\code{\link[=distrib_intercept_start.ZeroInflatedDistrib]{distrib_intercept_start.ZeroInflatedDistrib()}}. Only the first start carries
+\eqn{\hat p_0}; the others keep a random mixing probability, and the parent's
+own starts in the same order.
 }
 \seealso{
 \code{\link[=distrib_start]{distrib_start()}} for the generic, \code{\link[=zero_adjusted]{zero_adjusted()}},

@@ -32,7 +32,7 @@ first point is already the estimate.
 }
 \details{
 Where the object parametrizes the precision, the sample covariance is
-inverted first: the matrix the structure has to represent is
+inverted first: the matrix that the structure has to represent is
 \eqn{\hat\Sigma^{-1}}, not \eqn{\hat\Sigma}.
 
 The covariance divides by \eqn{n}, which is the maximum likelihood

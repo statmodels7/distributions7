@@ -29,7 +29,7 @@ expected Hessian and \code{FALSE} the observed one.}
 \item{approx}{How the expectation is approximated for a family with no
 closed form for it: \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or
 \code{"mc"}.
-Read only when \code{expected} is \code{TRUE} and the family has no exact
+It is read only when \code{expected} is \code{TRUE} and the family has no exact
 expression; ignored otherwise.}
 
 \item{nsim}{Monte Carlo sample size, a single positive integer, read only
@@ -40,17 +40,17 @@ integer count. Defaults to \code{1L}. The matrix does not depend on the count.}
 }
 \value{
 A symmetric numeric matrix of dimension
-\code{length(distrib@params)}, with both dimnames set to \code{distrib@params}.
+\code{length(distrib@params)}, whose dimnames are both \code{distrib@params}.
 }
 \description{
 Assembles the package's named list of second-derivative components into the
-symmetric \eqn{p \times p} matrix an optimizer wants, summed over
+symmetric \eqn{p \times p} matrix that an optimizer requires, summed over
 observations and on the link scale. Components are stored one per unordered
 index pair, so this fills both triangles from the one value.
 
-With \code{expected = TRUE} it assembles the expected Hessian instead, which is
-what turns Newton's method into Fisher scoring and what makes a fit possible
-on a family whose observed curvature is unusable. On a Laplace at
+With \code{expected = TRUE} it assembles the expected Hessian instead, which turns
+Newton's method into Fisher scoring and makes a fit possible on a family
+whose observed curvature is unusable. On a Laplace at
 \eqn{\sigma = 1} with 400 draws the observed matrix is
 \eqn{\bigl(\begin{smallmatrix} 0 & 2\\ 2 & -392\end{smallmatrix}\bigr)}:
 \eqn{\partial^2\ell/\partial\mu^2} is zero almost everywhere, so the

@@ -1,3 +1,18 @@
+# distributions7 0.80.5
+
+* Documentation, sixth and last part: the pages of the base classes,
+  `check_distrib()`, `fit_distrib()` and its methods, `fisher_scoring()`, the
+  generics, the plot methods, the starting values and the utilities, the
+  README, the three vignettes and the descriptions of the pkgdown reference
+  rewritten without relative clauses lacking their pronoun, stranded
+  prepositions, absolute constructions, sentences without a verb and
+  personified descriptions of the code.
+* The messages for a `theta` without some parameters are reworded as in
+  penalties7 ("'theta' lacks the parameter(s) ...; the expected parameters
+  are ..."), and so are the messages for parameters of incompatible lengths
+  ("The parameter dimensions do not match"), for empty parameters of a plot
+  and for the random parameters that `plot()` draws when `theta` is missing.
+
 # distributions7 0.80.4
 
 * Documentation, fifth part: the pages of the derivative routes (cdf, mixed,

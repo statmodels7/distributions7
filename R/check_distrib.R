@@ -9,8 +9,8 @@ NULL
 #'
 #' @param name The check's name, as it appears in the report.
 #' @param ok Logical; whether the check passed.
-#' @param stat The numeric statistic the check produced, typically a maximum
-#'   discrepancy.
+#' @param stat The numeric statistic that the check produced, typically a
+#'   maximum discrepancy.
 #' @param detail An optional message, used to carry the reason for a failure.
 #'
 #' @return A one-row data frame with columns `check`, `status`,
@@ -101,7 +101,7 @@ safe_check <- function(name, expr) {
 #' - density: non-negativity and integration/summation to 1 over the support.
 #' - cdf: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
 #'   and its agreement with the density: for a continuous family a central
-#'   difference of the cdf against the density, with the step the response
+#'   difference of the cdf against the density, with the step that the response
 #'   derivatives use, and for a discrete one \eqn{F(k) - F(k-1)} against the
 #'   mass.
 #' - quantile: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
@@ -137,11 +137,12 @@ safe_check <- function(name, expr) {
 #'   [distrib_hess_y()] against central differences in \eqn{y} whose step is
 #'   chosen observation by observation by [fd_stable_quotient()], between a
 #'   step cut to under half the distance to a bound and one scaled on that
-#'   distance, each divided by the steps its evaluation points actually lie
-#'   at. A draw closer than \eqn{128\lvert b\rvert\varepsilon} to a finite
-#'   bound \eqn{b \ne 0}, where the spacing of doubles is absolute and no
-#'   central difference compares a derivative, is left out and counted in the
-#'   row's `detail`.
+#'   distance, and each of which is divided by the steps at which its
+#'   evaluation points actually lie. A draw closer than
+#'   \eqn{128\lvert b\rvert\varepsilon} to a finite
+#'   bound \eqn{b \ne 0}, where the spacing of doubles is absolute and a
+#'   central difference does not compare a derivative, is left out and counted
+#'   in the row's `detail`.
 #' - link scale: `scale = "link"` derivatives against finite
 #'   differences of the log-likelihood in \eqn{\eta}.
 #'
@@ -149,26 +150,27 @@ safe_check <- function(name, expr) {
 #' method of its own is not run: the value would be the numerical fallback,
 #' the same finite difference as the reference, and the comparison would hold
 #' by construction. The row is listed in the attribute `"skipped"` with that
-#' reason. The response fallbacks take the cut step alone, so near a bound they
-#' can differ from the reference, which is what the row then reports.
+#' reason. The response fallbacks take only the cut step, so near a bound they
+#' can differ from the reference, and the row then reports that difference.
 #'
-#' A check whose statistic comes out `NaN` or `NA` has nothing to judge, as the
-#' expected information of a family where it does not exist, and is not a row
-#' of the table: it is listed with its reason in the attribute `"skipped"`, and
-#' every row that is in the table reads `"OK"` or `"FAIL"`. An infinite
-#' statistic is a failure, being a component that overflows where its reference
-#' does not; so is a check whose computation raised an error, and so is a
-#' density or a distribution function that is not finite. The checks defined on
-#' the values themselves (the non-negativity of the density, the range of the
-#' distribution function and, for a discrete family, the quantile round trip)
-#' are kept even when their statistic is missing.
+#' A check whose statistic comes out `NaN` or `NA` has nothing to judge (the
+#' expected information of a family in which it does not exist is an example)
+#' and is not a row of the table: it is listed with its reason in the attribute
+#' `"skipped"`, and every row that is in the table reads `"OK"` or `"FAIL"`. An
+#' infinite statistic is a failure, because it comes from a component that
+#' overflows where its reference does not. A check whose computation raised an
+#' error is also a failure, and so is a density or a distribution function that
+#' is not finite. The checks defined on the values themselves (the
+#' non-negativity of the density, the range of the distribution function and,
+#' for a discrete family, the quantile round trip) are kept even when their
+#' statistic is missing.
 #'
-#' Mixed distributions --- a density with point masses on top of it, as produced by
-#' [zero_adjusted()] on a continuous parent --- are handled as long as they
+#' Mixed distributions (a density with point masses on top of it, as produced by
+#' [zero_adjusted()] on a continuous parent) are handled as long as they
 #' declare their atoms through [distrib_atoms()]. The density is then expected
 #' to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
 #' are checked as generalized inverses rather than exact ones, and finite differences in
-#' \eqn{y} are kept away from the atoms, where no derivative exists.
+#' \eqn{y} are kept away from the atoms, where a derivative does not exist.
 #'
 #' @examples
 #' \dontrun{
@@ -683,9 +685,9 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
 #' Binds the rows of [check_distrib()] into a table, leaving out each row that
 #' compared nothing and recording it with its reason in the attribute
 #' `"skipped"`: a row marked as a numerical fallback, and a row whose statistic
-#' is `NaN` or `NA` without its computation having raised. A row that raised
-#' keeps its failure, and so does a row named in `on_values`, whose criterion
-#' is defined on the values themselves.
+#' is `NaN` or `NA` although its computation did not raise an error. A row that
+#' raised keeps its failure, and so does a row named in `on_values`, whose
+#' criterion is defined on the values themselves.
 #'
 #' @param res A list of one-row data frames from [new_check()] and
 #'   [safe_check()].
@@ -736,7 +738,7 @@ drop_no_verdict <- function(res, on_values) {
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param out The data frame of checks.
-#' @param theta The parameters the checks were run at.
+#' @param theta The parameters at which the checks were run.
 #' @param n The number of observations used.
 #' @param nsim The Monte Carlo sample size used.
 #'
@@ -779,7 +781,7 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
   invisible(NULL)
 }
 
-#' Which Observations the Finite-Difference Reference Can Be Trusted At
+#' Observations at Which the Finite-Difference Reference Can Be Trusted
 #'
 #' @description
 #' Flags the observations where a central difference has actually converged, so
@@ -787,34 +789,34 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' against a reference that is itself reliable.
 #'
 #' @details
-#' A log-likelihood with a kink has no derivative exactly at the kink, the
-#' Laplace's location being the example the package ships, and a central
+#' A log-likelihood with a kink has no derivative exactly at the kink (the
+#' location of the Laplace is the example that the package ships), and a central
 #' difference straddling it returns a number that is simply wrong. An observation
 #' landing within a step of that point therefore makes the *reference*
 #' invalid, not the analytical value being tested, and comparing against it
 #' reports a failure for code that is right. Because the draws are random, such
 #' a failure cannot be predicted.
 #'
-#' Rather than hard-code where a kink is, the reference is recomputed with the
-#' step halved: where the two disagree, finite differencing has not converged and
-#' that observation is dropped. For a smooth log-likelihood nothing is ever
-#' dropped, so the check keeps its full strength: a gradient made 5\% wrong is
-#' still caught.
+#' Rather than hard-code where a kink is, the function recomputes the reference
+#' after halving the step: where the two disagree, finite differencing has not
+#' converged and that observation is dropped. For a smooth log-likelihood the
+#' guard never drops an observation, so the check keeps its full strength: a
+#' gradient made 5\% wrong is still caught.
 #'
 #' The two estimates are compared relative to their own magnitude rather
 #' than against a denominator floored at one: near a kink both are tiny yet
 #' differ by a factor of two, which a floor of one would hide. If no
 #' observation survives, all are kept, because a systematic disagreement is a
-#' real failure and is reported; the guard is meant for a local disagreement
-#' only.
+#' real failure and is reported; the guard is meant only for a local
+#' disagreement.
 #'
 #' @param fd_at A function of one argument, the relative step, returning the
 #'   finite-difference reference computed with that step.
 #' @param ref The reference already computed at `h_rel`, a named list of
 #'   component vectors.
-#' @param h_rel The relative step `ref` was computed with.
+#' @param h_rel The relative step with which `ref` was computed.
 #' @param smooth_all Logical; `TRUE` when every parameter is declared
-#'   smooth, in which case no observation is ever dropped and the guard does not
+#'   smooth, in which case the guard drops no observation and does not
 #'   run at all.
 #'
 #' @return A logical vector as long as the components of `ref`.

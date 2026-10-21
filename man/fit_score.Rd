@@ -21,7 +21,7 @@ does not depend on the count.}
 }
 \value{
 An unnamed numeric vector of length \code{length(distrib@params)}, in the
-order \code{distrib@params} gives.
+order of \code{distrib@params}.
 }
 \description{
 Returns \eqn{\partial \ell / \partial \eta} for the whole sample: the

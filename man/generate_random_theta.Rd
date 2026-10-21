@@ -13,7 +13,7 @@ generate_random_theta(distrib, ...)
 }
 \value{
 A named list of parameter values, one per element of
-\code{distrib@params}, each inside that parameter's bounds.
+\code{distrib@params}; each value lies inside that parameter's bounds.
 }
 \description{
 Generates sensible random parameters for a distribution based on its mathematical domain.

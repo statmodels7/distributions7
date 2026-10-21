@@ -9,12 +9,12 @@ plot_legend_side(y, dens)
 \arguments{
 \item{y}{The evaluation points, a numeric vector.}
 
-\item{dens}{A list of densities, one per setting, each the length of \code{y}.
-Non-finite and negative entries are treated as zero.}
+\item{dens}{A list of densities, one per setting, in which each has the
+length of \code{y}. Non-finite and negative entries are treated as zero.}
 }
 \value{
 \code{"topright"} or \code{"topleft"}, a character string of length 1.
-\code{"topright"} where no setting has any positive mass.
+The function returns \code{"topright"} when no setting has any positive mass.
 }
 \description{
 Returns the corner of the panel in which the legend is drawn, the one that

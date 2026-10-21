@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_distrib.R
 \name{fd_is_reliable}
 \alias{fd_is_reliable}
-\title{Which Observations the Finite-Difference Reference Can Be Trusted At}
+\title{Observations at Which the Finite-Difference Reference Can Be Trusted}
 \usage{
 fd_is_reliable(fd_at, ref, h_rel, smooth_all)
 }
@@ -13,10 +13,10 @@ finite-difference reference computed with that step.}
 \item{ref}{The reference already computed at \code{h_rel}, a named list of
 component vectors.}
 
-\item{h_rel}{The relative step \code{ref} was computed with.}
+\item{h_rel}{The relative step with which \code{ref} was computed.}
 
 \item{smooth_all}{Logical; \code{TRUE} when every parameter is declared
-smooth, in which case no observation is ever dropped and the guard does not
+smooth, in which case the guard drops no observation and does not
 run at all.}
 }
 \value{
@@ -28,26 +28,26 @@ that \code{\link[=check_distrib]{check_distrib()}} compares an analytical deriva
 against a reference that is itself reliable.
 }
 \details{
-A log-likelihood with a kink has no derivative exactly at the kink, the
-Laplace's location being the example the package ships, and a central
+A log-likelihood with a kink has no derivative exactly at the kink (the
+location of the Laplace is the example that the package ships), and a central
 difference straddling it returns a number that is simply wrong. An observation
 landing within a step of that point therefore makes the \emph{reference}
 invalid, not the analytical value being tested, and comparing against it
 reports a failure for code that is right. Because the draws are random, such
 a failure cannot be predicted.
 
-Rather than hard-code where a kink is, the reference is recomputed with the
-step halved: where the two disagree, finite differencing has not converged and
-that observation is dropped. For a smooth log-likelihood nothing is ever
-dropped, so the check keeps its full strength: a gradient made 5\\% wrong is
-still caught.
+Rather than hard-code where a kink is, the function recomputes the reference
+after halving the step: where the two disagree, finite differencing has not
+converged and that observation is dropped. For a smooth log-likelihood the
+guard never drops an observation, so the check keeps its full strength: a
+gradient made 5\\% wrong is still caught.
 
 The two estimates are compared relative to their own magnitude rather
 than against a denominator floored at one: near a kink both are tiny yet
 differ by a factor of two, which a floor of one would hide. If no
 observation survives, all are kept, because a systematic disagreement is a
-real failure and is reported; the guard is meant for a local disagreement
-only.
+real failure and is reported; the guard is meant only for a local
+disagreement.
 }
 \seealso{
 \code{\link[=check_distrib]{check_distrib()}}

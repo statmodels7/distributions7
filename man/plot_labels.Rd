@@ -14,9 +14,9 @@ plot_labels(x, ps)
 }
 \value{
 A list with two components: \code{legend}, a character vector of length
-\code{ps$k} or \code{NULL} when nothing varies, and \code{main}, a character string of
-length 1 carrying a newline between the family's name and the fixed
-values.
+\code{ps$k} or \code{NULL} when every parameter is fixed, and \code{main}, a character
+string of length 1 carrying a newline between the family's name and the
+fixed values.
 }
 \description{
 Splits a set of plot settings into what varies and what does not: the
@@ -25,9 +25,9 @@ stated once in the title beside the family's name. A reader then sees which
 parameter the panel is about without counting curves, and reads the held
 values without a second key.
 
-Where nothing varies there is one curve and no legend, and the title carries
-every parameter. Where nothing is fixed the title is the family's name
-alone. Values are rounded to three decimals.
+If every parameter is fixed, there is one curve and no legend, and the title
+carries every parameter. If every parameter varies, the title is only the
+family's name. Values are rounded to three decimals.
 }
 \seealso{
 \code{\link[=plot_settings]{plot_settings()}}, which supplies \code{ps};

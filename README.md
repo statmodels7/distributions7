@@ -23,13 +23,13 @@ package happened to need it: the density and the score, sometimes the
 Hessian, rarely anything beyond.
 
 `{distributions7}` writes them once, as objects. Each carries the usual
-density, distribution and quantile functions, together with the **exact
-derivatives of the log-likelihood up to fourth order**, and a fifth
-order that is closed form for some families and one central difference
-of the analytic fourth order for the others. The derivatives are
-available with respect to the parameters, with respect to the response,
-and with respect to the unconstrained parameters behind a link function,
-which is the scale an optimizer works on.
+density, distribution and quantile functions, together with the exact
+derivatives of the log-likelihood up to fourth order, and a fifth order
+that is closed form for some families and one central difference of the
+analytic fourth order for the others. The derivatives are available with
+respect to the parameters, with respect to the response, and with
+respect to the unconstrained parameters behind a link function, which is
+the scale on which an optimizer works.
 
 It is the distribution layer of
 [statmodels7](https://statmodels7.github.io), an S7 toolkit for
@@ -47,8 +47,8 @@ book](https://statmodels7.github.io/book/).
 pak::pak("statmodels7/distributions7")
 ```
 
-Or the whole toolkit at once, which installs `{distributions7}` together
-with the other packages of the toolkit:
+Alternatively, the following call installs the whole toolkit, that is,
+`{distributions7}` together with the other packages of the toolkit:
 
 ``` r
 pak::pak("statmodels7/statmodels7")
@@ -94,7 +94,7 @@ c(skewness = skewness(d, theta), kurtosis = kurtosis(d, theta))
 #>        0        0
 ```
 
-Every moment returns **one value per parameter setting**, so a component
+Every moment returns one value per parameter setting, so a component
 given as a vector gives one moment per element, and the result can be
 bound to the rows of that vector. This holds also when the varied
 parameter does not enter the formula: the skewness of a Weibull depends
@@ -140,8 +140,8 @@ distrib_expected_hessian(d, 0, theta)
 #> [1] 0
 ```
 
-On the **link scale** the same generics return derivatives with respect
-to the unconstrained parameters instead, computed through the chain rule
+On the link scale the same generics return derivatives with respect to
+the unconstrained parameters instead, computed through the chain rule
 rather than by differentiating numerically:
 
 ``` r
@@ -166,7 +166,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 40 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -181,7 +181,7 @@ fit
 ```
 
 The fit carries the data from which it was estimated, so it can be
-checked against the data and simulated from:
+checked against the data and used to simulate new data:
 
 ``` r
 plot(fit)
@@ -233,8 +233,8 @@ A multivariate distribution carries a mean vector and a matrix, and the
 matrix comes from a structure of
 [parameters7](https://statmodels7.github.io/parameters7/). Its free
 values are scalars, so the parameter vector is a named list of numbers
-exactly as above and every generic here applies unchanged,
-`fit_distrib()` included. The names say which matrix the structure
+exactly as above and every generic here applies unchanged, including
+`fit_distrib()`. The names indicate which matrix the structure
 describes, `sigma_` for a covariance and `omega_` for a precision,
 because the same structure on the two sides is two different models.
 
@@ -258,9 +258,9 @@ the fit’s variance matrix onto the standard deviations and the
 correlations, by the delta method, and builds each interval on the scale
 that keeps it in its own set: a standard deviation on the log scale, a
 correlation on Fisher’s *z*. A precision parametrization reports the
-conditional variances and the partial correlations instead, which are
-what it describes directly; the marginal matrix remains available from
-`mv_sigma()`.
+conditional variances and the partial correlations instead, because
+these are the quantities that it describes directly; the marginal matrix
+remains available from `mv_sigma()`.
 
 ``` r
 mv_summary(fitm)
@@ -270,7 +270,7 @@ mv_summary(fitm)
 #> cor_v1_v2 0.5729534 0.03004043 0.5111287 0.6288798
 ```
 
-Up to three coordinates the fit can be drawn, each panel showing a
+Up to three coordinates the fit can be drawn, and each panel shows a
 marginal: the fitted density against a kernel estimate on the diagonal,
 and contours against the observations below it.
 
@@ -280,20 +280,20 @@ plot(fitm)
 
 <img src="man/figures/README-mv-plot-1.png" alt="" width="100%" />
 
-`mvstudent_t1_distrib()` is the heavy-tailed alternative, with the
-degrees of freedom estimated alongside everything else. Its `mv_sigma()`
-is the **scale** matrix and its `variance()` the covariance, which
-differ by the factor $\nu/(\nu-2)$. The two are reported separately, so
-that the family remains usable at two degrees of freedom or fewer, where
-the covariance does not exist.
+`mvstudent_t1_distrib()` is the heavy-tailed alternative, in which the
+degrees of freedom are estimated alongside everything else. Its
+`mv_sigma()` is the scale matrix and its `variance()` the covariance,
+which differ by the factor $\nu/(\nu-2)$. The two are reported
+separately, so that the family remains usable at two degrees of freedom
+or fewer, where the covariance does not exist.
 
 Two families are not elliptical. `dirichlet_distrib()` lives on the
 simplex, written in a mean vector (a `parameters7` simplex) and a
 concentration, and its marginals are beta with that same concentration.
-`multinomial_distrib()` is discrete, and being discrete it can enumerate
-its support: `mv_support()` returns every vector of counts summing to
-the size, so its normalization and its expected information are exact
-sums rather than samples.
+`multinomial_distrib()` is discrete, and because it is discrete it can
+enumerate its support: `mv_support()` returns every vector of counts
+summing to the size, so its normalization and its expected information
+are exact sums rather than samples.
 
 ``` r
 dm <- multinomial_distrib(3, size = 5)
@@ -328,7 +328,7 @@ d2 <- MyLaplace(
   )
 )
 
-# never implemented, yet available
+# These methods were never implemented, yet they are available.
 distrib_cdf(d2, 1, list(mu = 0, b = 2))
 #> [1] 0.6967347
 distrib_gradient(d2, 1, list(mu = 0, b = 2))

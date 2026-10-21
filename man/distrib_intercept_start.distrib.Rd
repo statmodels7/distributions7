@@ -6,7 +6,7 @@
 \arguments{
 \item{distrib}{A \code{\link[=distrib]{distrib()}} object.}
 
-\item{y}{The response. Unused.}
+\item{y}{The response. It is unused.}
 
 \item{...}{Unused.}
 }
@@ -14,8 +14,8 @@
 An empty list.
 }
 \description{
-The base method: an empty list, the intercept-only fit being
-the start for every parameter.
+The base method returns an empty list, because the
+intercept-only fit is the start for every parameter.
 }
 \seealso{
 \code{\link[=distrib_intercept_start]{distrib_intercept_start()}} for the generic.

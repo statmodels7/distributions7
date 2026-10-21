@@ -30,10 +30,10 @@ Every component must have length 1 or the same \eqn{k}. A length that only
 divides \eqn{k} signals an error, because R would recycle such a
 component without a warning.
 
-The meaning is available only because a plot has no data to recycle a
-parameter against. \code{\link[=distrib_pdf]{distrib_pdf()}} and every derivative generic read a
-vector component as one value per observation, which is why each setting is
-handed to them as scalars.
+A vector component can be read as one setting per curve only because a plot
+has no data against which to recycle a parameter. \code{\link[=distrib_pdf]{distrib_pdf()}} and every
+derivative generic read a vector component as one value per observation,
+so each setting is handed to them as scalars.
 }
 \seealso{
 \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} and \code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}}, the

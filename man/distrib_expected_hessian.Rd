@@ -29,7 +29,7 @@ predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{approx}{How the expectation is approximated when the distribution
-has no closed-form expected Hessian; ignored otherwise. One of
+has no closed-form expected Hessian; ignored otherwise. The value is one of
 \code{"opg"} (the default: the outer product of the score, read at each
 observation without taking an expectation), \code{"bartlett"} (the second
 Bartlett identity, with the expectation taken by summation or

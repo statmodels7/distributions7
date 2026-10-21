@@ -6,8 +6,8 @@
 \arguments{
 \item{distrib}{A \code{\link[=distrib]{distrib()}} object.}
 
-\item{y}{The response. Unused here, and accepted only because the generic
-passes it.}
+\item{y}{The response. It is unused here and is accepted only because the
+generic passes it.}
 
 \item{n_start}{How many starting values to draw, a single positive integer.
 Defaults to 5. A value below 1 is raised to 1.}
@@ -18,10 +18,10 @@ Defaults to 5. A value below 1 is raised to 1.}
 A list of \code{n_start} named parameter lists on the parameter scale.
 }
 \description{
-The base method: \code{n_start} independent draws from
+The base method returns \code{n_start} independent draws from
 \code{\link[=generate_random_theta]{generate_random_theta()}}, which samples each parameter inside its own
-domain and never looks at the response. It is what a family gets when it
-registers no method of its own, and it is adequate wherever the parameters
+domain and never looks at the response. A family that registers no method
+of its own uses this one. It is adequate wherever the parameters
 are of order one whatever the data, which is true of a shape, a dispersion
 or a probability and false of a location or a scale.
 }

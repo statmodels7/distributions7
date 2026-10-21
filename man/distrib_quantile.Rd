@@ -23,7 +23,8 @@ A numeric vector of quantiles.
 Evaluates the quantile function for a given distribution.
 }
 \details{
-The generalized inverse of the distribution function,
+The quantile function is the generalized inverse of the distribution
+function,
 
 \deqn{Q(p; \theta) = \inf\{y : F(y; \theta) \ge p\},}
 

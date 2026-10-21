@@ -14,9 +14,9 @@ distrib_intercept_start(distrib, y, ...)
 \item{...}{Passed to methods. The shipped methods do not use it.}
 }
 \value{
-A named list of single numbers on the parameter scale, possibly
-empty, each strictly inside its parameter's bounds and named after an
-entry of \code{distrib@params}.
+A named list of single numbers on the parameter scale, which may be
+empty. Each value is strictly inside its parameter's bounds and is named
+after an entry of \code{distrib@params}.
 }
 \description{
 Returns, on the parameter scale, a starting value for each parameter
@@ -27,7 +27,7 @@ method returns an empty list: for most families the intercept-only fit is
 the right start.
 }
 \details{
-The case this exists for is \code{\link[=zero_inflated]{zero_inflated()}}. Without covariates the
+This generic exists for \code{\link[=zero_inflated]{zero_inflated()}}. Without covariates the
 parent's overdispersion can absorb the excess zeros, so the intercept-only
 maximum puts the mixing weight at the edge of its domain. That is the
 maximum of the model without covariates, but it is a poor start for a model
@@ -41,5 +41,5 @@ distrib_intercept_start(zero_inflated(poisson_distrib()), c(0, 0, 1, 3))
 
 }
 \seealso{
-\code{\link[=distrib_start]{distrib_start()}}, the starting values \code{\link[=fit_distrib]{fit_distrib()}} uses.
+\code{\link[=distrib_start]{distrib_start()}}, the starting values that \code{\link[=fit_distrib]{fit_distrib()}} uses.
 }

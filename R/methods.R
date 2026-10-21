@@ -11,8 +11,9 @@ NULL
 #' that maps it to the unconstrained scale. The name of a wrapper combines the
 #' wrapper and its parent, so `truncated(gamma2_distrib(), upper = 5)` prints
 #' as `Truncated Gamma2 [upper=5]`, followed by the parameter rows of the
-#' parent. No parameter value is shown, because a `distrib` carries a
-#' parametrization and no estimate; for estimates see [print.distrib_fit()].
+#' parent. The method does not show a parameter value, because a `distrib`
+#' carries a parametrization and not an estimate; for estimates see
+#' [print.distrib_fit()].
 #'
 #' @param x An object inheriting from `distrib`.
 #' @param ... Unused, accepted for compatibility with [base::print()].
@@ -88,14 +89,14 @@ S7::method(print, distrib) <- function(x, ...) {
 #' @name generate_random_theta.distrib
 #'
 #' @description
-#' Draws one parameter value per entry of `distrib@params`, each inside that
-#' parameter's own interval in `params_bounds` and strictly away from its
-#' ends. A bounded interval is sampled across its width, a half-line is
+#' Draws one parameter value per entry of `distrib@params`, and each value lies
+#' inside that parameter's own interval in `params_bounds` and strictly away
+#' from its ends. A bounded interval is sampled across its width, a half-line is
 #' sampled from a positive draw offset from the finite end, and an unbounded
 #' parameter is sampled around zero.
 #'
 #' The draws ignore the response entirely, so they are a fallback and never an
-#' estimate: being of order one whatever the data, they suit a shape or a
+#' estimate. They are of order one whatever the data, so they suit a shape or a
 #' probability and are the wrong order for a location or a scale on a response
 #' of any size. The univariate methods of [distrib_start()] use them for the
 #' starting values after the first, and the base method for all of them;
@@ -106,7 +107,8 @@ S7::method(print, distrib) <- function(x, ...) {
 #' @param ... Unused.
 #'
 #' @return A named list with one numeric value per parameter, named and
-#'   ordered as `distrib@params`, every value strictly inside its own bounds.
+#'   ordered as `distrib@params`; every value lies strictly inside its own
+#'   bounds.
 #'
 #' @examples
 #' set.seed(1)
@@ -158,10 +160,10 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 #' divides \eqn{k} signals an error, because R would recycle such a
 #' component without a warning.
 #'
-#' The meaning is available only because a plot has no data to recycle a
-#' parameter against. [distrib_pdf()] and every derivative generic read a
-#' vector component as one value per observation, which is why each setting is
-#' handed to them as scalars.
+#' A vector component can be read as one setting per curve only because a plot
+#' has no data against which to recycle a parameter. [distrib_pdf()] and every
+#' derivative generic read a vector component as one value per observation,
+#' so each setting is handed to them as scalars.
 #'
 #' @param x A distribution object, read for `params`.
 #' @param theta A named list, or a named numeric vector, holding one entry per
@@ -180,13 +182,13 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 plot_settings <- function(x, theta) {
   if (is.numeric(theta) && !is.list(theta)) theta <- as.list(theta)
   if (!all(x@params %in% names(theta))) {
-    stop(sprintf("Missing parameters in 'theta'. Expected: %s",
+    stop(sprintf("'theta' lacks some parameters; the expected parameters are %s.",
                  paste(x@params, collapse = ", ")), call. = FALSE)
   }
   theta <- theta[x@params]
   lens <- vapply(theta, length, integer(1))
   if (any(lens == 0L)) {
-    stop(sprintf("Empty parameters in 'theta': %s",
+    stop(sprintf("'theta' has empty parameters: %s",
                  paste(x@params[lens == 0L], collapse = ", ")), call. = FALSE)
   }
   k <- max(lens)
@@ -208,14 +210,14 @@ plot_settings <- function(x, theta) {
 #'
 #' @description
 #' Returns the three visual keys by which a plot method distinguishes its
-#' settings, each recycled to length \eqn{k}. A single curve is black, solid and a filled
-#' circle. Several take a qualitative palette, the six base line types and six
-#' distinguishable symbols, so that a printed copy with no color is still
-#' readable.
+#' settings, and each key is recycled to length \eqn{k}. A single curve is
+#' black, solid and a filled circle. Several take a qualitative palette, the
+#' six base line types and six distinguishable symbols, so that a printed copy
+#' with no color is still readable.
 #'
-#' A continuous family draws with the color and the line type; a discrete one
-#' draws with the color and the symbol, because dashing a stem is what a
-#' line type does there and a dashed stem reads as a broken one.
+#' A continuous family draws with the color and the line type. A discrete
+#' family draws with the color and the symbol, because a line type would dash
+#' the stems and a dashed stem reads as a broken one.
 #'
 #' @param k How many settings are drawn, a single positive integer.
 #' @param dots The caller's `...`, as a list. A `col`, `lty` or `pch` given
@@ -252,11 +254,11 @@ plot_keys <- function(k, dots = list()) {
 #' key goes to the other side.
 #'
 #' @param y The evaluation points, a numeric vector.
-#' @param dens A list of densities, one per setting, each the length of `y`.
-#'   Non-finite and negative entries are treated as zero.
+#' @param dens A list of densities, one per setting, in which each has the
+#'   length of `y`. Non-finite and negative entries are treated as zero.
 #'
 #' @return `"topright"` or `"topleft"`, a character string of length 1.
-#'   `"topright"` where no setting has any positive mass.
+#'   The function returns `"topright"` when no setting has any positive mass.
 #'
 #' @seealso [plot.continuous_distrib()] and [plot.discrete_distrib()], the
 #'   callers; [plot_labels()] for what goes in the key.
@@ -278,18 +280,18 @@ plot_legend_side <- function(y, dens) {
 #' parameter the panel is about without counting curves, and reads the held
 #' values without a second key.
 #'
-#' Where nothing varies there is one curve and no legend, and the title carries
-#' every parameter. Where nothing is fixed the title is the family's name
-#' alone. Values are rounded to three decimals.
+#' If every parameter is fixed, there is one curve and no legend, and the title
+#' carries every parameter. If every parameter varies, the title is only the
+#' family's name. Values are rounded to three decimals.
 #'
 #' @param x A distribution object, read for `distrib_name` and `params`.
 #' @param ps The value of [plot_settings()], read for `settings` and
 #'   `varying`.
 #'
 #' @return A list with two components: `legend`, a character vector of length
-#'   `ps$k` or `NULL` when nothing varies, and `main`, a character string of
-#'   length 1 carrying a newline between the family's name and the fixed
-#'   values.
+#'   `ps$k` or `NULL` when every parameter is fixed, and `main`, a character
+#'   string of length 1 carrying a newline between the family's name and the
+#'   fixed values.
 #'
 #' @seealso [plot_settings()], which supplies `ps`;
 #'   [plot_legend_side()] for where the legend goes;
@@ -362,7 +364,7 @@ plot_labels <- function(x, ps) {
 #' @return `x`, invisibly. The function is called for the plot that it draws.
 #'
 #' @examples
-#' # One curve per value of the scale, at a shared mean.
+#' # The plot has one curve per value of the scale, at a shared mean.
 #' plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 #'
 #' # A heavy-tailed family needs its own window: the 99.5% quantile of a
@@ -379,7 +381,7 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
   if (missing(theta)) {
     theta <- generate_random_theta(x)
     param_str <- paste(names(theta), round(unlist(theta), 3), sep = " = ", collapse = ", ")
-    message(sprintf("Argument 'theta' is missing. Automatically generating random parameters: %s", param_str))
+    message(sprintf("Argument 'theta' is missing. The plot uses random parameters: %s", param_str))
   }
   ps <- plot_settings(x, theta)
   labs <- plot_labels(x, ps)
@@ -446,9 +448,9 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #'
 #' @details
 #' # The two keys, and why they are not the continuous ones
-#' Settings are separated by color and symbol together, the symbol sitting
-#' at the top of each stem where the point already is. The line type is not
-#' used here: dashing a stem is what it would do, and a dashed stem reads as a
+#' Settings are separated by color and symbol together, and the symbol sits
+#' at the top of each stem, where the point already is. The line type is not
+#' used here, because it would dash the stems and a dashed stem reads as a
 #' broken one, so at a support of any size the panel fills with fragments that
 #' cross each other.
 #'
@@ -473,8 +475,8 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #' @return `x`, invisibly. The function is called for the plot that it draws.
 #'
 #' @examples
-#' # Three rates, whose masses are countable at every support point because
-#' # the settings are offset sideways.
+#' # The three rates have masses that are countable at every support point
+#' # because the settings are offset sideways.
 #' plot(poisson_distrib(), list(mu = c(1, 4, 10)))
 #'
 #' # Overdispersion at a fixed mean: the mass spreads as theta falls.
@@ -490,7 +492,7 @@ S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL,
   if (missing(theta)) {
     theta <- generate_random_theta(x)
     param_str <- paste(names(theta), round(unlist(theta), 3), sep = " = ", collapse = ", ")
-    message(sprintf("Argument 'theta' is missing. Automatically generating random parameters: %s", param_str))
+    message(sprintf("Argument 'theta' is missing. The plot uses random parameters: %s", param_str))
   }
   ps <- plot_settings(x, theta)
   labs <- plot_labels(x, ps)

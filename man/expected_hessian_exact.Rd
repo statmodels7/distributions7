@@ -17,10 +17,10 @@ A single logical.
 A single logical.
 }
 \description{
-\code{TRUE} when the family computes its expected information exactly, in
-closed form or by a quadrature of its own to working precision, and \code{FALSE}
-when a call to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} reaches a fallback and the
-answer is therefore an approximation. It is a generic so that a family
+Returns \code{TRUE} when the family computes its expected information exactly,
+in closed form or by a quadrature of its own to working precision, and
+\code{FALSE} when a call to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} reaches a fallback and
+the answer is therefore an approximation. It is a generic so that a family
 whose registered method is not what its owning class suggests can report
 this; \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} calls it and
 \code{\link[=expected_hessian_exact.distrib]{expected_hessian_exact.distrib()}} is the default.
@@ -30,13 +30,13 @@ so that a family whose registered method differs from what its owning class
 indicates can supply its own answer.
 }
 \details{
-The predicate is what a consumer reads to decide which information to
-report. Where it returns \code{TRUE} the expected information costs one
-evaluation and has the smaller variance, so it is the better matrix to
-invert; where it returns \code{FALSE} the choice is between an approximation and
-the observed Hessian, which every family has and which is exact. That is
-the rule that \code{\link[=fit_distrib]{fit_distrib()}} follows for its standard errors and that
-\pkg{statmodels7} follows in \code{vcov()}.
+A function that reports the information of a family uses the predicate to
+choose which information to report. Where it returns \code{TRUE} the expected
+information costs one evaluation and has the smaller variance, so it is the
+better matrix to invert; where it returns \code{FALSE} the choice is between an
+approximation and the observed Hessian, which every family has and which is
+exact. \code{\link[=fit_distrib]{fit_distrib()}} follows this rule for its standard errors, and
+\pkg{statmodels7} follows it in \code{vcov()}.
 
 Every shipped univariate family returns \code{TRUE}. The Poisson-inverse
 Gaussian families sum their expected information exactly over the support,
@@ -45,9 +45,9 @@ quadrature over the standardized response per distinct shape; see
 \code{\link[=loc_scale_expected]{loc_scale_expected()}}. Among the wrappers, \code{\link[=truncated]{truncated()}} returns \code{FALSE}.
 
 Reading the class that owns the registered method is not sufficient on its
-own, which is why the generic exists: a method registered on the class of a
-family may chain onto a parent that approximates, and a family that does so
-returns the answer of its parent.
+own, and the generic exists for this reason: a method registered on the class
+of a family may chain onto a parent that approximates, and a family that does
+so returns the answer of its parent.
 
 The default reads the class on which the \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
 method is registered: the base classes carry the approximating method and
@@ -70,7 +70,7 @@ expected_hessian_exact(truncated(gaussian1_distrib(), lower = 0))
 \seealso{
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the wrapper that calls it;
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the quantity itself, and
-\code{\link[=expected_by_opg]{expected_by_opg()}} for the fallback a \code{FALSE} answer reaches.
+\code{\link[=expected_by_opg]{expected_by_opg()}} for the fallback that a \code{FALSE} answer reaches.
 
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}},
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}

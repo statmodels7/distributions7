@@ -18,8 +18,8 @@ NULL
 #' Register the Package's S7 Methods on Load
 #'
 #' @description
-#' Calls `S7::methods_register()`, which is what makes methods registered on
-#' generics owned by other packages take effect.
+#' Calls `S7::methods_register()`, so that methods registered on generics
+#' owned by other packages take effect.
 #'
 #' @details
 #' It matters here for the S3 generics that the package extends, among them

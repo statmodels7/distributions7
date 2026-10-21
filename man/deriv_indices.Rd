@@ -12,25 +12,25 @@ deriv_indices(params, order)
 \item{order}{A positive integer, the derivative order.}
 }
 \value{
-A list of integer vectors, each of length \code{order}, parallel to
-\code{deriv_names(params, order)}.
+A list of integer vectors, parallel to
+\code{deriv_names(params, order)}, in which each vector has length \code{order}.
 }
 \description{
-The multi-indices that \code{\link[=deriv_names]{deriv_names()}} names, in exactly the same order:
-non-decreasing tuples of length \code{order} over \code{seq_along(params)},
+Returns the multi-indices that \code{\link[=deriv_names]{deriv_names()}} names, in exactly the same
+order: non-decreasing tuples of length \code{order} over \code{seq_along(params)},
 enumerated lexicographically.
 }
 \details{
-This function exists so that no caller needs to recover an index tuple by
-splitting a component name. Splitting fails for a parameter whose own name
+This function lets a caller obtain an index tuple without splitting a
+component name. Splitting fails for a parameter whose own name
 contains an underscore: \code{"mu_log_scale_log_scale"} splits into five
 pieces, and matching those against \code{params} yields \code{NA}s. The
 multivariate families carry such names by construction
 (\code{sigma_log_L1}), so the parsing route is wrong for shipped families
-as well as user-defined ones. Generating the indices and the names from the
-same enumeration removes the possibility of disagreement.
+as well as user-defined ones. Because the indices and the names are
+generated from the same enumeration, they cannot disagree.
 
-Note that this is not interchangeable with
+This function is not interchangeable with
 \code{deriv_index_list()} in \code{link_scale.R}: that one is ordered to match
 \code{\link[=hess_names]{hess_names()}} at order 2, which puts the diagonal first, whereas
 this one is lexicographic throughout to match \code{\link[=deriv_names]{deriv_names()}}. At

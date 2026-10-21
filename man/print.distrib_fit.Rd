@@ -25,17 +25,16 @@ every link is the identity the last block is replaced by a one-line note.
 
 The optimizer line names the method that produced the estimates, which is
 not always the one requested, and the convergence line names the stopping
-rule that ended the run. Without that rule \code{converged} says nothing: it
-records that some test was met. A run that did not converge also prints
-the score per
-observation at the point it stopped at, which is the one number that says
-whether the point is usable.
+rule that ended the run. Without that rule \code{converged} does not identify
+the test: it records that some test was met. A run that did not converge
+also prints the score per observation at the point where it stopped, and
+this number indicates whether the point is usable.
 
 For a multivariate fit the coordinates of the covariance structure are
-replaced by the quantities that the model is written in (the location, the
+replaced by the quantities in which the model is written (the location, the
 standard deviations and the correlations that \code{\link[=mv_summary]{mv_summary()}} derives),
 because a log-Cholesky coordinate has no direct interpretation. Any
-parameter that the structure does not account for, such as the degrees of
+parameter that the structure does not cover, such as the degrees of
 freedom of a \eqn{t}, is
 printed after them.
 }
@@ -45,7 +44,7 @@ d <- gaussian1_distrib()
 y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 print(fit_distrib(d, y))
 
-# The link-scale block is where the interval is built. On a Gamma written
+# The interval is built in the link-scale block. On a Gamma written
 # in the mean and the variance both parameters carry a log link, so both
 # lower limits are positive by construction.
 g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))

@@ -16,14 +16,14 @@ A character string of length 1: \code{"0.4 ms"}, \code{"40 ms"}, \code{"1.5 s"},
 \code{"59.4 s"}, \code{"1 min 01 s"}. Milliseconds, and seconds below a minute, are
 given to three significant digits; above a minute the seconds are rounded
 to the nearest second. The unit is chosen on the rounded value, so that
-no field reaches its carry.
+rounding never carries a field past its limit.
 }
 \description{
-Formats a time in seconds for the line \code{\link[=print.distrib_fit]{print.distrib_fit()}} shows,
+Formats a time in seconds for the line that \code{\link[=print.distrib_fit]{print.distrib_fit()}} shows,
 choosing the unit from the size: milliseconds below a second, seconds below
 a minute, and minutes with seconds above. A fit of a few hundred
 observations then reads \verb{40 ms} where one of ten million reads
-\verb{2 min 07 s}, and neither prints a figure the reader has to count zeros in.
+\verb{2 min 07 s}, and in neither case does the reader have to count zeros.
 }
 \seealso{
 \code{\link[=print.distrib_fit]{print.distrib_fit()}}, the only caller; \code{\link[=fit_distrib]{fit_distrib()}}, which

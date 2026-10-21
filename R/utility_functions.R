@@ -53,7 +53,7 @@ align_theta <- function(distrib, theta) {
   if (!identical(nms, params)) {
     if (!all(params %in% nms)) {
       stop(sprintf(
-        "Missing parameter(s) in 'theta': %s. Expected: %s.",
+        "'theta' lacks the parameter(s) %s; the expected parameters are %s.",
         paste(setdiff(params, nms), collapse = ", "), paste(params, collapse = ", ")
       ), call. = FALSE)
     }
@@ -99,13 +99,14 @@ check_theta_bounds <- function(distrib, theta) {
 #' Check Parameter Domains, Taking the Properties as Arguments
 #'
 #' @description
-#' The body behind [check_theta_bounds()], differing only in that it
+#' Provides the body of [check_theta_bounds()]. It differs only in that it
 #' receives the distribution's properties instead of reaching for them.
 #'
 #' @details
 #' `align_theta()` calls this on every generic invocation, so its fixed cost
 #' is the package's fixed cost. Each read of an S7 property has a cost of its
-#' own, so the caller reads the properties it needs once and passes them on.
+#' own, so the caller reads the properties that it needs once and passes them
+#' on.
 #'
 #' Every offending parameter is collected before anything is raised, so a call
 #' with two bad values reports both rather than one at a time. At most three
@@ -177,19 +178,19 @@ check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
 #' causing the mismatch.
 #'
 #' @examples
-#' # --- Case 1: Implicit max length ---
-#' # Valid: all scalars
+#' # --- Case 1: the maximum length is implicit ---
+#' # Valid: all parameters are scalars
 #' check_params_dim(list(mu = 1, sigma = 2))
 #'
-#' # Valid: mixing scalar and vector
+#' # Valid: a scalar and a vector are mixed
 #' check_params_dim(list(mu = 1:5, sigma = 1))
 #'
-#' # Invalid: incompatible lengths (2 vs 3)
+#' # Invalid: the lengths (2 and 3) are incompatible
 #' \dontrun{
 #' check_params_dim(list(mu = 1:2, sigma = 1:3))
 #' }
 #'
-#' # --- Case 2: Explicit n ---
+#' # --- Case 2: n is explicit ---
 #' # Valid: vector matches n (5)
 #' check_params_dim(list(mu = 1:5, sigma = 1), n = 5)
 #'
@@ -217,7 +218,7 @@ check_params_dim <- function(theta, n) {
     bad_lens <- len_theta[mismatch_idx]
 
     stop(
-      "Parameter dimension mismatch. All parameters should have length 1 or ", n, ".\n",
+      "The parameter dimensions do not match. All parameters should have length 1 or ", n, ".\n",
       "  Offending: ",
       paste0(bad_params, " (length ", bad_lens, ")", collapse = ", "),
       call. = FALSE
@@ -305,7 +306,7 @@ hess_names <- function(params) {
 #' definition as the same class.
 #'
 #' @details
-#' Several functions here decide whether a method comes from the base class or
+#' Several functions here test whether a method comes from the base class or
 #' from a subclass that registered its own, by reading
 #' `attr(m, "signature")[[1]]`, the documented S7 route. The comparison that
 #' follows must not use `identical()`: on S7 class objects that tests object
@@ -313,13 +314,14 @@ hess_names <- function(params) {
 #' definition. A class is re-created whenever the code of the package is
 #' re-evaluated instead of being loaded, as under coverage instrumentation.
 #'
-#' When `identical()` fails in this way the comparison is silent, and a
-#' numerical fallback is taken for an analytic method. The function therefore
+#' When `identical()` fails in this way, it returns `FALSE` without any
+#' signal, and the code takes a numerical fallback for an analytic method. The
+#' function therefore
 #' returns `TRUE` for identical objects as a fast path, and otherwise compares
 #' the class name together with the package name.
 #'
 #' @param cls The S7 class recorded on a method.
-#' @param base The base class to compare against.
+#' @param base The base class with which `cls` is compared.
 #'
 #' @return A single logical.
 #'
@@ -336,24 +338,24 @@ is_class <- function(cls, base) {
 #'
 #' @description
 #' Maps each name produced by [hess_names()] back to the pair of
-#' parameters it differentiates with respect to.
+#' parameters with respect to which that component is differentiated.
 #'
 #' @details
-#' The wrappers need to go from `"mu_sigma"` back to
-#' `c("mu", "sigma")` in order to combine the parent's score with its
-#' Hessian. Splitting the string on `"_"` is the obvious way and it is
-#' wrong: a parameter whose own name contains an underscore
-#' (`"log_scale"`) makes `"log_scale_log_scale"` split into four
-#' pieces, and taking the first and the last silently yields
-#' `c("log", "scale")`. The map is built from the parameter vector, so it does
-#' not depend on the characters in the names.
+#' Combining the parent's score with its Hessian in the wrappers requires
+#' going from `"mu_sigma"` back to `c("mu", "sigma")`. Splitting the string on
+#' `"_"` is the obvious way and it is wrong: a parameter whose own name
+#' contains an underscore (`"log_scale"`) makes `"log_scale_log_scale"` split
+#' into four pieces, and a function that takes the first and the last piece
+#' returns `c("log", "scale")` without signaling an error. The map is built
+#' from the parameter vector, so it does not depend on the characters in the
+#' names.
 #'
 #' [deriv_indices()] is the same idea for orders above two.
 #'
 #' @param params A character vector of parameter names.
 #'
-#' @return A named list, parallel to `hess_names(params)`, each element a
-#'   character pair.
+#' @return A named list, parallel to `hess_names(params)`, in which each
+#'   element is a character pair.
 #'
 #' @seealso [hess_names()], [deriv_indices()]
 #' @keywords internal
@@ -403,21 +405,21 @@ deriv_names <- function(params, order) {
 #' Index Tuples Behind the Higher-Order Derivative Names
 #'
 #' @description
-#' The multi-indices that [deriv_names()] names, in exactly the same order:
-#' non-decreasing tuples of length `order` over `seq_along(params)`,
+#' Returns the multi-indices that [deriv_names()] names, in exactly the same
+#' order: non-decreasing tuples of length `order` over `seq_along(params)`,
 #' enumerated lexicographically.
 #'
 #' @details
-#' This function exists so that no caller needs to recover an index tuple by
-#' splitting a component name. Splitting fails for a parameter whose own name
+#' This function lets a caller obtain an index tuple without splitting a
+#' component name. Splitting fails for a parameter whose own name
 #' contains an underscore: `"mu_log_scale_log_scale"` splits into five
 #' pieces, and matching those against `params` yields `NA`s. The
 #' multivariate families carry such names by construction
 #' (`sigma_log_L1`), so the parsing route is wrong for shipped families
-#' as well as user-defined ones. Generating the indices and the names from the
-#' same enumeration removes the possibility of disagreement.
+#' as well as user-defined ones. Because the indices and the names are
+#' generated from the same enumeration, they cannot disagree.
 #'
-#' Note that this is not interchangeable with
+#' This function is not interchangeable with
 #' `deriv_index_list()` in `link_scale.R`: that one is ordered to match
 #' [hess_names()] at order 2, which puts the diagonal first, whereas
 #' this one is lexicographic throughout to match [deriv_names()]. At
@@ -426,8 +428,8 @@ deriv_names <- function(params, order) {
 #' @param params A character vector of parameter names.
 #' @param order A positive integer, the derivative order.
 #'
-#' @return A list of integer vectors, each of length `order`, parallel to
-#'   `deriv_names(params, order)`.
+#' @return A list of integer vectors, parallel to
+#'   `deriv_names(params, order)`, in which each vector has length `order`.
 #'
 #' @seealso [deriv_names()], [hess_pairs()]
 #' @keywords internal
@@ -486,14 +488,14 @@ transpose_params <- function(theta) {
 #' @name tail_helpers
 #'
 #' @description
-#' Three internal helpers for the distribution and quantile functions of the
+#' Three internal helpers serve the distribution and quantile functions of the
 #' families with a closed form. `log1mexp_neg()` computes
 #' \eqn{\log(1 - e^a)} for \eqn{a \le 0}, through `log(-expm1(a))` when
 #' \eqn{a > -\log 2} and through `log1p(-exp(a))` otherwise, so that the
 #' result keeps its relative accuracy at both ends (Maechler, 2012).
 #' `cdf_from_log_tails()` returns the probability that `lower.tail` and
-#' `log.p` select from the logarithms of the two tails, both computed by the
-#' caller. `quantile_log_tails()` converts a probability given with
+#' `log.p` select from the logarithms of the two tails, and the caller computes
+#' both logarithms. `quantile_log_tails()` converts a probability given with
 #' `lower.tail` and `log.p` into the logarithms of the lower and the upper
 #' tail, without forming \eqn{1 - p} or exponentiating a logarithm; a
 #' probability outside \eqn{[0, 1]} gives `NaN` for both.
@@ -503,8 +505,8 @@ transpose_params <- function(theta) {
 #'   \eqn{P(Y \le q)} and \eqn{P(Y > q)}.
 #' @param p A numeric vector of probabilities, or of their logarithms when
 #'   `log.p = TRUE`.
-#' @param lower.tail,log.p Logical of length 1, with the meaning they have in
-#'   [distrib_cdf()] and [distrib_quantile()].
+#' @param lower.tail,log.p Logical of length 1, with the meaning that they
+#'   have in [distrib_cdf()] and [distrib_quantile()].
 #'
 #' @return `log1mexp_neg()` and `cdf_from_log_tails()` return a numeric vector
 #'   of the length of their input; `quantile_log_tails()` returns a list with
@@ -518,7 +520,7 @@ transpose_params <- function(theta) {
 #' distributions7:::log1mexp_neg(-1e-20)
 #' log(1 - exp(-1e-20))
 #'
-#' # The upper tail of a probability given on the log scale.
+#' # The upper tail is computed for a probability given on the log scale.
 #' distributions7:::quantile_log_tails(log(1e-30), lower.tail = FALSE,
 #'                                     log.p = TRUE)
 #'
@@ -579,7 +581,7 @@ log_neg_log1mexp <- function(p) {
 #' @return A numeric vector of log probabilities.
 #'
 #' @examples
-#' # a hazard of e^-800 and an argument of e^-800, both below the double range
+#' # A hazard and an argument of e^-800 are both below the double range.
 #' distributions7:::weibull_log_lower(c(-3, -800))
 #' distributions7:::gamma_log_lower(c(-3, -800), 0.7)
 #'

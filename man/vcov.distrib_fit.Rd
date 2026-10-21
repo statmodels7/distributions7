@@ -10,8 +10,9 @@
 \code{\link[base:match.arg]{base::match.arg()}}; anything else signals an error.}
 
 \item{information}{Which information to invert: \code{"fit"} (the default) is
-the matrix the fit stored, \code{"observed"} the Hessian at the estimates, and
-\code{"expected"} the expected information there. The last two are recomputed.}
+the matrix that the fit stored, \code{"observed"} the Hessian at the estimates,
+and \code{"expected"} the expected information there. The last two are
+recomputed.}
 
 \item{approx}{One of \code{"opg"}, \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, read
 only when \code{information = "expected"} and the family has no closed form.
@@ -30,12 +31,12 @@ scale.
 }
 \description{
 Returns the estimated variance matrix of the estimates, on either scale.
-The one the fit computes is on the link scale, the inverse of the
-information at \eqn{\hat\eta}. The parameter-scale matrix is its image
+The matrix that the fit computes is on the link scale and is the inverse of
+the information at \eqn{\hat\eta}. The parameter-scale matrix is its image
 under the delta method,
 \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right),}
-the Jacobian being diagonal because each parameter carries its own scalar
+and the Jacobian is diagonal because each parameter carries its own scalar
 link.
 
 Every entry is \code{NA} when the information could not be evaluated or inverted
@@ -49,9 +50,9 @@ writes it out, where it costs one evaluation and has the smaller variance,
 and the observed Hessian otherwise.
 
 The alternative is available because the two are different estimators and
-the choice is the reader's. They agree asymptotically and not in a sample:
-the expected one is the information averaged over the model, the observed
-one the curvature of the likelihood at the data in hand.
+the choice is the reader's. They agree asymptotically but not in a sample.
+The expected information is averaged over the model, and the observed
+information is the curvature of the likelihood at the data in hand.
 
 Where a family does not write its expected information out,
 \code{information = "expected"} reaches a fallback, and \code{approx} selects it. The

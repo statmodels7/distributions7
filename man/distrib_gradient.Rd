@@ -33,7 +33,8 @@ Computes the analytical first derivatives of the log-likelihood with respect to 
 d <- gaussian1_distrib()
 distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 
-# the same score with respect to the unconstrained parameters
+# With scale = "link" the same score is taken with respect to the
+# unconstrained parameters.
 distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
 }
 \seealso{

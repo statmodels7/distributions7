@@ -22,9 +22,9 @@ A data frame with columns \code{check}, \code{status}, \code{statistic} and
 Binds the rows of \code{\link[=check_distrib]{check_distrib()}} into a table, leaving out each row that
 compared nothing and recording it with its reason in the attribute
 \code{"skipped"}: a row marked as a numerical fallback, and a row whose statistic
-is \code{NaN} or \code{NA} without its computation having raised. A row that raised
-keeps its failure, and so does a row named in \code{on_values}, whose criterion
-is defined on the values themselves.
+is \code{NaN} or \code{NA} although its computation did not raise an error. A row that
+raised keeps its failure, and so does a row named in \code{on_values}, whose
+criterion is defined on the values themselves.
 }
 \seealso{
 \code{\link[=check_distrib]{check_distrib()}}, the caller.

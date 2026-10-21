@@ -18,13 +18,14 @@ product of the observed scores, which costs one gradient; \code{"bartlett"}
 evaluates the right-hand side of the second Bartlett identity, a sum over
 the support for a discrete family and a quadrature for a continuous one;
 \code{"integrate"} is quadrature of the observed information; \code{"mc"} is Monte
-Carlo. Matched by \code{\link[base:match.arg]{base::match.arg()}}, so
-anything else signals an error listing the four. See
+Carlo. The value is matched by
+\code{\link[base:match.arg]{base::match.arg()}}, so any other value signals an error that lists the
+four. See
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
 
-\item{nsim}{Monte Carlo sample size, a single positive finite number. Read
-only when \code{approx = "mc"}. Defaults to 10000. A vector, a non-finite
-value or a number below 1 signals an error.}
+\item{nsim}{Monte Carlo sample size, a single positive finite number. It is
+read only when \code{approx = "mc"}. It defaults to 10000. A vector, a
+non-finite value or a number below 1 signals an error.}
 
 \item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} (the
 default), in which case \code{\link[=fit_distrib]{fit_distrib()}} stops on
@@ -41,19 +42,20 @@ An S7 object of class \code{\link[=FisherScoring]{FisherScoring()}}, with proper
 }
 \description{
 Returns a specification of Fisher scoring for \code{\link[=fit_distrib]{fit_distrib()}}'s \code{method}
-argument, carrying how the expected information is to be obtained when the
-family has no closed form for it, and optionally a stopping rule and an
-iteration limit of its own. It is \code{\link[=fit_distrib]{fit_distrib()}}'s default method.
+argument. The specification records how the expected information is
+obtained when the family has no closed form for it, and optionally a
+stopping rule and an iteration limit of its own. It is \code{\link[=fit_distrib]{fit_distrib()}}'s
+default method.
 
-Fisher scoring is Newton's method with the observed Hessian replaced by
-minus the expected information, so it needs no implementation of its own and
-is not an optimizer. What it does need, and an optimizer has no slot for, is
-the statement of how that matrix is to be obtained, and that is what this
-object holds.
+Fisher scoring is Newton's method in which the observed Hessian is replaced
+by minus the expected information, so it needs no implementation of its own
+and is not an optimizer. It needs one thing for which an optimizer has no
+slot, the statement of how that matrix is obtained, and this object holds
+that statement.
 }
 \section{Values accepted by the method argument}{
-\code{\link[=fit_distrib]{fit_distrib()}} takes one argument saying how to optimize, and it takes an
-optimizer of \pkg{optimizers7} or this:
+\code{\link[=fit_distrib]{fit_distrib()}} has one argument that selects how to optimize, and that
+argument accepts an optimizer of \pkg{optimizers7} or this object:
 
 \tabular{ll}{
 \code{method = fisher_scoring()} \tab Newton's method with the
@@ -68,17 +70,18 @@ observed Hessian \cr
 Writing \eqn{s(\eta) = \partial \ell / \partial \eta} for the score on the
 unconstrained scale and \eqn{\mathcal{I}(\eta) = \mathbb{E}[-\partial^{2}
 \ell / \partial \eta \partial \eta']} for the expected information there,
+the step is
 \deqn{\eta^{(t+1)} = \eta^{(t)}
   + \mathcal{I}(\eta^{(t)})^{-1} s(\eta^{(t)}).}
 Under the diagonal reparametrization \eqn{\theta_i = h_i(\eta_i)} the
 information transforms by congruence,
 \eqn{\mathcal{I}(\eta) = D\,\mathcal{I}(\theta)\,D} with
-\eqn{D = \operatorname{diag}(h_i'(\eta_i))}, the first-order term of the
-chain rule vanishing in expectation because the score has mean zero. The
+\eqn{D = \operatorname{diag}(h_i'(\eta_i))}, and the first-order term of the
+chain rule vanishes in expectation because the score has mean zero. The
 matrix inverted is therefore positive definite wherever
 \eqn{\mathcal{I}(\theta)} is, and the step is a direction of ascent. A fit
-therefore succeeds on a family whose observed Hessian is indefinite, the
-Laplace being the standard case.
+therefore succeeds on a family whose observed Hessian is indefinite; the
+Laplace is the standard case.
 }
 
 \section{Strategies for the expected information}{
@@ -99,11 +102,11 @@ set.seed(1)
 d <- gaussian1_distrib()
 y <- distrib_rng(d, 100, list(mu = 1, sigma = 2))
 
-# The default, and the same thing said explicitly.
+# The default and the explicit specification give the same fit.
 coef(fit_distrib(d, y))
 coef(fit_distrib(d, y, method = fisher_scoring()))
 
-# The congruence the step rests on: the information on the link scale is
+# The step rests on a congruence: the information on the link scale is
 # D I(theta) D, with D the diagonal of the inverse link's derivative.
 th <- list(mu = 1, sigma = 2)
 It <- distrib_expected_hessian(d, y, th)

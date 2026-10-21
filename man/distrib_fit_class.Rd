@@ -33,22 +33,22 @@ distrib_fit(
 }
 \arguments{
 \item{distrib}{The fitted \code{distrib} object, carrying the parametrization and
-the links the estimates are expressed in.}
+the links in which the estimates are expressed.}
 
-\item{y}{The observations the fit was computed from, kept so that the fitted
-distribution can be compared with the data by \code{\link[=plot.distrib_fit]{plot.distrib_fit()}} and
-so that the information can be recomputed by \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}.}
+\item{y}{The observations from which the fit was computed, kept so that the
+fitted distribution can be compared with the data by \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}
+and so that the information can be recomputed by \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}.}
 
 \item{n}{The number of observations: the row count for a multivariate
 response and the length otherwise. \code{bic} and the printed header both
 read it.}
 
 \item{coefficients}{Named numeric estimates on the parameter scale, one per
-parameter, in the order \code{distrib@params} gives.}
+parameter, in the order given by \code{distrib@params}.}
 
 \item{se}{Named standard errors on the parameter scale, from the delta
-method. \code{NaN} where the corresponding variance came back negative, \code{NA}
-where it is missing.}
+method. An entry is \code{NaN} where the corresponding variance came back
+negative and \code{NA} where it is missing.}
 
 \item{ci}{A two-column numeric matrix of confidence limits on the parameter
 scale, one row per parameter, columns \code{lower} and \code{upper}.}
@@ -88,12 +88,13 @@ whatever point it reached.}
 one requested: \code{"Fisher scoring"} and \code{"Newton-Raphson"} fall back to
 \code{"BFGS"} when they fail, and this records which one produced the estimates.}
 
-\item{criterion}{Which stopping rule ended the run, in the words
+\item{criterion}{Which stopping rule ended the run, in the words in which
 \pkg{optimizers7} reports it, such as
-\code{"gradient (max-norm) < 1e-06"}. Empty when none fired.}
+\code{"gradient (max-norm) < 1e-06"}. It is empty when no rule fired.}
 
-\item{note}{Any remark the optimizer attached to the run, such as
-\code{"the line search found no acceptable step"}. Empty when there is none.}
+\item{note}{Any remark that the optimizer attached to the run, such as
+\code{"the line search found no acceptable step"}. It is empty when there is
+no remark.}
 
 \item{counts}{A named list of evaluation counts with components \code{f}, \code{g} and
 \code{h}: how many times the objective, its gradient and its Hessian were
@@ -107,16 +108,16 @@ on a fit that did not converge.}
 \item{elapsed}{Seconds spent optimizing, summed over every starting value
 and every fallback attempted, not just the run that was kept.}
 
-\item{level}{The confidence level \code{ci} and \code{ci_eta} were built at.}
+\item{level}{The confidence level at which \code{ci} and \code{ci_eta} were built.}
 }
 \value{
 An S7 object of class \code{distrib_fit}, with the properties above.
 }
 \description{
-The class of the object \code{\link[=fit_distrib]{fit_distrib()}} returns. It holds the estimates on
-both the parameter scale and the link scale, their standard errors and
-confidence limits, the maximized log-likelihood with the two information
-criteria built on it, and a record of what the optimizer did.
+This is the class of the object that \code{\link[=fit_distrib]{fit_distrib()}} returns. It holds the
+estimates on both the parameter scale and the link scale, their standard
+errors and confidence limits, the maximized log-likelihood with the two
+information criteria built on it, and a record of what the optimizer did.
 
 Both scales are kept because the fit is computed on one and read on the
 other. The variance matrix is the inverse information at
@@ -129,7 +130,7 @@ the way to build a fit; call \code{\link[=fit_distrib]{fit_distrib()}}.
 }
 \section{Methods}{
 
-Registered on this class:
+The following methods are registered on this class:
 \code{\link[=coef.distrib_fit]{coef()}},
 \code{\link[=confint.distrib_fit]{confint()}},
 \code{\link[=logLik.distrib_fit]{logLik()}},
@@ -158,8 +159,8 @@ all.equal(fit@eta[["sigma"]], log(fit@coefficients[["sigma"]]))
 fit@ci
 all.equal(fit@ci[["sigma", "lower"]], exp(fit@ci_eta[["sigma", "lower"]]))
 
-# What the optimizer did. 'score' is the max-norm of the score per
-# observation at the point reported, which is what the rule tested.
+# The fit records what the optimizer did. 'score' is the max-norm of the
+# score per observation at the point reported, which the rule tested.
 c(iterations = fit@iterations, converged = fit@converged, score = fit@score)
 fit@criterion
 

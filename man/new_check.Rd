@@ -11,8 +11,8 @@ new_check(name, ok, stat, detail = NA_character_)
 
 \item{ok}{Logical; whether the check passed.}
 
-\item{stat}{The numeric statistic the check produced, typically a maximum
-discrepancy.}
+\item{stat}{The numeric statistic that the check produced, typically a
+maximum discrepancy.}
 
 \item{detail}{An optional message, used to carry the reason for a failure.}
 }

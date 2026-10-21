@@ -12,7 +12,7 @@ distrib_start(distrib, y, n_start = 5L, ...)
 \item{y}{The response: a numeric vector, or an \eqn{n \times p} matrix for a
 multivariate family. A method may ignore it, and the base one does.}
 
-\item{n_start}{How many starting values are wanted, a single positive
+\item{n_start}{The number of starting values, a single positive
 integer. Defaults to 5. A method that returns its own estimate returns one
 and ignores this, which the two multivariate methods and the two
 Poisson-inverse Gaussian ones do.}
@@ -20,13 +20,13 @@ Poisson-inverse Gaussian ones do.}
 \item{...}{Passed to methods. The shipped methods do not use it.}
 }
 \value{
-A list of named parameter lists on the parameter scale, each
-complete: one component per entry of \code{distrib@params}, named and ordered
-as \code{distrib@params}. Every value is strictly inside its parameter's
+A list of named parameter lists on the parameter scale. Each list
+is complete, with one component per entry of \code{distrib@params}, named and
+ordered as \code{distrib@params}. Every value is strictly inside its parameter's
 bounds, which the validator treats as open.
 }
 \description{
-Returns the starting values that \code{\link[=fit_distrib]{fit_distrib()}} begins from, computed
+Returns the starting values with which \code{\link[=fit_distrib]{fit_distrib()}} begins, computed
 from the response where the family has a method for it. The result is a
 list of named parameter lists on the parameter scale. The fit tries
 them in order until two converged runs agree on the best objective, so the
@@ -34,18 +34,18 @@ first element is the one tried first.
 }
 \details{
 A starting value that ignores the data can be arbitrarily far from the
-answer, and the distance decides how much work the fit does. For a
+answer, and the distance determines how much work the fit does. For a
 multivariate Gaussian the sample mean and the sample covariance are the
 maximum likelihood estimate, so a fit that starts there converges in one
 iteration.
 
 The base method draws each parameter from its own domain and never reads
-\code{y}, so a family that registers nothing loses nothing. A family with a
-better estimator registers a method: an exact maximum likelihood estimator
-where one is known, a method-of-moments estimator otherwise, or the estimate
-of a simpler family the harder one contains. The two univariate methods
-route through \code{\link[=start_from_moments]{start_from_moments()}}, which uses the family's own moment
-inversion where \code{\link[=moment_estimates]{moment_estimates()}} has one and reads
+\code{y}, so a family without a method of its own still has a start. A family
+with a better estimator registers a method: an exact maximum likelihood
+estimator where one is known, a method-of-moments estimator otherwise, or the
+estimate of a simpler family that the harder one contains. The two univariate
+methods route through \code{\link[=start_from_moments]{start_from_moments()}}, which uses the family's own
+moment inversion where \code{\link[=moment_estimates]{moment_estimates()}} has one and reads
 \code{params_interpretation} where it does not.
 }
 \examples{
@@ -71,5 +71,5 @@ vapply(s, function(th) unlist(th), numeric(2))
 \code{\link[=fit_distrib]{fit_distrib()}}, which calls this;
 \code{\link[=start_from_moments]{start_from_moments()}} for the univariate route;
 \code{\link[=moment_estimates]{moment_estimates()}} for the family-by-family inversions;
-\code{\link[=generate_random_theta]{generate_random_theta()}} for the draw the base method makes.
+\code{\link[=generate_random_theta]{generate_random_theta()}} for the draw that the base method makes.
 }

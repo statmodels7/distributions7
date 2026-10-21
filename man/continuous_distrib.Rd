@@ -39,16 +39,17 @@ continuous_distrib(
 An object of class \code{continuous_distrib}.
 }
 \description{
-A subclass of \code{distrib} specifically for continuous probability distributions.
+This class is a subclass of \code{distrib} specifically for
+continuous probability distributions.
 }
 \section{Methods}{
 
-Defaults for continuous distributions, built from the density alone: the cdf by
-quadrature, the quantile function by root finding, the generator by
-Generalized Ratio-of-Uniforms (\code{\link[=rng_grou]{rng_grou()}}) or inverse transform when an
-analytical quantile is available, the derivatives in the response and the
-mixed derivatives by finite differences, and the derivatives of the cdf by
-differencing it. The list below is partial.
+The class has defaults for continuous distributions, built only from the
+density: the cdf by quadrature, the quantile function by root finding, the
+generator by Generalized Ratio-of-Uniforms (\code{\link[=rng_grou]{rng_grou()}}) or inverse
+transform when an analytical quantile is available, the derivatives in the
+response and the mixed derivatives by finite differences, and the derivatives
+of the cdf by differencing it. The list below is partial.
 
 \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf()}},
 \code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y()}},

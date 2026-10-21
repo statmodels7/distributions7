@@ -17,17 +17,17 @@ domain reaches the link, which returns \code{NaN} or a non-finite value there.}
 }
 \value{
 An unnamed numeric vector of length \code{length(distrib@params)}, one
-linear predictor per parameter, in the order \code{distrib@params} gives.
+linear predictor per parameter, in the order given by \code{distrib@params}.
 }
 \description{
 Applies each parameter's own link, \eqn{\eta_i = g_i(\theta_i)}, and returns
-the resulting vector of linear predictors. This is how a starting value
-expressed in natural parameters enters the optimizer, which works on
-\eqn{\eta} because it is unconstrained.
+the resulting vector of linear predictors. A starting value expressed in
+natural parameters enters the optimizer through this map, because the
+optimizer works on \eqn{\eta}, which is unconstrained.
 
 Only the first element of each component of \code{theta} is read. A fit estimates
 one \eqn{\theta} for the whole sample, so a component of length \eqn{n} is a
-vector the caller built for a density evaluation, not \eqn{n} separate
+vector that the caller built for a density evaluation, not \eqn{n} separate
 parameters: \code{list(mu = c(1, 99, 99), sigma = 2)} gives the same \eqn{\eta} as
 \code{list(mu = 1, sigma = 2)}.
 }

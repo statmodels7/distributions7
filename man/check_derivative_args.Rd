@@ -14,19 +14,19 @@ check_derivative_args(distrib, y, theta)
 \item{theta}{A named list of parameters.}
 }
 \value{
-A list with elements \code{y} and \code{theta}, both conformable.
+A list with elements \code{y} and \code{theta}, which are conformable.
 }
 \description{
 Aligns \code{theta}, checks that every parameter has length 1 or \eqn{n}, and
 recycles a scalar \code{y} up to \eqn{n} when \code{theta} is vectorized. A constant
-of the family that varies by observation (a binomial's vector \code{size}, its
-parents' included) enters \eqn{n} too: the response and the parameters must
-then have length 1 or the length of that constant, and any other length
-signals an error.
+of the family that varies by observation (a binomial's vector \code{size},
+including that of its parents) enters \eqn{n} too: the response and the
+parameters must then have length 1 or the length of that constant, and any
+other length signals an error.
 }
 \details{
-An empty \code{y} is allowed through untouched, giving empty derivatives, the
-way \code{dnorm(numeric(0))} gives \code{numeric(0)} and the way
+An empty \code{y} is allowed through untouched, giving empty derivatives, as
+\code{dnorm(numeric(0))} gives \code{numeric(0)} and as
 \code{\link[=distrib_pdf]{distrib_pdf()}} already behaves. Without the special case the
 recycling check below rejects it with the nonsensical message
 \code{"'y' must have length 1 or 1, not 0"}.

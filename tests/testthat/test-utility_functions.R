@@ -4,13 +4,13 @@ test_that("check_params_dim validates correctly", {
   expect_invisible(check_params_dim(list(mu = 1:5, sigma = 1)))
   
   # Should error on incompatible lengths (e.g., 2 vs 3)
-  expect_error(check_params_dim(list(mu = 1:2, sigma = 1:3)), "Parameter dimension mismatch")
+  expect_error(check_params_dim(list(mu = 1:2, sigma = 1:3)), "parameter dimensions do not match")
   
   # Explicit target length `n`
   expect_invisible(check_params_dim(list(mu = 1:5, sigma = 1), n = 5))
   
   # Should error if vector length does not match explicit n
-  expect_error(check_params_dim(list(mu = 1:3, sigma = 1), n = 5), "Parameter dimension mismatch")
+  expect_error(check_params_dim(list(mu = 1:3, sigma = 1), n = 5), "parameter dimensions do not match")
 })
 
 test_that("expand_params expands scalars correctly", {

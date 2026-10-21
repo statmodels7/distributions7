@@ -10,22 +10,22 @@ hess_pairs(params)
 \item{params}{A character vector of parameter names.}
 }
 \value{
-A named list, parallel to \code{hess_names(params)}, each element a
-character pair.
+A named list, parallel to \code{hess_names(params)}, in which each
+element is a character pair.
 }
 \description{
 Maps each name produced by \code{\link[=hess_names]{hess_names()}} back to the pair of
-parameters it differentiates with respect to.
+parameters with respect to which that component is differentiated.
 }
 \details{
-The wrappers need to go from \code{"mu_sigma"} back to
-\code{c("mu", "sigma")} in order to combine the parent's score with its
-Hessian. Splitting the string on \code{"_"} is the obvious way and it is
-wrong: a parameter whose own name contains an underscore
-(\code{"log_scale"}) makes \code{"log_scale_log_scale"} split into four
-pieces, and taking the first and the last silently yields
-\code{c("log", "scale")}. The map is built from the parameter vector, so it does
-not depend on the characters in the names.
+Combining the parent's score with its Hessian in the wrappers requires
+going from \code{"mu_sigma"} back to \code{c("mu", "sigma")}. Splitting the string on
+\code{"_"} is the obvious way and it is wrong: a parameter whose own name
+contains an underscore (\code{"log_scale"}) makes \code{"log_scale_log_scale"} split
+into four pieces, and a function that takes the first and the last piece
+returns \code{c("log", "scale")} without signaling an error. The map is built
+from the parameter vector, so it does not depend on the characters in the
+names.
 
 \code{\link[=deriv_indices]{deriv_indices()}} is the same idea for orders above two.
 }

@@ -2,8 +2,8 @@
 #' @name distrib_generics
 #'
 #' @description
-#' The S7 generics that apply to every `distrib` object, grouped by what they
-#' compute. This page is the index; each generic is documented on its own page,
+#' This page lists the S7 generics that apply to every `distrib` object,
+#' grouped by what they compute. Each generic is documented on its own page,
 #' and the method of each family for it on a third.
 #'
 #' The only compulsory method is [distrib_pdf()]. Every other quantity has a
@@ -29,8 +29,8 @@
 #'     [distrib_d4expected_hessian()].}
 #'   \item{derivatives in the response}{[distrib_grad_y()],
 #'     [distrib_hess_y()], [distrib_deriv3_y()], [distrib_deriv4_y()].
-#'     A discrete family has no method for them, its support having no
-#'     continuous direction to differentiate along, so a call signals an
+#'     A discrete family has no method for them because its support has no
+#'     continuous direction along which to differentiate, so a call signals an
 #'     error.}
 #'   \item{mixed}{[distrib_cross_y()], [distrib_cross2_y()],
 #'     [distrib_cross3_y()], [distrib_grad_y_hess()],
@@ -69,7 +69,7 @@
 #' distrib_quantile(d, 0.975, th)
 #' distrib_gradient(d, c(-1, 1), th)
 #'
-#' # theta is reordered by name before dispatch, so the order it is written in
+#' # theta is reordered by name before dispatch, so the order of its elements
 #' # does not matter.
 #' identical(distrib_pdf(d, 1, list(mu = 0, sigma = 2)),
 #'           distrib_pdf(d, 1, list(sigma = 2, mu = 0)))
@@ -163,7 +163,8 @@ distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, th
 #' @description Evaluates the quantile function for a given distribution.
 #'
 #' @details
-#' The generalized inverse of the distribution function,
+#' The quantile function is the generalized inverse of the distribution
+#' function,
 #'
 #' \deqn{Q(p; \theta) = \inf\{y : F(y; \theta) \ge p\},}
 #'
@@ -206,17 +207,18 @@ distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(dist
 #' @param ... Additional arguments passed to the specific method.
 #'
 #' @return A list with components `y` (the locations) and `p` (their
-#'   probabilities), both numeric vectors of the same length, possibly of length
+#'   probabilities); both are numeric vectors of the same length, which may be
 #'   zero.
 #'
 #' @details
 #' The default returns no atoms, which is the right answer for every ordinary
 #' distribution: a continuous one has none, and a discrete one is made of nothing
 #' else, so listing them would be pointless. The generic exists for the case in
-#' between, where a routine written for densities has to be told that part of the
-#' mass is not in the integral --- [check_distrib()] uses it to know
-#' that the density is expected to integrate to \eqn{1 - \sum p} rather than 1,
-#' and to keep its finite differences away from the jumps.
+#' between, where part of the mass is not in the integral of the density and a
+#' routine written for densities cannot see this on its own. [check_distrib()]
+#' uses it to establish that the density is expected to integrate to
+#' \eqn{1 - \sum p} rather than 1, and to keep its finite differences away from
+#' the jumps.
 #'
 #' @examples
 #' distrib_atoms(gamma2_distrib(), list(mu = 2, sigma2 = 1))
@@ -267,14 +269,14 @@ distrib_rng <- S7::new_generic("distrib_rng", "distrib", function(distrib, n, th
 #' @description
 #' Aligns `theta`, checks that every parameter has length 1 or \eqn{n}, and
 #' recycles a scalar `y` up to \eqn{n} when `theta` is vectorized. A constant
-#' of the family that varies by observation (a binomial's vector `size`, its
-#' parents' included) enters \eqn{n} too: the response and the parameters must
-#' then have length 1 or the length of that constant, and any other length
-#' signals an error.
+#' of the family that varies by observation (a binomial's vector `size`,
+#' including that of its parents) enters \eqn{n} too: the response and the
+#' parameters must then have length 1 or the length of that constant, and any
+#' other length signals an error.
 #'
 #' @details
-#' An empty `y` is allowed through untouched, giving empty derivatives, the
-#' way `dnorm(numeric(0))` gives `numeric(0)` and the way
+#' An empty `y` is allowed through untouched, giving empty derivatives, as
+#' `dnorm(numeric(0))` gives `numeric(0)` and as
 #' [distrib_pdf()] already behaves. Without the special case the
 #' recycling check below rejects it with the nonsensical message
 #' `"'y' must have length 1 or 1, not 0"`.
@@ -283,7 +285,7 @@ distrib_rng <- S7::new_generic("distrib_rng", "distrib", function(distrib, n, th
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #'
-#' @return A list with elements `y` and `theta`, both conformable.
+#' @return A list with elements `y` and `theta`, which are conformable.
 #'
 #' @seealso [align_theta()], [check_params_dim()]
 #' @keywords internal
@@ -393,7 +395,8 @@ recycle_point <- function(distrib, x, theta, arg = "y") {
 #' d <- gaussian1_distrib()
 #' distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
-#' # the same score with respect to the unconstrained parameters
+#' # With scale = "link" the same score is taken with respect to the
+#' # unconstrained parameters.
 #' distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
 #' @seealso [distrib_hessian()], [distrib_expected_hessian()], [distrib_deriv3()], [distrib_deriv4()]
 #' @export
@@ -411,8 +414,8 @@ distrib_gradient <- S7::new_generic("distrib_gradient", "distrib", function(dist
 #' @description Computes the analytical observed second derivatives (Hessian matrix) of the log-likelihood with respect to the distribution's parameters.
 #'
 #' @details
-#' With \eqn{l(\theta; y) = \log f(y; \theta)}, one entry per unordered pair
-#' of parameters,
+#' With \eqn{l(\theta; y) = \log f(y; \theta)}, the Hessian has one entry per
+#' unordered pair of parameters,
 #'
 #' \deqn{l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial \theta_j},}
 #'
@@ -465,7 +468,7 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #'   Each parameter must have length 1 or `length(y)`.
 #' @inheritParams distrib_gradient
 #' @param approx How the expectation is approximated when the distribution
-#'   has no closed-form expected Hessian; ignored otherwise. One of
+#'   has no closed-form expected Hessian; ignored otherwise. The value is one of
 #'   `"opg"` (the default: the outer product of the score, read at each
 #'   observation without taking an expectation), `"bartlett"` (the second
 #'   Bartlett identity, with the expectation taken by summation or
@@ -523,7 +526,7 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' Computes the unique third-order partial derivatives of the log-likelihood with
 #' respect to the distribution's parameters. Distributions with a closed-form
 #' implementation provide it directly (in C++); the others fall back to finite
-#' differences of the highest order the family implements itself (see
+#' differences of the highest order that the family implements itself (see
 #' [numerical_deriv3()]).
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param y A numeric vector of observations.
@@ -534,8 +537,8 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' @inheritParams distrib_gradient
 #' @param approx How the expectation is approximated when `expected = TRUE`
 #'   and the distribution has no closed-form expected third derivatives; ignored
-#'   otherwise. One of `"integrate"` (default), `"bartlett"` (equivalently
-#'   `"opg"`) or `"mc"`. See [expected_derivative_methods()].
+#'   otherwise. The value is one of `"integrate"` (default), `"bartlett"`
+#'   (equivalently `"opg"`) or `"mc"`. See [expected_derivative_methods()].
 #' @param nsim Monte Carlo sample size used when `approx = "mc"`. Defaults to 10000.
 #' @param ... Additional arguments passed to the specific method.
 #' @return A named list of derivative-component vectors, keyed as in
@@ -564,7 +567,7 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' Computes the unique fourth-order partial derivatives of the log-likelihood with
 #' respect to the distribution's parameters. Distributions with a closed-form
 #' implementation provide it directly (in C++); the others fall back to finite
-#' differences of the highest order the family implements itself, up to the
+#' differences of the highest order that the family implements itself, up to the
 #' Hessian (see [numerical_deriv4()]).
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param y A numeric vector of observations.
@@ -575,8 +578,8 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' @inheritParams distrib_gradient
 #' @param approx How the expectation is approximated when `expected = TRUE`
 #'   and the distribution has no closed-form expected fourth derivatives; ignored
-#'   otherwise. One of `"integrate"` (default), `"bartlett"` (equivalently
-#'   `"opg"`) or `"mc"`. See [expected_derivative_methods()].
+#'   otherwise. The value is one of `"integrate"` (default), `"bartlett"`
+#'   (equivalently `"opg"`) or `"mc"`. See [expected_derivative_methods()].
 #' @param nsim Monte Carlo sample size used when `approx = "mc"`. Defaults to 10000.
 #' @param ... Additional arguments passed to the specific method.
 #' @return A named list of derivative-component vectors, keyed as in
@@ -602,9 +605,9 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #' Fifth-Order Derivatives
 #'
 #' @description
-#' The unique fifth-order partial derivatives of the log-likelihood with
-#' respect to the distribution's parameters, on the parameter scale or on the
-#' link scale.
+#' Computes the unique fifth-order partial derivatives of the log-likelihood
+#' with respect to the distribution's parameters, on the parameter scale or on
+#' the link scale.
 #'
 #' @details
 #' The order is needed because each order of differentiating the predictor of
@@ -650,17 +653,17 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #'   uses both.
 #' @param ... Additional arguments passed to the specific method.
 #'
-#' @return A named list of derivative-component vectors, each of length
-#'   `length(y)`, keyed as
-#'   [`deriv_names(distrib@params, 5)`][deriv_names] gives them (e.g.
+#' @return A named list of derivative-component vectors, in which each vector
+#'   has length `length(y)` and the names are those that
+#'   [`deriv_names(distrib@params, 5)`][deriv_names] gives (e.g.
 #'   `"mu_mu_sigma_sigma_sigma"`).
 #'
 #' @examples
 #' distrib_deriv5(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @seealso [distrib_deriv4()] for the order below, [numerical_deriv5()] for
-#'   the differencing, and [has_exact_deriv4()] for the predicate that says
-#'   whether the quantity being differenced is itself analytic.
+#'   the differencing, and [has_exact_deriv4()] for the predicate that reports
+#'   whether the quantity that is differenced is itself analytic.
 #' @export
 distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -673,8 +676,8 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
 #' Whether a Family Supplies Its Own Fourth Derivative
 #'
 #' @description
-#' Whether the family supplies its own fourth-order derivatives, rather than
-#' reaching one of the base classes' numerical fallbacks.
+#' Reports whether the family supplies its own fourth-order derivatives, rather
+#' than reaching one of the base classes' numerical fallbacks.
 #'
 #' @details
 #' The numerical fifth order is one central difference of the fourth, so its
@@ -682,7 +685,7 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
 #' is the family's own, the result is an ordinary numerical derivative of a
 #' quantity that the family computes directly. Where the fourth order is the
 #' numerical fallback of the package, the fifth order is a difference of a
-#' difference, and no choice of tolerance makes it reliable.
+#' difference, and it is unreliable whatever the tolerance.
 #'
 #' A family in the second case still receives a value, since a distribution
 #' needs only [distrib_pdf()], and the value comes back without a warning. Its
@@ -712,7 +715,7 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
 #' has_exact_deriv4(truncated(gaussian1_distrib(), lower = 0))
 #'
 #' @seealso [distrib_deriv5()], the consumer; [expected_hessian_exact()],
-#'   the predicate this is modeled on.
+#'   the predicate on which this is modeled.
 #' @export
 has_exact_deriv4 <- S7::new_generic("has_exact_deriv4", "x")
 
@@ -772,12 +775,13 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #' \eqn{\log F(q;\theta)} --- or of \eqn{\log(1 - F(q;\theta))} when
 #' `lower.tail = FALSE`.
 #'
-#' These are what a censored observation contributes to the score. An
-#' observation known only to be at most \eqn{q} contributes \eqn{\log F(q)}, one
-#' known only to exceed \eqn{q} contributes \eqn{\log(1-F(q))}, and an interval
-#' censored one contributes \eqn{\log(F(b) - F(a))}, which is assembled from the
-#' unlogged derivatives (`log = FALSE`) at the two endpoints. They are also
-#' what the delta method needs for the standard error of a quantile residual.
+#' These derivatives give the contribution of a censored observation to the
+#' score. An observation known only to be at most \eqn{q} contributes
+#' \eqn{\log F(q)}, one known only to exceed \eqn{q} contributes
+#' \eqn{\log(1-F(q))}, and an interval censored one contributes
+#' \eqn{\log(F(b) - F(a))}, which is assembled from the derivatives of the
+#' probability itself (`log = FALSE`) at the two endpoints. The delta method
+#' also needs them for the standard error of a quantile residual.
 #'
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param q A numeric vector of quantiles.
@@ -787,8 +791,8 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #'   \eqn{\log F(q)}, otherwise of \eqn{\log(1 - F(q))}.
 #' @param log Logical; if `TRUE` (default), derivatives of the *log*
 #'   tail probability. With `FALSE` the derivatives of the probability
-#'   itself are returned, which interval censoring and the truncation
-#'   constant are built from.
+#'   itself are returned; interval censoring and the truncation constant are
+#'   built from them.
 #' @param ... Additional arguments passed to the specific method.
 #'
 #' @return A named list with one numeric vector per parameter.
@@ -818,7 +822,8 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #' d <- gaussian1_distrib()
 #' theta <- list(mu = 0, sigma = 1)
 #'
-#' # what a right-censored observation at q = 1 contributes to the score
+#' # The call returns what a right-censored observation at q = 1 contributes
+#' # to the score.
 #' distrib_grad_cdf(d, 1, theta, lower.tail = FALSE)
 #'
 #' @seealso [distrib_hess_cdf()], [distrib_gradient()]
@@ -872,22 +877,22 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' Whether a Family's Expected Information Is Written Out
 #'
 #' @description
-#' `TRUE` when the family computes its expected information exactly, in
-#' closed form or by a quadrature of its own to working precision, and `FALSE`
-#' when a call to [distrib_expected_hessian()] reaches a fallback and the
-#' answer is therefore an approximation. It is a generic so that a family
+#' Returns `TRUE` when the family computes its expected information exactly,
+#' in closed form or by a quadrature of its own to working precision, and
+#' `FALSE` when a call to [distrib_expected_hessian()] reaches a fallback and
+#' the answer is therefore an approximation. It is a generic so that a family
 #' whose registered method is not what its owning class suggests can report
 #' this; [has_exact_expected_hessian()] calls it and
 #' [expected_hessian_exact.distrib()] is the default.
 #'
 #' @details
-#' The predicate is what a consumer reads to decide which information to
-#' report. Where it returns `TRUE` the expected information costs one
-#' evaluation and has the smaller variance, so it is the better matrix to
-#' invert; where it returns `FALSE` the choice is between an approximation and
-#' the observed Hessian, which every family has and which is exact. That is
-#' the rule that [fit_distrib()] follows for its standard errors and that
-#' \pkg{statmodels7} follows in `vcov()`.
+#' A function that reports the information of a family uses the predicate to
+#' choose which information to report. Where it returns `TRUE` the expected
+#' information costs one evaluation and has the smaller variance, so it is the
+#' better matrix to invert; where it returns `FALSE` the choice is between an
+#' approximation and the observed Hessian, which every family has and which is
+#' exact. [fit_distrib()] follows this rule for its standard errors, and
+#' \pkg{statmodels7} follows it in `vcov()`.
 #'
 #' Every shipped univariate family returns `TRUE`. The Poisson-inverse
 #' Gaussian families sum their expected information exactly over the support,
@@ -896,9 +901,9 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' [loc_scale_expected()]. Among the wrappers, [truncated()] returns `FALSE`.
 #'
 #' Reading the class that owns the registered method is not sufficient on its
-#' own, which is why the generic exists: a method registered on the class of a
-#' family may chain onto a parent that approximates, and a family that does so
-#' returns the answer of its parent.
+#' own, and the generic exists for this reason: a method registered on the class
+#' of a family may chain onto a parent that approximates, and a family that does
+#' so returns the answer of its parent.
 #'
 #' @param x An object inheriting from class `"distrib"`.
 #' @param ... Passed to methods.
@@ -912,7 +917,7 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #'
 #' @seealso [has_exact_expected_hessian()], the wrapper that calls it;
 #'   [distrib_expected_hessian()] for the quantity itself, and
-#'   [expected_by_opg()] for the fallback a `FALSE` answer reaches.
+#'   [expected_by_opg()] for the fallback that a `FALSE` answer reaches.
 #'
 #' @export
 expected_hessian_exact <- S7::new_generic("expected_hessian_exact", "x")
@@ -920,7 +925,7 @@ expected_hessian_exact <- S7::new_generic("expected_hessian_exact", "x")
 #' The Kink of a Family
 #'
 #' @description
-#' The one non-smooth piece of a log-density, as the composition
+#' Returns the one non-smooth piece of a log-density, as the composition
 #' \eqn{c(\theta)\,\phi(v(y,\theta))} of [kink_spec()], or `NULL` for a family
 #' that is smooth in every parameter. [params_order()] reads the order of
 #' differentiability off the answer.
@@ -933,8 +938,8 @@ expected_hessian_exact <- S7::new_generic("expected_hessian_exact", "x")
 #'
 #' A wrapper does not propagate the declaration today, so a wrapper of a kinked
 #' family returns `NULL` here while `params_smooth` still records the kink;
-#' [params_order()] reports `NA` there rather than `Inf`, which says the order
-#' has not been established rather than that the parameter is smooth.
+#' [params_order()] reports `NA` there rather than `Inf`, because the order has
+#' not been established, whereas `Inf` would mean that the parameter is smooth.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #'
@@ -957,7 +962,7 @@ kink_decomposition <- S7::new_generic("kink_decomposition", "distrib",
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param ... Additional arguments passed to the specific method.
 #' @return A named list of parameter values, one per element of
-#'   `distrib@params`, each inside that parameter's bounds.
+#'   `distrib@params`; each value lies inside that parameter's bounds.
 #' @examples
 #' set.seed(1)
 #' generate_random_theta(gamma2_distrib())

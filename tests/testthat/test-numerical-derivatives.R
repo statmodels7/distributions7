@@ -95,8 +95,8 @@ test_that("fallback derivatives are vectorized over theta and validated like the
   )
 
   # Same argument validation path as analytic methods (generic-level checks)
-  expect_error(distrib_gradient(bg, rnorm(10), list(mu = 1:3, sigma = 1)), "dimension mismatch")
-  expect_error(distrib_gradient(bg, 0, list(mu = 0)), "Missing parameter")
+  expect_error(distrib_gradient(bg, rnorm(10), list(mu = 1:3, sigma = 1)), "dimensions do not match")
+  expect_error(distrib_gradient(bg, 0, list(mu = 0)), "lacks the parameter")
 })
 
 test_that("finite-difference steps respect parameter domain boundaries", {

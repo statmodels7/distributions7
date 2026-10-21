@@ -62,7 +62,7 @@ The checks performed are:
 \item density: non-negativity and integration/summation to 1 over the support.
 \item cdf: values in \eqn{[0,1]} and monotonicity along a grid of quantiles,
 and its agreement with the density: for a continuous family a central
-difference of the cdf against the density, with the step the response
+difference of the cdf against the density, with the step that the response
 derivatives use, and for a discrete one \eqn{F(k) - F(k-1)} against the
 mass.
 \item quantile: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
@@ -98,11 +98,12 @@ an interior point still leaves the row without a statistic.
 \code{\link[=distrib_hess_y]{distrib_hess_y()}} against central differences in \eqn{y} whose step is
 chosen observation by observation by \code{\link[=fd_stable_quotient]{fd_stable_quotient()}}, between a
 step cut to under half the distance to a bound and one scaled on that
-distance, each divided by the steps its evaluation points actually lie
-at. A draw closer than \eqn{128\lvert b\rvert\varepsilon} to a finite
-bound \eqn{b \ne 0}, where the spacing of doubles is absolute and no
-central difference compares a derivative, is left out and counted in the
-row's \code{detail}.
+distance, and each of which is divided by the steps at which its
+evaluation points actually lie. A draw closer than
+\eqn{128\lvert b\rvert\varepsilon} to a finite
+bound \eqn{b \ne 0}, where the spacing of doubles is absolute and a
+central difference does not compare a derivative, is left out and counted
+in the row's \code{detail}.
 \item link scale: \code{scale = "link"} derivatives against finite
 differences of the log-likelihood in \eqn{\eta}.
 }
@@ -111,26 +112,27 @@ A parameter-derivative check of an order for which the family registers no
 method of its own is not run: the value would be the numerical fallback,
 the same finite difference as the reference, and the comparison would hold
 by construction. The row is listed in the attribute \code{"skipped"} with that
-reason. The response fallbacks take the cut step alone, so near a bound they
-can differ from the reference, which is what the row then reports.
+reason. The response fallbacks take only the cut step, so near a bound they
+can differ from the reference, and the row then reports that difference.
 
-A check whose statistic comes out \code{NaN} or \code{NA} has nothing to judge, as the
-expected information of a family where it does not exist, and is not a row
-of the table: it is listed with its reason in the attribute \code{"skipped"}, and
-every row that is in the table reads \code{"OK"} or \code{"FAIL"}. An infinite
-statistic is a failure, being a component that overflows where its reference
-does not; so is a check whose computation raised an error, and so is a
-density or a distribution function that is not finite. The checks defined on
-the values themselves (the non-negativity of the density, the range of the
-distribution function and, for a discrete family, the quantile round trip)
-are kept even when their statistic is missing.
+A check whose statistic comes out \code{NaN} or \code{NA} has nothing to judge (the
+expected information of a family in which it does not exist is an example)
+and is not a row of the table: it is listed with its reason in the attribute
+\code{"skipped"}, and every row that is in the table reads \code{"OK"} or \code{"FAIL"}. An
+infinite statistic is a failure, because it comes from a component that
+overflows where its reference does not. A check whose computation raised an
+error is also a failure, and so is a density or a distribution function that
+is not finite. The checks defined on the values themselves (the
+non-negativity of the density, the range of the distribution function and,
+for a discrete family, the quantile round trip) are kept even when their
+statistic is missing.
 
-Mixed distributions --- a density with point masses on top of it, as produced by
-\code{\link[=zero_adjusted]{zero_adjusted()}} on a continuous parent --- are handled as long as they
+Mixed distributions (a density with point masses on top of it, as produced by
+\code{\link[=zero_adjusted]{zero_adjusted()}} on a continuous parent) are handled as long as they
 declare their atoms through \code{\link[=distrib_atoms]{distrib_atoms()}}. The density is then expected
 to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
 are checked as generalized inverses rather than exact ones, and finite differences in
-\eqn{y} are kept away from the atoms, where no derivative exists.
+\eqn{y} are kept away from the atoms, where a derivative does not exist.
 }
 \examples{
 \dontrun{

@@ -129,5 +129,5 @@ test_that("a size that varies by observation gives one expectation per observati
   expect_equal(expectation(tr, function(y, theta) y, list(mu = 0.3)), one,
                tolerance = 1e-14)
   expect_error(expectation(d, function(y, theta) y, list(mu = c(0.1, 0.2))),
-               "dimension mismatch")
+               "dimensions do not match")
 })

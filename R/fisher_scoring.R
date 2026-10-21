@@ -5,11 +5,12 @@ NULL
 #' @name FisherScoring
 #'
 #' @description
-#' The class [fisher_scoring()] returns and [fit_distrib()] accepts through its
-#' `method` argument. It holds the two things a Fisher scoring run needs that
-#' an ordinary optimizer cannot carry: how the expected information is to be
-#' obtained when the family has no closed form for it, and the stopping rule
-#' and iteration budget the run is to use.
+#' This class is the one that [fisher_scoring()] returns and that
+#' [fit_distrib()] accepts through its `method` argument. It holds the two
+#' things that a Fisher scoring run needs and that an ordinary optimizer cannot
+#' carry: how the expected information is obtained when the family has no
+#' closed form for it, and the stopping rule and iteration budget that the run
+#' uses.
 #'
 #' This page documents the raw S7 constructor, which validates nothing. Build
 #' one with [fisher_scoring()], which checks all four arguments.
@@ -53,20 +54,21 @@ FisherScoring <- S7::new_class("FisherScoring",
 #'
 #' @description
 #' Returns a specification of Fisher scoring for [fit_distrib()]'s `method`
-#' argument, carrying how the expected information is to be obtained when the
-#' family has no closed form for it, and optionally a stopping rule and an
-#' iteration limit of its own. It is [fit_distrib()]'s default method.
+#' argument. The specification records how the expected information is
+#' obtained when the family has no closed form for it, and optionally a
+#' stopping rule and an iteration limit of its own. It is [fit_distrib()]'s
+#' default method.
 #'
-#' Fisher scoring is Newton's method with the observed Hessian replaced by
-#' minus the expected information, so it needs no implementation of its own and
-#' is not an optimizer. What it does need, and an optimizer has no slot for, is
-#' the statement of how that matrix is to be obtained, and that is what this
-#' object holds.
+#' Fisher scoring is Newton's method in which the observed Hessian is replaced
+#' by minus the expected information, so it needs no implementation of its own
+#' and is not an optimizer. It needs one thing for which an optimizer has no
+#' slot, the statement of how that matrix is obtained, and this object holds
+#' that statement.
 #'
 #' @details
 #' # Values accepted by the method argument
-#' [fit_distrib()] takes one argument saying how to optimize, and it takes an
-#' optimizer of \pkg{optimizers7} or this:
+#' [fit_distrib()] has one argument that selects how to optimize, and that
+#' argument accepts an optimizer of \pkg{optimizers7} or this object:
 #'
 #' \tabular{ll}{
 #'   `method = fisher_scoring()` \tab Newton's method with the
@@ -80,17 +82,18 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' Writing \eqn{s(\eta) = \partial \ell / \partial \eta} for the score on the
 #' unconstrained scale and \eqn{\mathcal{I}(\eta) = \mathbb{E}[-\partial^{2}
 #' \ell / \partial \eta \partial \eta']} for the expected information there,
+#' the step is
 #' \deqn{\eta^{(t+1)} = \eta^{(t)}
 #'   + \mathcal{I}(\eta^{(t)})^{-1} s(\eta^{(t)}).}
 #' Under the diagonal reparametrization \eqn{\theta_i = h_i(\eta_i)} the
 #' information transforms by congruence,
 #' \eqn{\mathcal{I}(\eta) = D\,\mathcal{I}(\theta)\,D} with
-#' \eqn{D = \operatorname{diag}(h_i'(\eta_i))}, the first-order term of the
-#' chain rule vanishing in expectation because the score has mean zero. The
+#' \eqn{D = \operatorname{diag}(h_i'(\eta_i))}, and the first-order term of the
+#' chain rule vanishes in expectation because the score has mean zero. The
 #' matrix inverted is therefore positive definite wherever
 #' \eqn{\mathcal{I}(\theta)} is, and the step is a direction of ascent. A fit
-#' therefore succeeds on a family whose observed Hessian is indefinite, the
-#' Laplace being the standard case.
+#' therefore succeeds on a family whose observed Hessian is indefinite; the
+#' Laplace is the standard case.
 #'
 #' # Strategies for the expected information
 #' `approx` is read only where the family has no closed-form expected
@@ -110,12 +113,13 @@ FisherScoring <- S7::new_class("FisherScoring",
 #'   evaluates the right-hand side of the second Bartlett identity, a sum over
 #'   the support for a discrete family and a quadrature for a continuous one;
 #'   `"integrate"` is quadrature of the observed information; `"mc"` is Monte
-#'   Carlo. Matched by [base::match.arg()], so
-#'   anything else signals an error listing the four. See
+#'   Carlo. The value is matched by
+#'   [base::match.arg()], so any other value signals an error that lists the
+#'   four. See
 #'   [expected_derivative_methods()].
-#' @param nsim Monte Carlo sample size, a single positive finite number. Read
-#'   only when `approx = "mc"`. Defaults to 10000. A vector, a non-finite
-#'   value or a number below 1 signals an error.
+#' @param nsim Monte Carlo sample size, a single positive finite number. It is
+#'   read only when `approx = "mc"`. It defaults to 10000. A vector, a
+#'   non-finite value or a number below 1 signals an error.
 #' @param criterion A stopping rule from \pkg{optimizers7}, or `NULL` (the
 #'   default), in which case [fit_distrib()] stops on
 #'   [optimizers7::crit_grad()] at its default tolerance. An object that is not
@@ -132,11 +136,11 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' d <- gaussian1_distrib()
 #' y <- distrib_rng(d, 100, list(mu = 1, sigma = 2))
 #'
-#' # The default, and the same thing said explicitly.
+#' # The default and the explicit specification give the same fit.
 #' coef(fit_distrib(d, y))
 #' coef(fit_distrib(d, y, method = fisher_scoring()))
 #'
-#' # The congruence the step rests on: the information on the link scale is
+#' # The step rests on a congruence: the information on the link scale is
 #' # D I(theta) D, with D the diagonal of the inverse link's derivative.
 #' th <- list(mu = 1, sigma = 2)
 #' It <- distrib_expected_hessian(d, y, th)

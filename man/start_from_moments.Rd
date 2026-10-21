@@ -13,9 +13,9 @@ start_from_moments(distrib, y, n_start = 5L, ...)
 \code{params_interpretation} and \code{params_bounds}.}
 
 \item{y}{The response, a numeric vector. Non-finite entries are dropped, and
-a sample with fewer than two usable values gets the random draws alone.}
+a sample with fewer than two usable values yields only the random draws.}
 
-\item{n_start}{How many starting values are wanted, a single positive
+\item{n_start}{The number of starting values, a single positive
 integer. Defaults to 5, and a value below 1 is raised to 1.}
 
 \item{...}{Unused.}
@@ -26,8 +26,8 @@ the first from the data where one could be computed.
 }
 \description{
 Returns \code{n_start} starting values whose first is computed from the response
-and whose rest are random draws. It is the method that both
-\code{continuous_distrib} and \code{discrete_distrib} register, so a univariate
+and whose rest are random draws. Both \code{continuous_distrib} and
+\code{discrete_distrib} register this method, so a univariate
 family uses it unless the family registers a method of its own, as
 \code{\link[=pig1_distrib]{pig1_distrib()}}, \code{\link[=pig2_distrib]{pig2_distrib()}}, \code{\link[=zero_adjusted]{zero_adjusted()}} and
 \code{\link[=zero_inflated]{zero_inflated()}} do.
@@ -38,7 +38,7 @@ entry there. The other families fall back to reading
 started at the sample median, one meaning a spread at the sample standard
 deviation or its square, one meaning degrees of freedom at what the sample
 kurtosis implies, and a shape, a dispersion or a probability keeps its
-draw, those being of order one whatever the data.
+draw, because those are of order one whatever the data.
 }
 \section{Why the base method is not used for univariate families}{
 The base method draws each parameter from its own domain and does not read

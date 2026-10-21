@@ -20,7 +20,8 @@ be reproduced after the fact.}
 }
 \value{
 For a univariate fit, a data frame of \code{object@n} rows and \code{nsim}
-columns named \code{sim_1} to \code{sim_nsim}, each column one replicate. For a
+columns named \code{sim_1} to \code{sim_nsim}, in which each column is one
+replicate. For a
 multivariate fit each replicate is a matrix, and the data frame has
 \code{object@n} rows and \code{nsim * p} columns named \code{sim_1.v1}, \code{sim_1.v2}, and
 so on. The \code{"seed"} attribute carries the generator state described
@@ -29,9 +30,9 @@ above.
 \description{
 Draws new samples from the fitted distribution, evaluated at the maximum
 likelihood estimates and ignoring their uncertainty. Each replicate has the
-same length as the data the fit was computed from, so a replicate is
-directly comparable with the observations: this is the draw a parametric
-bootstrap and a posterior-predictive style check both need.
+same length as the data from which the fit was computed, so a replicate is
+directly comparable with the observations: this is the draw that a
+parametric bootstrap and a posterior-predictive style check both need.
 
 The draws come from \code{\link[=distrib_rng]{distrib_rng()}}, so a family with no closed-form
 generator is sampled by the package's own fallback and the cost is that
@@ -45,7 +46,8 @@ fit <- fit_distrib(gaussian1_distrib(), y)
 sims <- simulate(fit, 20, seed = 42)
 dim(sims)
 
-# A parametric bootstrap of any statistic, here the median.
+# The replicates give a parametric bootstrap of any statistic, here the
+# median.
 quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 
 # The seed argument leaves the caller's stream where it found it.
@@ -56,5 +58,6 @@ all.equal(before, after)
 }
 \seealso{
 \code{\link[=fit_distrib]{fit_distrib()}} for the fit; \code{\link[=distrib_rng]{distrib_rng()}} for the generator;
-\code{\link[=plot.distrib_fit]{plot.distrib_fit()}} to compare the fit with the data it came from.
+\code{\link[=plot.distrib_fit]{plot.distrib_fit()}} to compare the fit with the data from which it was
+computed.
 }

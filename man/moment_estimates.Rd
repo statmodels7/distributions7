@@ -18,9 +18,9 @@ A named list of parameters on the parameter scale, one component per
 entry of \code{distrib@params}, or \code{NULL} where this family has no entry.
 }
 \description{
-Returns the parameters a family's own first two moments imply for a sample,
-in closed form where the inversion has one, and \code{NULL} where this family has
-no entry.
+Returns the parameters that a family's own first two moments imply for a
+sample, in closed form where the inversion has one, and \code{NULL} where this
+family has no entry.
 
 A starting value should be an estimate. For most families the moment
 estimate is one line: the sample mean and variance are set equal to the
@@ -40,8 +40,8 @@ A family with no moments takes the robust analogue. The Cauchy uses the
 median and half the interquartile range, which are its location and its
 scale. Where the inversion needs a root, the standard approximation
 stands in: the Weibull's shape from the coefficient of variation, the von
-Mises's concentration from the mean resultant length. A starting value is
-allowed to be approximate.
+Mises's concentration from the mean resultant length. These approximations
+suffice because the result is only a starting value.
 
 Five families have no entry and fall through to
 \code{\link[=start_from_moments]{start_from_moments()}}'s reading of \code{params_interpretation}: \code{gengamma1},
@@ -52,17 +52,16 @@ generalized gamma, a moment that does not identify the pair for the skew
 }
 
 \section{A fixed constant in the name}{
-A family carrying one announces it there, as in \code{"beta-binomial [size=10]"},
-so the bracketed part is stripped before the name is used as a lookup key.
-If the bracketed part were kept, the lookup would find no entry for a
-beta-binomial of any size, and the fit would fall back to the default
+A family that carries one records it there, as in \code{"beta-binomial [size=10]"}, so the bracketed part is stripped before the name is used as a
+lookup key. If the bracketed part were kept, the lookup would find no entry
+for a beta-binomial of any size, and the fit would fall back to the default
 without a message, because a missing key is a valid result.
 }
 
 \seealso{
 \code{\link[=start_from_moments]{start_from_moments()}}, the main caller and the fallback, and
 \code{\link[=distrib_intercept_start.SkewNormal1Distrib]{distrib_intercept_start.SkewNormal1Distrib()}}, which also calls it;
-\code{\link[=distrib_start]{distrib_start()}} for the generic; \code{\link[=mean]{mean()}} and \code{\link[=variance]{variance()}}, which the
-inversions are written against.
+\code{\link[=distrib_start]{distrib_start()}} for the generic; \code{\link[=mean]{mean()}} and \code{\link[=variance]{variance()}}, against which
+the inversions are written.
 }
 \keyword{internal}

@@ -9,7 +9,7 @@ is_class(cls, base)
 \arguments{
 \item{cls}{The S7 class recorded on a method.}
 
-\item{base}{The base class to compare against.}
+\item{base}{The base class with which \code{cls} is compared.}
 }
 \value{
 A single logical.
@@ -19,7 +19,7 @@ Compares two S7 class objects, treating a class re-created from the same
 definition as the same class.
 }
 \details{
-Several functions here decide whether a method comes from the base class or
+Several functions here test whether a method comes from the base class or
 from a subclass that registered its own, by reading
 \code{attr(m, "signature")[[1]]}, the documented S7 route. The comparison that
 follows must not use \code{identical()}: on S7 class objects that tests object
@@ -27,8 +27,9 @@ identity, so it returns \code{FALSE} for a class re-created from the same
 definition. A class is re-created whenever the code of the package is
 re-evaluated instead of being loaded, as under coverage instrumentation.
 
-When \code{identical()} fails in this way the comparison is silent, and a
-numerical fallback is taken for an analytic method. The function therefore
+When \code{identical()} fails in this way, it returns \code{FALSE} without any
+signal, and the code takes a numerical fallback for an analytic method. The
+function therefore
 returns \code{TRUE} for identical objects as a fast path, and otherwise compares
 the class name together with the package name.
 }

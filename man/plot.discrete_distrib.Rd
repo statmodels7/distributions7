@@ -32,9 +32,9 @@ vector gives one setting per element, exactly as in
 \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}.
 }
 \section{The two keys, and why they are not the continuous ones}{
-Settings are separated by color and symbol together, the symbol sitting
-at the top of each stem where the point already is. The line type is not
-used here: dashing a stem is what it would do, and a dashed stem reads as a
+Settings are separated by color and symbol together, and the symbol sits
+at the top of each stem, where the point already is. The line type is not
+used here, because it would dash the stems and a dashed stem reads as a
 broken one, so at a support of any size the panel fills with fragments that
 cross each other.
 
@@ -44,8 +44,8 @@ one in front of another.
 }
 
 \examples{
-# Three rates, whose masses are countable at every support point because
-# the settings are offset sideways.
+# The three rates have masses that are countable at every support point
+# because the settings are offset sideways.
 plot(poisson_distrib(), list(mu = c(1, 4, 10)))
 
 # Overdispersion at a fixed mean: the mass spreads as theta falls.

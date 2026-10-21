@@ -11,27 +11,29 @@ fit_theta_from_eta(distrib, eta)
 \code{link_params}.}
 
 \item{eta}{A numeric vector of linear predictors, one per parameter, in the
-order \code{distrib@params} gives. A non-finite entry propagates to the
-parameter it names.}
+order given by \code{distrib@params}. A non-finite entry propagates to the
+parameter that it names.}
 }
 \value{
-A named list of length \code{length(distrib@params)}, each component a
-number on the parameter scale, named and ordered as \code{distrib@params}.
+A named list of length \code{length(distrib@params)}, in which each
+component is a number on the parameter scale, named and ordered as
+\code{distrib@params}.
 }
 \description{
 Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)},
-and returns the parameters as the named list every generic in the package
-expects. It is the inverse of \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}.
+and returns the parameters as the named list that every generic in the
+package expects. It is the inverse of \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}.
 
 Every link maps onto the open interior of its parameter's domain, and
 \code{linkfunctions7} clamps the result strictly inside when the arithmetic
 saturates, so a \eqn{\theta} obtained this way is admissible whatever the
 optimizer proposed. On a Gaussian scale carried by the logarithm,
 \eqn{\eta = -800} gives \eqn{\sigma = 1.9\times 10^{-77}} and
-\eqn{\eta = 800} gives \eqn{1.8\times 10^{308}}: both extreme, both still
-inside \eqn{(0, \infty)}, so the density can be evaluated and the point
-rejected on its likelihood. This is also why a confidence interval built on
-the link scale and mapped back cannot run outside the domain.
+\eqn{\eta = 800} gives \eqn{1.8\times 10^{308}}: both values are extreme
+and both lie inside \eqn{(0, \infty)}, so the density can be evaluated and
+the point rejected on its likelihood. For the same reason a confidence
+interval built on the link scale and mapped back cannot run outside the
+domain.
 }
 \seealso{
 \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}, the inverse; \code{\link[=fit_dtheta_deta]{fit_dtheta_deta()}} for the

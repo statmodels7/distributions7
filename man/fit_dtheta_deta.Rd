@@ -11,12 +11,12 @@ fit_dtheta_deta(distrib, eta)
 \code{link_params}.}
 
 \item{eta}{A numeric vector of linear predictors, one per parameter, in the
-order \code{distrib@params} gives. Only \code{eta[i]} is read for the i-th
+order of \code{distrib@params}. Only \code{eta[i]} is read for the i-th
 parameter, so entries beyond the parameter count are ignored.}
 }
 \value{
 An unnamed numeric vector of length \code{length(distrib@params)}, in the
-order \code{distrib@params} gives.
+order of \code{distrib@params}.
 }
 \description{
 Returns \eqn{h_i'(\eta_i) = dg_i^{-1}/d\eta_i}, one entry per parameter,
@@ -24,7 +24,7 @@ evaluated at the supplied linear predictors. Because each parameter carries
 its own scalar link the Jacobian of \eqn{\theta} in \eqn{\eta} is diagonal,
 and this is its diagonal.
 
-It is what the delta method needs to carry a variance matrix from the link
+The delta method uses it to carry a variance matrix from the link
 scale, where the fit computes it, to the parameter scale, where it is
 reported: \eqn{\widehat{\mathrm{Var}}(\hat\theta) = J V J} with
 \eqn{J = \mathrm{diag}(h')}. On a Gaussian at \eqn{\eta = (1.5, \log 2.5)},
@@ -32,7 +32,7 @@ with the identity on \eqn{\mu} and the logarithm on \eqn{\sigma}, it returns
 \code{c(1, 2.5)}.
 }
 \seealso{
-\code{\link[=fit_theta_from_eta]{fit_theta_from_eta()}}, the map this differentiates;
+\code{\link[=fit_theta_from_eta]{fit_theta_from_eta()}}, the map that this function differentiates;
 \code{\link[=fit_distrib]{fit_distrib()}}, which uses it for the standard errors and nothing else;
 \code{\link[linkfunctions7:dlinkinv]{linkfunctions7::dlinkinv()}}.
 }

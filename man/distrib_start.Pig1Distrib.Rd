@@ -33,7 +33,7 @@ set.seed(4)
 d <- pig1_distrib()
 y <- distrib_rng(d, 5000, list(mu = 4, sigma = 0.5))
 
-# The inversion recovers the parameters it was drawn from.
+# The inversion recovers the parameters from which the sample was drawn.
 unlist(distrib_start(d, y)[[1]])
 
 # It is exactly the sample moments, read through mean and variance.

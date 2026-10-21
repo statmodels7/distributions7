@@ -17,7 +17,7 @@ An unnamed numeric vector of length \code{s@n_free}.
 }
 \description{
 Returns the free vector of a \code{parameters7} structure whose matrix is \code{m}.
-\code{parameters7::param_free()} answers exactly where the structure can
+\code{parameters7::param_free()} returns it exactly where the structure can
 represent the matrix, which for an unstructured covariance is always. Where
 it cannot, that call signals an error and this falls back to least squares
 on the entries, started from the zero vector. A compound-symmetric

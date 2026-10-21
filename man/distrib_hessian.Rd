@@ -30,8 +30,8 @@ A named list of numeric vectors, keyed as
 Computes the analytical observed second derivatives (Hessian matrix) of the log-likelihood with respect to the distribution's parameters.
 }
 \details{
-With \eqn{l(\theta; y) = \log f(y; \theta)}, one entry per unordered pair
-of parameters,
+With \eqn{l(\theta; y) = \log f(y; \theta)}, the Hessian has one entry per
+unordered pair of parameters,
 
 \deqn{l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial \theta_j},}
 

@@ -19,8 +19,8 @@ Each parameter must have length 1 or \code{length(q)}.}
 
 \item{log}{Logical; if \code{TRUE} (default), derivatives of the \emph{log}
 tail probability. With \code{FALSE} the derivatives of the probability
-itself are returned, which interval censoring and the truncation
-constant are built from.}
+itself are returned; interval censoring and the truncation constant are
+built from them.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -32,12 +32,13 @@ Computes the first derivatives, with respect to the parameters, of
 \eqn{\log F(q;\theta)} --- or of \eqn{\log(1 - F(q;\theta))} when
 \code{lower.tail = FALSE}.
 
-These are what a censored observation contributes to the score. An
-observation known only to be at most \eqn{q} contributes \eqn{\log F(q)}, one
-known only to exceed \eqn{q} contributes \eqn{\log(1-F(q))}, and an interval
-censored one contributes \eqn{\log(F(b) - F(a))}, which is assembled from the
-unlogged derivatives (\code{log = FALSE}) at the two endpoints. They are also
-what the delta method needs for the standard error of a quantile residual.
+These derivatives give the contribution of a censored observation to the
+score. An observation known only to be at most \eqn{q} contributes
+\eqn{\log F(q)}, one known only to exceed \eqn{q} contributes
+\eqn{\log(1-F(q))}, and an interval censored one contributes
+\eqn{\log(F(b) - F(a))}, which is assembled from the derivatives of the
+probability itself (\code{log = FALSE}) at the two endpoints. The delta method
+also needs them for the standard error of a quantile residual.
 }
 \details{
 The mathematics is one exchange of derivative and integral. Since the region
@@ -64,7 +65,8 @@ probability times the complete Bell polynomial in the log-scale ones.
 d <- gaussian1_distrib()
 theta <- list(mu = 0, sigma = 1)
 
-# what a right-censored observation at q = 1 contributes to the score
+# The call returns what a right-censored observation at q = 1 contributes
+# to the score.
 distrib_grad_cdf(d, 1, theta, lower.tail = FALSE)
 
 }

@@ -13,7 +13,7 @@ kink_decomposition(distrib)
 A \code{\link[=kink_spec]{kink_spec()}}, or \code{NULL} when the family is smooth.
 }
 \description{
-The one non-smooth piece of a log-density, as the composition
+Returns the one non-smooth piece of a log-density, as the composition
 \eqn{c(\theta)\,\phi(v(y,\theta))} of \code{\link[=kink_spec]{kink_spec()}}, or \code{NULL} for a family
 that is smooth in every parameter. \code{\link[=params_order]{params_order()}} reads the order of
 differentiability off the answer.
@@ -26,8 +26,8 @@ which returns \code{NULL}.
 
 A wrapper does not propagate the declaration today, so a wrapper of a kinked
 family returns \code{NULL} here while \code{params_smooth} still records the kink;
-\code{\link[=params_order]{params_order()}} reports \code{NA} there rather than \code{Inf}, which says the order
-has not been established rather than that the parameter is smooth.
+\code{\link[=params_order]{params_order()}} reports \code{NA} there rather than \code{Inf}, because the order has
+not been established, whereas \code{Inf} would mean that the parameter is smooth.
 }
 \examples{
 kink_decomposition(gaussian1_distrib())

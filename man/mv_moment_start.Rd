@@ -2,15 +2,15 @@
 % Please edit documentation in R/starting_values.R
 \name{mv_moment_start}
 \alias{mv_moment_start}
-\title{The Moment Estimates a Multivariate Family Starts From}
+\title{Moment Estimates as the Start of a Multivariate Family}
 \usage{
 mv_moment_start(y, p)
 }
 \arguments{
-\item{y}{The response, an \eqn{n \times p} matrix, or anything
+\item{y}{The response, an \eqn{n \times p} matrix, or anything that
 \code{\link[base:matrix]{base::as.matrix()}} turns into one.}
 
-\item{p}{The dimension, a single positive integer. Used only for the
+\item{p}{The dimension, a single positive integer. It is used only for the
 one-row fallback.}
 }
 \value{
@@ -19,9 +19,9 @@ A list with two components: \code{mu}, a numeric vector of length
 }
 \description{
 Returns the sample mean and the sample covariance of a multivariate
-response, with the covariance made safely positive definite. The covariance
+response; the covariance is made safely positive definite. The covariance
 divides by \eqn{n} rather than \eqn{n - 1}, which is the maximum likelihood
-estimator and therefore the point a Gaussian fit is looking for.
+estimator and therefore the point to which a Gaussian fit converges.
 }
 \details{
 A sample covariance is singular when there are fewer observations than

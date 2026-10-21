@@ -30,7 +30,7 @@ the series of \eqn{P}; above, they are \code{log(-expm1(-H))} and
 \code{\link[stats:GammaDist]{stats::pgamma()}} on the log scale.
 }
 \examples{
-# a hazard of e^-800 and an argument of e^-800, both below the double range
+# A hazard and an argument of e^-800 are both below the double range.
 distributions7:::weibull_log_lower(c(-3, -800))
 distributions7:::gamma_log_lower(c(-3, -800), 0.7)
 

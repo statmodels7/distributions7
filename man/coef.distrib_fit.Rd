@@ -16,14 +16,14 @@ A named numeric vector of length \code{length(object@distrib@params)},
 named and ordered as \code{object@distrib@params}.
 }
 \description{
-Returns the maximum likelihood estimates, on either of the two scales the
-fit carries. The default is the parameter scale, \eqn{\hat\theta}, which is
-what the family is interpreted in; \code{scale = "link"} gives
-\eqn{\hat\eta = g(\hat\theta)}, the point the optimizer actually reached.
+Returns the maximum likelihood estimates, on either of the two scales that
+the fit carries. The default is the parameter scale, \eqn{\hat\theta}, the
+scale on which the family is interpreted; \code{scale = "link"} gives
+\eqn{\hat\eta = g(\hat\theta)}, the point that the optimizer reached.
 
-Neither is recomputed. Both were stored at the optimum, and each is the
-image of the other under the family's links, so \code{coef(fit, "link")} is
-\code{g(coef(fit))} component by component.
+The fit does not recompute either vector. Both were stored at the optimum,
+and each is the image of the other under the family's links, so
+\code{coef(fit, "link")} is \code{g(coef(fit))} component by component.
 }
 \examples{
 set.seed(1)

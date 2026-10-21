@@ -11,7 +11,7 @@ template:
 home:
   title: Distributions as reusable objects
   description: >
-    Probability distributions written once, as objects any package can use,
+    Probability distributions written once, as objects that any package can use,
     carrying exact derivatives of the log-likelihood to fourth order with
     respect to the parameters, the response, and the unconstrained scale on
     which an optimizer works.
@@ -208,8 +208,9 @@ reference:
 
 - title: Numerical fallbacks
   desc: >
-    What a distribution gets for free when it implements only its density.
-    Rarely called directly; they show what the default methods compute.
+    The quantities that the default methods supply when a distribution
+    implements only its density. They are rarely called directly, and they
+    show what the default methods compute.
   contents:
   - numerical_gradient
   - numerical_hessian
@@ -407,7 +408,7 @@ reference:
 
 - title: Internals
   desc: >
-    The machinery that the exported functions are built from. It is not
+    The machinery from which the exported functions are built. It is not
     needed to use the package, and it is documented so that the derivations can
     be followed from the code that implements them: the set
     partitions behind the Bartlett identities and the wrapper derivatives, the
@@ -418,10 +419,10 @@ reference:
 
 - title: Reparametrized distributions
   desc: >
-    The wrapper reparametrize() returns and the machinery behind it. The map
-    is written in ordinary R and its derivatives are hand-written closed
-    forms (or one stencil per partial when none are supplied), so every
-    order the parent has in closed form survives.
+    The wrapper that reparametrize() returns and the machinery behind it. The
+    map is written in ordinary R and its derivatives are hand-written closed
+    forms, or one stencil per partial if they are not supplied, so every
+    order that the parent has in closed form survives.
   contents:
   - ReparamContinuousDistrib
   - ends_with(".ReparamContinuousDistrib")

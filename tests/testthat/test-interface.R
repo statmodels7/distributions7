@@ -30,15 +30,15 @@ test_that("named theta is aligned to the distribution's parameter order", {
 test_that("malformed theta produces informative errors", {
   d <- gaussian1_distrib()
 
-  expect_error(distrib_pdf(d, 0, list(mu = 0)), "Missing parameter")
+  expect_error(distrib_pdf(d, 0, list(mu = 0)), "lacks the parameter")
   expect_error(distrib_pdf(d, 0, list(0)), "2 parameter")
   expect_error(
     distrib_gradient(d, rnorm(10), list(mu = 1:3, sigma = 1)),
-    "dimension mismatch"
+    "dimensions do not match"
   )
   expect_error(
     distrib_hessian(d, rnorm(10), list(mu = 1:3, sigma = 1)),
-    "dimension mismatch"
+    "dimensions do not match"
   )
 })
 

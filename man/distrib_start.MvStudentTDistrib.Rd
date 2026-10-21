@@ -18,9 +18,9 @@ location components, the structure's free values, then \code{nu} at 8, named
 and ordered as \code{distrib@params}.
 }
 \description{
-Returns the sample mean and the sample covariance with the degrees of
-freedom set at 8, which gives tails clearly heavier than the Gaussian's and
-a finite second moment. The Gaussian estimate is the limit of this family
+Returns the sample mean, the sample covariance and degrees of freedom equal
+to 8, which give tails clearly heavier than the Gaussian's and a finite
+second moment. The Gaussian estimate is the limit of this family
 as \eqn{\nu} grows, so the search for a finite \eqn{\nu} starts from it.
 
 One starting value is returned for any value of \code{n_start}.
@@ -29,12 +29,12 @@ One starting value is returned for any value of \code{n_start}.
 The scale matrix is not the covariance. For a \eqn{t} with \eqn{\nu}
 degrees of freedom \eqn{\mathrm{Var}(Y) = \nu\Sigma/(\nu-2)}, so the sample
 covariance is multiplied by \eqn{(\nu_0-2)/\nu_0 = 0.75} before it is
-carried onto the structure. A starting value that confused the two would
+carried onto the structure. Using the covariance as the scale matrix would
 begin with a scale a third too large.
 }
 \seealso{
 \code{\link[=distrib_start]{distrib_start()}} for the generic;
-\code{\link[=distrib_start.MvGaussianDistrib]{distrib_start.MvGaussianDistrib()}}, the limit this starts from;
+\code{\link[=distrib_start.MvGaussianDistrib]{distrib_start.MvGaussianDistrib()}}, the limit from which this starts;
 \code{\link[=mv_sigma]{mv_sigma()}} for the scale matrix and \code{\link[=variance]{variance()}} for the covariance.
 }
 \keyword{internal}

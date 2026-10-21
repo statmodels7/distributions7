@@ -18,8 +18,9 @@ parameter, its interpretation, the interval in which it lies and the link
 that maps it to the unconstrained scale. The name of a wrapper combines the
 wrapper and its parent, so \code{truncated(gamma2_distrib(), upper = 5)} prints
 as \verb{Truncated Gamma2 [upper=5]}, followed by the parameter rows of the
-parent. No parameter value is shown, because a \code{distrib} carries a
-parametrization and no estimate; for estimates see \code{\link[=print.distrib_fit]{print.distrib_fit()}}.
+parent. The method does not show a parameter value, because a \code{distrib}
+carries a parametrization and not an estimate; for estimates see
+\code{\link[=print.distrib_fit]{print.distrib_fit()}}.
 }
 \examples{
 gaussian1_distrib()

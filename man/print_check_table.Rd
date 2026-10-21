@@ -11,7 +11,7 @@ print_check_table(distrib, out, theta, n, nsim)
 
 \item{out}{The data frame of checks.}
 
-\item{theta}{The parameters the checks were run at.}
+\item{theta}{The parameters at which the checks were run.}
 
 \item{n}{The number of observations used.}
 

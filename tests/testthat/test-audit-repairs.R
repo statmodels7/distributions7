@@ -284,9 +284,9 @@ test_that("gengamma_components() rejects an order it does not compute", {
 test_that("pdf, cdf and quantile reject parameters of a non-conformable length", {
   y <- c(1, 2, 3)
   expect_error(distrib_pdf(gengamma1_distrib(), y, list(a = c(1, 2), d = 3, p = 1.5)),
-               "dimension mismatch")
+               "dimensions do not match")
   expect_error(distrib_cdf(gamma1_distrib(), y, list(mu = c(1, 2), phi = 1)),
-               "dimension mismatch")
+               "dimensions do not match")
   expect_error(distrib_quantile(gaussian1_distrib(), c(0.1, 0.5),
                                 list(mu = c(0, 1, 2), sigma = 1)),
                "'p' must have length 1 or 3")

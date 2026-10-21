@@ -31,19 +31,19 @@ causing the mismatch.
 }
 
 \examples{
-# --- Case 1: Implicit max length ---
-# Valid: all scalars
+# --- Case 1: the maximum length is implicit ---
+# Valid: all parameters are scalars
 check_params_dim(list(mu = 1, sigma = 2))
 
-# Valid: mixing scalar and vector
+# Valid: a scalar and a vector are mixed
 check_params_dim(list(mu = 1:5, sigma = 1))
 
-# Invalid: incompatible lengths (2 vs 3)
+# Invalid: the lengths (2 and 3) are incompatible
 \dontrun{
 check_params_dim(list(mu = 1:2, sigma = 1:3))
 }
 
-# --- Case 2: Explicit n ---
+# --- Case 2: n is explicit ---
 # Valid: vector matches n (5)
 check_params_dim(list(mu = 1:5, sigma = 1), n = 5)
 

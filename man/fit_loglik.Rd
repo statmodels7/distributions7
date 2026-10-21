@@ -21,16 +21,16 @@ and \code{NaN} when the density itself is not computable at \code{theta}.
 }
 \description{
 Sums the log-density over the observations, \eqn{\sum_i \log f(y_i;
-\theta)}, and returns the one number the fit maximizes. Every observation is
-read at the same \eqn{\theta}, which is the i.i.d. assumption the fitting
-layer makes.
+\theta)}, and returns the one number that the fit maximizes. Every
+observation is read at the same \eqn{\theta}, which is the i.i.d. assumption
+that the fitting layer makes.
 
 The value is not divided by \eqn{n}. \code{\link[=fit_distrib]{fit_distrib()}} scales it when it
 hands the objective to an optimizer, and recomputes it unscaled here for the
-\code{loglik}, \code{aic} and \code{bic} a fit reports.
+\code{loglik}, \code{aic} and \code{bic} that a fit reports.
 }
 \seealso{
 \code{\link[=distrib_pdf]{distrib_pdf()}}, which supplies the terms;
-\code{\link[=logLik.distrib_fit]{logLik.distrib_fit()}} for the value a fit carries.
+\code{\link[=logLik.distrib_fit]{logLik.distrib_fit()}} for the value that a fit carries.
 }
 \keyword{internal}
