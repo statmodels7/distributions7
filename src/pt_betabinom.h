@@ -678,6 +678,177 @@ inline void betabinom2_info_dinfo(int k, double y, const double* th,
     bb_shapes_info_diag(k, th[0], th[1], (int) th[2], out);
 }
 
+// ---- the components only the joint registry reads ---------------------------
+
+// E[l_{mu sigma}] of betabinom1 by the exact sum over the support, the
+// off-diagonal component of betabinom_expected_hessian_cpp() (betabinom.cpp):
+// the direct sums below bb1_direct_cut(), the shapes' route above it
+inline double betabinom1_expected_mu_sigma(double m, double s, double size) {
+    BBmap mp = bb_map(m, s);
+    int N = (int) size;
+    const bool direct = s < bb1_direct_cut();
+    double e = 0.0;
+    for (int j = 0; j <= N; j++) {
+        double p = std::exp(bb_log_mass(j, mp.A, mp.B, size));
+        if (direct) {
+            double v[3];
+            bb1_direct(j, size, m, s, 2, v);
+            e += p * v[1];
+            continue;
+        }
+        BBderiv d = bb_shape_derivs(j, size, mp.A, mp.B);
+        e += p * betabinom1_hess_mu_sigma(d, mp);
+    }
+    return e;
+}
+
+// The six first derivatives of the expected information of betabinom1 in
+// (mu, sigma), as betabinom1_dexpected() (R/dexpected_support.R) forms them
+// at order 1 for one row: o[2 r + c] is the derivative in parameter c
+// (0 = mu, 1 = sigma) of the pair r (0 = mu mu, 1 = sigma sigma,
+// 2 = mu sigma). The direct sums apply below bb1_direct_cut(); above it the
+// shapes' derivatives are carried across by betabinom1_dexpected_entry(), as
+// betabinom1_dexpected1_cpp() (dexpected_kernels.cpp) does.
+inline void betabinom1_dexpected_pairs(double m, double s, int N, double* o) {
+    if (s < bb1_direct_cut()) {
+        bb1_dexpected_direct(m, s, N, 1, o);
+        return;
+    }
+    double sh[9];
+    bb_shapes_dexp1(m / s, (1.0 - m) / s, N, sh);
+    const int pa[3] = {0, 1, 0}, pb[3] = {0, 1, 1};
+    int w = 0;
+    for (int r = 0; r < 3; ++r)
+        for (int c = 0; c < 2; ++c)
+            o[w++] = betabinom1_dexpected_entry(pa[r], pb[r], c, m, s, sh);
+}
+
+// E[l_ab] of betabinom2 for the pairs (alpha alpha, beta beta, alpha beta) in
+// o[0..2], by one pass over the support with BBSums to order two, as
+// betabinom2_expected_cpp() (dexpected_kernels.cpp) forms them
+inline void betabinom2_expected_pairs(double a, double b, int N, double* o) {
+    const BBSums S(a, b, N, 2);
+    double lp = S.lp0;
+    double acc[3] = {0.0, 0.0, 0.0};
+    for (int j = 0; j <= N; ++j) {
+        double D[5][5];
+        S.at(j, D);
+        double p = std::exp(lp);
+        for (int r = 0; r < 3; ++r) {
+            int n0 = (kBBpu[r] == 0) + (kBBpv[r] == 0), n1 = 2 - n0;
+            acc[r] += p * D[n0][n1];
+        }
+        if (j < N) lp = bb_next_lp(lp, j, N, a, b);
+    }
+    for (int k = 0; k < 3; ++k) o[k] = acc[k];
+}
+
+// ---- the routers of the joint registry --------------------------------------
+//
+// One per order: every component at one observation, on the parameter scale,
+// in (mu, sigma) for betabinom1 and (alpha, beta) for betabinom2, th holding
+// the two parameters and then the size. The Hessian and the expected
+// Hessian fill a full 2 x 2 matrix and the derivative of the expected
+// Hessian a 2 x 2 x 2 array, column-major, out[a + 2 b + 4 c] being the
+// derivative of E[l_ab] in parameter c. The expectations are exact sums over
+// the support {0, ..., size}.
+
+// th = (mu, sigma, size)
+inline void betabinom1_joint_grad(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], size = th[2];
+    if (s < bb1_direct_cut() && bb_on_support(y, size)) {
+        double v[2];
+        bb1_direct(y, size, m, s, 1, v);
+        out[0] = v[0];
+        out[1] = v[1];
+        return;
+    }
+    const BBmap mp = bb_map(m, s);
+    const BBd1 d = bb_shape_d1(y, size, mp.A, mp.B);
+    out[0] = betabinom1_score_mu(d, mp);
+    out[1] = betabinom1_score_sigma(d, mp);
+}
+
+inline void betabinom1_joint_hess(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], size = th[2];
+    if (s < bb1_direct_cut() && bb_on_support(y, size)) {
+        double v[3];
+        bb1_direct(y, size, m, s, 2, v);
+        out[0] = v[0];
+        out[1] = out[2] = v[1];
+        out[3] = v[2];
+        return;
+    }
+    const BBmap mp = bb_map(m, s);
+    const BBderiv d = bb_shape_derivs(y, size, mp.A, mp.B);
+    out[0] = betabinom1_hess_mu_mu(d, mp);
+    out[1] = out[2] = betabinom1_hess_mu_sigma(d, mp);
+    out[3] = betabinom1_hess_sigma_sigma(d, mp);
+}
+
+inline void betabinom1_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    const double m = th[0], s = th[1], size = th[2];
+    out[0] = betabinom1_expected_kk(0, m, s, size);
+    out[1] = out[2] = betabinom1_expected_mu_sigma(m, s, size);
+    out[3] = betabinom1_expected_kk(1, m, s, size);
+}
+
+inline void betabinom1_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    const double m = th[0], s = th[1], size = th[2];
+    double o[6];
+    betabinom1_dexpected_pairs(m, s, (int) size, o);
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    // c = 0 (mu)
+    out[0] = o[0];
+    out[3] = o[2];
+    out[1] = out[2] = o[4];
+    // c = 1 (sigma)
+    out[0 + 4] = o[1];
+    out[3 + 4] = o[3];
+    out[1 + 4] = out[2 + 4] = o[5];
+}
+
+// th = (alpha, beta, size)
+inline void betabinom2_joint_grad(double y, const double* th, double* out) {
+    const BBd1 d = bb_shape_d1_mixed(y, th[2], th[0], th[1]);
+    out[0] = d.lA;
+    out[1] = d.lB;
+}
+
+inline void betabinom2_joint_hess(double y, const double* th, double* out) {
+    const BBd2 d = bb_shape_d2_mixed(y, th[2], th[0], th[1]);
+    out[0] = d.lAA;
+    out[3] = d.lBB;
+    out[1] = out[2] = d.lAB;
+}
+
+inline void betabinom2_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    double o[3];
+    betabinom2_expected_pairs(th[0], th[1], (int) th[2], o);
+    out[0] = o[0];
+    out[3] = o[1];
+    out[1] = out[2] = o[2];
+}
+
+inline void betabinom2_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    // o[0..2] hold E[l_ab] and o[3 + 2 r + c] the derivative in the shape c of
+    // the pair r (0 = alpha alpha, 1 = beta beta, 2 = alpha beta)
+    double o[9];
+    bb_shapes_dexp1(th[0], th[1], (int) th[2], o);
+    // c = 0 (alpha)
+    out[0] = o[3];
+    out[3] = o[5];
+    out[1] = out[2] = o[7];
+    // c = 1 (beta)
+    out[0 + 4] = o[4];
+    out[3 + 4] = o[6];
+    out[1 + 4] = out[2 + 4] = o[8];
+}
+
 } // namespace d7
 
 #endif

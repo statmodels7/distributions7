@@ -109,6 +109,21 @@ inline double pseudohuber_d3_nu_nu_nu(double v, double s, const PhA& PA,
     return -0.375 * q2 * q2 * q - P.dB[3];
 }
 
+// the off-diagonal components of the Hessian, as pseudohuber_hessian_cpp
+// forms them (s2 = sigma^2)
+inline double pseudohuber_hess_mu_sigma(double s, const PhA& P) {
+    const double s2 = s * s;
+    return P.rho * (2.0 * P.kap2 + P.rho * P.rho) / s2;
+}
+
+inline double pseudohuber_hess_mu_nu(double s, const PhA& P) {
+    return P.rho * (s / P.A) / (2.0 * P.A);
+}
+
+inline double pseudohuber_hess_sigma_nu(const PhA& P) {
+    return -P.rho * P.rho / (2.0 * P.A);
+}
+
 // log f, as distrib_pdf() forms it
 inline double pseudohuber_logpdf(double y, double mu, double sigma, double v,
                                  const PhNu& P) {
@@ -181,6 +196,35 @@ inline void pseudohuber_info_dinfo(int k, double y, const double* th,
         pseudohuber_quad_diag(k, th + 2, v, true);
     }, std2);
     loc_scale_unstandardize(k, th[1], std2, out);
+}
+
+// The routers of the joint registry for the score and the Hessian: every
+// component at one observation, on the parameter scale, th = (mu, sigma,
+// nu), P = 3. The Hessian fills a full 3 x 3 matrix, column-major,
+// out[a + 3 b]. The expected information of this family is an exp-sinh
+// quadrature (the diagonal compiled in pseudohuber_quad_diag(), the
+// sigma-nu entry only in R), so there is no joint_info and no joint_dinfo.
+inline void pseudohuber_joint_grad(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], v = th[2];
+    const double r = m - y;
+    const PhA A = ph_a(r, s, v);
+    const PhNu P = ph_nu(v);
+    out[0] = pseudohuber_score_mu(s, A);
+    out[1] = pseudohuber_score_sigma(r, s, A);
+    out[2] = pseudohuber_score_nu(v, s, A, P);
+}
+
+inline void pseudohuber_joint_hess(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], v = th[2];
+    const double r = m - y;
+    const PhA A = ph_a(r, s, v);
+    const PhNu P = ph_nu(v);
+    out[0] = pseudohuber_hess_mu_mu(s, A);
+    out[4] = pseudohuber_hess_sigma_sigma(r, s, A);
+    out[8] = pseudohuber_hess_nu_nu(s, A, P);
+    out[1] = out[3] = pseudohuber_hess_mu_sigma(s, A);
+    out[2] = out[6] = pseudohuber_hess_mu_nu(s, A);
+    out[5] = out[7] = pseudohuber_hess_sigma_nu(A);
 }
 
 } // namespace d7

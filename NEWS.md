@@ -1,3 +1,16 @@
+# distributions7 0.82.0
+
+* The joint entries of the C registry cover every family with more than one
+  parameter. For 32 families all four entries are written out, from the
+  expressions of the vector kernels; for the skew t, the two pseudo-Huber
+  families and the two skew normals, whose expected information is an
+  exp-sinh quadrature in R, the gradient and the Hessian are. The vector
+  kernels are unchanged.
+* `d7_joint_covered()` returns how many of the four entries a family has (4,
+  or 2 for the gradient and the Hessian only), 0 for a family it does not
+  cover and -1 for an unknown id; an entry beyond a family's coverage
+  returns NaN.
+
 # distributions7 0.81.0
 
 * The C registry has a joint entry for consumers that read the derivatives

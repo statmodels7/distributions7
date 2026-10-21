@@ -655,6 +655,53 @@ inline void negbin1_info_dinfo(int k, double y, const double* th,
     }
 }
 
+// The routers of the joint registry, one per order, for (mu, theta) in that
+// order. Each fills a full P x P matrix (P = 2) column-major, out[a + P b],
+// and the derivative of the expected information a P x P x P array, out[a +
+// P b + P P c] being the derivative of E[l_ab] in parameter c. The grad and
+// the hess call negbin1_low_orders(), as negbin1.cpp does, so the route to
+// the exact sums (integer y below theta = 1) and to nb1_parts() is the same.
+inline void negbin1_joint_grad(double y, const double* th, double* out) {
+    double v[5];
+    negbin1_low_orders(y, th[0], th[1], 1, v);
+    out[0] = v[0];
+    out[1] = v[1];
+}
+
+inline void negbin1_joint_hess(double y, const double* th, double* out) {
+    double v[5];
+    negbin1_low_orders(y, th[0], th[1], 2, v);
+    out[0] = v[2];
+    out[3] = v[4];
+    out[1] = out[2] = v[3];
+}
+
+// The expected information from nb1_sums0(), as nb1_E_parts() in
+// negbin1.cpp forms it.
+inline void negbin1_joint_info(double y, const double* th, double* out) {
+    double m = th[0], t = th[1];
+    double A, G;
+    nb1_sums0(m, t, &A, &G);
+    out[0] = negbin1_expected_mu_mu(A);
+    out[3] = negbin1_expected_theta_theta(t, G);
+    out[1] = out[2] = negbin1_expected_mu_theta(m, t, G);
+}
+
+// The derivatives of the expected information from nb1_sums1(), in the
+// order of negbin1_dexpected1_cpp().
+inline void negbin1_joint_dinfo(double y, const double* th, double* out) {
+    double m = th[0], t = th[1];
+    double A[3], G[3];
+    nb1_sums1(m, t, A, G);
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[0] = negbin1_dexpected_mu_mu_mu(A);
+    out[4] = negbin1_dexpected_mu_mu_theta(A);
+    out[2] = out[1] = negbin1_dexpected_mu_theta_mu(m, t, G);
+    out[6] = out[5] = negbin1_dexpected_mu_theta_theta(m, t, G);
+    out[3] = negbin1_dexpected_theta_theta_mu(t, G);
+    out[7] = negbin1_dexpected_theta_theta_theta(t, G);
+}
+
 } // namespace d7
 
 #endif

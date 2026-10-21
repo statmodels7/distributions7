@@ -80,6 +80,47 @@ inline void laplace_info_dinfo(int k, double y, const double* th,
     }
 }
 
+// The mixed components, written as laplace.cpp writes them: the Hessian's
+// -sgn(r)/b^2 and the derivative of E_mm = -1/b^2 in b, 2/b^3.
+inline double laplace_hess_mu_sigma(double sg, double b) {
+    return -sg * (1.0 / b) * (1.0 / b);
+}
+
+inline double laplace_dexpected_mu_mu_sigma(double b) {
+    return 2.0 / (b * b * b);
+}
+
+// The routers of the joint registry, one per order, in (mu, sigma); the
+// layout is the one pt_cauchy.h describes. The Laplace kernels take the
+// sign of the residual and its modulus.
+inline void laplace_joint_grad(double y, const double* th, double* out) {
+    double r = y - th[0], b = th[1];
+    out[0] = laplace_score_mu(laplace_sign(r), b);
+    out[1] = laplace_score_sigma(std::fabs(r), b);
+}
+
+inline void laplace_joint_hess(double y, const double* th, double* out) {
+    double r = y - th[0], b = th[1];
+    out[0] = laplace_hess_mu_mu();
+    out[3] = laplace_hess_sigma_sigma(std::fabs(r), b);
+    out[1] = out[2] = laplace_hess_mu_sigma(laplace_sign(r), b);
+}
+
+inline void laplace_joint_info(double y, const double* th, double* out) {
+    double b = th[1];
+    out[0] = laplace_expected_mu_mu(b);
+    out[3] = laplace_expected_sigma_sigma(b);
+    out[1] = out[2] = 0.0;
+}
+
+// E_ms = 0 for every sigma, so both of its derivatives are zero
+inline void laplace_joint_dinfo(double y, const double* th, double* out) {
+    double b = th[1];
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[4] = laplace_dexpected_mu_mu_sigma(b);
+    out[7] = laplace_dexpected_sigma_sigma_sigma(b);
+}
+
 } // namespace d7
 
 #endif

@@ -1185,6 +1185,307 @@ inline void gengamma2_info_dinfo(int k, double y, const double* th,
   }
 }
 
+// --- The joint registry ----------------------------------------------------
+// The coefficient arrays of the kernels, set up as the kernels set them up:
+// the gradient, the Hessian, the expected Hessian and its first derivatives
+// each take the polygammas of (k0, k1) and the same Bs as in their kernel,
+// in double below GG2_KC and GG2_DC and in double-double above them. The
+// arrays are the K of the kernel, and the functions below read them.
+inline void gengamma2_joint_coefs_grad(double dv, double pv, double* K) {
+  const double k0d = dv / pv;
+  if (k0d < GG2_KC && dv < GG2_DC) {
+    const double k1d = (dv + 1.0) / pv;
+    double PAv[12] = {0}, Gv[12] = {0};
+    Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
+    gengamma2_coef_score_mean<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
+    gengamma2_coef_score_d<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
+    gengamma2_coef_score_p<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
+  } else {
+    const dd d(dv), p(pv);
+    const dd k0 = d / p, k1 = (d + 1.0) / p;
+    dd PAv[12], Gv[12];
+    Gv[0] = dd_psi_diff(k0, k1, 0);
+    gengamma2_coef_score_mean<dd>(d, p, PAv, Gv, dd_B0(k0), K);
+    gengamma2_coef_score_d<dd>(d, p, PAv, Gv, dd_B0(k0), K);
+    gengamma2_coef_score_p<dd>(d, p, PAv, Gv, dd_B0(k0), K);
+  }
+}
+
+inline void gengamma2_joint_coefs_hess(double dv, double pv, double* K) {
+  const double k0d = dv / pv;
+  if (k0d < GG2_KC && dv < GG2_DC) {
+    const double k1d = (dv + 1.0) / pv;
+    double PAv[12] = {0}, Gv[12] = {0};
+    PAv[1] = R::psigamma(k0d, 1.0);
+    Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
+    Gv[1] = R::psigamma(k1d, 1.0) - R::psigamma(k0d, 1.0);
+    gengamma2_coef_hess_mean_mean<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
+    gengamma2_coef_hess_d_d<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
+    gengamma2_coef_hess_p_p<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
+    gengamma2_coef_hessian_rest<double>(dv, pv, PAv, Gv, gg2_B0(k0d), K);
+  } else {
+    const dd d(dv), p(pv);
+    const dd k0 = d / p, k1 = (d + 1.0) / p;
+    dd PAv[12], Gv[12];
+    PAv[1] = dd_psi_n(k0, 1);
+    Gv[0] = dd_psi_diff(k0, k1, 0);
+    Gv[1] = dd_psi_diff(k0, k1, 1);
+    gengamma2_coef_hess_mean_mean<dd>(d, p, PAv, Gv, dd_B0(k0), K);
+    gengamma2_coef_hess_d_d<dd>(d, p, PAv, Gv, dd_B0(k0), K);
+    gengamma2_coef_hess_p_p<dd>(d, p, PAv, Gv, dd_B0(k0), K);
+    gengamma2_coef_hessian_rest<dd>(d, p, PAv, Gv, dd_B0(k0), K);
+  }
+}
+
+inline void gengamma2_joint_coefs_expected(double dv, double pv, double* K) {
+  const double k0d = dv / pv;
+  if (k0d < GG2_KC && dv < GG2_DC) {
+    const double k1d = (dv + 1.0) / pv;
+    double PAv[12] = {0}, Gv[12] = {0};
+    PAv[1] = R::psigamma(k0d, 1.0);
+    Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
+    gengamma2_coef_expected_mean_mean<double>(dv, pv, PAv, Gv, 0.0, K);
+    gengamma2_coef_expected_d_d<double>(dv, pv, PAv, Gv, 0.0, K);
+    gengamma2_coef_expected_p_p<double>(dv, pv, PAv, Gv, 0.0, K);
+    gengamma2_coef_expected_hessian_rest<double>(dv, pv, PAv, Gv, 0.0, K);
+  } else {
+    const dd d(dv), p(pv);
+    const dd k0 = d / p, k1 = (d + 1.0) / p;
+    dd PAv[12], Gv[12];
+    PAv[1] = dd_psi_n(k0, 1);
+    Gv[0] = dd_psi_diff(k0, k1, 0);
+    gengamma2_coef_expected_mean_mean<dd>(d, p, PAv, Gv, dd(0.0), K);
+    gengamma2_coef_expected_d_d<dd>(d, p, PAv, Gv, dd(0.0), K);
+    gengamma2_coef_expected_p_p<dd>(d, p, PAv, Gv, dd(0.0), K);
+    gengamma2_coef_expected_hessian_rest<dd>(d, p, PAv, Gv, dd(0.0), K);
+  }
+}
+
+inline void gengamma2_joint_coefs_dexpected(double dv, double pv, double* K) {
+  const double k0d = dv / pv;
+  if (k0d < GG2_KC && dv < GG2_DC) {
+    const double k1d = (dv + 1.0) / pv;
+    double PAv[12] = {0}, Gv[12] = {0};
+    PAv[1] = R::psigamma(k0d, 1.0);
+    PAv[2] = R::psigamma(k0d, 2.0);
+    Gv[0] = R::psigamma(k1d, 0.0) - R::psigamma(k0d, 0.0);
+    Gv[1] = R::psigamma(k1d, 1.0) - R::psigamma(k0d, 1.0);
+    gengamma2_coef_dexpected_mean_mean_mean<double>(dv, pv, PAv, Gv, 0.0, K);
+    gengamma2_coef_dexpected_d_d_d<double>(dv, pv, PAv, Gv, 0.0, K);
+    gengamma2_coef_dexpected_p_p_p<double>(dv, pv, PAv, Gv, 0.0, K);
+    gengamma2_coef_dexpected1_rest<double>(dv, pv, PAv, Gv, 0.0, K);
+  } else {
+    const dd d(dv), p(pv);
+    const dd k0 = d / p, k1 = (d + 1.0) / p;
+    dd PAv[12], Gv[12];
+    PAv[1] = dd_psi_n(k0, 1);
+    PAv[2] = dd_psi_n(k0, 2);
+    Gv[0] = dd_psi_diff(k0, k1, 0);
+    Gv[1] = dd_psi_diff(k0, k1, 1);
+    gengamma2_coef_dexpected_mean_mean_mean<dd>(d, p, PAv, Gv, dd(0.0), K);
+    gengamma2_coef_dexpected_d_d_d<dd>(d, p, PAv, Gv, dd(0.0), K);
+    gengamma2_coef_dexpected_p_p_p<dd>(d, p, PAv, Gv, dd(0.0), K);
+    gengamma2_coef_dexpected1_rest<dd>(d, p, PAv, Gv, dd(0.0), K);
+  }
+}
+
+// The off-diagonal Hessian entries, from gengamma2_hessian_cpp: the branch
+// |Z| < 1 polynomial in Z and R, and the branch above it in X and Q.
+inline double gengamma2_hess_mean_d(const double* K, const GG2Data& D, double im) {
+  const double Z = D.Z, R = D.R, Q = D.Q, X = D.X;
+  (void) Z; (void) R; (void) Q; (void) X;
+  if (std::fabs(Z) < 1.0) {
+    const double u0 = D.z[7], u1 = D.z[6], u2 = D.z[5], u3 = D.z[4], u4 = D.z[3], u5 = D.z[2];
+    return (K[43]*u0 + K[44]*u1 + K[45]*u2 + K[46]*u3 + K[47]*u4 + K[48]*u5 + K[49]*Z + K[50]*R + K[51]) * im;
+  }
+  return (K[41]*Q + K[42]) * im;
+}
+
+inline double gengamma2_hess_mean_p(const double* K, const GG2Data& D, double im) {
+  const double Z = D.Z, R = D.R, Q = D.Q, X = D.X;
+  (void) Z; (void) R; (void) Q; (void) X;
+  if (std::fabs(Z) < 1.0) {
+    const double u0 = D.z[7], u1 = D.z[6], u2 = D.z[5], u3 = D.z[4], u4 = D.z[3], u5 = D.z[2];
+    const double u6 = R*Z;
+    const double u7 = D.z[8];
+    return (K[56]*u7 + K[57]*u0 + K[58]*u1 + K[59]*u2 + K[60]*u3 + K[61]*u4 + K[62]*u5 + K[63]*u6 + K[64]*Z + K[65]*R + K[66]) * im;
+  }
+  const double u0 = Q*X;
+  return (K[52]*u0 + K[53]*X + K[54]*Q + K[55]) * im;
+}
+
+inline double gengamma2_hess_d_p(const double* K, const GG2Data& D, double im) {
+  const double Z = D.Z, R = D.R, Q = D.Q, X = D.X;
+  (void) Z; (void) R; (void) Q; (void) X; (void) im;
+  if (std::fabs(Z) < 1.0) {
+    const double u0 = D.z[7], u1 = D.z[6], u2 = D.z[5], u3 = D.z[4], u4 = D.z[3], u5 = D.z[2];
+    const double u6 = R*Z;
+    const double u7 = D.z[8];
+    return (K[71]*u7 + K[72]*u0 + K[73]*u1 + K[74]*u2 + K[75]*u3 + K[76]*u4 + K[77]*u5 + K[78]*u6 + K[79]*Z + K[80]*R + K[81]);
+  }
+  const double u0 = Q*X;
+  return (K[67]*u0 + K[68]*X + K[69]*Q + K[70]);
+}
+
+// The expected information, from gengamma2_expected_hessian_cpp.
+inline double gengamma2_expected_mean_d(const double* K, double im) {
+  return (K[3]) * im;
+}
+
+inline double gengamma2_expected_mean_p(const double* K, double im) {
+  return (K[4]) * im;
+}
+
+inline double gengamma2_expected_d_p(const double* K) {
+  return (K[5]);
+}
+
+// The derivatives of the expected information, from gengamma2_dexpected1_cpp:
+// the pair comes first and the differentiating parameter last.
+inline double gengamma2_dexpected_mean_mean_d(const double* K, double im) {
+  return (K[1]) * std::pow(im, 2);
+}
+
+inline double gengamma2_dexpected_mean_mean_p(const double* K, double im) {
+  return (K[2]) * std::pow(im, 2);
+}
+
+inline double gengamma2_dexpected_d_d_mean(const double* K, double im) {
+  return (K[3]) * im;
+}
+
+inline double gengamma2_dexpected_d_d_p(const double* K) {
+  return (K[5]);
+}
+
+inline double gengamma2_dexpected_p_p_mean(const double* K, double im) {
+  return (K[6]) * im;
+}
+
+inline double gengamma2_dexpected_p_p_d(const double* K) {
+  return (K[7]);
+}
+
+inline double gengamma2_dexpected_mean_d_mean(const double* K, double im) {
+  return (K[9]) * std::pow(im, 2);
+}
+
+inline double gengamma2_dexpected_mean_d_d(const double* K, double im) {
+  return (K[10]) * im;
+}
+
+inline double gengamma2_dexpected_mean_d_p(const double* K, double im) {
+  return (K[11]) * im;
+}
+
+inline double gengamma2_dexpected_mean_p_mean(const double* K, double im) {
+  return (K[12]) * std::pow(im, 2);
+}
+
+inline double gengamma2_dexpected_mean_p_d(const double* K, double im) {
+  return (K[13]) * im;
+}
+
+inline double gengamma2_dexpected_mean_p_p(const double* K, double im) {
+  return (K[14]) * im;
+}
+
+inline double gengamma2_dexpected_d_p_mean(const double* K, double im) {
+  return (K[15]) * im;
+}
+
+inline double gengamma2_dexpected_d_p_d(const double* K) {
+  return (K[16]);
+}
+
+inline double gengamma2_dexpected_d_p_p(const double* K) {
+  return (K[17]);
+}
+
+// The data of one observation for the joint routers, as gengamma2_hessian_cpp
+// forms them: im = 1/mean, and the data quantities at Z = pC + Z0.
+inline GG2Data gengamma2_joint_data(double y, double mv, double dv, double pv, double& im) {
+  const double A0 = gg2_A0(dv, pv);
+  const double Z0 = A0 + gg2_B0(dv / pv);
+  im = 1.0 / mv;
+  const double dy = y - mv;
+  const double pC = pv * (std::fabs(dy) < 0.5 * mv ? std::log1p(dy / mv) : std::log(y / mv));
+  const double Z = pC + Z0;
+  return gg2_data(Z, pC, A0);
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale, in (mean, d, p). The Hessian and the
+// expected information fill a full 3 x 3 matrix and the derivative of the
+// expected information a 3 x 3 x 3 array, column-major, out[a + 3 b + 9 c]
+// being the derivative of E[l_ab] in parameter c.
+inline void gengamma2_joint_grad(double y, const double* th, double* out) {
+  const double mv = th[0], dv = th[1], pv = th[2];
+  double im = 0.0;
+  const GG2Data D = gengamma2_joint_data(y, mv, dv, pv, im);
+  double K[35] = {0};
+  gengamma2_joint_coefs_grad(dv, pv, K);
+  out[0] = gengamma2_score_mean(K, D, im);
+  out[1] = gengamma2_score_d(K, D, im);
+  out[2] = gengamma2_score_p(K, D, im);
+}
+
+inline void gengamma2_joint_hess(double y, const double* th, double* out) {
+  const double mv = th[0], dv = th[1], pv = th[2];
+  double im = 0.0;
+  const GG2Data D = gengamma2_joint_data(y, mv, dv, pv, im);
+  double K[82] = {0};
+  gengamma2_joint_coefs_hess(dv, pv, K);
+  out[0] = gengamma2_hess_mean_mean(K, D, im);
+  out[4] = gengamma2_hess_d_d(K, D, im);
+  out[8] = gengamma2_hess_p_p(K, D, im);
+  out[1] = out[3] = gengamma2_hess_mean_d(K, D, im);
+  out[2] = out[6] = gengamma2_hess_mean_p(K, D, im);
+  out[5] = out[7] = gengamma2_hess_d_p(K, D, im);
+}
+
+inline void gengamma2_joint_info(double y, const double* th, double* out) {
+  const double mv = th[0], dv = th[1], pv = th[2];
+  const double im = 1.0 / mv;
+  double K[6] = {0};
+  gengamma2_joint_coefs_expected(dv, pv, K);
+  out[0] = gengamma2_expected_mean_mean(K, im);
+  out[4] = gengamma2_expected_d_d(K, im);
+  out[8] = gengamma2_expected_p_p(K, im);
+  out[1] = out[3] = gengamma2_expected_mean_d(K, im);
+  out[2] = out[6] = gengamma2_expected_mean_p(K, im);
+  out[5] = out[7] = gengamma2_expected_d_p(K);
+}
+
+inline void gengamma2_joint_dinfo(double y, const double* th, double* out) {
+  const double mv = th[0], dv = th[1], pv = th[2];
+  const double im = 1.0 / mv;
+  double K[18] = {0};
+  gengamma2_joint_coefs_dexpected(dv, pv, K);
+  for (int j = 0; j < 27; ++j) out[j] = 0.0;
+  // c = 0 (mean)
+  out[0] = gengamma2_dexpected_mean_mean_mean(K, im);
+  out[4] = gengamma2_dexpected_d_d_mean(K, im);
+  out[8] = gengamma2_dexpected_p_p_mean(K, im);
+  out[1] = out[3] = gengamma2_dexpected_mean_d_mean(K, im);
+  out[2] = out[6] = gengamma2_dexpected_mean_p_mean(K, im);
+  out[5] = out[7] = gengamma2_dexpected_d_p_mean(K, im);
+  // c = 1 (d)
+  out[9] = gengamma2_dexpected_mean_mean_d(K, im);
+  out[13] = gengamma2_dexpected_d_d_d(K, im);
+  out[17] = gengamma2_dexpected_p_p_d(K);
+  out[10] = out[12] = gengamma2_dexpected_mean_d_d(K, im);
+  out[11] = out[15] = gengamma2_dexpected_mean_p_d(K, im);
+  out[14] = out[16] = gengamma2_dexpected_d_p_d(K);
+  // c = 2 (p)
+  out[18] = gengamma2_dexpected_mean_mean_p(K, im);
+  out[22] = gengamma2_dexpected_d_d_p(K);
+  out[26] = gengamma2_dexpected_p_p_p(K, im);
+  out[19] = out[21] = gengamma2_dexpected_mean_d_p(K, im);
+  out[20] = out[24] = gengamma2_dexpected_mean_p_p(K, im);
+  out[23] = out[25] = gengamma2_dexpected_d_p_p(K);
+}
+
 } // namespace d7
 
 #endif

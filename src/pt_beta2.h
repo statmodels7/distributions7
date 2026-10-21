@@ -72,6 +72,49 @@ inline void beta2_info_dinfo(int k, double y, const double* th,
     }
 }
 
+// The routers of the joint registry, one per order, for (alpha, beta) in
+// that order. Each fills a full P x P matrix (P = 2) column-major, out[a + P b],
+// and the derivative of the expected information a P x P x P array, out[a +
+// P b + P P c] being the derivative of E[l_ab] in parameter c. The mixed
+// entry is psi'(alpha + beta) in every order, and so are its derivatives
+// in alpha and beta, psi''(alpha + beta), as beta2_dexpected1_cpp() forms
+// them.
+inline void beta2_joint_grad(double y, const double* th, double* out) {
+    double a = th[0], b = th[1];
+    double s0 = R::digamma(a + b);
+    out[0] = beta2_score_alpha(std::log(y), R::digamma(a), s0);
+    out[1] = beta2_score_beta(std::log1p(-y), R::digamma(b), s0);
+}
+
+inline void beta2_joint_hess(double y, const double* th, double* out) {
+    double a = th[0], b = th[1];
+    double s1 = R::trigamma(a + b);
+    out[0] = beta2_hess_alpha_alpha(R::trigamma(a), s1);
+    out[3] = beta2_hess_beta_beta(R::trigamma(b), s1);
+    out[1] = out[2] = s1;
+}
+
+inline void beta2_joint_info(double y, const double* th, double* out) {
+    double a = th[0], b = th[1];
+    double s1 = R::trigamma(a + b);
+    out[0] = beta2_expected_alpha_alpha(R::trigamma(a), s1);
+    out[3] = beta2_expected_beta_beta(R::trigamma(b), s1);
+    out[1] = out[2] = s1;
+}
+
+inline void beta2_joint_dinfo(double y, const double* th, double* out) {
+    double a = th[0], b = th[1];
+    double ps = R::psigamma(a + b, 2), pa = R::psigamma(a, 2),
+           pb = R::psigamma(b, 2);
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[0] = beta2_dexpected_alpha_alpha_alpha(pa, ps);
+    out[4] = ps;
+    out[2] = out[1] = ps;
+    out[6] = out[5] = ps;
+    out[3] = ps;
+    out[7] = beta2_dexpected_beta_beta_beta(pb, ps);
+}
+
 } // namespace d7
 
 #endif

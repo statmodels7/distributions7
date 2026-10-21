@@ -445,6 +445,11 @@ inline double pig1_hess_sigma_sigma(double yy, double m, double sg,
                                     const double* L) {
     return pig1_slot(0, 2, yy, m, sg, L);
 }
+// the cross partial, which pig1_row() writes at slot pix(1, 1)
+inline double pig1_hess_mu_sigma(double yy, double m, double sg,
+                                 const double* L) {
+    return pig1_slot(1, 1, yy, m, sg, L);
+}
 
 // ---- pig2 (mu, alpha) -------------------------------------------------------
 
@@ -675,6 +680,220 @@ inline void pig2_info_dinfo(int k, double y, const double* th, double* out) {
     }
     out[0] = ok[0] ? E : NA_REAL;
     out[1] = ok[1] ? D : NA_REAL;
+}
+
+// ---- the joint registry -----------------------------------------------------
+//
+// The expected Hessian E[l_ab] (three entries, in the order mu_mu, p2_p2,
+// mu_p2) and its derivative in each of the two parameters (six entries,
+// D[2 p + c] for pair p and parameter c), by the pass over the support of
+// pig_expected_obs() in pig_hd.cpp: E[l_ab] = -E[l_a l_b] and
+// d_c E[l_ab] = -E[l_ac l_b + l_a l_bc + l_a l_b l_c], the sums stopping at
+// the rules of pw = 4 (E) and pw = 6 (D) of the kernels pig*_expected_cpp
+// and pig*_dexpected1_cpp. With WANT_D false the pass ends where the
+// information's rule is met, as the kernel of order 0 does. ok[0], ok[1]
+// report whether E and D were completed.
+template <class Seq, bool WANT_D, class Comp>
+inline void pig_joint_obs(double m, double arg, double tail, Comp comp,
+                          double* E, double* D, bool* ok) {
+    static const int PA[3] = {0, 1, 0};
+    static const int PB[3] = {0, 1, 1};
+    for (int j = 0; j < 3; ++j) E[j] = 0.0;
+    for (int j = 0; j < 6; ++j) D[j] = 0.0;
+    ok[0] = ok[1] = false;
+    Seq seq(arg);
+    double pre[7], cum = 0.0, fprev = 0.0;
+    bool e_done = false;
+    const long cap = 100000000L;
+    for (long yy = 0; yy < cap; ++yy) {
+        if (yy > 0) seq.next();
+        seq.pre(pre);
+        double val, g[2], h[3];
+        comp((double) yy, pre, &val, g, h);
+        double f = std::exp(val);
+        if (!(f > 0.0)) {
+            if ((double) yy > m) {
+                ok[0] = ok[1] = true;
+                return;
+            }
+            continue;
+        }
+        cum += f;
+        for (int p = 0; p < 3; ++p) {
+            int a = PA[p], b = PB[p];
+            double ga = g[a], gb = g[b], gab = ga * gb;
+            if (!e_done) E[p] -= f * gab;
+            if (WANT_D) {
+                for (int c = 0; c < 2; ++c) {
+                    double gc = g[c];
+                    D[2 * p + c] -= f * (h[a + c] * gb + ga * h[b + c] +
+                                         gab * gc);
+                }
+            }
+        }
+        if ((double) yy > m && fprev > 0.0) {
+            double r = f / fprev;
+            double rt = (r < 1.0) ? r / (1.0 - r) : R_PosInf;
+            double base = f * std::max(rt, tail);
+            if (!e_done && base * std::pow((yy + 1.0) / (m + 1.0), 4) <=
+                1e-17 * cum) {
+                e_done = true;
+                ok[0] = true;
+                if (!WANT_D) return;
+            }
+            if (WANT_D &&
+                base * std::pow((yy + 1.0) / (m + 1.0), 6) <= 1e-17 * cum) {
+                ok[1] = true;
+                return;
+            }
+        }
+        fprev = f;
+    }
+}
+
+// E and D of pig1 at (mu, sigma): the series of pig_asym.h near the Poisson
+// limit, the support sum elsewhere, NA where a sum was not completed or the
+// parameters are outside the domain (the branches of pig_expected_run())
+template <bool WANT_D>
+inline void pig1_joint_expected(double m, double x, double* E, double* D) {
+    bool ok[2] = {false, false};
+    for (int j = 0; j < 3; ++j) E[j] = 0.0;
+    for (int j = 0; j < 6; ++j) D[j] = 0.0;
+    if (R_finite(m) && R_finite(x) && m > 0.0 && x > 0.0) {
+        if ((1.0 + m) * x <= PIG_ASYM_CUT) {
+            pig1_asym0(m, x, E);
+            if (WANT_D) pig1_asym1(m, x, D);
+            ok[0] = ok[1] = true;
+        } else {
+            double w = 0.5 * x / d7::sqrt_cr(1.0 + 2.0 * x * m);
+            pig_joint_obs<PigSeqW, WANT_D>(m, w, 2.0 * x * m,
+                [&](double yy, const double* pre, double* val, double* g,
+                    double* h) {
+                    *val = pig1_value(yy, m, x, pre);
+                    g[0] = pig1_score_mu(yy, m, x, pre);
+                    g[1] = pig1_score_sigma(yy, m, x, pre);
+                    h[0] = pig1_hess_mu_mu(yy, m, x, pre);
+                    h[1] = pig1_hess_mu_sigma(yy, m, x, pre);
+                    h[2] = pig1_hess_sigma_sigma(yy, m, x, pre);
+                }, E, D, ok);
+        }
+    }
+    if (!ok[0]) for (int j = 0; j < 3; ++j) E[j] = NA_REAL;
+    if (WANT_D && !ok[1]) for (int j = 0; j < 6; ++j) D[j] = NA_REAL;
+}
+
+// E and D of pig2 at (mu, alpha), with the same branches
+template <bool WANT_D>
+inline void pig2_joint_expected(double m, double x, double* E, double* D) {
+    bool ok[2] = {false, false};
+    for (int j = 0; j < 3; ++j) E[j] = 0.0;
+    for (int j = 0; j < 6; ++j) D[j] = 0.0;
+    if (R_finite(m) && R_finite(x) && m > 0.0 && x > 0.0) {
+        const double xs = 1.0 / x;
+        if ((1.0 + m) * xs <= PIG_ASYM_CUT) {
+            pig2_asym0(m, xs, E);
+            if (WANT_D) pig2_asym1(m, xs, D);
+            ok[0] = ok[1] = true;
+        } else {
+            double t = m / x;
+            double b = x / (t + std::hypot(1.0, t));
+            pig_joint_obs<PigSeq, WANT_D>(m, x, 2.0 * m / b,
+                [&](double yy, const double* pre, double* val, double* g,
+                    double* h) {
+                    *val = pig2_value(yy, m, x, pre[5]);
+                    const Pig2Base B = pig2_base(yy, m, x);
+                    g[0] = pig2_score_mu(yy, m, B);
+                    g[1] = pig2_score_alpha(yy, m, x, B, pre[6]);
+                    h[0] = pig2_hess_mu_mu(yy, B);
+                    h[1] = pig2_hess_mu_alpha(yy, B);
+                    h[2] = pig2_hess_alpha_alpha(yy, B, pre[2]);
+                }, E, D, ok);
+        }
+    }
+    if (!ok[0]) for (int j = 0; j < 3; ++j) E[j] = NA_REAL;
+    if (WANT_D && !ok[1]) for (int j = 0; j < 6; ++j) D[j] = NA_REAL;
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale (th = mu, then sigma for pig1 and
+// alpha for pig2). The Hessian and the expected information fill a full
+// 2 x 2 matrix and the derivative of the expected information a 2 x 2 x 2
+// array, column-major, out[a + 2 b + 4 c] being the derivative of E[l_ab] in
+// parameter c.
+inline void pig1_joint_grad(double y, const double* th, double* out) {
+    const double m = th[0], sg = th[1];
+    double L[5] = {0, 0, 0, 0, 0};
+    if (pig_in_support(y)) pig_logS_w(y, pig1_w(m, sg), 1, L);
+    out[0] = pig1_score_mu(y, m, sg, L);
+    out[1] = pig1_score_sigma(y, m, sg, L);
+}
+
+inline void pig1_joint_hess(double y, const double* th, double* out) {
+    const double m = th[0], sg = th[1];
+    double L[5] = {0, 0, 0, 0, 0};
+    if (pig_in_support(y)) pig_logS_w(y, pig1_w(m, sg), 2, L);
+    out[0] = pig1_hess_mu_mu(y, m, sg, L);
+    out[3] = pig1_hess_sigma_sigma(y, m, sg, L);
+    out[1] = out[2] = pig1_hess_mu_sigma(y, m, sg, L);
+}
+
+inline void pig1_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    double E[3], D[6];
+    pig1_joint_expected<false>(th[0], th[1], E, D);
+    out[0] = E[0];
+    out[3] = E[1];
+    out[1] = out[2] = E[2];
+}
+
+inline void pig1_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    double E[3], D[6];
+    pig1_joint_expected<true>(th[0], th[1], E, D);
+    for (int c = 0; c < 2; ++c) {
+        out[4 * c] = D[c];
+        out[3 + 4 * c] = D[2 + c];
+        out[1 + 4 * c] = out[2 + 4 * c] = D[4 + c];
+    }
+}
+
+inline void pig2_joint_grad(double y, const double* th, double* out) {
+    const double m = th[0], aa = th[1];
+    double p[5] = {0, 0, 0, 0, 0}, logS = 0.0, A1 = 0.0;
+    if (pig_in_support(y)) psi_derivs(y, aa, 1, p, &logS, &A1);
+    const Pig2Base B = pig2_base(y, m, aa);
+    out[0] = pig2_score_mu(y, m, B);
+    out[1] = pig2_score_alpha(y, m, aa, B, A1);
+}
+
+inline void pig2_joint_hess(double y, const double* th, double* out) {
+    const double m = th[0], aa = th[1];
+    double p[5] = {0, 0, 0, 0, 0}, logS = 0.0, A1 = 0.0;
+    if (pig_in_support(y)) psi_derivs(y, aa, 2, p, &logS, &A1);
+    const Pig2Base B = pig2_base(y, m, aa);
+    out[0] = pig2_hess_mu_mu(y, B);
+    out[3] = pig2_hess_alpha_alpha(y, B, p[2]);
+    out[1] = out[2] = pig2_hess_mu_alpha(y, B);
+}
+
+inline void pig2_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    double E[3], D[6];
+    pig2_joint_expected<false>(th[0], th[1], E, D);
+    out[0] = E[0];
+    out[3] = E[1];
+    out[1] = out[2] = E[2];
+}
+
+inline void pig2_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    double E[3], D[6];
+    pig2_joint_expected<true>(th[0], th[1], E, D);
+    for (int c = 0; c < 2; ++c) {
+        out[4 * c] = D[c];
+        out[3 + 4 * c] = D[2 + c];
+        out[1 + 4 * c] = out[2 + 4 * c] = D[4 + c];
+    }
 }
 
 } // namespace d7

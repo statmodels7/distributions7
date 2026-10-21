@@ -173,6 +173,42 @@ inline double gamma2_dexpected_sigma2_sigma2_sigma2(double m, double v,
     return a * (3.0 * g + a * g1) * iv3;
 }
 
+// The derivatives of the expected information entries that the mixed
+// components of gamma2_dexpected1_cpp hold: dE[mu mu]/dv, dE[v v]/dmu,
+// dE[mu v]/dmu and dE[mu v]/dv, as gamma2_dexpected1_cpp computes them
+// (r1 = psi1_rest(a), r2 = psi2_rest(a)).
+inline double gamma2_dexpected_mu_mu_sigma2(double m, double v, double r1,
+                                            double r2) {
+    double a = m * m / v;
+    double g = -a * r1, g1 = -r1 - a * r2;
+    double iv = 1.0 / v, iv2 = iv * iv;
+    return (1.0 + 4.0 * g + 4.0 * a * g1) * iv2;
+}
+
+inline double gamma2_dexpected_sigma2_sigma2_mu(double m, double v, double r1,
+                                                double r2) {
+    double a = m * m / v;
+    double g = -a * r1, g1 = -r1 - a * r2;
+    double iv = 1.0 / v, iv2 = iv * iv, iv3 = iv2 * iv;
+    return -2.0 * m * (g + a * g1) * iv3;
+}
+
+inline double gamma2_dexpected_mu_sigma2_mu(double m, double v, double r1,
+                                            double r2) {
+    double a = m * m / v;
+    double g = -a * r1, g1 = -r1 - a * r2;
+    double iv = 1.0 / v, iv2 = iv * iv;
+    return (2.0 * g + 4.0 * a * g1) * iv2;
+}
+
+inline double gamma2_dexpected_mu_sigma2_sigma2(double m, double v, double r1,
+                                                double r2) {
+    double a = m * m / v;
+    double g = -a * r1, g1 = -r1 - a * r2;
+    double iv = 1.0 / v, iv2 = iv * iv, iv3 = iv2 * iv;
+    return -2.0 * m * (2.0 * g + a * g1) * iv3;
+}
+
 inline void gamma2_score_curv(int k, double y, const double* th,
                               double* out) {
     double m = th[0], s2 = th[1];
@@ -203,6 +239,55 @@ inline void gamma2_info_dinfo(int k, double y, const double* th,
         out[0] = gamma2_component(0, 2, T);
         out[1] = gamma2_dexpected_sigma2_sigma2_sigma2(m, s2, r1, r2);
     }
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale (mu, sigma2). The components are the
+// ones gamma.cpp reads from gamma2_component() on the tables of one
+// observation. The Hessian and the expected information fill a full P x P
+// matrix and the derivative of the expected information a P x P x P array,
+// column-major, out[a + P b + P^2 c] being the derivative of E[l_ab] in
+// parameter c.
+inline void gamma2_joint_grad(double y, const double* th, double* out) {
+    double m = th[0], v = th[1];
+    Gamma2Tables T;
+    gamma2_shape_rests(m * m / v, 2, T.Gd);
+    gamma2_fill_tables(y, m, v, 2, false, T);
+    out[0] = gamma2_component(1, 0, T);
+    out[1] = gamma2_component(0, 1, T);
+}
+
+inline void gamma2_joint_hess(double y, const double* th, double* out) {
+    double m = th[0], v = th[1];
+    Gamma2Tables T;
+    gamma2_shape_rests(m * m / v, 2, T.Gd);
+    gamma2_fill_tables(y, m, v, 2, false, T);
+    out[0] = gamma2_component(2, 0, T);
+    out[3] = gamma2_component(0, 2, T);
+    out[1] = out[2] = gamma2_component(1, 1, T);
+}
+
+inline void gamma2_joint_info(double y, const double* th, double* out) {
+    double m = th[0], v = th[1];
+    Gamma2Tables T;
+    gamma2_shape_rests(m * m / v, 2, T.Gd, true);
+    gamma2_fill_tables(y, m, v, 2, true, T);
+    out[0] = gamma2_component(2, 0, T);
+    out[3] = gamma2_component(0, 2, T);
+    out[1] = out[2] = gamma2_component(1, 1, T);
+}
+
+inline void gamma2_joint_dinfo(double y, const double* th, double* out) {
+    double m = th[0], v = th[1];
+    double a = m * m / v;
+    double r1 = d7::psi1_rest(a), r2 = d7::psi2_rest(a);
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[0] = gamma2_dexpected_mu_mu_mu(m, v, r1, r2);
+    out[4] = gamma2_dexpected_mu_mu_sigma2(m, v, r1, r2);
+    out[1] = out[2] = gamma2_dexpected_mu_sigma2_mu(m, v, r1, r2);
+    out[3] = gamma2_dexpected_sigma2_sigma2_mu(m, v, r1, r2);
+    out[5] = out[6] = gamma2_dexpected_mu_sigma2_sigma2(m, v, r1, r2);
+    out[7] = gamma2_dexpected_sigma2_sigma2_sigma2(m, v, r1, r2);
 }
 
 } // namespace d7

@@ -291,6 +291,92 @@ inline void negbin2_info_dinfo(int k, double y, const double* th,
     }
 }
 
+// The mixed observed entry, l_mu_theta = (y - mu)/(theta + mu)^2, as
+// negbin_hessian_cpp() forms it.
+inline double negbin2_hess_mu_theta(double y, double m, double th) {
+    double th_plus_mu = th + m;
+    double th_plus_mu2 = th_plus_mu * th_plus_mu;
+    double res = y - m;
+    return res / th_plus_mu2;
+}
+
+// d_theta E_mm = -1/c^2 with c = theta + mu, as negbin_dexpected1_cpp() forms it.
+inline double negbin2_dexpected_mu_mu_theta(double m, double th) {
+    double c = th + m, c2 = c * c;
+    return -1.0 / c2;
+}
+
+// d_mu E_tt, the mu-derivative of the expected dispersion entry. It is the
+// first component of nb_dE_ltt1() in negbin.cpp, with the same mass
+// recurrence, seed, log-scale switch and stopping rule as
+// negbin2_expected_theta_theta(). The summand is
+// p_k (U_mu + U s_mu) with U_mu = -k/(theta c^2), s_mu = theta (k - mu)/(mu c).
+inline double negbin2_dexpected_theta_theta_mu(double mu, double theta) {
+    double ratio = mu / (theta + mu);
+    double lratio = std::log(mu) - std::log(theta + mu);
+    const int kmax = negbin2_series_cap(mu, theta);
+    const double mode = negbin2_series_mode(mu, theta);
+    const double c = theta + mu, c2 = c * c;
+    const double den = theta * c;
+
+    double U = 0.0;
+    double r1 = 0.0;
+    double lpk = -theta * std::log1p(mu / theta);
+    bool logscale = (lpk <= -640.0);
+    double pk = std::exp(lpk);
+    for (int k = 0; k <= kmax; ++k) {
+        double kd = (double) k;
+        double sm = theta * (kd - mu) / (mu * c);
+        double Um = -kd / (theta * c2);
+        r1 += pk * (Um + U * sm);
+        bool last = negbin2_series_done(kd, pk, mode);
+        double tk = theta + kd;
+        U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
+        if (last) break;
+        if (logscale) {
+            lpk += lratio + std::log((k + theta) / (k + 1.0));
+            pk = std::exp(lpk);
+            if (lpk > -640.0) logscale = false;
+        } else {
+            pk *= (k + theta) / (k + 1.0) * ratio;
+        }
+    }
+    return r1;
+}
+
+// The routers of the joint registry, one per order, for (mu, theta) in that
+// order. Each fills a full P x P matrix (P = 2) column-major, out[a + P b],
+// and the derivative of the expected information a P x P x P array, out[a +
+// P b + P P c] being the derivative of E[l_ab] in parameter c.
+inline void negbin2_joint_grad(double y, const double* th, double* out) {
+    double m = th[0], t = th[1];
+    out[0] = negbin2_score_mu(y, m, t);
+    out[1] = negbin2_score_theta(d7::psi_A_rest(y, t), negbin2_Ew(y, m, t));
+}
+
+inline void negbin2_joint_hess(double y, const double* th, double* out) {
+    double m = th[0], t = th[1];
+    out[0] = negbin2_hess_mu_mu(y, m, t);
+    out[3] = negbin2_hess_theta_theta(y, m, t, d7::psi_T_rest(y, t));
+    out[1] = out[2] = negbin2_hess_mu_theta(y, m, t);
+}
+
+inline void negbin2_joint_info(double y, const double* th, double* out) {
+    double m = th[0], t = th[1];
+    out[0] = negbin2_expected_mu_mu(m, t);
+    out[3] = negbin2_expected_theta_theta(m, t);
+    out[1] = out[2] = 0.0;
+}
+
+inline void negbin2_joint_dinfo(double y, const double* th, double* out) {
+    double m = th[0], t = th[1];
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[0] = negbin2_dexpected_mu_mu_mu(m, t);
+    out[4] = negbin2_dexpected_mu_mu_theta(m, t);
+    out[3] = negbin2_dexpected_theta_theta_mu(m, t);
+    out[7] = negbin2_dexpected_theta_theta_theta(m, t);
+}
+
 } // namespace d7
 
 #endif

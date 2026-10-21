@@ -133,6 +133,31 @@ inline double pseudohuber2_hess_nu_nu(double z, const Ph2Z& P,
     return -(0.5 * np.R[2] * z * P.zD - 0.25 * qn * qnD) + np.h[2];
 }
 
+// the off-diagonal components of the Hessian, as pseudohuber2_hessian_cpp
+// forms them; np carries R and h to order two. With vD2 = nu/D^2,
+// 2 - R zD^2 = 1 + vD2 and 1 - R zD^2 / 2 = (1 + vD2)/2 exactly
+inline double pseudohuber2_hess_mu_sigma(double s, const Ph2Z& P,
+                                         const NuPart& np, double v) {
+    const double R0 = np.R[0], s2 = s * s;
+    const double vD2 = v / (P.D * P.D);
+    return -R0 * P.zD * (1.0 + vD2) / s2;
+}
+
+inline double pseudohuber2_hess_mu_nu(double s, const Ph2Z& P,
+                                      const NuPart& np, double v) {
+    const double R0 = np.R[0], R1 = np.R[1];
+    const double vD2 = v / (P.D * P.D);
+    return P.zD * (0.5 * R1 * (1.0 + vD2) - 0.5 * R0 / (P.D * P.D)) / s;
+}
+
+inline double pseudohuber2_hess_sigma_nu(double z, double s, const Ph2Z& P,
+                                         const NuPart& np, double v) {
+    const double R0 = np.R[0], R1 = np.R[1];
+    const double zz = z * P.zD;
+    const double vD2 = v / (P.D * P.D);
+    return zz * (0.5 * R1 * (1.0 + vD2) - 0.5 * R0 / (P.D * P.D)) / s;
+}
+
 // the third derivatives on the diagonal: with (d/dQ)^m sqrt(Q) = c_m D/Q^m,
 // c = (1/2, -1/4, 3/8),
 //   (d/dx)^3 D = c_1 Q_xxx D/Q + 3 c_2 Q_x Q_xx D/Q^2 + c_3 Q_x^3 D/Q^3;
@@ -239,6 +264,37 @@ inline void pseudohuber2_info_dinfo(int k, double y, const double* th,
         pseudohuber2_quad_diag(k, th + 2, v, true);
     }, std2);
     loc_scale_unstandardize(k, th[1], std2, out);
+}
+
+// The routers of the joint registry for the score and the Hessian: every
+// component at one observation, on the parameter scale, th = (mu, sigma,
+// nu), P = 3. The Hessian fills a full 3 x 3 matrix, column-major,
+// out[a + 3 b]. The expected information of this family is an exp-sinh
+// quadrature (the diagonal compiled in pseudohuber2_quad_diag(), the
+// sigma-nu entry only in R), so there is no joint_info and no joint_dinfo.
+inline void pseudohuber2_joint_grad(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], v = th[2];
+    NuPart np = {{0}, {0}};
+    nu_part(v, 1, np);
+    const double z = (y - m) / s;
+    const Ph2Z P = ph2_z(z, v, np.R[0]);
+    out[0] = pseudohuber2_score_mu(s, P, np);
+    out[1] = pseudohuber2_score_sigma(z, s, P, np);
+    out[2] = pseudohuber2_score_nu(z, P, np);
+}
+
+inline void pseudohuber2_joint_hess(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], v = th[2];
+    NuPart np = {{0}, {0}};
+    nu_part(v, 2, np);
+    const double z = (y - m) / s;
+    const Ph2Z P = ph2_z(z, v, np.R[0]);
+    out[0] = pseudohuber2_hess_mu_mu(s, P, np, v);
+    out[4] = pseudohuber2_hess_sigma_sigma(z, s, P, np, v);
+    out[8] = pseudohuber2_hess_nu_nu(z, P, np);
+    out[1] = out[3] = pseudohuber2_hess_mu_sigma(s, P, np, v);
+    out[2] = out[6] = pseudohuber2_hess_mu_nu(s, P, np, v);
+    out[5] = out[7] = pseudohuber2_hess_sigma_nu(z, s, P, np, v);
 }
 
 } // namespace d7

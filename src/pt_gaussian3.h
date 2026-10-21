@@ -66,6 +66,46 @@ inline void gaussian3_info_dinfo(int k, double y, const double* th,
     }
 }
 
+// Mixed component of the observed Hessian, d2 l / d mu d tau = r, which
+// gaussian3_hessian_cpp writes as y - mu.
+inline double gaussian3_hess_mu_tau(double r) {
+    return r;
+}
+
+// d E[l_mm] / d tau for E_mm = -tau, the kernel's w[1].
+inline double gaussian3_dexpected_mu_mu_tau() {
+    return -1.0;
+}
+
+// The routers of the joint registry, one per order (see pt_gaussian2.h).
+inline void gaussian3_joint_grad(double y, const double* th, double* out) {
+    double r = y - th[0], t = th[1];
+    out[0] = gaussian3_score_mu(r, t);
+    out[1] = gaussian3_score_tau(r, t);
+}
+
+inline void gaussian3_joint_hess(double y, const double* th, double* out) {
+    double r = y - th[0], t = th[1];
+    out[0] = gaussian3_hess_mu_mu(t);
+    out[3] = gaussian3_hess_tau_tau(t);
+    out[1] = out[2] = gaussian3_hess_mu_tau(r);
+}
+
+inline void gaussian3_joint_info(double y, const double* th, double* out) {
+    double t = th[1];
+    out[0] = gaussian3_expected_mu_mu(t);
+    out[3] = gaussian3_expected_tau_tau(t);
+    out[1] = out[2] = 0.0;
+}
+
+inline void gaussian3_joint_dinfo(double y, const double* th, double* out) {
+    double t = th[1];
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[0] = gaussian3_dexpected_mu_mu_mu();
+    out[4] = gaussian3_dexpected_mu_mu_tau();
+    out[7] = gaussian3_dexpected_tau_tau_tau(t);
+}
+
 } // namespace d7
 
 #endif

@@ -89,6 +89,17 @@ inline double vonmises1_dexpected_kappa_kappa_kappa(double A2) {
   return -A2;
 }
 
+// l_{mu kappa} = sin(y - mu)
+inline double vonmises1_hess_mu_kappa(double sin_d) {
+  return sin_d;
+}
+
+// E_mm = -kappa A, so its derivative in kappa is -(A + kappa A')
+inline double vonmises1_dexpected_mu_mu_kappa(double kappa, double A,
+                                              double A1) {
+  return -(A + kappa * A1);
+}
+
 inline void vonmises1_score_curv(int k, double y, const double* th,
                                  double* out) {
   const N7Bessel& B = vm_bessel();
@@ -157,6 +168,16 @@ inline double vonmises2_dexpected_rho_rho_rho(double k2) {
   return -k2;
 }
 
+// l_{mu rho} = sin(y - mu) kappa'(rho)
+inline double vonmises2_hess_mu_rho(double sin_d, double k1) {
+  return sin_d * k1;
+}
+
+// E_mm = -rho kappa(rho), so its derivative in rho is -(kappa + rho kappa')
+inline double vonmises2_dexpected_mu_mu_rho(double r, double k0, double k1) {
+  return -(k0 + r * k1);
+}
+
 inline void vonmises2_score_curv(int k, double y, const double* th,
                                  double* out) {
   const N7Bessel& B = vm_bessel();
@@ -190,6 +211,88 @@ inline void vonmises2_info_dinfo(int k, double y, const double* th,
     out[0] = vonmises2_expected_rho_rho(kk[1]);
     out[1] = vonmises2_dexpected_rho_rho_rho(kk[2]);
   }
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale, th = (mu, kappa) for vonmises1 and
+// (mu, rho) for vonmises2. The Hessian and the expected information fill a
+// full 2 x 2 matrix and the derivative of the expected information a
+// 2 x 2 x 2 array, column-major, out[a + 2 b + 4 c] being the derivative of
+// E[l_ab] in parameter c. The expected information does not depend on mu and
+// E[l_12] = 0, so only the entries in the second parameter are non-zero.
+inline void vonmises1_joint_grad(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double kappa = th[1], d = y - th[0];
+  out[0] = vonmises1_score_mu(kappa, std::sin(d));
+  out[1] = vonmises1_score_kappa(std::cos(d), B.A(kappa));
+}
+
+inline void vonmises1_joint_hess(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double kappa = th[1], d = y - th[0];
+  out[0] = vonmises1_hess_mu_mu(kappa, std::cos(d));
+  out[3] = vonmises1_hess_kappa_kappa(B.d1(kappa));
+  out[1] = out[2] = vonmises1_hess_mu_kappa(std::sin(d));
+}
+
+inline void vonmises1_joint_info(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double kappa = th[1];
+  double a[2];
+  B.upto(kappa, 1, a);
+  out[0] = vonmises1_expected_mu_mu(kappa, a[0]);
+  out[3] = vonmises1_expected_kappa_kappa(a[1]);
+  out[1] = out[2] = 0.0;
+}
+
+inline void vonmises1_joint_dinfo(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double kappa = th[1];
+  double a[3];
+  B.upto(kappa, 2, a);
+  for (int j = 0; j < 8; ++j) out[j] = 0.0;
+  out[4] = vonmises1_dexpected_mu_mu_kappa(kappa, a[0], a[1]);
+  out[7] = vonmises1_dexpected_kappa_kappa_kappa(a[2]);
+}
+
+inline void vonmises2_joint_grad(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double r = th[1], d = y - th[0];
+  double kk[2];
+  vm2_kappa(B, r, 1, kk);
+  out[0] = vonmises2_score_mu(kk[0], std::sin(d));
+  out[1] = vonmises2_score_rho(std::cos(d), r, kk[1]);
+}
+
+inline void vonmises2_joint_hess(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double r = th[1], d = y - th[0];
+  double kk[3];
+  vm2_kappa(B, r, 2, kk);
+  const double c = std::cos(d);
+  out[0] = vonmises2_hess_mu_mu(kk[0], c);
+  out[3] = vonmises2_hess_rho_rho(c, r, kk[1], kk[2]);
+  out[1] = out[2] = vonmises2_hess_mu_rho(std::sin(d), kk[1]);
+}
+
+inline void vonmises2_joint_info(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double r = th[1];
+  double kk[2];
+  vm2_kappa(B, r, 1, kk);
+  out[0] = vonmises2_expected_mu_mu(kk[0], r);
+  out[3] = vonmises2_expected_rho_rho(kk[1]);
+  out[1] = out[2] = 0.0;
+}
+
+inline void vonmises2_joint_dinfo(double y, const double* th, double* out) {
+  const N7Bessel& B = vm_bessel();
+  const double r = th[1];
+  double kk[3];
+  vm2_kappa(B, r, 2, kk);
+  for (int j = 0; j < 8; ++j) out[j] = 0.0;
+  out[4] = vonmises2_dexpected_mu_mu_rho(r, kk[0], kk[1]);
+  out[7] = vonmises2_dexpected_rho_rho_rho(kk[2]);
 }
 
 } // namespace d7

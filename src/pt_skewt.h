@@ -272,6 +272,40 @@ inline void skewt_info_dinfo(int k, double y, const double* th, double* out) {
     loc_scale_unstandardize(k, th[1], std2, out);
 }
 
+// The joint entries of the C registry at one observation, th = (mu, sigma,
+// alpha, nu), P = 4, on the parameter scale. They read the generated closed
+// forms of pt_skewt_table.h through skewt_obs<K>(), which is what the vector
+// kernels skewt_gradient_cpp() and skewt_hessian_cpp() run, so that every
+// component is the same number to the bit. The components of order K come in
+// the order of the multisets of (mu, sigma, alpha, nu), lexicographic:
+//   K = 1: mu, sigma, alpha, nu;
+//   K = 2: mu_mu, mu_sigma, mu_alpha, mu_nu, sigma_sigma, sigma_alpha,
+//          sigma_nu, alpha_alpha, alpha_nu, nu_nu.
+// There are no info and dinfo entries: the expected Hessian of the skew t has
+// no closed form and is taken by quadrature (loc_scale_expected()).
+
+// out[a]: the score in parameter a
+inline void skewt_joint_grad(double y, const double* th, double* out) {
+    thread_local SkewtConst cc;
+    cc.at(th[3], 1);
+    double g[4];
+    skewt_obs<1>(y, th[0], th[1], th[2], th[3], cc, g);
+    for (int a = 0; a < 4; ++a) out[a] = g[a];
+}
+
+// out[a + 4 b]: the Hessian, both triangles
+inline void skewt_joint_hess(double y, const double* th, double* out) {
+    thread_local SkewtConst cc;
+    cc.at(th[3], 2);
+    double h[10];
+    skewt_obs<2>(y, th[0], th[1], th[2], th[3], cc, h);
+    // the position of (a, b), a <= b, in the multiset order
+    static const int pos[4][4] = {{0, 1, 2, 3}, {1, 4, 5, 6},
+                                  {2, 5, 7, 8}, {3, 6, 8, 9}};
+    for (int b = 0; b < 4; ++b)
+        for (int a = 0; a < 4; ++a) out[a + 4 * b] = h[pos[a][b]];
+}
+
 } // namespace d7
 
 #endif

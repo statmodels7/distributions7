@@ -156,6 +156,146 @@ inline void enet_info_dinfo(int k, double y, const double* th, double* out) {
     }
 }
 
+// ---- the components only the joint registry reads ---------------------------
+// Written from the kernels of enet.cpp (enet_hessian_cpp,
+// enet_expected_hessian_cpp, enet_dexpected1_cpp), which keep them inline.
+
+inline double enet_hess_mu_lambda(const EnetPar& P, double z) {
+    double s = enet_sign(z), al = P.al;
+    return al * s + (1.0 - al) * z;
+}
+
+inline double enet_hess_mu_alpha(const EnetPar& P, double z) {
+    double s = enet_sign(z), lam = P.lam;
+    return lam * (s - z);
+}
+
+inline double enet_hess_lambda_alpha(const EnetPar& P, double z) {
+    double al = P.al, lam = P.lam;
+    return (-std::fabs(z) + z * z / 2.0) -
+        (lam * (P.zaa * al + P.zac * (1.0 - 2.0 * al) - P.zcc * (1.0 - al)) +
+         P.za - P.zc);
+}
+
+inline double enet_expected_lambda_alpha(const EnetPar& P) {
+    double al = P.al;
+    return -P.lam * (P.zaa * al + P.zac * (1.0 - 2.0 * al) -
+                     P.zcc * (1.0 - al));
+}
+
+// E_mm = -(a^2 - 2ac Z_a - 2c^2 Z_c) differentiated in a and in c, then
+// carried to lambda and alpha
+inline double enet_dexpected_mu_mu_lambda(const EnetPar& P) {
+    double al = P.al, bl = 1.0 - al, a = P.a, c = P.c;
+    double dEa = -(2.0 * a - 2.0 * c * P.za - 2.0 * a * c * P.zaa -
+                   2.0 * c * c * P.zac);
+    double dEc = -(-2.0 * a * P.za - 2.0 * a * c * P.zac - 4.0 * c * P.zc -
+                   2.0 * c * c * P.zcc);
+    return al * dEa + bl * dEc;
+}
+
+inline double enet_dexpected_mu_mu_alpha(const EnetPar& P) {
+    double lam = P.lam, a = P.a, c = P.c;
+    double dEa = -(2.0 * a - 2.0 * c * P.za - 2.0 * a * c * P.zaa -
+                   2.0 * c * c * P.zac);
+    double dEc = -(-2.0 * a * P.za - 2.0 * a * c * P.zac - 4.0 * c * P.zc -
+                   2.0 * c * c * P.zcc);
+    return lam * (dEa - dEc);
+}
+
+// Z'' along (w, v), and Z''' along (w, w, v)
+inline double enet_dexpected_lambda_lambda_alpha(const EnetPar& P,
+                                                 const EnetT3& T) {
+    double lam = P.lam, al = P.al, bl = 1.0 - al;
+    double Hwv = P.zaa * al + P.zac * (bl - al) - P.zcc * bl;
+    double Twwv = T.aaa * al * al + T.aac * (2.0 * al * bl - al * al) +
+                  T.acc * (bl * bl - 2.0 * al * bl) - T.ccc * bl * bl;
+    return -(2.0 * Hwv + lam * Twwv);
+}
+
+// Z'' along (v, v), and Z''' along (v, v, w)
+inline double enet_dexpected_alpha_alpha_lambda(const EnetPar& P,
+                                                const EnetT3& T) {
+    double lam = P.lam, al = P.al, bl = 1.0 - al;
+    double Hvv = P.zaa - 2.0 * P.zac + P.zcc;
+    double Tvvw = T.aaa * al + T.aac * (bl - 2.0 * al) +
+                  T.acc * (al - 2.0 * bl) + T.ccc * bl;
+    return -2.0 * lam * Hvv - lam * lam * Tvvw;
+}
+
+inline double enet_dexpected_lambda_alpha_lambda(const EnetPar& P,
+                                                 const EnetT3& T) {
+    double lam = P.lam, al = P.al, bl = 1.0 - al;
+    double Hwv = P.zaa * al + P.zac * (bl - al) - P.zcc * bl;
+    double Twwv = T.aaa * al * al + T.aac * (2.0 * al * bl - al * al) +
+                  T.acc * (bl * bl - 2.0 * al * bl) - T.ccc * bl * bl;
+    return -Hwv - lam * Twwv;
+}
+
+inline double enet_dexpected_lambda_alpha_alpha(const EnetPar& P,
+                                                const EnetT3& T) {
+    double lam = P.lam, al = P.al, bl = 1.0 - al;
+    double Hvv = P.zaa - 2.0 * P.zac + P.zcc;
+    double Tvvw = T.aaa * al + T.aac * (bl - 2.0 * al) +
+                  T.acc * (al - 2.0 * bl) + T.ccc * bl;
+    return -lam * (Hvv + lam * Tvvw);
+}
+
+// ---- the routers of the joint registry --------------------------------------
+//
+// One per order: every component at one observation, on the parameter scale,
+// in (mu, lambda, alpha). The Hessian and the expected Hessian fill a full
+// 3 x 3 matrix and the derivative of the expected Hessian a 3 x 3 x 3 array,
+// column-major, out[a + 3 b + 9 c] being the derivative of E[l_ab] in
+// parameter c. E_ml = E_ma = 0 and every derivative in mu is 0.
+
+inline void enet_joint_grad(double y, const double* th, double* out) {
+    const EnetPar P = enet_par(th[1], th[2]);
+    double z = y - th[0];
+    out[0] = enet_score_mu(P, z);
+    out[1] = enet_score_lambda(P, z);
+    out[2] = enet_score_alpha(P, z);
+}
+
+inline void enet_joint_hess(double y, const double* th, double* out) {
+    const EnetPar P = enet_par(th[1], th[2]);
+    double z = y - th[0];
+    out[0] = enet_hess_mu_mu(P);
+    out[4] = enet_hess_lambda_lambda(P);
+    out[8] = enet_hess_alpha_alpha(P);
+    out[1] = out[3] = enet_hess_mu_lambda(P, z);
+    out[2] = out[6] = enet_hess_mu_alpha(P, z);
+    out[5] = out[7] = enet_hess_lambda_alpha(P, z);
+}
+
+inline void enet_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    const EnetPar P = enet_par(th[1], th[2]);
+    out[0] = enet_expected_mu_mu(P);
+    out[4] = enet_expected_lambda_lambda(P);
+    out[8] = enet_expected_alpha_alpha(P);
+    out[1] = out[3] = 0.0;
+    out[2] = out[6] = 0.0;
+    out[5] = out[7] = enet_expected_lambda_alpha(P);
+}
+
+inline void enet_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    const EnetPar P = enet_par(th[1], th[2]);
+    const EnetT3 T = enet_t3(P);
+    for (int j = 0; j < 27; ++j) out[j] = 0.0;
+    // c = 1 (lambda)
+    out[0 + 9] = enet_dexpected_mu_mu_lambda(P);
+    out[4 + 9] = enet_dexpected_lambda_lambda_lambda(P, T);
+    out[8 + 9] = enet_dexpected_alpha_alpha_lambda(P, T);
+    out[5 + 9] = out[7 + 9] = enet_dexpected_lambda_alpha_lambda(P, T);
+    // c = 2 (alpha)
+    out[0 + 18] = enet_dexpected_mu_mu_alpha(P);
+    out[4 + 18] = enet_dexpected_lambda_lambda_alpha(P, T);
+    out[8 + 18] = enet_dexpected_alpha_alpha_alpha(P, T);
+    out[5 + 18] = out[7 + 18] = enet_dexpected_lambda_alpha_alpha(P, T);
+}
+
 } // namespace d7
 
 #endif

@@ -145,6 +145,53 @@ inline void skewnormal1_info_dinfo(int k, double y, const double* th,
     loc_scale_unstandardize(k, th[1], std2, out);
 }
 
+// The off-diagonal components of the Hessian, from skewnormal1_hessian_cpp
+// (skewnormal1.cpp): the caller passes z, the Mills ratio r and dr.
+inline double skewnormal1_hess_mu_sigma(double z, double s, double a,
+                                        double r, double dr) {
+    const double s2 = s * s;
+    return (a * a * z * dr - 2.0 * z + a * r) / s2;
+}
+
+inline double skewnormal1_hess_mu_alpha(double z, double s, double a,
+                                        double r, double dr) {
+    return -(r + a * z * dr) / s;
+}
+
+inline double skewnormal1_hess_sigma_alpha(double z, double s, double a,
+                                           double r, double dr) {
+    return -(z * r + a * z * z * dr) / s;
+}
+
+// The routers of the joint registry, in (mu, sigma, alpha). The skew normal's
+// expected information has no closed form (it is a quadrature in the shape,
+// see skewnormal1_info_dinfo()), so only the gradient and the Hessian are
+// written here.
+inline void skewnormal1_joint_grad(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], a = th[2];
+    const double z = (y - m) / s;
+    double gg[6];
+    logphi_derivs(a * z, 1, gg);
+    const double r = gg[1];
+    out[0] = skewnormal1_score_mu(z, s, a, r);
+    out[1] = skewnormal1_score_sigma(z, s, a, r);
+    out[2] = skewnormal1_score_alpha(z, r);
+}
+
+inline void skewnormal1_joint_hess(double y, const double* th, double* out) {
+    const double m = th[0], s = th[1], a = th[2];
+    const double z = (y - m) / s;
+    double gg[6];
+    logphi_derivs(a * z, 2, gg);
+    const double r = gg[1], dr = gg[2];
+    out[0] = skewnormal1_hess_mu_mu(s, a, dr);
+    out[4] = skewnormal1_hess_sigma_sigma(z, s, a, r, dr);
+    out[8] = skewnormal1_hess_alpha_alpha(z, dr);
+    out[1] = out[3] = skewnormal1_hess_mu_sigma(z, s, a, r, dr);
+    out[2] = out[6] = skewnormal1_hess_mu_alpha(z, s, a, r, dr);
+    out[5] = out[7] = skewnormal1_hess_sigma_alpha(z, s, a, r, dr);
+}
+
 } // namespace d7
 
 #endif

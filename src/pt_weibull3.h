@@ -141,6 +141,42 @@ inline double weibull3_dexpected_sigma_sigma_sigma(const Weibull3DexpectedPar& P
   return (2.0*std::pow(P0, 2) + 2.0*P0*t2 - 1.6911373403938686*P0 - 0.84556867019693428*t2 + 3.6473613217057588)/std::pow(s, 3);
 }
 
+// Off-diagonal entries of the observed Hessian, the expected information and
+// its derivatives, as the kernels of weibull3.cpp compute them inline. The
+// caller passes eC = exp(C s) with C = log(y/m) for the observed entry.
+inline double weibull3_hess_mean_sigma(const Weibull3HessianPar& P, double C,
+                                       double s, double eC, double m) {
+  const double t0 = C*s;
+  const double t2 = P.t2;
+  const double P0 = P.P0;
+  const double t3 = P.t3;
+  const double t4 = eC*t3;
+  const double t5 = t4 - 1;
+  return (-P0*t4 + t0*t4 + t2*t4 + t5)/m;
+}
+
+inline double weibull3_expected_mean_sigma(const Weibull3ExpectedPar& P,
+                                           double m) {
+  return (0.42278433509846714 - 1.0*P.P0)/m;
+}
+
+// d E[mean mean] / d sigma
+inline double weibull3_dexpected_mean_mean_sigma(const Weibull3DexpectedPar& P,
+                                                 double s) {
+  return -2.0*s*P.t1;
+}
+
+// d E[mean sigma] / d mean
+inline double weibull3_dexpected_mean_sigma_mean(const Weibull3DexpectedPar& P) {
+  return P.t1*(1.0*P.P0 - 0.42278433509846714);
+}
+
+// d E[mean sigma] / d sigma
+inline double weibull3_dexpected_mean_sigma_sigma(const Weibull3DexpectedPar& P,
+                                                  double m) {
+  return 1.0*P.P1/(m*P.t0);
+}
+
 inline void weibull3_score_curv(int k, double y, const double* th,
                                 double* out) {
   const double m = th[0], s = th[1];
@@ -170,6 +206,51 @@ inline void weibull3_info_dinfo(int k, double y, const double* th,
     out[0] = weibull3_expected_sigma_sigma(Pe);
     out[1] = weibull3_dexpected_sigma_sigma_sigma(Pd, s);
   }
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale (mean, sigma). The Hessian and the
+// expected information fill a full P x P matrix and the derivative of the
+// expected information a P x P x P array, column-major, out[a + P b + P^2 c]
+// being the derivative of E[l_ab] in parameter c.
+inline void weibull3_joint_grad(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1];
+  const Weibull3GradientPar Pg = weibull3_gradient_par(m, s);
+  const double C = std::log(y / m);
+  const double eC = std::exp(C*s);
+  const double E = eC*std::exp(Pg.LG*s);
+  out[0] = weibull3_score_mean(Pg, m, s, E);
+  out[1] = weibull3_score_sigma(Pg, C, E);
+}
+
+inline void weibull3_joint_hess(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1];
+  const Weibull3HessianPar Ph = weibull3_hessian_par(m, s);
+  const double C = std::log(y / m);
+  const double eC = std::exp(C*s);
+  out[0] = weibull3_hess_mean_mean(Ph, m, s, eC);
+  out[3] = weibull3_hess_sigma_sigma(Ph, C, eC);
+  out[1] = out[2] = weibull3_hess_mean_sigma(Ph, C, s, eC, m);
+}
+
+inline void weibull3_joint_info(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1];
+  const Weibull3ExpectedPar Pe = weibull3_expected_par(m, s);
+  out[0] = weibull3_expected_mean_mean(Pe, m);
+  out[3] = weibull3_expected_sigma_sigma(Pe);
+  out[1] = out[2] = weibull3_expected_mean_sigma(Pe, m);
+}
+
+inline void weibull3_joint_dinfo(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1];
+  const Weibull3DexpectedPar Pd = weibull3_dexpected_par(m, s);
+  for (int j = 0; j < 8; ++j) out[j] = 0.0;
+  out[0] = weibull3_dexpected_mean_mean_mean(Pd, m);
+  out[4] = weibull3_dexpected_mean_mean_sigma(Pd, s);
+  out[1] = out[2] = weibull3_dexpected_mean_sigma_mean(Pd);
+  out[3] = 0.0;
+  out[5] = out[6] = weibull3_dexpected_mean_sigma_sigma(Pd, m);
+  out[7] = weibull3_dexpected_sigma_sigma_sigma(Pd, s);
 }
 
 } // namespace d7

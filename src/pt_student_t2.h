@@ -239,6 +239,87 @@ inline double student_t2_dexpected_nu_nu_nu(double V8) {
   return V8;
 }
 
+// The off-diagonal components that only the joint registry reads. They are
+// written from the Hessian kernel of student_t2.cpp (the same intermediates
+// t, u and zt, the same guards, the same operation order).
+inline double student_t2_hess_mu_sigma(double z, double s, double ik) {
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w0 = 3*ik;
+  const double w2 = std::pow(s, -2);
+  const double w3 = T.t*w2;
+  return -2*w3*T.zt*(w0 + 1);
+}
+
+inline double student_t2_hess_mu_nu(double z, double s, double ik) {
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w0 = 3*ik;
+  const double w1 = T.t*w0 - T.u;
+  const double w8 = -w1/s;
+  return ik*w8*T.zt;
+}
+
+inline double student_t2_hess_sigma_nu(double z, double s, double ik) {
+  const student_t2_TQ T = student_t2_tq(z, ik);
+  const double w0 = 3*ik;
+  const double w1 = T.t*w0 - T.u;
+  const double w8 = -w1/s;
+  return T.u*w8;
+}
+
+// The expected information, the off-diagonal entry (sigma, nu), from the
+// expected Hessian kernel of student_t2.cpp.
+inline double student_t2_expected_sigma_nu(double s, double ik) {
+  const double w0 = std::pow(ik, 2);
+  return -6*std::pow(ik, 3)/(s*(8*ik + 15*w0 + 1));
+}
+
+// The derivatives of the expected Hessian that the joint registry reads,
+// from the dexpected1 kernel of student_t2.cpp.
+inline double student_t2_dexpected_mu_mu_sigma(double s, double ik) {
+  const double w0 = std::pow(ik, 2);
+  const double w1 = 6*w0;
+  const double w2 = 5*ik;
+  const double w3 = w2 + 1;
+  const double w4 = 1/(std::pow(s, 3)*w3);
+  return 2*w4*(w1 + w3);
+}
+
+inline double student_t2_dexpected_mu_mu_nu(double s, double ik) {
+  const double w0 = std::pow(ik, 2);
+  const double w2 = 5*ik;
+  const double w5 = std::pow(s, -2);
+  const double w6 = w5/(10*ik + 25*w0 + 1);
+  const double w7 = std::pow(ik, 3);
+  const double w8 = 6*w7;
+  return w6*w8*(w2 + 2);
+}
+
+inline double student_t2_dexpected_sigma_sigma_nu(double s, double ik) {
+  const double w0 = std::pow(ik, 2);
+  const double w1 = 6*w0;
+  const double w5 = std::pow(s, -2);
+  const double w6 = w5/(10*ik + 25*w0 + 1);
+  return -w1*w6;
+}
+
+inline double student_t2_dexpected_sigma_nu_sigma(double s, double ik) {
+  const double w0 = std::pow(ik, 2);
+  const double w5 = std::pow(s, -2);
+  const double w7 = std::pow(ik, 3);
+  const double w8 = 6*w7;
+  const double w9 = 15*w0;
+  return w5*w8/(8*ik + w9 + 1);
+}
+
+inline double student_t2_dexpected_sigma_nu_nu(double s, double ik) {
+  const double w0 = std::pow(ik, 2);
+  const double w7 = std::pow(ik, 3);
+  const double w9 = 15*w0;
+  const double w10 = std::pow(ik, 4);
+  const double w11 = 16*ik;
+  return 6*w10*(w11 + w9 + 3)/(s*(94*w0 + 225*w10 + w11 + 240*w7 + 1));
+}
+
 inline void student_t2_score_curv(int k, double y, const double* th,
                                   double* out) {
   const double m = th[0], s = th[1], v = th[2];
@@ -270,6 +351,58 @@ inline void student_t2_info_dinfo(int k, double y, const double* th,
     out[0] = student_t2_expected_nu_nu(t2_V2(v));
     out[1] = student_t2_dexpected_nu_nu_nu(t2_V8(v));
   }
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale, in (mu, sigma, nu). The Hessian and
+// the expected information fill a full 3 x 3 matrix and the derivative of
+// the expected information a 3 x 3 x 3 array, column-major,
+// out[a + 3 b + 9 c] being the derivative of E[l_ab] in parameter c.
+inline void student_t2_joint_grad(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 2.0);
+  const double z = (y - m) / s;
+  out[0] = student_t2_score_mu(z, s, ik);
+  out[1] = student_t2_score_sigma(z, s, ik);
+  out[2] = student_t2_score_nu(z, ik, t2_V0(v), student_t2_DQ(z, ik));
+}
+
+inline void student_t2_joint_hess(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 2.0);
+  const double z = (y - m) / s;
+  out[0] = student_t2_hess_mu_mu(z, s, ik);
+  out[4] = student_t2_hess_sigma_sigma(z, s, ik);
+  out[8] = student_t2_hess_nu_nu(z, ik, t2_V1(v));
+  out[1] = out[3] = student_t2_hess_mu_sigma(z, s, ik);
+  out[2] = out[6] = student_t2_hess_mu_nu(z, s, ik);
+  out[5] = out[7] = student_t2_hess_sigma_nu(z, s, ik);
+}
+
+inline void student_t2_joint_info(double y, const double* th, double* out) {
+  const double s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 2.0);
+  out[0] = student_t2_expected_mu_mu(s, ik);
+  out[4] = student_t2_expected_sigma_sigma(s, ik);
+  out[8] = student_t2_expected_nu_nu(t2_V2(v));
+  out[1] = out[3] = 0.0;
+  out[2] = out[6] = 0.0;
+  out[5] = out[7] = student_t2_expected_sigma_nu(s, ik);
+}
+
+inline void student_t2_joint_dinfo(double y, const double* th, double* out) {
+  const double s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 2.0);
+  for (int j = 0; j < 27; ++j) out[j] = 0.0;
+  // c = 1 (sigma)
+  out[0 + 9] = student_t2_dexpected_mu_mu_sigma(s, ik);
+  out[4 + 9] = student_t2_dexpected_sigma_sigma_sigma(s, ik);
+  out[5 + 9] = out[7 + 9] = student_t2_dexpected_sigma_nu_sigma(s, ik);
+  // c = 2 (nu)
+  out[0 + 18] = student_t2_dexpected_mu_mu_nu(s, ik);
+  out[4 + 18] = student_t2_dexpected_sigma_sigma_nu(s, ik);
+  out[8 + 18] = student_t2_dexpected_nu_nu_nu(t2_V8(v));
+  out[5 + 18] = out[7 + 18] = student_t2_dexpected_sigma_nu_nu(s, ik);
 }
 
 } // namespace d7

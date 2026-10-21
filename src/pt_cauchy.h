@@ -132,6 +132,48 @@ inline void cauchy_info_dinfo(int k, double y, const double* th,
     }
 }
 
+// The component the joint registry reads and the scalar one does not: the
+// derivative of E_mm = -1/(2 sigma^2) in sigma, written as the kernel writes
+// it, -2 k u^3 with k = -1/2 and u = 1/sigma (dexpected_kernels.cpp).
+inline double cauchy_dexpected_mu_mu_sigma(double s) {
+    const double k = -0.5;
+    double u = 1.0 / s, u3 = u * u * u;
+    return -2.0 * k * u3;
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale, in (mu, sigma). The Hessian and the
+// expected information fill a full 2 x 2 matrix and the derivative of the
+// expected information a 2 x 2 x 2 array, column-major, out[a + 2 b + 4 c]
+// being the derivative of E[l_ab] in parameter c.
+inline void cauchy_joint_grad(double y, const double* th, double* out) {
+    double res = y - th[0], s = th[1];
+    out[0] = cauchy_score_mu(res, s);
+    out[1] = cauchy_score_sigma(res, s);
+}
+
+inline void cauchy_joint_hess(double y, const double* th, double* out) {
+    double res = y - th[0], s = th[1];
+    out[0] = cauchy_hess_mu_mu(res, s);
+    out[3] = cauchy_hess_sigma_sigma(res, s);
+    out[1] = out[2] = cauchy_hess_mu_sigma(res, s);
+}
+
+inline void cauchy_joint_info(double y, const double* th, double* out) {
+    double s = th[1];
+    out[0] = cauchy_expected_mu_mu(s);
+    out[3] = cauchy_expected_sigma_sigma(s);
+    out[1] = out[2] = 0.0;
+}
+
+// E_ms = 0 for every sigma, so both of its derivatives are zero
+inline void cauchy_joint_dinfo(double y, const double* th, double* out) {
+    double s = th[1];
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[4] = cauchy_dexpected_mu_mu_sigma(s);
+    out[7] = cauchy_dexpected_sigma_sigma_sigma(s);
+}
+
 } // namespace d7
 
 #endif

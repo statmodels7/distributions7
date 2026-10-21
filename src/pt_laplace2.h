@@ -69,6 +69,47 @@ inline void laplace2_info_dinfo(int k, double y, const double* th,
     }
 }
 
+// The mixed components, written as laplace.cpp writes them: the Hessian's
+// mu-lambda entry is the sign of the residual itself, and the derivative of
+// E_mm = -lambda^2 in lambda is -2 lambda.
+inline double laplace2_hess_mu_lambda(double sg) {
+    return sg;
+}
+
+inline double laplace2_dexpected_mu_mu_lambda(double lam) {
+    return -2.0 * lam;
+}
+
+// The routers of the joint registry, one per order, in (mu, lambda); the
+// layout is the one pt_cauchy.h describes.
+inline void laplace2_joint_grad(double y, const double* th, double* out) {
+    double r = y - th[0], lam = th[1];
+    out[0] = laplace2_score_mu(laplace_sign(r), lam);
+    out[1] = laplace2_score_lambda(std::fabs(r), lam);
+}
+
+inline void laplace2_joint_hess(double y, const double* th, double* out) {
+    double r = y - th[0], lam = th[1];
+    out[0] = laplace2_hess_mu_mu();
+    out[3] = laplace2_hess_lambda_lambda(lam);
+    out[1] = out[2] = laplace2_hess_mu_lambda(laplace_sign(r));
+}
+
+inline void laplace2_joint_info(double y, const double* th, double* out) {
+    double lam = th[1];
+    out[0] = laplace2_expected_mu_mu(lam);
+    out[3] = laplace2_expected_lambda_lambda(lam);
+    out[1] = out[2] = 0.0;
+}
+
+// E_ml = 0 for every rate, so both of its derivatives are zero
+inline void laplace2_joint_dinfo(double y, const double* th, double* out) {
+    double lam = th[1];
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[4] = laplace2_dexpected_mu_mu_lambda(lam);
+    out[7] = laplace2_dexpected_lambda_lambda_lambda(lam);
+}
+
 } // namespace d7
 
 #endif

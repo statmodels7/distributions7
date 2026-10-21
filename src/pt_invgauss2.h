@@ -45,6 +45,19 @@ inline double invgauss2_dexpected_lambda_lambda_lambda(double L) {
     return iL3;
 }
 
+// Off-diagonal entry of the observed Hessian, as invgauss2_hessian_cpp
+// computes it.
+inline double invgauss2_hess_mu_lambda(double y, double m) {
+    double m3 = m * m * m;
+    return (y - m) / m3;
+}
+
+// d E[l_mu mu] / d lambda, as invgauss2_dexpected1_cpp computes it.
+inline double invgauss2_dexpected_mu_mu_lambda(double m) {
+    double im = 1.0 / m, im3 = im * im * im;
+    return -im3;
+}
+
 inline void invgauss2_score_curv(int k, double y, const double* th,
                                  double* out) {
     double m = th[0], L = th[1];
@@ -67,6 +80,39 @@ inline void invgauss2_info_dinfo(int k, double y, const double* th,
         out[0] = invgauss2_expected_lambda_lambda(L);
         out[1] = invgauss2_dexpected_lambda_lambda_lambda(L);
     }
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale (mu, lambda). The Hessian and the
+// expected information fill a full P x P matrix and the derivative of the
+// expected information a P x P x P array, column-major, out[a + P b + P^2 c]
+// being the derivative of E[l_ab] in parameter c.
+inline void invgauss2_joint_grad(double y, const double* th, double* out) {
+    double m = th[0], L = th[1];
+    out[0] = invgauss2_score_mu(y, m, L);
+    out[1] = invgauss2_score_lambda(y, m, L);
+}
+
+inline void invgauss2_joint_hess(double y, const double* th, double* out) {
+    double m = th[0], L = th[1];
+    out[0] = invgauss2_hess_mu_mu(y, m, L);
+    out[3] = invgauss2_hess_lambda_lambda(L);
+    out[1] = out[2] = invgauss2_hess_mu_lambda(y, m);
+}
+
+inline void invgauss2_joint_info(double y, const double* th, double* out) {
+    double m = th[0], L = th[1];
+    out[0] = invgauss2_expected_mu_mu(m, L);
+    out[3] = invgauss2_expected_lambda_lambda(L);
+    out[1] = out[2] = 0.0;
+}
+
+inline void invgauss2_joint_dinfo(double y, const double* th, double* out) {
+    double m = th[0], L = th[1];
+    for (int j = 0; j < 8; ++j) out[j] = 0.0;
+    out[0] = invgauss2_dexpected_mu_mu_mu(m, L);
+    out[4] = invgauss2_dexpected_mu_mu_lambda(m);
+    out[7] = invgauss2_dexpected_lambda_lambda_lambda(L);
 }
 
 } // namespace d7

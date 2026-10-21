@@ -2096,14 +2096,23 @@ double d7_logpdf(int id, double y, const double* th) {
 // derivative of the expected information a P x P x P array, column-major,
 // out[a + P b + P^2 c] being the derivative of E[l_ab] in parameter c, all on
 // the parameter scale. A family is covered once its components are written
-// out in its header; d7_joint_covered() answers 1 for those, 0 for the other
-// families and for the wrappers, and -1 for an unknown id, and the entries
-// fill `out` with NaN where the family is not covered.
+// out in its header. d7_joint_covered() answers how many of the four entries
+// the family has, in order: 4 where all four are exact, 2 where only the
+// gradient and the Hessian are (the expected information being approximated
+// for that family, which serves an unscaled filter only), 0 for the other
+// families and for the wrappers, and -1 for an unknown id. An entry beyond
+// the family's coverage fills `out` with NaN.
 int d7_joint_covered(int id) {
     if (id >= kWrapBase) return node_valid(id) ? 0 : -1;
     if (id < 0 || id >= d7_n_scalar_classes) return -1;
     switch (id) {
-    case 0: case 23: return 1;
+    case 0: case 1: case 3: case 4: case 10: case 11: case 12: case 13:
+    case 14: case 15: case 16: case 17: case 18: case 19: case 20: case 21:
+    case 22: case 23: case 24: case 25: case 26: case 27: case 28: case 29:
+    case 30: case 31: case 32: case 33: case 39: case 40: case 41: case 42:
+        return 4;
+    case 34: case 35: case 36: case 37: case 38:
+        return 2;
     default: return 0;
     }
 }
@@ -2112,39 +2121,171 @@ static void fill_nan(double* out, int m) {
     for (int j = 0; j < m; ++j) out[j] = R_NaN;
 }
 
+// the number of parameters of a family that the joint registry knows, which
+// sizes the NaN written for an entry beyond its coverage; 0 otherwise
 static int joint_np(int id) {
-    return d7_joint_covered(id) == 1 ? id_np(id) : 0;
+    return d7_joint_covered(id) > 0 ? id_np(id) : 0;
 }
 
 void d7_joint_grad(int id, double y, const double* th, double* out) {
-    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    switch (d7_joint_covered(id) >= 2 ? id : -1) {
     case 0: d7::gaussian1_joint_grad(y, th, out); break;
+    case 1: d7::gamma1_joint_grad(y, th, out); break;
+    case 3: d7::negbin2_joint_grad(y, th, out); break;
+    case 4: d7::beta1_joint_grad(y, th, out); break;
+    case 10: d7::cauchy_joint_grad(y, th, out); break;
+    case 11: d7::logistic_joint_grad(y, th, out); break;
+    case 12: d7::gaussian2_joint_grad(y, th, out); break;
+    case 13: d7::gaussian3_joint_grad(y, th, out); break;
+    case 14: d7::lognormal1_joint_grad(y, th, out); break;
+    case 15: d7::invgauss1_joint_grad(y, th, out); break;
+    case 16: d7::invgauss2_joint_grad(y, th, out); break;
+    case 17: d7::gamma2_joint_grad(y, th, out); break;
+    case 18: d7::gpd_joint_grad(y, th, out); break;
+    case 19: d7::vonmises1_joint_grad(y, th, out); break;
+    case 20: d7::vonmises2_joint_grad(y, th, out); break;
+    case 21: d7::weibull3_joint_grad(y, th, out); break;
+    case 22: d7::lognormal2_joint_grad(y, th, out); break;
     case 23: d7::student_t1_joint_grad(y, th, out); break;
+    case 24: d7::student_t2_joint_grad(y, th, out); break;
+    case 25: d7::gengamma1_joint_grad(y, th, out); break;
+    case 26: d7::gengamma2_joint_grad(y, th, out); break;
+    case 27: d7::gumbel_joint_grad(y, th, out); break;
+    case 28: d7::laplace_joint_grad(y, th, out); break;
+    case 29: d7::laplace2_joint_grad(y, th, out); break;
+    case 30: d7::weibull1_joint_grad(y, th, out); break;
+    case 31: d7::beta2_joint_grad(y, th, out); break;
+    case 32: d7::enet_joint_grad(y, th, out); break;
+    case 33: d7::negbin1_joint_grad(y, th, out); break;
+    case 34: d7::skewnormal1_joint_grad(y, th, out); break;
+    case 35: d7::skewt_joint_grad(y, th, out); break;
+    case 36: d7::pseudohuber_joint_grad(y, th, out); break;
+    case 37: d7::pseudohuber2_joint_grad(y, th, out); break;
+    case 38: d7::skewnormal2_joint_grad(y, th, out); break;
+    case 39: d7::pig1_joint_grad(y, th, out); break;
+    case 40: d7::pig2_joint_grad(y, th, out); break;
+    case 41: d7::betabinom1_joint_grad(y, th, out); break;
+    case 42: d7::betabinom2_joint_grad(y, th, out); break;
     default: fill_nan(out, joint_np(id));
     }
 }
 
 void d7_joint_hess(int id, double y, const double* th, double* out) {
-    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    switch (d7_joint_covered(id) >= 2 ? id : -1) {
     case 0: d7::gaussian1_joint_hess(y, th, out); break;
+    case 1: d7::gamma1_joint_hess(y, th, out); break;
+    case 3: d7::negbin2_joint_hess(y, th, out); break;
+    case 4: d7::beta1_joint_hess(y, th, out); break;
+    case 10: d7::cauchy_joint_hess(y, th, out); break;
+    case 11: d7::logistic_joint_hess(y, th, out); break;
+    case 12: d7::gaussian2_joint_hess(y, th, out); break;
+    case 13: d7::gaussian3_joint_hess(y, th, out); break;
+    case 14: d7::lognormal1_joint_hess(y, th, out); break;
+    case 15: d7::invgauss1_joint_hess(y, th, out); break;
+    case 16: d7::invgauss2_joint_hess(y, th, out); break;
+    case 17: d7::gamma2_joint_hess(y, th, out); break;
+    case 18: d7::gpd_joint_hess(y, th, out); break;
+    case 19: d7::vonmises1_joint_hess(y, th, out); break;
+    case 20: d7::vonmises2_joint_hess(y, th, out); break;
+    case 21: d7::weibull3_joint_hess(y, th, out); break;
+    case 22: d7::lognormal2_joint_hess(y, th, out); break;
     case 23: d7::student_t1_joint_hess(y, th, out); break;
+    case 24: d7::student_t2_joint_hess(y, th, out); break;
+    case 25: d7::gengamma1_joint_hess(y, th, out); break;
+    case 26: d7::gengamma2_joint_hess(y, th, out); break;
+    case 27: d7::gumbel_joint_hess(y, th, out); break;
+    case 28: d7::laplace_joint_hess(y, th, out); break;
+    case 29: d7::laplace2_joint_hess(y, th, out); break;
+    case 30: d7::weibull1_joint_hess(y, th, out); break;
+    case 31: d7::beta2_joint_hess(y, th, out); break;
+    case 32: d7::enet_joint_hess(y, th, out); break;
+    case 33: d7::negbin1_joint_hess(y, th, out); break;
+    case 34: d7::skewnormal1_joint_hess(y, th, out); break;
+    case 35: d7::skewt_joint_hess(y, th, out); break;
+    case 36: d7::pseudohuber_joint_hess(y, th, out); break;
+    case 37: d7::pseudohuber2_joint_hess(y, th, out); break;
+    case 38: d7::skewnormal2_joint_hess(y, th, out); break;
+    case 39: d7::pig1_joint_hess(y, th, out); break;
+    case 40: d7::pig2_joint_hess(y, th, out); break;
+    case 41: d7::betabinom1_joint_hess(y, th, out); break;
+    case 42: d7::betabinom2_joint_hess(y, th, out); break;
     default: fill_nan(out, joint_np(id) * joint_np(id));
     }
 }
 
 void d7_joint_info(int id, double y, const double* th, double* out) {
-    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    switch (d7_joint_covered(id) >= 4 ? id : -1) {
     case 0: d7::gaussian1_joint_info(y, th, out); break;
+    case 1: d7::gamma1_joint_info(y, th, out); break;
+    case 3: d7::negbin2_joint_info(y, th, out); break;
+    case 4: d7::beta1_joint_info(y, th, out); break;
+    case 10: d7::cauchy_joint_info(y, th, out); break;
+    case 11: d7::logistic_joint_info(y, th, out); break;
+    case 12: d7::gaussian2_joint_info(y, th, out); break;
+    case 13: d7::gaussian3_joint_info(y, th, out); break;
+    case 14: d7::lognormal1_joint_info(y, th, out); break;
+    case 15: d7::invgauss1_joint_info(y, th, out); break;
+    case 16: d7::invgauss2_joint_info(y, th, out); break;
+    case 17: d7::gamma2_joint_info(y, th, out); break;
+    case 18: d7::gpd_joint_info(y, th, out); break;
+    case 19: d7::vonmises1_joint_info(y, th, out); break;
+    case 20: d7::vonmises2_joint_info(y, th, out); break;
+    case 21: d7::weibull3_joint_info(y, th, out); break;
+    case 22: d7::lognormal2_joint_info(y, th, out); break;
     case 23: d7::student_t1_joint_info(y, th, out); break;
+    case 24: d7::student_t2_joint_info(y, th, out); break;
+    case 25: d7::gengamma1_joint_info(y, th, out); break;
+    case 26: d7::gengamma2_joint_info(y, th, out); break;
+    case 27: d7::gumbel_joint_info(y, th, out); break;
+    case 28: d7::laplace_joint_info(y, th, out); break;
+    case 29: d7::laplace2_joint_info(y, th, out); break;
+    case 30: d7::weibull1_joint_info(y, th, out); break;
+    case 31: d7::beta2_joint_info(y, th, out); break;
+    case 32: d7::enet_joint_info(y, th, out); break;
+    case 33: d7::negbin1_joint_info(y, th, out); break;
+    case 39: d7::pig1_joint_info(y, th, out); break;
+    case 40: d7::pig2_joint_info(y, th, out); break;
+    case 41: d7::betabinom1_joint_info(y, th, out); break;
+    case 42: d7::betabinom2_joint_info(y, th, out); break;
     default: fill_nan(out, joint_np(id) * joint_np(id));
     }
 }
 
 void d7_joint_dinfo(int id, double y, const double* th, double* out) {
     const int P = joint_np(id);
-    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    switch (d7_joint_covered(id) >= 4 ? id : -1) {
     case 0: d7::gaussian1_joint_dinfo(y, th, out); break;
+    case 1: d7::gamma1_joint_dinfo(y, th, out); break;
+    case 3: d7::negbin2_joint_dinfo(y, th, out); break;
+    case 4: d7::beta1_joint_dinfo(y, th, out); break;
+    case 10: d7::cauchy_joint_dinfo(y, th, out); break;
+    case 11: d7::logistic_joint_dinfo(y, th, out); break;
+    case 12: d7::gaussian2_joint_dinfo(y, th, out); break;
+    case 13: d7::gaussian3_joint_dinfo(y, th, out); break;
+    case 14: d7::lognormal1_joint_dinfo(y, th, out); break;
+    case 15: d7::invgauss1_joint_dinfo(y, th, out); break;
+    case 16: d7::invgauss2_joint_dinfo(y, th, out); break;
+    case 17: d7::gamma2_joint_dinfo(y, th, out); break;
+    case 18: d7::gpd_joint_dinfo(y, th, out); break;
+    case 19: d7::vonmises1_joint_dinfo(y, th, out); break;
+    case 20: d7::vonmises2_joint_dinfo(y, th, out); break;
+    case 21: d7::weibull3_joint_dinfo(y, th, out); break;
+    case 22: d7::lognormal2_joint_dinfo(y, th, out); break;
     case 23: d7::student_t1_joint_dinfo(y, th, out); break;
+    case 24: d7::student_t2_joint_dinfo(y, th, out); break;
+    case 25: d7::gengamma1_joint_dinfo(y, th, out); break;
+    case 26: d7::gengamma2_joint_dinfo(y, th, out); break;
+    case 27: d7::gumbel_joint_dinfo(y, th, out); break;
+    case 28: d7::laplace_joint_dinfo(y, th, out); break;
+    case 29: d7::laplace2_joint_dinfo(y, th, out); break;
+    case 30: d7::weibull1_joint_dinfo(y, th, out); break;
+    case 31: d7::beta2_joint_dinfo(y, th, out); break;
+    case 32: d7::enet_joint_dinfo(y, th, out); break;
+    case 33: d7::negbin1_joint_dinfo(y, th, out); break;
+    case 39: d7::pig1_joint_dinfo(y, th, out); break;
+    case 40: d7::pig2_joint_dinfo(y, th, out); break;
+    case 41: d7::betabinom1_joint_dinfo(y, th, out); break;
+    case 42: d7::betabinom2_joint_dinfo(y, th, out); break;
     default: fill_nan(out, P * P * P);
     }
 }
@@ -2190,14 +2331,14 @@ Rcpp::List d7_info_probe(std::string cls, int k, Rcpp::NumericVector y,
 
 // the twin of d7_scalar_probe() for the joint registry: the four orders at
 // every observation, as an n x P matrix, an n x P x P and an n x P x P x P
-// array; `covered` is d7_joint_covered()
+// array; `covered` is d7_joint_covered(), and the orders beyond it are NaN
 // [[Rcpp::export]]
 Rcpp::List d7_joint_probe(std::string cls, Rcpp::NumericVector y,
                           Rcpp::NumericMatrix theta) {
     int id = d7_scalar_id(cls.c_str());
     int cov = d7_joint_covered(id);
     int n = y.size(), np = theta.ncol();
-    int P = cov == 1 ? id_np(id) : 0;
+    int P = cov >= 2 ? id_np(id) : 0;
     Rcpp::NumericMatrix g(n, P);
     Rcpp::NumericVector h(n * P * P), e(n * P * P), de(n * P * P * P);
     std::vector<double> th(np), og(P), oh(P * P), oe(P * P), ode(P * P * P);
@@ -2227,7 +2368,7 @@ Rcpp::List d7_joint_probe(std::string cls, Rcpp::NumericVector y,
 Rcpp::CharacterVector d7_joint_classes_covered() {
     std::vector<std::string> out;
     for (int i = 0; i < d7_n_scalar_classes; ++i) {
-        if (d7_joint_covered(i) == 1) out.push_back(d7_scalar_classes[i]);
+        if (d7_joint_covered(i) > 0) out.push_back(d7_scalar_classes[i]);
     }
     return Rcpp::wrap(out);
 }

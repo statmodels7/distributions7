@@ -144,6 +144,44 @@ inline double gpd_dexpected_xi_xi_xi(double x) {
   return -2.0 * F1;
 }
 
+// Off-diagonal entry of the observed Hessian, as gpd_hessian_cpp computes it.
+inline double gpd_hess_sigma_xi(double z, double x, double T1, double is) {
+  const double w0 = T1*z;
+  return (w0*(-w0*x - w0 + 1)) * gpd_ipow(is, 1);
+}
+
+// Off-diagonal entry of the expected information, as gpd_expected_hessian_cpp
+// computes it (NA where it does not exist).
+inline double gpd_expected_sigma_xi(double sv, double x) {
+  const double is = 1.0 / sv;
+  const double w0 = 1.0/(2*x + 1);
+  const double w1 = w0/(x + 1);
+  return x > -1.0/2.0 ? (-w1) * gpd_ipow(is, 1) : NA_REAL;
+}
+
+// The derivatives of the expected information entries that
+// gpd_dexpected1_cpp computes inline: d E_ss / d xi, d E_sx / d sigma and
+// d E_sx / d xi, with d = 1 + 2 xi and F = 1/(d (1 + xi)).
+inline double gpd_dexpected_sigma_sigma_xi(double s, double x) {
+  double d = 1.0 + 2.0 * x;
+  double is = 1.0 / s, is2 = is * is;
+  double id = 1.0 / d, id2 = id * id;
+  return 2.0 * id2 * is2;
+}
+
+inline double gpd_dexpected_sigma_xi_sigma(double s, double x) {
+  double d = 1.0 + 2.0 * x, F = 1.0 / (d * (1.0 + x));
+  double is = 1.0 / s, is2 = is * is;
+  return F * is2;
+}
+
+inline double gpd_dexpected_sigma_xi_xi(double s, double x) {
+  double d = 1.0 + 2.0 * x, F = 1.0 / (d * (1.0 + x)), c = 3.0 + 4.0 * x;
+  double F1 = -c * F * F;
+  double is = 1.0 / s;
+  return -F1 * is;
+}
+
 inline void gpd_score_curv(int k, double y, const double* th, double* out) {
   const double sv = th[0], x = th[1];
   const double t = gpd_t(y, sv, x);
@@ -175,6 +213,73 @@ inline void gpd_info_dinfo(int k, double y, const double* th, double* out) {
     out[0] = gpd_expected_xi_xi(x);
     out[1] = gpd_dexpected_xi_xi_xi(x);
   }
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale (sigma, xi). The Hessian and the
+// expected information fill a full P x P matrix and the derivative of the
+// expected information a P x P x P array, column-major, out[a + P b + P^2 c]
+// being the derivative of E[l_ab] in parameter c. Outside the support the
+// observed components are NaN, as in gpd_score_curv(). The expected
+// information is NA where xi <= -1/2, and so is its derivative.
+inline void gpd_joint_grad(double y, const double* th, double* out) {
+  const double sv = th[0], x = th[1];
+  const double t = gpd_t(y, sv, x);
+  if (!gpd_in_support(y, t)) {
+    out[0] = R_NaN;
+    out[1] = R_NaN;
+    return;
+  }
+  const double z = y / sv, u = x * z;
+  const double T1 = 1.0 / t;
+  const double LT = gpd_logt(u, t);
+  const double v = u / t;
+  const double F1 = gpd_phi(1, u, v, t, LT);
+  const double is = 1.0 / sv;
+  out[0] = gpd_score_sigma(z, x, T1, is);
+  out[1] = gpd_score_xi(z, T1, F1);
+}
+
+inline void gpd_joint_hess(double y, const double* th, double* out) {
+  const double sv = th[0], x = th[1];
+  const double t = gpd_t(y, sv, x);
+  if (!gpd_in_support(y, t)) {
+    out[0] = R_NaN;
+    out[3] = R_NaN;
+    out[1] = out[2] = R_NaN;
+    return;
+  }
+  const double z = y / sv, u = x * z;
+  const double T1 = 1.0 / t;
+  const double LT = gpd_logt(u, t);
+  const double v = u / t;
+  const double F2 = gpd_phi(2, u, v, t, LT);
+  const double is = 1.0 / sv;
+  out[0] = gpd_hess_sigma_sigma(z, x, T1, is);
+  out[3] = gpd_hess_xi_xi(z, T1, F2);
+  out[1] = out[2] = gpd_hess_sigma_xi(z, x, T1, is);
+}
+
+inline void gpd_joint_info(double y, const double* th, double* out) {
+  const double sv = th[0], x = th[1];
+  out[0] = gpd_expected_sigma_sigma(sv, x);
+  out[3] = gpd_expected_xi_xi(x);
+  out[1] = out[2] = gpd_expected_sigma_xi(sv, x);
+}
+
+inline void gpd_joint_dinfo(double y, const double* th, double* out) {
+  const double sv = th[0], x = th[1];
+  for (int j = 0; j < 8; ++j) out[j] = 0.0;
+  if (x <= -0.5) {
+    for (int j = 0; j < 8; ++j) out[j] = NA_REAL;
+    return;
+  }
+  out[0] = gpd_dexpected_sigma_sigma_sigma(sv, x);
+  out[4] = gpd_dexpected_sigma_sigma_xi(sv, x);
+  out[1] = out[2] = gpd_dexpected_sigma_xi_sigma(sv, x);
+  out[3] = 0.0;
+  out[5] = out[6] = gpd_dexpected_sigma_xi_xi(sv, x);
+  out[7] = gpd_dexpected_xi_xi_xi(x);
 }
 
 } // namespace d7

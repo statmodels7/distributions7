@@ -679,6 +679,83 @@ inline void skewnormal2_info_dinfo(int k, double y, const double* th,
   loc_scale_unstandardize(k, s, std2, out);
 }
 
+// The off-diagonal components of the observed Hessian, from
+// skewnormal2_hessian_cpp (skewnormal2.cpp): u0 = s^-2 and u1 = G_11/s.
+inline double skewnormal2_hess_mu_sigma(double G1_0, double G2_0, double w,
+                                        double s) {
+  const double u0 = std::pow(s, -2);
+  return u0 * (G1_0 + G2_0 * w);
+}
+
+inline double skewnormal2_hess_mu_gamma1(double G1_1, double s) {
+  const double u1 = G1_1 / s;
+  return -u1;
+}
+
+inline double skewnormal2_hess_sigma_gamma1(double G1_1, double w, double s) {
+  const double u1 = G1_1 / s;
+  return -u1 * w;
+}
+
+// The routers of the joint registry, in (mu, sigma, gamma1). The expected
+// information is a series below sn2_ge() and a quadrature above it
+// (skewnormal2_info_dinfo()), so it is not exact here and only the gradient
+// and the observed Hessian are written. The observed Hessian is rejected at
+// gamma1 = 0 by distrib_hessian(), and the router computes what the kernel
+// computes there.
+inline void skewnormal2_joint_grad(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1], gv = th[2];
+  const Sn2ShapeGrad P = sn2_shape_grad(gv);
+  const double r = P.r, Dq = P.Dq;
+  const double w = (y - m) / s;
+  const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
+  const double Z1 = sn2_zeta1(X);
+  double G1_0 = sn2_grad_G1_0(w, X, Z1, P);
+  const double gs01 = sn2_series_region(X, r) ? sn2_G_series(0, 1, w, r) : 0.0;
+  double G0_1 = sn2_G0_1(w, X, Z1, P, gs01);
+  // far left of the step the forms above cancel; there by composition
+  if (X < -1.0 && !sn2_series_region(X, r)) {
+    double GG[6][6];
+    sn2_G_fdb(w, r, Dq, 1, GG);
+    G1_0 = GG[1][0];
+    G0_1 = GG[0][1];
+  }
+  out[0] = skewnormal2_score_mu(G1_0, s);
+  out[1] = skewnormal2_score_sigma(G1_0, w, s);
+  out[2] = skewnormal2_score_gamma1(G0_1);
+}
+
+inline void skewnormal2_joint_hess(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1], gv = th[2];
+  const Sn2ShapeHess P = sn2_shape_hess(gv);
+  const double r = P.r, Dq = P.Dq;
+  const double w = (y - m) / s;
+  const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
+  const double Z1 = sn2_zeta1(X);
+  const bool ser = sn2_series_region(X, r);
+  const double gs11 = ser ? sn2_G_series(1, 1, w, r) : 0.0;
+  const double gs02 = ser ? sn2_G_series(0, 2, w, r) : 0.0;
+  double G1_1 = sn2_hess_G1_1(w, X, Z1, P, gs11);
+  double G1_0 = sn2_G1_0(w, X, Z1, P);
+  double G2_0 = sn2_G2_0(w, X, Z1, P);
+  double G0_2 = sn2_G0_2(w, X, Z1, P, gs02);
+  // far left of the step the forms above cancel; there by composition
+  if (X < -1.0 && !ser) {
+    double GG[6][6];
+    sn2_G_fdb(w, r, Dq, 2, GG);
+    G1_0 = GG[1][0];
+    G2_0 = GG[2][0];
+    G1_1 = GG[1][1];
+    G0_2 = GG[0][2];
+  }
+  out[0] = skewnormal2_hess_mu_mu(G2_0, s);
+  out[4] = skewnormal2_hess_sigma_sigma(G1_0, G2_0, w, s);
+  out[8] = skewnormal2_hess_gamma1_gamma1(G0_2);
+  out[1] = out[3] = skewnormal2_hess_mu_sigma(G1_0, G2_0, w, s);
+  out[2] = out[6] = skewnormal2_hess_mu_gamma1(G1_1, s);
+  out[5] = out[7] = skewnormal2_hess_sigma_gamma1(G1_1, w, s);
+}
+
 } // namespace d7
 
 #endif
