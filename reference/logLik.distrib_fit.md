@@ -5,12 +5,12 @@ Returns the maximized log-likelihood as a `logLik` object, so that
 [`stats::BIC()`](https://rdrr.io/r/stats/AIC.html) and anything else in
 stats that reads one can be applied to a fit. The value is summed over
 observations and is not divided by \\n\\, whatever scaling the optimizer
-worked with.
+used.
 
 The `df` attribute is the number of estimated parameters, which for
-these fits is every parameter of the family: a fit estimates all of
-them, so nothing is held. The `nobs` attribute is `object@n`, the row
-count for a multivariate response and the length otherwise.
+these fits is every parameter of the family, because a fit estimates all
+of them and holds none fixed. The `nobs` attribute is `object@n`, the
+row count for a multivariate response and the length otherwise.
 
 ## Arguments
 
@@ -50,14 +50,14 @@ c(df = attr(logLik(fit), "df"), nobs = attr(logLik(fit), "nobs"))
 #>   df nobs 
 #>    2  400 
 
-# The criteria the fit reports are the ones stats builds from this.
+# The criteria that the fit reports are the ones that stats builds from this.
 all.equal(AIC(logLik(fit)), fit@aic)
 #> [1] TRUE
 all.equal(BIC(logLik(fit)), fit@bic)
 #> [1] TRUE
 
-# Comparing two families on the same data. The Student t spends one more
-# parameter, so AIC decides whether the tails are worth it.
+# Two families are compared on the same data. The Student t has one more
+# parameter, and the AIC shows whether the tails are worth it.
 ft <- fit_distrib(student_t1_distrib(), y)
 c(gaussian = AIC(logLik(fit)), student_t = AIC(logLik(ft)))
 #>  gaussian student_t 

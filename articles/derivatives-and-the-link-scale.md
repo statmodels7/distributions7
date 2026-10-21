@@ -5,11 +5,11 @@
 library(distributions7)
 ```
 
-Most of what **distributions7** offers beyond densities is derivatives:
-the score, the information, and the third and fourth derivatives of the
-log-likelihood. This vignette explains what they are, the two scales
-they are available on, and why the second scale (the link scale) is the
-one that an optimizer needs.
+Beyond densities, distributions7 offers mainly derivatives: the score,
+the information, and the third and fourth derivatives of the
+log-likelihood. This vignette explains what they are, the two scales on
+which they are available, and why the second scale (the link scale) is
+the one that an optimizer needs.
 
 ## The derivatives of the log-likelihood
 
@@ -44,7 +44,7 @@ distrib_hessian(d, y, theta)           # observed: d^2 ell / d theta^2
 #> [1]  0.13921196 -0.04080963  0.18569525 -0.35450684
 ```
 
-The **expected** Hessian (the negative Fisher information) is a separate
+The expected Hessian (the negative Fisher information) is a separate
 generic, because for a correct model it does not depend on $`y`$:
 
 ``` r
@@ -93,13 +93,13 @@ Every generic for the parameter derivatives of the log-likelihood, from
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
 to
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
-takes a `scale` argument. The default, `scale = "parameter"`, is what
-the examples above used: derivatives with respect to $`\theta`$ on its
-natural, constrained scale.
+takes a `scale` argument. The default, `scale = "parameter"`, gives
+derivatives with respect to $`\theta`$ on its natural, constrained
+scale, as in the examples above.
 
 `scale = "link"` instead gives derivatives with respect to the
-**unconstrained** parameter $`\eta = g(\theta)`$ behind each link. For
-the Gaussian the default link on $`\sigma`$ is the log, so
+unconstrained parameter $`\eta = g(\theta)`$ behind each link. For the
+Gaussian the default link on $`\sigma`$ is the log, so
 $`\eta_\sigma = \log\sigma`$:
 
 ``` r
@@ -172,12 +172,12 @@ constrained parameters means either fighting the boundary or bolting on
 constraints. Reparametrize through the link and the problem becomes
 unconstrained: $`\eta`$ ranges over the whole real line, and a Newton or
 Fisher-scoring step needs exactly the link-scale score and information
-this package computes in closed form.
+that this package computes in closed form.
 
-That is what
+The function
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-does: it optimizes on the link scale and maps back, which is why its
-confidence intervals cannot leave a parameter’s domain. See
+optimizes on the link scale and maps back, so its confidence intervals
+cannot leave a parameter’s domain. See
 [`vignette("fitting-a-model")`](https://statmodels7.github.io/distributions7/articles/fitting-a-model.md)
 for that side of the story.
 
@@ -208,8 +208,8 @@ c(parameter = eh_par$sigma_sigma[1],
 and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 also take `expected = TRUE`. Some distributions have closed-form
-expected derivatives; where they do not, the value is approximated, and
-`approx` chooses how:
+expected derivatives; where they do not, the value is approximated by
+the strategy that the `approx` argument selects:
 
 ``` r
 
@@ -245,7 +245,7 @@ has the details.
 
 ## A note for authors of derivative methods
 
-A user-written analytical derivative method **must** include the `scale`
+A user-written analytical derivative method must include the `scale`
 argument in its signature, even if the method only ever returns the
 parameter scale:
 

@@ -41,7 +41,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 494 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 583 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -56,9 +56,9 @@ fit
 ```
 
 The estimates recover the values from which the sample was generated,
-and the print method shows them twice: on the **parameter scale**, and
-on the **link scale** where the fitting actually happened. More on that
-split below.
+and the print method shows them twice: on the parameter scale, and on
+the link scale where the fitting actually happened. The split is
+explained below.
 
 ## Reading the fit
 
@@ -99,11 +99,10 @@ confint(fit, scale = "link")
 ```
 
 The interval on the link scale is symmetric about the estimate, and the
-one on the parameter scale is its image under $`g^{-1}`$, which is why
-the second is not symmetric.
-[`confint()`](https://rdrr.io/r/stats/confint.html) also takes a
-`level`, computed from the stored estimates and standard errors without
-refitting:
+one on the parameter scale is its image under $`g^{-1}`$, so the second
+is not symmetric. [`confint()`](https://rdrr.io/r/stats/confint.html)
+also takes a `level`, computed from the stored estimates and standard
+errors without refitting:
 
 ``` r
 
@@ -114,8 +113,8 @@ confint(fit, level = 0.99)
 ```
 
 The object also carries the information criteria, the number of
-iterations and the method that was actually used, all visible in the
-print above.
+iterations and the method that was actually used, and the print above
+shows all of them.
 
 ## Why the link scale
 
@@ -124,9 +123,9 @@ $`(0, 1)`$; a Gaussian’s standard deviation is positive. Optimizing
 those constrained parameters directly means fighting the boundary.
 Instead
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-optimizes the **unconstrained** parameters behind each link ($`\log\mu`$
-and $`\log\sigma^2`$ for the gamma), where there is no boundary to hit,
-using the exact score and information the package provides on that
+optimizes the unconstrained parameters behind each link ($`\log\mu`$ and
+$`\log\sigma^2`$ for the gamma), where there is no boundary to hit,
+using the exact score and information that the package provides on that
 scale.
 
 The estimates are then mapped back, and so are the intervals. Because a
@@ -140,7 +139,7 @@ b <- bernoulli_distrib()
 fit_distrib(b, rbinom(40, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25
-#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 2 ms
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 5 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -261,7 +260,7 @@ and the caller’s random stream is left untouched.
 Before a fit is trusted, and especially before a user-written
 distribution is,
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-puts it through a battery of numerical checks. It confirms that the
+runs a battery of numerical checks on it. The checks establish that the
 density integrates to one, that the distribution function agrees with
 the density, that the quantile inverts it, that the generator follows
 it, that the analytical derivatives match finite differences on the
@@ -292,8 +291,8 @@ invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
 ```
 
 Had a mistake crept into an analytical derivative, the corresponding
-line would read `FAIL`, with the size of the discrepancy printed next to
-it. It is the fastest way to catch a wrong formula.
+line would read `FAIL`, and the size of the discrepancy is printed next
+to it. It is the fastest way to catch a wrong formula.
 
 ## Further reading
 

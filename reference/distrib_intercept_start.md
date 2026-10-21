@@ -29,13 +29,13 @@ distrib_intercept_start(distrib, y, ...)
 
 ## Value
 
-A named list of single numbers on the parameter scale, possibly empty,
-each strictly inside its parameter's bounds and named after an entry of
-`distrib@params`.
+A named list of single numbers on the parameter scale, which may be
+empty. Each value is strictly inside its parameter's bounds and is named
+after an entry of `distrib@params`.
 
 ## Details
 
-The case this exists for is
+This generic exists for
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md).
 Without covariates the parent's overdispersion can absorb the excess
 zeros, so the intercept-only maximum puts the mixing weight at the edge
@@ -49,7 +49,7 @@ See
 ## See also
 
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md),
-the starting values
+the starting values that
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 uses.
 

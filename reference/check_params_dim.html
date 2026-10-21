@@ -11,7 +11,7 @@ n. This ensures safe vector recycling and dimensional consistency."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,19 +89,19 @@ causing the mismatch.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># --- Case 1: Implicit max length ---</span></span></span>
-<span class="r-in"><span><span class="co"># Valid: all scalars</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># --- Case 1: the maximum length is implicit ---</span></span></span>
+<span class="r-in"><span><span class="co"># Valid: all parameters are scalars</span></span></span>
 <span class="r-in"><span><span class="fu">check_params_dim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Valid: mixing scalar and vector</span></span></span>
+<span class="r-in"><span><span class="co"># Valid: a scalar and a vector are mixed</span></span></span>
 <span class="r-in"><span><span class="fu">check_params_dim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Invalid: incompatible lengths (2 vs 3)</span></span></span>
+<span class="r-in"><span><span class="co"># Invalid: the lengths (2 and 3) are incompatible</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">check_params_dim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># --- Case 2: Explicit n ---</span></span></span>
+<span class="r-in"><span><span class="co"># --- Case 2: n is explicit ---</span></span></span>
 <span class="r-in"><span><span class="co"># Valid: vector matches n (5)</span></span></span>
 <span class="r-in"><span><span class="fu">check_params_dim</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

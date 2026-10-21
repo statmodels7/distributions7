@@ -36,11 +36,11 @@ Every component must have length 1 or the same \\k\\. A length that only
 divides \\k\\ signals an error, because R would recycle such a component
 without a warning.
 
-The meaning is available only because a plot has no data to recycle a
-parameter against.
+A vector component can be read as one setting per curve only because a
+plot has no data against which to recycle a parameter.
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 and every derivative generic read a vector component as one value per
-observation, which is why each setting is handed to them as scalars.
+observation, so each setting is handed to them as scalars.
 
 ## See also
 

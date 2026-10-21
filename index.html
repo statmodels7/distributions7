@@ -18,9 +18,9 @@
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Distributions as reusable objects">
-<meta name="description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order with respect to the parameters, the response, and the unconstrained scale on which an optimizer works.
+<meta name="description" content="Probability distributions written once, as objects that any package can use, carrying exact derivatives of the log-likelihood to fourth order with respect to the parameters, the response, and the unconstrained scale on which an optimizer works.
 ">
-<meta property="og:description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order with respect to the parameters, the response, and the unconstrained scale on which an optimizer works.
+<meta property="og:description" content="Probability distributions written once, as objects that any package can use, carrying exact derivatives of the log-likelihood to fourth order with respect to the parameters, the response, and the unconstrained scale on which an optimizer works.
 ">
 <meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png">
 </head>
@@ -32,7 +32,7 @@
 
     <a class="navbar-brand me-2" href="index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@
 </h1>
 </div>
 <p>Almost every R package that fits statistical models writes its own distributions, privately: a <code>switch</code> on a character string, or a list of closures that only the package itself can reach. The same Gamma is therefore re-implemented again and again, each time only as far as that package happened to need it: the density and the score, sometimes the Hessian, rarely anything beyond.</p>
-<p><a href="https://statmodels7.github.io/distributions7/">distributions7</a> writes them once, as objects. Each carries the usual density, distribution and quantile functions, together with the <strong>exact derivatives of the log-likelihood up to fourth order</strong>, and a fifth order that is closed form for some families and one central difference of the analytic fourth order for the others. The derivatives are available with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function, which is the scale an optimizer works on.</p>
+<p><a href="https://statmodels7.github.io/distributions7/">distributions7</a> writes them once, as objects. Each carries the usual density, distribution and quantile functions, together with the exact derivatives of the log-likelihood up to fourth order, and a fifth order that is closed form for some families and one central difference of the analytic fourth order for the others. The derivatives are available with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function, which is the scale on which an optimizer works.</p>
 <p>It is the distribution layer of <a href="https://statmodels7.github.io" class="external-link">statmodels7</a>, an S7 toolkit for statistical modeling, and works alongside <a href="https://statmodels7.github.io/linkfunctions7/" class="external-link">linkfunctions7</a>. The mathematics behind every formula, from the likelihood theory and the change of scale to the derivations for the zero-inflated, zero-adjusted, truncated and transformed wrappers, is worked out in <a href="https://statmodels7.github.io/book/" class="external-link">the statmodels7 book</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -80,7 +80,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"statmodels7/distributions7"</span><span class="op">)</span></span></code></pre></div>
-<p>Or the whole toolkit at once, which installs <a href="https://statmodels7.github.io/distributions7/">distributions7</a> together with the other packages of the toolkit:</p>
+<p>Alternatively, the following call installs the whole toolkit, that is, <a href="https://statmodels7.github.io/distributions7/">distributions7</a> together with the other packages of the toolkit:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"statmodels7/statmodels7"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -112,7 +112,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>skewness <span class="op">=</span> <span class="fu"><a href="reference/skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span>, kurtosis <span class="op">=</span> <span class="fu"><a href="reference/kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; skewness kurtosis </span></span>
 <span><span class="co">#&gt;        0        0</span></span></code></pre></div>
-<p>Every moment returns <strong>one value per parameter setting</strong>, so a component given as a vector gives one moment per element, and the result can be bound to the rows of that vector. This holds also when the varied parameter does not enter the formula: the skewness of a Weibull depends only on its shape, and three scales still give three values.</p>
+<p>Every moment returns one value per parameter setting, so a component given as a vector gives one moment per element, and the result can be bound to the rows of that vector. This holds also when the varied parameter does not enter the formula: the skewness of a Weibull depends only on its shape, and three scales still give three values.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/weibull1_distrib.html">weibull1_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/skewness.html">skewness</a></span><span class="op">(</span><span class="va">w</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
@@ -145,7 +145,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $mu_sigma</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
-<p>On the <strong>link scale</strong> the same generics return derivatives with respect to the unconstrained parameters instead, computed through the chain rule rather than by differentiating numerically:</p>
+<p>On the link scale the same generics return derivatives with respect to the unconstrained parameters instead, computed through the chain rule rather than by differentiating numerically:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $mu</span></span>
@@ -164,7 +164,7 @@
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 40 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -176,7 +176,7 @@
 <span><span class="co">#&gt;        Estimate Std. Error   2.5%  97.5%</span></span>
 <span><span class="co">#&gt; mu       1.0842     0.0213 1.0424 1.1260</span></span>
 <span><span class="co">#&gt; sigma2   0.6875     0.0744 0.5416 0.8334</span></span></code></pre></div>
-<p>The fit carries the data from which it was estimated, so it can be checked against the data and simulated from:</p>
+<p>The fit carries the data from which it was estimated, so it can be checked against the data and used to simulate new data:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-fit-plot-1.png" alt="" width="100%"></p>
@@ -205,7 +205,7 @@
 <div class="section level2">
 <h2 id="several-dimensions">Several dimensions<a class="anchor" aria-label="anchor" href="#several-dimensions"></a>
 </h2>
-<p>A multivariate distribution carries a mean vector and a matrix, and the matrix comes from a structure of <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>. Its free values are scalars, so the parameter vector is a named list of numbers exactly as above and every generic here applies unchanged, <code><a href="reference/fit_distrib.html">fit_distrib()</a></code> included. The names say which matrix the structure describes, <code>sigma_</code> for a covariance and <code>omega_</code> for a precision, because the same structure on the two sides is two different models.</p>
+<p>A multivariate distribution carries a mean vector and a matrix, and the matrix comes from a structure of <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>. Its free values are scalars, so the parameter vector is a named list of numbers exactly as above and every generic here applies unchanged, including <code><a href="reference/fit_distrib.html">fit_distrib()</a></code>. The names indicate which matrix the structure describes, <code>sigma_</code> for a covariance and <code>omega_</code> for a precision, because the same structure on the two sides is two different models.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">dm</span><span class="op">@</span><span class="va">params</span></span>
@@ -218,19 +218,19 @@
 <span><span class="co">#&gt;           v1        v2</span></span>
 <span><span class="co">#&gt; v1 1.0476959 0.7273189</span></span>
 <span><span class="co">#&gt; v2 0.7273189 1.5380692</span></span></code></pre></div>
-<p>Those free values are the coordinates in which an optimizer moves, and they are not the quantities that the fit reports. <code><a href="reference/mv_summary.html">mv_summary()</a></code> carries the fit’s variance matrix onto the standard deviations and the correlations, by the delta method, and builds each interval on the scale that keeps it in its own set: a standard deviation on the log scale, a correlation on Fisher’s <em>z</em>. A precision parametrization reports the conditional variances and the partial correlations instead, which are what it describes directly; the marginal matrix remains available from <code><a href="reference/mv_sigma.html">mv_sigma()</a></code>.</p>
+<p>Those free values are the coordinates in which an optimizer moves, and they are not the quantities that the fit reports. <code><a href="reference/mv_summary.html">mv_summary()</a></code> carries the fit’s variance matrix onto the standard deviations and the correlations, by the delta method, and builds each interval on the scale that keeps it in its own set: a standard deviation on the log scale, a correlation on Fisher’s <em>z</em>. A precision parametrization reports the conditional variances and the partial correlations instead, because these are the quantities that it describes directly; the marginal matrix remains available from <code><a href="reference/mv_sigma.html">mv_sigma()</a></code>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/mv_summary.html">mv_summary</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate Std. Error      2.5%     97.5%</span></span>
 <span><span class="co">#&gt; sd_v1     1.0235702 0.03236813 0.9620558 1.0890178</span></span>
 <span><span class="co">#&gt; sd_v2     1.2401892 0.03921823 1.1656565 1.3194875</span></span>
 <span><span class="co">#&gt; cor_v1_v2 0.5729534 0.03004043 0.5111287 0.6288798</span></span></code></pre></div>
-<p>Up to three coordinates the fit can be drawn, each panel showing a marginal: the fitted density against a kernel estimate on the diagonal, and contours against the observations below it.</p>
+<p>Up to three coordinates the fit can be drawn, and each panel shows a marginal: the fitted density against a kernel estimate on the diagonal, and contours against the observations below it.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-mv-plot-1.png" alt="" width="100%"></p>
-<p><code><a href="reference/mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> is the heavy-tailed alternative, with the degrees of freedom estimated alongside everything else. Its <code><a href="reference/mv_sigma.html">mv_sigma()</a></code> is the <strong>scale</strong> matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by the factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math>. The two are reported separately, so that the family remains usable at two degrees of freedom or fewer, where the covariance does not exist.</p>
-<p>Two families are not elliptical. <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> lives on the simplex, written in a mean vector (a <code>parameters7</code> simplex) and a concentration, and its marginals are beta with that same concentration. <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code> is discrete, and being discrete it can enumerate its support: <code><a href="reference/mv_support.html">mv_support()</a></code> returns every vector of counts summing to the size, so its normalization and its expected information are exact sums rather than samples.</p>
+<p><code><a href="reference/mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> is the heavy-tailed alternative, in which the degrees of freedom are estimated alongside everything else. Its <code><a href="reference/mv_sigma.html">mv_sigma()</a></code> is the scale matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by the factor <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math>. The two are reported separately, so that the family remains usable at two degrees of freedom or fewer, where the covariance does not exist.</p>
+<p>Two families are not elliptical. <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> lives on the simplex, written in a mean vector (a <code>parameters7</code> simplex) and a concentration, and its marginals are beta with that same concentration. <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code> is discrete, and because it is discrete it can enumerate its support: <code><a href="reference/mv_support.html">mv_support()</a></code> returns every vector of counts summing to the size, so its normalization and its expected information are exact sums rather than samples.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/multinomial_distrib.html">multinomial_distrib</a></span><span class="op">(</span><span class="fl">3</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs_alr1 <span class="op">=</span> <span class="fl">0.3</span>, probs_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span></span>
@@ -259,7 +259,7 @@
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># never implemented, yet available</span></span>
+<span><span class="co"># These methods were never implemented, yet they are available.</span></span>
 <span><span class="fu"><a href="reference/distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d2</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.6967347</span></span>
 <span><span class="fu"><a href="reference/distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d2</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>

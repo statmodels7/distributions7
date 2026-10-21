@@ -1,8 +1,8 @@
 # The Direct Skew Normal Starts at Its Moment Estimate
 
-Returns the moment estimate of \\(\mu, \sigma, \alpha)\\, with the
-sample skewness held at 0.9, when the absolute sample skewness is at
-least 0.9, and an empty list otherwise.
+Returns, when the absolute sample skewness is at least 0.9, the moment
+estimate of \\(\mu, \sigma, \alpha)\\ in which the sample skewness is
+held at 0.9, and an empty list otherwise.
 
 ## Arguments
 
@@ -32,7 +32,7 @@ the intercept-only maximum likelihood fit has \\\alpha \to \infty\\ and
 the direct parametrization the curvature in \\\mu\\ there grows as
 \\\alpha^2\\, so a regression started from that point takes steps of
 order \\1/\alpha^2\\ and does not reach its maximum. The moment estimate
-with the skewness held at 0.9 gives \\\alpha = 6.3\\ and the matching
+computed at a skewness of 0.9 gives \\\alpha = 6.3\\ and the matching
 location and scale.
 
 ## See also

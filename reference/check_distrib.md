@@ -82,9 +82,9 @@ The checks performed are:
 
 - cdf: values in \\\[0,1\]\\ and monotonicity along a grid of quantiles,
   and its agreement with the density: for a continuous family a central
-  difference of the cdf against the density, with the step the response
-  derivatives use, and for a discrete one \\F(k) - F(k-1)\\ against the
-  mass.
+  difference of the cdf against the density, with the step that the
+  response derivatives use, and for a discrete one \\F(k) - F(k-1)\\
+  against the mass.
 
 - quantile: round-trip against the CDF (\\F(Q(p)) = p\\ for continuous
   distributions, and the generalized-inverse inequalities for discrete
@@ -142,11 +142,11 @@ The checks performed are:
   by observation by
   [`fd_stable_quotient()`](https://statmodels7.github.io/distributions7/reference/fd_stable_quotient.md),
   between a step cut to under half the distance to a bound and one
-  scaled on that distance, each divided by the steps its evaluation
-  points actually lie at. A draw closer than \\128\lvert
-  b\rvert\varepsilon\\ to a finite bound \\b \ne 0\\, where the spacing
-  of doubles is absolute and no central difference compares a
-  derivative, is left out and counted in the row's `detail`.
+  scaled on that distance, and each of which is divided by the steps at
+  which its evaluation points actually lie. A draw closer than
+  \\128\lvert b\rvert\varepsilon\\ to a finite bound \\b \ne 0\\, where
+  the spacing of doubles is absolute and a central difference does not
+  compare a derivative, is left out and counted in the row's `detail`.
 
 - link scale: `scale = "link"` derivatives against finite differences of
   the log-likelihood in \\\eta\\.
@@ -155,32 +155,32 @@ A parameter-derivative check of an order for which the family registers
 no method of its own is not run: the value would be the numerical
 fallback, the same finite difference as the reference, and the
 comparison would hold by construction. The row is listed in the
-attribute `"skipped"` with that reason. The response fallbacks take the
-cut step alone, so near a bound they can differ from the reference,
-which is what the row then reports.
+attribute `"skipped"` with that reason. The response fallbacks take only
+the cut step, so near a bound they can differ from the reference, and
+the row then reports that difference.
 
-A check whose statistic comes out `NaN` or `NA` has nothing to judge, as
-the expected information of a family where it does not exist, and is not
-a row of the table: it is listed with its reason in the attribute
-`"skipped"`, and every row that is in the table reads `"OK"` or
-`"FAIL"`. An infinite statistic is a failure, being a component that
-overflows where its reference does not; so is a check whose computation
-raised an error, and so is a density or a distribution function that is
-not finite. The checks defined on the values themselves (the
-non-negativity of the density, the range of the distribution function
-and, for a discrete family, the quantile round trip) are kept even when
-their statistic is missing.
+A check whose statistic comes out `NaN` or `NA` has nothing to judge
+(the expected information of a family in which it does not exist is an
+example) and is not a row of the table: it is listed with its reason in
+the attribute `"skipped"`, and every row that is in the table reads
+`"OK"` or `"FAIL"`. An infinite statistic is a failure, because it comes
+from a component that overflows where its reference does not. A check
+whose computation raised an error is also a failure, and so is a density
+or a distribution function that is not finite. The checks defined on the
+values themselves (the non-negativity of the density, the range of the
+distribution function and, for a discrete family, the quantile round
+trip) are kept even when their statistic is missing.
 
-Mixed distributions — a density with point masses on top of it, as
+Mixed distributions (a density with point masses on top of it, as
 produced by
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
-on a continuous parent — are handled as long as they declare their atoms
+on a continuous parent) are handled as long as they declare their atoms
 through
 [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md).
 The density is then expected to integrate to one minus the atomic mass,
 quantiles falling inside a jump of the CDF are checked as generalized
 inverses rather than exact ones, and finite differences in \\y\\ are
-kept away from the atoms, where no derivative exists.
+kept away from the atoms, where a derivative does not exist.
 
 ## See also
 

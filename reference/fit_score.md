@@ -37,7 +37,7 @@ fit_score(distrib, y, theta, threads = 1L)
 ## Value
 
 An unnamed numeric vector of length `length(distrib@params)`, in the
-order `distrib@params` gives.
+order of `distrib@params`.
 
 ## See also
 

@@ -1,8 +1,8 @@
 # Distribution Generics
 
-The S7 generics that apply to every `distrib` object, grouped by what
-they compute. This page is the index; each generic is documented on its
-own page, and the method of each family for it on a third.
+This page lists the S7 generics that apply to every `distrib` object,
+grouped by what they compute. Each generic is documented on its own
+page, and the method of each family for it on a third.
 
 The only compulsory method is
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md).
@@ -53,9 +53,9 @@ pages; the value returned is theirs.
   [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
   [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md),
   [`distrib_deriv4_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md).
-  A discrete family has no method for them, its support having no
-  continuous direction to differentiate along, so a call signals an
-  error.
+  A discrete family has no method for them because its support has no
+  continuous direction along which to differentiate, so a call signals
+  an error.
 
 - mixed:
 
@@ -146,7 +146,7 @@ distrib_gradient(d, c(-1, 1), th)
 #> [1] 0 0
 #> 
 
-# theta is reordered by name before dispatch, so the order it is written in
+# theta is reordered by name before dispatch, so the order of its elements
 # does not matter.
 identical(distrib_pdf(d, 1, list(mu = 0, sigma = 2)),
           distrib_pdf(d, 1, list(sigma = 2, mu = 0)))

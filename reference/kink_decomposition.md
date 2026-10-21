@@ -1,6 +1,6 @@
 # The Kink of a Family
 
-The one non-smooth piece of a log-density, as the composition
+Returns the one non-smooth piece of a log-density, as the composition
 \\c(\theta)\\\phi(v(y,\theta))\\ of
 [`kink_spec()`](https://statmodels7.github.io/distributions7/reference/kink_spec.md),
 or `NULL` for a family that is smooth in every parameter.
@@ -40,8 +40,8 @@ A wrapper does not propagate the declaration today, so a wrapper of a
 kinked family returns `NULL` here while `params_smooth` still records
 the kink;
 [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
-reports `NA` there rather than `Inf`, which says the order has not been
-established rather than that the parameter is smooth.
+reports `NA` there rather than `Inf`, because the order has not been
+established, whereas `Inf` would mean that the parameter is smooth.
 
 ## See also
 

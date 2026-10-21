@@ -1,12 +1,12 @@
 # Random Starting Values
 
-The base method: `n_start` independent draws from
+The base method returns `n_start` independent draws from
 [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md),
 which samples each parameter inside its own domain and never looks at
-the response. It is what a family gets when it registers no method of
-its own, and it is adequate wherever the parameters are of order one
-whatever the data, which is true of a shape, a dispersion or a
-probability and false of a location or a scale.
+the response. A family that registers no method of its own uses this
+one. It is adequate wherever the parameters are of order one whatever
+the data, which is true of a shape, a dispersion or a probability and
+false of a location or a scale.
 
 ## Arguments
 
@@ -18,8 +18,8 @@ probability and false of a location or a scale.
 
 - y:
 
-  The response. Unused here, and accepted only because the generic
-  passes it.
+  The response. It is unused here and is accepted only because the
+  generic passes it.
 
 - n_start:
 

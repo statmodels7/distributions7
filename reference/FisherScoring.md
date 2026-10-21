@@ -1,14 +1,14 @@
 # S7 Class for Fisher Scoring Specifications
 
-The class
+This class is the one that
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
-returns and
+returns and that
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-accepts through its `method` argument. It holds the two things a Fisher
-scoring run needs that an ordinary optimizer cannot carry: how the
-expected information is to be obtained when the family has no closed
-form for it, and the stopping rule and iteration budget the run is to
-use.
+accepts through its `method` argument. It holds the two things that a
+Fisher scoring run needs and that an ordinary optimizer cannot carry:
+how the expected information is obtained when the family has no closed
+form for it, and the stopping rule and iteration budget that the run
+uses.
 
 This page documents the raw S7 constructor, which validates nothing.
 Build one with

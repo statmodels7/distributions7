@@ -1,7 +1,7 @@
 # S7 Class for Discrete Distributions
 
-A subclass of `distrib` specifically for discrete probability
-distributions.
+This class is a subclass of `distrib` specifically for discrete
+probability distributions.
 
 ## Usage
 
@@ -78,11 +78,11 @@ An object of class `discrete_distrib`.
 
 ## Methods
 
-Defaults for discrete distributions, built from the probability mass
-function alone by accumulating it over the support, and for the
-derivatives of the cdf by exact summation; they require a finite lower
-bound, which every standard count distribution has. A discrete
-distribution has no derivatives in the response.
+The class has defaults for discrete distributions, built only from the
+probability mass function by accumulating it over the support, and
+defaults for the derivatives of the cdf by exact summation; they require
+a finite lower bound, which every standard count distribution has. A
+discrete distribution has no derivatives in the response.
 
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.discrete_distrib.md),

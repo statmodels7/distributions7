@@ -1,5 +1,25 @@
 # Changelog
 
+## distributions7 0.80.5
+
+- Documentation, sixth and last part: the pages of the base classes,
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  and its methods,
+  [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
+  the generics, the plot methods, the starting values and the utilities,
+  the README, the three vignettes and the descriptions of the pkgdown
+  reference rewritten without relative clauses lacking their pronoun,
+  stranded prepositions, absolute constructions, sentences without a
+  verb and personified descriptions of the code.
+- The messages for a `theta` without some parameters are reworded as in
+  penalties7 (“‘theta’ lacks the parameter(s) …; the expected parameters
+  are …”), and so are the messages for parameters of incompatible
+  lengths (“The parameter dimensions do not match”), for empty
+  parameters of a plot and for the random parameters that
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) draws when
+  `theta` is missing.
+
 ## distributions7 0.80.4
 
 - Documentation, fifth part: the pages of the derivative routes (cdf,

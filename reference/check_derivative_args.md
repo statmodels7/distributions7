@@ -3,9 +3,9 @@
 Aligns `theta`, checks that every parameter has length 1 or \\n\\, and
 recycles a scalar `y` up to \\n\\ when `theta` is vectorized. A constant
 of the family that varies by observation (a binomial's vector `size`,
-its parents' included) enters \\n\\ too: the response and the parameters
-must then have length 1 or the length of that constant, and any other
-length signals an error.
+including that of its parents) enters \\n\\ too: the response and the
+parameters must then have length 1 or the length of that constant, and
+any other length signals an error.
 
 ## Usage
 
@@ -29,12 +29,12 @@ check_derivative_args(distrib, y, theta)
 
 ## Value
 
-A list with elements `y` and `theta`, both conformable.
+A list with elements `y` and `theta`, which are conformable.
 
 ## Details
 
-An empty `y` is allowed through untouched, giving empty derivatives, the
-way `dnorm(numeric(0))` gives `numeric(0)` and the way
+An empty `y` is allowed through untouched, giving empty derivatives, as
+`dnorm(numeric(0))` gives `numeric(0)` and as
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 already behaves. Without the special case the recycling check below
 rejects it with the nonsensical message

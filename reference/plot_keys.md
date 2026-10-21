@@ -1,14 +1,14 @@
 # Colors, Line Types and Symbols for a Set of Curves
 
 Returns the three visual keys by which a plot method distinguishes its
-settings, each recycled to length \\k\\. A single curve is black, solid
-and a filled circle. Several take a qualitative palette, the six base
-line types and six distinguishable symbols, so that a printed copy with
-no color is still readable.
+settings, and each key is recycled to length \\k\\. A single curve is
+black, solid and a filled circle. Several take a qualitative palette,
+the six base line types and six distinguishable symbols, so that a
+printed copy with no color is still readable.
 
-A continuous family draws with the color and the line type; a discrete
-one draws with the color and the symbol, because dashing a stem is what
-a line type does there and a dashed stem reads as a broken one.
+A continuous family draws with the color and the line type. A discrete
+family draws with the color and the symbol, because a line type would
+dash the stems and a dashed stem reads as a broken one.
 
 ## Usage
 

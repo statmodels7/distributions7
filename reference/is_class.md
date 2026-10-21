@@ -17,7 +17,7 @@ is_class(cls, base)
 
 - base:
 
-  The base class to compare against.
+  The base class with which `cls` is compared.
 
 ## Value
 
@@ -25,7 +25,7 @@ A single logical.
 
 ## Details
 
-Several functions here decide whether a method comes from the base class
+Several functions here test whether a method comes from the base class
 or from a subclass that registered its own, by reading
 `attr(m, "signature")[[1]]`, the documented S7 route. The comparison
 that follows must not use
@@ -36,10 +36,10 @@ code of the package is re-evaluated instead of being loaded, as under
 coverage instrumentation.
 
 When [`identical()`](https://rdrr.io/r/base/identical.html) fails in
-this way the comparison is silent, and a numerical fallback is taken for
-an analytic method. The function therefore returns `TRUE` for identical
-objects as a fast path, and otherwise compares the class name together
-with the package name.
+this way, it returns `FALSE` without any signal, and the code takes a
+numerical fallback for an analytic method. The function therefore
+returns `TRUE` for identical objects as a fast path, and otherwise
+compares the class name together with the package name.
 
 ## See also
 

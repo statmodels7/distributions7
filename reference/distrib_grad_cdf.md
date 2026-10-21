@@ -4,12 +4,12 @@ Computes the first derivatives, with respect to the parameters, of
 \\\log F(q;\theta)\\ — or of \\\log(1 - F(q;\theta))\\ when
 `lower.tail = FALSE`.
 
-These are what a censored observation contributes to the score. An
-observation known only to be at most \\q\\ contributes \\\log F(q)\\,
-one known only to exceed \\q\\ contributes \\\log(1-F(q))\\, and an
-interval censored one contributes \\\log(F(b) - F(a))\\, which is
-assembled from the unlogged derivatives (`log = FALSE`) at the two
-endpoints. They are also what the delta method needs for the standard
+These derivatives give the contribution of a censored observation to the
+score. An observation known only to be at most \\q\\ contributes \\\log
+F(q)\\, one known only to exceed \\q\\ contributes \\\log(1-F(q))\\, and
+an interval censored one contributes \\\log(F(b) - F(a))\\, which is
+assembled from the derivatives of the probability itself (`log = FALSE`)
+at the two endpoints. The delta method also needs them for the standard
 error of a quantile residual.
 
 ## Usage
@@ -42,8 +42,8 @@ distrib_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
   Logical; if `TRUE` (default), derivatives of the *log* tail
   probability. With `FALSE` the derivatives of the probability itself
-  are returned, which interval censoring and the truncation constant are
-  built from.
+  are returned; interval censoring and the truncation constant are built
+  from them.
 
 - ...:
 
@@ -88,7 +88,8 @@ times the complete Bell polynomial in the log-scale ones.
 d <- gaussian1_distrib()
 theta <- list(mu = 0, sigma = 1)
 
-# what a right-censored observation at q = 1 contributes to the score
+# The call returns what a right-censored observation at q = 1 contributes
+# to the score.
 distrib_grad_cdf(d, 1, theta, lower.tail = FALSE)
 #> $mu
 #> [1] 1.525135

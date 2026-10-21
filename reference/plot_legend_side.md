@@ -24,13 +24,13 @@ plot_legend_side(y, dens)
 
 - dens:
 
-  A list of densities, one per setting, each the length of `y`.
-  Non-finite and negative entries are treated as zero.
+  A list of densities, one per setting, in which each has the length of
+  `y`. Non-finite and negative entries are treated as zero.
 
 ## Value
 
-`"topright"` or `"topleft"`, a character string of length 1.
-`"topright"` where no setting has any positive mass.
+`"topright"` or `"topleft"`, a character string of length 1. The
+function returns `"topright"` when no setting has any positive mass.
 
 ## See also
 

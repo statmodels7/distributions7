@@ -34,7 +34,8 @@ A numeric vector of quantiles.
 
 ## Details
 
-The generalized inverse of the distribution function,
+The quantile function is the generalized inverse of the distribution
+function,
 
 \$\$Q(p; \theta) = \inf\\y : F(y; \theta) \ge p\\,\$\$
 

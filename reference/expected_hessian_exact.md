@@ -1,8 +1,8 @@
 # Whether a Family's Expected Information Is Written Out
 
-`TRUE` when the family computes its expected information exactly, in
-closed form or by a quadrature of its own to working precision, and
-`FALSE` when a call to
+Returns `TRUE` when the family computes its expected information
+exactly, in closed form or by a quadrature of its own to working
+precision, and `FALSE` when a call to
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 reaches a fallback and the answer is therefore an approximation. It is a
 generic so that a family whose registered method is not what its owning
@@ -41,14 +41,14 @@ A single logical.
 
 ## Details
 
-The predicate is what a consumer reads to decide which information to
-report. Where it returns `TRUE` the expected information costs one
-evaluation and has the smaller variance, so it is the better matrix to
-invert; where it returns `FALSE` the choice is between an approximation
-and the observed Hessian, which every family has and which is exact.
-That is the rule that
+A function that reports the information of a family uses the predicate
+to choose which information to report. Where it returns `TRUE` the
+expected information costs one evaluation and has the smaller variance,
+so it is the better matrix to invert; where it returns `FALSE` the
+choice is between an approximation and the observed Hessian, which every
+family has and which is exact.
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-follows for its standard errors and that statmodels7 follows in
+follows this rule for its standard errors, and statmodels7 follows it in
 [`vcov()`](https://rdrr.io/r/stats/vcov.html).
 
 Every shipped univariate family returns `TRUE`. The Poisson-inverse
@@ -61,8 +61,8 @@ Among the wrappers,
 returns `FALSE`.
 
 Reading the class that owns the registered method is not sufficient on
-its own, which is why the generic exists: a method registered on the
-class of a family may chain onto a parent that approximates, and a
+its own, and the generic exists for this reason: a method registered on
+the class of a family may chain onto a parent that approximates, and a
 family that does so returns the answer of its parent.
 
 The default reads the class on which the
@@ -86,7 +86,7 @@ the wrapper that calls it;
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the quantity itself, and
 [`expected_by_opg()`](https://statmodels7.github.io/distributions7/reference/expected_by_opg.md)
-for the fallback a `FALSE` answer reaches.
+for the fallback that a `FALSE` answer reaches.
 
 [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md),
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)

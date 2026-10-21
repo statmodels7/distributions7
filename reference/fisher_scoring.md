@@ -2,17 +2,17 @@
 
 Returns a specification of Fisher scoring for
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)'s
-`method` argument, carrying how the expected information is to be
-obtained when the family has no closed form for it, and optionally a
-stopping rule and an iteration limit of its own. It is
+`method` argument. The specification records how the expected
+information is obtained when the family has no closed form for it, and
+optionally a stopping rule and an iteration limit of its own. It is
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)'s
 default method.
 
-Fisher scoring is Newton's method with the observed Hessian replaced by
-minus the expected information, so it needs no implementation of its own
-and is not an optimizer. What it does need, and an optimizer has no slot
-for, is the statement of how that matrix is to be obtained, and that is
-what this object holds.
+Fisher scoring is Newton's method in which the observed Hessian is
+replaced by minus the expected information, so it needs no
+implementation of its own and is not an optimizer. It needs one thing
+for which an optimizer has no slot, the statement of how that matrix is
+obtained, and this object holds that statement.
 
 ## Usage
 
@@ -35,16 +35,16 @@ fisher_scoring(
   the right-hand side of the second Bartlett identity, a sum over the
   support for a discrete family and a quadrature for a continuous one;
   `"integrate"` is quadrature of the observed information; `"mc"` is
-  Monte Carlo. Matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html), so
-  anything else signals an error listing the four. See
+  Monte Carlo. The value is matched by
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html), so any
+  other value signals an error that lists the four. See
   [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - nsim:
 
-  Monte Carlo sample size, a single positive finite number. Read only
-  when `approx = "mc"`. Defaults to 10000. A vector, a non-finite value
-  or a number below 1 signals an error.
+  Monte Carlo sample size, a single positive finite number. It is read
+  only when `approx = "mc"`. It defaults to 10000. A vector, a
+  non-finite value or a number below 1 signals an error.
 
 - criterion:
 
@@ -73,8 +73,8 @@ with properties `approx`, `nsim`, `criterion` and `maxit`.
 ## Values accepted by the method argument
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-takes one argument saying how to optimize, and it takes an optimizer of
-optimizers7 or this:
+has one argument that selects how to optimize, and that argument accepts
+an optimizer of optimizers7 or this object:
 
 |  |  |
 |----|----|
@@ -87,16 +87,16 @@ optimizers7 or this:
 Writing \\s(\eta) = \partial \ell / \partial \eta\\ for the score on the
 unconstrained scale and \\\mathcal{I}(\eta) = \mathbb{E}\[-\partial^{2}
 \ell / \partial \eta \partial \eta'\]\\ for the expected information
-there, \$\$\eta^{(t+1)} = \eta^{(t)} + \mathcal{I}(\eta^{(t)})^{-1}
-s(\eta^{(t)}).\$\$ Under the diagonal reparametrization \\\theta_i =
-h_i(\eta_i)\\ the information transforms by congruence,
-\\\mathcal{I}(\eta) = D\\\mathcal{I}(\theta)\\D\\ with \\D =
-\operatorname{diag}(h_i'(\eta_i))\\, the first-order term of the chain
-rule vanishing in expectation because the score has mean zero. The
-matrix inverted is therefore positive definite wherever
+there, the step is \$\$\eta^{(t+1)} = \eta^{(t)} +
+\mathcal{I}(\eta^{(t)})^{-1} s(\eta^{(t)}).\$\$ Under the diagonal
+reparametrization \\\theta_i = h_i(\eta_i)\\ the information transforms
+by congruence, \\\mathcal{I}(\eta) = D\\\mathcal{I}(\theta)\\D\\ with
+\\D = \operatorname{diag}(h_i'(\eta_i))\\, and the first-order term of
+the chain rule vanishes in expectation because the score has mean zero.
+The matrix inverted is therefore positive definite wherever
 \\\mathcal{I}(\theta)\\ is, and the step is a direction of ascent. A fit
-therefore succeeds on a family whose observed Hessian is indefinite, the
-Laplace being the standard case.
+therefore succeeds on a family whose observed Hessian is indefinite; the
+Laplace is the standard case.
 
 ## Strategies for the expected information
 
@@ -132,7 +132,7 @@ set.seed(1)
 d <- gaussian1_distrib()
 y <- distrib_rng(d, 100, list(mu = 1, sigma = 2))
 
-# The default, and the same thing said explicitly.
+# The default and the explicit specification give the same fit.
 coef(fit_distrib(d, y))
 #>       mu    sigma 
 #> 1.217775 1.787394 
@@ -140,7 +140,7 @@ coef(fit_distrib(d, y, method = fisher_scoring()))
 #>       mu    sigma 
 #> 1.217775 1.787394 
 
-# The congruence the step rests on: the information on the link scale is
+# The step rests on a congruence: the information on the link scale is
 # D I(theta) D, with D the diagonal of the inverse link's derivative.
 th <- list(mu = 1, sigma = 2)
 It <- distrib_expected_hessian(d, y, th)

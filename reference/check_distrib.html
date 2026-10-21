@@ -19,7 +19,7 @@ check_distrib_mv(), which has no CDF or quantile rows."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,7 +130,7 @@ it is listed in the attribute <code>"skipped"</code>, a data frame with columns
     <p>The checks performed are:</p><ul><li><p>density: non-negativity and integration/summation to 1 over the support.</p></li>
 <li><p>cdf: values in \([0,1]\) and monotonicity along a grid of quantiles,
 and its agreement with the density: for a continuous family a central
-difference of the cdf against the density, with the step the response
+difference of the cdf against the density, with the step that the response
 derivatives use, and for a discrete one \(F(k) - F(k-1)\) against the
 mass.</p></li>
 <li><p>quantile: round-trip against the CDF (\(F(Q(p)) = p\) for continuous
@@ -166,35 +166,37 @@ an interior point still leaves the row without a statistic.</p></li>
 <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code> against central differences in \(y\) whose step is
 chosen observation by observation by <code><a href="fd_stable_quotient.html">fd_stable_quotient()</a></code>, between a
 step cut to under half the distance to a bound and one scaled on that
-distance, each divided by the steps its evaluation points actually lie
-at. A draw closer than \(128\lvert b\rvert\varepsilon\) to a finite
-bound \(b \ne 0\), where the spacing of doubles is absolute and no
-central difference compares a derivative, is left out and counted in the
-row's <code>detail</code>.</p></li>
+distance, and each of which is divided by the steps at which its
+evaluation points actually lie. A draw closer than
+\(128\lvert b\rvert\varepsilon\) to a finite
+bound \(b \ne 0\), where the spacing of doubles is absolute and a
+central difference does not compare a derivative, is left out and counted
+in the row's <code>detail</code>.</p></li>
 <li><p>link scale: <code>scale = "link"</code> derivatives against finite
 differences of the log-likelihood in \(\eta\).</p></li>
 </ul><p>A parameter-derivative check of an order for which the family registers no
 method of its own is not run: the value would be the numerical fallback,
 the same finite difference as the reference, and the comparison would hold
 by construction. The row is listed in the attribute <code>"skipped"</code> with that
-reason. The response fallbacks take the cut step alone, so near a bound they
-can differ from the reference, which is what the row then reports.</p>
-<p>A check whose statistic comes out <code>NaN</code> or <code>NA</code> has nothing to judge, as the
-expected information of a family where it does not exist, and is not a row
-of the table: it is listed with its reason in the attribute <code>"skipped"</code>, and
-every row that is in the table reads <code>"OK"</code> or <code>"FAIL"</code>. An infinite
-statistic is a failure, being a component that overflows where its reference
-does not; so is a check whose computation raised an error, and so is a
-density or a distribution function that is not finite. The checks defined on
-the values themselves (the non-negativity of the density, the range of the
-distribution function and, for a discrete family, the quantile round trip)
-are kept even when their statistic is missing.</p>
-<p>Mixed distributions — a density with point masses on top of it, as produced by
-<code><a href="zero_adjusted.html">zero_adjusted()</a></code> on a continuous parent — are handled as long as they
+reason. The response fallbacks take only the cut step, so near a bound they
+can differ from the reference, and the row then reports that difference.</p>
+<p>A check whose statistic comes out <code>NaN</code> or <code>NA</code> has nothing to judge (the
+expected information of a family in which it does not exist is an example)
+and is not a row of the table: it is listed with its reason in the attribute
+<code>"skipped"</code>, and every row that is in the table reads <code>"OK"</code> or <code>"FAIL"</code>. An
+infinite statistic is a failure, because it comes from a component that
+overflows where its reference does not. A check whose computation raised an
+error is also a failure, and so is a density or a distribution function that
+is not finite. The checks defined on the values themselves (the
+non-negativity of the density, the range of the distribution function and,
+for a discrete family, the quantile round trip) are kept even when their
+statistic is missing.</p>
+<p>Mixed distributions (a density with point masses on top of it, as produced by
+<code><a href="zero_adjusted.html">zero_adjusted()</a></code> on a continuous parent) are handled as long as they
 declare their atoms through <code><a href="distrib_atoms.html">distrib_atoms()</a></code>. The density is then expected
 to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
 are checked as generalized inverses rather than exact ones, and finite differences in
-\(y\) are kept away from the atoms, where no derivative exists.</p>
+\(y\) are kept away from the atoms, where a derivative does not exist.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

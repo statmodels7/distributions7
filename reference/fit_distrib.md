@@ -5,9 +5,9 @@ returns a
 [`distrib_fit()`](https://statmodels7.github.io/distributions7/reference/distrib_fit_class.md)
 carrying the estimates, their standard errors and confidence limits on
 both scales. The optimization runs on the link scale, where the
-parameters are unconstrained, driven by the analytical score and
-information the family supplies at `scale = "link"`; the estimates are
-then mapped back and reported on the parameter scale.
+parameters are unconstrained, and it is driven by the analytical score
+and information that the family supplies at `scale = "link"`; the
+estimates are then mapped back and reported on the parameter scale.
 
 On a Gaussian the answer is the closed-form estimate to the printed
 digit: \\\hat\mu = \bar y\\, \\\hat\sigma^2 = \frac{1}{n}\sum (y_i -
@@ -53,7 +53,7 @@ fit_distrib(
 
 - method:
 
-  How to optimize. One argument taking one of three things:
+  How to optimize. The argument takes one of three things:
 
   - [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
     the default: Newton's method with the expected information in place
@@ -65,13 +65,13 @@ fit_distrib(
   - an optimizer object from optimizers7, used as given and receiving
     the analytical gradient and the observed Hessian, so that
     `method = lbfgs(criterion = crit_grad(1e-12))` selects the algorithm
-    and the stopping rule together. A stopping rule the optimizer cannot
-    evaluate is rejected here, where the message can name it;
+    and the stopping rule together. A stopping rule that the optimizer
+    cannot evaluate is rejected here, where the message can name it;
 
   - one of the strings `"fisher"`, `"newton"` or `"bfgs"`, short names
     for the three ready-made strategies. The first two fall back to BFGS
-    if they fail to converge; an optimizer the caller chose is never
-    replaced.
+    if they fail to converge; an optimizer that the caller chose is
+    never replaced.
 
   The iteration limit and the stopping rule belong to the method and are
   set there, on an optimizer through its own `maxit` and `criterion` and
@@ -81,8 +81,8 @@ fit_distrib(
   [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
   and the three strings the rule is
   [`optimizers7::crit_grad()`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
-  at its default tolerance when none is set; an optimizer object keeps
-  its own default.
+  at its default tolerance when the method does not set a rule; an
+  optimizer object keeps its own default.
 
 - level:
 
@@ -97,8 +97,8 @@ fit_distrib(
   How many starting values to request from
   [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
   when `start` is `NULL`. Defaults to 5. A family that returns its own
-  estimate returns one and ignores this. Ignored entirely when `start`
-  is given.
+  estimate returns one and ignores this. It is ignored entirely when
+  `start` is given.
 
 - threads:
 
@@ -120,10 +120,11 @@ Its `coefficients`, `se` and `ci` are on the parameter scale and its
 `converged`, `score`, `iterations`, `method`, `criterion` and `counts`
 record what the optimizer did. See that page for every component.
 
-Signals an error when no starting value produced a usable run, and a
-separate one when every run of a discrete family reached a positive
-log-likelihood, which is impossible for a product of probabilities and
-says the mass function has broken down at the parameters reached.
+Signals an error when every starting value fails to produce a usable
+run, and a separate one when every run of a discrete family reached a
+positive log-likelihood, which is impossible for a product of
+probabilities and indicates that the mass function has broken down at
+the parameters reached.
 
 ## Why the link scale
 
@@ -138,13 +139,13 @@ and they are exact wherever the family's own derivatives are.
 
 ## Scaling of the objective
 
-What the optimizer receives is \\-\ell(\eta)/n\\, with the gradient and
-the Hessian divided by \\n\\ with it. Scaling by a positive constant
+The optimizer receives \\-\ell(\eta)/n\\, and the gradient and the
+Hessian are divided by \\n\\ as well. Scaling by a positive constant
 moves neither the maximum nor any Newton step, since \\H^{-1}g\\ is
-unchanged when both are divided by \\n\\. What it changes is the meaning
-of a threshold: a tolerance on the gradient of this objective is a
-tolerance on the score per observation whatever the sample size, so the
-same rule means the same thing at \\n = 10\\ and at \\n = 10^7\\.
+unchanged when both are divided by \\n\\. The scaling changes the
+meaning of a threshold: a tolerance on the gradient of this objective is
+a tolerance on the score per observation whatever the sample size, so
+the same rule means the same thing at \\n = 10\\ and at \\n = 10^7\\.
 `loglik`, the information and every standard error are recomputed
 unscaled at the optimum.
 
@@ -172,11 +173,11 @@ negative log-likelihood. A single converged run is not taken as the
 answer because it may be a degenerate stationary point. Where fewer than
 two runs converge every start is tried and the best is kept. Fisher
 scoring and Newton's method fall back to BFGS from the same starting
-value when they fail; an optimizer the caller named does not. Among the
-runs that finish, a converged one beats a non-converged one and the
-objective breaks ties, so the fit reports the best run and not the last.
-A run of a discrete family whose log-likelihood came back positive is
-discarded before any comparison.
+value when they fail; an optimizer that the caller named does not. Among
+the runs that finish, a run that converged beats one that did not
+converge and the objective breaks ties, so the fit reports the best run
+and not the last. A run of a discrete family whose log-likelihood came
+back positive is discarded before any comparison.
 
 ## See also
 
@@ -187,7 +188,7 @@ for the default method;
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
 for where the starting values come from;
 [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
-for the chain rule the score uses;
+for the chain rule that the score uses;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 to validate a family before fitting it;
 [`optimizers7::minimize()`](https://statmodels7.github.io/optimizers7/reference/minimize.html),
@@ -203,7 +204,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 3 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 7 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

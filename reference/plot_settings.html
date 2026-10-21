@@ -13,7 +13,7 @@ becomes three settings that share a mean and differ in scale."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,10 +83,10 @@ settings, which may be empty.</p>
     <p>Every component must have length 1 or the same \(k\). A length that only
 divides \(k\) signals an error, because R would recycle such a
 component without a warning.</p>
-<p>The meaning is available only because a plot has no data to recycle a
-parameter against. <code><a href="distrib_pdf.html">distrib_pdf()</a></code> and every derivative generic read a
-vector component as one value per observation, which is why each setting is
-handed to them as scalars.</p>
+<p>A vector component can be read as one setting per curve only because a plot
+has no data against which to recycle a parameter. <code><a href="distrib_pdf.html">distrib_pdf()</a></code> and every
+derivative generic read a vector component as one value per observation,
+so each setting is handed to them as scalars.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

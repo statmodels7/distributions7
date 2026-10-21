@@ -6,9 +6,9 @@ are stated once in the title beside the family's name. A reader then
 sees which parameter the panel is about without counting curves, and
 reads the held values without a second key.
 
-Where nothing varies there is one curve and no legend, and the title
-carries every parameter. Where nothing is fixed the title is the
-family's name alone. Values are rounded to three decimals.
+If every parameter is fixed, there is one curve and no legend, and the
+title carries every parameter. If every parameter varies, the title is
+only the family's name. Values are rounded to three decimals.
 
 ## Usage
 
@@ -31,9 +31,9 @@ plot_labels(x, ps)
 ## Value
 
 A list with two components: `legend`, a character vector of length
-`ps$k` or `NULL` when nothing varies, and `main`, a character string of
-length 1 carrying a newline between the family's name and the fixed
-values.
+`ps$k` or `NULL` when every parameter is fixed, and `main`, a character
+string of length 1 carrying a newline between the family's name and the
+fixed values.
 
 ## See also
 

@@ -36,8 +36,8 @@ distrib_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
   Logical; if `TRUE` (default), derivatives of the *log* tail
   probability. With `FALSE` the derivatives of the probability itself
-  are returned, which interval censoring and the truncation constant are
-  built from.
+  are returned; interval censoring and the truncation constant are built
+  from them.
 
 - ...:
 

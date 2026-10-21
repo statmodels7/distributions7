@@ -1,6 +1,6 @@
 # Method-of-Moments Estimates, Family by Family
 
-Returns the parameters a family's own first two moments imply for a
+Returns the parameters that a family's own first two moments imply for a
 sample, in closed form where the inversion has one, and `NULL` where
 this family has no entry.
 
@@ -49,8 +49,8 @@ A family with no moments takes the robust analogue. The Cauchy uses the
 median and half the interquartile range, which are its location and its
 scale. Where the inversion needs a root, the standard approximation
 stands in: the Weibull's shape from the coefficient of variation, the
-von Mises's concentration from the mean resultant length. A starting
-value is allowed to be approximate.
+von Mises's concentration from the mean resultant length. These
+approximations suffice because the result is only a starting value.
 
 Five families have no entry and fall through to
 [`start_from_moments()`](https://statmodels7.github.io/distributions7/reference/start_from_moments.md)'s
@@ -62,7 +62,7 @@ elementary moments at all for the elastic net.
 
 ## A fixed constant in the name
 
-A family carrying one announces it there, as in
+A family that carries one records it there, as in
 `"beta-binomial [size=10]"`, so the bracketed part is stripped before
 the name is used as a lookup key. If the bracketed part were kept, the
 lookup would find no entry for a beta-binomial of any size, and the fit
@@ -78,4 +78,4 @@ which also calls it;
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
 for the generic; [`mean()`](https://rdrr.io/r/base/mean.html) and
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),
-which the inversions are written against.
+against which the inversions are written.

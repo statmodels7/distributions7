@@ -1,14 +1,14 @@
 # Total Log-Likelihood
 
 Sums the log-density over the observations, \\\sum_i \log f(y_i;
-\theta)\\, and returns the one number the fit maximizes. Every
+\theta)\\, and returns the one number that the fit maximizes. Every
 observation is read at the same \\\theta\\, which is the i.i.d.
-assumption the fitting layer makes.
+assumption that the fitting layer makes.
 
 The value is not divided by \\n\\.
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 scales it when it hands the objective to an optimizer, and recomputes it
-unscaled here for the `loglik`, `aic` and `bic` a fit reports.
+unscaled here for the `loglik`, `aic` and `bic` that a fit reports.
 
 ## Usage
 
@@ -42,4 +42,4 @@ A single number. It is `-Inf` when any observation has zero density, and
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
 which supplies the terms;
 [`logLik.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/logLik.distrib_fit.md)
-for the value a fit carries.
+for the value that a fit carries.

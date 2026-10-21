@@ -4,10 +4,10 @@ Binds the rows of
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 into a table, leaving out each row that compared nothing and recording
 it with its reason in the attribute `"skipped"`: a row marked as a
-numerical fallback, and a row whose statistic is `NaN` or `NA` without
-its computation having raised. A row that raised keeps its failure, and
-so does a row named in `on_values`, whose criterion is defined on the
-values themselves.
+numerical fallback, and a row whose statistic is `NaN` or `NA` although
+its computation did not raise an error. A row that raised keeps its
+failure, and so does a row named in `on_values`, whose criterion is
+defined on the values themselves.
 
 ## Usage
 

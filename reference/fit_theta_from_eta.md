@@ -1,7 +1,7 @@
 # The Link Scale Carried Back to Parameters
 
 Applies each parameter's inverse link, \\\theta_i = g_i^{-1}(\eta_i)\\,
-and returns the parameters as the named list every generic in the
+and returns the parameters as the named list that every generic in the
 package expects. It is the inverse of
 [`fit_eta_from_theta()`](https://statmodels7.github.io/distributions7/reference/fit_eta_from_theta.md).
 
@@ -10,10 +10,10 @@ Every link maps onto the open interior of its parameter's domain, and
 saturates, so a \\\theta\\ obtained this way is admissible whatever the
 optimizer proposed. On a Gaussian scale carried by the logarithm, \\\eta
 = -800\\ gives \\\sigma = 1.9\times 10^{-77}\\ and \\\eta = 800\\ gives
-\\1.8\times 10^{308}\\: both extreme, both still inside \\(0, \infty)\\,
-so the density can be evaluated and the point rejected on its
-likelihood. This is also why a confidence interval built on the link
-scale and mapped back cannot run outside the domain.
+\\1.8\times 10^{308}\\: both values are extreme and both lie inside
+\\(0, \infty)\\, so the density can be evaluated and the point rejected
+on its likelihood. For the same reason a confidence interval built on
+the link scale and mapped back cannot run outside the domain.
 
 ## Usage
 
@@ -31,13 +31,14 @@ fit_theta_from_eta(distrib, eta)
 - eta:
 
   A numeric vector of linear predictors, one per parameter, in the order
-  `distrib@params` gives. A non-finite entry propagates to the parameter
-  it names.
+  given by `distrib@params`. A non-finite entry propagates to the
+  parameter that it names.
 
 ## Value
 
-A named list of length `length(distrib@params)`, each component a number
-on the parameter scale, named and ordered as `distrib@params`.
+A named list of length `length(distrib@params)`, in which each component
+is a number on the parameter scale, named and ordered as
+`distrib@params`.
 
 ## See also
 

@@ -13,7 +13,7 @@ plot.continuous_distrib()."><meta property="og:image" content="https://statmodel
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,9 +91,9 @@ over the settings; an <code>lty</code> is accepted and has no effect on the stem
     </div>
     <div class="section level2">
     <h2 id="the-two-keys-and-why-they-are-not-the-continuous-ones">The two keys, and why they are not the continuous ones<a class="anchor" aria-label="anchor" href="#the-two-keys-and-why-they-are-not-the-continuous-ones"></a></h2>
-    <p>Settings are separated by color and symbol together, the symbol sitting
-at the top of each stem where the point already is. The line type is not
-used here: dashing a stem is what it would do, and a dashed stem reads as a
+    <p>Settings are separated by color and symbol together, and the symbol sits
+at the top of each stem, where the point already is. The line type is not
+used here, because it would dash the stems and a dashed stem reads as a
 broken one, so at a support of any size the panel fills with fragments that
 cross each other.</p>
 <p>Several settings are also shifted sideways by a fraction of the spacing, so
@@ -109,8 +109,8 @@ one in front of another.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Three rates, whose masses are countable at every support point because</span></span></span>
-<span class="r-in"><span><span class="co"># the settings are offset sideways.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The three rates have masses that are countable at every support point</span></span></span>
+<span class="r-in"><span><span class="co"># because the settings are offset sideways.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.discrete_distrib-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>

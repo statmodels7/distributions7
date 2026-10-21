@@ -1,10 +1,10 @@
-# The Moment Estimates a Multivariate Family Starts From
+# Moment Estimates as the Start of a Multivariate Family
 
 Returns the sample mean and the sample covariance of a multivariate
-response, with the covariance made safely positive definite. The
+response; the covariance is made safely positive definite. The
 covariance divides by \\n\\ rather than \\n - 1\\, which is the maximum
-likelihood estimator and therefore the point a Gaussian fit is looking
-for.
+likelihood estimator and therefore the point to which a Gaussian fit
+converges.
 
 ## Usage
 
@@ -16,14 +16,14 @@ mv_moment_start(y, p)
 
 - y:
 
-  The response, an \\n \times p\\ matrix, or anything
+  The response, an \\n \times p\\ matrix, or anything that
   [`base::as.matrix()`](https://rdrr.io/r/base/matrix.html) turns into
   one.
 
 - p:
 
-  The dimension, a single positive integer. Used only for the one-row
-  fallback.
+  The dimension, a single positive integer. It is used only for the
+  one-row fallback.
 
 ## Value
 

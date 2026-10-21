@@ -1,15 +1,15 @@
 # Random Parameters Inside a Family's Own Domain
 
-Draws one parameter value per entry of `distrib@params`, each inside
-that parameter's own interval in `params_bounds` and strictly away from
-its ends. A bounded interval is sampled across its width, a half-line is
-sampled from a positive draw offset from the finite end, and an
-unbounded parameter is sampled around zero.
+Draws one parameter value per entry of `distrib@params`, and each value
+lies inside that parameter's own interval in `params_bounds` and
+strictly away from its ends. A bounded interval is sampled across its
+width, a half-line is sampled from a positive draw offset from the
+finite end, and an unbounded parameter is sampled around zero.
 
 The draws ignore the response entirely, so they are a fallback and never
-an estimate: being of order one whatever the data, they suit a shape or
-a probability and are the wrong order for a location or a scale on a
-response of any size. The univariate methods of
+an estimate. They are of order one whatever the data, so they suit a
+shape or a probability and are the wrong order for a location or a scale
+on a response of any size. The univariate methods of
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
 use them for the starting values after the first, and the base method
 for all of them;
@@ -30,7 +30,7 @@ uses them to probe a family at an arbitrary parameter.
 ## Value
 
 A named list with one numeric value per parameter, named and ordered as
-`distrib@params`, every value strictly inside its own bounds.
+`distrib@params`; every value lies strictly inside its own bounds.
 
 ## See also
 

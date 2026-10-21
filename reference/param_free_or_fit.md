@@ -3,11 +3,11 @@
 Returns the free vector of a `parameters7` structure whose matrix is
 `m`.
 [`parameters7::param_free()`](https://statmodels7.github.io/parameters7/reference/param_free.html)
-answers exactly where the structure can represent the matrix, which for
-an unstructured covariance is always. Where it cannot, that call signals
-an error and this falls back to least squares on the entries, started
-from the zero vector. A compound-symmetric structure given an arbitrary
-covariance is the ordinary case.
+returns it exactly where the structure can represent the matrix, which
+for an unstructured covariance is always. Where it cannot, that call
+signals an error and this falls back to least squares on the entries,
+started from the zero vector. A compound-symmetric structure given an
+arbitrary covariance is the ordinary case.
 
 The fallback is approximate, which a starting value may be. It is capped
 at 200 BFGS iterations and returns the zero vector if the optimization

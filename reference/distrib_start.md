@@ -1,11 +1,11 @@
 # A Starting Value Drawn From the Data
 
-Returns the starting values that
+Returns the starting values with which
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-begins from, computed from the response where the family has a method
-for it. The result is a list of named parameter lists on the parameter
-scale. The fit tries them in order until two converged runs agree on the
-best objective, so the first element is the one tried first.
+begins, computed from the response where the family has a method for it.
+The result is a list of named parameter lists on the parameter scale.
+The fit tries them in order until two converged runs agree on the best
+objective, so the first element is the one tried first.
 
 ## Usage
 
@@ -26,10 +26,10 @@ distrib_start(distrib, y, n_start = 5L, ...)
 
 - n_start:
 
-  How many starting values are wanted, a single positive integer.
-  Defaults to 5. A method that returns its own estimate returns one and
-  ignores this, which the two multivariate methods and the two
-  Poisson-inverse Gaussian ones do.
+  The number of starting values, a single positive integer. Defaults
+  to 5. A method that returns its own estimate returns one and ignores
+  this, which the two multivariate methods and the two Poisson-inverse
+  Gaussian ones do.
 
 - ...:
 
@@ -37,25 +37,25 @@ distrib_start(distrib, y, n_start = 5L, ...)
 
 ## Value
 
-A list of named parameter lists on the parameter scale, each complete:
-one component per entry of `distrib@params`, named and ordered as
-`distrib@params`. Every value is strictly inside its parameter's bounds,
-which the validator treats as open.
+A list of named parameter lists on the parameter scale. Each list is
+complete, with one component per entry of `distrib@params`, named and
+ordered as `distrib@params`. Every value is strictly inside its
+parameter's bounds, which the validator treats as open.
 
 ## Details
 
 A starting value that ignores the data can be arbitrarily far from the
-answer, and the distance decides how much work the fit does. For a
+answer, and the distance determines how much work the fit does. For a
 multivariate Gaussian the sample mean and the sample covariance are the
 maximum likelihood estimate, so a fit that starts there converges in one
 iteration.
 
 The base method draws each parameter from its own domain and never reads
-`y`, so a family that registers nothing loses nothing. A family with a
-better estimator registers a method: an exact maximum likelihood
+`y`, so a family without a method of its own still has a start. A family
+with a better estimator registers a method: an exact maximum likelihood
 estimator where one is known, a method-of-moments estimator otherwise,
-or the estimate of a simpler family the harder one contains. The two
-univariate methods route through
+or the estimate of a simpler family that the harder one contains. The
+two univariate methods route through
 [`start_from_moments()`](https://statmodels7.github.io/distributions7/reference/start_from_moments.md),
 which uses the family's own moment inversion where
 [`moment_estimates()`](https://statmodels7.github.io/distributions7/reference/moment_estimates.md)
@@ -70,7 +70,7 @@ for the univariate route;
 [`moment_estimates()`](https://statmodels7.github.io/distributions7/reference/moment_estimates.md)
 for the family-by-family inversions;
 [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
-for the draw the base method makes.
+for the draw that the base method makes.
 
 ## Examples
 

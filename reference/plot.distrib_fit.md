@@ -1,12 +1,12 @@
 # Plot a Fitted Distribution Against the Data
 
-Compares the fitted distribution with the sample it was estimated from,
-choosing the comparison from the family's support. A continuous family
-is drawn as the fitted density over a kernel estimate of the data, with
-a rug of the observations underneath. A discrete one is drawn as the
-observed relative frequencies in bars with the fitted mass overlaid, a
-kernel estimate being a misrepresentation of a sample from a discrete
-distribution.
+Compares the fitted distribution with the sample from which it was
+estimated, choosing the comparison from the family's support. A
+continuous family is drawn as the fitted density over a kernel estimate
+of the data, with a rug of the observations underneath. A discrete one
+is drawn as the observed relative frequencies in bars with the fitted
+mass overlaid, because a kernel estimate misrepresents a sample from a
+discrete distribution.
 
 A multivariate fit is drawn as a panel matrix: the fitted marginal
 density and a kernel estimate of the data on the diagonal, the fitted
@@ -39,6 +39,7 @@ contours over the observations below it, the fitted correlation above.
 - col_fit, col_data:
 
   Colors of the fitted curve and of the empirical summary, in any form
+  that
   [`grDevices::col2rgb()`](https://rdrr.io/r/grDevices/col2rgb.html)
   accepts.
 
@@ -48,7 +49,7 @@ contours over the observations below it, the fitted correlation above.
   to all of them. At most three coordinates can be drawn, because a
   larger panel matrix is not readable, so a fit with more than three
   coordinates signals an error unless `mv_which` selects at most three.
-  Ignored for a univariate fit.
+  The argument is ignored for a univariate fit.
 
 - ...:
 

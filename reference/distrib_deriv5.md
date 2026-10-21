@@ -1,8 +1,8 @@
 # Fifth-Order Derivatives
 
-The unique fifth-order partial derivatives of the log-likelihood with
-respect to the distribution's parameters, on the parameter scale or on
-the link scale.
+Computes the unique fifth-order partial derivatives of the
+log-likelihood with respect to the distribution's parameters, on the
+parameter scale or on the link scale.
 
 ## Usage
 
@@ -44,10 +44,10 @@ distrib_deriv5(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 ## Value
 
-A named list of derivative-component vectors, each of length
-`length(y)`, keyed as
+A named list of derivative-component vectors, in which each vector has
+length `length(y)` and the names are those that
 [`deriv_names(distrib@params, 5)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
-gives them (e.g. `"mu_mu_sigma_sigma_sigma"`).
+gives (e.g. `"mu_mu_sigma_sigma_sigma"`).
 
 ## Details
 
@@ -104,8 +104,8 @@ for the order below,
 [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
 for the differencing, and
 [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
-for the predicate that says whether the quantity being differenced is
-itself analytic.
+for the predicate that reports whether the quantity that is differenced
+is itself analytic.
 
 ## Examples
 

@@ -23,7 +23,7 @@ print_check_table(distrib, out, theta, n, nsim)
 
 - theta:
 
-  The parameters the checks were run at.
+  The parameters at which the checks were run.
 
 - n:
 

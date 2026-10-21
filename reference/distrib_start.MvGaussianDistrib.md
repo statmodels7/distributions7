@@ -40,7 +40,7 @@ components followed by the structure's free values, named and ordered as
 ## Details
 
 Where the object parametrizes the precision, the sample covariance is
-inverted first: the matrix the structure has to represent is
+inverted first: the matrix that the structure has to represent is
 \\\hat\Sigma^{-1}\\, not \\\hat\Sigma\\.
 
 The covariance divides by \\n\\, which is the maximum likelihood

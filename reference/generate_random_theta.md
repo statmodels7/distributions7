@@ -21,8 +21,8 @@ generate_random_theta(distrib, ...)
 
 ## Value
 
-A named list of parameter values, one per element of `distrib@params`,
-each inside that parameter's bounds.
+A named list of parameter values, one per element of `distrib@params`;
+each value lies inside that parameter's bounds.
 
 ## See also
 

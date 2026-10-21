@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -1029,7 +1029,7 @@
       </dl></div><div class="section level2">
       <h2 id="numerical-fallbacks">Numerical fallbacks<a class="anchor" aria-label="anchor" href="#numerical-fallbacks"></a></h2>
 
-      <div class="section-desc"><p>What a distribution gets for free when it implements only its density. Rarely called directly; they show what the default methods compute.</p></div>
+      <div class="section-desc"><p>The quantities that the default methods supply when a distribution implements only its density. They are rarely called directly, and they show what the default methods compute.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -6507,7 +6507,7 @@
       </dl></div><div class="section level2">
       <h2 id="internals">Internals<a class="anchor" aria-label="anchor" href="#internals"></a></h2>
 
-      <div class="section-desc"><p>The machinery that the exported functions are built from. It is not needed to use the package, and it is documented so that the derivations can be followed from the code that implements them: the set partitions behind the Bartlett identities and the wrapper derivatives, the Bell polynomials behind the link scale, the ratio-of-uniforms sampler and the transforms that make it work on a divergent density.</p></div>
+      <div class="section-desc"><p>The machinery from which the exported functions are built. It is not needed to use the package, and it is documented so that the derivations can be followed from the code that implements them: the set partitions behind the Bartlett identities and the wrapper derivatives, the Bell polynomials behind the link scale, the ratio-of-uniforms sampler and the transforms that make it work on a divergent density.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -8234,7 +8234,7 @@
           <code><a href="fd_is_reliable.html">fd_is_reliable()</a></code>
 
         </dt>
-        <dd>Which Observations the Finite-Difference Reference Can Be Trusted At</dd>
+        <dd>Observations at Which the Finite-Difference Reference Can Be Trusted</dd>
 
         <dt>
 
@@ -9690,7 +9690,7 @@
           <code><a href="mv_moment_start.html">mv_moment_start()</a></code>
 
         </dt>
-        <dd>The Moment Estimates a Multivariate Family Starts From</dd>
+        <dd>Moment Estimates as the Start of a Multivariate Family</dd>
 
         <dt>
 
@@ -11472,7 +11472,7 @@
       </dl></div><div class="section level2">
       <h2 id="reparametrized-distributions">Reparametrized distributions<a class="anchor" aria-label="anchor" href="#reparametrized-distributions"></a></h2>
 
-      <div class="section-desc"><p>The wrapper reparametrize() returns and the machinery behind it. The map is written in ordinary R and its derivatives are hand-written closed forms (or one stencil per partial when none are supplied), so every order the parent has in closed form survives.</p></div>
+      <div class="section-desc"><p>The wrapper that reparametrize() returns and the machinery behind it. The map is written in ordinary R and its derivatives are hand-written closed forms, or one stencil per partial if they are not supplied, so every order that the parent has in closed form survives.</p></div>
 
       <dl></dl></div><div class="section level2">
 

@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,13 +79,13 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>A new distribution in <strong>distributions7</strong> requires only
-its <strong>density</strong> (<code>distrib_pdf</code>). Everything else
-(the cumulative distribution function, the quantile function, the random
-number generator, the score, the observed and expected Hessian, and the
-moments) is then available automatically through numerical fallbacks. A
-closed-form expression derived later is registered as a method and
-transparently takes over, with no change to calling code.</p>
+<p>A new distribution in distributions7 requires only its density
+(<code>distrib_pdf</code>). Everything else (the cumulative distribution
+function, the quantile function, the random number generator, the score,
+the observed and expected Hessian, and the moments) is then available
+automatically through numerical fallbacks. A closed-form expression
+derived later is registered as a method and replaces the fallback, with
+no change to calling code.</p>
 </div>
 <div class="section level2">
 <h2 id="how-dispatch-makes-this-work">How dispatch makes this work<a class="anchor" aria-label="anchor" href="#how-dispatch-makes-this-work"></a>
@@ -154,13 +154,13 @@ parameters</td>
 </tbody>
 </table>
 <p>Default methods for all of these (except <code>distrib_pdf</code>)
-are registered on the <strong>base classes</strong>: the probability
-functions on <code>continuous_distrib</code> and
-<code>discrete_distrib</code>, the response derivatives on
-<code>continuous_distrib</code>, and the parameter derivatives and the
-moments on <code>distrib</code>. Because S7 always selects the most
-specific applicable method, a subclass inherits those defaults until
-something more specific is registered. The defaults are:</p>
+are registered on the base classes: the probability functions on
+<code>continuous_distrib</code> and <code>discrete_distrib</code>, the
+response derivatives on <code>continuous_distrib</code>, and the
+parameter derivatives and the moments on <code>distrib</code>. Because
+S7 always selects the most specific applicable method, a subclass
+inherits those defaults until something more specific is registered. The
+defaults are:</p>
 <ul>
 <li>
 <code>distrib_cdf</code>: numerical integration of the density
@@ -183,8 +183,8 @@ finite differences of the log-density (see
 <li>
 <code>distrib_deriv3</code>, <code>distrib_deriv4</code>: one
 central finite-difference stencil on the highest-order derivative that
-the family implements itself, which is a tensor-product stencil on the
-log-density for a family defined by its density alone (see
+the family implements itself; for a family defined by its density alone,
+this is a tensor-product stencil on the log-density (see
 <code><a href="../reference/numerical_deriv3.html">numerical_deriv3()</a></code> / <code><a href="../reference/numerical_deriv4.html">numerical_deriv4()</a></code>);</li>
 <li>
 <code>distrib_expected_hessian</code>: by default
@@ -200,17 +200,13 @@ power.</li>
 </h2>
 <p>A new distribution needs exactly three things:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>A class</strong> that inherits from
-<code>continuous_distrib</code> or <code>discrete_distrib</code>.</li>
-<li>
-<strong>A <code>distrib_pdf</code> method</strong> for that
-class.</li>
-<li>
-<strong>A constructor</strong> that fills in the metadata (name,
-support bounds, parameter names, domains and link functions).</li>
+<li>A class that inherits from <code>continuous_distrib</code> or
+<code>discrete_distrib</code>.</li>
+<li>A <code>distrib_pdf</code> method for that class.</li>
+<li>A constructor that fills in the metadata (name, support bounds,
+parameter names, domains and link functions).</li>
 </ol>
-<p>Nothing else is required.</p>
+<p>These three items are sufficient.</p>
 <div class="section level3">
 <h3 id="worked-example-the-laplace-distribution">Worked example: the Laplace distribution<a class="anchor" aria-label="anchor" href="#worked-example-the-laplace-distribution"></a>
 </h3>
@@ -222,15 +218,15 @@ and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi><mo>&gt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">b&gt;0</annotation></semantics></math>.
 Base R has no <code>dlaplace</code>, so this is a genuinely new
 distribution.</p>
-<p><strong>Step 1: the class.</strong> It is continuous, so we inherit
-from <code>continuous_distrib</code>:</p>
+<p>Step 1 defines the class. The distribution is continuous, so we
+inherit from <code>continuous_distrib</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Laplace</span> <span class="op">&lt;-</span> <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_class</a></span><span class="op">(</span><span class="st">"Laplace"</span>, parent <span class="op">=</span> <span class="va">continuous_distrib</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Step 2: the density.</strong> A method for
-<code>distrib_pdf</code>. The signature is always
+<p>Step 2 defines the density as a method for <code>distrib_pdf</code>.
+The signature is always
 <code>(distrib, y, theta, log = FALSE, ...)</code>, where
-<code>theta</code> is a named list of parameters (each element a scalar
-or a vector aligned with <code>y</code>). The <code>...</code> is
+<code>theta</code> is a named list of parameters (each element is a
+scalar or a vector aligned with <code>y</code>). The <code>...</code> is
 required: a modeling function such as
 <code>statmodels7::statmod()</code> passes further arguments to the
 density, the number of threads among them, and a method without
@@ -242,13 +238,13 @@ density, the number of threads among them, and a method without
 <span>  <span class="va">log_d</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">b</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">log</span><span class="op">)</span> <span class="va">log_d</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">log_d</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Two conventions matter. <code>theta</code> is indexed positionally
+<p>The method indexes <code>theta</code> positionally
 (<code>theta[[1]]</code>, <code>theta[[2]]</code>) so that the parameter
-<em>names</em> stay free, and the <code>log</code> branch is always
-implemented, because the numerical machinery evaluates the density on
-the log scale for stability.</p>
-<p><strong>Step 3: the constructor.</strong> A plain function returning
-an object of the class with the metadata filled in. The density is not
+<em>names</em> stay free, and it always implements the <code>log</code>
+branch, because the numerical machinery evaluates the density on the log
+scale for stability.</p>
+<p>Step 3 defines the constructor, a plain function that returns an
+object of the class and fills in the metadata. The density is not
 differentiable in the location at
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">y = \mu</annotation></semantics></math>,
 which the constructor records in <code>params_smooth</code>:</p>
@@ -272,17 +268,17 @@ which the constructor records in <code>params_smooth</code>:</p>
 parameter’s domain) and by <code><a href="../reference/generate_random_theta.html">generate_random_theta()</a></code>. The
 <code>link_params</code> are used by downstream modeling code;
 <code>identity_link()</code> and <code>log_link()</code> come from
-<strong>linkfunctions7</strong>.</p>
+linkfunctions7.</p>
 <p>That is the entire definition. Everything now works:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># density (what we defined)</span></span>
+<span><span class="co"># The density is the one we defined.</span></span>
 <span><span class="fu"><a href="../reference/distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.15163266 0.25000000 0.09196986</span></span>
 <span></span>
-<span><span class="co"># CDF, quantile, RNG: all numerical fallbacks</span></span>
+<span><span class="co"># The CDF, quantile and RNG are all numerical fallbacks.</span></span>
 <span><span class="fu"><a href="../reference/distrib_cdf.html">distrib_cdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0.1839397 0.5000000 0.8884349</span></span>
 <span><span class="fu"><a href="../reference/distrib_quantile.html">distrib_quantile</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span>   <span class="co"># median is exactly mu = 1</span></span>
@@ -290,7 +286,7 @@ parameter’s domain) and by <code><a href="../reference/generate_random_theta.h
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">5</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]  5.723932 -2.857153  0.855691  2.715865  0.144959</span></span>
 <span></span>
-<span><span class="co"># score and Hessian: finite differences of the log-density</span></span>
+<span><span class="co"># The score and Hessian are finite differences of the log-density.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
 <span><span class="co">#&gt;  $ mu: num [1:2] -0.5 0.5</span></span>
@@ -301,14 +297,14 @@ parameter’s domain) and by <code><a href="../reference/generate_random_theta.h
 <span><span class="co">#&gt;  $ b_b  : num [1:2] -0.25 -0.25</span></span>
 <span><span class="co">#&gt;  $ mu_b : num [1:2] 0.25 -0.25</span></span>
 <span></span>
-<span><span class="co"># moments: numerical integration against the density</span></span>
+<span><span class="co"># The moments are numerical integrals against the density.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span>, variance <span class="op">=</span> <span class="fu"><a href="../reference/variance.html">variance</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Laplace variance is 2 b^2 = 8</span></span>
 <span><span class="co">#&gt;     mean variance </span></span>
 <span><span class="co">#&gt;        1        8</span></span></code></pre></div>
 <p>We can check the fallbacks against the known closed forms for the
 Laplace:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># analytical Laplace CDF</span></span>
+<code class="sourceCode R"><span><span class="co"># The analytical Laplace CDF is defined here.</span></span>
 <span><span class="va">lap_cdf</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">q</span>, <span class="va">mu</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">q</span> <span class="op">&lt;</span> <span class="va">mu</span>, <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">(</span><span class="va">q</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span><span class="op">)</span>, <span class="fl">1</span> <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="op">(</span><span class="va">q</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -339,13 +335,13 @@ Laplace:</p>
 </h2>
 <p>For a discrete distribution, inherit from
 <code>discrete_distrib</code> instead and let <code>distrib_pdf</code>
-be the <strong>probability mass function</strong>. The one extra
-requirement is that the support has a <strong>finite lower
-bound</strong> (<code>bounds[1]</code>), which every standard count
-distribution satisfies. The discrete fallbacks build a cumulative-mass
-table from that lower bound, growing it geometrically as needed.</p>
+be the probability mass function. The one extra requirement is that the
+support has a finite lower bound (<code>bounds[1]</code>), which every
+standard count distribution satisfies. The discrete fallbacks build a
+cumulative-mass table from that lower bound, growing it geometrically as
+needed.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># A shifted-geometric example: P(Y = k) = (1-p) p^k for k = 0, 1, 2, ...</span></span>
+<code class="sourceCode R"><span><span class="co"># This is a shifted-geometric example: P(Y = k) = (1-p) p^k for k = 0, 1, 2, ...</span></span>
 <span><span class="va">Geom</span> <span class="op">&lt;-</span> <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_class</a></span><span class="op">(</span><span class="st">"Geom"</span>, parent <span class="op">=</span> <span class="va">discrete_distrib</span><span class="op">)</span></span>
 <span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">distrib_pdf</span>, <span class="va">Geom</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">log</span> <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">p</span> <span class="op">&lt;-</span> <span class="va">theta</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -374,12 +370,12 @@ table from that lower bound, growing it geometrically as needed.</p>
 <h2 id="adding-closed-forms-for-performance">Adding closed forms for performance<a class="anchor" aria-label="anchor" href="#adding-closed-forms-for-performance"></a>
 </h2>
 <p>The numerical fallbacks are convenient but slower and less precise
-than analytical formulas. Whenever a closed form is available,
-registering it as a method makes it take over automatically, and
-existing code keeps working. There is no need to override everything:
-any subset of the methods can be supplied.</p>
+than analytical formulas. Whenever a closed form is available, it
+replaces the fallback automatically once it is registered as a method,
+and existing code keeps working. There is no need to override
+everything: any subset of the methods can be supplied.</p>
 <p>For the Laplace, all of these are available in closed form. For
-instance the CDF, quantile and score:</p>
+instance, we register the CDF, quantile and score as follows:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">distrib_cdf</span>, <span class="va">Laplace</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">q</span>, <span class="va">theta</span>,</span>
 <span>                                             <span class="va">lower.tail</span> <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">log.p</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
@@ -397,7 +393,7 @@ instance the CDF, quantile and score:</p>
 <span>  <span class="va">mu</span> <span class="op">-</span> <span class="va">b</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">p</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">p</span> <span class="op">-</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># score: d/dmu = sign(y - mu) / b,  d/db = (|y - mu| / b - 1) / b</span></span>
+<span><span class="co"># The score is d/dmu = sign(y - mu) / b,  d/db = (|y - mu| / b - 1) / b</span></span>
 <span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">distrib_gradient</span>, <span class="va">Laplace</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>,</span>
 <span>                                                  <span class="va">scale</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameter"</span>, <span class="st">"link"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">mu</span> <span class="op">&lt;-</span> <span class="va">theta</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>; <span class="va">b</span> <span class="op">&lt;-</span> <span class="va">theta</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
@@ -406,18 +402,17 @@ instance the CDF, quantile and score:</p>
 <span>    b  <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Note the signature of the derivative method: it must mirror the
-generic, which carries a <code>scale</code> argument (and
-<code>...</code>). <strong>A method always returns parameter-scale
-derivatives</strong>; the chain rule is never implemented by hand. The
-generic applies the link-scale transformation afterwards when the caller
-requests <code>scale = "link"</code>. The same applies to
-<code>distrib_hessian</code>, <code>distrib_expected_hessian</code>,
-<code>distrib_deriv3</code> and <code>distrib_deriv4</code>. Of the
-probability-function methods, <code>distrib_pdf</code> takes
-<code>...</code> as Step 2 explains, and <code>distrib_cdf</code>,
-<code>distrib_quantile</code> and <code>distrib_rng</code> keep the
-signatures shown here.</p>
+<p>The signature of the derivative method must mirror the generic, which
+carries a <code>scale</code> argument (and <code>...</code>). A method
+always returns parameter-scale derivatives; the chain rule is never
+implemented by hand. The generic applies the link-scale transformation
+afterwards when the caller requests <code>scale = "link"</code>. The
+same applies to <code>distrib_hessian</code>,
+<code>distrib_expected_hessian</code>, <code>distrib_deriv3</code> and
+<code>distrib_deriv4</code>. Of the probability-function methods,
+<code>distrib_pdf</code> takes <code>...</code> as Step 2 explains, and
+<code>distrib_cdf</code>, <code>distrib_quantile</code> and
+<code>distrib_rng</code> keep the signatures shown here.</p>
 <p>The results agree with what the fallbacks produced, to the accuracy
 of the finite differences, and are now exact and faster:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -427,25 +422,24 @@ of the finite differences, and are now exact and faster:</p>
 <span><span class="co">#&gt; List of 2</span></span>
 <span><span class="co">#&gt;  $ mu: num [1:2] -0.5 0.5</span></span>
 <span><span class="co">#&gt;  $ b : num [1:2] 0 0</span></span></code></pre></div>
-<p>A practical suggestion for the order in which to add closed
-forms:</p>
+<p>We suggest adding closed forms in the following order:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong><code>distrib_gradient</code></strong>: the single biggest
-speed-up for model fitting, since the score is evaluated at every
-optimization step. Writing it in C++ (via <strong>Rcpp</strong>), as the
-built-in distributions do, helps further.</li>
+<code>distrib_gradient</code>: the single biggest speed-up for model
+fitting, since the score is evaluated at every optimization step.
+Writing it in C++ (via Rcpp), as the built-in distributions do, helps
+further.</li>
 <li>
-<strong><code>distrib_hessian</code></strong>: for Newton-type
-optimization and standard errors.</li>
+<code>distrib_hessian</code>: for Newton-type optimization and
+standard errors.</li>
 <li>
-<strong><code>distrib_cdf</code> / <code>distrib_quantile</code> /
-<code>distrib_rng</code></strong>: for fast or high-volume simulation
-and tail probabilities.</li>
+<code>distrib_cdf</code> / <code>distrib_quantile</code> /
+<code>distrib_rng</code>: for fast or high-volume simulation and tail
+probabilities.</li>
 <li>
-<strong><code>distrib_expected_hessian</code></strong> and
-<strong>analytical moments</strong>: when a closed form exists and the
-fitting method is Fisher scoring, or exact moments are needed.</li>
+<code>distrib_expected_hessian</code> and analytical moments: when a
+closed form exists and the fitting method is Fisher scoring, or exact
+moments are needed.</li>
 </ol>
 </div>
 <div class="section level2">
@@ -554,7 +548,7 @@ scale:</p>
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gaussian1</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 13 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 26 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -577,7 +571,7 @@ instance, the interval can never leave
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="fu"><a href="../reference/bernoulli_distrib.html">bernoulli_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: bernoulli</span></span>
 <span><span class="co">#&gt; Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 4 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 5 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -592,8 +586,7 @@ instance, the interval can never leave
 <h2 id="non-differentiable-parameters">Non-differentiable parameters<a class="anchor" aria-label="anchor" href="#non-differentiable-parameters"></a>
 </h2>
 <p>Some distributions have a log-likelihood that is not differentiable
-in one of its parameters. The archetype is the <strong>Laplace</strong>
-distribution
+in one of its parameters. The archetype is the Laplace distribution
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>;</mo><mi>μ</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><mn>2</mn><mi>b</mi></mrow></mfrac><msup><mi>e</mi><mrow><mi>−</mi><mo stretchy="false" form="prefix">|</mo><mi>y</mi><mo>−</mo><mi>μ</mi><mo stretchy="false" form="prefix">|</mo><mi>/</mi><mi>b</mi></mrow></msup></mrow><annotation encoding="application/x-tex">f(y;\mu,b)=\frac{1}{2b}e^{-|y-\mu|/b}</annotation></semantics></math>,
 whose density has a kink at
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>y</mi><mo>=</mo><mi>μ</mi></mrow><annotation encoding="application/x-tex">y=\mu</annotation></semantics></math>:
@@ -601,7 +594,7 @@ the score
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>ℓ</mi><mi>/</mi><mi>∂</mi><mi>μ</mi><mo>=</mo><mrow><mi mathvariant="normal">sign</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>y</mi><mo>−</mo><mi>μ</mi><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>b</mi></mrow><annotation encoding="application/x-tex">\partial\ell/\partial\mu=\operatorname{sign}(y-\mu)/b</annotation></semantics></math>
 exists only almost everywhere, and the observed curvature
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>∂</mi><mn>2</mn></msup><mi>ℓ</mi><mi>/</mi><mi>∂</mi><msup><mi>μ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\partial^2\ell/\partial\mu^2</annotation></semantics></math>
-is <strong>zero</strong>, so Newton-Raphson cannot update
+is zero, so Newton-Raphson cannot update
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>.</p>
 <p>The package handles this in two ways. First, a distribution declares
 which parameters are smooth through the <code>params_smooth</code>
@@ -647,8 +640,7 @@ in place of
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
 <ul>
-<li>
-<strong>Minimum to define a distribution:</strong> a subclass of
+<li>Minimum to define a distribution: a subclass of
 <code>continuous_distrib</code> or <code>discrete_distrib</code>, a
 <code>distrib_pdf</code> method, and a constructor with the metadata.
 (Discrete distributions additionally need a finite lower support

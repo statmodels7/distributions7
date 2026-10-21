@@ -7,8 +7,8 @@ link that maps it to the unconstrained scale. The name of a wrapper
 combines the wrapper and its parent, so
 `truncated(gamma2_distrib(), upper = 5)` prints as
 `Truncated Gamma2 [upper=5]`, followed by the parameter rows of the
-parent. No parameter value is shown, because a `distrib` carries a
-parametrization and no estimate; for estimates see
+parent. The method does not show a parameter value, because a `distrib`
+carries a parametrization and not an estimate; for estimates see
 [`print.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/print.distrib_fit.md).
 
 ## Arguments

@@ -44,8 +44,8 @@ A named list of numeric vectors, keyed as
 
 ## Details
 
-With \\l(\theta; y) = \log f(y; \theta)\\, one entry per unordered pair
-of parameters,
+With \\l(\theta; y) = \log f(y; \theta)\\, the Hessian has one entry per
+unordered pair of parameters,
 
 \$\$l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial
 \theta_j},\$\$

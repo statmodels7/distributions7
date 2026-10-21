@@ -9,7 +9,7 @@ definition as the same class."><meta property="og:image" content="https://statmo
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@ definition as the same class.</p>
 
 
 <dt id="arg-base">base<a class="anchor" aria-label="anchor" href="#arg-base"></a></dt>
-<dd><p>The base class to compare against.</p></dd>
+<dd><p>The base class with which <code>cls</code> is compared.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -69,15 +69,16 @@ definition as the same class.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Several functions here decide whether a method comes from the base class or
+    <p>Several functions here test whether a method comes from the base class or
 from a subclass that registered its own, by reading
 <code>attr(m, "signature")[[1]]</code>, the documented S7 route. The comparison that
 follows must not use <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code>: on S7 class objects that tests object
 identity, so it returns <code>FALSE</code> for a class re-created from the same
 definition. A class is re-created whenever the code of the package is
 re-evaluated instead of being loaded, as under coverage instrumentation.</p>
-<p>When <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code> fails in this way the comparison is silent, and a
-numerical fallback is taken for an analytic method. The function therefore
+<p>When <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code> fails in this way, it returns <code>FALSE</code> without any
+signal, and the code takes a numerical fallback for an analytic method. The
+function therefore
 returns <code>TRUE</code> for identical objects as a fast path, and otherwise compares
 the class name together with the package name.</p>
     </div>

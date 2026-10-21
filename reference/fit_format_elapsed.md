@@ -1,12 +1,11 @@
 # A Duration Rendered With a Unit Matched to Its Size
 
-Formats a time in seconds for the line
+Formats a time in seconds for the line that
 [`print.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/print.distrib_fit.md)
 shows, choosing the unit from the size: milliseconds below a second,
 seconds below a minute, and minutes with seconds above. A fit of a few
 hundred observations then reads `40 ms` where one of ten million reads
-`2 min 07 s`, and neither prints a figure the reader has to count zeros
-in.
+`2 min 07 s`, and in neither case does the reader have to count zeros.
 
 ## Usage
 
@@ -28,7 +27,7 @@ A character string of length 1: `"0.4 ms"`, `"40 ms"`, `"1.5 s"`,
 `"59.4 s"`, `"1 min 01 s"`. Milliseconds, and seconds below a minute,
 are given to three significant digits; above a minute the seconds are
 rounded to the nearest second. The unit is chosen on the rounded value,
-so that no field reaches its carry.
+so that rounding never carries a field past its limit.
 
 ## See also
 

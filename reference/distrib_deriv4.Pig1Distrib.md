@@ -110,6 +110,6 @@ x <- distrib_rng(d, n, th)
 rbind(score = system.time(distrib_gradient(d, x, th))[["elapsed"]],
       fourth = system.time(distrib_deriv4(d, x, th))[["elapsed"]])
 #>         [,1]
-#> score  0.008
-#> fourth 0.010
+#> score  0.018
+#> fourth 0.016
 ```

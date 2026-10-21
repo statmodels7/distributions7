@@ -1,6 +1,6 @@
 # S7 Class for Maximum-Likelihood Fits
 
-The class of the object
+This is the class of the object that
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 returns. It holds the estimates on both the parameter scale and the link
 scale, their standard errors and confidence limits, the maximized
@@ -52,12 +52,12 @@ distrib_fit(
 - distrib:
 
   The fitted `distrib` object, carrying the parametrization and the
-  links the estimates are expressed in.
+  links in which the estimates are expressed.
 
 - y:
 
-  The observations the fit was computed from, kept so that the fitted
-  distribution can be compared with the data by
+  The observations from which the fit was computed, kept so that the
+  fitted distribution can be compared with the data by
   [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
   and so that the information can be recomputed by
   [`vcov.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md).
@@ -70,13 +70,13 @@ distrib_fit(
 - coefficients:
 
   Named numeric estimates on the parameter scale, one per parameter, in
-  the order `distrib@params` gives.
+  the order given by `distrib@params`.
 
 - se:
 
   Named standard errors on the parameter scale, from the delta method.
-  `NaN` where the corresponding variance came back negative, `NA` where
-  it is missing.
+  An entry is `NaN` where the corresponding variance came back negative
+  and `NA` where it is missing.
 
 - ci:
 
@@ -140,14 +140,15 @@ distrib_fit(
 
 - criterion:
 
-  Which stopping rule ended the run, in the words optimizers7 reports
-  it, such as `"gradient (max-norm) < 1e-06"`. Empty when none fired.
+  Which stopping rule ended the run, in the words in which optimizers7
+  reports it, such as `"gradient (max-norm) < 1e-06"`. It is empty when
+  no rule fired.
 
 - note:
 
-  Any remark the optimizer attached to the run, such as
-  `"the line search found no acceptable step"`. Empty when there is
-  none.
+  Any remark that the optimizer attached to the run, such as
+  `"the line search found no acceptable step"`. It is empty when there
+  is no remark.
 
 - counts:
 
@@ -169,7 +170,7 @@ distrib_fit(
 
 - level:
 
-  The confidence level `ci` and `ci_eta` were built at.
+  The confidence level at which `ci` and `ci_eta` were built.
 
 ## Value
 
@@ -177,7 +178,7 @@ An S7 object of class `distrib_fit`, with the properties above.
 
 ## Methods
 
-Registered on this class:
+The following methods are registered on this class:
 [`coef()`](https://statmodels7.github.io/distributions7/reference/coef.distrib_fit.md),
 [`confint()`](https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.md),
 [`logLik()`](https://statmodels7.github.io/distributions7/reference/logLik.distrib_fit.md),
@@ -227,8 +228,8 @@ fit@ci
 all.equal(fit@ci[["sigma", "lower"]], exp(fit@ci_eta[["sigma", "lower"]]))
 #> [1] TRUE
 
-# What the optimizer did. 'score' is the max-norm of the score per
-# observation at the point reported, which is what the rule tested.
+# The fit records what the optimizer did. 'score' is the max-norm of the
+# score per observation at the point reported, which the rule tested.
 c(iterations = fit@iterations, converged = fit@converged, score = fit@score)
 #>   iterations    converged        score 
 #> 2.000000e+00 1.000000e+00 7.864824e-11 

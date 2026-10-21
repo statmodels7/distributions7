@@ -39,7 +39,7 @@ and `alpha`.
 [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
 for the family;
 [`distrib_start.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_start.Pig1Distrib.md)
-for the estimate this maps;
+for the estimate that this maps;
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
 for the generic.
 
@@ -51,7 +51,7 @@ d <- pig2_distrib()
 alpha0 <- sqrt(1 + 2 * 0.5 * 4) / 0.5
 y <- distrib_rng(d, 5000, list(mu = 4, alpha = alpha0))
 
-# The inversion recovers what the sample was drawn from.
+# The inversion recovers the parameters from which the sample was drawn.
 rbind(start = unlist(distrib_start(d, y)[[1]]),
       truth = c(mu = 4, alpha = alpha0))
 #>           mu    alpha

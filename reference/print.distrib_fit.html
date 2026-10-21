@@ -6,16 +6,15 @@ that the interval that the fit built is visible beside its image. When
 every link is the identity the last block is replaced by a one-line note.
 The optimizer line names the method that produced the estimates, which is
 not always the one requested, and the convergence line names the stopping
-rule that ended the run. Without that rule converged says nothing: it
-records that some test was met. A run that did not converge also prints
-the score per
-observation at the point it stopped at, which is the one number that says
-whether the point is usable.
+rule that ended the run. Without that rule converged does not identify
+the test: it records that some test was met. A run that did not converge
+also prints the score per observation at the point where it stopped, and
+this number indicates whether the point is usable.
 For a multivariate fit the coordinates of the covariance structure are
-replaced by the quantities that the model is written in (the location, the
+replaced by the quantities in which the model is written (the location, the
 standard deviations and the correlations that mv_summary() derives),
 because a log-Cholesky coordinate has no direct interpretation. Any
-parameter that the structure does not account for, such as the degrees of
+parameter that the structure does not cover, such as the degrees of
 freedom of a \(t\), is
 printed after them."><meta property="og:description" content="Shows a fit in four blocks: the family and the sample size with the
 log-likelihood and the two information criteria; what the optimizer did;
@@ -24,16 +23,15 @@ that the interval that the fit built is visible beside its image. When
 every link is the identity the last block is replaced by a one-line note.
 The optimizer line names the method that produced the estimates, which is
 not always the one requested, and the convergence line names the stopping
-rule that ended the run. Without that rule converged says nothing: it
-records that some test was met. A run that did not converge also prints
-the score per
-observation at the point it stopped at, which is the one number that says
-whether the point is usable.
+rule that ended the run. Without that rule converged does not identify
+the test: it records that some test was met. A run that did not converge
+also prints the score per observation at the point where it stopped, and
+this number indicates whether the point is usable.
 For a multivariate fit the coordinates of the covariance structure are
-replaced by the quantities that the model is written in (the location, the
+replaced by the quantities in which the model is written (the location, the
 standard deviations and the correlations that mv_summary() derives),
 because a log-Cholesky coordinate has no direct interpretation. Any
-parameter that the structure does not account for, such as the degrees of
+parameter that the structure does not cover, such as the degrees of
 freedom of a \(t\), is
 printed after them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -43,7 +41,7 @@ printed after them."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,16 +81,15 @@ that the interval that the fit built is visible beside its image. When
 every link is the identity the last block is replaced by a one-line note.</p>
 <p>The optimizer line names the method that produced the estimates, which is
 not always the one requested, and the convergence line names the stopping
-rule that ended the run. Without that rule <code>converged</code> says nothing: it
-records that some test was met. A run that did not converge also prints
-the score per
-observation at the point it stopped at, which is the one number that says
-whether the point is usable.</p>
+rule that ended the run. Without that rule <code>converged</code> does not identify
+the test: it records that some test was met. A run that did not converge
+also prints the score per observation at the point where it stopped, and
+this number indicates whether the point is usable.</p>
 <p>For a multivariate fit the coordinates of the covariance structure are
-replaced by the quantities that the model is written in (the location, the
+replaced by the quantities in which the model is written (the location, the
 standard deviations and the correlations that <code><a href="mv_summary.html">mv_summary()</a></code> derives),
 because a log-Cholesky coordinate has no direct interpretation. Any
-parameter that the structure does not account for, such as the degrees of
+parameter that the structure does not cover, such as the degrees of
 freedom of a \(t\), is
 printed after them.</p>
     </div>
@@ -137,7 +134,7 @@ and the tables are rounded to this many decimal places by
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum-likelihood fit: gaussian1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 4 ms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 8 ms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Converged: yes (gradient (max-norm) &lt; 1e-06)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter scale:</span>
@@ -150,14 +147,14 @@ and the tables are rounded to this many decimal places by
 <span class="r-out co"><span class="r-pr">#&gt;</span> mu      2.0679     0.1356 1.8021 2.3338</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> sigma   1.1095     0.0316 1.0475 1.1714</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The link-scale block is where the interval is built. On a Gamma written</span></span></span>
+<span class="r-in"><span><span class="co"># The interval is built in the link-scale block. On a Gamma written</span></span></span>
 <span class="r-in"><span><span class="co"># in the mean and the variance both parameters carry a log link, so both</span></span></span>
 <span class="r-in"><span><span class="co"># lower limits are positive by construction.</span></span></span>
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="fl">300</span>, shape <span class="op">=</span> <span class="fl">4</span>, rate <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum-likelihood fit: gamma2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Observations: 300   Log-likelihood: -403   AIC: 810   BIC: 817</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 4 ms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 9 ms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Converged: yes (gradient (max-norm) &lt; 1e-06)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter scale:</span>

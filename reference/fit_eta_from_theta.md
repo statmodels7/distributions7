@@ -1,15 +1,15 @@
 # Parameters Carried to the Link Scale
 
 Applies each parameter's own link, \\\eta_i = g_i(\theta_i)\\, and
-returns the resulting vector of linear predictors. This is how a
-starting value expressed in natural parameters enters the optimizer,
-which works on \\\eta\\ because it is unconstrained.
+returns the resulting vector of linear predictors. A starting value
+expressed in natural parameters enters the optimizer through this map,
+because the optimizer works on \\\eta\\, which is unconstrained.
 
 Only the first element of each component of `theta` is read. A fit
 estimates one \\\theta\\ for the whole sample, so a component of length
-\\n\\ is a vector the caller built for a density evaluation, not \\n\\
-separate parameters: `list(mu = c(1, 99, 99), sigma = 2)` gives the same
-\\\eta\\ as `list(mu = 1, sigma = 2)`.
+\\n\\ is a vector that the caller built for a density evaluation, not
+\\n\\ separate parameters: `list(mu = c(1, 99, 99), sigma = 2)` gives
+the same \\\eta\\ as `list(mu = 1, sigma = 2)`.
 
 ## Usage
 
@@ -36,7 +36,7 @@ fit_eta_from_theta(distrib, theta)
 ## Value
 
 An unnamed numeric vector of length `length(distrib@params)`, one linear
-predictor per parameter, in the order `distrib@params` gives.
+predictor per parameter, in the order given by `distrib@params`.
 
 ## See also
 

@@ -19,7 +19,7 @@ The same two floors apply, so an underdispersed sample gives a very large
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +90,7 @@ $$\alpha = \frac{\sqrt{1 + 2\sigma\mu}}{\sigma}.$$</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="pig2_distrib.html">pig2_distrib()</a></code> for the family;
-<code><a href="distrib_start.Pig1Distrib.html">distrib_start.Pig1Distrib()</a></code> for the estimate this maps;
+<code><a href="distrib_start.Pig1Distrib.html">distrib_start.Pig1Distrib()</a></code> for the estimate that this maps;
 <code><a href="distrib_start.html">distrib_start()</a></code> for the generic.</p></div>
     </div>
 
@@ -101,7 +101,7 @@ $$\alpha = \frac{\sqrt{1 + 2\sigma\mu}}{\sigma}.$$</p>
 <span class="r-in"><span><span class="va">alpha0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="fl">4</span><span class="op">)</span> <span class="op">/</span> <span class="fl">0.5</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">5000</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, alpha <span class="op">=</span> <span class="va">alpha0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The inversion recovers what the sample was drawn from.</span></span></span>
+<span class="r-in"><span><span class="co"># The inversion recovers the parameters from which the sample was drawn.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="distrib_start.html">distrib_start</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>      truth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, alpha <span class="op">=</span> <span class="va">alpha0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           mu    alpha</span>

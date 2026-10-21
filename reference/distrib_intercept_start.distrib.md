@@ -1,7 +1,7 @@
 # Default Intercept Starting Values
 
-The base method: an empty list, the intercept-only fit being the start
-for every parameter.
+The base method returns an empty list, because the intercept-only fit is
+the start for every parameter.
 
 ## Arguments
 
@@ -13,7 +13,7 @@ for every parameter.
 
 - y:
 
-  The response. Unused.
+  The response. It is unused.
 
 - ...:
 

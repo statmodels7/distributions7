@@ -1,7 +1,7 @@
 # Whether a Family Supplies Its Own Fourth Derivative
 
-Whether the family supplies its own fourth-order derivatives, rather
-than reaching one of the base classes' numerical fallbacks.
+Reports whether the family supplies its own fourth-order derivatives,
+rather than reaching one of the base classes' numerical fallbacks.
 
 ## Usage
 
@@ -30,8 +30,8 @@ its accuracy depends on the quantity that it differences. Where the
 fourth order is the family's own, the result is an ordinary numerical
 derivative of a quantity that the family computes directly. Where the
 fourth order is the numerical fallback of the package, the fifth order
-is a difference of a difference, and no choice of tolerance makes it
-reliable.
+is a difference of a difference, and it is unreliable whatever the
+tolerance.
 
 A family in the second case still receives a value, since a distribution
 needs only
@@ -61,7 +61,7 @@ requested `orders`, which default to `1:4`.
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
 the consumer;
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
-the predicate this is modeled on.
+the predicate on which this is modeled.
 
 ## Examples
 

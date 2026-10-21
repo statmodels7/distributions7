@@ -1,13 +1,14 @@
 # Estimates From a Maximum-Likelihood Fit
 
 Returns the maximum likelihood estimates, on either of the two scales
-the fit carries. The default is the parameter scale, \\\hat\theta\\,
-which is what the family is interpreted in; `scale = "link"` gives
-\\\hat\eta = g(\hat\theta)\\, the point the optimizer actually reached.
+that the fit carries. The default is the parameter scale,
+\\\hat\theta\\, the scale on which the family is interpreted;
+`scale = "link"` gives \\\hat\eta = g(\hat\theta)\\, the point that the
+optimizer reached.
 
-Neither is recomputed. Both were stored at the optimum, and each is the
-image of the other under the family's links, so `coef(fit, "link")` is
-`g(coef(fit))` component by component.
+The fit does not recompute either vector. Both were stored at the
+optimum, and each is the image of the other under the family's links, so
+`coef(fit, "link")` is `g(coef(fit))` component by component.
 
 ## Arguments
 

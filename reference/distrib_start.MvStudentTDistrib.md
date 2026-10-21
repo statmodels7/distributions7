@@ -1,10 +1,9 @@
 # The Gaussian Estimate as a Starting Value for a t
 
-Returns the sample mean and the sample covariance with the degrees of
-freedom set at 8, which gives tails clearly heavier than the Gaussian's
-and a finite second moment. The Gaussian estimate is the limit of this
-family as \\\nu\\ grows, so the search for a finite \\\nu\\ starts from
-it.
+Returns the sample mean, the sample covariance and degrees of freedom
+equal to 8, which give tails clearly heavier than the Gaussian's and a
+finite second moment. The Gaussian estimate is the limit of this family
+as \\\nu\\ grows, so the search for a finite \\\nu\\ starts from it.
 
 One starting value is returned for any value of `n_start`.
 
@@ -39,15 +38,15 @@ ordered as `distrib@params`.
 The scale matrix is not the covariance. For a \\t\\ with \\\nu\\ degrees
 of freedom \\\mathrm{Var}(Y) = \nu\Sigma/(\nu-2)\\, so the sample
 covariance is multiplied by \\(\nu_0-2)/\nu_0 = 0.75\\ before it is
-carried onto the structure. A starting value that confused the two would
-begin with a scale a third too large.
+carried onto the structure. Using the covariance as the scale matrix
+would begin with a scale a third too large.
 
 ## See also
 
 [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
 for the generic;
 [`distrib_start.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_start.MvGaussianDistrib.md),
-the limit this starts from;
+the limit from which this starts;
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 for the scale matrix and
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)

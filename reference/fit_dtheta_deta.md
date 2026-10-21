@@ -5,9 +5,9 @@ evaluated at the supplied linear predictors. Because each parameter
 carries its own scalar link the Jacobian of \\\theta\\ in \\\eta\\ is
 diagonal, and this is its diagonal.
 
-It is what the delta method needs to carry a variance matrix from the
-link scale, where the fit computes it, to the parameter scale, where it
-is reported: \\\widehat{\mathrm{Var}}(\hat\theta) = J V J\\ with \\J =
+The delta method uses it to carry a variance matrix from the link scale,
+where the fit computes it, to the parameter scale, where it is reported:
+\\\widehat{\mathrm{Var}}(\hat\theta) = J V J\\ with \\J =
 \mathrm{diag}(h')\\. On a Gaussian at \\\eta = (1.5, \log 2.5)\\, with
 the identity on \\\mu\\ and the logarithm on \\\sigma\\, it returns
 `c(1, 2.5)`.
@@ -28,18 +28,18 @@ fit_dtheta_deta(distrib, eta)
 - eta:
 
   A numeric vector of linear predictors, one per parameter, in the order
-  `distrib@params` gives. Only `eta[i]` is read for the i-th parameter,
-  so entries beyond the parameter count are ignored.
+  of `distrib@params`. Only `eta[i]` is read for the i-th parameter, so
+  entries beyond the parameter count are ignored.
 
 ## Value
 
 An unnamed numeric vector of length `length(distrib@params)`, in the
-order `distrib@params` gives.
+order of `distrib@params`.
 
 ## See also
 
 [`fit_theta_from_eta()`](https://statmodels7.github.io/distributions7/reference/fit_theta_from_eta.md),
-the map this differentiates;
+the map that this function differentiates;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
 which uses it for the standard errors and nothing else;
 [`linkfunctions7::dlinkinv()`](https://statmodels7.github.io/linkfunctions7/reference/dlinkinv.html).

@@ -76,7 +76,7 @@ for the pieces.
 ## Examples
 
 ``` r
-# One curve per value of the scale, at a shared mean.
+# The plot has one curve per value of the scale, at a shared mean.
 plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 
 

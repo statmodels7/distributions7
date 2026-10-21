@@ -9,18 +9,18 @@ note.
 
 The optimizer line names the method that produced the estimates, which
 is not always the one requested, and the convergence line names the
-stopping rule that ended the run. Without that rule `converged` says
-nothing: it records that some test was met. A run that did not converge
-also prints the score per observation at the point it stopped at, which
-is the one number that says whether the point is usable.
+stopping rule that ended the run. Without that rule `converged` does not
+identify the test: it records that some test was met. A run that did not
+converge also prints the score per observation at the point where it
+stopped, and this number indicates whether the point is usable.
 
 For a multivariate fit the coordinates of the covariance structure are
-replaced by the quantities that the model is written in (the location,
+replaced by the quantities in which the model is written (the location,
 the standard deviations and the correlations that
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
 derives), because a log-Cholesky coordinate has no direct
-interpretation. Any parameter that the structure does not account for,
-such as the degrees of freedom of a \\t\\, is printed after them.
+interpretation. Any parameter that the structure does not cover, such as
+the degrees of freedom of a \\t\\, is printed after them.
 
 ## Arguments
 
@@ -66,7 +66,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 print(fit_distrib(d, y))
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 4 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 8 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -79,14 +79,14 @@ print(fit_distrib(d, y))
 #> mu      2.0679     0.1356 1.8021 2.3338
 #> sigma   1.1095     0.0316 1.0475 1.1714
 
-# The link-scale block is where the interval is built. On a Gamma written
+# The interval is built in the link-scale block. On a Gamma written
 # in the mean and the variance both parameters carry a log link, so both
 # lower limits are positive by construction.
 g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
 print(g, digits = 3)
 #> Maximum-likelihood fit: gamma2
 #> Observations: 300   Log-likelihood: -403   AIC: 810   BIC: 817
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 4 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 9 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

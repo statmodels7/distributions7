@@ -4,16 +4,16 @@ varying parameters become one legend entry per curve, and the fixed ones are
 stated once in the title beside the family's name. A reader then sees which
 parameter the panel is about without counting curves, and reads the held
 values without a second key.
-Where nothing varies there is one curve and no legend, and the title carries
-every parameter. Where nothing is fixed the title is the family's name
-alone. Values are rounded to three decimals."><meta property="og:description" content="Splits a set of plot settings into what varies and what does not: the
+If every parameter is fixed, there is one curve and no legend, and the title
+carries every parameter. If every parameter varies, the title is only the
+family's name. Values are rounded to three decimals."><meta property="og:description" content="Splits a set of plot settings into what varies and what does not: the
 varying parameters become one legend entry per curve, and the fixed ones are
 stated once in the title beside the family's name. A reader then sees which
 parameter the panel is about without counting curves, and reads the held
 values without a second key.
-Where nothing varies there is one curve and no legend, and the title carries
-every parameter. Where nothing is fixed the title is the family's name
-alone. Values are rounded to three decimals."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+If every parameter is fixed, there is one curve and no legend, and the title
+carries every parameter. If every parameter varies, the title is only the
+family's name. Values are rounded to three decimals."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +21,7 @@ alone. Values are rounded to three decimals."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,9 +59,9 @@ varying parameters become one legend entry per curve, and the fixed ones are
 stated once in the title beside the family's name. A reader then sees which
 parameter the panel is about without counting curves, and reads the held
 values without a second key.</p>
-<p>Where nothing varies there is one curve and no legend, and the title carries
-every parameter. Where nothing is fixed the title is the family's name
-alone. Values are rounded to three decimals.</p>
+<p>If every parameter is fixed, there is one curve and no legend, and the title
+carries every parameter. If every parameter varies, the title is only the
+family's name. Values are rounded to three decimals.</p>
     </div>
 
     <div class="section level2">
@@ -85,9 +85,9 @@ alone. Values are rounded to three decimals.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with two components: <code>legend</code>, a character vector of length
-<code>ps$k</code> or <code>NULL</code> when nothing varies, and <code>main</code>, a character string of
-length 1 carrying a newline between the family's name and the fixed
-values.</p>
+<code>ps$k</code> or <code>NULL</code> when every parameter is fixed, and <code>main</code>, a character
+string of length 1 carrying a newline between the family's name and the
+fixed values.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -8,9 +8,9 @@ domain: a scale has a positive lower limit and a probability stays
 inside \\(0,1)\\. The two ends are sorted after mapping, because a link
 need not be increasing.
 
-Any level is available from the stored estimate and standard error
-without refitting, so a fit computed at 95% answers at 99% for the cost
-of one quantile.
+Any level can be computed from the stored estimate and standard error
+without refitting, so an interval at 99% follows from a fit computed at
+95% at the cost of one quantile.
 
 ## Arguments
 
@@ -22,15 +22,15 @@ of one quantile.
 
 - parm:
 
-  Which parameters to report, by name or by position. Missing, the
-  default, reports all of them. A name that is not a parameter of this
-  fit, or a position outside the range, signals an error naming the
-  argument.
+  Which parameters to report, by name or by position. If missing, which
+  is the default, all parameters are reported. A name that is not a
+  parameter of this fit, or a position outside the range, signals an
+  error naming the argument.
 
 - level:
 
   Confidence level, a single number in \\(0, 1)\\. Defaults to the level
-  the fit was computed at, `object@level`.
+  at which the fit was computed, `object@level`.
 
 - scale:
 
@@ -89,7 +89,7 @@ lo_eta <- confint(fit, "sigma", scale = "link")[1]
 all.equal(confint(fit, "sigma")[1], exp(lo_eta), check.attributes = FALSE)
 #> [1] TRUE
 
-# A probability near the boundary: 47 successes in 50 trials.
+# A probability near the boundary is fitted from 47 successes in 50 trials.
 fb <- fit_distrib(bernoulli_distrib(), rep(0:1, c(3, 47)))
 confint(fb)                    # inside (0, 1) by construction
 #>         2.5%     97.5%

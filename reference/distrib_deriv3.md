@@ -4,7 +4,7 @@ Computes the unique third-order partial derivatives of the
 log-likelihood with respect to the distribution's parameters.
 Distributions with a closed-form implementation provide it directly (in
 C++); the others fall back to finite differences of the highest order
-the family implements itself (see
+that the family implements itself (see
 [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)).
 
 ## Usage
@@ -55,8 +55,8 @@ distrib_deriv3(
 
   How the expectation is approximated when `expected = TRUE` and the
   distribution has no closed-form expected third derivatives; ignored
-  otherwise. One of `"integrate"` (default), `"bartlett"` (equivalently
-  `"opg"`) or `"mc"`. See
+  otherwise. The value is one of `"integrate"` (default), `"bartlett"`
+  (equivalently `"opg"`) or `"mc"`. See
   [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - nsim:

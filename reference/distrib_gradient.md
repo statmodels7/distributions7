@@ -60,7 +60,8 @@ distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> [1]  0 -1  0
 #> 
 
-# the same score with respect to the unconstrained parameters
+# With scale = "link" the same score is taken with respect to the
+# unconstrained parameters.
 distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
 #> $mu
 #> [1] -1  0  1

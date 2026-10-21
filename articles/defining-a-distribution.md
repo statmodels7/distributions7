@@ -7,13 +7,13 @@ library(distributions7)
 
 ## Overview
 
-A new distribution in **distributions7** requires only its **density**
+A new distribution in distributions7 requires only its density
 (`distrib_pdf`). Everything else (the cumulative distribution function,
 the quantile function, the random number generator, the score, the
 observed and expected Hessian, and the moments) is then available
 automatically through numerical fallbacks. A closed-form expression
-derived later is registered as a method and transparently takes over,
-with no change to calling code.
+derived later is registered as a method and replaces the fallback, with
+no change to calling code.
 
 ## How dispatch makes this work
 
@@ -34,8 +34,8 @@ distribution object:
 | `mean`, `variance`, `std_dev`, `skewness`, `kurtosis`, `moment` | moments |
 
 Default methods for all of these (except `distrib_pdf`) are registered
-on the **base classes**: the probability functions on
-`continuous_distrib` and `discrete_distrib`, the response derivatives on
+on the base classes: the probability functions on `continuous_distrib`
+and `discrete_distrib`, the response derivatives on
 `continuous_distrib`, and the parameter derivatives and the moments on
 `distrib`. Because S7 always selects the most specific applicable
 method, a subclass inherits those defaults until something more specific
@@ -59,8 +59,8 @@ is registered. The defaults are:
   [`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md));
 - `distrib_deriv3`, `distrib_deriv4`: one central finite-difference
   stencil on the highest-order derivative that the family implements
-  itself, which is a tensor-product stencil on the log-density for a
-  family defined by its density alone (see
+  itself; for a family defined by its density alone, this is a
+  tensor-product stencil on the log-density (see
   [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
   /
   [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md));
@@ -75,13 +75,13 @@ is registered. The defaults are:
 
 A new distribution needs exactly three things:
 
-1.  **A class** that inherits from `continuous_distrib` or
+1.  A class that inherits from `continuous_distrib` or
     `discrete_distrib`.
-2.  **A `distrib_pdf` method** for that class.
-3.  **A constructor** that fills in the metadata (name, support bounds,
+2.  A `distrib_pdf` method for that class.
+3.  A constructor that fills in the metadata (name, support bounds,
     parameter names, domains and link functions).
 
-Nothing else is required.
+These three items are sufficient.
 
 ### Worked example: the Laplace distribution
 
@@ -90,18 +90,18 @@ $`f(y;\mu,b)=\frac{1}{2b}\exp\!\left(-\frac{|y-\mu|}{b}\right)`$, with
 $`\mu\in\mathbb{R}`$ and $`b>0`$. Base R has no `dlaplace`, so this is a
 genuinely new distribution.
 
-**Step 1: the class.** It is continuous, so we inherit from
-`continuous_distrib`:
+Step 1 defines the class. The distribution is continuous, so we inherit
+from `continuous_distrib`:
 
 ``` r
 
 Laplace <- S7::new_class("Laplace", parent = continuous_distrib)
 ```
 
-**Step 2: the density.** A method for `distrib_pdf`. The signature is
-always `(distrib, y, theta, log = FALSE, ...)`, where `theta` is a named
-list of parameters (each element a scalar or a vector aligned with `y`).
-The `...` is required: a modeling function such as
+Step 2 defines the density as a method for `distrib_pdf`. The signature
+is always `(distrib, y, theta, log = FALSE, ...)`, where `theta` is a
+named list of parameters (each element is a scalar or a vector aligned
+with `y`). The `...` is required: a modeling function such as
 `statmodels7::statmod()` passes further arguments to the density, the
 number of threads among them, and a method without `...` stops on the
 first call.
@@ -116,15 +116,15 @@ S7::method(distrib_pdf, Laplace) <- function(distrib, y, theta, log = FALSE, ...
 }
 ```
 
-Two conventions matter. `theta` is indexed positionally (`theta[[1]]`,
-`theta[[2]]`) so that the parameter *names* stay free, and the `log`
-branch is always implemented, because the numerical machinery evaluates
-the density on the log scale for stability.
+The method indexes `theta` positionally (`theta[[1]]`, `theta[[2]]`) so
+that the parameter *names* stay free, and it always implements the `log`
+branch, because the numerical machinery evaluates the density on the log
+scale for stability.
 
-**Step 3: the constructor.** A plain function returning an object of the
-class with the metadata filled in. The density is not differentiable in
-the location at $`y = \mu`$, which the constructor records in
-`params_smooth`:
+Step 3 defines the constructor, a plain function that returns an object
+of the class and fills in the metadata. The density is not
+differentiable in the location at $`y = \mu`$, which the constructor
+records in `params_smooth`:
 
 ``` r
 
@@ -148,7 +148,7 @@ The `params_bounds` are used by the fallbacks (finite-difference steps
 are shrunk so they never step outside a parameter’s domain) and by
 [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md).
 The `link_params` are used by downstream modeling code;
-`identity_link()` and `log_link()` come from **linkfunctions7**.
+`identity_link()` and `log_link()` come from linkfunctions7.
 
 That is the entire definition. Everything now works:
 
@@ -157,11 +157,11 @@ That is the entire definition. Everything now works:
 d  <- laplace_distrib()
 th <- list(mu = 1, b = 2)
 
-# density (what we defined)
+# The density is the one we defined.
 distrib_pdf(d, c(0, 1, 3), th)
 #> [1] 0.15163266 0.25000000 0.09196986
 
-# CDF, quantile, RNG: all numerical fallbacks
+# The CDF, quantile and RNG are all numerical fallbacks.
 distrib_cdf(d, c(-1, 1, 4), th)
 #> [1] 0.1839397 0.5000000 0.8884349
 distrib_quantile(d, c(0.25, 0.5, 0.75), th)   # median is exactly mu = 1
@@ -169,7 +169,7 @@ distrib_quantile(d, c(0.25, 0.5, 0.75), th)   # median is exactly mu = 1
 head(distrib_rng(d, 5, th))
 #> [1]  5.723932 -2.857153  0.855691  2.715865  0.144959
 
-# score and Hessian: finite differences of the log-density
+# The score and Hessian are finite differences of the log-density.
 str(distrib_gradient(d, c(-1, 3), th))
 #> List of 2
 #>  $ mu: num [1:2] -0.5 0.5
@@ -180,7 +180,7 @@ str(distrib_hessian(d, c(-1, 3), th))
 #>  $ b_b  : num [1:2] -0.25 -0.25
 #>  $ mu_b : num [1:2] 0.25 -0.25
 
-# moments: numerical integration against the density
+# The moments are numerical integrals against the density.
 c(mean = mean(d, th), variance = variance(d, th))  # Laplace variance is 2 b^2 = 8
 #>     mean variance 
 #>        1        8
@@ -191,7 +191,7 @@ Laplace:
 
 ``` r
 
-# analytical Laplace CDF
+# The analytical Laplace CDF is defined here.
 lap_cdf <- function(q, mu, b) {
   ifelse(q < mu, 0.5 * exp((q - mu) / b), 1 - 0.5 * exp(-(q - mu) / b))
 }
@@ -231,15 +231,15 @@ plot(d, th)
 ## Discrete distributions
 
 For a discrete distribution, inherit from `discrete_distrib` instead and
-let `distrib_pdf` be the **probability mass function**. The one extra
-requirement is that the support has a **finite lower bound**
-(`bounds[1]`), which every standard count distribution satisfies. The
-discrete fallbacks build a cumulative-mass table from that lower bound,
-growing it geometrically as needed.
+let `distrib_pdf` be the probability mass function. The one extra
+requirement is that the support has a finite lower bound (`bounds[1]`),
+which every standard count distribution satisfies. The discrete
+fallbacks build a cumulative-mass table from that lower bound, growing
+it geometrically as needed.
 
 ``` r
 
-# A shifted-geometric example: P(Y = k) = (1-p) p^k for k = 0, 1, 2, ...
+# This is a shifted-geometric example: P(Y = k) = (1-p) p^k for k = 0, 1, 2, ...
 Geom <- S7::new_class("Geom", parent = discrete_distrib)
 S7::method(distrib_pdf, Geom) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- theta[[1]]
@@ -268,13 +268,13 @@ c(mean = mean(g, list(p = 0.6)))                        # p / (1 - p) = 1.5
 ## Adding closed forms for performance
 
 The numerical fallbacks are convenient but slower and less precise than
-analytical formulas. Whenever a closed form is available, registering it
-as a method makes it take over automatically, and existing code keeps
-working. There is no need to override everything: any subset of the
-methods can be supplied.
+analytical formulas. Whenever a closed form is available, it replaces
+the fallback automatically once it is registered as a method, and
+existing code keeps working. There is no need to override everything:
+any subset of the methods can be supplied.
 
-For the Laplace, all of these are available in closed form. For instance
-the CDF, quantile and score:
+For the Laplace, all of these are available in closed form. For
+instance, we register the CDF, quantile and score as follows:
 
 ``` r
 
@@ -294,7 +294,7 @@ S7::method(distrib_quantile, Laplace) <- function(distrib, p, theta,
   mu - b * sign(p - 0.5) * log(1 - 2 * abs(p - 0.5))
 }
 
-# score: d/dmu = sign(y - mu) / b,  d/db = (|y - mu| / b - 1) / b
+# The score is d/dmu = sign(y - mu) / b,  d/db = (|y - mu| / b - 1) / b
 S7::method(distrib_gradient, Laplace) <- function(distrib, y, theta,
                                                   scale = c("parameter", "link"), ...) {
   mu <- theta[[1]]; b <- theta[[2]]
@@ -305,9 +305,9 @@ S7::method(distrib_gradient, Laplace) <- function(distrib, y, theta,
 }
 ```
 
-Note the signature of the derivative method: it must mirror the generic,
-which carries a `scale` argument (and `...`). **A method always returns
-parameter-scale derivatives**; the chain rule is never implemented by
+The signature of the derivative method must mirror the generic, which
+carries a `scale` argument (and `...`). A method always returns
+parameter-scale derivatives; the chain rule is never implemented by
 hand. The generic applies the link-scale transformation afterwards when
 the caller requests `scale = "link"`. The same applies to
 `distrib_hessian`, `distrib_expected_hessian`, `distrib_deriv3` and
@@ -328,19 +328,17 @@ str(distrib_gradient(d, c(-1, 3), th))                   # now analytical
 #>  $ b : num [1:2] 0 0
 ```
 
-A practical suggestion for the order in which to add closed forms:
+We suggest adding closed forms in the following order:
 
-1.  **`distrib_gradient`**: the single biggest speed-up for model
-    fitting, since the score is evaluated at every optimization step.
-    Writing it in C++ (via **Rcpp**), as the built-in distributions do,
-    helps further.
-2.  **`distrib_hessian`**: for Newton-type optimization and standard
-    errors.
-3.  **`distrib_cdf` / `distrib_quantile` / `distrib_rng`**: for fast or
+1.  `distrib_gradient`: the single biggest speed-up for model fitting,
+    since the score is evaluated at every optimization step. Writing it
+    in C++ (via Rcpp), as the built-in distributions do, helps further.
+2.  `distrib_hessian`: for Newton-type optimization and standard errors.
+3.  `distrib_cdf` / `distrib_quantile` / `distrib_rng`: for fast or
     high-volume simulation and tail probabilities.
-4.  **`distrib_expected_hessian`** and **analytical moments**: when a
-    closed form exists and the fitting method is Fisher scoring, or
-    exact moments are needed.
+4.  `distrib_expected_hessian` and analytical moments: when a closed
+    form exists and the fitting method is Fisher scoring, or exact
+    moments are needed.
 
 ## Checking analytical derivatives
 
@@ -455,7 +453,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 13 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 26 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -480,7 +478,7 @@ set.seed(2)
 fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41
-#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 4 ms
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 5 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -495,12 +493,12 @@ fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 ## Non-differentiable parameters
 
 Some distributions have a log-likelihood that is not differentiable in
-one of its parameters. The archetype is the **Laplace** distribution
+one of its parameters. The archetype is the Laplace distribution
 $`f(y;\mu,b)=\frac{1}{2b}e^{-|y-\mu|/b}`$, whose density has a kink at
 $`y=\mu`$: the score
 $`\partial\ell/\partial\mu=\operatorname{sign}(y-\mu)/b`$ exists only
 almost everywhere, and the observed curvature
-$`\partial^2\ell/\partial\mu^2`$ is **zero**, so Newton-Raphson cannot
+$`\partial^2\ell/\partial\mu^2`$ is zero, so Newton-Raphson cannot
 update $`\mu`$.
 
 The package handles this in two ways. First, a distribution declares
@@ -545,10 +543,10 @@ $`b`$.
 
 ## Summary
 
-- **Minimum to define a distribution:** a subclass of
-  `continuous_distrib` or `discrete_distrib`, a `distrib_pdf` method,
-  and a constructor with the metadata. (Discrete distributions
-  additionally need a finite lower support bound.)
+- Minimum to define a distribution: a subclass of `continuous_distrib`
+  or `discrete_distrib`, a `distrib_pdf` method, and a constructor with
+  the metadata. (Discrete distributions additionally need a finite lower
+  support bound.)
 - The density alone yields the CDF, quantile function, RNG, score,
   observed and expected Hessian, and all moments, via numerical
   fallbacks.

@@ -5,17 +5,17 @@ symmetrically on the link scale, \(\hat\eta \pm z_{1-\alpha/2}\,
 scale is requested, so a limit cannot leave the parameter's domain: a scale
 has a positive lower limit and a probability stays inside \((0,1)\). The
 two ends are sorted after mapping, because a link need not be increasing.
-Any level is available from the stored estimate and standard error without
-refitting, so a fit computed at 95% answers at 99% for the cost of one
-quantile."><meta property="og:description" content="Returns Wald intervals for the estimated parameters. They are built
+Any level can be computed from the stored estimate and standard error
+without refitting, so an interval at 99% follows from a fit computed at 95%
+at the cost of one quantile."><meta property="og:description" content="Returns Wald intervals for the estimated parameters. They are built
 symmetrically on the link scale, \(\hat\eta \pm z_{1-\alpha/2}\,
 \mathrm{se}(\hat\eta)\), and mapped through \(g^{-1}\) when the parameter
 scale is requested, so a limit cannot leave the parameter's domain: a scale
 has a positive lower limit and a probability stays inside \((0,1)\). The
 two ends are sorted after mapping, because a link need not be increasing.
-Any level is available from the stored estimate and standard error without
-refitting, so a fit computed at 95% answers at 99% for the cost of one
-quantile."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Any level can be computed from the stored estimate and standard error
+without refitting, so an interval at 99% follows from a fit computed at 95%
+at the cost of one quantile."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -23,7 +23,7 @@ quantile."><meta property="og:image" content="https://statmodels7.github.io/dist
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,9 +62,9 @@ symmetrically on the link scale, \(\hat\eta \pm z_{1-\alpha/2}\,
 scale is requested, so a limit cannot leave the parameter's domain: a scale
 has a positive lower limit and a probability stays inside \((0,1)\). The
 two ends are sorted after mapping, because a link need not be increasing.</p>
-<p>Any level is available from the stored estimate and standard error without
-refitting, so a fit computed at 95% answers at 99% for the cost of one
-quantile.</p>
+<p>Any level can be computed from the stored estimate and standard error
+without refitting, so an interval at 99% follows from a fit computed at 95%
+at the cost of one quantile.</p>
     </div>
 
 
@@ -77,14 +77,15 @@ quantile.</p>
 
 
 <dt id="arg-parm">parm<a class="anchor" aria-label="anchor" href="#arg-parm"></a></dt>
-<dd><p>Which parameters to report, by name or by position. Missing, the
-default, reports all of them. A name that is not a parameter of this fit,
-or a position outside the range, signals an error naming the argument.</p></dd>
+<dd><p>Which parameters to report, by name or by position. If missing,
+which is the default, all parameters are reported. A name that is not a
+parameter of this fit, or a position outside the range, signals an error
+naming the argument.</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
 <dd><p>Confidence level, a single number in \((0, 1)\). Defaults to
-the level the fit was computed at, <code>object@level</code>.</p></dd>
+the level at which the fit was computed, <code>object@level</code>.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -138,7 +139,7 @@ parameter names. Both entries are <code>NA</code> where the standard error is.</
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span>, <span class="st">"sigma"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">lo_eta</span><span class="op">)</span>, check.attributes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A probability near the boundary: 47 successes in 50 trials.</span></span></span>
+<span class="r-in"><span><span class="co"># A probability near the boundary is fitted from 47 successes in 50 trials.</span></span></span>
 <span class="r-in"><span><span class="va">fb</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="fu"><a href="bernoulli_distrib.html">bernoulli_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">47</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fb</span><span class="op">)</span>                    <span class="co"># inside (0, 1) by construction</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         2.5%     97.5%</span>

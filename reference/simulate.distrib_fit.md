@@ -2,9 +2,10 @@
 
 Draws new samples from the fitted distribution, evaluated at the maximum
 likelihood estimates and ignoring their uncertainty. Each replicate has
-the same length as the data the fit was computed from, so a replicate is
-directly comparable with the observations: this is the draw a parametric
-bootstrap and a posterior-predictive style check both need.
+the same length as the data from which the fit was computed, so a
+replicate is directly comparable with the observations: this is the draw
+that a parametric bootstrap and a posterior-predictive style check both
+need.
 
 The draws come from
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
@@ -41,8 +42,8 @@ own fallback and the cost is that fallback's.
 ## Value
 
 For a univariate fit, a data frame of `object@n` rows and `nsim` columns
-named `sim_1` to `sim_nsim`, each column one replicate. For a
-multivariate fit each replicate is a matrix, and the data frame has
+named `sim_1` to `sim_nsim`, in which each column is one replicate. For
+a multivariate fit each replicate is a matrix, and the data frame has
 `object@n` rows and `nsim * p` columns named `sim_1.v1`, `sim_1.v2`, and
 so on. The `"seed"` attribute carries the generator state described
 above.
@@ -54,7 +55,7 @@ for the fit;
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 for the generator;
 [`plot.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
-to compare the fit with the data it came from.
+to compare the fit with the data from which it was computed.
 
 ## Examples
 
@@ -67,7 +68,8 @@ sims <- simulate(fit, 20, seed = 42)
 dim(sims)
 #> [1] 200  20
 
-# A parametric bootstrap of any statistic, here the median.
+# The replicates give a parametric bootstrap of any statistic, here the
+# median.
 quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 #>     2.5%    97.5% 
 #> 2.840640 3.336715 

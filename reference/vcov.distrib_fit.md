@@ -1,12 +1,12 @@
 # Variance-Covariance Matrix of a Maximum-Likelihood Fit
 
 Returns the estimated variance matrix of the estimates, on either scale.
-The one the fit computes is on the link scale, the inverse of the
-information at \\\hat\eta\\. The parameter-scale matrix is its image
-under the delta method, \$\$\widehat{\mathrm{Var}}(\hat\theta) =
+The matrix that the fit computes is on the link scale and is the inverse
+of the information at \\\hat\eta\\. The parameter-scale matrix is its
+image under the delta method, \$\$\widehat{\mathrm{Var}}(\hat\theta) =
 J\\\widehat{\mathrm{Var}}(\hat\eta)\\J, \qquad J =
 \mathrm{diag}\\\left(\frac{dg^{-1}}{d\eta}\Big\|\_{\hat\eta}\right),\$\$
-the Jacobian being diagonal because each parameter carries its own
+and the Jacobian is diagonal because each parameter carries its own
 scalar link.
 
 Every entry is `NA` when the information could not be evaluated or
@@ -29,8 +29,8 @@ uncertainty is missing.
 
 - information:
 
-  Which information to invert: `"fit"` (the default) is the matrix the
-  fit stored, `"observed"` the Hessian at the estimates, and
+  Which information to invert: `"fit"` (the default) is the matrix that
+  the fit stored, `"observed"` the Hessian at the estimates, and
   `"expected"` the expected information there. The last two are
   recomputed.
 
@@ -64,9 +64,10 @@ the family writes it out, where it costs one evaluation and has the
 smaller variance, and the observed Hessian otherwise.
 
 The alternative is available because the two are different estimators
-and the choice is the reader's. They agree asymptotically and not in a
-sample: the expected one is the information averaged over the model, the
-observed one the curvature of the likelihood at the data in hand.
+and the choice is the reader's. They agree asymptotically but not in a
+sample. The expected information is averaged over the model, and the
+observed information is the curvature of the likelihood at the data in
+hand.
 
 Where a family does not write its expected information out,
 `information = "expected"` reaches a fallback, and `approx` selects it.

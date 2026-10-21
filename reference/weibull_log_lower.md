@@ -37,7 +37,7 @@ A numeric vector of log probabilities.
 ## Examples
 
 ``` r
-# a hazard of e^-800 and an argument of e^-800, both below the double range
+# A hazard and an argument of e^-800 are both below the double range.
 distributions7:::weibull_log_lower(c(-3, -800))
 #> [1]   -3.02479 -800.00000
 distributions7:::gamma_log_lower(c(-3, -800), 0.7)

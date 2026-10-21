@@ -22,7 +22,7 @@ new_check(name, ok, stat, detail = NA_character_)
 
 - stat:
 
-  The numeric statistic the check produced, typically a maximum
+  The numeric statistic that the check produced, typically a maximum
   discrepancy.
 
 - detail:

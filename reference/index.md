@@ -319,8 +319,9 @@ The S7 classes; each page lists the methods that dispatch on it.
 
 ## Numerical fallbacks
 
-What a distribution gets for free when it implements only its density.
-Rarely called directly; they show what the default methods compute.
+The quantities that the default methods supply when a distribution
+implements only its density. They are rarely called directly, and they
+show what the default methods compute.
 
 - [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md)
   : Numerical Gradient of the Log-Density
@@ -2119,7 +2120,7 @@ inherits unless it registers something more specific.
 
 ## Internals
 
-The machinery that the exported functions are built from. It is not
+The machinery from which the exported functions are built. It is not
 needed to use the package, and it is documented so that the derivations
 can be followed from the code that implements them: the set partitions
 behind the Bartlett identities and the wrapper derivatives, the Bell
@@ -3008,7 +3009,7 @@ transforms that make it work on a divergent density.
   : Expected Information Read from the Class of Its Method
 
 - [`fd_is_reliable()`](https://statmodels7.github.io/distributions7/reference/fd_is_reliable.md)
-  : Which Observations the Finite-Difference Reference Can Be Trusted At
+  : Observations at Which the Finite-Difference Reference Can Be Trusted
 
 - [`fd_second()`](https://statmodels7.github.io/distributions7/reference/fd_second.md)
   : A Second Derivative From One Stencil
@@ -3648,7 +3649,7 @@ transforms that make it work on a divergent density.
   : The Matrix, Its Inverse and Their Derivatives
 
 - [`mv_moment_start()`](https://statmodels7.github.io/distributions7/reference/mv_moment_start.md)
-  : The Moment Estimates a Multivariate Family Starts From
+  : Moment Estimates as the Start of a Multivariate Family
 
 - [`mv_outer_rows()`](https://statmodels7.github.io/distributions7/reference/mv_outer_rows.md)
   : An Outer Product Per Observation
@@ -4459,10 +4460,10 @@ transforms that make it work on a divergent density.
 
 ## Reparametrized distributions
 
-The wrapper reparametrize() returns and the machinery behind it. The map
-is written in ordinary R and its derivatives are hand-written closed
-forms (or one stencil per partial when none are supplied), so every
-order the parent has in closed form survives.
+The wrapper that reparametrize() returns and the machinery behind it.
+The map is written in ordinary R and its derivatives are hand-written
+closed forms, or one stencil per partial if they are not supplied, so
+every order that the parent has in closed form survives.
 
 - [`ReparamContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md)
   [`ReparamDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md)

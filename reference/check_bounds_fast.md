@@ -1,9 +1,9 @@
 # Check Parameter Domains, Taking the Properties as Arguments
 
-The body behind
-[`check_theta_bounds()`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
-differing only in that it receives the distribution's properties instead
-of reaching for them.
+Provides the body of
+[`check_theta_bounds()`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md).
+It differs only in that it receives the distribution's properties
+instead of reaching for them.
 
 ## Usage
 
@@ -39,7 +39,8 @@ domain or not finite.
 [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
 calls this on every generic invocation, so its fixed cost is the
 package's fixed cost. Each read of an S7 property has a cost of its own,
-so the caller reads the properties it needs once and passes them on.
+so the caller reads the properties that it needs once and passes them
+on.
 
 Every offending parameter is collected before anything is raised, so a
 call with two bad values reports both rather than one at a time. At most

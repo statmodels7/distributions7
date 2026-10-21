@@ -1,6 +1,6 @@
 # Starting Values for the Zero Wrappers, Read Off the Data
 
-Starting values for
+Computes starting values for
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
 and
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md).
@@ -36,8 +36,8 @@ start_zero_wrapper(distrib, y, n_start = 5L, keep)
 
 - keep:
 
-  A function of the response returning which observations the parent's
-  starts are read from.
+  A function of the response that returns the observations from which
+  the parent's starts are read.
 
 ## Value
 
@@ -53,8 +53,8 @@ methods read the starting values of the parent from the observations
 described above instead.
 
 For a zero-adjusted family \\\hat p_0\\ is the maximum likelihood
-estimate of the mixing probability, the likelihood factorizing into a
-binomial part and a positive part. For a zero-inflated one it
+estimate of the mixing probability, because the likelihood factorizes
+into a binomial part and a positive part. For a zero-inflated one it
 over-estimates \\\pi\\, since \\P(Y = 0) = \pi + (1-\pi) f(0) \ge \pi\\,
 and does so from the side away from the flat end of the chart; see
 [`distrib_intercept_start.ZeroInflatedDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_intercept_start.ZeroInflatedDistrib.md).

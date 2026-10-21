@@ -1,7 +1,7 @@
 # S7 Class for Continuous Distributions
 
-A subclass of `distrib` specifically for continuous probability
-distributions.
+This class is a subclass of `distrib` specifically for continuous
+probability distributions.
 
 ## Usage
 
@@ -78,9 +78,9 @@ An object of class `continuous_distrib`.
 
 ## Methods
 
-Defaults for continuous distributions, built from the density alone: the
-cdf by quadrature, the quantile function by root finding, the generator
-by Generalized Ratio-of-Uniforms
+The class has defaults for continuous distributions, built only from the
+density: the cdf by quadrature, the quantile function by root finding,
+the generator by Generalized Ratio-of-Uniforms
 ([`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md))
 or inverse transform when an analytical quantile is available, the
 derivatives in the response and the mixed derivatives by finite

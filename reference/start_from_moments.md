@@ -1,9 +1,9 @@
 # Where a Univariate Family Starts, From the Data
 
 Returns `n_start` starting values whose first is computed from the
-response and whose rest are random draws. It is the method that both
-`continuous_distrib` and `discrete_distrib` register, so a univariate
-family uses it unless the family registers a method of its own, as
+response and whose rest are random draws. Both `continuous_distrib` and
+`discrete_distrib` register this method, so a univariate family uses it
+unless the family registers a method of its own, as
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
 [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md),
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
@@ -18,7 +18,7 @@ reading `params_interpretation`: a parameter meaning a location is
 started at the sample median, one meaning a spread at the sample
 standard deviation or its square, one meaning degrees of freedom at what
 the sample kurtosis implies, and a shape, a dispersion or a probability
-keeps its draw, those being of order one whatever the data.
+keeps its draw, because those are of order one whatever the data.
 
 ## Usage
 
@@ -36,12 +36,12 @@ start_from_moments(distrib, y, n_start = 5L, ...)
 - y:
 
   The response, a numeric vector. Non-finite entries are dropped, and a
-  sample with fewer than two usable values gets the random draws alone.
+  sample with fewer than two usable values yields only the random draws.
 
 - n_start:
 
-  How many starting values are wanted, a single positive integer.
-  Defaults to 5, and a value below 1 is raised to 1.
+  The number of starting values, a single positive integer. Defaults to
+  5, and a value below 1 is raised to 1.
 
 - ...:
 

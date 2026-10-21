@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,7 @@ distribution back to it. Parameters travel as a named list.</p>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 494 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 583 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -118,9 +118,9 @@ distribution back to it. Parameters travel as a named list.</p>
 <span><span class="co">#&gt; mu       1.0888     0.0214 1.0469 1.1306</span></span>
 <span><span class="co">#&gt; sigma2   0.6991     0.0745 0.5532 0.8451</span></span></code></pre></div>
 <p>The estimates recover the values from which the sample was generated,
-and the print method shows them twice: on the <strong>parameter
-scale</strong>, and on the <strong>link scale</strong> where the fitting
-actually happened. More on that split below.</p>
+and the print method shows them twice: on the parameter scale, and on
+the link scale where the fitting actually happened. The split is
+explained below.</p>
 </div>
 <div class="section level2">
 <h2 id="reading-the-fit">Reading the fit<a class="anchor" aria-label="anchor" href="#reading-the-fit"></a>
@@ -155,17 +155,17 @@ quantities on the unconstrained scale:</p>
 <p>The interval on the link scale is symmetric about the estimate, and
 the one on the parameter scale is its image under
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">g^{-1}</annotation></semantics></math>,
-which is why the second is not symmetric. <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> also
-takes a <code>level</code>, computed from the stored estimates and
-standard errors without refitting:</p>
+so the second is not symmetric. <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> also takes a
+<code>level</code>, computed from the stored estimates and standard
+errors without refitting:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span>, level <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            0.5%    99.5%</span></span>
 <span><span class="co">#&gt; mu     2.811604 3.138565</span></span>
 <span><span class="co">#&gt; sigma2 1.660868 2.437390</span></span></code></pre></div>
 <p>The object also carries the information criteria, the number of
-iterations and the method that was actually used, all visible in the
-print above.</p>
+iterations and the method that was actually used, and the print above
+shows all of them.</p>
 </div>
 <div class="section level2">
 <h2 id="why-the-link-scale">Why the link scale<a class="anchor" aria-label="anchor" href="#why-the-link-scale"></a>
@@ -175,13 +175,13 @@ in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math>;
 a Gaussian’s standard deviation is positive. Optimizing those
 constrained parameters directly means fighting the boundary. Instead
-<code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> optimizes the <strong>unconstrained</strong>
-parameters behind each link
+<code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> optimizes the unconstrained parameters behind
+each link
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>μ</mi></mrow><annotation encoding="application/x-tex">\log\mu</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><msup><mi>σ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\log\sigma^2</annotation></semantics></math>
 for the gamma), where there is no boundary to hit, using the exact score
-and information the package provides on that scale.</p>
+and information that the package provides on that scale.</p>
 <p>The estimates are then mapped back, and so are the intervals. Because
 a confidence interval is built symmetrically on the link scale and
 pushed through
@@ -192,7 +192,7 @@ its endpoints can never leave the parameter’s domain:</p>
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: bernoulli</span></span>
 <span><span class="co">#&gt; Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 2 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 5 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -292,9 +292,9 @@ untouched.</p>
 <h2 id="validating-a-distribution-numerically">Validating a distribution numerically<a class="anchor" aria-label="anchor" href="#validating-a-distribution-numerically"></a>
 </h2>
 <p>Before a fit is trusted, and especially before a user-written
-distribution is, <code><a href="../reference/check_distrib.html">check_distrib()</a></code> puts it through a battery
-of numerical checks. It confirms that the density integrates to one,
-that the distribution function agrees with the density, that the
+distribution is, <code><a href="../reference/check_distrib.html">check_distrib()</a></code> runs a battery of
+numerical checks on it. The checks establish that the density integrates
+to one, that the distribution function agrees with the density, that the
 quantile inverts it, that the generator follows it, that the analytical
 derivatives match finite differences on the parameter scale, and that
 the score matches them on the link scale:</p>
@@ -320,7 +320,7 @@ the score matches them on the link scale:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All 13 checks passed.</span></span></code></pre></div>
 <p>Had a mistake crept into an analytical derivative, the corresponding
-line would read <code>FAIL</code>, with the size of the discrepancy
+line would read <code>FAIL</code>, and the size of the discrepancy is
 printed next to it. It is the fastest way to catch a wrong formula.</p>
 </div>
 <div class="section level2">
