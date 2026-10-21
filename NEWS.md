@@ -1,3 +1,10 @@
+# distributions7 0.80.6
+
+* The package description is rewritten to describe the families, the
+  derivatives, the wrappers, the fitting and the validation that the
+  package provides. The README corrects a coordination in the description
+  of `fisher_scoring()`.
+
 # distributions7 0.80.5
 
 * Documentation, sixth and last part: the pages of the base classes,
