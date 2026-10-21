@@ -5,10 +5,17 @@
 #include <cmath>
 
 // The Student t in its location mu, scale s and degrees of freedom nu:
-// one function per component and order for the quantities the scalar
-// registry reads, lifted from the generated kernels in student_t1.cpp (which
-// records the derivation) and called by them and by the registry
-// (d7_ccallable.cpp). With ik = 1/nu and z = (y - mu)/s, the caller
+// one function per component and order for the quantities the registry
+// reads, lifted from the generated kernels in student_t1.cpp (which records
+// the derivation). The components of the scalar registry are called by the
+// kernels and by the registry (d7_ccallable.cpp); the off-diagonal
+// components that only the joint registry reads are not called by the
+// kernels, which compute them inline from intermediates shared across the
+// observation or across the call (routing the kernels through these
+// functions made the Hessian and the dexpected kernels 3 to 5 per cent
+// slower, and up to 1.6 times with scalar parameters, measured on -O2
+// builds 2026-10-21), and test-joint-registry.R holds the two to each
+// other. With ik = 1/nu and z = (y - mu)/s, the caller
 // passes z, ik, D(q) for q = z^2 ik, and the quantities of nu alone
 // t1_V*(nu), each of which carries a polygamma.
 
@@ -203,6 +210,27 @@ inline double student_t1_hess_nu_nu(double z, double ik, double V1) {
   return V1 + ik*w6 - w3*w7 - w6*w7;
 }
 
+inline double student_t1_hess_mu_sigma(double z, double s, double ik) {
+  const student_t1_TQ T = student_t1_tq(z, ik);
+  const double w1 = std::pow(s, -2);
+  const double w2 = T.t*w1;
+  return -2*w2*T.zt*(ik + 1);
+}
+
+inline double student_t1_hess_mu_nu(double z, double s, double ik) {
+  const student_t1_TQ T = student_t1_tq(z, ik);
+  const double w0 = ik*T.t - T.u;
+  const double w7 = -w0/s;
+  return ik*w7*T.zt;
+}
+
+inline double student_t1_hess_sigma_nu(double z, double s, double ik) {
+  const student_t1_TQ T = student_t1_tq(z, ik);
+  const double w0 = ik*T.t - T.u;
+  const double w7 = -w0/s;
+  return T.u*w7;
+}
+
 inline double student_t1_expected_mu_mu(double s, double ik) {
   const double w0 = 1/(std::pow(s, 2)*(3*ik + 1));
   return -w0*(ik + 1);
@@ -217,6 +245,11 @@ inline double student_t1_expected_nu_nu(double V2) {
   return V2;
 }
 
+inline double student_t1_expected_sigma_nu(double s, double ik) {
+  const double w1 = std::pow(ik, 2);
+  return 2*w1/(s*(4*ik + 3*w1 + 1));
+}
+
 inline double student_t1_dexpected_mu_mu_mu() {
   return 0;
 }
@@ -228,6 +261,37 @@ inline double student_t1_dexpected_sigma_sigma_sigma(double s, double ik) {
 
 inline double student_t1_dexpected_nu_nu_nu(double V8) {
   return V8;
+}
+
+inline double student_t1_dexpected_mu_mu_sigma(double s, double ik) {
+  const double w0 = 1/(std::pow(s, 3)*(3*ik + 1));
+  return 2*w0*(ik + 1);
+}
+
+inline double student_t1_dexpected_mu_mu_nu(double s, double ik) {
+  const double w1 = std::pow(ik, 2);
+  const double w2 = std::pow(s, -2);
+  const double w3 = w1*w2/(6*ik + 9*w1 + 1);
+  return -2*w3;
+}
+
+inline double student_t1_dexpected_sigma_sigma_nu(double s, double ik) {
+  const double w1 = std::pow(ik, 2);
+  const double w2 = std::pow(s, -2);
+  const double w3 = w1*w2/(6*ik + 9*w1 + 1);
+  return -6*w3;
+}
+
+inline double student_t1_dexpected_sigma_nu_sigma(double s, double ik) {
+  const double w1 = std::pow(ik, 2);
+  const double w2 = std::pow(s, -2);
+  return -2*w1*w2/(4*ik + 3*w1 + 1);
+}
+
+inline double student_t1_dexpected_sigma_nu_nu(double s, double ik) {
+  const double w1 = std::pow(ik, 2);
+  const double w4 = std::pow(ik, 3);
+  return -4*w4*(2*ik + 1)/(s*(9*std::pow(ik, 4) + 8*ik + 22*w1 + 24*w4 + 1));
 }
 
 inline void student_t1_score_curv(int k, double y, const double* th,
@@ -261,6 +325,58 @@ inline void student_t1_info_dinfo(int k, double y, const double* th,
     out[0] = student_t1_expected_nu_nu(t1_V2(v));
     out[1] = student_t1_dexpected_nu_nu_nu(t1_V8(v));
   }
+}
+
+// The routers of the joint registry, one per order: every component at one
+// observation, on the parameter scale, in (mu, sigma, nu). The Hessian and
+// the expected information fill a full 3 x 3 matrix and the derivative of
+// the expected information a 3 x 3 x 3 array, column-major,
+// out[a + 3 b + 9 c] being the derivative of E[l_ab] in parameter c.
+inline void student_t1_joint_grad(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 0.0);
+  const double z = (y - m) / s;
+  out[0] = student_t1_score_mu(z, s, ik);
+  out[1] = student_t1_score_sigma(z, s, ik);
+  out[2] = student_t1_score_nu(z, ik, t1_V0(v), student_t1_DQ(z, ik));
+}
+
+inline void student_t1_joint_hess(double y, const double* th, double* out) {
+  const double m = th[0], s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 0.0);
+  const double z = (y - m) / s;
+  out[0] = student_t1_hess_mu_mu(z, s, ik);
+  out[4] = student_t1_hess_sigma_sigma(z, s, ik);
+  out[8] = student_t1_hess_nu_nu(z, ik, t1_V1(v));
+  out[1] = out[3] = student_t1_hess_mu_sigma(z, s, ik);
+  out[2] = out[6] = student_t1_hess_mu_nu(z, s, ik);
+  out[5] = out[7] = student_t1_hess_sigma_nu(z, s, ik);
+}
+
+inline void student_t1_joint_info(double y, const double* th, double* out) {
+  const double s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 0.0);
+  out[0] = student_t1_expected_mu_mu(s, ik);
+  out[4] = student_t1_expected_sigma_sigma(s, ik);
+  out[8] = student_t1_expected_nu_nu(t1_V2(v));
+  out[1] = out[3] = 0.0;
+  out[2] = out[6] = 0.0;
+  out[5] = out[7] = student_t1_expected_sigma_nu(s, ik);
+}
+
+inline void student_t1_joint_dinfo(double y, const double* th, double* out) {
+  const double s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 0.0);
+  for (int j = 0; j < 27; ++j) out[j] = 0.0;
+  // c = 1 (sigma)
+  out[0 + 9] = student_t1_dexpected_mu_mu_sigma(s, ik);
+  out[4 + 9] = student_t1_dexpected_sigma_sigma_sigma(s, ik);
+  out[5 + 9] = out[7 + 9] = student_t1_dexpected_sigma_nu_sigma(s, ik);
+  // c = 2 (nu)
+  out[0 + 18] = student_t1_dexpected_mu_mu_nu(s, ik);
+  out[4 + 18] = student_t1_dexpected_sigma_sigma_nu(s, ik);
+  out[8 + 18] = student_t1_dexpected_nu_nu_nu(t1_V8(v));
+  out[5 + 18] = out[7 + 18] = student_t1_dexpected_sigma_nu_nu(s, ik);
 }
 
 } // namespace d7

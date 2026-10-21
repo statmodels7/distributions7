@@ -225,6 +225,11 @@ int d7_scalar_id(const char* cls);
 void d7_score_curv(int id, int k, double y, const double* th, double* out);
 void d7_info_dinfo(int id, int k, double y, const double* th, double* out);
 double d7_logpdf(int id, double y, const double* th);
+int d7_joint_covered(int id);
+void d7_joint_grad(int id, double y, const double* th, double* out);
+void d7_joint_hess(int id, double y, const double* th, double* out);
+void d7_joint_info(int id, double y, const double* th, double* out);
+void d7_joint_dinfo(int id, double y, const double* th, double* out);
 }
 
 namespace {
@@ -2084,6 +2089,66 @@ double d7_logpdf(int id, double y, const double* th) {
     }
 }
 
+// The joint registry: every component at one observation, one entry per
+// order, for a consumer that reads the derivatives in several parameters at
+// once (a joint score-driven filter). th as for d7_score_curv(); the
+// Hessian and the expected information fill a full P x P matrix and the
+// derivative of the expected information a P x P x P array, column-major,
+// out[a + P b + P^2 c] being the derivative of E[l_ab] in parameter c, all on
+// the parameter scale. A family is covered once its components are written
+// out in its header; d7_joint_covered() answers 1 for those, 0 for the other
+// families and for the wrappers, and -1 for an unknown id, and the entries
+// fill `out` with NaN where the family is not covered.
+int d7_joint_covered(int id) {
+    if (id >= kWrapBase) return node_valid(id) ? 0 : -1;
+    if (id < 0 || id >= d7_n_scalar_classes) return -1;
+    switch (id) {
+    case 0: case 23: return 1;
+    default: return 0;
+    }
+}
+
+static void fill_nan(double* out, int m) {
+    for (int j = 0; j < m; ++j) out[j] = R_NaN;
+}
+
+static int joint_np(int id) {
+    return d7_joint_covered(id) == 1 ? id_np(id) : 0;
+}
+
+void d7_joint_grad(int id, double y, const double* th, double* out) {
+    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    case 0: d7::gaussian1_joint_grad(y, th, out); break;
+    case 23: d7::student_t1_joint_grad(y, th, out); break;
+    default: fill_nan(out, joint_np(id));
+    }
+}
+
+void d7_joint_hess(int id, double y, const double* th, double* out) {
+    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    case 0: d7::gaussian1_joint_hess(y, th, out); break;
+    case 23: d7::student_t1_joint_hess(y, th, out); break;
+    default: fill_nan(out, joint_np(id) * joint_np(id));
+    }
+}
+
+void d7_joint_info(int id, double y, const double* th, double* out) {
+    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    case 0: d7::gaussian1_joint_info(y, th, out); break;
+    case 23: d7::student_t1_joint_info(y, th, out); break;
+    default: fill_nan(out, joint_np(id) * joint_np(id));
+    }
+}
+
+void d7_joint_dinfo(int id, double y, const double* th, double* out) {
+    const int P = joint_np(id);
+    switch (d7_joint_covered(id) == 1 ? id : -1) {
+    case 0: d7::gaussian1_joint_dinfo(y, th, out); break;
+    case 23: d7::student_t1_joint_dinfo(y, th, out); break;
+    default: fill_nan(out, P * P * P);
+    }
+}
+
 } // extern "C"
 
 // exposed to this package's own tests: the twin comparison against
@@ -2121,6 +2186,50 @@ Rcpp::List d7_info_probe(std::string cls, int k, Rcpp::NumericVector y,
     }
     return Rcpp::List::create(Rcpp::_["id"] = id, Rcpp::_["expected"] = e,
                               Rcpp::_["dexpected"] = de);
+}
+
+// the twin of d7_scalar_probe() for the joint registry: the four orders at
+// every observation, as an n x P matrix, an n x P x P and an n x P x P x P
+// array; `covered` is d7_joint_covered()
+// [[Rcpp::export]]
+Rcpp::List d7_joint_probe(std::string cls, Rcpp::NumericVector y,
+                          Rcpp::NumericMatrix theta) {
+    int id = d7_scalar_id(cls.c_str());
+    int cov = d7_joint_covered(id);
+    int n = y.size(), np = theta.ncol();
+    int P = cov == 1 ? id_np(id) : 0;
+    Rcpp::NumericMatrix g(n, P);
+    Rcpp::NumericVector h(n * P * P), e(n * P * P), de(n * P * P * P);
+    std::vector<double> th(np), og(P), oh(P * P), oe(P * P), ode(P * P * P);
+    for (int i = 0; i < n && P > 0; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        d7_joint_grad(id, y[i], th.data(), og.data());
+        d7_joint_hess(id, y[i], th.data(), oh.data());
+        d7_joint_info(id, y[i], th.data(), oe.data());
+        d7_joint_dinfo(id, y[i], th.data(), ode.data());
+        for (int a = 0; a < P; ++a) g(i, a) = og[a];
+        for (int j = 0; j < P * P; ++j) {
+            h[i + n * j] = oh[j];
+            e[i + n * j] = oe[j];
+        }
+        for (int j = 0; j < P * P * P; ++j) de[i + n * j] = ode[j];
+    }
+    h.attr("dim") = Rcpp::IntegerVector::create(n, P, P);
+    e.attr("dim") = Rcpp::IntegerVector::create(n, P, P);
+    de.attr("dim") = Rcpp::IntegerVector::create(n, P, P, P);
+    return Rcpp::List::create(Rcpp::_["id"] = id, Rcpp::_["covered"] = cov,
+                              Rcpp::_["grad"] = g, Rcpp::_["hess"] = h,
+                              Rcpp::_["info"] = e, Rcpp::_["dinfo"] = de);
+}
+
+// the classes the joint registry covers, for the twin tests
+// [[Rcpp::export]]
+Rcpp::CharacterVector d7_joint_classes_covered() {
+    std::vector<std::string> out;
+    for (int i = 0; i < d7_n_scalar_classes; ++i) {
+        if (d7_joint_covered(i) == 1) out.push_back(d7_scalar_classes[i]);
+    }
+    return Rcpp::wrap(out);
 }
 
 // d7_scalar_thread_safe() by class name, for the tests
@@ -2448,4 +2557,14 @@ void d7_register_ccallable(DllInfo* dll) {
                         (DL_FUNC) d7_scalar_thread_safe);
     R_RegisterCCallable("distributions7", "d7_logpdf",
                         (DL_FUNC) d7_logpdf);
+    R_RegisterCCallable("distributions7", "d7_joint_covered",
+                        (DL_FUNC) d7_joint_covered);
+    R_RegisterCCallable("distributions7", "d7_joint_grad",
+                        (DL_FUNC) d7_joint_grad);
+    R_RegisterCCallable("distributions7", "d7_joint_hess",
+                        (DL_FUNC) d7_joint_hess);
+    R_RegisterCCallable("distributions7", "d7_joint_info",
+                        (DL_FUNC) d7_joint_info);
+    R_RegisterCCallable("distributions7", "d7_joint_dinfo",
+                        (DL_FUNC) d7_joint_dinfo);
 }

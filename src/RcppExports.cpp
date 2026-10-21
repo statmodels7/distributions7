@@ -666,6 +666,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_joint_probe
+Rcpp::List d7_joint_probe(std::string cls, Rcpp::NumericVector y, Rcpp::NumericMatrix theta);
+RcppExport SEXP _distributions7_d7_joint_probe(SEXP clsSEXP, SEXP ySEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_joint_probe(cls, y, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// d7_joint_classes_covered
+Rcpp::CharacterVector d7_joint_classes_covered();
+RcppExport SEXP _distributions7_d7_joint_classes_covered() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(d7_joint_classes_covered());
+    return rcpp_result_gen;
+END_RCPP
+}
 // d7_logpdf_probe
 Rcpp::List d7_logpdf_probe(std::string cls, Rcpp::NumericVector y, Rcpp::NumericMatrix theta);
 RcppExport SEXP _distributions7_d7_logpdf_probe(SEXP clsSEXP, SEXP ySEXP, SEXP thetaSEXP) {
@@ -6638,6 +6661,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_chisq_deriv5_cpp", (DL_FUNC) &_distributions7_chisq_deriv5_cpp, 3},
     {"_distributions7_d7_scalar_probe", (DL_FUNC) &_distributions7_d7_scalar_probe, 4},
     {"_distributions7_d7_info_probe", (DL_FUNC) &_distributions7_d7_info_probe, 4},
+    {"_distributions7_d7_joint_probe", (DL_FUNC) &_distributions7_d7_joint_probe, 3},
+    {"_distributions7_d7_joint_classes_covered", (DL_FUNC) &_distributions7_d7_joint_classes_covered, 0},
     {"_distributions7_d7_logpdf_probe", (DL_FUNC) &_distributions7_d7_logpdf_probe, 3},
     {"_distributions7_d7_center_scale_probe", (DL_FUNC) &_distributions7_d7_center_scale_probe, 2},
     {"_distributions7_trunc_rule_cpp", (DL_FUNC) &_distributions7_trunc_rule_cpp, 3},

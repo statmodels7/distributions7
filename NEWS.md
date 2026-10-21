@@ -1,3 +1,15 @@
+# distributions7 0.81.0
+
+* The C registry has a joint entry for consumers that read the derivatives
+  in several parameters at one observation, one entry per order:
+  `d7_joint_grad()`, `d7_joint_hess()`, `d7_joint_info()` and
+  `d7_joint_dinfo()` (the gradient, the Hessian, the expected information and
+  its derivative in every parameter, on the parameter scale), with
+  `d7_joint_covered()`. The Gaussian (`gaussian1_distrib()`) and the Student
+  t (`student_t1_distrib()`) are covered. Their off-diagonal components are
+  written in the per-observation headers from the expressions of the vector
+  kernels, which are unchanged.
+
 # distributions7 0.80.6
 
 * The package description is rewritten to describe the families, the
