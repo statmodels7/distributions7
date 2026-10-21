@@ -6,27 +6,29 @@
 \arguments{
 \item{x}{A \code{CauchyDistrib}, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}. The values are not read, only their
-lengths, and the list is still aligned and validated.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), in
+which each component is a numeric vector of length 1 or \code{n}. The values are
+not read, only their lengths, and the list is still aligned and validated.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{NaN}, of length
 \code{max(length(theta$mu), length(theta$sigma))}. \code{\link[=std_dev]{std_dev()}} gives \code{NaN} too,
-being the square root of this.
+because it is the square root of this.
 }
 \description{
 Returns \code{NaN}. The variance is the second central moment, and it needs a
 first moment to center on; the Cauchy has neither. Its density decays like
 \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges for every
 \eqn{p \ge 1}, so the second moment does not exist either.
-\code{NaN} is returned directly, so that no quadrature is attempted.
+\code{NaN} is returned directly, so that the method does not attempt a
+quadrature.
 }
 \details{
-The spread a Cauchy does have is its half-interquartile range, exactly
-\eqn{\sigma}, available from \code{\link[=distrib_quantile]{distrib_quantile()}}. The parameter \eqn{\sigma}
+A Cauchy has a spread in its half-interquartile range, which equals
+\eqn{\sigma} exactly and is available from \code{\link[=distrib_quantile]{distrib_quantile()}}. The
+parameter \eqn{\sigma}
 is a scale parameter, which sets the width of the density, but it is not a
 standard deviation.
 }

@@ -9,16 +9,16 @@ dexpected_key(params, a, b, k)
 \arguments{
 \item{params}{A character vector of parameter names, in the family's order.}
 
-\item{a, b}{Indices into \code{params}; their order does not matter, the
-component being symmetric in them.}
+\item{a, b}{Indices into \code{params}; their order does not matter, because the
+component is symmetric in them.}
 
-\item{k}{The index of the parameter differentiated in, which does matter.}
+\item{k}{The index of the differentiating parameter, which does matter.}
 }
 \value{
 A single string.
 }
 \description{
-The name under which \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} returns
+Returns the name under which \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} returns
 \eqn{\partial\,\mathbb{E}[\ell_{ab}]/\partial\theta_c}.
 }
 \examples{

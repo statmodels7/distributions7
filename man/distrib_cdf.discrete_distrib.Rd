@@ -10,7 +10,7 @@ no method of its own.}
 \item{q}{A numeric vector of quantiles; a non-integer is floored, as a
 distribution function of a discrete variable requires.}
 
-\item{theta}{A named list of parameters, each of length 1 or \code{length(q)}.}
+\item{theta}{A named list of parameters; each has length 1 or \code{length(q)}.}
 
 \item{lower.tail}{Logical of length 1. \code{TRUE}, the default, returns \eqn{P(Y
 \le q)}; \code{FALSE} returns \eqn{P(Y > q)}.}

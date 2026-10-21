@@ -16,20 +16,21 @@ a location and whose second is a scale.}
 scale second. The order is positional and is not checked.}
 }
 \value{
-An unnamed list of two numeric vectors, each of length
-\code{length(y)}: the location component then the scale one. The caller names
-them.
+An unnamed list of two numeric vectors; each has length
+\code{length(y)}. The first is the location component and the second the scale
+one. The caller names them.
 }
 \description{
-Returns the two mixed components a location-scale family has in closed form,
-from the response derivatives the family already provides. Where the
-response enters the log-density only through \eqn{z = (y - \mu)/\sigma},
-differentiating \eqn{\ell^{(y)} = g'(z)/\sigma} gives
+Returns the two mixed components that a location-scale family has in closed
+form, from the response derivatives that the family already provides. Where
+the response enters the log-density only through
+\eqn{z = (y - \mu)/\sigma}, differentiating
+\eqn{\ell^{(y)} = g'(z)/\sigma} gives
 \deqn{\frac{\partial^2\ell}{\partial y\,\partial\mu} = -\ell^{(yy)},
       \qquad
       \frac{\partial^2\ell}{\partial y\,\partial\sigma} =
       -z\,\ell^{(yy)} - \frac{\ell^{(y)}}{\sigma},}
-so no new algebra is needed for either.
+so both components follow without new algebra.
 }
 \details{
 The scale formula uses only that \eqn{\sigma} is a scale, so it holds when

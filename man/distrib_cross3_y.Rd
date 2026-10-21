@@ -23,12 +23,12 @@ See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 \item{...}{Passed to the method.}
 }
 \value{
-A named list with one numeric vector per parameter, each as long as
-\code{y}, keyed by \code{distrib@params}.
+A named list with one numeric vector per parameter, keyed by
+\code{distrib@params}. Each vector is as long as \code{y}.
 }
 \description{
-Computes \eqn{\partial^4 \ell / \partial y^3\, \partial \theta_i}, one
-component per parameter, each a vector along \code{y}. It is
+Computes \eqn{\partial^4 \ell / \partial y^3\, \partial \theta_i}, with one
+component per parameter, and each component is a vector along \code{y}. It is
 \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} differentiated once in each parameter.
 }
 \section{What consumes it}{
@@ -74,7 +74,8 @@ y <- c(-1, 0, 2)
 theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
 distrib_cross3_y(d, y, theta)
 
-# Against a numerical derivative of the analytic third response derivative.
+# The result is compared with a numerical derivative of the analytic third
+# response derivative.
 f <- function(v) distrib_deriv3_y(d, y[1], list(mu = 0.4, sigma = v, nu = 6))
 numDeriv::grad(f, 1.3)
 

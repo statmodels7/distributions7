@@ -15,10 +15,10 @@ fd_self_consistency(x_half, x_full)
 A single number, possibly \code{Inf} or \code{NA}.
 }
 \description{
-Returns \eqn{\max|q(h/2) - q(h)| / \max|q(h)|}, the reading
-\code{\link[=fd_stable_step]{fd_stable_step()}} compares its two candidate steps on. It is \code{Inf} where
+Returns \eqn{\max|q(h/2) - q(h)| / \max|q(h)|}, the reading on which
+\code{\link[=fd_stable_step]{fd_stable_step()}} compares its two candidate steps. It is \code{Inf} where
 the half-step quotient is not finite and \code{NA} where the full-step one is
-identically zero, neither of which is a usable reading.
+identically zero, and in both cases the reading is not usable.
 }
 \seealso{
 \code{\link[=fd_stable_step]{fd_stable_step()}}.

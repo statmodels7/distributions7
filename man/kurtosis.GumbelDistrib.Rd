@@ -6,8 +6,9 @@
 \arguments{
 \item{x}{A \code{GumbelDistrib}, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
-vector of length 1 or \code{n}. The values are not read, only their lengths.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}; each is a
+numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,14 +17,15 @@ A numeric vector of 2.4s, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Constant: \eqn{\gamma_2 = 12/5 = 2.4}, the excess over the Gaussian. Like
-the skewness it is fixed for the whole family, there being no shape parameter
-for a standardized moment to depend on.
+The excess kurtosis is the constant \eqn{\gamma_2 = 12/5 = 2.4}, the excess
+over the Gaussian. Like the skewness, it is fixed for the whole family,
+because the family has no shape parameter on which a standardized moment
+could depend.
 }
 \examples{
 d <- gumbel_distrib()
 
-# 12 / 5 for every Gumbel.
+# The excess kurtosis is 12 / 5 for every Gumbel.
 kurtosis(d, list(mu = c(0, 5), sigma = c(1, 7)))
 
 }

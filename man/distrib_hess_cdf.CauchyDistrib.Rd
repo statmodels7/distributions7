@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -18,14 +18,15 @@ lower tail and \code{FALSE} the upper tail.}
 derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
-A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
-the length of \code{q} recycled against \code{theta}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, in
+which each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the same location-scale structure, through
-\code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}}, which computes each component as one term in
-\eqn{Y^{-2}}, \eqn{Y = q - \mu + \mathrm{i}\sigma}. With
-\eqn{\ell_y = \partial\log f/\partial y}, which for a Cauchy is \eqn{-2z/\{\sigma(1+z^2)\}},
+Computes the Hessian in closed form, from the same location-scale
+structure, through \code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}}, which computes each component as
+one term in \eqn{Y^{-2}}, \eqn{Y = q - \mu + \mathrm{i}\sigma}. With
+\eqn{\ell_y = \partial\log f/\partial y}, which for a Cauchy is
+\eqn{-2z/\{\sigma(1+z^2)\}},
 \deqn{\frac{\partial^2 F}{\partial\mu^2} = f\,\ell_y, \qquad
       \frac{\partial^2 F}{\partial\mu\,\partial\sigma}
         = f\left(z\ell_y + \frac{1}{\sigma}\right), \qquad
@@ -45,7 +46,8 @@ d <- cauchy_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic with it.
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))

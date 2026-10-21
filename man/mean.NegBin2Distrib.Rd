@@ -7,8 +7,8 @@
 \item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
-\code{n}. It is aligned and validated by name, so a missing or out-of-bounds
+\code{theta} (the dispersion, positive); each is a numeric vector of length 1
+or \code{n}. It is aligned and validated by name, so a missing or out-of-bounds
 component signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,10 +18,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. This
-parametrization carries the mean as its first parameter, so the method reads
-it off and recycles it to the length the two parameters imply. Nothing is
-integrated and nothing is summed.
+The closed form that replaces the numerical default is \eqn{E[Y] = \mu}.
+This parametrization carries the mean as its first parameter, so the method
+reads it off and recycles it to the length that the two parameters imply.
+The method performs no integration and no summation.
 }
 \examples{
 d <- negbin2_distrib()

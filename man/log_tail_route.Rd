@@ -39,15 +39,16 @@ A named list of numeric vectors, keyed as
 \code{\link[=hess_names]{hess_names()}} at order two), or \code{NULL}.
 }
 \description{
-Called from the bodies of \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}},
-\code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} and \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} before dispatch. On the
-log scale it returns the derivatives of \eqn{\log P}, \eqn{P} the requested
-tail, from \code{\link[=ls_log_tail_derivs]{ls_log_tail_derivs()}} for the eight location-scale families
-listed in \code{log_tail_ls}, and from \code{\link[=quad_log_tail_derivs]{quad_log_tail_derivs()}} for the
+The function is called from the bodies of \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} and \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}
+before dispatch. On the
+log scale it returns the derivatives of \eqn{\log P}, where \eqn{P} is the
+requested tail, from \code{\link[=ls_log_tail_derivs]{ls_log_tail_derivs()}} for the eight location-scale
+families listed in \code{log_tail_ls}, and from \code{\link[=quad_log_tail_derivs]{quad_log_tail_derivs()}} for the
 families listed in \code{log_tail_quad} (and, for the lower tail,
-\code{log_tail_quad_lower}) at the quantiles where \eqn{\log P}
-is below \code{log_tail_cut}, the other quantiles going to the family's own
-method. Elsewhere it returns \code{NULL} and the generic dispatches as usual.
+\code{log_tail_quad_lower}) at the quantiles where \eqn{\log P} is below
+\code{log_tail_cut}; the other quantiles go to the family's own method. Elsewhere
+it returns \code{NULL} and the generic dispatches as usual.
 
 \code{log_tail_ls} maps each location-scale class to its base and to the map
 \eqn{w} of its second parameter; \code{log_tail_quad} lists the classes of the
@@ -56,16 +57,17 @@ lower tail, which adds the two Weibull families; \code{log_tail_cut} is the
 threshold, \eqn{-5}; \code{log_tail_off} holds the switch that turns the
 route off while quantiles are sent back to the family's method.
 
-The quantiles are selected on \code{\link[=tail_cdf]{tail_cdf()}}, the value the family's method
-computes first. While the method runs on the quantiles that are not far,
-\code{log_tail_stash} holds that value with the class, quantiles, parameters
-and tail it belongs to, and \code{\link[=tail_cdf]{tail_cdf()}} returns it for a call with the
+The quantiles are selected on \code{\link[=tail_cdf]{tail_cdf()}}, the value that the family's
+method computes first. While the method runs on the quantiles that are not
+far, \code{log_tail_stash} holds that value with the class, quantiles,
+parameters and tail to which it belongs, and \code{\link[=tail_cdf]{tail_cdf()}} returns it for a
+call with the
 same arguments instead of evaluating the distribution function again. A
 parameter of length one is passed to the method as a scalar.
 }
 \examples{
 d <- gaussian1_distrib()
-# log S = log(1 - Phi(z)) at z = 40, where 1 - Phi(z) underflows
+# This is log S = log(1 - Phi(z)) at z = 40, where 1 - Phi(z) underflows.
 distributions7:::log_tail_route(d, 40, list(mu = 0, sigma = 1), 1L,
                                 FALSE, TRUE, distrib_grad_cdf)
 

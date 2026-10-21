@@ -25,8 +25,8 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of the expected information in the
-parameters, from compiled kernels.
+Computes the first and second derivatives of the expected information in
+the parameters, from compiled kernels.
 }
 \details{
 For the Student t, with \eqn{w_1 = 1 + 1/\nu} and \eqn{w_3 = 1 + 3/\nu},

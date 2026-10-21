@@ -21,7 +21,7 @@ parametrization, keyed by \code{distrib@params}, each of length
 \code{length(y)}.
 }
 \description{
-The parent's mixed block carried by the first-order chain rule on the map.
+Carries the parent's mixed block by the first-order chain rule on the map.
 }
 \seealso{
 \code{\link[=reparametrize]{reparametrize()}} for the wrapper;

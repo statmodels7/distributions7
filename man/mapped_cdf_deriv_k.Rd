@@ -21,7 +21,7 @@ mapped_cdf_deriv_k(
 \arguments{
 \item{distrib}{The mapped family, whose cdf and parameter names are read.}
 
-\item{parent}{The distribution it maps onto.}
+\item{parent}{The distribution onto which the family is mapped.}
 
 \item{th_par}{The parent's parameters, evaluated at the new ones.}
 
@@ -39,8 +39,8 @@ the upper tail.}
 \item{log}{A single logical; \code{TRUE} selects the derivatives of the log
 probability and \code{FALSE} those of the probability.}
 
-\item{q_par}{The quantiles on the parent's scale. \code{q} by default, and
-\code{log(q)} for a lognormal.}
+\item{q_par}{The quantiles on the parent's scale. The default is \code{q}; a
+lognormal passes \code{log(q)}.}
 
 \item{zero}{\code{NULL}, the default, or a logical vector along \code{q} marking the
 points where the distribution function is identically zero; there every
@@ -51,26 +51,26 @@ A named list of numeric vectors of the requested order, on the
 requested tail and scale.
 }
 \description{
-The body that every mapped family registers at orders 3 and 4, at 2 as well
-where its written-out route stops at the gradient, and at every order for
-the centered skew normal. It tests whether the parent's cdf derivatives
-are exact at every order up to the one wanted, takes
-\code{\link[=chain_cdf_deriv_k]{chain_cdf_deriv_k()}} if they are, and falls back to \code{\link[=cdf_tables]{cdf_tables()}} on the
-new family's own cdf if they are not.
+Computes the cdf derivatives of a family written as a map of another. Every
+mapped family registers this body at orders 3 and 4, at 2 as well where its
+written-out route stops at the gradient, and at every order for the centered
+skew normal. The body tests whether the parent's cdf derivatives
+are exact at every order up to the one wanted. If they are, it calls
+\code{\link[=chain_cdf_deriv_k]{chain_cdf_deriv_k()}}; if they are not, it calls \code{\link[=cdf_tables]{cdf_tables()}} on the
+new family's own cdf.
 }
 \section{The gate}{
 The chain is exact only if everything that it carries is exact, and the higher
-orders read the lower ones, so the test is over all of them. It is what
-stops a family from adding an exact transformation to a differenced parent
-and reporting the result as closed.
+orders read the lower ones, so the test covers all of them. The test stops a
+family from adding an exact transformation to a differenced parent and
+reporting the result as closed.
 }
 
 \section{A transformed response}{
 A family may be the parent's law at a transformed point as well as at a
 mapped parameter. A lognormal is a Gaussian at \eqn{\log q}, and since the
 transformation carries no parameter, the derivatives in \eqn{\theta} are the
-parent's with the point substituted. \code{q_par} is where that substitution is
-handed in.
+parent's with the point substituted. The substitution is passed as \code{q_par}.
 }
 
 \seealso{

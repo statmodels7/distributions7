@@ -33,8 +33,8 @@ dispatch.}
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter, each as long as
-\code{y}.
+A named list with one numeric vector per parameter. Each vector is
+as long as \code{y}.
 }
 \description{
 Reads \eqn{\partial^4\ell/\partial y^3\,\partial\theta_i} as
@@ -51,12 +51,12 @@ parameter indices, as \code{\link[=deriv_names]{deriv_names()}} generates them, 
 }
 \section{Registered on}{
 
-The fourteen location families on which this function is registered:
+This function is registered on the fourteen location families
 \code{Gaussian1Distrib}, \code{Gaussian2Distrib},
 \code{Gaussian3Distrib}, \code{CauchyDistrib}, \code{LogisticDistrib}, \code{LaplaceDistrib},
 \code{Laplace2Distrib}, \code{EnetDistrib}, \code{PseudoHuberDistrib}, \code{StudentT1Distrib},
 \code{SkewNormal1Distrib}, \code{SkewNormal2Distrib}, \code{SkewTDistrib},
-\code{GumbelDistrib}.
+and \code{GumbelDistrib}.
 }
 
 \seealso{

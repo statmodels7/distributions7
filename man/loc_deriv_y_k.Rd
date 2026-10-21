@@ -68,8 +68,8 @@ two methods are listed here as aliases.
 }
 
 \seealso{
-\code{\link[=distrib_deriv3_y.continuous_distrib]{distrib_deriv3_y.continuous_distrib()}} for the stencil a family
-outside this list falls back to; \code{\link[=register_dy_k]{register_dy_k()}}, the companion for
+\code{\link[=distrib_deriv3_y.continuous_distrib]{distrib_deriv3_y.continuous_distrib()}} for the stencil to which a
+family outside this list falls back; \code{\link[=register_dy_k]{register_dy_k()}}, the companion for
 families whose response is not a pure location; \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
 \code{\link[=distrib_deriv4]{distrib_deriv4()}}, whose components this reads.
 }

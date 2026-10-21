@@ -24,8 +24,8 @@ chosen for the stencil in use.}
 
 \item{to_bound}{\code{"clamp"}, the default, or \code{"scale"}, as above.}
 
-\item{order, accuracy}{The stencil the step is for, which fix its reach
-through \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}. The defaults are the central
+\item{order, accuracy}{The stencil for which the step is built; they fix its
+reach through \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}. The defaults are the central
 difference, whose reach is one.}
 }
 \value{
@@ -38,9 +38,9 @@ mathematical domain, either by cutting it to under half the distance to the
 nearest finite bound or by scaling it on that distance.
 }
 \details{
-The domain clamp is what allows a finite-difference fallback to be offered at
+The domain clamp makes it possible to offer a finite-difference fallback at
 all. Parameter domains here are open: a scale parameter is positive, not
-non-negative. A step chosen from the magnitude alone therefore takes a small
+non-negative. A step chosen only from the magnitude therefore takes a small
 \eqn{\sigma} straight through zero, and the log-density comes back \code{NaN}
 for reasons that look like a bug in the density. Clamping to 49\\% of the
 distance to each finite boundary keeps both evaluation points inside.
@@ -51,8 +51,8 @@ proportion as the parameter approaches the bound rather than sitting at
 \eqn{0.49\,d}. Where the log-density is singular in that parameter at the
 bound the clamped step's error stops falling once the clamp binds, and where
 the log-density instead saturates the scaled step is the worse of the two,
-its shorter step letting the rounding dominate. Neither is right everywhere,
-and \code{\link[=fd_stable_step]{fd_stable_step()}} is what chooses between them.
+because its shorter step lets the rounding dominate. Each of the two is wrong
+somewhere, and \code{\link[=fd_stable_step]{fd_stable_step()}} chooses between them.
 
 The two give the same step wherever \eqn{d \ge \max(1, |\theta|)}, which is
 every parameter of a family with no finite bound, and also a positive
@@ -61,20 +61,21 @@ parameter at or above one.
 A parameter already on or outside its boundary cannot be rescued this way, and
 is reported rather than differentiated.
 
-The clamp is on the stencil's OUTERMOST node and not on the step, so it
-divides by the reach, the largest offset the rule evaluates at in units of
-\eqn{h}. That number is the stencil's and is read from
+The clamp applies to the stencil's OUTERMOST node and not to the step, so it
+divides by the reach, the largest offset (in units of \eqn{h}) at which the
+rule evaluates. That number belongs to the stencil and is read from
 \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}} rather than assumed: a central difference and a
 three-point second difference both reach one step out, which is every use
-this package makes of the clamped branch today, while the five-point rules
-of accuracy four reach two. Without the division a step cut to
+that this package makes of the clamped branch today, while the five-point
+rules of accuracy four reach two. Without the division a step cut to
 \eqn{0.49 d} puts the outermost node of a reach-two rule at \eqn{0.98 d},
-which is inside the domain and not what the clamp says it is.
+which is inside the domain but lies farther out than the \eqn{0.49 d} that
+the clamp is meant to enforce.
 
-With the reach accounted for, the clamped branch at the default \code{h_rel} is
+When the reach is accounted for, the clamped branch at the default \code{h_rel} is
 \code{\link[numericals7:fd_step]{numericals7::fd_step()}} with \code{bounds}, and a test asserts the two are
 \code{identical()} so they cannot drift. It is written here rather than
-delegated because \code{h_rel} is an argument the callers vary:
+delegated because \code{h_rel} is an argument that the callers vary:
 \code{\link[=fd_stable_step]{fd_stable_step()}} halves it and \code{check_distrib()} reads the quotient at two
 steps, neither of which \code{fd_step()} can express.
 

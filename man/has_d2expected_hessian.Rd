@@ -14,8 +14,8 @@ has_d2expected_hessian(x)
 A single logical.
 }
 \description{
-\code{TRUE} where the \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} method that dispatches is
-registered on a class other than the base class, whose method signals an
-error.
+Returns \code{TRUE} when the \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} method that
+dispatches is registered on a class other than the base class. The method
+of the base class signals an error.
 }
 \keyword{internal}

@@ -7,8 +7,8 @@
 \item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{theta}
-(positive), each a numeric vector of length 1 or \code{n}. The Poisson limit is
-\eqn{\theta \to 0} here, the opposite end from NB2's.}
+(positive); each is a numeric vector of length 1 or \code{n}. The Poisson limit
+is \eqn{\theta \to 0} here, the opposite end from NB2's.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,9 +17,10 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, linear in the
-mean. This is what NB1 means: the variance is a fixed multiple of the mean,
-where NB2 makes it \eqn{\mu + \mu^2/\theta} and so quadratic. The two are
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, linear in the mean. In NB1 the
+variance is a fixed multiple of the mean, whereas NB2 makes it
+\eqn{\mu + \mu^2/\theta} and so quadratic. The two are
 different models of overdispersion and are not reparametrizations of each
 other.
 }

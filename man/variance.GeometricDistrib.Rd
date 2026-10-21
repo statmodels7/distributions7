@@ -15,7 +15,8 @@ vector of length 1 or \code{n}.}
 A numeric vector of variances, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\mu)}. It exceeds the mean
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = \mu(1+\mu)}. It exceeds the mean
 at every parameter value, so the family is overdispersed relative to a
 Poisson, and it is exactly the negative binomial's variance at
 \eqn{\theta = 1}.
@@ -23,7 +24,7 @@ Poisson, and it is exactly the negative binomial's variance at
 \examples{
 d <- geometric_distrib()
 
-# Mean times one plus the mean.
+# The variance is the mean times one plus the mean.
 all.equal(variance(d, list(mu = 3)), 12)
 
 # The negative binomial at theta = 1 is the same law.

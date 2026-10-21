@@ -23,7 +23,7 @@ expected information.}
 parameter scale. A kernel called for order 2 may return the order-1
 components beside the order-2 ones, and where it does they are read from
 that one call rather than from a second: a route that sums over the
-support pays for the family's derivatives once.}
+support computes the family's derivatives once.}
 }
 \value{
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.

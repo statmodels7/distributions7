@@ -7,7 +7,8 @@
 \item{x}{A \code{LogisticDistrib}, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
-(the scale, positive), each a numeric vector of length 1 or \code{n}.}
+(the scale, positive), in which each component is a numeric vector of
+length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,8 +17,8 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. The density is symmetric about \eqn{\mu}, so
-the location is the mean, the median and the mode at once.
+The mean has the closed form \eqn{E[Y] = \mu}. The density is symmetric about
+\eqn{\mu}, so the location is the mean, the median and the mode at once.
 }
 \examples{
 d <- logistic_distrib()

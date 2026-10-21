@@ -10,14 +10,14 @@ skewness(x, ...)
 \item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
 \item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
-any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
-single logical, \code{FALSE} by default.}
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector, the argument
+is \code{na.rm}, a single logical that is \code{FALSE} by default.}
 }
 \value{
 A numeric vector for a \code{distrib}, one value per parameter setting; a
-single number for a numeric vector. \code{NaN} where the third moment does not
-exist, as for the Cauchy and for the Student t at three degrees of freedom
-or fewer.
+single number for a numeric vector. The value is \code{NaN} where the third
+moment does not exist, as for the Cauchy and for the Student t at three
+degrees of freedom or fewer.
 }
 \description{
 Computes the skewness, the third standardized central moment
@@ -31,30 +31,30 @@ closed form; these two reach a quadrature through \code{\link[=moment]{moment()}
 }
 \section{What the sign and the size mean}{
 \eqn{\gamma_1} is invariant to location and to positive scaling, so it is a
-property of the shape alone: every Gaussian has \eqn{\gamma_1 = 0} and every
+property of the shape only: every Gaussian has \eqn{\gamma_1 = 0} and every
 exponential has \eqn{\gamma_1 = 2}, whatever their parameters. In a family
-with a shape parameter \eqn{\gamma_1} varies with that parameter: a Poisson
+with a shape parameter, \eqn{\gamma_1} varies with that parameter: a Poisson
 at mean \eqn{\mu} has \eqn{\gamma_1 = \mu^{-1/2}}, so its asymmetry vanishes
 as the counts grow.
 }
 
 \section{When it fails to exist}{
-The third moment is needed, so a family with heavy tails may have no
-skewness even where it has a mean. A Student t has one only above three
-degrees of freedom and returns \code{NaN} at or below them; a Cauchy has none at
-any parameter value and also returns \code{NaN}.
+The skewness exists only where the third moment exists, so a family with
+heavy tails may have no skewness even where it has a mean. A Student t has
+one only above three degrees of freedom and returns \code{NaN} at or below them;
+a Cauchy has none at any parameter value and also returns \code{NaN}.
 }
 
 \section{What the sample method returns}{
 On a numeric vector the third and second central moments both divide by
 \eqn{n}, so the value is \eqn{m_3 / m_2^{3/2}} with
 \eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. This is the population
-denominator, and it differs from the \eqn{n - 1} convention \code{\link[=variance]{variance()}}
-uses on a vector.
+denominator, and it differs from the \eqn{n - 1} convention that
+\code{\link[=variance]{variance()}} uses on a vector.
 }
 
 \examples{
-# Zero for a symmetric family, at every parameter value.
+# The skewness is zero for a symmetric family, at every parameter value.
 skewness(gaussian1_distrib(), list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 
 # A shape parameter moves it: a Poisson is mu^(-1/2).

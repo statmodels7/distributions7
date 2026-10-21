@@ -2,7 +2,7 @@
 #' Distribution Function and Its Derivatives from the Compiled Kernels
 #'
 #' @description
-#' Method bodies for [distrib_cdf()], [distrib_grad_cdf()] and
+#' Provides the method bodies for [distrib_cdf()], [distrib_grad_cdf()] and
 #' [distrib_hess_cdf()] that read the compiled distribution functions of the
 #' package's scalar registry, for the families whose distribution function
 #' has no closed derivative in a shape parameter: the gamma (both
@@ -47,16 +47,16 @@
 #' `pt()`, `pgamma()`, `pchisq()` or `pbeta()` where the family has one, and
 #' the same integral of the density otherwise; with `log.p = TRUE` its
 #' logarithm is formed by `compiled_log_cdf()`, so that it stays finite in
-#' either tail. The tail and the log scale of the derivatives are applied as
-#' for every family, by the conversion of the lower-tail derivatives.
+#' either tail. The lower-tail derivatives are converted to the requested
+#' tail and log scale, as for every family.
 #'
 #' @param distrib A distribution object of one of the families above.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameter values.
 #' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
 #'   the upper tail.
-#' @param log,log.p Are derivatives of (or values of) the log probability
-#'   wanted? A single logical.
+#' @param log,log.p A single logical; if `TRUE`, derivatives of (or values
+#'   of) the log probability are returned.
 #' @param ... Unused.
 #'
 #' @return For `compiled_cdf()`, a numeric vector; for the two derivative
@@ -96,8 +96,8 @@ compiled_far_tail <- function(distrib, a, out) {
 #'   \eqn{\log(1 - P_{\mathrm{other}})} through `log1p()` where `out` is
 #'   above one half, and as
 #'   \eqn{\ell(q) + \log\int_{\mathrm{tail}} e^{\ell(y) - \ell(q)}\,dy}
-#'   where `out` is below \eqn{e^{-5}}, the integral taken by
-#'   [quad_log_tail_prob()] on the scale \eqn{1/|\partial_y \ell(q)|}.
+#'   where `out` is below \eqn{e^{-5}}; there [quad_log_tail_prob()]
+#'   computes the integral on the scale \eqn{1/|\partial_y \ell(q)|}.
 compiled_log_cdf <- function(distrib, a, out, lower.tail) {
   lo <- log(out)
   big <- !is.na(out) & out > 0.5
@@ -120,7 +120,7 @@ compiled_log_cdf <- function(distrib, a, out, lower.tail) {
 #'   the tail beyond `q`, \eqn{\ell(q) + \log\int_0^\infty
 #'   e^{\ell(q \mp u) - \ell(q)}\,du}, by [stats::integrate()] on a scale
 #'   adjusted until one step changes \eqn{\ell} by between 1/2 and 50, and
-#'   \eqn{\ell(q) - \log|\ell'(q)|} where no such step is resolved.
+#'   \eqn{\ell(q) - \log|\ell'(q)|} where such a step cannot be resolved.
 log_tail_integral <- function(distrib, q, th, lower.tail) {
   lq <- distrib_pdf(distrib, q, th, log = TRUE)
   if (!is.finite(lq)) return(-Inf)
@@ -182,7 +182,7 @@ compiled_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE,
 
 #' @rdname compiled_cdf
 #' @return `compiled_cdf_args()` returns the class name, the recycled
-#'   quantiles and the parameter matrix the kernels read.
+#'   quantiles and the parameter matrix that the kernels read.
 compiled_cdf_args <- function(distrib, q, theta) {
   n <- max(length(q), lengths(theta))
   th <- lapply(align_theta(distrib, theta)[distrib@params], rep_len,
@@ -196,18 +196,18 @@ compiled_cdf_args <- function(distrib, q, theta) {
 #' Third and Fourth Derivatives of a Compiled Distribution Function
 #'
 #' @description
-#' The derivatives of \eqn{F} of order three or four in the parameters, for
-#' the families whose compiled distribution function integrates its shape
-#' derivatives ([compiled_cdf()]): gamma1, gamma2, chisq, both generalized
-#' gammas, both betas, both von Mises, both Student t, both pseudo-Huber and
-#' the skew t.
+#' Computes the derivatives of \eqn{F} of order three or four in the
+#' parameters, for the families whose compiled distribution function
+#' integrates its shape derivatives ([compiled_cdf()]): gamma1, gamma2, chisq,
+#' both generalized gammas, both betas, both von Mises, both Student t, both
+#' pseudo-Huber and the skew t.
 #'
 #' @details
 #' With \eqn{f = e^{\ell}}, the derivative of \eqn{f} in a multi-index
 #' \eqn{I} is \eqn{f B_I}, where \eqn{B_I} is the complete Bell polynomial
 #' in the derivatives of \eqn{\ell} ([bell_f_ratio()]), so
 #' \eqn{\partial_I F(q) = \int_{lo}^{q} f B_I}, taken as
-#' \eqn{-\int_{q}^{hi} f B_I} on the side `cdf_rule_cpp()` chooses, by the
+#' \eqn{-\int_{q}^{hi} f B_I} on the side that `cdf_rule_cpp()` chooses, by the
 #' nodes and weights of the rule of the first two orders. The family's own
 #' third and fourth derivatives of \eqn{\ell} supply \eqn{B_I}.
 #'
@@ -229,7 +229,7 @@ compiled_cdf_args <- function(distrib, q, theta) {
 #'   natural scale and the lower tail, keyed as
 #'   [`deriv_names(distrib@params, order)`][deriv_names].
 #'
-#' @seealso [numerical_cdf_deriv_k()], the stencil this replaces for these
+#' @seealso [numerical_cdf_deriv_k()], the stencil that this replaces for these
 #'   families; [continuous_cdf_deriv_k()], which chooses between them.
 #'
 #' @keywords internal
@@ -281,7 +281,7 @@ compiled_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' Power-Law Head of a Compiled CDF Derivative
 #'
 #' @description
-#' The part of \eqn{\partial_I F(q) = \int_0^q f B_I} below the cut
+#' Computes the part of \eqn{\partial_I F(q) = \int_0^q f B_I} below the cut
 #' \eqn{y_0} that `cdf_rule_cpp()` reports for a family on
 #' \eqn{(0, \infty)} whose density behaves like \eqn{y^{\alpha - 1}} near
 #' zero (a gamma or a generalized gamma with a small shape), where part of
@@ -301,7 +301,7 @@ compiled_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' `cdf_rule_cpp()`, which uses the same head at orders one and two.
 #'
 #' @param distrib A family named in [compiled_cdf_deriv_k()].
-#' @param rule The list `cdf_rule_cpp()` returns.
+#' @param rule The list that `cdf_rule_cpp()` returns.
 #' @param th The named list of parameter vectors, one value per point.
 #' @param order The derivative order, 3 or 4.
 #' @param params The parameter names.
@@ -360,8 +360,8 @@ compiled_ls_classes <- c("StudentT1Distrib", "StudentT2Distrib",
 #'
 #' @description
 #' Returns the derivatives of \eqn{F} of order three or four by
-#' [compiled_cdf_deriv_k()] for the families it covers, and by the stencil of
-#' [numerical_cdf_deriv_k()] otherwise.
+#' [compiled_cdf_deriv_k()] for the families that it covers, and by the
+#' stencil of [numerical_cdf_deriv_k()] otherwise.
 #'
 #' @inheritParams compiled_cdf_deriv_k
 #'

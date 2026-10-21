@@ -7,8 +7,8 @@
 \item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
-\code{n}.}
+\code{theta} (the dispersion, positive); each is a numeric vector of length 1
+or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,16 +17,16 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default:
+The closed form that replaces the numerical default is
 \eqn{6/\theta + \theta/\{\mu(\theta+\mu)\}}, the excess over the Gaussian's
-three. Both terms are positive, so the family is always leptokurtic, and the
-second is what survives in the Poisson limit, where the expression tends to
+three. Both terms are positive, so the family is always leptokurtic. Only the
+second term survives in the Poisson limit, where the expression tends to
 \eqn{1/\mu}.
 }
 \examples{
 d <- negbin2_distrib()
 
-# The published form, written out.
+# The published form is written out.
 mu <- 4; th <- 2
 all.equal(kurtosis(d, list(mu = mu, theta = th)),
           6 / th + th / (mu * (th + mu)))

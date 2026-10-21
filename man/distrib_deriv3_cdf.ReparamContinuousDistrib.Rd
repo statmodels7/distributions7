@@ -26,15 +26,15 @@ components keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, 3)}}; 
 length of \code{q} recycled against \code{theta}.
 }
 \description{
-The chain rule on the parent's cdf derivatives at orders 3 and 4, through
-\code{\link[=mapped_cdf_deriv_k]{mapped_cdf_deriv_k()}}. It is exact when the parent's derivatives are exact
-at every order up to the one wanted and the map's partials are exact, and
-falls to one product stencil on the reparametrized cdf when the parent's
-are not.
+Applies the chain rule to the parent's cdf derivatives at orders 3 and 4,
+through \code{\link[=mapped_cdf_deriv_k]{mapped_cdf_deriv_k()}}. The result is exact when the parent's
+derivatives are exact at every order up to the one wanted and the map's
+partials are exact; when the parent's derivatives are not exact, one product
+stencil on the reparametrized cdf is used instead.
 }
 \details{
-The partials of the map come from the object itself, \code{reparam_tables()}
-reading the keyed tables that the reparametrization was built with. They
+The partials of the map come from the object itself: \code{reparam_tables()}
+reads the keyed tables with which the reparametrization was built. They
 are exact when \code{\link[=reparametrize]{reparametrize()}} was given \code{map_derivs}, and single stencils
 on the map otherwise. A family created by \code{\link[=reparametrize]{reparametrize()}} over a parent
 with closed cdf derivatives therefore reaches the fourth order with no

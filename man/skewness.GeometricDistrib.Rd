@@ -15,7 +15,8 @@ vector of length 1 or \code{n}.}
 A numeric vector, the length of \code{theta$mu}, above 2 throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = (1+2\mu)/\sqrt{\mu(1+\mu)}}. It is positive at
+The skewness has the closed form
+\eqn{\gamma_1 = (1+2\mu)/\sqrt{\mu(1+\mu)}}. It is positive at
 every mean and, unlike a Poisson's, it does not vanish as the counts grow:
 it tends to 2 from above, the exponential's value, which is the continuous
 limit of the family.
@@ -23,7 +24,7 @@ limit of the family.
 \examples{
 d <- geometric_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(skewness(d, list(mu = 3)), 7 / sqrt(12))
 
 # It tends to the exponential's 2 as the mean grows.

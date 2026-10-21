@@ -16,19 +16,19 @@ A numeric vector, of length equal to the longest component of
 \code{theta}.
 }
 \description{
-Evaluates the excess kurtosis numerically. Three calls of \code{\link[=moment]{moment()}} are
-made: the mean at \code{p = 1}, then the second and fourth central moments about
-it, and the value is \eqn{m_4 / m_2^{2} - 3}. Passing the mean forward keeps
-the count at three quadratures. This is the fallback for a family with no
-closed form, which among the shipped families means the elastic net and the
-two von Mises.
+Evaluates the excess kurtosis numerically. The method calls
+\code{\link[=moment]{moment()}} three times, for the mean at \code{p = 1} and then for the second and
+fourth central moments about it, and the value is \eqn{m_4 / m_2^{2} - 3}.
+Passing the mean forward keeps the count at three quadratures. This is the
+fallback for a family with no closed form, which among the shipped families
+means the elastic net and the two von Mises.
 }
 \examples{
 # The elastic net reaches this method; its excess kurtosis lies between the
 # Gaussian's 0 and the Laplace's 3.
 round(kurtosis(enet_distrib(), list(mu = 0, lambda = 1, alpha = 0.5)), 4)
 
-# The same three moments, assembled by hand, on a family with a formula.
+# The same three moments are assembled by hand on a family with a formula.
 d <- gamma2_distrib(); th <- list(mu = 2, sigma2 = 1)
 m <- moment(d, th, p = 1)
 m2 <- moment(d, th, p = 2, central = TRUE, mu = m)

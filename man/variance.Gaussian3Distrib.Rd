@@ -7,7 +7,7 @@
 \item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{tau}
-(the precision, positive), each a numeric vector of length 1 or \code{n}. The
+(the precision, positive); each is a numeric vector of length 1 or \code{n}. The
 variance diverges as the precision approaches zero.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,14 +17,14 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = 1/\tau}. A larger precision gives a
-smaller variance. This parametrization differs from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
-only by the reciprocal \eqn{\tau = 1/\sigma^2}.
+The variance has the closed form \eqn{\operatorname{Var}(Y) = 1/\tau}. A
+larger precision gives a smaller variance. This parametrization differs from
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} only by the reciprocal \eqn{\tau = 1/\sigma^2}.
 }
 \examples{
 d <- gaussian3_distrib()
 
-# One over the precision.
+# The variance is one over the precision.
 all.equal(variance(d, list(mu = 0, tau = 0.25)), 4)
 
 # The standard deviation is one over its square root.

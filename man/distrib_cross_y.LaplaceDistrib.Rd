@@ -16,20 +16,20 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{sigma}, each a numeric vector
-of length \code{length(y)}. The \code{mu} component is exactly zero
-everywhere, the second response derivative of a Laplace being zero
+A named list with components \code{mu} and \code{sigma}; each is a numeric
+vector of length \code{length(y)}. The \code{mu} component is exactly zero
+everywhere, because the second response derivative of a Laplace is zero
 almost everywhere, and the \code{sigma} component is
 \eqn{\mathrm{sign}(y-\mu)/\sigma^2}, which jumps sign at the kink.
 }
 \description{
-Closed form from the location-scale identity, away from the kink at
-\eqn{y = \mu}, where the density has no derivative in the response and the
-quantity does not exist.
+The mixed derivatives are in closed form from the location-scale identity,
+away from the kink at \eqn{y = \mu}, where the density has no derivative in
+the response and the quantity does not exist.
 }
 \seealso{
 \code{\link[=loc_scale_cross_y]{loc_scale_cross_y()}}, the shared body;
 \code{\link[=distrib_cross_y.Laplace2Distrib]{distrib_cross_y.Laplace2Distrib()}} for the rate chart;
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}, which is zero here and is why.
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}, whose value of zero here gives the zero \code{mu} component.
 }
 \keyword{internal}

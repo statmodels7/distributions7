@@ -32,9 +32,9 @@ A named list of fifth-derivative component vectors, each of length
 \code{\link[=deriv_names]{deriv_names(distrib@params, 5)}} gives them.
 }
 \description{
-The fifth-order derivative components, each a single tensor-product
-central difference of the highest analytic order below it, through
-\code{\link[=tensor_derivatives]{tensor_derivatives()}}.
+Computes the fifth-order derivative components, where each component is a
+single tensor-product central difference of the highest analytic order
+below it, through \code{\link[=tensor_derivatives]{tensor_derivatives()}}.
 }
 \details{
 The quantity differenced is the fourth order where it is analytic, as
@@ -43,10 +43,10 @@ difference of a fourth-order component in one parameter: the component of
 a non-decreasing five-tuple is the four-tuple left when one index is
 dropped, and the whole order costs one stencil per parameter. Where the
 fourth order is not analytic, a family that registers no wrapper reads
-the highest order it implements itself, as \code{\link[=analytic_order]{analytic_order()}} gives it,
-and a wrapper of a parent without an analytic fourth order differences its
-log-density, because its lower orders are partition sums over the parent's
-fallbacks. A difference of a difference is never formed.
+the highest order that it implements itself, as \code{\link[=analytic_order]{analytic_order()}} gives
+it, and a wrapper of a parent without an analytic fourth order differences
+its log-density, because its lower orders are partition sums over the
+parent's fallbacks. A difference of a difference is never formed.
 
 The step of a difference of order \eqn{r} is
 \eqn{\varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with \eqn{a} the

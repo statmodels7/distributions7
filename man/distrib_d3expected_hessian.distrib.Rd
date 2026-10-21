@@ -20,7 +20,8 @@
 A named list keyed as \code{\link[=d3expected_names]{d3expected_names()}}.
 }
 \description{
-One central difference of \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} per parameter;
-an error where the family has no analytic second derivative.
+Takes one central difference of \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} per
+parameter and signals an error where the family has no analytic second
+derivative.
 }
 \keyword{internal}

@@ -11,10 +11,10 @@
 
 \item{q}{A numeric vector of quantiles. Values at or below zero give
 derivatives of exactly zero on the natural scale; on the log scale of the
-lower tail they are \code{NaN}, \eqn{\log F} being infinite there.}
+lower tail they are \code{NaN}, because \eqn{\log F} is infinite there.}
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
-\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.}
+\code{sigma} (the shape, positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -31,8 +31,8 @@ components for the gradient, three for the Hessian, four at order 3 and
 five at order 4.
 }
 \description{
-Closed form at every order from one to four, from the survival function
-\eqn{S = \exp\{-(q/\mu)^{\sigma}\}}. Writing
+The derivatives have closed form at every order from one to four, obtained
+from the survival function \eqn{S = \exp\{-(q/\mu)^{\sigma}\}}. Writing
 \eqn{h = \sigma(\log q - \log\mu)} the exponent is \eqn{L = -e^{h}}, so its
 partial derivatives are \eqn{-e^{h}} times the complete Bell polynomial in
 the partials of \eqn{h}, and those are elementary.
@@ -40,7 +40,7 @@ the partials of \eqn{h}, and those are elementary.
 \section{The partials of h}{
 \eqn{\partial^j h/\partial\mu^j = \sigma(-1)^j(j-1)!/\mu^j}, the same
 without the factor \eqn{\sigma} when one index names the shape, and exactly
-zero when two do: \eqn{h} is linear in the shape. That is what keeps the
+zero when two do: \eqn{h} is linear in the shape. This keeps the
 expansion short at the higher orders.
 }
 
@@ -65,7 +65,8 @@ d <- weibull1_distrib()
 q <- c(0.5, 2, 5)
 th <- list(mu = 2, sigma = 3)
 
-# Against a central difference of the cdf, on an absolute scale.
+# The result is compared with a central difference of the cdf, on an
+# absolute scale.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) - unlist(fd)))
 

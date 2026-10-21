@@ -7,8 +7,8 @@
 phi_terms_cdf_deriv_k(distrib, q, order, terms)
 }
 \arguments{
-\item{distrib}{An object inheriting from \code{distrib}. Its \code{params} name and
-order the components.}
+\item{distrib}{An object inheriting from \code{distrib}. Its \code{params} give the
+names and the order of the components.}
 
 \item{q}{A numeric vector of quantiles.}
 

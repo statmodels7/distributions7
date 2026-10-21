@@ -17,11 +17,11 @@ returns the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{sigma}, each a numeric vector
-of length \code{length(y)}.
+A named list with components \code{mu} and \code{sigma}. Each component is a
+numeric vector of length \code{length(y)}.
 }
 \description{
-Closed form. With \eqn{r = y - \mu},
+Computes the closed form. With \eqn{r = y - \mu},
 \deqn{\frac{\partial^2 \ell}{\partial y\, \partial \mu} = \frac{1}{\sigma^2},
       \qquad
       \frac{\partial^2 \ell}{\partial y\, \partial \sigma} =

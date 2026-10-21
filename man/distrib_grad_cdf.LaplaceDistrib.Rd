@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -18,16 +18,16 @@ lower tail and \code{FALSE} the upper tail.}
 derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, in which
+each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the location-scale structure:
+Computes the gradient in closed form, from the location-scale structure:
 \eqn{\partial F/\partial\mu = -f(q)} and
 \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
-method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself. Both are continuous everywhere,
-including at \eqn{q = \mu}: the density has a kink there but no jump, and
-the first derivatives of \eqn{F} read the density itself.
+method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself. Both components are continuous
+everywhere, including at \eqn{q = \mu}: the density has a kink there but no
+jump, and the first derivatives of \eqn{F} read the density itself.
 }
 \section{Notation}{
 
@@ -45,7 +45,7 @@ q <- c(-1, 0.5, 2)
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 
-# Continuous through the kink at q = mu.
+# The result is continuous through the kink at q = mu.
 distrib_grad_cdf(d, 0.3 + c(-1e-8, 0, 1e-8), th, log = FALSE)$mu
 }
 \seealso{

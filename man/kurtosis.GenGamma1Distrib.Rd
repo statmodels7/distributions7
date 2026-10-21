@@ -6,19 +6,19 @@
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
-each a numeric vector of length 1 or \code{n}. Only \code{d} and \code{p} enter the
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive;
+each is a numeric vector of length 1 or \code{n}. Only \code{d} and \code{p} enter the
 value.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, of length equal to the longest
-of the three components.
+A numeric vector of excess kurtoses, whose length is the one that the
+recycled parameters imply.
 }
 \description{
-Assembled from the first four raw moments,
-\eqn{\gamma_2 = (m_4 - 4m_1m_3 + 6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3}
+The excess kurtosis is assembled from the first four raw moments,
+\eqn{\gamma_2 =(m_4 - 4m_1m_3 + 6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3}
 with \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, and
 the two shapes move the skewness and the kurtosis with some freedom, where a
 gamma ties them by \eqn{\gamma_2 = 3\gamma_1^2/2}.

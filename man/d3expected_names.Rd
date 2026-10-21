@@ -13,9 +13,9 @@ d3expected_names(params)
 A character vector, \code{length(hess_names(params)) * length(deriv_names(params, 3))} long.
 }
 \description{
-One key per pair \eqn{(a,b)}, spelled as \code{\link[=hess_names]{hess_names()}} spells it, and per
-unordered triple, spelled as \code{\link[=deriv_names]{deriv_names()}} spells it at order three,
-joined \code{ab} first.
+Returns one key per pair \eqn{(a,b)}, spelled as \code{\link[=hess_names]{hess_names()}} spells it,
+and per unordered triple, spelled as \code{\link[=deriv_names]{deriv_names()}} spells it at order
+three, joined \code{ab} first.
 }
 \examples{
 d3expected_names(c("mu", "sigma"))

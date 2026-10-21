@@ -7,9 +7,9 @@
 \item{x}{A \code{BetaBinom2Distrib}, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, carrying the
 trial count in its \code{size} property.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or of the common length of the parameter
-settings.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive;
+each is a numeric vector of length 1 or of the common length of the
+parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,10 +18,10 @@ A numeric vector, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-The skewness of \code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}} at \eqn{\mu =
+The skewness is that of \code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}} at \eqn{\mu =
 \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}, computed by
-\code{\link[=betabinom_moments]{betabinom_moments()}}. It is
-zero when the two shapes are equal, the mixing beta being symmetric there.
+\code{\link[=betabinom_moments]{betabinom_moments()}}. It is zero when the two shapes are equal, because the
+mixing beta is symmetric there.
 }
 \section{Notation}{
 
@@ -32,7 +32,7 @@ zero when the two shapes are equal, the mixing beta being symmetric there.
 \examples{
 d <- betabinom2_distrib(size = 10)
 
-# Zero when the two shapes are equal.
+# The skewness is zero when the two shapes are equal.
 round(skewness(d, list(alpha = 3, beta = 3)), 12)
 
 # The two parametrizations agree on the law.

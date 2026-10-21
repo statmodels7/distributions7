@@ -25,15 +25,15 @@ on the same variable.
 }
 \details{
 The step is \eqn{h = \varepsilon^{1/4}\max(1, |y|)}, shrunk near a finite
-bound by \code{\link[=fd_steps_y]{fd_steps_y()}}. The longer exponent is what the second difference
-needs: its rounding error is \eqn{O(\varepsilon/h^2)} where the first
+bound by \code{\link[=fd_steps_y]{fd_steps_y()}}. The second difference needs the longer exponent:
+its rounding error is \eqn{O(\varepsilon/h^2)} where the first
 order's is \eqn{O(\varepsilon/h)}, so the optimum sits at a step twenty
 times longer and the accuracy reached is coarser, measured at about
 \eqn{4\times 10^{-7}} against the gamma's closed form where the first order
 reaches \eqn{3\times 10^{-10}}. The cost is three vectorized
 \code{distrib_pdf()} calls.
 
-As at first order, every family the package ships writes its own, and a
+As at first order, every family that the package ships writes its own, and a
 DISCRETE family registers no default.
 }
 \section{Notation}{
@@ -44,8 +44,8 @@ epsilon, \code{.Machine$double.eps}.
 }
 
 \examples{
-# A family that supplies a density and nothing else, which is what the
-# fallback exists for: every family the package ships writes its own
+# A family that supplies a density and nothing else is the case for which
+# the fallback exists: every family that the package ships writes its own
 # response derivatives.
 Toy <- S7::new_class("Toy", parent = continuous_distrib)
 S7::method(distrib_pdf, Toy) <- function(distrib, y, theta, ...) {
@@ -64,7 +64,8 @@ theta <- list(mu = 0.3, sigma = 1.2)
 
 distrib_hess_y(d, y, theta)
 
-# Against a Richardson-extrapolated second derivative of the log-density.
+# The result is compared with a Richardson-extrapolated second derivative
+# of the log-density.
 f <- function(v) distrib_pdf(d, v, theta, log = TRUE)
 vapply(y, function(v) numDeriv::hessian(f, v)[1, 1], numeric(1))
 

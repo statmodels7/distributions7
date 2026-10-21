@@ -20,11 +20,11 @@ A named list of three numeric vectors of length \code{length(y)}, keyed
 \code{mu}, \code{sigma} and \code{nu}.
 }
 \description{
-Closed form in all three parameters. With \eqn{z = (y-\mu)/\sigma} and
-\eqn{Q(z) = (\nu - z^2)/(\nu + z^2)^2} the response curvature is
-\eqn{\ell^{(yy)} = -(\nu+1)Q/\sigma^2}, so writing
-\eqn{Q' = 2z(z^2 - 3\nu)/(\nu+z^2)^3} and
-\eqn{\partial Q/\partial\nu = (3z^2-\nu)/(\nu+z^2)^3},
+Computes the closed form in all three parameters. With \eqn{z =
+(y-\mu)/\sigma} and \eqn{Q(z) = (\nu - z^2)/(\nu + z^2)^2} the response
+curvature is \eqn{\ell^{(yy)} = -(\nu+1)Q/\sigma^2}, so writing \eqn{Q' =
+2z(z^2 - 3\nu)/(\nu+z^2)^3} and \eqn{\partial Q/\partial\nu =
+(3z^2-\nu)/(\nu+z^2)^3},
 \deqn{\frac{\partial\ell^{(yy)}}{\partial\mu} = \frac{(\nu+1)Q'}{\sigma^3},
   \qquad \frac{\partial\ell^{(yy)}}{\partial\sigma}
     = \frac{(\nu+1)(2Q + zQ')}{\sigma^3}, \qquad
@@ -51,7 +51,8 @@ y <- c(-1, 0, 2)
 theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
 distrib_cross2_y(d, y, theta)
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2],
                                               nu = v[3]))
 numDeriv::grad(f, c(0.4, 1.3, 6))

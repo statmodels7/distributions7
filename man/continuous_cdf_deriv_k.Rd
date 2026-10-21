@@ -20,7 +20,7 @@ A named list of numeric vectors, as \code{\link[=compiled_cdf_deriv_k]{compiled_
 }
 \description{
 Returns the derivatives of \eqn{F} of order three or four by
-\code{\link[=compiled_cdf_deriv_k]{compiled_cdf_deriv_k()}} for the families it covers, and by the stencil of
-\code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}} otherwise.
+\code{\link[=compiled_cdf_deriv_k]{compiled_cdf_deriv_k()}} for the families that it covers, and by the
+stencil of \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}} otherwise.
 }
 \keyword{internal}

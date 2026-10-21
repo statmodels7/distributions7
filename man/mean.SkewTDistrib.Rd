@@ -8,7 +8,7 @@
 
 \item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
 scale, positive), \code{alpha} (the shape, any sign) and \code{nu} (the degrees of
-freedom, positive), each a numeric vector of length 1 or \code{n}. Settings
+freedom, positive); each is a numeric vector of length 1 or \code{n}. Settings
 with \eqn{\nu \le 1} give \code{NaN} in their own positions and do not affect
 the others.}
 
@@ -19,7 +19,8 @@ A numeric vector of means, of length equal to the longest of the
 four components, \code{NaN} wherever \eqn{\nu \le 1}.
 }
 \description{
-Closed form for \eqn{\nu > 1}: \eqn{E[Y] = \mu + \sigma\delta b_\nu}, with
+The closed form for \eqn{\nu > 1} is
+\eqn{E[Y] = \mu + \sigma\delta b_\nu}, with
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
 \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}. At
 \eqn{\nu \le 1} the value is \code{NaN}, because the first moment does not exist

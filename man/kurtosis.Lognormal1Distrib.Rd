@@ -7,8 +7,8 @@
 \item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
-(positive), each a numeric vector of length 1 or \code{n}. Only \code{sigma2} enters
-the value; the leading exponential overflows to \code{Inf} past
+(positive); each is a numeric vector of length 1 or \code{n}. Only \code{sigma2}
+enters the value; the leading exponential overflows to \code{Inf} past
 \eqn{\sigma^2 \approx 177}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,14 +18,15 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
-Closed form:
+The excess kurtosis has the closed form
 \deqn{\gamma_2 = e^{4\sigma^2} + 2e^{3\sigma^2} + 3e^{2\sigma^2} - 6,}
-free of \eqn{\mu}. It is evaluated as \eqn{w(16 + 15w + 6w^2 + w^3)} with
-\eqn{w = e^{\sigma^2} - 1} formed by \code{expm1()}, which keeps its digits at a
-small \eqn{\sigma^2}. The leading term grows like \eqn{e^{4\sigma^2}}, so the
-tail weight explodes with the spread of the logarithm: at
-\eqn{\sigma^2 = 1} it is 110.9, and the numerical route would need a
-quadrature far into the tail to see it at all.
+which is free of \eqn{\mu}. It is evaluated as
+\eqn{w(16 + 15w + 6w^2 + w^3)} where
+\eqn{w = e^{\sigma^2} - 1} is formed by \code{expm1()}, which keeps its digits at
+a small \eqn{\sigma^2}. The leading term grows like \eqn{e^{4\sigma^2}}, so
+the tail weight explodes with the spread of the logarithm: at \eqn{\sigma^2 =
+1} it is 110.9, and the numerical route would need a quadrature far into the
+tail to see it at all.
 }
 \section{Notation}{
 
@@ -35,7 +36,7 @@ quadrature far into the tail to see it at all.
 \examples{
 d <- lognormal1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(kurtosis(d, list(mu = 0, sigma2 = 1)),
           exp(4) + 2 * exp(3) + 3 * exp(2) - 6)
 

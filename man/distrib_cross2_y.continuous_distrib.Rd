@@ -20,7 +20,7 @@ A named list with one numeric vector per parameter, keyed by
 \code{distrib@params}.
 }
 \description{
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central
 difference of an analytic \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter, a second
 difference in the response of an analytic score, or one mixed stencil of
@@ -37,7 +37,8 @@ attr(S7::method(distrib_cross2_y, S7::S7_class(d)), "signature")[[1]]
 
 vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::grad(f, c(2, 1))
 }

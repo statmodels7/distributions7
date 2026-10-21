@@ -15,15 +15,16 @@ vector of length 1 or \code{n}.}
 A numeric vector, the length of \code{theta$mu}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = \sqrt{8/\mu}}. It is positive at every degrees
-of freedom, the support being the positive half-line, and it decays like
+The skewness has the closed form \eqn{\gamma_1 = \sqrt{8/\mu}}. It is
+positive at every degrees
+of freedom because the support is the positive half-line, and it decays like
 \eqn{\mu^{-1/2}}, which is the rate at which the family approaches a
 Gaussian as its degrees of freedom grow.
 }
 \examples{
 d <- chisq_distrib()
 
-# Square root of eight over the degrees of freedom.
+# The value is the square root of eight over the degrees of freedom.
 all.equal(skewness(d, list(mu = 5)), sqrt(8 / 5))
 
 # It vanishes as the degrees of freedom grow.

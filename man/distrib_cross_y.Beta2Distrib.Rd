@@ -16,12 +16,13 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{alpha} and \code{beta}, each a numeric vector
-of length \code{length(y)}.
+A named list with components \code{alpha} and \code{beta}; each is a numeric
+vector of length \code{length(y)}.
 }
 \description{
-Closed form: \eqn{\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)} gives
-\eqn{1/y} and \eqn{-1/(1-y)}.
+The mixed derivatives are in closed form:
+\eqn{\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)} gives \eqn{1/y} and
+\eqn{-1/(1-y)}.
 }
 \seealso{
 \code{\link[=beta2_distrib]{beta2_distrib()}} for the family;

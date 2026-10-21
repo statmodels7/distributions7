@@ -7,7 +7,7 @@
 \item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,11 +16,11 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$lambda))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_2 = 15\mu/\lambda}, the excess over the Gaussian.
-Like the skewness it depends on the two parameters through their ratio
-alone, and it is exactly \eqn{5\gamma_1^2/3}, so the family occupies one
-curve of the skewness-kurtosis plane, as it does in the other
-parametrization.
+The excess kurtosis has the closed form \eqn{\gamma_2 = 15\mu/\lambda}, the
+excess over the Gaussian. Like the skewness it depends on the two parameters
+only through their ratio, and it is exactly \eqn{5\gamma_1^2/3}, so the
+family occupies one curve of the skewness-kurtosis plane, as it does in the
+other parametrization.
 }
 \section{Notation}{
 
@@ -30,7 +30,7 @@ parametrization.
 \examples{
 d <- invgauss2_distrib()
 
-# Fifteen times the ratio.
+# The excess kurtosis is fifteen times the ratio.
 all.equal(kurtosis(d, list(mu = 2, lambda = 8)), 3.75)
 
 # The family lies on the curve kurtosis = (5/3) skewness^2.

@@ -22,13 +22,13 @@ A named list of numeric vectors, keyed as \code{\link[=deriv_names]{deriv_names(
 order, or as \code{\link[=hess_names]{hess_names()}} at order 2.
 }
 \description{
-The body shared by the location-scale families' \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
+This is the body shared by the location-scale families' \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
 \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} and \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}.
 Every table of \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} is the density times a factor, so
 on the log scale the factors are multiplied by
 \eqn{f/P = \exp(\log f - \log P)}, from the family's log-density and the
-log probability of the requested tail: neither \eqn{f} nor \eqn{P} is
-formed where it underflows, and the upper tail is the family's own.
+log probability of the requested tail: \eqn{f} and \eqn{P} are not formed
+where they underflow, and the upper tail is the family's own.
 }
 \examples{
 d <- logistic_distrib()

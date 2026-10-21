@@ -7,26 +7,26 @@
 \item{x}{A \code{SkewNormal1Distrib}, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and
-\code{alpha} (any sign), each a numeric vector of length 1 or \code{n}. Only \code{alpha}
-enters the value.}
+\code{alpha} (any sign); each is a numeric vector of length 1 or \code{n}. Only
+\code{alpha} enters the value.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, of the length the recycled
+A numeric vector of excess kurtoses, of the length that the recycled
 parameters imply, always in \eqn{[0, 0.8692)}. Only \code{alpha} enters the
-value, so a setting that varies the location or the scale alone repeats
+value, so a setting that varies only the location or the scale repeats
 one number.
 }
 \description{
-Closed form:
+The closed form is
 \deqn{\gamma_2 = 2(\pi - 3)\,
       \frac{(b\delta)^4}{(1 - b^2\delta^2)^{2}},}
 with \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 fourth power makes it even in the shape and non-negative, so the excess
 kurtosis of a skew normal is never below the Gaussian's, and the bound on
 \eqn{\delta} caps it at about 0.8692. A sample excess kurtosis beyond that
-value lies outside the range a skew normal can have at any shape.
+value lies outside the range that a skew normal can have at any shape.
 }
 \section{Notation}{
 
@@ -37,7 +37,7 @@ value lies outside the range a skew normal can have at any shape.
 \examples{
 d <- skewnormal1_distrib()
 
-# Even in the shape, and zero only at zero.
+# The kurtosis is even in the shape, and zero only at zero.
 kurtosis(d, list(mu = 0, sigma = 1, alpha = c(-3, 0, 3)))
 
 # The reachable range stops short of 0.8692.

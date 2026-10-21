@@ -13,8 +13,8 @@ derivatives to the requested order.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters, the location first and the scale
-second.}
+\item{theta}{A named list of parameters, in which the location comes first
+and the scale second.}
 
 \item{order}{The derivative order, 1 to 4.}
 }
@@ -24,9 +24,9 @@ the natural scale, keyed as
 [\code{deriv_names(distrib@params[1:2], order)}][deriv_names].
 }
 \description{
-Closed-form derivatives of \eqn{F} of any order up to four, for a family
-that is location-scale in its first two parameters. The general form of
-\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}, which stops at second order.
+Computes closed-form derivatives of \eqn{F} of any order up to four, for a
+family that is location-scale in its first two parameters. It is the
+general form of \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}, which stops at second order.
 }
 \section{The construction}{
 With \eqn{z = (q-\mu)/\sigma} the distribution function is
@@ -43,10 +43,10 @@ partials are exact zeros.
 }
 
 \section{What it depends on}{
-The response derivatives of orders 3 and 4 are what make this reach past
-second order: with only \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}} the
-construction stops where \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} stops. At orders 1 and 2
-the two agree to rounding error, which is the check that supports the
+The construction reaches past second order through the response
+derivatives of orders 3 and 4: with only \code{\link[=distrib_grad_y]{distrib_grad_y()}} and
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} it stops where \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} stops. At orders
+1 and 2 the two agree to rounding error, which is the check that supports the
 orders above.
 }
 

@@ -24,10 +24,10 @@ A named list of two numeric vectors, keyed by \code{distrib@params}, each
 of length \code{length(y)}.
 }
 \description{
-The \code{\link[=distrib_cross_y]{distrib_cross_y()}} body shared by every family that is location-scale
-in both its parameters: it takes the two components of
+Provides the \code{\link[=distrib_cross_y]{distrib_cross_y()}} body shared by every family that is
+location-scale in both its parameters. The body takes the two components of
 \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} and names them after the family's own parameters.
-Registered on the logistic, the Cauchy, the Gumbel and the Laplace.
+It is registered on the logistic, the Cauchy, the Gumbel and the Laplace.
 }
 \seealso{
 \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the identity;

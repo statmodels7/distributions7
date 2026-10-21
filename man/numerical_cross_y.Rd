@@ -25,14 +25,14 @@ Defaults to \code{.Machine$double.eps^(1/3)}. The step is taken by
 of the parameter.}
 
 \item{which}{A character vector of parameter names to differentiate, or
-\code{NULL} (the default) for all of them. Used by a family with a closed form
-for some of its parameters, so that only the remaining ones cost a pair of
-evaluations.}
+\code{NULL} (the default) for all of them. A family with a closed form for some
+of its parameters uses this argument, so that only the remaining ones cost
+a pair of evaluations.}
 }
 \value{
-A named list with one numeric vector per requested parameter, each
-of length \code{length(y)}, in the order \code{which} gives or \code{distrib@params}
-where it is \code{NULL}.
+A named list with one numeric vector per requested parameter, in the
+order that \code{which} gives, or in the order of \code{distrib@params} when \code{which}
+is \code{NULL}. Each vector has length \code{length(y)}.
 }
 \description{
 Computes \eqn{\partial^2 \ell / \partial y\, \partial \theta_i} by one
@@ -44,12 +44,12 @@ uses \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} instead
 }
 \section{The quantity that is differenced}{
 The quantity differenced is the response gradient, not the log-density,
-so a family with an analytical \code{distrib_grad_y} pays for exactly one
+so a family with an analytical \code{distrib_grad_y} requires exactly one
 finite-difference layer. Where the response gradient is itself the
-finite-difference fallback the composition is the four-point mixed stencil
+finite-difference fallback, the composition is the four-point mixed stencil
 on the log-density: the two differences act on different variables, so they
-commute into a single stencil instead of compounding the way nested
-differences in one variable do.
+commute into a single stencil instead of compounding as nested differences
+in one variable do.
 }
 
 \section{The step}{
@@ -68,7 +68,7 @@ numerical_cross_y(d, y, th)
 all.equal(numerical_cross_y(d, y, th), distrib_cross_y(d, y, th),
           tolerance = 1e-8)
 
-# 'which' costs a pair of evaluations for the named parameter alone.
+# 'which' costs a pair of evaluations only for the named parameter.
 numerical_cross_y(d, y, th, which = "sigma")
 
 }

@@ -8,7 +8,8 @@
 \code{\link[stats:sd]{stats::sd()}} does.}
 
 \item{na.rm}{Should missing values be dropped before the standard deviation
-is taken? A single logical, \code{FALSE} by default, which propagates \code{NA}.}
+is taken? It is a single logical, \code{FALSE} by default, and \code{FALSE}
+propagates \code{NA}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,9 +17,10 @@ is taken? A single logical, \code{FALSE} by default, which propagates \code{NA}.
 A single number, \code{NA} if \code{x} has fewer than two non-missing values.
 }
 \description{
-The sample standard deviation of a numeric vector, delegated to
-\code{\link[stats:sd]{stats::sd()}} and so the root of the \eqn{n - 1} variance. The method exists
-so that \code{\link[=std_dev]{std_dev()}} reads the same on data as on a distribution object.
+Computes the sample standard deviation of a numeric vector by delegating to
+\code{\link[stats:sd]{stats::sd()}}, which returns the root of the \eqn{n - 1} variance. The method
+exists so that \code{\link[=std_dev]{std_dev()}} reads the same on data as on a distribution
+object.
 }
 \examples{
 set.seed(1)

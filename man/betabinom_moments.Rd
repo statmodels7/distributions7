@@ -21,17 +21,17 @@ A numeric vector of the recycled length of \code{mu} and \code{sigma}.
 \description{
 Returns the mean, the variance, the skewness or the excess kurtosis of the
 beta-binomial with \eqn{n} trials, mean proportion \eqn{\mu} and
-dispersion \eqn{\sigma = 1/(\alpha + \beta)}, each in a closed form that
-forms no difference of large raw moments. With \eqn{g = \mu(1-\mu)},
+dispersion \eqn{\sigma = 1/(\alpha + \beta)}, in a closed form that forms
+no difference of large raw moments. We write \eqn{g = \mu(1-\mu)}, so that
 \deqn{E[Y] = n\mu,\qquad \mathrm{Var}(Y) = ng\,\frac{1 + n\sigma}{1 + \sigma},}
 \deqn{\gamma_1 = (1 - 2\mu)\,\frac{1 + 2n\sigma}{1 + 2\sigma}
   \sqrt{\frac{1 + \sigma}{gn(1 + n\sigma)}},}
 \deqn{\gamma_2 = \frac{6n\sigma(1 + n\sigma)\,[(1 - 6g)(1 + \sigma) + g]
   + (1 + \sigma)(1 - 6g - \sigma)}{gn(1 + 2\sigma)(1 + 3\sigma)(1 + n\sigma)}.}
-At \eqn{\sigma = 0} these are the binomial's, \eqn{\gamma_2} reducing to
-\eqn{(1 - 6g)/(gn)}. The excess kurtosis is written as one quotient, so that
-it is not formed as a kurtosis near 3 minus 3, which loses the digits of a
-value of order \eqn{1/n}.
+At \eqn{\sigma = 0} these are the binomial's, and \eqn{\gamma_2} reduces to
+\eqn{(1 - 6g)/(gn)}. The excess kurtosis is computed as one quotient, which
+avoids forming a kurtosis near 3 and subtracting 3, a step that would lose
+the digits of a value of order \eqn{1/n}.
 }
 \examples{
 # At a small dispersion the excess kurtosis tends to the binomial's.

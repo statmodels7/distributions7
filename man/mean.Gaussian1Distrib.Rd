@@ -7,9 +7,9 @@
 \item{x}{A \code{Gaussian1Distrib}, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, any real value) and
-\code{sigma} (the standard deviation, positive), each a numeric vector of length
-1 or \code{n}. It is aligned and validated by name, so a missing or
-out-of-bounds component signals an error.}
+\code{sigma} (the standard deviation, positive), in which each component is a
+numeric vector of length 1 or \code{n}. It is aligned and validated by name, so
+a missing or out-of-bounds component signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,9 +18,9 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. The first parameter of this parametrization
-is the mean itself, so the method reads it off and recycles it to the length
-the two parameters imply.
+The mean has the closed form \eqn{E[Y] = \mu}. The first parameter of this
+parametrization is the mean itself, so the method reads it off and recycles
+it to the length that the two parameters imply.
 }
 \examples{
 d <- gaussian1_distrib()

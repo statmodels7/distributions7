@@ -7,7 +7,7 @@
 \item{x}{A \code{Pig2Distrib}, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{alpha} (the orthogonal dispersion, positive), each a numeric vector of
+\code{alpha} (the orthogonal dispersion, positive); each is a numeric vector of
 length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,10 +18,10 @@ A numeric vector of means, of length
 parameter itself, recycled to that length.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This is the same law as \code{\link[=pig1_distrib]{pig1_distrib()}}
-written by a dispersion \eqn{\alpha} chosen so that the mean and the
-dispersion are orthogonal in the expected information; the mapping is
-\code{\link[=pig2_sigma]{pig2_sigma()}}, and the mean is the first parameter either way.
+The mean has the closed form \eqn{E[Y] = \mu}. This is the same law as
+\code{\link[=pig1_distrib]{pig1_distrib()}} written by a dispersion \eqn{\alpha} that is chosen so that
+the mean and the dispersion are orthogonal in the expected information; the
+mapping is \code{\link[=pig2_sigma]{pig2_sigma()}}, and the mean is the first parameter either way.
 }
 \section{Notation}{
 

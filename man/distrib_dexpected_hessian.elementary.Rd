@@ -61,21 +61,22 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of the expected information in the
-parameters, from compiled kernels, for the families whose expected
+Computes the first and second derivatives of the expected information in
+the parameters, from compiled kernels, for the families whose expected
 information is a written-out function of the parameters. Each component is
 an ordinary derivative of the family's \eqn{\mathbb{E}[\ell_{ab}]}; on the
 link scale the result is carried across by \code{\link[=dexpected_link]{dexpected_link()}}. The elastic
-net has the first derivatives only.
+net has only the first derivatives.
 }
 \details{
-The expected informations differentiated, on the parameter scale:
+The expected informations that are differentiated are the following, on the
+parameter scale:
 \itemize{
 \item Bernoulli and binomial of size \eqn{n}:
 \eqn{-n/(\mu(1-\mu))}, with \eqn{n = 1} for the Bernoulli;
 \item exponential: \eqn{-1/\mu^2}; geometric: \eqn{-1/(\mu(1+\mu))};
 \item chi-squared: \eqn{-\psi'(\mu/2)/4};
-\item Cauchy, logistic and Gumbel: every component a constant over
+\item Cauchy, logistic and Gumbel: every component is a constant over
 \eqn{\sigma^2}, so only \eqn{\sigma} moves them;
 \item gaussian by its variance, and lognormal in \eqn{(\mu, \sigma^2)}:
 \eqn{-1/\sigma^2} and \eqn{-1/(2\sigma^4)}; gaussian by its precision:
@@ -88,8 +89,8 @@ dispersion, \eqn{-\lambda/\mu^3} and \eqn{-1/(2\lambda^2)} by the shape;
 \eqn{\mathbb{E}[\ell_{\mu\sigma^2}] = 2\mu g/\sigma^4} and
 \eqn{\mathbb{E}[\ell_{\sigma^2\sigma^2}] = -a g/\sigma^4}; \eqn{g} and its
 derivatives are formed from the remainders of the polygamma functions'
-asymptotic series, so nothing cancels at a large shape, where
-\eqn{g \sim 1/(2a)};
+asymptotic series, so they are evaluated without cancellation at a large
+shape, where \eqn{g \sim 1/(2a)};
 \item beta by its two shapes: \eqn{\psi'(\alpha+\beta) - \psi'(\alpha)},
 \eqn{\psi'(\alpha+\beta)} and \eqn{\psi'(\alpha+\beta) - \psi'(\beta)};
 \item Weibull by its scale and shape: \eqn{-\sigma^2/\mu^2},

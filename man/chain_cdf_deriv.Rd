@@ -7,13 +7,13 @@
 chain_cdf_deriv(parent, q, th_par, maps, new_params, order)
 }
 \arguments{
-\item{parent}{The distribution being reparametrized.}
+\item{parent}{The distribution that is reparametrized.}
 
 \item{q}{A numeric vector of quantiles.}
 
 \item{th_par}{The parent's parameters, evaluated at the new ones.}
 
-\item{maps}{The map's keyed partial tables, in the form
+\item{maps}{The map's keyed partial tables, in the form that
 \code{\link[=reparam_map_derivs]{reparam_map_derivs()}} produces: a missing key is an exact zero, so a map
 with many vanishing partials costs nothing for them.}
 
@@ -48,8 +48,8 @@ The result is exact whenever the cdf derivatives of the parent and the
 partials of the map are, and no better than they are otherwise: applied to
 a parent that differences its own cdf, the chain adds an exact
 transformation to an approximate quantity and gains nothing over
-differencing the new cdf directly. Checking that is the
-caller's business, and \code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}} is where it is done.
+differencing the new cdf directly. The caller checks that, and
+\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}} performs the check.
 }
 
 \section{Notation}{

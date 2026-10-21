@@ -10,10 +10,10 @@ register_phi_terms_cdf(cls, term_fn)
 \item{cls}{The S7 class to register on.}
 
 \item{term_fn}{A function of \verb{(distrib, q, theta)} returning the list of
-terms \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} documents.}
+terms that \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} documents.}
 }
 \value{
-Invisibly \code{NULL}. Called for the registration.
+Invisibly \code{NULL}. The function is called for the registration.
 }
 \description{
 Turns one term function into the four S7 methods that a family of the shape
@@ -22,13 +22,13 @@ its terms once instead of four times. The inverse Gaussian and the elastic
 net are the two families registered through it.
 }
 \details{
-All four orders are registered, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} included, so these
+All four orders are registered, including \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so these
 families take the closed route from the first order up and never reach a
-stencil. \code{force(o)} inside the factory is what keeps the four registrations
-from sharing one order.
+stencil. \code{force(o)} inside the factory prevents the four registrations from
+sharing one order.
 }
 \seealso{
-\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, the body it registers;
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, the body that it registers;
 \code{\link[=distrib_grad_cdf.InvGauss1Distrib]{distrib_grad_cdf.InvGauss1Distrib()}} and
 \code{\link[=distrib_grad_cdf.EnetDistrib]{distrib_grad_cdf.EnetDistrib()}}, the two families.
 }

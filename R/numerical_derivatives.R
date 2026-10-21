@@ -10,9 +10,9 @@ NULL
 #' nearest finite bound or by scaling it on that distance.
 #'
 #' @details
-#' The domain clamp is what allows a finite-difference fallback to be offered at
+#' The domain clamp makes it possible to offer a finite-difference fallback at
 #' all. Parameter domains here are open: a scale parameter is positive, not
-#' non-negative. A step chosen from the magnitude alone therefore takes a small
+#' non-negative. A step chosen only from the magnitude therefore takes a small
 #' \eqn{\sigma} straight through zero, and the log-density comes back `NaN`
 #' for reasons that look like a bug in the density. Clamping to 49\% of the
 #' distance to each finite boundary keeps both evaluation points inside.
@@ -23,8 +23,8 @@ NULL
 #' \eqn{0.49\,d}. Where the log-density is singular in that parameter at the
 #' bound the clamped step's error stops falling once the clamp binds, and where
 #' the log-density instead saturates the scaled step is the worse of the two,
-#' its shorter step letting the rounding dominate. Neither is right everywhere,
-#' and [fd_stable_step()] is what chooses between them.
+#' because its shorter step lets the rounding dominate. Each of the two is wrong
+#' somewhere, and [fd_stable_step()] chooses between them.
 #'
 #' The two give the same step wherever \eqn{d \ge \max(1, |\theta|)}, which is
 #' every parameter of a family with no finite bound, and also a positive
@@ -33,20 +33,21 @@ NULL
 #' A parameter already on or outside its boundary cannot be rescued this way, and
 #' is reported rather than differentiated.
 #'
-#' The clamp is on the stencil's OUTERMOST node and not on the step, so it
-#' divides by the reach, the largest offset the rule evaluates at in units of
-#' \eqn{h}. That number is the stencil's and is read from
+#' The clamp applies to the stencil's OUTERMOST node and not to the step, so it
+#' divides by the reach, the largest offset (in units of \eqn{h}) at which the
+#' rule evaluates. That number belongs to the stencil and is read from
 #' [numericals7::fd_offsets()] rather than assumed: a central difference and a
 #' three-point second difference both reach one step out, which is every use
-#' this package makes of the clamped branch today, while the five-point rules
-#' of accuracy four reach two. Without the division a step cut to
+#' that this package makes of the clamped branch today, while the five-point
+#' rules of accuracy four reach two. Without the division a step cut to
 #' \eqn{0.49 d} puts the outermost node of a reach-two rule at \eqn{0.98 d},
-#' which is inside the domain and not what the clamp says it is.
+#' which is inside the domain but lies farther out than the \eqn{0.49 d} that
+#' the clamp is meant to enforce.
 #'
-#' With the reach accounted for, the clamped branch at the default `h_rel` is
+#' When the reach is accounted for, the clamped branch at the default `h_rel` is
 #' [numericals7::fd_step()] with `bounds`, and a test asserts the two are
 #' `identical()` so they cannot drift. It is written here rather than
-#' delegated because `h_rel` is an argument the callers vary:
+#' delegated because `h_rel` is an argument that the callers vary:
 #' [fd_stable_step()] halves it and `check_distrib()` reads the quotient at two
 #' steps, neither of which `fd_step()` can express.
 #'
@@ -61,8 +62,8 @@ NULL
 #' @param h_rel The relative step size, typically a root of machine epsilon
 #'   chosen for the stencil in use.
 #' @param to_bound `"clamp"`, the default, or `"scale"`, as above.
-#' @param order,accuracy The stencil the step is for, which fix its reach
-#'   through [numericals7::fd_offsets()]. The defaults are the central
+#' @param order,accuracy The stencil for which the step is built; they fix its
+#'   reach through [numericals7::fd_offsets()]. The defaults are the central
 #'   difference, whose reach is one.
 #'
 #' @return A numeric vector of steps, the same length as `theta_j`.
@@ -101,10 +102,10 @@ fd_steps <- function(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"),
 #' @title The Self-Consistency of a Difference Quotient Under Step Halving
 #'
 #' @description
-#' Returns \eqn{\max|q(h/2) - q(h)| / \max|q(h)|}, the reading
-#' [fd_stable_step()] compares its two candidate steps on. It is `Inf` where
+#' Returns \eqn{\max|q(h/2) - q(h)| / \max|q(h)|}, the reading on which
+#' [fd_stable_step()] compares its two candidate steps. It is `Inf` where
 #' the half-step quotient is not finite and `NA` where the full-step one is
-#' identically zero, neither of which is a usable reading.
+#' identically zero, and in both cases the reading is not usable.
 #'
 #' @param x_half The quotient at half the step, a numeric vector.
 #' @param x_full The quotient at the full step, the same length.
@@ -151,7 +152,7 @@ fd_self_consistency <- function(x_half, x_full) {
 #' It costs four quotients where one would do, except where the two steps
 #' coincide at every entry, which is every call on a parameter with no finite
 #' bound and every positive parameter at or above one: there the clamped step
-#' is returned at once and nothing is evaluated twice.
+#' is returned at once and each quotient is evaluated only once.
 #'
 #' Each order selects its own step, with its own `h_rel` and its own stencil;
 #' a choice made at first order is not reused at higher orders.
@@ -165,13 +166,14 @@ fd_self_consistency <- function(x_half, x_full) {
 #'   `NULL`.
 #' @param h_rel The relative step size.
 #' @param need_value Whether the caller will use the quotient at the chosen
-#'   step. `FALSE` for a caller that wants only the step, and then nothing is
-#'   evaluated at all where the two candidates coincide: the higher orders read
-#'   only `h`, and their quotient is a difference of whole Hessians.
-#' @param order,accuracy The stencil the quotient implements, passed to
-#'   [fd_steps()] so that the clamp is on the outermost node. The defaults are
-#'   the central difference; a caller whose quotient is a second difference
-#'   passes `order = 2`.
+#'   step. A caller that needs only the step sets it to `FALSE`, and the
+#'   function then skips every evaluation where the two candidates coincide: the
+#'   higher orders read only `h`, and their quotient is a difference of whole
+#'   Hessians.
+#' @param order,accuracy The stencil that the quotient implements; it is passed
+#'   to [fd_steps()] so that the clamp applies to the outermost node. The
+#'   defaults are the central difference; a caller whose quotient is a second
+#'   difference passes `order = 2`.
 #' @return A list of two elements: `h`, the step chosen, and `value`, the
 #'   quotient at it, or `NULL` when `need_value` is `FALSE` and no quotient had
 #'   to be taken.
@@ -202,13 +204,15 @@ fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE
 #' central finite differences of `distrib_pdf(..., log = TRUE)`. This powers
 #' the default [distrib_gradient()] method for distributions that do not
 #' implement an analytical gradient: any `distrib` subclass that defines only
-#' `distrib_pdf` gets its score function for free.
+#' `distrib_pdf` receives its score function from this default at no further
+#' cost to its author.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters (each of length 1 or `length(y)`).
-#' @param h_rel Numeric. Relative step size. Defaults to `.Machine$double.eps^(1/3)`
-#'   (optimal for central differences).
+#' @param theta A named list of parameters (each element has length 1 or
+#'   `length(y)`).
+#' @param h_rel Numeric, the relative step size. Defaults to
+#'   `.Machine$double.eps^(1/3)` (optimal for central differences).
 #'
 #' @return A named list (one element per parameter) of gradient vectors.
 #'
@@ -264,14 +268,15 @@ numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1
 #' Computes the observed Hessian of the log-density with respect to the parameters
 #' by central finite differences of `distrib_pdf(..., log = TRUE)`. The
 #' default [distrib_hessian()] method calls it for a family that has neither an
-#' analytical Hessian nor an analytical score; a family with an analytical
-#' score has it differenced instead.
+#' analytical Hessian nor an analytical score; for a family with an analytical
+#' score, the method differences that score instead.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters (each of length 1 or `length(y)`).
-#' @param h_rel Numeric. Relative step size. Defaults to `.Machine$double.eps^(1/4)`
-#'   (optimal for second differences).
+#' @param theta A named list of parameters (each element has length 1 or
+#'   `length(y)`).
+#' @param h_rel Numeric, the relative step size. Defaults to
+#'   `.Machine$double.eps^(1/4)` (optimal for second differences).
 #'
 #' @return A named list of Hessian component vectors, in [hess_names()] order
 #'   (diagonal elements first, then the upper-triangular mixed derivatives).
@@ -342,7 +347,7 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
 #'
 #' @description
 #' Computes the derivative components of order `order` of the log-density
-#' from the highest order the family implements itself: the log-density
+#' from the highest order that the family implements itself: the log-density
 #' (`base = 0`), the score (`base = 1`), the Hessian (`base = 2`), the third
 #' order (`base = 3`) or the fourth (`base = 4`). Each component is a single
 #' tensor-product central difference of order `order - base`, never a
@@ -350,15 +355,15 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
 #'
 #' @details
 #' The computation is [numericals7::fd_tensor()] over the coordinates
-#' \eqn{\theta_1, \dots, \theta_p}, with the log-density as the function and
-#' the derivatives of order `base` declared as the known quantity. A component
-#' is a multiset of parameters: \eqn{(\mu, \mu, \phi)} is
+#' \eqn{\theta_1, \dots, \theta_p}, where the log-density is the function and
+#' the derivatives of order `base` are declared as the known quantity. A
+#' component is a multiset of parameters: \eqn{(\mu, \mu, \phi)} is
 #' \eqn{\partial^3\ell / \partial\mu^2\partial\phi}. `base` of its indices
-#' select the analytical component that is differenced, taken from the
-#' parameters that occur most often, and the remaining multiplicities are the
-#' orders of the one-dimensional central stencils whose tensor product is
-#' applied to it. Each parameter is differentiated only once, however many
-#' times it occurs.
+#' select the analytical component that is differenced, and these indices are
+#' taken from the parameters that occur most often. The remaining
+#' multiplicities are the orders of the one-dimensional central stencils whose
+#' tensor product is applied to it. Each parameter is differentiated only once,
+#' however many times it occurs.
 #'
 #' The step in \eqn{\theta_j} is
 #' \eqn{h_j = \varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with
@@ -373,7 +378,7 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned by the generic.
 #' @param order The order of the derivatives, a whole number above `base`.
-#' @param base The highest order the family implements itself, 0 to 4.
+#' @param base The highest order that the family implements itself, 0 to 4.
 #' @param h_rel `NULL`, the default, for the step above, or a relative step
 #'   that replaces \eqn{\varepsilon^{1/(r+a)}}.
 #' @param skip Character vector of component names left `NULL`, or `NULL`.
@@ -473,17 +478,17 @@ tensor_coords <- function(distrib, theta, scale = c("parameter", "link")) {
 }
 
 
-#' The Highest Derivative Order a Family Implements Itself
+#' The Highest Derivative Order That a Family Implements Itself
 #'
 #' @description
 #' Returns the highest order, up to `upto`, at which the family registers its
-#' own method: 0 for a family with a density alone, 1 with a score, 2 with a
+#' own method: 0 for a family that has only a density, 1 with a score, 2 with a
 #' Hessian, 3 with third derivatives, 4 with fourth derivatives. A method
 #' inherited from one of the package's base classes is a numerical fallback
 #' and does not count; one inherited from a family class does.
 #'
 #' @param distrib An object inheriting from `distrib`.
-#' @param upto The highest order to look for, 1 to 4.
+#' @param upto The highest order to be examined, 1 to 4.
 #'
 #' @return An integer from 0 to `upto`.
 #'
@@ -507,11 +512,13 @@ analytic_order <- function(distrib, upto) {
 #' @name distrib_gradient.distrib
 #'
 #' @description
-#' The fallback for a family that implements no analytical score: the gradient
-#' of `distrib_pdf(..., log = TRUE)` by one central difference per
-#' parameter, through [numerical_gradient()]. This is why [distrib_pdf()] is
-#' the only compulsory method of the package: a family that defines the density
-#' alone gets a score, an information, five orders of derivative and a fit.
+#' This method is the fallback for a family that implements no analytical
+#' score. It computes the gradient of `distrib_pdf(..., log = TRUE)` by one
+#' central difference per parameter, through [numerical_gradient()]. For this
+#' reason [distrib_pdf()]
+#' is the only compulsory method of the package: a family that defines only the
+#' density has a score, an information, five orders of derivative and a fit
+#' available.
 #'
 #' @details
 #' # The stencil, the step and the cost
@@ -537,7 +544,7 @@ analytic_order <- function(distrib, upto) {
 #' @param ... Unused.
 #'
 #' @return A named list with one numeric vector per parameter, keyed by
-#'   `distrib@params`, each of length `length(y)`.
+#'   `distrib@params`; each vector has length `length(y)`.
 #'
 #' @seealso [numerical_gradient()], which does the differencing;
 #'   [fd_steps()] for the boundary rule;
@@ -552,8 +559,8 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #' @name distrib_hessian.distrib
 #'
 #' @description
-#' The fallback for a family that implements no analytical Hessian. For a
-#' family with a density alone it takes second differences of
+#' This method is the fallback for a family that implements no analytical
+#' Hessian. For a family that has only a density it takes second differences of
 #' `distrib_pdf(..., log = TRUE)` through [numerical_hessian()]: a diagonal
 #' component takes the three-point stencil
 #' \eqn{[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)]/h^2} and an
@@ -567,14 +574,15 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #'
 #' @details
 #' # The step and the cost
-#' For a family with a density alone, the step is \eqn{h = \varepsilon^{1/4}\max(1, |\theta_i|) \approx
-#' 1.22\times10^{-4}}, twenty times the gradient's: a second difference divides
-#' by \eqn{h^2}, so rounding grows as \eqn{1/h^2} and the optimum moves out.
-#' [fd_steps()] applies the same boundary clamp. One Hessian costs
-#' \eqn{2p} evaluations for the diagonal, \eqn{4} per distinct pair and one at
-#' the center, which is 9 in all for a two-parameter family, and more when
-#' [fd_stable_step()] compares two candidate steps. A second difference is
-#' about two digits less accurate than the first difference of the gradient.
+#' For a family that has only a density, the step is \eqn{h =
+#' \varepsilon^{1/4}\max(1, |\theta_i|) \approx 1.22\times10^{-4}}, twenty times
+#' the gradient's: a second difference divides by \eqn{h^2}, so rounding grows
+#' as \eqn{1/h^2} and the optimum moves out. [fd_steps()] applies the same
+#' boundary clamp. One Hessian costs \eqn{2p} evaluations for the diagonal,
+#' \eqn{4} per distinct pair and one at the center, which is 9 in all for a
+#' two-parameter family, and more when [fd_stable_step()] compares two candidate
+#' steps. A second difference is about two digits less accurate than the first
+#' difference of the gradient.
 #'
 #' @param distrib An object inheriting from `distrib` that registers no method
 #'   of its own.
@@ -584,9 +592,9 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #'   returns the parameter scale.
 #' @param ... Unused.
 #'
-#' @return A named list of Hessian component vectors, each of length
+#' @return A named list of Hessian component vectors, each of which has length
 #'   `length(y)`, keyed by [hess_names()], which puts the diagonal first and is
-#'   not the lexicographic keying [deriv_names()] uses above order 2.
+#'   not the lexicographic keying that [deriv_names()] uses above order 2.
 #'
 #' @seealso [numerical_hessian()] and [tensor_derivatives()], which do the
 #'   differencing; [fd_steps()] for the boundary rule;
@@ -604,8 +612,8 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' @title Default Expected Hessian for `distrib` Objects
 #' @name distrib_expected_hessian.distrib
 #' @description
-#' Fallback method, for a family that does not write its expected information
-#' out. It rests on the second Bartlett identity,
+#' This method is the fallback for a family that does not write its expected
+#' information out. It rests on the second Bartlett identity,
 #' \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, which
 #' holds for a regular model and, unlike \eqn{\mathbb{E}[\ell^{(ij)}]} read
 #' directly, survives a log-likelihood that is not differentiable in a
@@ -619,7 +627,8 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' so it costs one call to [distrib_gradient()]; `"bartlett"` evaluates the
 #' expectation itself, which is a sum over the support for a discrete family
 #' and a quadrature for a continuous one, and is orders of magnitude dearer.
-#' See [expected_by_opg()] for what the default gives up and what it does not.
+#' See [expected_by_opg()] for the properties that the default loses and those
+#' that it retains.
 #'
 #' The score is taken from [distrib_gradient()], so it uses the analytical
 #' gradient where the family has one and finite differences otherwise.
@@ -631,14 +640,14 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #'   are reported. The transformation is applied in the generic's body, so this
 #'   method always returns the parameter scale.
 #' @param approx One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, the
-#'   strategy [expected_derivative()] uses. Defaults to `"opg"`.
+#'   strategy that [expected_derivative()] uses. Defaults to `"opg"`.
 #' @param nsim Number of draws, read only by `approx = "mc"`.
 #' @param ... Unused, and accepted so that the signature matches the
 #'   generic's.
 #' @return A named list of expected Hessian component vectors.
 #' @seealso [expected_by_opg()] and [expected_by_bartlett()] for the two
 #'   readings of the identity, and [expected_hessian_exact()] for the
-#'   predicate that says whether a family reaches this method at all.
+#'   predicate that determines whether a family reaches this method at all.
 #' @keywords internal
 S7::method(distrib_expected_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   expected_derivative(distrib, y, theta, order = 2L,

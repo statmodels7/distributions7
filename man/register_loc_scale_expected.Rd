@@ -15,13 +15,13 @@ scale.}
 }
 \description{
 Registers \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and
-\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} on a location-scale class, each computed by
-\code{\link[=loc_scale_expected]{loc_scale_expected()}}, and \code{\link[=expected_hessian_costly]{expected_hessian_costly()}} answering
-\code{TRUE}.
+\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} on a location-scale class, each of which is
+computed by \code{\link[=loc_scale_expected]{loc_scale_expected()}}, and registers \code{\link[=expected_hessian_costly]{expected_hessian_costly()}}
+so that it returns \code{TRUE}.
 }
 \details{
 The \code{approx} and \code{nsim} arguments of the three generics are accepted and
-ignored, the expectation being taken by the rule of \code{\link[=loc_scale_rule]{loc_scale_rule()}} and
-not by one of the approximations \code{approx} selects between.
+ignored, because the expectation is taken by the rule of \code{\link[=loc_scale_rule]{loc_scale_rule()}}
+and not by one of the approximations between which \code{approx} selects.
 }
 \keyword{internal}

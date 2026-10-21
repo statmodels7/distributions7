@@ -7,20 +7,20 @@
 \item{x}{A \code{SkewTDistrib}, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive), \code{alpha}
-(any sign) and \code{nu} (positive), each a numeric vector of length 1 or \code{n}.
-Settings with \eqn{1 < \nu \le 2} give \code{Inf} and those with
+(any sign) and \code{nu} (positive); each is a numeric vector of length 1 or
+\code{n}. Settings with \eqn{1 < \nu \le 2} give \code{Inf} and those with
 \eqn{\nu \le 1} give \code{NaN}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, of the length the recycled
+A numeric vector of variances, of the length that the recycled
 parameters imply, \code{Inf} wherever \eqn{1 < \nu \le 2} and \code{NaN} wherever
 \eqn{\nu \le 1}. The scale, \code{alpha} and \code{nu} enter the value; the location
 does not.
 }
 \description{
-Closed form for \eqn{\nu > 2}:
+The closed form for \eqn{\nu > 2} is
 \eqn{\operatorname{Var}(Y) = \sigma^2\{\nu/(\nu-2) - \mu_z^2\}}, with
 \eqn{\mu_z = \delta b_\nu} the mean of the standardized variable. At
 \eqn{1 < \nu \le 2} the second moment diverges and the value is \code{Inf}, as

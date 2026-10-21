@@ -7,19 +7,20 @@
 \item{x}{A \code{StudentT1Distrib}, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive), in which each component is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, of length equal to the longest of the
-three components, \code{Inf} where \eqn{1 < \nu \le 2} and \code{NaN} where
-\eqn{\nu \le 1}.
+A numeric vector of variances, whose length is the one that the
+recycled parameters imply, with \code{Inf} where \eqn{1 < \nu \le 2} and \code{NaN}
+where \eqn{\nu \le 1}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2\nu/(\nu-2)} for
-\eqn{\nu > 2}, \code{Inf} for \eqn{1 < \nu \le 2}, and \code{NaN} at or below one. The
-three answers are three different statements: a finite value, a second
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = \sigma^2\nu/(\nu-2)} for
+\eqn{\nu > 2}; it is \code{Inf} for \eqn{1 < \nu \le 2} and \code{NaN} at or below one.
+These are three different statements: a finite value, a second
 moment that diverges to infinity while the first exists, and a second moment
 that is undefined because the first is.
 }
@@ -38,7 +39,8 @@ close to the threshold.
 \examples{
 d <- student_t1_distrib()
 
-# NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+# The values are NaN, infinite and finite, in that order, as nu crosses its
+# two thresholds.
 variance(d, list(mu = 0, sigma = 1, nu = c(1, 1.5, 2, 3)))
 
 # The scale is a lower bound, approached as the degrees of freedom grow.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/kink_decomposition.R
 \name{.kink_touched}
 \alias{.kink_touched}
-\title{Which Parameters a Kink Moves With}
+\title{The Parameters with Which a Kink Moves}
 \usage{
 .kink_touched(distrib, kd)
 }
@@ -15,15 +15,16 @@
 A character vector of parameter names, possibly empty.
 }
 \description{
-The set \eqn{\{p : \partial v/\partial \theta_p \ne 0\}}, evaluated rather
-than assumed, at probe values inside each parameter's own interval and at a
-few points of the support.
+Returns the set \eqn{\{p : \partial v/\partial \theta_p \ne 0\}}, which it
+evaluates at probe values inside each parameter's own interval and at a few
+points of the support rather than assuming it.
 }
 \details{
 The probe is the midpoint of a bounded interval and one unit inside a
-half-line, which is the rule \code{\link[=reparametrize]{reparametrize()}} already uses; a component is
-called non-zero if it is non-zero at any probe, since the set is defined by
-the derivative not vanishing identically.
+half-line, which is the rule that \code{\link[=reparametrize]{reparametrize()}} already uses; a
+component is called non-zero if it is non-zero at any probe, since the set
+consists of the parameters for which the derivative does not vanish
+identically.
 }
 \examples{
 d <- laplace_distrib()

@@ -21,8 +21,9 @@ the parameter scale.}
 A numeric vector.
 }
 \description{
-The concentration parametrization's, at \eqn{\kappa = A^{-1}(\rho)}. The
-response derivatives are the parent's unchanged; the mixed block is the
-parent's carried by \eqn{\kappa'(\rho)}, the location passing through.
+Obtains the derivatives from those of the concentration parametrization,
+at \eqn{\kappa = A^{-1}(\rho)}. The response derivatives are the parent's
+unchanged; the mixed block is the parent's carried by \eqn{\kappa'(\rho)},
+and the location passes through.
 }
 \keyword{internal}

@@ -19,7 +19,7 @@ distrib_dexpected_hessian(
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters, each of length 1 or
+\item{theta}{A named list of parameters; each has length 1 or
 \code{length(y)}.}
 
 \item{scale}{\code{"parameter"} for \eqn{\partial/\partial\theta_c},
@@ -35,15 +35,15 @@ A named list of numeric vectors, keyed as
 \code{\link[=dexpected_names]{dexpected_names(distrib@params)}}.
 }
 \description{
-\eqn{\partial\,\mathbb{E}[\ell_{ab}]/\partial\theta_c}, one component per
-pair \eqn{(a,b)} and differentiating parameter \eqn{c}.
+Returns \eqn{\partial\,\mathbb{E}[\ell_{ab}]/\partial\theta_c}, with one
+component per pair \eqn{(a,b)} and differentiating parameter \eqn{c}.
 }
 \details{
 The components are symmetric in \eqn{(a,b)} and not in \eqn{c}: writing
 \deqn{\frac{\partial}{\partial\theta_c}\mathbb{E}[\ell_{ab}]
   = \mathbb{E}[\ell_{abc}] + \mathbb{E}[\ell_{ab}\ell_{c}],}
 the first term is fully symmetric and the second is not, so the result is
-keyed by \code{\link[=dexpected_names]{dexpected_names()}} rather than by the sorted triples
+keyed by \code{\link[=dexpected_names]{dexpected_names()}} rather than by the sorted triples that
 \code{\link[=deriv_names]{deriv_names()}} uses at order three.
 
 The default method differences the family's own expected
@@ -55,7 +55,7 @@ formula. Where it is not, the method signals an error: see
 On \code{scale = "link"} the difference is taken along the free scale of the
 parameter being differentiated, and the expected information is read on the
 link scale at each of the two points, so the chain rule is never written out
-here and cannot disagree with the one
+here and cannot disagree with the one that
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} already applies.
 }
 \examples{

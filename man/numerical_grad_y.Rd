@@ -25,8 +25,8 @@ Computes \eqn{\partial \ell / \partial y} by the two-point central
 difference
 \deqn{\frac{\partial\ell}{\partial y} \approx
   \frac{\ell(y+h) - \ell(y-h)}{2h},}
-evaluated on \code{distrib_pdf(..., log = TRUE)}. It is what the default
-\code{\link[=distrib_grad_y]{distrib_grad_y()}} method runs for a continuous family with no closed form.
+evaluated on \code{distrib_pdf(..., log = TRUE)}. The default \code{\link[=distrib_grad_y]{distrib_grad_y()}}
+method runs it for a continuous family with no closed form.
 }
 \section{Step length and accuracy}{
 The stencil's truncation error is \eqn{O(h^2)} and its rounding error
@@ -35,17 +35,18 @@ The stencil's truncation error is \eqn{O(h^2)} and its rounding error
 gamma's own closed form at \code{h_rel} from \eqn{10^{-1}} to \eqn{10^{-8}}, the
 error is 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
 2.0e-08: it divides by a hundred per decade while the truncation dominates,
-turns near the default and rises again as the rounding takes over. A step
-ten times shorter than the default is therefore worse, not better.
+turns near the default and rises again once the rounding error dominates.
+A step ten times shorter than the default is therefore worse, not better.
 
 The step itself comes from \code{\link[=fd_steps_y]{fd_steps_y()}}, which scales it by
 \eqn{\max(1, |y|)} and shrinks it near a finite bound.
 }
 
 \section{The cost}{
-Two evaluations of the log-density, both vectorized over \code{y}, so one call
-costs two \code{distrib_pdf()} calls whatever the sample size. A family with a
-closed form pays neither.
+The function evaluates the log-density twice, and both evaluations are
+vectorized over \code{y}, so one call costs two \code{distrib_pdf()} calls whatever
+the sample size. A family with a
+closed form makes neither call.
 }
 
 \section{Notation}{

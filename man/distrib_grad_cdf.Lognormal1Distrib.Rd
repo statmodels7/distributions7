@@ -10,7 +10,7 @@
 distribution function is zero and its derivatives are too.}
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -21,11 +21,12 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{sigma2}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{sigma2}, in which
+each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form. On the log scale the lognormal is a location-scale family, so
+Computes the gradient in closed form. On the log scale the lognormal is a
+location-scale family, so
 \eqn{F(q) = \Phi(z)} with \eqn{z = (\log q - \mu)/\sigma}, and the two
 derivatives are
 \deqn{\frac{\partial F}{\partial\mu} = -q\,f(q), \qquad
@@ -35,9 +36,10 @@ derivatives are
 The factor \eqn{q} is the Jacobian of the change of variable: the standard
 normal density at \eqn{z} is \eqn{\varphi(z) = q\sigma f(q)}, so the
 location-scale formulas are rewritten in the density of \eqn{Y} itself and
-nothing on the log scale has to be evaluated. The extra \eqn{1/(2\sigma)} in
-the second component is the chain rule onto the variance, this
-parametrization carrying \eqn{\sigma^2} rather than \eqn{\sigma}.
+the method does not evaluate anything on the log scale. The extra
+\eqn{1/(2\sigma)} in the second component is the chain rule onto the
+variance, because this parametrization carries \eqn{\sigma^2} rather than
+\eqn{\sigma}.
 
 The second derivatives are registered separately, in closed form, by
 \code{\link[=distrib_hess_cdf.Lognormal1Distrib]{distrib_hess_cdf.Lognormal1Distrib()}}.
@@ -54,11 +56,12 @@ d <- lognormal1_distrib()
 th <- list(mu = 0, sigma2 = 1)
 q <- c(0.5, 1, 3)
 
-# The mean component is -q f(q), the Jacobian factor included.
+# The mean component is -q f(q), including the Jacobian factor.
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -q * distrib_pdf(d, q, th))
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic with it.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(distrib_grad_cdf(d, q, th, log = FALSE)$sigma2 / fd$sigma2 - 1))
 }

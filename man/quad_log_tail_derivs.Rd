@@ -17,7 +17,7 @@ quad_log_tail_prob(distrib, q, theta, lower.tail)
 
 \item{q}{A numeric vector of quantiles inside the support.}
 
-\item{theta}{A named list of parameters, each of the length of \code{q}.}
+\item{theta}{A named list of parameters; each has the length of \code{q}.}
 
 \item{o}{The derivative order, 1 to 4.}
 
@@ -34,8 +34,8 @@ order of \code{\link[=deriv_names]{deriv_names()}}, with the attribute \code{"lo
 a numeric vector of the length of \code{q}.
 }
 \description{
-Computes the derivatives of order \code{o} of \eqn{\log P}, \eqn{P} the tail
-beyond \code{q} on the side that \code{lower.tail} selects, from
+Computes the derivatives of order \code{o} of \eqn{\log P}, where \eqn{P} is the
+tail beyond \code{q} on the side that \code{lower.tail} selects, from
 \deqn{\log P = \ell(q) + \log J, \qquad
   J = \int_{\mathrm{tail}} e^{D(y)}\,dy, \qquad D(y) = \ell(y) - \ell(q).}
 The derivatives of \eqn{\log J} follow from the ratios
@@ -43,11 +43,12 @@ The derivatives of \eqn{\log J} follow from the ratios
 polynomials in the partial derivatives of \eqn{D}, through the
 moment-to-cumulant sum; both sums are the recursions over the subsets of a
 multi-index that contain its first position, run in compiled code
-(\code{log_tail_cumulants_cpp()}) on the pairs \code{log_tail_pairs()} enumerates. Every partial of
+(\code{log_tail_cumulants_cpp()}) on the pairs that \code{log_tail_pairs()}
+enumerates. Every partial of
 \eqn{D} is a difference of the family's own log-density derivatives at
 \eqn{y} and at \eqn{q}, which stays small over the tail, so the sums carry
-no cancellation of the size the ratios of \code{\link[=cdf_scale_k]{cdf_scale_k()}} carry, and
-nothing underflows where \eqn{P} does.
+no cancellation of the size that the ratios of \code{\link[=cdf_scale_k]{cdf_scale_k()}} carry, and
+the computation does not underflow where \eqn{P} does.
 }
 \details{
 The integral is taken with the 15-point Kronrod rule on 16 panels in
@@ -62,7 +63,7 @@ turns a power of \eqn{y - b} into a double exponential. The route is
 meant for the far tail, where the density decreases away from \code{q};
 \code{\link[=log_tail_route]{log_tail_route()}} uses it below \eqn{\log P = -5}. Toward an end at zero,
 a row whose last node with a representable abscissa still carries a
-relative weight above \eqn{10^{-12}}, the nodes beyond it having
+relative weight above \eqn{10^{-12}}, while the nodes beyond it have
 underflowed to zero, has mass below the smallest double (a shape near
 zero); it is marked in the attribute \code{"lost"} of the result.
 Toward an infinite end the nodes past the largest double are dropped,
@@ -70,8 +71,8 @@ which leaves out a relative mass of order \eqn{(q/x_{\max})^{\nu}} for a
 polynomial tail of index \eqn{\nu}.
 
 \code{quad_tail_parts()} returns the nodes at every quantile, the response
-vector \eqn{(q, y_1, \dots)} with the parameters repeated to match, the
-log densities and the weights \eqn{e^{D}} times the Jacobian and the
+vector \eqn{(q, y_1, \dots)}, in which the parameters are repeated to match,
+the log densities and the weights \eqn{e^{D}} times the Jacobian and the
 rule's weight; \code{log_tail_nodes()} the nodes and weights in \eqn{u},
 computed once; \code{log_tail_pairs()} the components of orders 1 to \code{o} in
 canonical form and, for each, the pairs (subset containing the first
@@ -79,7 +80,7 @@ position, rest) as indices into the components.
 }
 \examples{
 d <- gamma1_distrib()
-# log S of a gamma at 3000, where S underflows
+# This is log S of a gamma at 3000, where S underflows.
 distributions7:::quad_log_tail_derivs(d, 3000, list(mu = 1.7, phi = 2.3),
                                       1L, lower.tail = FALSE)
 

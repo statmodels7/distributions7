@@ -7,10 +7,10 @@
 \item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles. At or below zero every component is
-zero, the distribution function being flat there.}
+zero, because the distribution function is flat there.}
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -21,13 +21,13 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
-the length of \code{q} recycled against \code{theta}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}; each
+has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form. On the log scale the family is location-scale, so with
-\eqn{z = (\log q - \mu)/\sigma} and \eqn{\varphi} the standard normal
-density,
+Computes the Hessian in closed form. On the log scale the family is
+location-scale, so with \eqn{z = (\log q - \mu)/\sigma} and \eqn{\varphi} the
+standard normal density, the components are
 \deqn{\frac{\partial^2 F}{\partial\mu^2} = -\frac{z\varphi}{\sigma^2},
       \qquad
       \frac{\partial^2 F}{\partial\mu\,\partial\sigma^2}
@@ -43,8 +43,8 @@ differentiated too, and expressing everything on the log scale avoids that.
 
 The three components vanish at the points where their polynomial in \eqn{z}
 does, so \code{mu_mu} is exactly zero at the median \eqn{q = e^{\mu}}. A relative
-comparison against a numerical derivative is meaningless there and an
-absolute one is what to use.
+comparison against a numerical derivative is meaningless there, so an
+absolute comparison should be used.
 }
 \section{Notation}{
 

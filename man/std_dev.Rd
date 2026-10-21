@@ -10,8 +10,8 @@ std_dev(x, ...)
 \item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
 \item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
-any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
-single logical, \code{FALSE} by default.}
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector, the argument
+is \code{na.rm}, a single logical that is \code{FALSE} by default.}
 }
 \value{
 A numeric vector for a \code{distrib}, one value per parameter setting; a
@@ -20,9 +20,9 @@ single number for a numeric vector.
 \description{
 Computes \eqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}} for a
 distribution object, or the sample standard deviation for a numeric vector.
-No family registers a closed form of its own, so a \code{distrib} always reaches
-the square root of \code{\link[=variance]{variance()}}, which is where a family's formula is
-consulted. A numeric vector is passed to \code{\link[stats:sd]{stats::sd()}}.
+The families register no closed form of their own, so a \code{distrib} always
+reaches the square root of \code{\link[=variance]{variance()}}, which is where a family's formula
+is consulted. A numeric vector is passed to \code{\link[stats:sd]{stats::sd()}}.
 }
 \details{
 \deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
@@ -39,7 +39,7 @@ variance.
 # The scale of a Gaussian is its standard deviation, exactly.
 std_dev(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 
-# The square root of the variance, on any family.
+# The standard deviation is the square root of the variance, on any family.
 d <- gamma2_distrib()
 all.equal(std_dev(d, list(mu = 2, sigma2 = 1)),
           sqrt(variance(d, list(mu = 2, sigma2 = 1))))

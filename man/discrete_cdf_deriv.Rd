@@ -9,9 +9,9 @@ discrete_cdf_deriv(distrib, q, theta, order)
 \arguments{
 \item{distrib}{An object inheriting from \code{discrete_distrib}.}
 
-\item{q}{A numeric vector of quantiles. Each is handled separately, the
-support being walked from the lower bound up to it, so the cost grows with
-the largest requested quantile.}
+\item{q}{A numeric vector of quantiles. Each is handled separately: the
+function walks the support from the lower bound up to it, so the cost
+grows with the largest requested quantile.}
 
 \item{theta}{A named list of parameters on the parameter scale.}
 
@@ -26,7 +26,7 @@ the natural scale. \code{\link[=cdf_tail_scale]{cdf_tail_scale()}} puts them on 
 Evaluates \eqn{\partial^I F(q)} for a discrete family as the finite sum
 \deqn{\partial^I F(q) = \sum_{y \le q} f(y)\,
       \frac{\partial^I f}{f}(y).}
-Nothing is differenced and nothing is integrated: the sum is exact.
+The sum is exact, because the function neither differences nor integrates.
 }
 \section{Where the identity comes from}{
 The region of integration does not depend on \eqn{\theta}, so derivative and
@@ -51,7 +51,11 @@ expectation, so that the two sides of the comparison share no arithmetic.
 A family whose constant varies by observation (a binomial's vector \code{size}, or
 a wrapper over one) is evaluated at each observation's own constant, taken by
 \code{\link[=distrib_at_rows]{distrib_at_rows()}}, as the parameters are. A missing quantile gives a
-missing derivative. # The upper tail The derivatives of the mass sum to zero
+missing derivative.
+}
+
+\section{The upper tail}{
+The derivatives of the mass sum to zero
 over the support, so where \eqn{P(Y > q)} is below 0.01 the sum up to \eqn{q}
 is computed as minus the sum above it, a short series that keeps its digits
 where the sum up to \eqn{q} would cancel to a small number.

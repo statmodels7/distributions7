@@ -11,7 +11,7 @@ support_dexpected(distrib, y, theta, order, N, threads = 1L)
 
 \item{y}{The response, read for its length.}
 
-\item{theta}{A named list of parameters, each of length one or \code{length(y)}.}
+\item{theta}{A named list of parameters; each has length one or \code{length(y)}.}
 
 \item{order}{\code{1L} or \code{2L}.}
 
@@ -31,8 +31,8 @@ Sums the moment identities of \code{\link[=distrib_dexpected_hessian]{distrib_de
 against the mass, reading the family's own observed derivatives.
 }
 \details{
-The support being finite, each sum is the expectation exactly: no
-quadrature, no truncation. Every observation's parameters are crossed with
+Because the support is finite, each sum is the expectation exactly, with no
+quadrature and no truncation. Every observation's parameters are crossed with
 the \eqn{N + 1} support points and the derivative generics are called once
 on the whole grid.
 }

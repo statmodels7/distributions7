@@ -37,13 +37,12 @@ the mixed grid below.
 }
 \details{
 These are the second-order column of the mixed grid whose first-order column
-is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}:
+is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}:\tabular{llll}{
+    \tab \eqn{\partial^0/\partial\theta^0} \tab \eqn{\partial^1/\partial\theta^1} \tab \eqn{\partial^2/\partial\theta^2} \cr
+   \eqn{\partial/\partial y} \tab \code{\link[=distrib_grad_y]{distrib_grad_y()}} \tab \code{\link[=distrib_cross_y]{distrib_cross_y()}} \tab \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} \cr
+   \eqn{\partial^2/\partial y^2} \tab \code{\link[=distrib_hess_y]{distrib_hess_y()}} \tab \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} \tab \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} \cr
+}
 
-| | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} |
-\eqn{\partial^2/\partial\theta^2} | |---|---|---|---| |
-\eqn{\partial/\partial y} | \code{\link[=distrib_grad_y]{distrib_grad_y()}} | \code{\link[=distrib_cross_y]{distrib_cross_y()}} |
-\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} | | \eqn{\partial^2/\partial y^2} |
-\code{\link[=distrib_hess_y]{distrib_hess_y()}} | \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} | \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} |
 
 The second derivative of a marginal criterion requires the right-hand column
 from a penalty. A penalty is a negative log-density read

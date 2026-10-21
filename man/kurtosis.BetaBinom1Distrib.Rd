@@ -8,8 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
-and \code{sigma} (positive), each a numeric vector of length 1 or of the common
-length of the parameter settings.}
+and \code{sigma} (positive); each is a numeric vector of length 1 or of the
+common length of the parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,13 +18,13 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, written as one quotient by \code{\link[=betabinom_moments]{betabinom_moments()}} so that it is
-not formed as a kurtosis near 3 minus 3. The success probability is what sets
-its
-sign. Near \eqn{\mu = 1/2} it is negative and falls
-towards \eqn{-2} as the dispersion grows, the mass splitting between the two
-endpoints and the law approaching a scaled Bernoulli; near either end it is
-positive and large, the long tail towards the middle dominating.
+The method obtains the excess kurtosis from \code{\link[=betabinom_moments]{betabinom_moments()}} as one
+quotient, so that it does not form a kurtosis near 3 and
+subtract 3. The success probability sets its sign. Near \eqn{\mu = 1/2} it
+is negative and falls towards \eqn{-2} as the dispersion grows, because the
+mass splits between the two endpoints and the law approaches a scaled
+Bernoulli; near either end it is positive and large, because the long tail
+towards the middle dominates.
 }
 \section{Notation}{
 

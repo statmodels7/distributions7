@@ -15,7 +15,7 @@ quantile_anchors(distrib, theta)
 A numeric vector of approximate modes, one per setting.
 }
 \description{
-The grid search of \code{\link[=find_lp_anchor]{find_lp_anchor()}}, run on every parameter setting at
+Runs the grid search of \code{\link[=find_lp_anchor]{find_lp_anchor()}} on every parameter setting at
 once: each refinement evaluates the log-density on a grid of 129 points per
 setting in one call, and keeps the three grid points around the largest
 value of each.

@@ -13,17 +13,17 @@ NULL
 #' @title von Mises Mixed Derivatives
 #' @name distrib_cross_y.VonMises1Distrib
 #' @description
-#' Closed form. With \eqn{\ell^{(y)} = -\kappa\sin(y-\mu)}, the location
-#' component is \eqn{\kappa\cos(y-\mu)} and the concentration one
-#' \eqn{-\sin(y-\mu)}.
+#' The mixed derivatives are in closed form. With
+#' \eqn{\ell^{(y)} = -\kappa\sin(y-\mu)}, the location component is
+#' \eqn{\kappa\cos(y-\mu)} and the concentration one is \eqn{-\sin(y-\mu)}.
 #' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
 #' @param theta A list containing `mu` and `kappa`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `kappa`, each a numeric vector of
-#'   length `length(y)`.
+#' @return A named list with components `mu` and `kappa`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [vonmises1_distrib()] for the family;
 #'   [distrib_cross_y.VonMises2Distrib()] for the resultant-length
@@ -39,16 +39,16 @@ S7::method(distrib_cross_y, VonMises1Distrib) <- function(distrib, y, theta,
 #' @title Gaussian Mixed Derivatives in Mean and Variance
 #' @name distrib_cross_y.Gaussian2Distrib
 #' @description
-#' Closed form: \eqn{\ell^{(y)} = -(y-\mu)/\sigma^2} gives \eqn{1/\sigma^2}
-#' and \eqn{(y-\mu)/\sigma^4}.
+#' The mixed derivatives are in closed form: \eqn{\ell^{(y)} =
+#' -(y-\mu)/\sigma^2} gives \eqn{1/\sigma^2} and \eqn{(y-\mu)/\sigma^4}.
 #' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma2`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma2`, each a numeric vector
-#'   of length `length(y)`.
+#' @return A named list with components `mu` and `sigma2`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [distrib_cross_y.Gaussian1Distrib()] for the scale chart;
 #'   [distrib_cross_y.Gaussian3Distrib()] for the precision chart;
@@ -64,16 +64,16 @@ S7::method(distrib_cross_y, Gaussian2Distrib) <- function(distrib, y, theta,
 #' @title Gaussian Mixed Derivatives in Mean and Precision
 #' @name distrib_cross_y.Gaussian3Distrib
 #' @description
-#' Closed form: \eqn{\ell^{(y)} = -\tau(y-\mu)} gives \eqn{\tau} and
-#' \eqn{-(y-\mu)}.
+#' The mixed derivatives are in closed form: \eqn{\ell^{(y)} = -\tau(y-\mu)}
+#' gives \eqn{\tau} and \eqn{-(y-\mu)}.
 #' @param distrib A `Gaussian3Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `tau`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `tau`, each a numeric vector of
-#'   length `length(y)`.
+#' @return A named list with components `mu` and `tau`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [distrib_cross_y.Gaussian1Distrib()] for the scale chart;
 #'   [distrib_cross_y.Gaussian2Distrib()] for the variance chart;
@@ -88,17 +88,17 @@ S7::method(distrib_cross_y, Gaussian3Distrib) <- function(distrib, y, theta,
 #' @title Lognormal Mixed Derivatives
 #' @name distrib_cross_y.Lognormal1Distrib
 #' @description
-#' Closed form. On the log scale the family is location-scale, and
-#' \eqn{\ell^{(y)} = -1/y - (\log y - \mu)/(\sigma^2 y)} gives
-#' \eqn{1/(\sigma^2 y)} and \eqn{(\log y - \mu)/(\sigma^4 y)}.
+#' The mixed derivatives are in closed form. On the log scale the family is
+#' location-scale, and \eqn{\ell^{(y)} = -1/y - (\log y - \mu)/(\sigma^2 y)}
+#' gives \eqn{1/(\sigma^2 y)} and \eqn{(\log y - \mu)/(\sigma^4 y)}.
 #' @param distrib A `Lognormal1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma2`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma2`, each a numeric vector of
-#'   length `length(y)`.
+#' @return A named list with components `mu` and `sigma2`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [lognormal1_distrib()] for the family;
 #'   [distrib_cross_y.Gaussian1Distrib()], the law on the log scale;
@@ -115,7 +115,7 @@ S7::method(distrib_cross_y, Lognormal1Distrib) <- function(distrib, y, theta,
 #' @title Inverse Gaussian Mixed Derivatives
 #' @name distrib_cross_y.InvGauss1Distrib
 #' @description
-#' Closed form. With
+#' The mixed derivatives are in closed form. With
 #' \eqn{\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)}, the components
 #' are \eqn{1/(\phi\mu^3)} and \eqn{1/(2\phi^2\mu^2) - 1/(2\phi^2 y^2)}.
 #' @param distrib An `InvGauss1Distrib` object.
@@ -124,8 +124,8 @@ S7::method(distrib_cross_y, Lognormal1Distrib) <- function(distrib, y, theta,
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `phi`, each a numeric vector
-#'   of length `length(y)`.
+#' @return A named list with components `mu` and `phi`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [invgauss1_distrib()] for the family;
 #'   [distrib_cross_y.InvGauss2Distrib()] for the shape chart;
@@ -143,17 +143,17 @@ S7::method(distrib_cross_y, InvGauss1Distrib) <- function(distrib, y, theta,
 #' @title Beta Mixed Derivatives in Mean and Precision
 #' @name distrib_cross_y.Beta1Distrib
 #' @description
-#' Closed form. The shapes are \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi},
-#' and \eqn{\ell^{(y)} = (a-1)/y - (b-1)/(1-y)}, so the components are
-#' \eqn{\phi/y + \phi/(1-y)} and \eqn{\mu/y - (1-\mu)/(1-y)}.
+#' The mixed derivatives are in closed form. The shapes are \eqn{a = \mu\phi}
+#' and \eqn{b = (1-\mu)\phi}, and \eqn{\ell^{(y)} = (a-1)/y - (b-1)/(1-y)}, so
+#' the components are \eqn{\phi/y + \phi/(1-y)} and \eqn{\mu/y - (1-\mu)/(1-y)}.
 #' @param distrib A `Beta1Distrib` object.
 #' @param y A numeric vector in the unit interval.
 #' @param theta A list containing `mu` and `phi`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `phi`, each a numeric vector of
-#'   length `length(y)`.
+#' @return A named list with components `mu` and `phi`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [beta1_distrib()] for the family;
 #'   [distrib_cross_y.Beta2Distrib()] for the shape chart;
@@ -171,16 +171,17 @@ S7::method(distrib_cross_y, Beta1Distrib) <- function(distrib, y, theta,
 #' @title Beta Mixed Derivatives in the Shapes
 #' @name distrib_cross_y.Beta2Distrib
 #' @description
-#' Closed form: \eqn{\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)} gives
-#' \eqn{1/y} and \eqn{-1/(1-y)}.
+#' The mixed derivatives are in closed form:
+#' \eqn{\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)} gives \eqn{1/y} and
+#' \eqn{-1/(1-y)}.
 #' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector in the unit interval.
 #' @param theta A list containing `alpha` and `beta`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `alpha` and `beta`, each a numeric vector
-#'   of length `length(y)`.
+#' @return A named list with components `alpha` and `beta`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [beta2_distrib()] for the family;
 #'   [distrib_cross_y.Beta1Distrib()] for the mean chart;
@@ -195,8 +196,8 @@ S7::method(distrib_cross_y, Beta2Distrib) <- function(distrib, y, theta,
 #' @title Chi-Squared Mixed Derivative
 #' @name distrib_cross_y.ChisqDistrib
 #' @description
-#' Closed form: the degrees of freedom are the mean, and
-#' \eqn{\ell^{(y)} = (\mu/2 - 1)/y - 1/2} gives \eqn{1/(2y)}.
+#' The mixed derivative is in closed form: the degrees of freedom are the mean,
+#' and \eqn{\ell^{(y)} = (\mu/2 - 1)/y - 1/2} gives \eqn{1/(2y)}.
 #' @param distrib A `ChisqDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`.
@@ -219,17 +220,17 @@ S7::method(distrib_cross_y, ChisqDistrib) <- function(distrib, y, theta,
 #' @title Gamma Mixed Derivatives in Mean and Dispersion
 #' @name distrib_cross_y.Gamma1Distrib
 #' @description
-#' Closed form. The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}, so
-#' the mean component is \eqn{1/(\phi\mu^2)} and the dispersion one
-#' \eqn{1/(\phi^2\mu) - 1/(\phi^2 y)}.
+#' The mixed derivatives are in closed form. The shape is \eqn{1/\phi} and the
+#' rate \eqn{1/(\phi\mu)}, so the mean component is \eqn{1/(\phi\mu^2)} and the
+#' dispersion one \eqn{1/(\phi^2\mu) - 1/(\phi^2 y)}.
 #' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `phi`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `phi`, each a numeric vector
-#'   of length `length(y)`.
+#' @return A named list with components `mu` and `phi`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [gamma1_distrib()] for the family;
 #'   [distrib_cross_y.Gamma2Distrib()] for the dispersion chart;
@@ -247,7 +248,8 @@ S7::method(distrib_cross_y, Gamma1Distrib) <- function(distrib, y, theta,
 #' @title Gamma Mixed Derivatives in Mean and Variance
 #' @name distrib_cross_y.Gamma2Distrib
 #' @description
-#' Closed form: \eqn{\ell^{(y)} = (\mu^2/\sigma^2 - 1)/y - \mu/\sigma^2} gives
+#' The mixed derivatives are in closed form:
+#' \eqn{\ell^{(y)} = (\mu^2/\sigma^2 - 1)/y - \mu/\sigma^2} gives
 #' \eqn{2\mu/(\sigma^2 y) - 1/\sigma^2} and
 #' \eqn{-\mu^2/(\sigma^4 y) + \mu/\sigma^4}.
 #' @param distrib A `Gamma2Distrib` object.
@@ -256,8 +258,8 @@ S7::method(distrib_cross_y, Gamma1Distrib) <- function(distrib, y, theta,
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma2`, each a numeric vector
-#'   of length `length(y)`.
+#' @return A named list with components `mu` and `sigma2`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [gamma2_distrib()] for the family;
 #'   [distrib_cross_y.Gamma1Distrib()] for the variance chart;
@@ -275,9 +277,9 @@ S7::method(distrib_cross_y, Gamma2Distrib) <- function(distrib, y, theta,
 #' @title Skew Normal Mixed Derivatives in the Centered Parametrization
 #' @name distrib_cross_y.SkewNormal2Distrib
 #' @description
-#' The derivatives of the log-density in the response and once in each
-#' parameter, from a compiled kernel written as the parameter derivatives are
-#' (see [distrib_gradient.SkewNormal2Distrib()]).
+#' Returns the derivatives of the log-density in the response and once in each
+#' parameter, from a compiled kernel that is written as the parameter
+#' derivatives are (see [distrib_gradient.SkewNormal2Distrib()]).
 #' @param distrib A `SkewNormal2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`, `sigma` and `gamma1`.

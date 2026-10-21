@@ -7,7 +7,7 @@
 \item{x}{A \code{Beta1Distrib}, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
-and \code{phi} (positive), each a numeric vector of length 1 or \code{n}.}
+and \code{phi} (positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,15 +16,16 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
-\deqn{\gamma_2 = \frac{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}}
+The excess kurtosis has the closed form, in the two shapes \eqn{a = \mu\phi}
+and \eqn{b = (1-\mu)\phi},
+\deqn{\gamma_2 =\frac{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}}
                       {ab(a+b+2)(a+b+3)}.}
-The excess kurtosis is negative over a wide range of parameters, the support
-being bounded. At \eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform and
-the value is \eqn{-6/5}; at \eqn{\mu = 1/2} it tends to \eqn{-2}, the
-smallest value any distribution can have, as \eqn{\phi} goes to zero. The
-method evaluates the form in \eqn{(\mu, \phi)} of \code{\link[=beta_shape_moments]{beta_shape_moments()}}, in
-which \eqn{ab} is not formed.
+The excess kurtosis is negative over a wide range of parameters because the
+support is bounded. At \eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform
+and the value is \eqn{-6/5}; at \eqn{\mu = 1/2} it tends to \eqn{-2}, the
+smallest value that any distribution can have, as \eqn{\phi} goes to zero.
+The method evaluates the form in \eqn{(\mu, \phi)} of \code{\link[=beta_shape_moments]{beta_shape_moments()}},
+in which \eqn{ab} is not formed.
 }
 \section{Notation}{
 
@@ -39,7 +40,8 @@ d <- beta1_distrib()
 # values, down to -2.
 all.equal(kurtosis(d, list(mu = 0.5, phi = 2)), -1.2)
 
-# Negative over the symmetric middle, positive as the mass piles at an end.
+# The value is negative over the symmetric middle and positive as the mass
+# piles at an end.
 round(kurtosis(d, list(mu = c(0.5, 0.1, 0.02), phi = 5)), 4)
 
 }

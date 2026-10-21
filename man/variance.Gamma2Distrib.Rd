@@ -7,8 +7,8 @@
 \item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{sigma2} (the variance, positive), each a numeric vector of length 1 or
-\code{n}.}
+\code{sigma2} (the variance, positive), in which each component is a numeric
+vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,10 +17,10 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. The variance is the
-second parameter of this parametrization. The shape that the two parameters
-imply is \eqn{a = \mu^2/\sigma^2}, and the skewness and the kurtosis are
-functions of this shape.
+The variance has the closed form \eqn{\operatorname{Var}(Y) = \sigma^2}. The
+variance is the second parameter of this parametrization. The shape that the
+two parameters imply is \eqn{a = \mu^2/\sigma^2}, and the skewness and the
+kurtosis are functions of this shape.
 }
 \examples{
 d <- gamma2_distrib()

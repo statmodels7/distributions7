@@ -15,8 +15,8 @@ owns_method(x, generic)
 A single logical.
 }
 \description{
-\code{TRUE} where the method of \code{generic} that dispatches on \code{x} is registered
-on a class other than the four base classes, whose methods are the
+Returns \code{TRUE} where the method of \code{generic} that dispatches on \code{x} is
+registered on a class other than the four base classes, whose methods are the
 numerical fallbacks.
 }
 \seealso{

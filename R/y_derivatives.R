@@ -21,14 +21,14 @@ NULL
 #' is large and absolute where it is small, so a value near zero is not
 #' differenced with a step below the resolution of a double.
 #'
-#' `to_bound = "clamp"` is what the support requires and no more. A gamma
-#' observation at \eqn{y = 10^{-3}} differenced with the default step of
-#' \eqn{6 \times 10^{-6}} needs no help, but one at \eqn{y = 10^{-8}} would be
-#' evaluated at a negative point, where the log-density is not defined and
-#' `distrib_pdf(..., log = TRUE)` returns `-Inf`. The factor 0.49 leaves the step under half
-#' the distance to the bound, so both evaluation points stay inside with room
-#' to spare: at \eqn{y = 10^{-8}} the step becomes \eqn{4.9\times 10^{-9}} and
-#' the left point \eqn{5.1\times 10^{-9}}.
+#' `to_bound = "clamp"` applies only the correction that the support
+#' requires. A gamma observation at \eqn{y = 10^{-3}} differenced with the
+#' default step of \eqn{6 \times 10^{-6}} needs no help, but one at \eqn{y =
+#' 10^{-8}} would be evaluated at a negative point, where the log-density is not
+#' defined and `distrib_pdf(..., log = TRUE)` returns `-Inf`. The factor 0.49
+#' leaves the step under half the distance to the bound, so both evaluation
+#' points stay inside with room to spare: at \eqn{y = 10^{-8}} the step becomes
+#' \eqn{4.9\times 10^{-9}} and the left point \eqn{5.1\times 10^{-9}}.
 #'
 #' `to_bound = "scale"` takes \eqn{h = h_{rel}\min(\max(1, |y|), d)}, with
 #' \eqn{d} the distance to the nearest finite bound, so the step shrinks in
@@ -49,19 +49,19 @@ NULL
 #' @param h_rel The relative step size, a single positive number. The callers
 #'   pass \eqn{\varepsilon^{1/3}} at first order and \eqn{\varepsilon^{1/4}} at
 #'   second.
-#' @param order,accuracy The stencil the step is for, which fix its reach
-#'   through [numericals7::fd_offsets()]: the clamp is on the outermost node,
-#'   so a rule evaluating two steps out is cut to half of what a central
-#'   difference is. The defaults are the central difference, whose reach is
-#'   one. [numerical_deriv_y()] and [mixed_tensor_derivatives()] pass the
-#'   order of their own stencils.
+#' @param order,accuracy The stencil for which the step is computed. Its reach,
+#'   given by [numericals7::fd_offsets()], determines the clamp, which acts on
+#'   the outermost node, so a rule that evaluates two steps out is cut to half
+#'   of what a central difference is. The defaults are the central difference,
+#'   whose reach is one. [numerical_deriv_y()] and [mixed_tensor_derivatives()]
+#'   pass the order of their own stencils.
 #' @param to_bound `"clamp"`, the default, or `"scale"`, as above. The two give
 #'   the same step wherever \eqn{d \ge \max(1, |y|)}, which is every
 #'   observation of a family with no finite bound.
 #'
-#' @return A numeric vector of steps, as long as `y`. An observation strictly
-#'   inside the support gets a positive step, and one on a finite bound gets
-#'   zero.
+#' @return A numeric vector of steps, as long as `y`. The step is positive for
+#'   an observation strictly inside the support and zero for one on a finite
+#'   bound.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{y} the response,
@@ -89,7 +89,7 @@ NULL
 #' # Scaled on the distance instead, the step keeps shrinking with it.
 #' distributions7:::fd_steps_y(y, c(0, Inf), h_rel, "scale")
 #'
-#' # The two steps the callers use differ by a factor of twenty.
+#' # The two steps that the callers use differ by a factor of twenty.
 #' c(first_order = .Machine$double.eps^(1 / 3),
 #'   second_order = .Machine$double.eps^(1 / 4))
 fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
@@ -113,9 +113,9 @@ fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
 #' @description
 #' Evaluates a central difference in the response at both steps of
 #' [fd_steps_y()] and keeps, observation by observation, the one that agrees
-#' better with itself at half its step. It is the reference [check_distrib()]
-#' compares a family's response derivatives and its distribution function
-#' against.
+#' better with itself at half its step. [check_distrib()] uses it as the
+#' reference against which it compares a family's response derivatives and its
+#' distribution function.
 #'
 #' @details
 #' For each of the two steps the quotient \eqn{q(h)} is also taken at
@@ -123,10 +123,11 @@ fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
 #' infinite where \eqn{q(h/2)} is not finite, and undefined where \eqn{q(h)}
 #' is exactly zero. The step scaled on the distance to the bound is kept only
 #' where both readings are defined and its own is strictly the smaller;
-#' everywhere else, ties included, the clamped step is kept. The value
+#' everywhere else, including ties, the clamped step is kept. The value
 #' returned is the quotient at the full step.
 #'
-#' Neither step is accurate for every family, which is why both are read.
+#' Each of the two steps is inaccurate for some family, so both are
+#' read.
 #' Where the log-density is singular at a bound, the error of the clamped step
 #' stops falling once the clamp binds; where it is smooth at the bound, the
 #' scaled step is the less accurate one at the smallest distances. Where both
@@ -135,9 +136,9 @@ fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
 #'
 #' In a few cases the scaled step is kept although the clamped step would have
 #' been accurate. The scaled numerator is then a whole number of units in the
-#' last place of the log-density, which scales exactly with the step, so the
-#' quotient agrees with itself at half the step to the last bit and the test
-#' reads it as stable.
+#' last place of the log-density, and this numerator scales exactly with the
+#' step, so the quotient agrees with itself at half the step to the last bit and
+#' the test reads it as stable.
 #'
 #' It costs four quotients where one would do, except where the two steps
 #' coincide at every observation, which is every call on a family with no
@@ -152,14 +153,14 @@ fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
 #' number of units is not the step at which the evaluation points lie, so a
 #' quotient that divides by the nominal step is out by their rounding; and the
 #' scaled step falls below one unit and rounds to zero. The selection rule
-#' cannot tell these cases apart, because both candidates come from the same
+#' does not distinguish these cases, because both candidates come from the same
 #' arithmetic. Every candidate step is therefore at least
 #' \eqn{2\lvert y\rvert\varepsilon}, which leaves its half step at least one
 #' unit long, and the quotient that a caller passes divides by the steps
-#' actually taken, as [fd_first_taken()] and [fd_second_taken()] do. Neither
-#' repair reaches a point within a few units of such a bound, where the
+#' actually taken, as [fd_first_taken()] and [fd_second_taken()] do. The two
+#' repairs do not reach a point within a few units of such a bound, where the
 #' relative error of the reference decreases as about \eqn{5.4/d^2} in the
-#' distance \eqn{d} counted in units; [check_distrib()] leaves those draws
+#' distance \eqn{d}, counted in units; [check_distrib()] leaves those draws
 #' out.
 #'
 #' @param quotient A function of a vector of steps as long as `y`, returning
@@ -218,10 +219,10 @@ fd_stable_quotient <- function(quotient, y, bounds, h_rel) {
 #'   f''(x) \approx \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
 #'   {h_+ h_- (h_+ + h_-)},}
 #' which are the uniform formulas wherever \eqn{h_+ = h_- = h}. The
-#' correction is of the order of one unit of the last place over the step:
-#' negligible for a step of many units, and the whole of the accuracy for a
-#' step of a few, which is what a step within about \eqn{10^{-10}} of a
-#' non-zero bound is.
+#' correction is of the order of one unit of the last place over the step. It
+#' is negligible for a step of many units and accounts for the whole of the
+#' accuracy for a step of a few units, which is the case for a step within
+#' about \eqn{10^{-10}} of a non-zero bound.
 #'
 #' @param f A vectorized function of the points.
 #' @param x The points, a numeric vector.
@@ -267,8 +268,8 @@ fd_second_taken <- function(f, x, h, f0 = f(x)) {
 #' difference
 #' \deqn{\frac{\partial\ell}{\partial y} \approx
 #'   \frac{\ell(y+h) - \ell(y-h)}{2h},}
-#' evaluated on `distrib_pdf(..., log = TRUE)`. It is what the default
-#' [distrib_grad_y()] method runs for a continuous family with no closed form.
+#' evaluated on `distrib_pdf(..., log = TRUE)`. The default [distrib_grad_y()]
+#' method runs it for a continuous family with no closed form.
 #'
 #' @details
 #' # Step length and accuracy
@@ -279,17 +280,18 @@ fd_second_taken <- function(f, x, h, f0 = f(x)) {
 #' gamma's own closed form at `h_rel` from \eqn{10^{-1}} to \eqn{10^{-8}}, the
 #' error is 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
 #' 2.0e-08: it divides by a hundred per decade while the truncation dominates,
-#' turns near the default and rises again as the rounding takes over. A step
-#' ten times shorter than the default is therefore worse, not better.
+#' turns near the default and rises again once the rounding error dominates.
+#' A step ten times shorter than the default is therefore worse, not better.
 #'
 #' The step itself comes from [fd_steps_y()], which scales it by
 #' \eqn{\max(1, |y|)} and shrinks it near a finite bound.
 #'
 #' # The cost
 #'
-#' Two evaluations of the log-density, both vectorized over `y`, so one call
-#' costs two `distrib_pdf()` calls whatever the sample size. A family with a
-#' closed form pays neither.
+#' The function evaluates the log-density twice, and both evaluations are
+#' vectorized over `y`, so one call costs two `distrib_pdf()` calls whatever
+#' the sample size. A family with a
+#' closed form makes neither call.
 #'
 #' @param distrib An object inheriting from `continuous_distrib`. A discrete
 #'   family has no derivative in the response and registers no method.
@@ -340,27 +342,28 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' stencil
 #' \deqn{\frac{\partial^2\ell}{\partial y^2} \approx
 #'   \frac{\ell(y+h) - 2\ell(y) + \ell(y-h)}{h^2},}
-#' evaluated on `distrib_pdf(..., log = TRUE)`. It is what the default
-#' [distrib_hess_y()] method runs for a continuous family with no closed form.
+#' evaluated on `distrib_pdf(..., log = TRUE)`. The default [distrib_hess_y()]
+#' method runs it for a continuous family with no closed form.
 #'
 #' @details
 #' # Step length of the second difference
 #'
 #' The truncation error is again \eqn{O(h^2)}, but the rounding error is
 #' \eqn{O(\varepsilon/h^2)} where the first order's is
-#' \eqn{O(\varepsilon/h)}, the numerator being a difference of quantities of
-#' the same size divided by \eqn{h^2}. The
+#' \eqn{O(\varepsilon/h)}, because the numerator is a difference of quantities
+#' of the same size and is divided by \eqn{h^2}. The
 #' total is smallest at \eqn{h \sim \varepsilon^{1/4}}, which is the default
 #' and is twenty times the first order's step, and the accuracy attainable is
 #' correspondingly coarser. Measured against the gamma's own closed form at
-#' `h_rel` from \eqn{10^{-1}} to \eqn{10^{-8}}: 2.5e-01, 2.4e-03, 2.4e-05,
-#' 2.8e-07, 5.4e-06, 6.2e-04, 3.5e-02 and 3.1e+00. The rise past the optimum is
-#' far steeper than the first order's, which is the \eqn{h^{-2}} at work.
+#' `h_rel` from \eqn{10^{-1}} to \eqn{10^{-8}}, the error is 2.5e-01, 2.4e-03,
+#' 2.4e-05, 2.8e-07, 5.4e-06, 6.2e-04, 3.5e-02 and 3.1e+00. The rise past the
+#' optimum is far steeper than the first order's, which is the \eqn{h^{-2}} at
+#' work.
 #'
 #' # The cost
 #'
-#' Three evaluations of the log-density, one of them at `y` itself, all
-#' vectorized over `y`.
+#' The function evaluates the log-density three times, once at `y` itself, and
+#' all three evaluations are vectorized over `y`.
 #'
 #' @param distrib An object inheriting from `continuous_distrib`. A discrete
 #'   family has no derivative in the response and registers no method.
@@ -428,8 +431,8 @@ numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' Every continuous family that the package ships writes its own response
 #' gradient, so this method serves user-defined families only. A discrete
-#' family has no derivative in the response, so no default is registered there
-#' and the call signals an error that names the class.
+#' family has no derivative in the response, so the package registers no
+#' default for it and the call signals an error that names the class.
 #'
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
@@ -450,8 +453,8 @@ numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @keywords internal
 #'
 #' @examples
-#' # A family that supplies a density and nothing else, which is what the
-#' # fallback exists for: every family the package ships writes its own
+#' # A family that supplies a density and nothing else is the case for which
+#' # the fallback exists: every family that the package ships writes its own
 #' # response derivatives.
 #' Toy <- S7::new_class("Toy", parent = continuous_distrib)
 #' S7::method(distrib_pdf, Toy) <- function(distrib, y, theta, ...) {
@@ -471,8 +474,8 @@ numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' attr(S7::method(distrib_grad_y, Toy), "signature")[[1]]
 #' distrib_grad_y(d, y, theta)
 #'
-#' # Against a Richardson-extrapolated derivative of the same log-density,
-#' # which shares no arithmetic with the stencil.
+#' # The result is compared with a Richardson-extrapolated derivative of the
+#' # same log-density, which shares no arithmetic with the stencil.
 #' f <- function(v) distrib_pdf(d, v, theta, log = TRUE)
 #' vapply(y, function(v) numDeriv::grad(f, v), numeric(1))
 #'
@@ -495,15 +498,15 @@ S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta, ..
 #'
 #' @details
 #' The step is \eqn{h = \varepsilon^{1/4}\max(1, |y|)}, shrunk near a finite
-#' bound by [fd_steps_y()]. The longer exponent is what the second difference
-#' needs: its rounding error is \eqn{O(\varepsilon/h^2)} where the first
+#' bound by [fd_steps_y()]. The second difference needs the longer exponent:
+#' its rounding error is \eqn{O(\varepsilon/h^2)} where the first
 #' order's is \eqn{O(\varepsilon/h)}, so the optimum sits at a step twenty
 #' times longer and the accuracy reached is coarser, measured at about
 #' \eqn{4\times 10^{-7}} against the gamma's closed form where the first order
 #' reaches \eqn{3\times 10^{-10}}. The cost is three vectorized
 #' `distrib_pdf()` calls.
 #'
-#' As at first order, every family the package ships writes its own, and a
+#' As at first order, every family that the package ships writes its own, and a
 #' DISCRETE family registers no default.
 #'
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
@@ -525,8 +528,8 @@ S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta, ..
 #' @keywords internal
 #'
 #' @examples
-#' # A family that supplies a density and nothing else, which is what the
-#' # fallback exists for: every family the package ships writes its own
+#' # A family that supplies a density and nothing else is the case for which
+#' # the fallback exists: every family that the package ships writes its own
 #' # response derivatives.
 #' Toy <- S7::new_class("Toy", parent = continuous_distrib)
 #' S7::method(distrib_pdf, Toy) <- function(distrib, y, theta, ...) {
@@ -545,7 +548,8 @@ S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta, ..
 #'
 #' distrib_hess_y(d, y, theta)
 #'
-#' # Against a Richardson-extrapolated second derivative of the log-density.
+#' # The result is compared with a Richardson-extrapolated second derivative
+#' # of the log-density.
 #' f <- function(v) distrib_pdf(d, v, theta, log = TRUE)
 #' vapply(y, function(v) numDeriv::hessian(f, v)[1, 1], numeric(1))
 #'

@@ -25,7 +25,7 @@ whose registered method is not what its owning class suggests can report
 this; \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} calls it and
 \code{\link[=expected_hessian_exact.distrib]{expected_hessian_exact.distrib()}} is the default.
 
-The test that \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} applies, written as a generic
+Implements the test that \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} applies, as a generic
 so that a family whose registered method differs from what its owning class
 indicates can supply its own answer.
 }
@@ -49,8 +49,8 @@ own, which is why the generic exists: a method registered on the class of a
 family may chain onto a parent that approximates, and a family that does so
 returns the answer of its parent.
 
-The default reads the class the \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
-method is registered on: the base classes carry the approximating method and
+The default reads the class on which the \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
+method is registered: the base classes carry the approximating method and
 every other registration is, by default, a family that wrote the expectation
 out.
 
@@ -58,7 +58,7 @@ Reading the owner is not sufficient in general. A method registered on
 the class of a family may be a chain onto a parent that approximates, and
 then the owner reads as "written out" although the arithmetic is not. A
 family that chains onto another therefore returns the answer of its parent,
-which is what the wrappers do; \code{\link[=truncated]{truncated()}} returns \code{FALSE}
+as the wrappers do; \code{\link[=truncated]{truncated()}} returns \code{FALSE}
 unconditionally.
 }
 \examples{

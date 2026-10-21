@@ -14,12 +14,13 @@ inverse_link_derivs(distrib, theta, order)
 \item{order}{The highest derivative order needed, 1 to 5.}
 }
 \value{
-A list with one element per parameter, each a list whose \eqn{k}-th
-element is \eqn{h^{(k)}} evaluated at that parameter's \eqn{\eta}.
+A list with one element per parameter; each element is a list whose
+\eqn{k}-th element is \eqn{h^{(k)}} evaluated at that parameter's
+\eqn{\eta}.
 }
 \description{
-The derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's inverse link,
-evaluated at \eqn{\eta = g(\theta)}, up to \code{order}.
+Returns the derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's
+inverse link, evaluated at \eqn{\eta = g(\theta)}, up to \code{order}.
 }
 \details{
 This is the hot path of the link scale, so it is written against the

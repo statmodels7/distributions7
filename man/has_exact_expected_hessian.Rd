@@ -13,15 +13,15 @@ has_exact_expected_hessian(x)
 A single logical.
 }
 \description{
-\code{TRUE} when the distribution registers its own
+Returns \code{TRUE} when the distribution registers its own
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} method, rather than inheriting the
 one that approximates the expectation.
 }
 \details{
-The question decides whether the \code{approx} argument means anything. A
+The result determines whether the \code{approx} argument has any effect. A
 family with a closed form ignores it, and \code{\link[=fit_distrib]{fit_distrib()}} rejects
 the argument in that case instead of accepting it and doing something else:
-the Laplace is the example the package already documents, where
+the Laplace is the example that the package already documents, where
 \code{approx} has no effect at all because
 \eqn{\mathcal{I}(\theta) = 1/b^{2}} is written out.
 

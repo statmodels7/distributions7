@@ -7,7 +7,7 @@
 \item{x}{An \code{InvGauss1Distrib}, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{phi}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,9 +16,10 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = 3\sqrt{\phi\mu}}. It is positive at every
-parameter value and depends on the two parameters only through their
-product, so the whole family is one curve indexed by \eqn{\phi\mu}.
+The skewness has the closed form \eqn{\gamma_1 = 3\sqrt{\phi\mu}}. It is
+positive at every parameter value and depends on the two parameters only
+through their product, so the whole family is one curve indexed by
+\eqn{\phi\mu}.
 }
 \section{Notation}{
 
@@ -28,7 +29,7 @@ product, so the whole family is one curve indexed by \eqn{\phi\mu}.
 \examples{
 d <- invgauss1_distrib()
 
-# Three times the square root of the product.
+# The skewness is three times the square root of the product.
 all.equal(skewness(d, list(mu = 2, phi = 0.5)), 3 * sqrt(1))
 
 # Only the product matters.

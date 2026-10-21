@@ -7,7 +7,7 @@
 \item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
-(positive), each a numeric vector of length 1 or \code{n}. The variance
+(positive); each is a numeric vector of length 1 or \code{n}. The variance
 diverges as the shape approaches zero.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,7 +17,8 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. With
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. With
 \eqn{\lambda = 1/\phi} this is the \eqn{\phi\mu^3} of
 \code{\link[=variance.InvGauss1Distrib]{variance.InvGauss1Distrib()}}, so the two parametrizations agree on the law
 and differ only in which number is reported. The variance grows with the cube
@@ -31,7 +32,7 @@ of the mean, where that of the gamma grows with its square.
 \examples{
 d <- invgauss2_distrib()
 
-# The cube of the mean over the shape.
+# The variance is the cube of the mean over the shape.
 all.equal(variance(d, list(mu = 2, lambda = 8)), 1)
 
 # The two parametrizations agree when lambda = 1 / phi.

@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -18,11 +18,11 @@ lower tail and \code{FALSE} the upper tail.}
 derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, in which
+each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the location-scale structure:
+Computes the gradient in closed form, from the location-scale structure:
 \eqn{\partial F/\partial\mu = -f(q)} and
 \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself. For this family the density is

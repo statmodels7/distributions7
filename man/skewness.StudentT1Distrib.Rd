@@ -7,19 +7,19 @@
 \item{x}{A \code{StudentT1Distrib}, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
-(positive), each a numeric vector of length 1 or \code{n}. Only \code{nu} enters the
-value; settings with \eqn{\nu \le 3} give \code{NaN}.}
+(positive), in which each component is a numeric vector of length 1 or
+\code{n}. Only \code{nu} enters the value; settings with \eqn{\nu \le 3} give \code{NaN}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, of length equal to the longest of the three
-components, zero where \eqn{\nu > 3} and \code{NaN} elsewhere.
+A numeric vector, whose length is the one that the recycled
+parameters imply, with zero where \eqn{\nu > 3} and \code{NaN} elsewhere.
 }
 \description{
-Zero for \eqn{\nu > 3}, and \code{NaN} at or below three, where the third moment
-does not exist. The density is symmetric about \eqn{\mu}, so the value is
-zero wherever it is defined.
+The skewness is zero for \eqn{\nu > 3} and \code{NaN} at or below three, where the
+third moment does not exist. The density is symmetric about \eqn{\mu}, so the
+value is zero wherever it is defined.
 }
 \section{Notation}{
 
@@ -29,7 +29,8 @@ zero wherever it is defined.
 \examples{
 d <- student_t1_distrib()
 
-# Undefined at or below three degrees of freedom, then zero by symmetry.
+# The skewness is undefined at or below three degrees of freedom, and zero by
+# symmetry above.
 skewness(d, list(mu = 0, sigma = 1, nu = c(2, 3, 4)))
 
 }

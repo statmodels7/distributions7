@@ -8,8 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{mu} (the success probability,
-strictly between 0 and 1) and \code{sigma} (the dispersion, positive), each a
-numeric vector of length 1 or of the common length of the parameter
+strictly between 0 and 1) and \code{sigma} (the dispersion, positive); each is
+a numeric vector of length 1 or of the common length of the parameter
 settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -19,9 +19,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = n\mu}, the same as a binomial's. The mixing beta has
-mean \eqn{\mu}, so mixing the success probability over it does not change the
-mean; the dispersion enters the variance and the higher moments.
+The mean has the closed form \eqn{E[Y] = n\mu}, the same as a binomial's.
+The mixing beta has mean \eqn{\mu}, so mixing the success probability over
+it does not change the mean; the dispersion enters the variance and the
+higher moments.
 }
 \section{Notation}{
 
@@ -32,7 +33,7 @@ dispersion and \eqn{n} the number of trials, held on the object.
 \examples{
 d <- betabinom1_distrib(size = 10)
 
-# n mu, and the dispersion does not move it.
+# The mean is n mu, and the dispersion does not move it.
 mean(d, list(mu = 0.3, sigma = c(0.01, 0.5, 5)))
 
 }

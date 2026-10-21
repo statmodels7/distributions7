@@ -28,13 +28,13 @@ probability and \code{FALSE} those of the probability. \code{FALSE} reads only
 \code{dF[[order]]} and the lower tables are then unused.}
 }
 \value{
-A named list of numeric vectors of the requested order alone. The
+A named list of numeric vectors of the requested order only. The
 lower orders are consumed on the way and do not appear in the result.
 }
 \description{
-The general form of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}: converts derivatives of \eqn{F} into
-derivatives of whichever tail was requested, on the natural or the
-logarithmic scale, at any order from 1 to 4.
+Converts derivatives of \eqn{F} into derivatives of whichever tail was
+requested, on the natural or the logarithmic scale, at any order from 1 to
+4. It is the general form of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
 }
 \section{The two conversions}{
 Switching to the upper tail flips the sign at every order, \eqn{S = 1 - F};
@@ -51,8 +51,8 @@ has 5 and 15 terms.
 
 \section{Why every lower order is needed}{
 A partition into \eqn{k} blocks reads \eqn{k} ratios, so the relation at
-order 4 needs the tables of orders 1, 2 and 3 as well. That is why \code{dF} is a
-list of tables, and why a caller that wants only the fourth order still
+order 4 needs the tables of orders 1, 2 and 3 as well. Therefore \code{dF} is a
+list of tables, and a caller that wants only the fourth order still
 assembles the first three.
 }
 

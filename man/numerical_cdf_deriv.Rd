@@ -23,10 +23,10 @@ may be vectors; the step is then chosen elementwise.}
 
 \item{order}{The derivative order, 1 (the default) or 2.}
 
-\item{h_rel}{The relative step. A single number, defaulting to
+\item{h_rel}{The relative step. It is a single number that defaults to
 \eqn{\varepsilon^{1/(\mathrm{order}+2)}}, which balances the stencil's
 truncation against its rounding. A step much smaller than the default is
-worse, the rounding growing as \eqn{h^{-\mathrm{order}}}.}
+worse, because the rounding grows as \eqn{h^{-\mathrm{order}}}.}
 
 \item{which}{A character vector naming the components to differentiate, or
 \code{NULL} (the default) for all of them: parameter names at order 1 and
@@ -42,9 +42,9 @@ order of \code{\link[=hess_names]{hess_names()}}, restricted to the names in \co
 }
 \description{
 Differentiates the distribution function with respect to the parameters by
-central differences of \code{\link[=distrib_cdf]{distrib_cdf()}}. This is the route a continuous
+central differences of \code{\link[=distrib_cdf]{distrib_cdf()}}. This is the route that a continuous
 family takes when it registers no closed form, and it is deliberately
-preferred there to the exact partial-expectation identity: for a continuous
+chosen there over the exact partial-expectation identity: for a continuous
 family that identity is an integral over a semi-infinite region, while the
 cdf itself is analytic for every family in the catalog, so differencing it
 is both cheaper and more accurate.
@@ -69,10 +69,10 @@ step of the right size.
 }
 
 \section{Where it is used}{
-No shipped univariate family calls this function for its gradient or
-Hessian: the families whose derivative in a shape parameter has no
-elementary form (the gamma, chi-squared, generalized gamma, beta, von Mises,
-Student t, pseudo-Huber and skew t families) register the compiled
+The shipped univariate families do not call this function for their
+gradient or Hessian: the families whose derivative in a shape parameter has
+no elementary form (the gamma, chi-squared, generalized gamma, beta, von
+Mises, Student t, pseudo-Huber and skew t families) register the compiled
 quadrature of \code{\link[=compiled_cdf]{compiled_cdf()}}. The function serves continuous families
 defined by the user, the wrappers of continuous families, and the first two
 tables of \code{\link[=cdf_tables]{cdf_tables()}} where a family has no method of its own.
@@ -89,10 +89,11 @@ d <- gaussian1_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# One central difference per parameter.
+# The function takes one central difference per parameter.
 numerical_cdf_deriv(d, q, th, order = 1)
 
-# Against the closed form the Gaussian registers, on the same scale.
+# The result is compared with the closed form that the Gaussian registers,
+# on the same scale.
 exact <- distrib_grad_cdf(d, q, th, log = FALSE)
 max(abs(numerical_cdf_deriv(d, q, th, 1)$mu / exact$mu - 1))
 

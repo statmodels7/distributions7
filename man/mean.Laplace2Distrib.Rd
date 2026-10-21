@@ -7,7 +7,7 @@
 \item{x}{A \code{Laplace2Distrib}, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location) and \code{lambda}
-(the rate, positive), each a numeric vector of length 1 or \code{n}.}
+(the rate, positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,9 +16,9 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. This is the
-same family as \code{\link[=laplace_distrib]{laplace_distrib()}} written by its rate
-\eqn{\lambda = 1/\sigma}, and the mean does not see the difference: it is
+The closed form that replaces the numerical default is \eqn{E[Y] = \mu}.
+This is the same family as \code{\link[=laplace_distrib]{laplace_distrib()}} written by its rate
+\eqn{\lambda = 1/\sigma}, and the mean is the same in both, since it is
 the location in either parametrization.
 }
 \examples{

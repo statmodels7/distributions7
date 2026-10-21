@@ -15,12 +15,12 @@ lp_edge_divergence(lp, b)
 A numeric vector of length 2, named \code{lower} and \code{upper}.
 }
 \description{
-For each finite edge, the exponent \eqn{\alpha} of a divergence
+Returns, for each finite edge, the exponent \eqn{\alpha} of a divergence
 \eqn{f(y) \sim \lvert y - a \rvert^{\alpha - 1}}, or \code{NA} when the
 density stays bounded there.
 }
 \details{
-A density that diverges at an edge is the one case the ratio-of-uniforms
+A density that diverges at an edge is the one case that the ratio-of-uniforms
 sampler cannot handle directly, so it has to be detected and then removed by
 a change of variable, which needs the exponent.
 

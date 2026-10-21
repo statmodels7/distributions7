@@ -7,8 +7,8 @@
 \item{x}{A \code{PseudoHuberDistrib}, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
-scale, positive) and \code{nu} (the shape, positive), each a numeric vector of
-length 1 or \code{n}.}
+scale, positive) and \code{nu} (the shape, positive); each is a numeric vector
+of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,9 +17,9 @@ A numeric vector of means, of length equal to the longest of the
 three components.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. The density
-is symmetric about \eqn{\mu} at every scale and shape, so the location
-parameter is the mean, the median and the mode at once.
+The closed form that replaces the numerical default is \eqn{E[Y] = \mu}. The
+density is symmetric about \eqn{\mu} at every scale and shape, so the
+location parameter is the mean, the median and the mode at once.
 }
 \examples{
 d <- pseudohuber_distrib()

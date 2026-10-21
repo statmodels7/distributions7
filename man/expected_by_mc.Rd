@@ -18,8 +18,8 @@ expected_by_mc(distrib, y, theta, order, nsim)
 \item{nsim}{The number of draws per parameter configuration.}
 }
 \value{
-A named list of expected derivative component vectors, each of length
-\code{length(y)}.
+A named list of expected derivative component vectors; each has
+length \code{length(y)}.
 }
 \description{
 Simulates \code{nsim} draws and averages the observed derivative over them.
@@ -30,9 +30,9 @@ Observations whose parameters coincide are not merged, so a \code{theta} that
 varies over the observations costs one simulation per observation, and a
 scalar \code{theta} costs one simulation however long \code{y} is.
 
-Estimates the same quantity as \code{\link[=expected_by_integrate]{expected_by_integrate()}}, with an
-error falling as \eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed is
-fixed. Its cost is the cost of \code{\link[=distrib_rng]{distrib_rng()}}, so it is expensive for a
+Estimates the same quantity as \code{\link[=expected_by_integrate]{expected_by_integrate()}}, has an
+error that falls as \eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed
+is fixed. Its cost is the cost of \code{\link[=distrib_rng]{distrib_rng()}}, so it is expensive for a
 distribution whose generator inverts a slow quantile function.
 }
 \seealso{

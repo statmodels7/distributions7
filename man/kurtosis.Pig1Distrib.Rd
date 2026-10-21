@@ -7,7 +7,7 @@
 \item{x}{A \code{Pig1Distrib}, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{sigma}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,12 +16,13 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$sigma))}, positive throughout.
 }
 \description{
-Closed form from the cumulants, \eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} with
+The excess kurtosis has the closed form
+\eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} in the cumulants, with
 \deqn{\kappa_2 = \mu + \sigma\mu^2, \qquad
       \kappa_4 = \mu + 7\sigma\mu^2 + 18\sigma^2\mu^3 + 15\sigma^3\mu^4.}
 The ratio of the fourth cumulant to the squared second equals the excess
 kurtosis, because the fourth cumulant already excludes the term 3 of the
-fourth standardized moment, so no 3 is subtracted here.
+fourth standardized moment, so the method does not subtract 3.
 }
 \section{Notation}{
 
@@ -32,7 +33,7 @@ fourth standardized moment, so no 3 is subtracted here.
 \examples{
 d <- pig1_distrib()
 
-# The cumulant ratio, written out.
+# The excess kurtosis equals the cumulant ratio, written out.
 all.equal(kurtosis(d, list(mu = 3, sigma = 1)),
           (3 + 7 * 9 + 18 * 27 + 15 * 81) / 144)
 

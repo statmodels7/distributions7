@@ -25,7 +25,7 @@ tensor_derivatives(
 
 \item{order}{The order of the derivatives, a whole number above \code{base}.}
 
-\item{base}{The highest order the family implements itself, 0 to 4.}
+\item{base}{The highest order that the family implements itself, 0 to 4.}
 
 \item{h_rel}{\code{NULL}, the default, for the step above, or a relative step
 that replaces \eqn{\varepsilon^{1/(r+a)}}.}
@@ -44,7 +44,7 @@ A named list of component vectors, keyed as
 }
 \description{
 Computes the derivative components of order \code{order} of the log-density
-from the highest order the family implements itself: the log-density
+from the highest order that the family implements itself: the log-density
 (\code{base = 0}), the score (\code{base = 1}), the Hessian (\code{base = 2}), the third
 order (\code{base = 3}) or the fourth (\code{base = 4}). Each component is a single
 tensor-product central difference of order \code{order - base}, never a
@@ -52,15 +52,15 @@ difference of a difference.
 }
 \details{
 The computation is \code{\link[numericals7:fd_tensor]{numericals7::fd_tensor()}} over the coordinates
-\eqn{\theta_1, \dots, \theta_p}, with the log-density as the function and
-the derivatives of order \code{base} declared as the known quantity. A component
-is a multiset of parameters: \eqn{(\mu, \mu, \phi)} is
+\eqn{\theta_1, \dots, \theta_p}, where the log-density is the function and
+the derivatives of order \code{base} are declared as the known quantity. A
+component is a multiset of parameters: \eqn{(\mu, \mu, \phi)} is
 \eqn{\partial^3\ell / \partial\mu^2\partial\phi}. \code{base} of its indices
-select the analytical component that is differenced, taken from the
-parameters that occur most often, and the remaining multiplicities are the
-orders of the one-dimensional central stencils whose tensor product is
-applied to it. Each parameter is differentiated only once, however many
-times it occurs.
+select the analytical component that is differenced, and these indices are
+taken from the parameters that occur most often. The remaining
+multiplicities are the orders of the one-dimensional central stencils whose
+tensor product is applied to it. Each parameter is differentiated only once,
+however many times it occurs.
 
 The step in \eqn{\theta_j} is
 \eqn{h_j = \varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with

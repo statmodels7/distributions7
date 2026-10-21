@@ -16,14 +16,15 @@ A numeric vector of excess kurtoses, the length of \code{theta$mu},
 positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_2 = 12/\mu}, the excess over the Gaussian. It is
-positive at every degrees of freedom and decays like \eqn{\mu^{-1}}, whereas
-the skewness decays like \eqn{\mu^{-1/2}}: \eqn{\gamma_2 = 3\gamma_1^2/2}.
+The excess kurtosis has the closed form \eqn{\gamma_2 = 12/\mu}, the excess
+over the Gaussian. It is positive at every degrees of freedom and decays like
+\eqn{\mu^{-1}}, whereas the skewness decays like \eqn{\mu^{-1/2}}:
+\eqn{\gamma_2 = 3\gamma_1^2/2}.
 }
 \examples{
 d <- chisq_distrib()
 
-# Twelve over the degrees of freedom.
+# The value is twelve over the degrees of freedom.
 all.equal(kurtosis(d, list(mu = 5)), 12 / 5)
 
 # It falls twice as fast as the skewness.

@@ -18,12 +18,13 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{sigma}, each a numeric vector
-of length \code{length(y)}.
+A named list with components \code{mu} and \code{sigma}; each is a numeric
+vector of length \code{length(y)}.
 }
 \description{
-Closed form from the location-scale identity: the location component is
-\eqn{-\ell^{(yy)}} and the scale one \eqn{-z\ell^{(yy)} - \ell^{(y)}/\sigma}.
+The mixed derivatives are in closed form from the location-scale identity:
+the location component is \eqn{-\ell^{(yy)}} and the scale one
+\eqn{-z\ell^{(yy)} - \ell^{(y)}/\sigma}.
 }
 \seealso{
 \code{\link[=loc_scale_cross_y]{loc_scale_cross_y()}}, the shared body, and

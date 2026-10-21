@@ -18,11 +18,11 @@ link evaluated at \eqn{\eta}, as a numeric vector.}
 A numeric vector, the polynomial evaluated element-wise.
 }
 \description{
-The partial (incomplete) Bell polynomial \eqn{B_{m,j}} evaluated at the
+Evaluates the partial (incomplete) Bell polynomial \eqn{B_{m,j}} at the
 derivatives of the inverse link, for \eqn{m \le 5}.
 }
 \details{
-These are the coefficients Faa di Bruno's formula needs. Because each
+These are the coefficients that Faa di Bruno's formula needs. Because each
 parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 diagonal and the multivariate formula factorizes into a product of univariate
 ones, so only \eqn{B_{m,j}} for a single variable is required. They are

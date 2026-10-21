@@ -7,8 +7,8 @@
 \item{x}{A \code{Pig1Distrib}, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{sigma}
-(positive), each a numeric vector of length 1 or \code{n}. The Poisson limit is
-\eqn{\sigma \to 0}.}
+(positive); each is a numeric vector of length 1 or \code{n}. The Poisson limit
+is \eqn{\sigma \to 0}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,11 +17,11 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, the second cumulant:
+The variance is the second cumulant and has the closed form
 \eqn{\operatorname{Var}(Y) = \kappa_2 = \mu + \sigma\mu^2}. The quadratic
-term is the overdispersion the inverse Gaussian mixing adds, and it has the
-same shape as a negative binomial's; the two families separate at the third
-cumulant and above, where this one is the heavier-tailed.
+term is the overdispersion that the inverse Gaussian mixing adds, and it has
+the same shape as that of a negative binomial; the two families separate at
+the third cumulant and above, where this one has the heavier tail.
 }
 \section{Notation}{
 
@@ -32,7 +32,7 @@ cumulant and above, where this one is the heavier-tailed.
 \examples{
 d <- pig1_distrib()
 
-# Mean plus dispersion times the square of the mean.
+# The variance is the mean plus the dispersion times the square of the mean.
 all.equal(variance(d, list(mu = 3, sigma = 1)), 12)
 
 # It falls onto the Poisson variance as the dispersion vanishes.

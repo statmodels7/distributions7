@@ -22,8 +22,8 @@ order \code{k}.
 \description{
 Calls the family's \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} (\code{k = 1}) or \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}
 (\code{k = 2}) on the lower tail and the natural scale, and orders the result as
-\code{\link[=deriv_names]{deriv_names(distrib@params, k)}}, the keying \code{\link[=cdf_tables]{cdf_tables()}}
-and \code{\link[=cdf_scale_k]{cdf_scale_k()}} use.
+\code{\link[=deriv_names]{deriv_names(distrib@params, k)}}, the keying that
+\code{\link[=cdf_tables]{cdf_tables()}} and \code{\link[=cdf_scale_k]{cdf_scale_k()}} use.
 }
 \examples{
 d <- gamma2_distrib()

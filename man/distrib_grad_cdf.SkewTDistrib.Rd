@@ -9,7 +9,8 @@
 \item{q}{A numeric vector of quantiles.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive), \code{alpha}
-(any sign) and \code{nu} (positive), each a numeric vector of length 1 or \code{n}.}
+(any sign) and \code{nu} (positive); each is a numeric vector of length 1 or
+\code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -19,13 +20,13 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
 A named list of four numeric vectors, \code{mu}, \code{sigma}, \code{alpha} and
-\code{nu}, each the length of \code{q} recycled against \code{theta}.
+\code{nu}; each has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-with \eqn{z = (q-\mu)/\sigma}; the components in the shape and in the
-degrees of freedom are integrals of the density's own derivatives, taken by
-the compiled rule. The method is
+Computes the gradient in closed form in the location and the scale,
+\eqn{-f(q)} and \eqn{-z f(q)} with \eqn{z = (q-\mu)/\sigma}; the components
+in the shape and in the degrees of freedom are integrals of the density's
+own derivatives, taken by the compiled rule. The method is
 \code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} itself, shared with the other families whose
 distribution function has no closed derivative in a shape parameter.
 }

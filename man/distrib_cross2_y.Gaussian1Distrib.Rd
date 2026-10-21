@@ -17,14 +17,14 @@ dispatch.}
 }
 \value{
 A named list of two numeric vectors of length \code{length(y)}, keyed
-\code{mu} and \code{sigma}, the first exactly zero.
+\code{mu} and \code{sigma}, where the first is exactly zero.
 }
 \description{
-Closed form. The gaussian's response curvature is
+Computes the closed form. The gaussian's response curvature is
 \eqn{\ell^{(yy)} = -1/\sigma^2}, which carries no location, so
 \deqn{\frac{\partial^3\ell}{\partial y^2\,\partial\mu} = 0, \qquad
   \frac{\partial^3\ell}{\partial y^2\,\partial\sigma} = \frac{2}{\sigma^3}.}
-Neither component varies with the data.
+Both components are constant in the data.
 }
 \section{Notation}{
 
@@ -40,17 +40,18 @@ y <- c(-1, 0, 2)
 theta <- list(mu = 0.4, sigma = 1.3)
 distrib_cross2_y(d, y, theta)
 
-# The one surviving component, written out.
+# The one surviving component is written out.
 2 / 1.3^3
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::grad(f, c(0.4, 1.3))
 }
 \seealso{
 \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic,
 \code{\link[=distrib_hess_y_hess.Gaussian1Distrib]{distrib_hess_y_hess.Gaussian1Distrib()}} for the next order in
-\eqn{\theta}, and \code{\link[=distrib_cross2_y.StudentT1Distrib]{distrib_cross2_y.StudentT1Distrib()}}, where nothing
-vanishes.
+\eqn{\theta}, and \code{\link[=distrib_cross2_y.StudentT1Distrib]{distrib_cross2_y.StudentT1Distrib()}}, where every
+component is non-zero.
 }
 \keyword{internal}

@@ -16,14 +16,15 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{lambda}, each a numeric vector
-of length \code{length(y)}. The \code{mu} component is exactly zero almost
+A named list with components \code{mu} and \code{lambda}; each is a numeric
+vector of length \code{length(y)}. The \code{mu} component is exactly zero almost
 everywhere and the \code{lambda} component is \eqn{\pm 1}.
 }
 \description{
-Closed form, away from the kink at \eqn{y = \mu}: with
-\eqn{\ell^{(y)} = -\lambda\,\mathrm{sign}(y-\mu)}, the location component
-is 0 almost everywhere and the rate component is \eqn{-\mathrm{sign}(y-\mu)}.
+The mixed derivatives are in closed form away from the kink at
+\eqn{y = \mu}: with \eqn{\ell^{(y)} = -\lambda\,\mathrm{sign}(y-\mu)}, the
+location component is 0 almost everywhere and the rate component is
+\eqn{-\mathrm{sign}(y-\mu)}.
 }
 \seealso{
 \code{\link[=distrib_cross_y.LaplaceDistrib]{distrib_cross_y.LaplaceDistrib()}} for the scale chart;

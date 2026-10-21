@@ -7,7 +7,7 @@
 \item{x}{A \code{Pig2Distrib}, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{alpha}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,12 +16,12 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$alpha))}.
 }
 \description{
-The second cumulant \eqn{\kappa_2 = \mu + \sigma\mu^2} of
+The variance is the second cumulant \eqn{\kappa_2 = \mu + \sigma\mu^2} of
 \code{\link[=variance.Pig1Distrib]{variance.Pig1Distrib()}}, read at the dispersion
-\eqn{\sigma = } \code{\link[=pig2_sigma]{pig2_sigma()}}\verb{(mu, alpha)} this parametrization implies.
-The law is the same; what changes is which number is reported, and the
-orthogonal dispersion is the one whose estimate is asymptotically
-uncorrelated with the mean's.
+\eqn{\sigma = } \code{\link[=pig2_sigma]{pig2_sigma()}}\verb{(mu, alpha)} that this parametrization
+implies. The law is the same, and only the reported dispersion differs. The
+orthogonal dispersion has an estimate that is asymptotically uncorrelated
+with the mean's.
 }
 \section{Notation}{
 

@@ -14,7 +14,7 @@ register_surv_cdf(cls, pieces)
 \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} documents.}
 }
 \value{
-Invisibly \code{NULL}. Called for the registration.
+Invisibly \code{NULL}. The function is called for its registration.
 }
 \description{
 Turns a function returning \eqn{L = \log(1-F)} and its partial-derivative
@@ -23,17 +23,17 @@ function once instead of four times. Two families are registered through
 it: the exponential and the Weibull.
 }
 \details{
-All four orders are registered, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} included, so these
+All four orders are registered, including \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so these
 families take the closed route from the first order up. Where the upper tail
 is requested on the natural scale the derivatives of \eqn{S} are returned
 directly, \eqn{\partial^I S = -\partial^I F}, which is the one case where
-the survival function is the quantity the construction produces first.
+the survival function is the quantity that the construction produces first.
 
-\code{force(o)} inside the factory is what keeps the four registrations from
+\code{force(o)} inside the factory prevents the four registrations from
 sharing one order.
 }
 \seealso{
-\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}}, the body it registers;
+\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}}, the body that it registers;
 \code{\link[=distrib_grad_cdf.ExponentialDistrib]{distrib_grad_cdf.ExponentialDistrib()}} and
 \code{\link[=distrib_grad_cdf.Weibull1Distrib]{distrib_grad_cdf.Weibull1Distrib()}}, the two families.
 }

@@ -29,10 +29,11 @@ A named list with one numeric vector, \code{mu}, the length of \code{q}
 recycled against \code{theta}.
 }
 \description{
-Closed form, the binomial identity at \eqn{n = 1}. The distribution function
-takes two values, \eqn{F(0) = 1 - p} and \eqn{F(1) = 1}, so the derivative
-is \eqn{-1} at \eqn{k = 0} and exactly zero at \eqn{k = 1}, the upper value
-being 1 whatever \eqn{p} is.
+Computes the gradient in closed form, by the binomial identity at
+\eqn{n = 1}. The distribution function takes two values,
+\eqn{F(0) = 1 - p} and \eqn{F(1) = 1}, so the derivative is \eqn{-1} at
+\eqn{k = 0} and exactly zero at \eqn{k = 1}, because the upper value is 1
+whatever \eqn{p} is.
 }
 \section{Notation}{
 
@@ -43,7 +44,7 @@ being 1 whatever \eqn{p} is.
 \examples{
 d <- bernoulli_distrib()
 
-# -1 at zero, and exactly 0 at one.
+# The derivative is -1 at zero, and exactly 0 at one.
 distrib_grad_cdf(d, c(0, 1), list(mu = 0.3), log = FALSE)$mu
 
 # On the log scale at k = 0 that is -1 / (1 - p).

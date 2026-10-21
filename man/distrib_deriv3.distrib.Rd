@@ -33,16 +33,17 @@ A named list of third-derivative component vectors, each of length
 \code{\link[=deriv_names]{deriv_names(distrib@params, 3)}} gives them.
 }
 \description{
-The fallback for a family that registers no third-order method. Observed
-derivatives come from \code{\link[=numerical_deriv3]{numerical_deriv3()}}: one central difference of the
-family's own \code{\link[=distrib_hessian]{distrib_hessian()}} along each parameter, or, for a family
-without its own Hessian, one tensor-product stencil on its score or its
-log-density. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
-strategy \code{approx} names.
+Provides the fallback for a family that registers no third-order method.
+Observed derivatives come from \code{\link[=numerical_deriv3]{numerical_deriv3()}}: one central difference
+of the family's own \code{\link[=distrib_hessian]{distrib_hessian()}} along each parameter, or, for a
+family without its own Hessian, one tensor-product stencil on its score or
+its log-density. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
+strategy selected by \code{approx}.
 
 Every family shipped in this package writes the observed third order out,
-so this method serves a family defined outside the package, which gets five
-orders from a density alone. It is also the reference against which the
+so this method serves a family defined outside the package, and five orders
+are available for such a family from its density without any other method.
+It is also the reference against which the
 analytical kernels are validated.
 }
 \seealso{

@@ -26,10 +26,11 @@ use.}
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of the expected information in the
-parameters, from the derivatives of the Bessel ratio
-\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} and of its inverse, computed by
-one compiled kernel per order from numericals7's compiled Bessel ratio.
+Computes the first and second derivatives of the expected information in
+the parameters from the derivatives of the Bessel ratio
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} and of its inverse. One compiled
+kernel per order performs the computation from numericals7's compiled
+Bessel ratio.
 }
 \details{
 By the concentration, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\kappa A(\kappa)} and
@@ -38,7 +39,8 @@ By the concentration, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\kappa A(\kappa)} and
 length \eqn{\rho = A(\kappa)}, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\rho\,\kappa(\rho)}
 and \eqn{\mathbb{E}[\ell_{\rho\rho}] = -\kappa'(\rho)}, so they read the
 inverse's derivatives \eqn{\kappa'}, \eqn{\kappa''} and \eqn{\kappa'''}.
-Nothing moves with the direction \eqn{\mu}. The first-order kernel reads
+The expected information does not depend on the direction \eqn{\mu}. The
+first-order kernel reads
 \eqn{A} to \eqn{A''} (or \eqn{\kappa} to \eqn{\kappa''}), the second-order
 one \eqn{A'} to \eqn{A'''} (or \eqn{\kappa'} to \eqn{\kappa'''}).
 }

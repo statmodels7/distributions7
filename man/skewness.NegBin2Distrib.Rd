@@ -7,8 +7,8 @@
 \item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
-\code{n}.}
+\code{theta} (the dispersion, positive); each is a numeric vector of length 1
+or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,7 +17,7 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default:
+The closed form that replaces the numerical default is
 \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}. It is positive at every
 parameter value and decreases towards the Poisson value \eqn{\mu^{-1/2}} as
 \eqn{\theta} grows.
@@ -25,7 +25,7 @@ parameter value and decreases towards the Poisson value \eqn{\mu^{-1/2}} as
 \examples{
 d <- negbin2_distrib()
 
-# The published form, written out.
+# The published form is written out.
 mu <- 4; th <- 2
 all.equal(skewness(d, list(mu = mu, theta = th)),
           (th + 2 * mu) / sqrt(mu * th * (th + mu)))

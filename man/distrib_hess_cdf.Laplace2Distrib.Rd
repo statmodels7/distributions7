@@ -9,8 +9,8 @@
 \item{q}{A numeric vector of quantiles. At \eqn{q = \mu} exactly, \code{sign(0)}
 is 0 and the components are the average of their two one-sided limits.}
 
-\item{theta}{A named list with components \code{mu} and \code{lambda} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -21,11 +21,12 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
-the length of \code{q} recycled against \code{theta}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, in
+which each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form. Writing \eqn{r = q - \mu} and \eqn{a = |r|},
+Computes the Hessian in closed form. Writing \eqn{r = q - \mu} and
+\eqn{a = |r|},
 \deqn{\frac{\partial^2 F}{\partial\mu^2} = -\lambda\,\mathrm{sign}(r)\,f,
       \qquad
       \frac{\partial^2 F}{\partial\lambda^2}

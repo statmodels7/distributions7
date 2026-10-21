@@ -27,17 +27,17 @@ second.}
 the same step wherever \eqn{d \ge \max(1, |y|)}, which is every
 observation of a family with no finite bound.}
 
-\item{order, accuracy}{The stencil the step is for, which fix its reach
-through \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}: the clamp is on the outermost node,
-so a rule evaluating two steps out is cut to half of what a central
-difference is. The defaults are the central difference, whose reach is
-one. \code{\link[=numerical_deriv_y]{numerical_deriv_y()}} and \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} pass the
-order of their own stencils.}
+\item{order, accuracy}{The stencil for which the step is computed. Its reach,
+given by \code{\link[numericals7:fd_offsets]{numericals7::fd_offsets()}}, determines the clamp, which acts on
+the outermost node, so a rule that evaluates two steps out is cut to half
+of what a central difference is. The defaults are the central difference,
+whose reach is one. \code{\link[=numerical_deriv_y]{numerical_deriv_y()}} and \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}
+pass the order of their own stencils.}
 }
 \value{
-A numeric vector of steps, as long as \code{y}. An observation strictly
-inside the support gets a positive step, and one on a finite bound gets
-zero.
+A numeric vector of steps, as long as \code{y}. The step is positive for
+an observation strictly inside the support and zero for one on a finite
+bound.
 }
 \description{
 Returns the step for a central difference in the RESPONSE: \code{h_rel} scaled by
@@ -52,14 +52,14 @@ The scaling by \eqn{\max(1, |y|)} makes the step relative where the response
 is large and absolute where it is small, so a value near zero is not
 differenced with a step below the resolution of a double.
 
-\code{to_bound = "clamp"} is what the support requires and no more. A gamma
-observation at \eqn{y = 10^{-3}} differenced with the default step of
-\eqn{6 \times 10^{-6}} needs no help, but one at \eqn{y = 10^{-8}} would be
-evaluated at a negative point, where the log-density is not defined and
-\code{distrib_pdf(..., log = TRUE)} returns \code{-Inf}. The factor 0.49 leaves the step under half
-the distance to the bound, so both evaluation points stay inside with room
-to spare: at \eqn{y = 10^{-8}} the step becomes \eqn{4.9\times 10^{-9}} and
-the left point \eqn{5.1\times 10^{-9}}.
+\code{to_bound = "clamp"} applies only the correction that the support
+requires. A gamma observation at \eqn{y = 10^{-3}} differenced with the
+default step of \eqn{6 \times 10^{-6}} needs no help, but one at \eqn{y =
+10^{-8}} would be evaluated at a negative point, where the log-density is not
+defined and \code{distrib_pdf(..., log = TRUE)} returns \code{-Inf}. The factor 0.49
+leaves the step under half the distance to the bound, so both evaluation
+points stay inside with room to spare: at \eqn{y = 10^{-8}} the step becomes
+\eqn{4.9\times 10^{-9}} and the left point \eqn{5.1\times 10^{-9}}.
 
 \code{to_bound = "scale"} takes \eqn{h = h_{rel}\min(\max(1, |y|), d)}, with
 \eqn{d} the distance to the nearest finite bound, so the step shrinks in
@@ -96,7 +96,7 @@ rbind(step = h, left_point = y - h)
 # Scaled on the distance instead, the step keeps shrinking with it.
 distributions7:::fd_steps_y(y, c(0, Inf), h_rel, "scale")
 
-# The two steps the callers use differ by a factor of twenty.
+# The two steps that the callers use differ by a factor of twenty.
 c(first_order = .Machine$double.eps^(1 / 3),
   second_order = .Machine$double.eps^(1 / 4))
 }

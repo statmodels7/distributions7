@@ -7,7 +7,8 @@
 \item{x}{A \code{LogisticDistrib}, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
-(the scale, positive), each a numeric vector of length 1 or \code{n}.}
+(the scale, positive), in which each component is a numeric vector of
+length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,7 +17,8 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The standard
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The standard
 deviation is \eqn{\sigma\pi/\sqrt3 \approx 1.8138\sigma}, so the scale is
 smaller than the standard deviation by the factor \eqn{\pi/\sqrt3}, and a
 logistic scale is not comparable with a Gaussian standard deviation as it
@@ -25,7 +27,7 @@ stands.
 \examples{
 d <- logistic_distrib()
 
-# pi^2 sigma^2 / 3.
+# The variance is pi^2 sigma^2 / 3.
 all.equal(variance(d, list(mu = 0, sigma = 2)), pi^2 * 4 / 3)
 
 # The standard deviation is pi / sqrt(3) times the scale.

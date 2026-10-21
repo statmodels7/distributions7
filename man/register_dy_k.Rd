@@ -36,7 +36,8 @@ register_dy_k(cls, f)
 \item{f}{The rule.}
 }
 \value{
-Invisibly \code{NULL}. Called for the two registrations it makes.
+Invisibly \code{NULL}. It is called for the two registrations that it
+makes.
 }
 \description{
 Turns a function of \verb{(distrib, y, theta, k)} into the two methods, so
@@ -52,8 +53,8 @@ families listed below, which write a rule in the response of their own, so
 
 \seealso{
 \code{\link[=loc_deriv_y_k]{loc_deriv_y_k()}}, the companion for the location families;
-\code{\link[=distrib_deriv3_y.continuous_distrib]{distrib_deriv3_y.continuous_distrib()}} for the stencil a family outside
-both lists falls back to; \code{\link[=dy_log]{dy_log()}} for the elementary terms each rule
-is built from.
+\code{\link[=distrib_deriv3_y.continuous_distrib]{distrib_deriv3_y.continuous_distrib()}} for the stencil to which a family
+outside both lists falls back; \code{\link[=dy_log]{dy_log()}} for the elementary terms from
+which each rule is built.
 }
 \keyword{internal}

@@ -32,7 +32,7 @@ NULL
 #' Numerical Third and Fourth Response Derivatives
 #'
 #' @description
-#' One central stencil of the requested order applied to
+#' Applies one central stencil of the requested order to
 #' `distrib_pdf(..., log = TRUE)`.
 #'
 #' @details
@@ -76,17 +76,18 @@ numerical_deriv_y <- function(distrib, y, theta, order,
 #' Third and Fourth Derivatives With Respect to the Response
 #'
 #' @description
+#' `distrib_deriv3_y()` and `distrib_deriv4_y()` return
 #' \eqn{\partial^{3}\ell/\partial y^{3}} and
-#' \eqn{\partial^{4}\ell/\partial y^{4}}, completing the sequence begun by
+#' \eqn{\partial^{4}\ell/\partial y^{4}}, which complete the sequence begun by
 #' [distrib_grad_y()] and [distrib_hess_y()].
 #'
 #' @details
-#' A family whose response enters only as \eqn{y - \mu} gets these from the
-#' derivatives it already has in the location, since
-#' \eqn{\partial^{k}\ell/\partial y^{k} = (-1)^{k}\,
+#' For a family whose response enters only as \eqn{y - \mu}, these derivatives
+#' follow from the derivatives that the family already has in the location,
+#' since \eqn{\partial^{k}\ell/\partial y^{k} = (-1)^{k}\,
 #' \partial^{k}\ell/\partial\mu^{k}}. The other shipped families take them from
-#' closed forms of their own, and a family defined by its density alone takes
-#' one stencil of the requested order on the log-density.
+#' closed forms of their own, and a family that is defined only by its density
+#' takes one stencil of the requested order on the log-density.
 #'
 #' As with the lower orders, a discrete family has no such derivative, and the
 #' call signals an error instead of returning a difference between support
@@ -131,7 +132,8 @@ distrib_deriv4_y <- S7::new_generic(
 
 #' @title Default Third and Fourth Response Derivatives
 #' @name distrib_deriv3_y.continuous_distrib
-#' @description One stencil of the requested order, on the log-density.
+#' @description Applies one stencil of the requested order to the
+#'   log-density.
 #' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
@@ -181,8 +183,8 @@ S7::method(distrib_deriv4_y, continuous_distrib) <- function(distrib, y, theta,
 #' `SkewNormal2Distrib` has compiled kernels of its own in the response; its
 #' two methods are listed here as aliases.
 #'
-#' @seealso [distrib_deriv3_y.continuous_distrib()] for the stencil a family
-#'   outside this list falls back to; [register_dy_k()], the companion for
+#' @seealso [distrib_deriv3_y.continuous_distrib()] for the stencil to which a
+#'   family outside this list falls back; [register_dy_k()], the companion for
 #'   families whose response is not a pure location; [distrib_deriv3()] and
 #'   [distrib_deriv4()], whose components this reads.
 #'
@@ -336,7 +338,8 @@ dy_of_log <- function(gd, y, k) {
 #' @param cls The S7 class.
 #' @param f The rule.
 #'
-#' @return Invisibly `NULL`. Called for the two registrations it makes.
+#' @return Invisibly `NULL`. It is called for the two registrations that it
+#'   makes.
 #'
 #' @section Registered on:
 #' This body serves both third- and fourth-order response derivatives on the
@@ -345,9 +348,9 @@ dy_of_log <- function(gd, y, k) {
 #' `Gamma1Distrib`, `Gamma2Distrib`, `ChisqDistrib`, `ExponentialDistrib`, `Beta1Distrib`, `Beta2Distrib`, `Weibull1Distrib`, `InvGauss1Distrib`, `InvGauss2Distrib`, `Lognormal1Distrib`, `VonMises1Distrib`, `VonMises2Distrib`.
 #'
 #' @seealso [loc_deriv_y_k()], the companion for the location families;
-#'   [distrib_deriv3_y.continuous_distrib()] for the stencil a family outside
-#'   both lists falls back to; [dy_log()] for the elementary terms each rule
-#'   is built from.
+#'   [distrib_deriv3_y.continuous_distrib()] for the stencil to which a family
+#'   outside both lists falls back; [dy_log()] for the elementary terms from
+#'   which each rule is built.
 #'
 #' @aliases distrib_deriv3_y.Gamma1Distrib distrib_deriv4_y.Gamma1Distrib
 #' @aliases distrib_deriv3_y.Gamma2Distrib distrib_deriv4_y.Gamma2Distrib
@@ -438,10 +441,10 @@ register_dy_k(VonMises2Distrib, function(distrib, y, theta, k) {
 #' @aliases distrib_deriv4_y.ReparamContinuousDistrib
 #'
 #' @description
-#' The parent's third and fourth response derivatives, read at the parent's
-#' parameters. A reparametrization acts on \eqn{\theta} and these derivatives
-#' are taken in \eqn{y}, so the two do not interact: the chain rule does not
-#' enter, and the result of the parent is returned exactly.
+#' Returns the parent's third and fourth response derivatives, read at the
+#' parent's parameters. A reparametrization acts on \eqn{\theta} and these
+#' derivatives are taken in \eqn{y}, so the two do not interact: the chain rule
+#' does not enter, and the result of the parent is returned exactly.
 #'
 #' The same holds at the first and second orders. It does not hold for the
 #' mixed block [distrib_cross_y()], which takes one derivative in each, so

@@ -17,8 +17,9 @@ recycle the result: an expectation does not depend on the sample.}
 \item{order}{The derivative order, a single integer from 2 to 4.}
 }
 \value{
-A named list of expected derivative component vectors, each of
-length \code{length(y)}, keyed as \code{\link[=observed_deriv]{observed_deriv()}} keys that order.
+A named list of expected derivative component vectors; each has
+length \code{length(y)}, and the names are the keys that \code{\link[=observed_deriv]{observed_deriv()}}
+uses at that order.
 }
 \description{
 Integrates each observed derivative component directly against the density
@@ -27,8 +28,8 @@ normally the most accurate route where the observed derivative is available
 in closed form.
 }
 \details{
-What this estimates is \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
-regular model that is the quantity wanted. For a family with a non-smooth
+The function estimates \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
+regular model that is the required quantity. For a family with a non-smooth
 parameter it is not: the observed \eqn{\ell_{ij}} has a point mass at the
 kink, which an integral of its pointwise values does not contain (on a
 Laplace the location component would be 0 instead of
@@ -36,15 +37,15 @@ Laplace the location component would be 0 instead of
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, which needs only the score.
 
 Quadrature is also unreliable where the observed derivative is itself a
-finite difference, since it then integrates numerical noise. That error is
-caught and re-raised naming the component and pointing at the alternatives,
-so it reaches the caller as a statement about the route rather than as an
-opaque failure from the integrator.
+finite difference, since it then integrates numerical noise. The function
+catches that error and signals it again, naming the component and pointing
+at the alternatives, so that the caller receives a statement about the route
+rather than an opaque failure from the integrator.
 }
 \seealso{
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for the three strategies;
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, the route that survives a kink;
-\code{\link[=expected_by_mc]{expected_by_mc()}} where quadrature struggles;
+\code{\link[=expected_by_mc]{expected_by_mc()}} where quadrature performs poorly;
 \code{\link[=expectation]{expectation()}}, which does the integration.
 }
 \keyword{internal}

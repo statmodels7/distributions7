@@ -19,13 +19,13 @@ distrib_d3expected_hessian(
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters, each of length 1 or
+\item{theta}{A named list of parameters; each has length 1 or
 \code{length(y)}.}
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
 \item{approx, nsim}{Accepted for symmetry with
-\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; no method reads them.}
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; the methods ignore them.}
 
 \item{...}{Passed to methods.}
 }
@@ -34,9 +34,9 @@ A named list of numeric vectors, keyed as
 \code{\link[=d3expected_names]{d3expected_names(distrib@params)}}.
 }
 \description{
-\eqn{\partial^3\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d\,
-\partial\theta_e}, one component per pair \eqn{(a,b)} and per unordered
-triple \eqn{(c,d,e)}.
+Returns \eqn{\partial^3\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,
+\partial\theta_d\,\partial\theta_e}, with one component per pair
+\eqn{(a,b)} and per unordered triple \eqn{(c,d,e)}.
 }
 \details{
 The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e)}

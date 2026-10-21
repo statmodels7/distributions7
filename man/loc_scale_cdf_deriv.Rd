@@ -8,14 +8,15 @@ loc_scale_cdf_deriv(distrib, q, theta, order)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib} whose first two
-parameters are a location and a scale. Nothing checks that; a family that
-is not location-scale and registers this body gets wrong numbers.}
+parameters are a location and a scale. The function does not check that,
+and it returns wrong numbers for a family that is not location-scale but
+registers this body.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters, the location first and the scale
-second. Any further parameters are read by \code{\link[=distrib_pdf]{distrib_pdf()}} and
-\code{\link[=distrib_grad_y]{distrib_grad_y()}} but get no component here.}
+\item{theta}{A named list of parameters, in which the location comes first
+and the scale second. Any further parameters are read by \code{\link[=distrib_pdf]{distrib_pdf()}}
+and \code{\link[=distrib_grad_y]{distrib_grad_y()}} but have no component in the result.}
 
 \item{order}{The derivative order, 1 or 2.}
 }
@@ -25,8 +26,8 @@ the natural scale: two components at order 1, and the three of
 \code{\link[=hess_names]{hess_names()}} at order 2.
 }
 \description{
-Closed-form derivatives of \eqn{F} for a family that is location-scale in
-its first two parameters. Writing \eqn{F(q) = G(z)} with
+Computes closed-form derivatives of \eqn{F} for a family that is
+location-scale in its first two parameters. Writing \eqn{F(q) = G(z)} with
 \eqn{z = (q-\mu)/\sigma} and differentiating the composition puts everything
 in terms of the density and its response derivative, both of which every
 distribution already supplies, so a family has only to declare that it is

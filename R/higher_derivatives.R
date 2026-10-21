@@ -15,7 +15,7 @@ NULL
 #'
 #' @description
 #' Computes the unique third-order partial derivatives of the log-density by
-#' central finite differences of the highest order the family implements
+#' central finite differences of the highest order that the family implements
 #' itself. This powers the default [distrib_deriv3()] method for distributions
 #' without a closed-form implementation, and is the reference used to validate
 #' the analytical kernels.
@@ -23,15 +23,15 @@ NULL
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
-#' @param h_rel Numeric. Relative finite-difference step. Defaults to
+#' @param h_rel Numeric; the relative finite-difference step. Defaults to
 #'   `.Machine$double.eps^(1/3)` for a family with its own Hessian, and to the
-#'   step [tensor_derivatives()] chooses for the order of its difference
+#'   step that [tensor_derivatives()] chooses for the order of its difference
 #'   otherwise; a value given explicitly is used on either route.
 #' @param skip Character vector of component names, or `NULL`, the default.
 #'   A named component is left `NULL` in the result rather than computed, for
 #'   a caller that supplies it in closed form. The names and their order are
-#'   unchanged, so a downstream caller does not need to know which were
-#'   skipped.
+#'   unchanged, so a downstream caller can read the result without checking
+#'   which components were skipped.
 #'
 #' @return A named list of third-derivative component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 3)`][deriv_names].
@@ -121,22 +121,22 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' @description
 #' Computes the unique fourth-order partial derivatives of the log-density by
-#' central finite differences of the highest order the family implements
+#' central finite differences of the highest order that the family implements
 #' itself, up to the Hessian. This powers the default [distrib_deriv4()]
 #' method for distributions without a closed-form implementation.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
-#' @param h_rel Numeric. Relative finite-difference step. Defaults to
+#' @param h_rel Numeric; the relative finite-difference step. Defaults to
 #'   `.Machine$double.eps^(1/4)` for a family with its own Hessian, and to the
-#'   step [tensor_derivatives()] chooses for the order of its difference
+#'   step that [tensor_derivatives()] chooses for the order of its difference
 #'   otherwise; a value given explicitly is used on either route.
 #' @param skip Character vector of component names, or `NULL`, the default.
 #'   A named component is left `NULL` in the result rather than computed, for
 #'   a caller that supplies it in closed form. The names and their order are
-#'   unchanged, so a downstream caller does not need to know which were
-#'   skipped.
+#'   unchanged, so a downstream caller can read the result without checking
+#'   which components were skipped.
 #'
 #' @return A named list of fourth-derivative component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 4)`][deriv_names].
@@ -234,16 +234,17 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @name distrib_deriv3.distrib
 #'
 #' @description
-#' The fallback for a family that registers no third-order method. Observed
-#' derivatives come from [numerical_deriv3()]: one central difference of the
-#' family's own [distrib_hessian()] along each parameter, or, for a family
-#' without its own Hessian, one tensor-product stencil on its score or its
-#' log-density. Expected ones come from [expected_derivative()] at the
-#' strategy `approx` names.
+#' Provides the fallback for a family that registers no third-order method.
+#' Observed derivatives come from [numerical_deriv3()]: one central difference
+#' of the family's own [distrib_hessian()] along each parameter, or, for a
+#' family without its own Hessian, one tensor-product stencil on its score or
+#' its log-density. Expected ones come from [expected_derivative()] at the
+#' strategy selected by `approx`.
 #'
 #' Every family shipped in this package writes the observed third order out,
-#' so this method serves a family defined outside the package, which gets five
-#' orders from a density alone. It is also the reference against which the
+#' so this method serves a family defined outside the package, and five orders
+#' are available for such a family from its density without any other method.
+#' It is also the reference against which the
 #' analytical kernels are validated.
 #'
 #' @param distrib An object inheriting from `distrib` that registers no method
@@ -283,7 +284,8 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #' @name distrib_deriv4.distrib
 #'
 #' @description
-#' The fallback for a family that registers no fourth-order method. Observed
+#' Provides the fallback for a family that registers no fourth-order method.
+#' Observed
 #' derivatives come from [numerical_deriv4()]: a second difference of the
 #' family's own [distrib_hessian()] rather than a difference of the third
 #' order, or, for a family without its own Hessian, one tensor-product stencil
@@ -333,9 +335,9 @@ S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FA
 #' Fifth-Order Derivatives by One Tensor Stencil
 #'
 #' @description
-#' The fifth-order derivative components, each a single tensor-product
-#' central difference of the highest analytic order below it, through
-#' [tensor_derivatives()].
+#' Computes the fifth-order derivative components, where each component is a
+#' single tensor-product central difference of the highest analytic order
+#' below it, through [tensor_derivatives()].
 #'
 #' @details
 #' The quantity differenced is the fourth order where it is analytic, as
@@ -344,10 +346,10 @@ S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FA
 #' a non-decreasing five-tuple is the four-tuple left when one index is
 #' dropped, and the whole order costs one stencil per parameter. Where the
 #' fourth order is not analytic, a family that registers no wrapper reads
-#' the highest order it implements itself, as [analytic_order()] gives it,
-#' and a wrapper of a parent without an analytic fourth order differences its
-#' log-density, because its lower orders are partition sums over the parent's
-#' fallbacks. A difference of a difference is never formed.
+#' the highest order that it implements itself, as [analytic_order()] gives
+#' it, and a wrapper of a parent without an analytic fourth order differences
+#' its log-density, because its lower orders are partition sums over the
+#' parent's fallbacks. A difference of a difference is never formed.
 #'
 #' The step of a difference of order \eqn{r} is
 #' \eqn{\varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with \eqn{a} the
@@ -385,14 +387,14 @@ numerical_deriv5 <- function(distrib, y, theta, scale = c("parameter", "link"),
 }
 
 
-#' The Order a Fifth Derivative Is Differenced From
+#' The Order from Which a Fifth Derivative Is Differenced
 #'
 #' @description
 #' Returns 4 where [has_exact_deriv4()] is `TRUE`; 0 for a wrapper whose
-#' parent has no analytic fourth order, a wrapper being a class that
+#' parent has no analytic fourth order, where a wrapper is a class that
 #' overrides [has_exact_deriv4()] to read its parent; and otherwise the
-#' highest order the family registers itself, as [analytic_order()] gives it
-#' up to 3.
+#' highest order that the family registers itself, as [analytic_order()] gives
+#' it up to 3.
 #'
 #' @param x A distribution object.
 #'
@@ -412,16 +414,16 @@ deriv5_base <- function(x) {
 #' @name distrib_deriv5.distrib
 #'
 #' @description
-#' The route that a family takes at the fifth order when it registers no
-#' method of its own: one tensor-product difference of its highest analytic
+#' Defines the route that a family takes at the fifth order when it registers
+#' no method of its own: one tensor-product difference of its highest analytic
 #' order, through [numerical_deriv5()].
 #'
 #' @details
-#' This is registered on the base class. Ten families write the fifth order
-#' out themselves (see [distrib_deriv5()]), and the wrappers override it.
-#' Among the families that reach it, what differs is the quantity being
-#' differenced: [has_exact_deriv4()] reports whether that quantity is
-#' analytic, and [check_distrib()] emits no order-5 row where it is not.
+#' This is registered on the base class. The families that write the fifth
+#' order out themselves (see [distrib_deriv5()]) and the wrappers override it.
+#' Among the families that reach it, the quantity that is differenced varies:
+#' [has_exact_deriv4()] reports whether that quantity is analytic, and
+#' [check_distrib()] emits no order-5 row where it is not.
 #'
 #' @param distrib An object inheriting from `distrib`.
 #' @param y A numeric vector of observations.

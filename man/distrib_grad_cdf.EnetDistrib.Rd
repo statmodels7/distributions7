@@ -12,8 +12,8 @@
 \item{q}{A numeric vector of quantiles.}
 
 \item{theta}{A named list with components \code{mu} (any real value), \code{lambda}
-(positive) and \code{alpha} (strictly between 0 and 1), each a numeric vector
-of length 1 or \code{n}.}
+(positive) and \code{alpha} (strictly between 0 and 1); each is a numeric
+vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -30,7 +30,8 @@ components for the gradient, six for the Hessian, ten at order 3 and
 fifteen at order 4.
 }
 \description{
-Closed form at every order from one to four. Each half of the distribution
+Returns the derivatives in closed form at every order from one to four. Each
+half of the distribution
 function is a truncated Gaussian: with \eqn{z = q - \mu}, \eqn{s = \sqrt c}
 and \eqn{x = a/\sqrt c} it is \eqn{e^{w}\Phi(X)} below the location and
 \eqn{1 - e^{w}\Phi(X)} above it, for \eqn{X = \pm sz - x} and a weight
@@ -67,11 +68,12 @@ d <- enet_distrib()
 q <- c(-1, 0.5, 2)
 th <- list(mu = 0, lambda = 1, alpha = 0.5)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The gradient is compared with a central difference of the cdf, which
+# shares no arithmetic.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 
-# Three, six, ten and fifteen components as the order rises.
+# The number of components is three, six, ten and fifteen as the order rises.
 lengths(list(distrib_grad_cdf(d, q, th),
              distrib_hess_cdf(d, q, th),
              distrib_deriv3_cdf(d, q, th),

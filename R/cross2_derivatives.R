@@ -13,15 +13,16 @@ NULL
 #' @title Mixed Second-Response Parameter Derivatives of the Log-Density
 #'
 #' @description
-#' Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i}, one
-#' component per parameter, each a vector along `y`. Where [distrib_hess_y()]
-#' says how curved the log-density is in the RESPONSE, this says how that
-#' curvature moves with each parameter.
+#' Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i}, with one
+#' component per parameter, and each component is a vector along `y`.
+#' [distrib_hess_y()] gives
+#' the curvature of the log-density in the RESPONSE, and this quantity gives the
+#' rate at which that curvature changes with each parameter.
 #'
 #' @details
 #' # What consumes it
 #'
-#' It completes the surface a marginal likelihood needs. A penalty is
+#' It completes the surface that a marginal likelihood needs. A penalty is
 #' \eqn{-\log f(D\beta;\theta)}, so its Hessian in the coefficients is
 #' \eqn{-D'\mathrm{diag}(\ell^{(yy)})D}, and the derivative of that in
 #' \eqn{\theta} is this component placed the same way. Differentiating the
@@ -42,10 +43,11 @@ NULL
 #' stencil to the highest quantity that the family implements itself, through
 #' [mixed_tensor_derivatives()]: a central difference of the analytic response
 #' Hessian in each parameter where the family has one, so that such a family
-#' pays for exactly one difference.
+#' requires exactly one difference.
 #'
-#' Continuous distributions only, as with every response derivative: a discrete
-#' family has no method and the call raises with its class named.
+#' The quantity exists for continuous distributions only, as with every
+#' response derivative: a discrete
+#' family has no method and the call raises an error that names its class.
 #'
 #' @param distrib A distribution object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
@@ -54,8 +56,8 @@ NULL
 #' @inheritParams distrib_gradient
 #' @param ... Passed to the method.
 #'
-#' @return A named list with one numeric vector per parameter, each as long as
-#'   `y`, keyed by `distrib@params`.
+#' @return A named list with one numeric vector per parameter, keyed by
+#'   `distrib@params`. Each vector is as long as `y`.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{y} the response,
@@ -78,12 +80,13 @@ NULL
 #' # location, so the mu component is exactly zero.
 #' c(sigma = 2 / 1.3^3)
 #'
-#' # Against a numerical derivative of the response Hessian.
+#' # The result is compared with a numerical derivative of the response
+#' # Hessian.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::grad(f, c(0.4, 1.3))
 #'
-#' # On the link scale, sigma riding a log link, the component is multiplied
-#' # by h' = sigma and nothing else.
+#' # On the link scale, where sigma rides a log link, the component is
+#' # multiplied by h' = sigma and nothing else.
 #' c(link = distrib_cross2_y(d, y, theta, scale = "link")$sigma[1],
 #'   hand = distrib_cross2_y(d, y, theta)$sigma[1] * 1.3)
 #'
@@ -112,7 +115,7 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #'
 #' @details
 #' The reference is the response HESSIAN, one order up from the log-density, so
-#' a distribution carrying an analytic `distrib_hess_y` pays for exactly one
+#' a distribution carrying an analytic `distrib_hess_y` requires exactly one
 #' finite-difference layer. Where that Hessian is itself a fallback the two
 #' differences act on different variables and compose into a single mixed
 #' stencil, rather than into the nested differencing of one variable that the
@@ -124,15 +127,15 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #'
 #' @param distrib A distribution object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters, the point to differentiate at.
+#' @param theta A named list of parameters at which the derivative is computed.
 #' @param h_rel The relative step, defaulting to `.Machine$double.eps^(1/3)`,
 #'   the optimal exponent for a central first difference.
 #' @param which An optional character vector naming a subset of
 #'   `distrib@params`. The default, `NULL`, computes every component; a subset
 #'   returns only those, keyed the same way, and costs one difference each.
 #'
-#' @return A named list with one numeric vector per requested parameter, each
-#'   as long as `y`.
+#' @return A named list with one numeric vector per requested parameter. Each
+#'   vector is as long as `y`.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{y} the response,
@@ -151,13 +154,14 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #' num <- numerical_cross2_y(d, y, theta)
 #' num$sigma
 #'
-#' # Against the gaussian's own closed form, which it does not need this for.
+#' # The result is compared with the gaussian's own closed form, which does
+#' # not need this route.
 #' max(abs(unlist(num) - unlist(distrib_cross2_y(d, y, theta))))
 #'
-#' # One parameter at a time, when only one is wanted.
+#' # A single parameter is computed when only that one is wanted.
 #' numerical_cross2_y(d, y, theta, which = "sigma")
 #'
-#' # A family that does take this route, checked against numDeriv.
+#' # A family that does take this route is checked against numDeriv.
 #' dg <- gamma2_distrib()
 #' yg <- c(0.5, 1, 2)
 #' vapply(distrib_cross2_y(dg, yg, list(mu = 2, sigma2 = 1)),
@@ -193,7 +197,7 @@ numerical_cross2_y <- function(distrib, y, theta,
 #' @name distrib_cross2_y.continuous_distrib
 #'
 #' @description
-#' Falls back to one tensor stencil on the highest quantity the family
+#' Falls back to one tensor stencil on the highest quantity that the family
 #' implements itself, through [mixed_tensor_derivatives()]: a central
 #' difference of an analytic [distrib_hess_y()] in each parameter, a second
 #' difference in the response of an analytic score, or one mixed stencil of
@@ -227,7 +231,8 @@ numerical_cross2_y <- function(distrib, y, theta,
 #'
 #' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #'
-#' # Against a numerical derivative of the response Hessian.
+#' # The result is compared with a numerical derivative of the response
+#' # Hessian.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 #' numDeriv::grad(f, c(2, 1))
 S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
@@ -241,11 +246,11 @@ S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
 #' @name distrib_cross2_y.Gaussian1Distrib
 #'
 #' @description
-#' Closed form. The gaussian's response curvature is
+#' Computes the closed form. The gaussian's response curvature is
 #' \eqn{\ell^{(yy)} = -1/\sigma^2}, which carries no location, so
 #' \deqn{\frac{\partial^3\ell}{\partial y^2\,\partial\mu} = 0, \qquad
 #'   \frac{\partial^3\ell}{\partial y^2\,\partial\sigma} = \frac{2}{\sigma^3}.}
-#' Neither component varies with the data.
+#' Both components are constant in the data.
 #'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations. Only its length is used.
@@ -255,7 +260,7 @@ S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors of length `length(y)`, keyed
-#'   `mu` and `sigma`, the first exactly zero.
+#'   `mu` and `sigma`, where the first is exactly zero.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{y} the response,
@@ -265,8 +270,8 @@ S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
 #'
 #' @seealso [distrib_cross2_y()] for the generic,
 #'   [distrib_hess_y_hess.Gaussian1Distrib()] for the next order in
-#'   \eqn{\theta}, and [distrib_cross2_y.StudentT1Distrib()], where nothing
-#'   vanishes.
+#'   \eqn{\theta}, and [distrib_cross2_y.StudentT1Distrib()], where every
+#'   component is non-zero.
 #'
 #' @keywords internal
 #'
@@ -276,10 +281,11 @@ S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
 #' theta <- list(mu = 0.4, sigma = 1.3)
 #' distrib_cross2_y(d, y, theta)
 #'
-#' # The one surviving component, written out.
+#' # The one surviving component is written out.
 #' 2 / 1.3^3
 #'
-#' # Against a numerical derivative of the response Hessian.
+#' # The result is compared with a numerical derivative of the response
+#' # Hessian.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 #' numDeriv::grad(f, c(0.4, 1.3))
 S7::method(distrib_cross2_y, Gaussian1Distrib) <- function(distrib, y, theta,
@@ -296,11 +302,11 @@ S7::method(distrib_cross2_y, Gaussian1Distrib) <- function(distrib, y, theta,
 #' @name distrib_cross2_y.StudentT1Distrib
 #'
 #' @description
-#' Closed form in all three parameters. With \eqn{z = (y-\mu)/\sigma} and
-#' \eqn{Q(z) = (\nu - z^2)/(\nu + z^2)^2} the response curvature is
-#' \eqn{\ell^{(yy)} = -(\nu+1)Q/\sigma^2}, so writing
-#' \eqn{Q' = 2z(z^2 - 3\nu)/(\nu+z^2)^3} and
-#' \eqn{\partial Q/\partial\nu = (3z^2-\nu)/(\nu+z^2)^3},
+#' Computes the closed form in all three parameters. With \eqn{z =
+#' (y-\mu)/\sigma} and \eqn{Q(z) = (\nu - z^2)/(\nu + z^2)^2} the response
+#' curvature is \eqn{\ell^{(yy)} = -(\nu+1)Q/\sigma^2}, so writing \eqn{Q' =
+#' 2z(z^2 - 3\nu)/(\nu+z^2)^3} and \eqn{\partial Q/\partial\nu =
+#' (3z^2-\nu)/(\nu+z^2)^3},
 #' \deqn{\frac{\partial\ell^{(yy)}}{\partial\mu} = \frac{(\nu+1)Q'}{\sigma^3},
 #'   \qquad \frac{\partial\ell^{(yy)}}{\partial\sigma}
 #'     = \frac{(\nu+1)(2Q + zQ')}{\sigma^3}, \qquad
@@ -341,7 +347,8 @@ S7::method(distrib_cross2_y, Gaussian1Distrib) <- function(distrib, y, theta,
 #' theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
 #' distrib_cross2_y(d, y, theta)
 #'
-#' # Against a numerical derivative of the response Hessian.
+#' # The result is compared with a numerical derivative of the response
+#' # Hessian.
 #' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2],
 #'                                               nu = v[3]))
 #' numDeriv::grad(f, c(0.4, 1.3, 6))

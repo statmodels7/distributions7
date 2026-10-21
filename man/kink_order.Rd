@@ -13,9 +13,9 @@ kink_order(phi)
 A single number, \code{-1}, \code{0}, \code{1} or \code{2}.
 }
 \description{
-The largest \code{k} for which a composition has \code{k} continuous derivatives at
-the origin: 0 for \eqn{\lvert v \rvert} and \eqn{(v)_+}, whose first
-derivative jumps; 1 for \eqn{(v)_+^2}; 2 for \eqn{(v)_+^3}; and -1 for
+Returns the largest \code{k} for which a composition has \code{k} continuous
+derivatives at the origin: 0 for \eqn{\lvert v \rvert} and \eqn{(v)_+}, whose
+first derivative jumps; 1 for \eqn{(v)_+^2}; 2 for \eqn{(v)_+^3}; and -1 for
 \eqn{1\{v>0\}}, which is not continuous at all.
 }
 \details{

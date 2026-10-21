@@ -11,7 +11,7 @@ no method of its own.}
 logarithms under \code{log.p}. A value outside \eqn{[0, 1]} gives \code{NaN} and a
 missing value \code{NA}.}
 
-\item{theta}{A named list of parameters, each of length 1 or \code{length(p)}.}
+\item{theta}{A named list of parameters; each has length 1 or \code{length(p)}.}
 
 \item{lower.tail}{Logical of length 1. \code{TRUE}, the default, treats \code{p} as
 \eqn{P(Y \le q)}; \code{FALSE} treats it as the upper tail.}
@@ -27,28 +27,28 @@ and \code{theta}.
 }
 \description{
 The fallback for a discrete family that implements no analytical quantile
-function: the smallest support point \eqn{k} with \eqn{F(k) \ge p}, read off
-the cumulative table that \code{\link[=disc_cum_table]{disc_cum_table()}} builds. It is exact. The
-distribution function of a discrete variable is a step function, so
-inverting it is a lookup and there is nothing to solve. The probability is
-compared with the running sum after a relative reduction of
-\eqn{64\varepsilon}, as \code{\link[stats:Poisson]{stats::qpois()}} does, so that a probability equal
-to \eqn{F(k)} returns \eqn{k}; on a Poisson defined by its mass alone the
-result agrees with \code{\link[stats:Poisson]{stats::qpois()}}. With \code{lower.tail = FALSE} an upper-tail
+function returns the smallest support point \eqn{k} with
+\eqn{F(k) \ge p}, read off the cumulative table that \code{\link[=disc_cum_table]{disc_cum_table()}}
+builds. It is exact. The distribution function of a discrete variable is a
+step function, so inverting it is a lookup and there is nothing to solve. The
+probability is compared with the running sum after a relative reduction of
+\eqn{64\varepsilon}, as \code{\link[stats:Poisson]{stats::qpois()}} does, so that a probability equal to
+\eqn{F(k)} returns \eqn{k}; on a Poisson defined by its mass alone the result
+agrees with \code{\link[stats:Poisson]{stats::qpois()}}. With \code{lower.tail = FALSE} an upper-tail
 probability below one half is inverted against the table of \eqn{P(Y > k)}
 that \code{\link[=disc_upper_table]{disc_upper_table()}} sums from the top, so that it is not turned into
 \eqn{1 - p}, which would lose its digits; the quantile of an upper-tail
 probability far below machine epsilon is therefore finite and accurate.
 
 Because the distribution function is a step function, the round trip does
-not close. Asking for 0.025, 0.5 and 0.975 returns points
-whose cumulative probabilities are larger, because no support point sits
-exactly at those values.
+not close. Evaluating the quantile function at 0.025, 0.5 and 0.975 returns
+points whose cumulative probabilities are larger, because the cumulative
+probabilities of the support points differ from those values.
 }
 \seealso{
 \code{\link[=disc_cum_table]{disc_cum_table()}}, which builds the table; \code{\link[=disc_upper_table]{disc_upper_table()}},
 the table of the upper tail; \code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf.discrete_distrib()}}, the function
-it inverts;
+that it inverts;
 \code{\link[=distrib_rng.discrete_distrib]{distrib_rng.discrete_distrib()}}, which reads the same table;
 \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

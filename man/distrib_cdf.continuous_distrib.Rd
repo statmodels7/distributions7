@@ -10,7 +10,7 @@ no method of its own.}
 \item{q}{A numeric vector of quantiles. A value outside \code{distrib@bounds}
 returns 0 or 1 as the side requires.}
 
-\item{theta}{A named list of parameters, each of length 1 or \code{length(q)}.}
+\item{theta}{A named list of parameters; each has length 1 or \code{length(q)}.}
 
 \item{lower.tail}{Logical of length 1. \code{TRUE}, the default, returns
 \eqn{P(Y \le q)}; \code{FALSE} returns the upper tail, computed as the
@@ -35,8 +35,8 @@ distribution function: it integrates \code{distrib_pdf} numerically.
 }
 \section{Where the nodes go}{
 An approximate mode is located first by \code{\link[=find_pdf_anchor]{find_pdf_anchor()}}, and the
-integral is taken over whichever side of the mode holds \eqn{q}, the other
-side being reached through the complement. The quadrature nodes then
+integral is taken over whichever side of the mode holds \eqn{q}, and the
+other side is reached through the complement. The quadrature nodes then
 concentrate where the probability mass is, which gives the integral its
 accuracy without any information about the shape of the density.
 }

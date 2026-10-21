@@ -20,8 +20,8 @@ A named list with the single component \code{mu}, a numeric vector of length
 \code{length(y)}.
 }
 \description{
-Closed form: the degrees of freedom are the mean, and
-\eqn{\ell^{(y)} = (\mu/2 - 1)/y - 1/2} gives \eqn{1/(2y)}.
+The mixed derivative is in closed form: the degrees of freedom are the mean,
+and \eqn{\ell^{(y)} = (\mu/2 - 1)/y - 1/2} gives \eqn{1/(2y)}.
 }
 \seealso{
 \code{\link[=chisq_distrib]{chisq_distrib()}} for the family;

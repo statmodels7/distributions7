@@ -7,9 +7,9 @@
 \item{x}{A \code{BetaBinom2Distrib}, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, carrying the
 trial count in its \code{size} property.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or of the common length of the parameter
-settings.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive;
+each is a numeric vector of length 1 or of the common length of the
+parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,8 +18,9 @@ A numeric vector of means, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form: \eqn{E[Y] = n\alpha/(\alpha+\beta)}, the trial count times the
-mean of the mixing beta. This is the classical two-shape parametrization;
+The mean has the closed form \eqn{E[Y] = n\alpha/(\alpha+\beta)}, the trial
+count times the mean of the mixing beta. This is the classical two-shape
+parametrization;
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} carries the same law with
 \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}.
 }
@@ -32,7 +33,7 @@ mean of the mixing beta. This is the classical two-shape parametrization;
 \examples{
 d <- betabinom2_distrib(size = 10)
 
-# Ten trials times the mixing beta's mean of 0.4.
+# The mean is ten trials times the mixing beta's mean of 0.4.
 all.equal(mean(d, list(alpha = 2, beta = 3)), 4)
 
 }

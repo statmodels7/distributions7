@@ -28,9 +28,9 @@ NULL
 #' differentiability off it.
 #'
 #' @details
-#' The five compositions and the order each one leaves, which is the number
-#' of continuous derivatives at \eqn{v = 0}, one less than the order of the
-#' first derivative that jumps there:
+#' The table lists the five compositions and, for each, the order that it
+#' leaves, which is the number of continuous derivatives at \eqn{v = 0}, one
+#' less than the order of the first derivative that jumps there:
 #'
 #' \tabular{lll}{
 #'   `phi`      \tab \eqn{\phi(v)}          \tab order \cr
@@ -57,14 +57,14 @@ NULL
 #'   value per observation.
 #' @param dv A function of `(y, theta)` returning a named list with one entry
 #'   per parameter, \eqn{\partial v / \partial \theta_p}. An entry that is
-#'   identically zero says the kink does not move with that parameter.
+#'   identically zero indicates that the kink does not move with it.
 #' @param coef A function of `theta` returning the multiplier \eqn{c(\theta)}
 #'   standing in front of \eqn{\phi}.
 #'
 #' @return An object of class `kink_spec` carrying the four fields.
 #'
 #' @examples
-#' # the Laplace: l = -log(2 sigma) - |y - mu| / sigma
+#' # The Laplace log-density is l = -log(2 sigma) - |y - mu| / sigma.
 #' k <- kink_spec(
 #'   phi  = "abs",
 #'   v    = function(y, theta) y - theta$mu,
@@ -73,7 +73,7 @@ NULL
 #' k
 #' kink_order(k@phi)
 #'
-#' @seealso [kink_decomposition()] for the generic a family answers,
+#' @seealso [kink_decomposition()] for the generic that a family implements,
 #'   [params_order()] for the order deduced from it, and [check_kink()] for
 #'   the validator.
 #' @export
@@ -115,9 +115,9 @@ S7::method(print, kink_spec) <- function(x, ...) {
 #' The Order Left by a Composition
 #'
 #' @description
-#' The largest `k` for which a composition has `k` continuous derivatives at
-#' the origin: 0 for \eqn{\lvert v \rvert} and \eqn{(v)_+}, whose first
-#' derivative jumps; 1 for \eqn{(v)_+^2}; 2 for \eqn{(v)_+^3}; and -1 for
+#' Returns the largest `k` for which a composition has `k` continuous
+#' derivatives at the origin: 0 for \eqn{\lvert v \rvert} and \eqn{(v)_+}, whose
+#' first derivative jumps; 1 for \eqn{(v)_+^2}; 2 for \eqn{(v)_+^3}; and -1 for
 #' \eqn{1\{v>0\}}, which is not continuous at all.
 #'
 #' @details
@@ -149,9 +149,9 @@ kink_order <- function(phi) {
 #' The Order of Differentiability of a Family in Each Parameter
 #'
 #' @description
-#' One integer per parameter: the largest `k` such that the log-density has `k`
-#' continuous derivatives in that parameter everywhere in `y`. `Inf` marks a
-#' smooth parameter, which is the value for a family that declares no
+#' Returns one integer per parameter: the largest `k` such that the log-density
+#' has `k` continuous derivatives in that parameter everywhere in `y`. `Inf`
+#' marks a smooth parameter, which is the value for a family that declares no
 #' [kink_decomposition()] and records every parameter as smooth in
 #' `params_smooth`.
 #'
@@ -168,10 +168,10 @@ kink_order <- function(phi) {
 #' A family that declares no decomposition but records a parameter as
 #' non-smooth through `params_smooth` reports `NA` for it: there is a kink and
 #' its order has not been established. A consumer must treat that as unusable
-#' rather than as smooth, which is what [check_distrib()] and the fitting layer
-#' do. This is the state of every wrapper of a kinked family today.
+#' rather than as smooth, and [check_distrib()] and the fitting layer do so.
+#' This is the state of every wrapper of a kinked family today.
 #'
-#' The consumers and the order each one needs:
+#' Each consumer needs the order shown below:
 #'
 #' \tabular{ll}{
 #'   1 \tab a score continuous in the coefficients \cr
@@ -187,7 +187,7 @@ kink_order <- function(phi) {
 #' @return A named numeric vector, one entry per element of `distrib@params`.
 #'
 #' @examples
-#' # smooth everywhere
+#' # The Gaussian is smooth in every parameter.
 #' params_order(gaussian1_distrib())
 #'
 #' # the Laplace: the location carries the kink, the scale does not
@@ -218,18 +218,19 @@ params_order <- function(distrib, ...) {
   out
 }
 
-#' Which Parameters a Kink Moves With
+#' The Parameters with Which a Kink Moves
 #'
 #' @description
-#' The set \eqn{\{p : \partial v/\partial \theta_p \ne 0\}}, evaluated rather
-#' than assumed, at probe values inside each parameter's own interval and at a
-#' few points of the support.
+#' Returns the set \eqn{\{p : \partial v/\partial \theta_p \ne 0\}}, which it
+#' evaluates at probe values inside each parameter's own interval and at a few
+#' points of the support rather than assuming it.
 #'
 #' @details
 #' The probe is the midpoint of a bounded interval and one unit inside a
-#' half-line, which is the rule [reparametrize()] already uses; a component is
-#' called non-zero if it is non-zero at any probe, since the set is defined by
-#' the derivative not vanishing identically.
+#' half-line, which is the rule that [reparametrize()] already uses; a
+#' component is called non-zero if it is non-zero at any probe, since the set
+#' consists of the parameters for which the derivative does not vanish
+#' identically.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param kd A [kink_spec()].
@@ -259,8 +260,9 @@ params_order <- function(distrib, ...) {
 #' A Trial Parameter Value Inside Every Interval
 #'
 #' @description
-#' The midpoint of a bounded interval, one unit inside a half-line, and zero on
-#' the whole line. The same rule [reparametrize()] probes a map with.
+#' Returns the midpoint of a bounded interval, one unit inside a half-line, and
+#' zero on the whole line. This is the rule with which [reparametrize()] probes
+#' a map.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #'
@@ -285,9 +287,9 @@ params_order <- function(distrib, ...) {
 #' A Few Points of the Support
 #'
 #' @description
-#' Three quantiles of the family at the probe parameters, falling back on the
-#' interior of its bounds where the quantile function signals an error or
-#' returns a value that is not finite.
+#' Returns three quantiles of the family at the probe parameters, and falls
+#' back on the interior of its bounds where the quantile function signals an
+#' error or returns a value that is not finite.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameter values.
@@ -332,28 +334,28 @@ S7::method(kink_decomposition, distrib) <- function(distrib) NULL
 #'
 #' @description
 #' Holds a [kink_decomposition()] to the family that declares it. The
-#' declaration says where the kink is, what sits on top of it and what stands
-#' in front; the family's own density and score are written independently of
-#' it, so the two can be compared.
+#' declaration gives the location of the kink, the composition that sits on top
+#' of it and the multiplier that stands in front; the family's own density and
+#' score are written independently of it, so the two can be compared.
 #'
 #' @details
-#' Three checks, at probe parameters inside every interval:
+#' The function runs three checks, at probe parameters inside every interval:
 #'
 #' \describe{
 #'   \item{`dv`}{each \eqn{\partial v/\partial \theta_p} against a central
 #'     difference of \eqn{v} itself. This checks `dv` on its own, although
 #'     the jump check below reads it as well.}
-#'   \item{`jump`}{the jump of the score across the kink against the one the
-#'     declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
+#'   \item{`jump`}{the jump of the score across the kink against the one
+#'     that the declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
 #'     \eqn{\phi'} at the origin (2 for \eqn{\lvert v \rvert} and 1 for
 #'     \eqn{(v)_+}), the score of \eqn{c(\theta)\phi(v)} jumps by
 #'     \deqn{c(\theta)\, \Delta\phi' \, \partial v/\partial \theta_p}
-#'     as \eqn{y} crosses the surface \eqn{v = 0}. This is the check that
-#'     matters: it reads `phi`, `v`, `dv` and `coef` at once, and a wrong `v`
+#'     as \eqn{y} crosses the surface \eqn{v = 0}. This is the most important
+#'     check: it reads `phi`, `v`, `dv` and `coef` at once, and a wrong `v`
 #'     fails it.}
-#'   \item{`smooth`}{the score of every parameter the declaration calls smooth
-#'     really is continuous across the same surface. Without this the check
-#'     would pass a declaration that named too few parameters.}
+#'   \item{`smooth`}{the score of every parameter that the declaration calls
+#'     smooth really is continuous across the same surface. Without this the
+#'     check would pass a declaration that named too few parameters.}
 #' }
 #'
 #' A composition whose \eqn{\Delta\phi'} is zero (\eqn{(v)_+^2} and
@@ -435,7 +437,7 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
 #' @description
 #' Solves \eqn{v(y, \theta) = 0} for `y`, which is where the log-density is not
 #' smooth. The search runs over the support, cut to \eqn{[-1000, 1000]} on a
-#' side whose bound is infinite, and returns `NA` when no sign change is
+#' side whose bound is infinite, and returns `NA` unless a sign change is
 #' bracketed there.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
@@ -470,7 +472,7 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
 #' @param jumps Measured jumps of the score, or `NULL`.
 #' @param pred Predicted jumps, or `NULL`.
 #' @param kd A [kink_spec()].
-#' @param ord The order the composition leaves.
+#' @param ord The order that the composition leaves.
 #' @param distrib The family.
 #'
 #' @return `NULL`, invisibly; called for the printing.
@@ -506,19 +508,19 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
 #' Returns the points of \eqn{[\mathrm{lower}, \mathrm{upper}]} at which the
 #' log-density of a family is not smooth in its parameters, for one parameter
 #' combination. [expectation()] adds them to the knots of its quadrature, so
-#' that no panel straddles a jump of the score.
+#' that every panel stays on one side of each jump of the score.
 #'
 #' @details
 #' The base method solves \eqn{v(y, \theta) = 0} for the \eqn{v} of the
 #' family's [kink_decomposition()]. It evaluates \eqn{v} on a grid of the
 #' range, which is twice as dense on its central half, and refines each
 #' sign change with [stats::uniroot()], so that a \eqn{v} with several roots
-#' (a Huber likelihood has two) gives each of them. A family that declares no
-#' decomposition returns no point, even when `params_smooth` records a
+#' (a Huber likelihood has two) gives each of them. A family without a declared
+#' decomposition returns an empty vector, even when `params_smooth` records a
 #' non-smooth parameter, since the location of its kink is then unknown.
 #'
 #' A [folded()] family has a kink at \eqn{\lvert y^* \rvert} for every kink
-#' \eqn{y^*} of its parent, its density being \eqn{f(y) + f(-y)}, and a
+#' \eqn{y^*} of its parent, because its density is \eqn{f(y) + f(-y)}, and a
 #' [truncated()] family has its parent's kinks.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.

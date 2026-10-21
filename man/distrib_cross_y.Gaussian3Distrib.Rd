@@ -16,12 +16,12 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{tau}, each a numeric vector of
-length \code{length(y)}.
+A named list with components \code{mu} and \code{tau}; each is a numeric
+vector of length \code{length(y)}.
 }
 \description{
-Closed form: \eqn{\ell^{(y)} = -\tau(y-\mu)} gives \eqn{\tau} and
-\eqn{-(y-\mu)}.
+The mixed derivatives are in closed form: \eqn{\ell^{(y)} = -\tau(y-\mu)}
+gives \eqn{\tau} and \eqn{-(y-\mu)}.
 }
 \seealso{
 \code{\link[=distrib_cross_y.Gaussian1Distrib]{distrib_cross_y.Gaussian1Distrib()}} for the scale chart;

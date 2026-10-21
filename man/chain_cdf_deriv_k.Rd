@@ -7,7 +7,7 @@
 chain_cdf_deriv_k(parent, q, th_par, maps, new_params, order)
 }
 \arguments{
-\item{parent}{The distribution being mapped.}
+\item{parent}{The distribution that is mapped.}
 
 \item{q}{A numeric vector of quantiles, already on the parent's scale if the
 map transforms the response.}
@@ -28,11 +28,11 @@ the natural scale, keyed as
 }
 \description{
 Carries a parent's derivatives of \eqn{F} in its own parameters onto the new
-ones, for a map given as keyed partial tables, at any order up to four. The
-general form of \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}, which writes orders 1 and 2 out; above
-them the same sum comes from \code{\link[=chain_assemble]{chain_assemble()}}, the enumeration the
-reparametrized parameter derivatives already run on, so the package carries
-no second copy of the partition sum.
+ones, for a map given as keyed partial tables, at any order up to four. This
+is the general form of \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}, which writes orders 1 and 2 out.
+Above them the same sum comes from \code{\link[=chain_assemble]{chain_assemble()}}, the enumeration on
+which the reparametrized parameter derivatives already run, so the package
+carries no second copy of the partition sum.
 }
 \details{
 The parent's tables are fetched on the natural scale, with

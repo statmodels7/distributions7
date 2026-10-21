@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -20,14 +20,15 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{sigma2}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{sigma2}; each
+has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, by the chain rule on the scale parametrization's derivatives
-through \eqn{\sigma = \sqrt{\sigma^2}}. The mean component is unchanged,
-\eqn{-f(q)}, and the variance component is the scale one divided by
-\eqn{2\sigma}, which is the map's only non-zero partial.
+Computes the derivatives in closed form, by the chain rule on the scale
+parametrization's derivatives through \eqn{\sigma = \sqrt{\sigma^2}}. The
+mean component is unchanged, \eqn{-f(q)}, and the variance component is the
+scale one divided by \eqn{2\sigma}. This factor is the derivative of
+\eqn{\sigma} in \eqn{\sigma^2}, the only non-zero partial of the map.
 }
 \section{Notation}{
 

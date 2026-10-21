@@ -19,7 +19,7 @@ A single number, or \code{NA_real_}.
 \description{
 Solves \eqn{v(y, \theta) = 0} for \code{y}, which is where the log-density is not
 smooth. The search runs over the support, cut to \eqn{[-1000, 1000]} on a
-side whose bound is infinite, and returns \code{NA} when no sign change is
+side whose bound is infinite, and returns \code{NA} unless a sign change is
 bracketed there.
 }
 \examples{

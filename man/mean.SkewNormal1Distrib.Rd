@@ -7,8 +7,8 @@
 \item{x}{A \code{SkewNormal1Distrib}, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
-scale, positive) and \code{alpha} (the shape, any sign), each a numeric vector
-of length 1 or \code{n}.}
+scale, positive) and \code{alpha} (the shape, any sign); each is a numeric
+vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,7 +17,7 @@ A numeric vector of means, of length equal to the longest of the
 three components.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu + \sigma b \delta}, with
+The closed form is \eqn{E[Y] = \mu + \sigma b \delta}, with
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 location is not the mean unless the shape is zero: a positive shape pulls
 the mass to the right and the mean with it, by at most
@@ -32,7 +32,7 @@ shape, in Azzalini's direct parametrization.
 \examples{
 d <- skewnormal1_distrib()
 
-# The location plus sigma b delta.
+# The mean is the location plus sigma b delta.
 delta <- 3 / sqrt(1 + 9)
 all.equal(mean(d, list(mu = 0, sigma = 1, alpha = 3)),
           sqrt(2 / pi) * delta)

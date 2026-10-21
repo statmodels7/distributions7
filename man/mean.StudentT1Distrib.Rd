@@ -7,21 +7,22 @@
 \item{x}{A \code{StudentT1Distrib}, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
-scale, positive) and \code{nu} (the degrees of freedom, positive), each a
-numeric vector of length 1 or \code{n}. Settings with \eqn{\nu \le 1} give
-\code{NaN} in their own positions and do not affect the others.}
+scale, positive) and \code{nu} (the degrees of freedom, positive), in which
+each component is a numeric vector of length 1 or \code{n}. Settings with
+\eqn{\nu \le 1} give \code{NaN} in their own positions and do not affect the
+others.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means, of length equal to the longest of the
-three components, \code{NaN} wherever \eqn{\nu \le 1}.
+A numeric vector of means, whose length is the one that the
+recycled parameters imply, with \code{NaN} wherever \eqn{\nu \le 1}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu} for \eqn{\nu > 1}, and \code{NaN} at or below one,
-where the first moment does not exist. At \eqn{\nu = 1} the family is the
-Cauchy, whose divergence is the reason for the threshold; above it the
-density is symmetric about \eqn{\mu} and the location is the mean.
+The mean has the closed form \eqn{E[Y] = \mu} for \eqn{\nu > 1}, and is \code{NaN}
+at or below one, where the first moment does not exist. At \eqn{\nu = 1} the
+family is the Cauchy, whose divergence is the reason for the threshold; above
+it the density is symmetric about \eqn{\mu} and the location is the mean.
 }
 \section{Notation}{
 

@@ -15,8 +15,9 @@ of freedom, positive), a numeric vector of length 1 or \code{n}.}
 A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. The family carries one parameter, which is
-both the mean and the degrees of freedom, the two coinciding for this law.
+The mean has the closed form \eqn{E[Y] = \mu}. The family carries one
+parameter, which is both the mean and the degrees of freedom, because the two
+coincide for this law.
 It is not restricted to whole numbers here, so the family is the gamma with
 variance tied to twice the mean.
 }

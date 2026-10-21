@@ -7,8 +7,8 @@
 \item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, any real value)
-and \code{tau} (the precision, positive), each a numeric vector of length 1 or
-\code{n}.}
+and \code{tau} (the precision, positive); each is a numeric vector of length 1
+or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,10 +17,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This is the Gaussian written by its
-precision \eqn{\tau = 1/\sigma^2}, a parametrization common in Bayesian
-models. As in the other two Gaussian parametrizations, the mean is the
-location parameter.
+The mean has the closed form \eqn{E[Y] = \mu}. This is the Gaussian written
+by its precision \eqn{\tau = 1/\sigma^2}, a parametrization common in
+Bayesian models. As in the other Gaussian parametrizations, the mean is
+the location parameter.
 }
 \examples{
 d <- gaussian3_distrib()

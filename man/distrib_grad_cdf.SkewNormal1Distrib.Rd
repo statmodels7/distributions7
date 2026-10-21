@@ -12,7 +12,7 @@
 \item{q}{A numeric vector of quantiles.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and
-\code{alpha} (any sign), each a numeric vector of length 1 or \code{n}.}
+\code{alpha} (any sign); each is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -29,13 +29,13 @@ components for the gradient, six for the Hessian, ten at order 3 and
 fifteen at order 4.
 }
 \description{
-Closed form at every order from one to four, in the shape as well as in the
-location and the scale. With \eqn{z = (q-\mu)/\sigma} the distribution
-function is \eqn{\Phi(z) - 2T(z,\alpha)}, and Owen's \eqn{T} has elementary
-partial derivatives in both arguments, so the integral in its definition is
-differentiated away at the first order and never has to be differentiated
-again. The location and the scale then enter only through \eqn{z}, by the
-same chain rule the other location-scale families use.
+The derivatives are in closed form at every order from one to four, in the
+shape as well as in the location and the scale. With \eqn{z = (q-\mu)/\sigma}
+the distribution function is \eqn{\Phi(z) - 2T(z,\alpha)}, and Owen's \eqn{T}
+has elementary partial derivatives in both arguments, so the integral in its
+definition is differentiated away at the first order and never has to be
+differentiated again. The location and the scale then enter only through
+\eqn{z}, by the same chain rule that the other location-scale families use.
 }
 \section{Accuracy}{
 The derivatives are closed forms. A product stencil on the same
@@ -75,7 +75,7 @@ gg <- distrib_grad_cdf(gaussian1_distrib(), q, list(mu = 0.3, sigma = 1.2),
                        log = FALSE)
 max(abs(g0$mu - gg$mu))
 
-# Three, six, ten and fifteen components as the order rises.
+# The number of components is three, six, ten and fifteen as the order rises.
 lengths(list(distrib_grad_cdf(d, q, th),
              distrib_hess_cdf(d, q, th),
              distrib_deriv3_cdf(d, q, th),

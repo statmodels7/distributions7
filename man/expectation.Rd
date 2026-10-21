@@ -31,8 +31,8 @@ A numeric vector of expected values, one per parameter combination.
 }
 \description{
 Computes \eqn{E[f(Y)]} under the distribution: by numerical integration for a
-continuous distribution and by series summation for a discrete one, with the
-methods described on their own pages.
+continuous distribution and by series summation for a discrete one. The
+methods are described on their own pages.
 }
 \examples{
 expectation(poisson_distrib(), function(y, theta, k = 1) y^k,

@@ -16,14 +16,14 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu}, \code{sigma} and \code{nu}, each a numeric
-vector of length \code{length(y)}. All three are exact.
+A named list with components \code{mu}, \code{sigma} and \code{nu}; each is a
+numeric vector of length \code{length(y)}. All three are exact.
 }
 \description{
-Closed form throughout. The location and scale components come from the
-location-scale identity; the response enters the shape only through
-\eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape component is
-\eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
+The mixed derivatives are in closed form throughout. The location and scale
+components come from the location-scale identity; the response enters the
+shape only through \eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape
+component is \eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
 }
 \seealso{
 \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the first two components;

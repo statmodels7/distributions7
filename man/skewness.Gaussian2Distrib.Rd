@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
-a numeric vector of length 1 or \code{n}. The values are checked against the
+\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive); each
+is a numeric vector of length 1 or \code{n}. The values are checked against the
 parameter bounds, and only their lengths enter the result.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,15 +17,16 @@ A numeric vector of zeros, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Exactly zero at every parameter value, the density being symmetric about
-\eqn{\mu}. A standardized moment is invariant under a change of
-parametrization, so this is the same zero that \code{\link[=skewness.Gaussian1Distrib]{skewness.Gaussian1Distrib()}}
-returns.
+The skewness is exactly zero at every parameter value, because the density
+is symmetric about \eqn{\mu}. A standardized moment is invariant under a
+change of parametrization, so this is the same zero that
+\code{\link[=skewness.Gaussian1Distrib]{skewness.Gaussian1Distrib()}} returns.
 }
 \examples{
 d <- gaussian2_distrib()
 
-# Zero at every location and variance, with one value per setting.
+# The skewness is zero at every location and variance, with one value per
+# setting.
 skewness(d, list(mu = c(-2, 0, 5), sigma2 = c(1, 4, 9)))
 
 }

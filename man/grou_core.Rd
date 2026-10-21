@@ -11,21 +11,22 @@ grou_core(lp, b, n, r)
 
 \item{b}{A length-2 numeric vector, the support.}
 
-\item{n}{The number of draws wanted.}
+\item{n}{The number of draws.}
 
 \item{r}{The ratio-of-uniforms tuning parameter.}
 }
 \value{
 A numeric vector of draws. An error is signaled if the log-density
-at the mode is not finite, if no bounding rectangle can be built, or if no
-draw is accepted in 1000 rounds.
+at the mode is not finite, if a bounding rectangle cannot be built, or if
+1000 rounds pass without an accepted draw.
 }
 \description{
-The sampler itself, on a bare log-density over an interval.
+Runs the sampler itself on a bare log-density over an interval.
 }
 \details{
-Kept separate from the \code{distrib} object so that it can also be run on a
-reparametrized density, which is how the divergence transforms reuse it.
+The sampler is kept separate from the \code{distrib} object so that it can also be
+run on a reparametrized density, and the divergence transforms reuse it for
+that purpose.
 
 Two devices make it safe. The kernel is recentered at the mode,
 without which a density located at \eqn{\mu = 1000} produces a degenerate

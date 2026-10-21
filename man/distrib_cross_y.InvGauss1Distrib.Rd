@@ -16,11 +16,11 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{phi}, each a numeric vector
-of length \code{length(y)}.
+A named list with components \code{mu} and \code{phi}; each is a numeric
+vector of length \code{length(y)}.
 }
 \description{
-Closed form. With
+The mixed derivatives are in closed form. With
 \eqn{\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)}, the components
 are \eqn{1/(\phi\mu^3)} and \eqn{1/(2\phi^2\mu^2) - 1/(2\phi^2 y^2)}.
 }

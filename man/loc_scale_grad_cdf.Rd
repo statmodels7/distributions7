@@ -12,8 +12,8 @@ parameters are a location and a scale.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters, the location first and the scale
-second.}
+\item{theta}{A named list of parameters, in which the location comes first
+and the scale second.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -24,13 +24,14 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of two numeric vectors, one per parameter, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, one per parameter, in which
+each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} body the location-scale families share:
-the factors of \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at order 1, put on the requested
-tail and scale by \code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. The Gaussian, the logistic, the
+This function is the \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} body that the location-scale
+families share: it computes the factors of \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at
+order 1 and puts them on the requested tail and scale by
+\code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. The Gaussian, the logistic, the
 Laplace and the Gumbel register this function itself, so their pages document one piece
 of arithmetic.
 }

@@ -28,14 +28,14 @@ A named list keyed as \code{\link[=hess_names]{hess_names()}}, \code{\link[=dexp
 \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The expected information of the Poisson-inverse Gaussian and its first and
-second derivatives in the parameters, computed exactly by one pass over the
+Computes the expected information of the Poisson-inverse Gaussian and its
+first and second derivatives in the parameters exactly, by one pass over the
 support for each observation.
 }
 \details{
 For \code{\link[=pig2_distrib]{pig2_distrib()}} the expectations are sums over the support of the mass
-times products of the observed derivatives, written through the second
-Bartlett identity with the measure moving:
+times products of the observed derivatives, and they are written through the
+second Bartlett identity, in which the measure moves:
 \deqn{\mathbb{E}[\ell_{ab}] = -\mathbb{E}[\ell_a\ell_b],}
 \deqn{\partial_c\,\mathbb{E}[\ell_{ab}] = -\mathbb{E}[\ell_{ac}\ell_b
   + \ell_a\ell_{bc} + \ell_a\ell_b\ell_c],}
@@ -72,7 +72,7 @@ order 20, derived offline: the log-mass is the Poisson's plus a power series
 in \eqn{\sigma} whose coefficients are polynomials in \eqn{y}, so every
 expectation is a combination of Poisson moments and its coefficients are
 polynomials in \eqn{\mu} and \eqn{1/\mu}. The mixed entry of pig2 is zero at
-every order of that series, the parametrization being orthogonal.
+every order of that series, because the parametrization is orthogonal.
 
 The \code{approx} and \code{nsim} arguments are accepted and ignored.
 }
@@ -81,7 +81,8 @@ d <- pig2_distrib()
 th <- list(mu = 3, alpha = 2)
 distrib_expected_hessian(d, 1, th)
 
-# Against the outer product of the scores summed over the support.
+# The kernel is compared with the outer product of the scores summed over
+# the support.
 y <- 0:400
 f <- distrib_pdf(d, y, th)
 g <- distrib_gradient(d, y, th)

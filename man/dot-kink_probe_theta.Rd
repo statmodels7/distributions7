@@ -13,8 +13,9 @@
 A named list, one entry per parameter.
 }
 \description{
-The midpoint of a bounded interval, one unit inside a half-line, and zero on
-the whole line. The same rule \code{\link[=reparametrize]{reparametrize()}} probes a map with.
+Returns the midpoint of a bounded interval, one unit inside a half-line, and
+zero on the whole line. This is the rule with which \code{\link[=reparametrize]{reparametrize()}} probes
+a map.
 }
 \examples{
 distributions7:::.kink_probe_theta(laplace_distrib())

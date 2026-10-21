@@ -19,16 +19,16 @@ numerical_deriv3(
 
 \item{theta}{A named list of parameters (each of length 1 or \code{length(y)}).}
 
-\item{h_rel}{Numeric. Relative finite-difference step. Defaults to
+\item{h_rel}{Numeric; the relative finite-difference step. Defaults to
 \code{.Machine$double.eps^(1/3)} for a family with its own Hessian, and to the
-step \code{\link[=tensor_derivatives]{tensor_derivatives()}} chooses for the order of its difference
+step that \code{\link[=tensor_derivatives]{tensor_derivatives()}} chooses for the order of its difference
 otherwise; a value given explicitly is used on either route.}
 
 \item{skip}{Character vector of component names, or \code{NULL}, the default.
 A named component is left \code{NULL} in the result rather than computed, for
 a caller that supplies it in closed form. The names and their order are
-unchanged, so a downstream caller does not need to know which were
-skipped.}
+unchanged, so a downstream caller can read the result without checking
+which components were skipped.}
 }
 \value{
 A named list of third-derivative component vectors, keyed as in
@@ -36,7 +36,7 @@ A named list of third-derivative component vectors, keyed as in
 }
 \description{
 Computes the unique third-order partial derivatives of the log-density by
-central finite differences of the highest order the family implements
+central finite differences of the highest order that the family implements
 itself. This powers the default \code{\link[=distrib_deriv3]{distrib_deriv3()}} method for distributions
 without a closed-form implementation, and is the reference used to validate
 the analytical kernels.

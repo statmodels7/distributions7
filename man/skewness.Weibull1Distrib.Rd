@@ -7,21 +7,21 @@
 \item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
-\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
-The third moment exists for every positive shape.}
+\code{sigma} (the shape, positive); each is a numeric vector of length 1 or
+\code{n}. The third moment exists for every positive shape.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector, of length
 \code{max(length(theta$mu), length(theta$sigma))}. Only the shape enters the
-value, so a setting that varies the scale alone repeats one number.
+value, so a setting that varies only the scale repeats one number.
 }
 \description{
-Closed form:
+The skewness has the closed form
 \deqn{\gamma_1 = \frac{g_3 - 3 g_1 g_2 + 2 g_1^3}{(g_2 - g_1^2)^{3/2}},
       \qquad g_k = \Gamma(1 + k/\sigma).}
-The scale cancels, so the value is a function of the shape alone. It is
+The scale cancels, so the value depends only on the shape. It is
 zero at a shape near 3.60235, so a Weibull is right-skewed below that value
 and left-skewed above it, whereas the skewness of a gamma is always
 positive. The method evaluates it through \code{\link[=weibull_moment_terms]{weibull_moment_terms()}}, from

@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{tau} (positive), each a
-numeric vector of length 1 or \code{n}. The values are checked against the
+\item{theta}{A named list with components \code{mu} and \code{tau} (positive); each is
+a numeric vector of length 1 or \code{n}. The values are checked against the
 parameter bounds, and only their lengths enter the result.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,15 +17,16 @@ A numeric vector of zeros, of length
 \code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Exactly zero at every parameter value, the density being symmetric about
-\eqn{\mu}. A standardized moment is invariant under a change of
-parametrization, so this is the same zero that the other two Gaussian classes
-return.
+The skewness is exactly zero at every parameter value, because the density
+is symmetric about \eqn{\mu}. A standardized moment is invariant under a
+change of parametrization, so this is the same zero that the other two
+Gaussian classes return.
 }
 \examples{
 d <- gaussian3_distrib()
 
-# Zero at every location and precision, with one value per setting.
+# The skewness is zero at every location and precision, with one value per
+# setting.
 skewness(d, list(mu = c(-2, 0, 5), tau = c(1, 4, 9)))
 
 }

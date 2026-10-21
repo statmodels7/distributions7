@@ -26,9 +26,9 @@ turning derivatives with respect to \eqn{\theta} into derivatives with respect
 to the unconstrained \eqn{\eta}.
 }
 \details{
-The mathematics is set out in \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. Two things
-in the implementation are deliberate and are the reason it is not simply a
-transcription of the formula:
+The mathematics is set out in \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. The
+implementation is not a plain transcription of the formula, for two
+deliberate reasons.
 
 First order is special-cased. It is a diagonal rescaling,
 \eqn{\partial \ell/\partial \eta_i = (\partial \ell/\partial \theta_i) h_i'},

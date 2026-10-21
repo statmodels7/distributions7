@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{lambda} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -20,11 +20,12 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{lambda}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{lambda}, in which
+each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
+Computes the gradient in closed form:
+\eqn{\partial F/\partial\mu = -f(q)} and
 \eqn{\partial F/\partial\lambda = (q-\mu)\,f(q)/\lambda}. This is the same
 law as \code{\link[=laplace_distrib]{laplace_distrib()}} written by its rate \eqn{\lambda = 1/\sigma}, and
 the chain rule turns the scale component into the one above.

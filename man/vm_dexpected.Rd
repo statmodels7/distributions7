@@ -21,8 +21,9 @@ vm_dexpected(P, n, order, f, g)
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-Assembles the keyed components for a two-parameter family in which nothing
-moves with the first parameter, \eqn{E_{11} = f(c)},
-\eqn{E_{22} = g(c)} and \eqn{E_{12} = 0} in the second parameter \eqn{c}.
+Assembles the keyed components for a two-parameter family in which the
+expected information does not depend on the first parameter and, in the
+second parameter \eqn{c}, \eqn{E_{11} = f(c)}, \eqn{E_{22} = g(c)} and
+\eqn{E_{12} = 0}.
 }
 \keyword{internal}

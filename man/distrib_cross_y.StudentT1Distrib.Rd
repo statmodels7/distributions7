@@ -17,11 +17,11 @@ returns the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu}, \code{sigma} and \code{nu}, each a numeric
-vector of length \code{length(y)}.
+A named list with components \code{mu}, \code{sigma} and \code{nu}. Each component
+is a numeric vector of length \code{length(y)}.
 }
 \description{
-Closed form in all three parameters. With \eqn{r = y - \mu} and
+Computes the closed form in all three parameters. With \eqn{r = y - \mu} and
 \eqn{D = \nu\sigma^2 + r^2},
 \deqn{\frac{\partial^2 \ell}{\partial y\, \partial \mu} =
       \frac{(\nu+1)(\nu\sigma^2 - r^2)}{D^2}, \qquad
@@ -32,8 +32,8 @@ Closed form in all three parameters. With \eqn{r = y - \mu} and
 
 The \eqn{\nu} component is elementary here, unlike the \eqn{\nu} components
 of the cdf derivatives: the log-density carries \code{lgamma} and a logarithm of
-\eqn{D}, both differentiable in \eqn{\nu} in closed form, and no
-distribution function appears.
+\eqn{D}, both differentiable in \eqn{\nu} in closed form, and the
+expression does not involve a distribution function.
 
 The \eqn{\mu} component changes sign at \eqn{|r| = \sigma\sqrt\nu} and
 decays as \eqn{r^{-2}}, where the Gaussian's is constant. It is the

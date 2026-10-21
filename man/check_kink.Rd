@@ -22,28 +22,28 @@ where a check does not apply.
 }
 \description{
 Holds a \code{\link[=kink_decomposition]{kink_decomposition()}} to the family that declares it. The
-declaration says where the kink is, what sits on top of it and what stands
-in front; the family's own density and score are written independently of
-it, so the two can be compared.
+declaration gives the location of the kink, the composition that sits on top
+of it and the multiplier that stands in front; the family's own density and
+score are written independently of it, so the two can be compared.
 }
 \details{
-Three checks, at probe parameters inside every interval:
+The function runs three checks, at probe parameters inside every interval:
 
 \describe{
 \item{\code{dv}}{each \eqn{\partial v/\partial \theta_p} against a central
 difference of \eqn{v} itself. This checks \code{dv} on its own, although
 the jump check below reads it as well.}
-\item{\code{jump}}{the jump of the score across the kink against the one the
-declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
+\item{\code{jump}}{the jump of the score across the kink against the one
+that the declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
 \eqn{\phi'} at the origin (2 for \eqn{\lvert v \rvert} and 1 for
 \eqn{(v)_+}), the score of \eqn{c(\theta)\phi(v)} jumps by
 \deqn{c(\theta)\, \Delta\phi' \, \partial v/\partial \theta_p}
-as \eqn{y} crosses the surface \eqn{v = 0}. This is the check that
-matters: it reads \code{phi}, \code{v}, \code{dv} and \code{coef} at once, and a wrong \code{v}
+as \eqn{y} crosses the surface \eqn{v = 0}. This is the most important
+check: it reads \code{phi}, \code{v}, \code{dv} and \code{coef} at once, and a wrong \code{v}
 fails it.}
-\item{\code{smooth}}{the score of every parameter the declaration calls smooth
-really is continuous across the same surface. Without this the check
-would pass a declaration that named too few parameters.}
+\item{\code{smooth}}{the score of every parameter that the declaration calls
+smooth really is continuous across the same surface. Without this the
+check would pass a declaration that named too few parameters.}
 }
 
 A composition whose \eqn{\Delta\phi'} is zero (\eqn{(v)_+^2} and

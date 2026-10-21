@@ -16,15 +16,16 @@ A numeric vector of variances, the length of \code{theta$mu}, in
 \eqn{(0, 1/4]}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)}. It is largest at
-\eqn{\mu = 1/2}, where it is \eqn{1/4}, and goes to zero at either end, the
-response becoming deterministic there. That quarter is the largest variance
-any distribution on \eqn{\{0,1\}} can have.
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = \mu(1-\mu)}. It is largest at
+\eqn{\mu = 1/2}, where it is \eqn{1/4}, and goes to zero at either end,
+because the response becomes deterministic there. The value \eqn{1/4} is
+the largest variance that any distribution on \eqn{\{0,1\}} can have.
 }
 \examples{
 d <- bernoulli_distrib()
 
-# Largest at one half, vanishing at either end.
+# The variance is largest at one half and vanishes at either end.
 variance(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
 
 }

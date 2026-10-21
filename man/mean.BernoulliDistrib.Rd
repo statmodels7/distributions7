@@ -18,9 +18,9 @@ A numeric vector of means, the length of \code{theta$mu}, strictly inside
 \eqn{(0,1)}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}, the success probability. The response takes
-the values 0 and 1, so the mean is the probability of the second value, and
-every other moment is a function of \eqn{\mu}.
+The mean has the closed form \eqn{E[Y] = \mu}, the success probability. The
+response takes the values 0 and 1, so the mean is the probability of the
+second value, and every other moment is a function of \eqn{\mu}.
 }
 \examples{
 d <- bernoulli_distrib()

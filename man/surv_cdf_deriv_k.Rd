@@ -22,10 +22,11 @@ order the components, and its lower bound supplies the default mask.}
 the corresponding partial derivative of \eqn{L}. An empty block is the
 zeroth order and is never requested.}
 
-\item{inside}{A logical vector saying which quantiles lie inside the
-support, or \code{NULL} (the default), which reads \code{q > distrib@bounds[1]}. A
-family whose support depends on a parameter supplies its own; the fixed
-bounds cannot see it.}
+\item{inside}{A logical vector that marks the quantiles lying inside the
+support, or \code{NULL} (the default), in which case the mask is
+\code{q > distrib@bounds[1]}. A family whose support depends on a parameter
+supplies its own mask, because the fixed bounds do not vary with the
+parameter.}
 }
 \value{
 A named list of numeric vectors, derivatives of \eqn{F} itself on
@@ -37,23 +38,23 @@ wherever \code{inside} is \code{FALSE}.
 Returns \eqn{\partial^I F} for every component of the requested order, for a
 family whose survival function is the exponential of something elementary.
 Given \eqn{L = \log(1-F)} and a function evaluating its partial derivatives,
-all four orders follow at once, so a family has only to say what \eqn{L} is.
+all four orders follow at once, so it is enough to supply \eqn{L}.
 }
 \section{The identity}{
 \eqn{S = e^{L}} gives \eqn{\partial^I S = S\,B_I}, with \eqn{B_I} the
 complete Bell polynomial in the partials of \eqn{L}, and \eqn{F = 1 - S}
-turns that into \eqn{\partial^I F = -S\,B_I}. It is the same identity the
-distribution wrappers use, read on the survival function instead of on the
-density, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} runs the partition sum, so the derivatives
+turns that into \eqn{\partial^I F = -S\,B_I}. It is the same identity that
+the distribution wrappers use, read on the survival function instead of on
+the density, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} runs the partition sum, so the derivatives
 come from that sum and not from a transcribed expansion.
 }
 
-\section{Two things the arithmetic needs}{
+\section{The survival function and the support}{
 The survival function is evaluated as \code{exp(Lval)} and not as \code{1 - F}, which
-keeps the far tail from canceling. And below the support \eqn{F} is
+keeps the far tail from canceling. Below the support \eqn{F} is
 identically zero and so is every derivative, while \eqn{L} is still finite
-there and would otherwise give a survival above one; the \code{inside} mask is
-what suppresses that.
+there and would otherwise give a survival above one; the \code{inside} mask
+suppresses that.
 }
 
 \section{Notation}{

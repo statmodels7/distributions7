@@ -15,6 +15,6 @@ hess_pair_name(params, a, b)
 A single string.
 }
 \description{
-\verb{params[a]_params[b]} in whichever order \code{\link[=hess_names]{hess_names()}} lists it.
+Returns \verb{params[a]_params[b]} in whichever order \code{\link[=hess_names]{hess_names()}} lists it.
 }
 \keyword{internal}

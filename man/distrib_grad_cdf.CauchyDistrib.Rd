@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -20,27 +20,29 @@ The Cauchy's tails are heavy, so the probability underflows far later here
 than for a Gaussian.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, in which
+each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
-\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma},
-computed by \code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}} as \eqn{-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi}
-with \eqn{Y = q - \mu + \mathrm{i}\sigma}, without squaring the residual.
+Computes the gradient in closed form: \eqn{\partial F/\partial\mu = -f(q)}
+and \eqn{\partial F/\partial\sigma = -z f(q)} with
+\eqn{z = (q-\mu)/\sigma}, computed by \code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}} as
+\eqn{-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi} with \eqn{Y = q - \mu +
+\mathrm{i}\sigma}, without squaring the residual.
 }
 \details{
-The family has no moments, and none is needed here: the distribution
-function is elementary, \eqn{F(q) = 1/2 + \arctan(z)/\pi}, and the identity
-\eqn{\partial F/\partial\mu = -f} holds for every location-scale family
-whether or not its moments converge. The quantities this page returns are
-therefore exact where \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} and its siblings return \code{NaN}.
+The family has no moments, and the result does not need them: the
+distribution function is elementary, \eqn{F(q) = 1/2 + \arctan(z)/\pi}, and
+the identity \eqn{\partial F/\partial\mu = -f} holds for every location-scale
+family whether or not its moments converge. The quantities that this page
+returns are therefore exact where \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} and its siblings
+return \code{NaN}.
 }
 \section{Notation}{
 
 \eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
 \eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
-function. Neither \eqn{\mu} nor \eqn{\sigma} is a moment: they are the
+function. \eqn{\mu} and \eqn{\sigma} are not moments: they are the
 median and the half-interquartile range.
 }
 
@@ -49,7 +51,7 @@ d <- cauchy_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Exact, although the family has no moments.
+# The result is exact, although the family has no moments.
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 

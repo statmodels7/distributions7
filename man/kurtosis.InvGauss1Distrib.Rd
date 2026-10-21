@@ -7,7 +7,7 @@
 \item{x}{An \code{InvGauss1Distrib}, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{phi}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,10 +16,11 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_2 = 15\phi\mu}, the excess over the Gaussian. Like
-the skewness it depends on the two parameters through their product alone,
-and it is exactly \eqn{5\gamma_1^2/3}, so the family occupies one curve of
-the skewness-kurtosis plane, as the gamma does with its own constant.
+The excess kurtosis has the closed form \eqn{\gamma_2 = 15\phi\mu}, the
+excess over the Gaussian. Like the skewness it depends on the two parameters
+only through their product, and it is exactly \eqn{5\gamma_1^2/3}, so the
+family occupies one curve of the skewness-kurtosis plane, as the gamma does
+with its own constant.
 }
 \section{Notation}{
 
@@ -29,7 +30,7 @@ the skewness-kurtosis plane, as the gamma does with its own constant.
 \examples{
 d <- invgauss1_distrib()
 
-# Fifteen times the product.
+# The kurtosis is fifteen times the product.
 all.equal(kurtosis(d, list(mu = 2, phi = 0.5)), 15)
 
 # The family lies on the curve kurtosis = (5/3) skewness^2.

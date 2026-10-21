@@ -11,10 +11,11 @@ numerical_gradient(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters (each of length 1 or \code{length(y)}).}
+\item{theta}{A named list of parameters (each element has length 1 or
+\code{length(y)}).}
 
-\item{h_rel}{Numeric. Relative step size. Defaults to \code{.Machine$double.eps^(1/3)}
-(optimal for central differences).}
+\item{h_rel}{Numeric, the relative step size. Defaults to
+\code{.Machine$double.eps^(1/3)} (optimal for central differences).}
 }
 \value{
 A named list (one element per parameter) of gradient vectors.
@@ -24,7 +25,8 @@ Computes the gradient of the log-density with respect to each parameter by
 central finite differences of \code{distrib_pdf(..., log = TRUE)}. This powers
 the default \code{\link[=distrib_gradient]{distrib_gradient()}} method for distributions that do not
 implement an analytical gradient: any \code{distrib} subclass that defines only
-\code{distrib_pdf} gets its score function for free.
+\code{distrib_pdf} receives its score function from this default at no further
+cost to its author.
 }
 \details{
 Each component is one central difference of the log-density in its own

@@ -8,8 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
-and \code{sigma} (positive), each a numeric vector of length 1 or of the common
-length of the parameter settings.}
+and \code{sigma} (positive); each is a numeric vector of length 1 or of the
+common length of the parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,15 +18,15 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form:
+The variance has the closed form
 \deqn{\operatorname{Var}(Y) = n\mu(1-\mu)\,\frac{1 + n\sigma}{1 + \sigma}.}
 The first factor is the binomial variance and the second is the
 overdispersion, at least 1 for every \eqn{n \ge 1} and growing towards
 \eqn{n} as the dispersion rises. At \eqn{\sigma \to 0} the family is
 binomial; at large \eqn{\sigma} the variance approaches
 \eqn{n^2\mu(1-\mu)}, which is a Bernoulli scaled by the trial count and is
-the largest a distribution on \eqn{\{0, \ldots, n\}} with that mean can
-have.
+the largest variance that a distribution on \eqn{\{0, \ldots, n\}} with that
+mean can have.
 }
 \section{Notation}{
 
@@ -37,7 +37,7 @@ dispersion and \eqn{n} the number of trials.
 \examples{
 d <- betabinom1_distrib(size = 10)
 
-# The published form, written out.
+# The published form is written out.
 all.equal(variance(d, list(mu = 0.3, sigma = 0.5)),
           10 * 0.3 * 0.7 * (1 + 10 * 0.5) / (1 + 0.5))
 

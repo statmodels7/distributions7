@@ -7,8 +7,8 @@
 \item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, any real value)
-and \code{sigma2} (the variance, positive), each a numeric vector of length 1
-or \code{n}.}
+and \code{sigma2} (the variance, positive); each is a numeric vector of length
+1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,9 +17,9 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This is the same law as
+The mean has the closed form \eqn{E[Y] = \mu}. This is the same law as
 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} written by its variance, and the mean is the location
-in all three of the toolkit's Gaussian parametrizations.
+in every Gaussian parametrization of the toolkit.
 }
 \examples{
 d <- gaussian2_distrib()

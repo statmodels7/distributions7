@@ -7,9 +7,9 @@
 \item{x}{A \code{BetaBinom2Distrib}, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, carrying the
 trial count in its \code{size} property.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or of the common length of the parameter
-settings. Large shapes concentrate the
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive;
+each is a numeric vector of length 1 or of the common length of the
+parameter settings. Large shapes concentrate the
 mixing beta and take the family towards a binomial.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -19,9 +19,10 @@ A numeric vector of variances, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)(1 + n\sigma)/(1 +
-\sigma)} at \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma =
-1/(\alpha+\beta)}, computed by \code{\link[=betabinom_moments]{betabinom_moments()}}. For \eqn{n > 1} it
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = n\mu(1-\mu)(1 + n\sigma)/(1 + \sigma)} at
+\eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)},
+computed by \code{\link[=betabinom_moments]{betabinom_moments()}}. For \eqn{n > 1} it
 exceeds the binomial variance at the same mean, and the excess grows as the
 two shapes shrink; for \eqn{n = 1} it is the Bernoulli variance.
 }

@@ -28,10 +28,11 @@ recycled against \code{theta} and the \code{size} of the family. The generic sig
 an error for a \code{size} whose length is neither 1 nor that common length.
 }
 \description{
-Closed form, and exact: the companion identity to the Poisson's,
+Computes the gradient in closed form, and exactly, by the companion
+identity to the Poisson's,
 \deqn{\frac{\partial}{\partial p} P(X \le k) = -n\,\mathrm{dbinom}(k, n-1, p).}
-The whole sum collapses to one binomial mass at one fewer trial, so nothing
-is summed and nothing is differenced.
+The whole sum collapses to one binomial mass at one fewer trial, so the
+function neither sums nor differences.
 }
 \section{Notation}{
 
@@ -43,7 +44,7 @@ held on the object, and \eqn{k = \lfloor q \rfloor}.
 d <- binomial_distrib(size = 10)
 q <- c(2, 5, 8)
 
-# Minus n times a binomial mass at one fewer trial.
+# The component is minus n times a binomial mass at one fewer trial.
 all.equal(distrib_grad_cdf(d, q, list(mu = 0.3), log = FALSE)$mu,
           -10 * dbinom(q, 9, 0.3))
 }

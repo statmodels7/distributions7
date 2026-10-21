@@ -11,11 +11,11 @@ weibull_moment_terms(sigma)
 }
 \value{
 A list with \code{L1} (\eqn{L(t)}), \code{lV} (\eqn{\log(e^{D_2} - 1)}),
-\code{skew} and \code{kurt}, each a numeric vector of the length of \code{sigma}.
+\code{skew} and \code{kurt}; each is a numeric vector of the length of \code{sigma}.
 }
 \description{
 Returns the pieces of the variance, the skewness and the excess kurtosis of
-a Weibull with shape \eqn{k}, which depend on the shape alone. With
+a Weibull with shape \eqn{k}, which depend only on the shape. With
 \eqn{t = 1/k}, \eqn{L(x) = \log\Gamma(1 + x)} and
 \eqn{D_j = L(jt) - jL(t)}, the raw moments divided by
 \eqn{\Gamma(1+t)^j} are \eqn{e^{D_j}}, so

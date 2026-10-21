@@ -11,10 +11,11 @@ numerical_hessian(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters (each of length 1 or \code{length(y)}).}
+\item{theta}{A named list of parameters (each element has length 1 or
+\code{length(y)}).}
 
-\item{h_rel}{Numeric. Relative step size. Defaults to \code{.Machine$double.eps^(1/4)}
-(optimal for second differences).}
+\item{h_rel}{Numeric, the relative step size. Defaults to
+\code{.Machine$double.eps^(1/4)} (optimal for second differences).}
 }
 \value{
 A named list of Hessian component vectors, in \code{\link[=hess_names]{hess_names()}} order
@@ -24,8 +25,8 @@ A named list of Hessian component vectors, in \code{\link[=hess_names]{hess_name
 Computes the observed Hessian of the log-density with respect to the parameters
 by central finite differences of \code{distrib_pdf(..., log = TRUE)}. The
 default \code{\link[=distrib_hessian]{distrib_hessian()}} method calls it for a family that has neither an
-analytical Hessian nor an analytical score; a family with an analytical
-score has it differenced instead.
+analytical Hessian nor an analytical score; for a family with an analytical
+score, the method differences that score instead.
 }
 \details{
 Diagonal components use the three-point stencil

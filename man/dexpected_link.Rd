@@ -25,8 +25,8 @@ order \code{order + 1}.}
 A named list on the link scale.
 }
 \description{
-Leibniz's rule on \eqn{F_{ab} = E_{ab}\,h_a' h_b'}, written once for every
-family.
+Applies Leibniz's rule to \eqn{F_{ab} = E_{ab}\,h_a' h_b'}. The rule is
+written once for every family.
 }
 \details{
 Each parameter moves with its own coordinate only, so with

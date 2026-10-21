@@ -10,7 +10,7 @@ NULL
 #' expectation is taken numerically by [expectation()], which integrates over
 #' the support of a continuous family and sums the series of a discrete one.
 #' The order \eqn{p} may be fractional where \eqn{(y - c)^p} is real over the
-#' whole support, \eqn{c} being the centering value (for example a raw moment
+#' whole support, where \eqn{c} is the centering value (for example a raw moment
 #' of a family on the positive half-line); the integrand is \eqn{(y - c)^p} and
 #' not \eqn{|y - c|^p}. Every setting supplied in `theta` is evaluated in one
 #' batched call, and the result carries one value per setting.
@@ -66,12 +66,12 @@ NULL
 #'   to 1, the mean. A non-integer order is accepted where \eqn{(y - c)^p} is
 #'   real over the support. A negative order on a family whose support reaches
 #'   zero gives a divergent integral, and the quadrature signals an error.
-#' @param central Should the moment be taken about the mean? A single logical,
-#'   `FALSE` by default, which gives the raw moment and needs no extra pass.
+#' @param central Should the moment be taken about the mean? It is a single
+#'   logical whose default `FALSE` gives the raw moment and needs no extra pass.
 #'   `TRUE` costs one further evaluation unless `mu` is supplied.
-#' @param mu The centering value used when `central = TRUE`. A numeric vector
-#'   of length 1 or of the number of settings, or `NULL` (the default), which
-#'   computes the mean numerically. Read only when `central = TRUE`.
+#' @param mu The centering value used when `central = TRUE`. It is a numeric
+#'   vector of length 1 or of the number of settings, or `NULL` (the default),
+#'   which computes the mean numerically. Read only when `central = TRUE`.
 #' @param ... Passed to [expectation()], and from there to the quadrature or
 #'   the series. Names here must not collide with the names in `theta`.
 #'
@@ -80,15 +80,15 @@ NULL
 #'   diverges, or the integrand is not real, an error is signaled in place of a
 #'   value.
 #'
-#' @seealso [expectation()] for the quadrature and the series this rests on;
-#'   [mean.distrib()], [variance()], [std_dev()], [skewness()] and [kurtosis()]
-#'   for the standard moments, which use a family's closed form when one is
-#'   registered.
+#' @seealso [expectation()] for the quadrature and the series on which this
+#'   rests; [mean.distrib()], [variance()], [std_dev()], [skewness()] and
+#'   [kurtosis()] for the standard moments, which use a family's closed form
+#'   when one is registered.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
 #'
-#' # The first four moments of a Gaussian, raw and central.
+#' # These calls compute the first four moments of a Gaussian, raw and central.
 #' moment(d, list(mu = 2, sigma = 3), p = 1)                  # 2
 #' moment(d, list(mu = 2, sigma = 3), p = 2)                  # mu^2 + sigma^2
 #' moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE)  # sigma^2
@@ -100,7 +100,7 @@ NULL
 #' all.equal(moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE, mu = 0),
 #'           moment(d, list(mu = 2, sigma = 3), p = 2))
 #'
-#' # One value per parameter setting.
+#' # The call returns one value per parameter setting.
 #' moment(d, list(mu = c(0, 1, 2), sigma = 1), p = 2, central = TRUE)
 #'
 #' # On a discrete family the expectation is an exact sum.
@@ -156,7 +156,7 @@ moment <- function(distrib, theta, p = 1, central = FALSE, mu = NULL, ...) {
 #'
 #' @examples
 #' # The von Mises is one of the two families with no closed-form mean, so this
-#' # method is what answers for it. On (-pi, pi] with mu = 0 the mean is 0.
+#' # method computes its mean. On (-pi, pi] with mu = 0 the mean is 0.
 #' round(mean(vonmises1_distrib(), list(mu = 0, kappa = 2)), 12)
 #'
 #' # A family with a closed form never reaches here; the numbers agree anyway.
@@ -191,25 +191,25 @@ S7::method(mean, distrib) <- function(x, theta, ...) {
 #'
 #' On a numeric vector the value is [stats::var()], which divides by
 #' \eqn{n - 1}. That is the unbiased estimator, and it differs from the
-#' convention [skewness()] and [kurtosis()] use for their sample versions,
+#' convention that [skewness()] and [kurtosis()] use for their sample versions,
 #' which divide by \eqn{n}. The difference is deliberate: both follow the
 #' commonest convention for the quantity in question.
 #'
 #' @param x An object inheriting from `distrib`, or a numeric vector.
 #' @param ... For a `distrib`: `theta`, a named list of parameters, followed by
-#'   any further arguments for [moment()]. For a numeric vector: `na.rm`, a
-#'   single logical, `FALSE` by default.
+#'   any further arguments for [moment()]. For a numeric vector, the argument
+#'   is `na.rm`, a single logical that is `FALSE` by default.
 #'
 #' @return A numeric vector for a `distrib`, one value per parameter setting; a
-#'   single number for a numeric vector. `NaN` for a family with no moments,
-#'   `Inf` for one whose variance diverges.
+#'   single number for a numeric vector. The value is `NaN` for a family with
+#'   no moments and `Inf` for one whose variance diverges.
 #'
 #' @seealso [std_dev()] for its square root, [skewness()] and [kurtosis()] for
 #'   the standardized third and fourth moments, [moment()] for the numerical
 #'   route, [expectation()] for the quadrature and the series.
 #'
 #' @examples
-#' # A closed form, one value per setting.
+#' # A closed form gives one value per setting.
 #' variance(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 #'
 #' # A Poisson is equidispersed: the variance is the mean.
@@ -266,15 +266,15 @@ S7::method(variance, distrib) <- function(x, theta, ...) {
 #' @name variance.numeric
 #'
 #' @description
-#' The sample variance of a numeric vector, delegated to [stats::var()] and so
-#' divided by \eqn{n - 1}. The method exists so that [variance()] reads the same
-#' on data as on a distribution object; nothing is computed here that
-#' [stats::var()] does not compute.
+#' Computes the sample variance of a numeric vector by delegating to
+#' [stats::var()], which divides by \eqn{n - 1}. The method exists so that
+#' [variance()] reads the same on data as on a distribution object; the method
+#' computes only what [stats::var()] computes.
 #'
 #' @param x A numeric vector. A vector of length 1 gives `NA`, as
-#'   [stats::var()] does, there being no degree of freedom left.
+#'   [stats::var()] does, because zero degrees of freedom remain.
 #' @param na.rm Should missing values be dropped before the variance is taken?
-#'   A single logical, `FALSE` by default, which propagates `NA`.
+#'   It is a single logical, `FALSE` by default, and `FALSE` propagates `NA`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A single number, `NA` if `x` has fewer than two non-missing values.
@@ -288,7 +288,7 @@ S7::method(variance, distrib) <- function(x, theta, ...) {
 #' y <- rnorm(50)
 #' all.equal(variance(y), var(y))
 #'
-#' # The n - 1 denominator, not n.
+#' # The denominator is n - 1, not n.
 #' all.equal(variance(y), sum((y - mean(y))^2) / (length(y) - 1))
 #'
 #' # Missing values propagate unless dropped.
@@ -304,9 +304,9 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @description
 #' Computes \eqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}} for a
 #' distribution object, or the sample standard deviation for a numeric vector.
-#' No family registers a closed form of its own, so a `distrib` always reaches
-#' the square root of [variance()], which is where a family's formula is
-#' consulted. A numeric vector is passed to [stats::sd()].
+#' The families register no closed form of their own, so a `distrib` always
+#' reaches the square root of [variance()], which is where a family's formula
+#' is consulted. A numeric vector is passed to [stats::sd()].
 #'
 #' @details
 #' \deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
@@ -321,8 +321,8 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'
 #' @param x An object inheriting from `distrib`, or a numeric vector.
 #' @param ... For a `distrib`: `theta`, a named list of parameters, followed by
-#'   any further arguments for [moment()]. For a numeric vector: `na.rm`, a
-#'   single logical, `FALSE` by default.
+#'   any further arguments for [moment()]. For a numeric vector, the argument
+#'   is `na.rm`, a single logical that is `FALSE` by default.
 #'
 #' @return A numeric vector for a `distrib`, one value per parameter setting; a
 #'   single number for a numeric vector.
@@ -334,7 +334,7 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' # The scale of a Gaussian is its standard deviation, exactly.
 #' std_dev(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 #'
-#' # The square root of the variance, on any family.
+#' # The standard deviation is the square root of the variance, on any family.
 #' d <- gamma2_distrib()
 #' all.equal(std_dev(d, list(mu = 2, sigma2 = 1)),
 #'           sqrt(variance(d, list(mu = 2, sigma2 = 1))))
@@ -351,10 +351,11 @@ std_dev <- S7::new_generic("std_dev", "x")
 #' @name std_dev.distrib
 #'
 #' @description
-#' The square root of [variance()], evaluated at the same parameters. This is
-#' the only route to a distribution's standard deviation: no shipped family
-#' registers a method of its own, so whatever a family does for its variance,
-#' closed form or quadrature, is what happens here and the root is taken after.
+#' Returns the square root of [variance()], evaluated at the same parameters.
+#' This is the only route to a distribution's standard deviation, because a
+#' shipped family registers no method of its own. The variance of the family, by
+#' closed form or by quadrature, is therefore computed first and the root is
+#' taken after.
 #'
 #' @param x A `distrib` object.
 #' @param theta A named list of parameters on the parameter scale. Components
@@ -362,8 +363,8 @@ std_dev <- S7::new_generic("std_dev", "x")
 #' @param ... Passed to [variance()] and from there to [moment()].
 #'
 #' @return A numeric vector of standard deviations, of length equal to the
-#'   longest component of `theta`. `NaN` where the variance is `NaN`, `Inf`
-#'   where it is `Inf`.
+#'   longest component of `theta`. The value is `NaN` where the variance is
+#'   `NaN` and `Inf` where it is `Inf`.
 #'
 #' @seealso [std_dev()] for the generic and the sample version,
 #'   [variance.distrib()] for the quantity under the root.
@@ -385,14 +386,16 @@ S7::method(std_dev, distrib) <- function(x, theta, ...) {
 #' @name std_dev.numeric
 #'
 #' @description
-#' The sample standard deviation of a numeric vector, delegated to
-#' [stats::sd()] and so the root of the \eqn{n - 1} variance. The method exists
-#' so that [std_dev()] reads the same on data as on a distribution object.
+#' Computes the sample standard deviation of a numeric vector by delegating to
+#' [stats::sd()], which returns the root of the \eqn{n - 1} variance. The method
+#' exists so that [std_dev()] reads the same on data as on a distribution
+#' object.
 #'
 #' @param x A numeric vector. A vector of length 1 gives `NA`, as
 #'   [stats::sd()] does.
 #' @param na.rm Should missing values be dropped before the standard deviation
-#'   is taken? A single logical, `FALSE` by default, which propagates `NA`.
+#'   is taken? It is a single logical, `FALSE` by default, and `FALSE`
+#'   propagates `NA`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A single number, `NA` if `x` has fewer than two non-missing values.
@@ -430,42 +433,42 @@ S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' # What the sign and the size mean
 #'
 #' \eqn{\gamma_1} is invariant to location and to positive scaling, so it is a
-#' property of the shape alone: every Gaussian has \eqn{\gamma_1 = 0} and every
+#' property of the shape only: every Gaussian has \eqn{\gamma_1 = 0} and every
 #' exponential has \eqn{\gamma_1 = 2}, whatever their parameters. In a family
-#' with a shape parameter \eqn{\gamma_1} varies with that parameter: a Poisson
+#' with a shape parameter, \eqn{\gamma_1} varies with that parameter: a Poisson
 #' at mean \eqn{\mu} has \eqn{\gamma_1 = \mu^{-1/2}}, so its asymmetry vanishes
 #' as the counts grow.
 #'
 #' # When it fails to exist
 #'
-#' The third moment is needed, so a family with heavy tails may have no
-#' skewness even where it has a mean. A Student t has one only above three
-#' degrees of freedom and returns `NaN` at or below them; a Cauchy has none at
-#' any parameter value and also returns `NaN`.
+#' The skewness exists only where the third moment exists, so a family with
+#' heavy tails may have no skewness even where it has a mean. A Student t has
+#' one only above three degrees of freedom and returns `NaN` at or below them;
+#' a Cauchy has none at any parameter value and also returns `NaN`.
 #'
 #' # What the sample method returns
 #'
 #' On a numeric vector the third and second central moments both divide by
 #' \eqn{n}, so the value is \eqn{m_3 / m_2^{3/2}} with
 #' \eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. This is the population
-#' denominator, and it differs from the \eqn{n - 1} convention [variance()]
-#' uses on a vector.
+#' denominator, and it differs from the \eqn{n - 1} convention that
+#' [variance()] uses on a vector.
 #'
 #' @param x An object inheriting from `distrib`, or a numeric vector.
 #' @param ... For a `distrib`: `theta`, a named list of parameters, followed by
-#'   any further arguments for [moment()]. For a numeric vector: `na.rm`, a
-#'   single logical, `FALSE` by default.
+#'   any further arguments for [moment()]. For a numeric vector, the argument
+#'   is `na.rm`, a single logical that is `FALSE` by default.
 #'
 #' @return A numeric vector for a `distrib`, one value per parameter setting; a
-#'   single number for a numeric vector. `NaN` where the third moment does not
-#'   exist, as for the Cauchy and for the Student t at three degrees of freedom
-#'   or fewer.
+#'   single number for a numeric vector. The value is `NaN` where the third
+#'   moment does not exist, as for the Cauchy and for the Student t at three
+#'   degrees of freedom or fewer.
 #'
 #' @seealso [kurtosis()] for the fourth standardized moment, [variance()] and
 #'   [std_dev()] for the second, [moment()] for the numerical route.
 #'
 #' @examples
-#' # Zero for a symmetric family, at every parameter value.
+#' # The skewness is zero for a symmetric family, at every parameter value.
 #' skewness(gaussian1_distrib(), list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 #'
 #' # A shape parameter moves it: a Poisson is mu^(-1/2).
@@ -487,12 +490,12 @@ skewness <- S7::new_generic("skewness", "x")
 #' @name skewness.distrib
 #'
 #' @description
-#' Evaluates the third standardized central moment numerically. Three calls of
-#' [moment()] are made: the mean at `p = 1`, then the second and third central
-#' moments about it, and the value is \eqn{m_3 / m_2^{3/2}}. Passing the mean
-#' forward keeps the count at three quadratures. This is the fallback for a
-#' family with no closed form, which among the shipped families means the two
-#' von Mises.
+#' Evaluates the third standardized central moment numerically. The method
+#' calls [moment()] three times, for the mean at `p = 1` and then for the second
+#' and third central moments about it, and the value is
+#' \eqn{m_3 / m_2^{3/2}}. Passing the mean forward keeps the count at three
+#' quadratures. This is the fallback for a family with no closed form, which
+#' among the shipped families means the two von Mises.
 #'
 #' @param x A `distrib` object.
 #' @param theta A named list of parameters on the parameter scale. Components
@@ -509,7 +512,7 @@ skewness <- S7::new_generic("skewness", "x")
 #' # The von Mises reaches this method, and is symmetric about mu.
 #' round(skewness(vonmises1_distrib(), list(mu = 0, kappa = 2)), 10)
 #'
-#' # The same three moments, assembled by hand, on a family that has a formula.
+#' # The same three moments are assembled by hand on a family with a formula.
 #' d <- gamma2_distrib(); th <- list(mu = 2, sigma2 = 1)
 #' m <- moment(d, th, p = 1)
 #' m2 <- moment(d, th, p = 2, central = TRUE, mu = m)
@@ -528,16 +531,17 @@ S7::method(skewness, distrib) <- function(x, theta, ...) {
 #' @name skewness.numeric
 #'
 #' @description
-#' The sample skewness of a numeric vector, \eqn{m_3 / m_2^{3/2}} with
+#' Computes the sample skewness of a numeric vector, \eqn{m_3 / m_2^{3/2}} with
 #' \eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both central moments divide by
 #' \eqn{n}, so this is the population denominator and the estimator is biased
 #' towards zero in small samples. [variance.numeric()] uses \eqn{n - 1}
-#' instead, each following the commonest convention for its own quantity.
+#' instead, and each of the two follows the commonest convention for its own
+#' quantity.
 #'
-#' @param x A numeric vector. A constant vector gives `NaN`, the standardizing
-#'   denominator being zero.
+#' @param x A numeric vector. A constant vector gives `NaN`, because the
+#'   standardizing denominator is zero.
 #' @param na.rm Should missing values be dropped before the moments are taken?
-#'   A single logical, `FALSE` by default, which propagates `NA`.
+#'   It is a single logical, `FALSE` by default, and `FALSE` propagates `NA`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A single number.
@@ -550,7 +554,7 @@ S7::method(skewness, distrib) <- function(x, theta, ...) {
 #' set.seed(1)
 #' y <- rgamma(500, shape = 2)
 #'
-#' # The n denominator, written out.
+#' # The denominator is n, written out.
 #' m <- mean(y)
 #' all.equal(skewness(y),
 #'           mean((y - m)^3) / mean((y - m)^2)^1.5)
@@ -573,7 +577,7 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'
 #' @description
 #' Computes the excess kurtosis, the fourth standardized central moment less
-#' the three a Gaussian has:
+#' the three that a Gaussian has:
 #'
 #' \deqn{\gamma_2 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{4}\right] - 3.}
 #'
@@ -592,35 +596,36 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'
 #' # When it fails to exist
 #'
-#' The fourth moment is needed, so the threshold is higher than for
-#' [skewness()]: a Student t has an excess kurtosis only above four degrees of
-#' freedom. Between two and four degrees of freedom it returns `Inf`, at two or
-#' fewer it returns `NaN`, and a Cauchy returns `NaN` at every parameter value.
+#' The excess kurtosis requires the fourth moment, so its threshold is higher
+#' than for [skewness()]: a Student t has an excess kurtosis only above four
+#' degrees of freedom. Between two and four degrees of freedom it returns `Inf`,
+#' at two or fewer it returns `NaN`, and a Cauchy returns `NaN` at every
+#' parameter value.
 #'
 #' # What the sample method returns
 #'
 #' On a numeric vector the fourth and second central moments both divide by
 #' \eqn{n}, giving \eqn{m_4 / m_2^{2} - 3}. This is the population denominator,
-#' the same convention [skewness()] uses. [variance()] divides by \eqn{n - 1}
-#' instead.
+#' the same convention that [skewness()] uses. [variance()] divides by
+#' \eqn{n - 1} instead.
 #'
 #' @param x An object inheriting from `distrib`, or a numeric vector.
 #' @param ... For a `distrib`: `theta`, a named list of parameters, followed by
-#'   any further arguments for [moment()]. For a numeric vector: `na.rm`, a
-#'   single logical, `FALSE` by default.
+#'   any further arguments for [moment()]. For a numeric vector, the argument
+#'   is `na.rm`, a single logical that is `FALSE` by default.
 #'
 #' @return A numeric vector for a `distrib`, one value per parameter setting; a
-#'   single number for a numeric vector. `NaN` for a family with no moments,
-#'   `Inf` where the fourth moment diverges.
+#'   single number for a numeric vector. The value is `NaN` for a family with
+#'   no moments and `Inf` where the fourth moment diverges.
 #'
 #' @seealso [skewness()] for the third standardized moment, [variance()] and
 #'   [std_dev()] for the second, [moment()] for the numerical route.
 #'
 #' @examples
-#' # Zero for every Gaussian, by construction.
+#' # The excess kurtosis is zero for every Gaussian, by construction.
 #' kurtosis(gaussian1_distrib(), list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 #'
-#' # Three for the Laplace, which is the textbook heavy-tailed comparison.
+#' # The Laplace has an excess kurtosis of three, the heavy-tailed benchmark.
 #' all.equal(kurtosis(laplace_distrib(), list(mu = 0, sigma = 2)), 3)
 #'
 #' # A Student t is 6 / (nu - 4), and infinite at or below four.
@@ -639,12 +644,12 @@ kurtosis <- S7::new_generic("kurtosis", "x")
 #' @name kurtosis.distrib
 #'
 #' @description
-#' Evaluates the excess kurtosis numerically. Three calls of [moment()] are
-#' made: the mean at `p = 1`, then the second and fourth central moments about
-#' it, and the value is \eqn{m_4 / m_2^{2} - 3}. Passing the mean forward keeps
-#' the count at three quadratures. This is the fallback for a family with no
-#' closed form, which among the shipped families means the elastic net and the
-#' two von Mises.
+#' Evaluates the excess kurtosis numerically. The method calls
+#' [moment()] three times, for the mean at `p = 1` and then for the second and
+#' fourth central moments about it, and the value is \eqn{m_4 / m_2^{2} - 3}.
+#' Passing the mean forward keeps the count at three quadratures. This is the
+#' fallback for a family with no closed form, which among the shipped families
+#' means the elastic net and the two von Mises.
 #'
 #' @param x A `distrib` object.
 #' @param theta A named list of parameters on the parameter scale. Components
@@ -662,7 +667,7 @@ kurtosis <- S7::new_generic("kurtosis", "x")
 #' # Gaussian's 0 and the Laplace's 3.
 #' round(kurtosis(enet_distrib(), list(mu = 0, lambda = 1, alpha = 0.5)), 4)
 #'
-#' # The same three moments, assembled by hand, on a family with a formula.
+#' # The same three moments are assembled by hand on a family with a formula.
 #' d <- gamma2_distrib(); th <- list(mu = 2, sigma2 = 1)
 #' m <- moment(d, th, p = 1)
 #' m2 <- moment(d, th, p = 2, central = TRUE, mu = m)
@@ -681,17 +686,17 @@ S7::method(kurtosis, distrib) <- function(x, theta, ...) {
 #' @name kurtosis.numeric
 #'
 #' @description
-#' The sample excess kurtosis of a numeric vector, \eqn{m_4 / m_2^{2} - 3} with
-#' \eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both central moments divide by
-#' \eqn{n}, so this is the population denominator, the convention
-#' [skewness.numeric()] also uses. The estimator is biased downwards in small
-#' samples, and heavy tails make it slow to settle: it depends on the fourth
-#' moment, so a handful of extreme points dominate it.
+#' Computes the sample excess kurtosis of a numeric vector,
+#' \eqn{m_4 / m_2^{2} - 3} with \eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both
+#' central moments divide by \eqn{n}, so this is the population denominator, the
+#' convention that [skewness.numeric()] also uses. The estimator is biased
+#' downwards in small samples, and heavy tails make it slow to settle: it
+#' depends on the fourth moment, so a handful of extreme points dominate it.
 #'
-#' @param x A numeric vector. A constant vector gives `NaN`, the standardizing
-#'   denominator being zero.
+#' @param x A numeric vector. A constant vector gives `NaN`, because the
+#'   standardizing denominator is zero.
 #' @param na.rm Should missing values be dropped before the moments are taken?
-#'   A single logical, `FALSE` by default, which propagates `NA`.
+#'   It is a single logical, `FALSE` by default, and `FALSE` propagates `NA`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A single number.
@@ -704,7 +709,7 @@ S7::method(kurtosis, distrib) <- function(x, theta, ...) {
 #' set.seed(1)
 #' y <- rt(1000, df = 10)
 #'
-#' # The n denominator, written out.
+#' # The denominator is n, written out.
 #' m <- mean(y)
 #' all.equal(kurtosis(y), mean((y - m)^4) / mean((y - m)^2)^2 - 3)
 #'
@@ -731,15 +736,15 @@ S7::method(kurtosis, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @name mean.NegBin2Distrib
 #'
 #' @description
-#' Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. This
-#' parametrization carries the mean as its first parameter, so the method reads
-#' it off and recycles it to the length the two parameters imply. Nothing is
-#' integrated and nothing is summed.
+#' The closed form that replaces the numerical default is \eqn{E[Y] = \mu}.
+#' This parametrization carries the mean as its first parameter, so the method
+#' reads it off and recycles it to the length that the two parameters imply.
+#' The method performs no integration and no summation.
 #'
 #' @param x A `NegBin2Distrib`, from [negbin2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
-#'   `n`. It is aligned and validated by name, so a missing or out-of-bounds
+#'   `theta` (the dispersion, positive); each is a numeric vector of length 1
+#'   or `n`. It is aligned and validated by name, so a missing or out-of-bounds
 #'   component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -766,7 +771,7 @@ S7::method(mean, NegBin2Distrib) <- function(x, theta, ...) {
 #' @name variance.NegBin2Distrib
 #'
 #' @description
-#' Closed form, replacing the numerical default:
+#' The closed form that replaces the numerical default is
 #' \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. The quadratic term is the
 #' overdispersion, so the variance exceeds the mean at every finite \eqn{\theta}
 #' and falls back onto it as \eqn{\theta} grows, which is the Poisson limit of
@@ -774,9 +779,9 @@ S7::method(mean, NegBin2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `NegBin2Distrib`, from [negbin2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
-#'   `n`. Small `theta` means heavy overdispersion; the variance diverges as it
-#'   approaches zero.
+#'   `theta` (the dispersion, positive); each is a numeric vector of length 1
+#'   or `n`. Small `theta` means heavy overdispersion; the variance diverges as
+#'   it approaches zero.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -805,15 +810,15 @@ S7::method(variance, NegBin2Distrib) <- function(x, theta, ...) {
 #' @name skewness.NegBin2Distrib
 #'
 #' @description
-#' Closed form, replacing the numerical default:
+#' The closed form that replaces the numerical default is
 #' \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}. It is positive at every
 #' parameter value and decreases towards the Poisson value \eqn{\mu^{-1/2}} as
 #' \eqn{\theta} grows.
 #'
 #' @param x A `NegBin2Distrib`, from [negbin2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
-#'   `n`.
+#'   `theta` (the dispersion, positive); each is a numeric vector of length 1
+#'   or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -825,7 +830,7 @@ S7::method(variance, NegBin2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- negbin2_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' mu <- 4; th <- 2
 #' all.equal(skewness(d, list(mu = mu, theta = th)),
 #'           (th + 2 * mu) / sqrt(mu * th * (th + mu)))
@@ -845,16 +850,16 @@ S7::method(skewness, NegBin2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.NegBin2Distrib
 #'
 #' @description
-#' Closed form, replacing the numerical default:
+#' The closed form that replaces the numerical default is
 #' \eqn{6/\theta + \theta/\{\mu(\theta+\mu)\}}, the excess over the Gaussian's
-#' three. Both terms are positive, so the family is always leptokurtic, and the
-#' second is what survives in the Poisson limit, where the expression tends to
+#' three. Both terms are positive, so the family is always leptokurtic. Only the
+#' second term survives in the Poisson limit, where the expression tends to
 #' \eqn{1/\mu}.
 #'
 #' @param x A `NegBin2Distrib`, from [negbin2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
-#'   `n`.
+#'   `theta` (the dispersion, positive); each is a numeric vector of length 1
+#'   or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -866,7 +871,7 @@ S7::method(skewness, NegBin2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- negbin2_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' mu <- 4; th <- 2
 #' all.equal(kurtosis(d, list(mu = mu, theta = th)),
 #'           6 / th + th / (mu * (th + mu)))
@@ -886,14 +891,14 @@ S7::method(kurtosis, NegBin2Distrib) <- function(x, theta, ...) {
 #' @name mean.PseudoHuberDistrib
 #'
 #' @description
-#' Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. The density
-#' is symmetric about \eqn{\mu} at every scale and shape, so the location
-#' parameter is the mean, the median and the mode at once.
+#' The closed form that replaces the numerical default is \eqn{E[Y] = \mu}. The
+#' density is symmetric about \eqn{\mu} at every scale and shape, so the
+#' location parameter is the mean, the median and the mode at once.
 #'
 #' @param x A `PseudoHuberDistrib`, from [pseudohuber_distrib()].
 #' @param theta A named list with components `mu` (the location), `sigma` (the
-#'   scale, positive) and `nu` (the shape, positive), each a numeric vector of
-#'   length 1 or `n`.
+#'   scale, positive) and `nu` (the shape, positive); each is a numeric vector
+#'   of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length equal to the longest of the
@@ -919,7 +924,7 @@ S7::method(mean, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @name variance.PseudoHuberDistrib
 #'
 #' @description
-#' Closed form, replacing the numerical default:
+#' The closed form that replaces the numerical default is
 #' \deqn{\operatorname{Var}(Y) = \sigma^2 \sqrt{\nu}\,
 #'       \frac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})},}
 #' with \eqn{K_r} the modified Bessel function of the second kind. The scale
@@ -941,13 +946,13 @@ S7::method(mean, PseudoHuberDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `PseudoHuberDistrib`, from [pseudohuber_distrib()].
 #' @param theta A named list with components `mu` (the location), `sigma` (the
-#'   scale, positive) and `nu` (the shape, positive), each a numeric vector of
-#'   length 1 or `n`.
+#'   scale, positive) and `nu` (the shape, positive); each is a numeric vector
+#'   of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, of the length the recycled
+#' @return A numeric vector of variances, of the length that the recycled
 #'   parameters imply. The scale and `nu` enter the value, so a setting that
-#'   varies `mu` alone repeats one number.
+#'   varies only `mu` repeats one number.
 #'
 #' @seealso [kurtosis.PseudoHuberDistrib()], which is a ratio of the same
 #'   Bessel functions; [mean.PseudoHuberDistrib()]; [pseudohuber_distrib()].
@@ -955,7 +960,7 @@ S7::method(mean, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- pseudohuber_distrib()
 #'
-#' # The Bessel ratio, written out against the method.
+#' # The Bessel ratio is written out against the method.
 #' nu <- 4
 #' all.equal(variance(d, list(mu = 0, sigma = 1, nu = nu)),
 #'           sqrt(nu) * besselK(sqrt(nu), 2, expon.scaled = TRUE) /
@@ -977,14 +982,14 @@ S7::method(variance, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @name skewness.PseudoHuberDistrib
 #'
 #' @description
-#' Exactly zero at every parameter value. The density is symmetric about
-#' \eqn{\mu}, so every odd central moment vanishes and the third standardized
-#' one with it. The constant is returned directly, recycled to the length the
-#' parameters imply, so no quadrature is run.
+#' The skewness is exactly zero at every parameter value. The density is
+#' symmetric about \eqn{\mu}, so every odd central moment vanishes and the third
+#' standardized one with it. The constant is returned directly, recycled to the
+#' length that the parameters imply, so the method runs no quadrature.
 #'
 #' @param x A `PseudoHuberDistrib`, from [pseudohuber_distrib()].
-#' @param theta A named list with components `mu`, `sigma` and `nu`, each a
-#'   numeric vector of length 1 or `n`. The values are not read, only their
+#' @param theta A named list with components `mu`, `sigma` and `nu`; each
+#'   is a numeric vector of length 1 or `n`. The values are not read, only their
 #'   lengths, but the list is still aligned and validated.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -997,7 +1002,7 @@ S7::method(variance, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- pseudohuber_distrib()
 #'
-#' # Zero at every shape, by symmetry, with one value per setting.
+#' # The skewness is zero at every shape, by symmetry, for each setting.
 #' skewness(d, list(mu = 0, sigma = 1, nu = c(1, 2, 3)))
 #'
 #' @keywords internal
@@ -1010,14 +1015,14 @@ S7::method(skewness, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.PseudoHuberDistrib
 #'
 #' @description
-#' Closed form, replacing the numerical default:
+#' The closed form that replaces the numerical default is
 #' \deqn{\gamma_2 = 3\,\frac{K_3(\sqrt{\nu})\,K_1(\sqrt{\nu})}
 #'                          {K_2(\sqrt{\nu})^2} - 3,}
 #' with \eqn{K_r} the modified Bessel function of the second kind. It depends
-#' on the shape alone, the location and the scale canceling in a standardized
-#' moment, and it interpolates between the two limits the family is built to
-#' span: about 3, the Laplace's, as \eqn{\nu \to 0}, and 0, the Gaussian's, as
-#' \eqn{\nu} grows.
+#' only on the shape, because the location and the scale cancel in a
+#' standardized moment, and it interpolates between the two limits that the
+#' family is built to span: about 3, the Laplace's, as \eqn{\nu \to 0}, and 0,
+#' the Gaussian's, as \eqn{\nu} grows.
 #'
 #' @details
 #' All three Bessel functions are evaluated exponentially scaled. Each carries
@@ -1030,14 +1035,14 @@ S7::method(skewness, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' second kind of order \eqn{r}.
 #'
 #' @param x A `PseudoHuberDistrib`, from [pseudohuber_distrib()].
-#' @param theta A named list with components `mu`, `sigma` and `nu`, each a
-#'   numeric vector of length 1 or `n`. Only `nu` enters the value; the other
-#'   two are read for their lengths and are still validated.
+#' @param theta A named list with components `mu`, `sigma` and `nu`; each
+#'   is a numeric vector of length 1 or `n`. Only `nu` enters the value; the
+#'   other two are read for their lengths and are still validated.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, of the length the recycled
-#'   parameters imply. Only `nu` enters the value, so a setting that varies
-#'   the location or the scale alone repeats one number.
+#' @return A numeric vector of excess kurtoses, of the length that the recycled
+#'   parameters imply. Only `nu` enters the value, so a setting that leaves
+#'   `nu` fixed repeats one number.
 #'
 #' @seealso [variance.PseudoHuberDistrib()] for the other Bessel ratio,
 #'   [kurtosis.LaplaceDistrib()] and [kurtosis.Gaussian1Distrib()] for the two
@@ -1049,7 +1054,7 @@ S7::method(skewness, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' # The shape carries the tail weight, from the Laplace's 3 to the Gaussian's 0.
 #' round(kurtosis(d, list(mu = 0, sigma = 1, nu = c(1e-4, 1, 1e2, 1e4))), 4)
 #'
-#' # Neither the location nor the scale enters a standardized moment.
+#' # The location and the scale do not enter a standardized moment.
 #' kurtosis(d, list(mu = c(0, 5), sigma = c(1, 9), nu = 4))
 #'
 #' @keywords internal
@@ -1066,14 +1071,14 @@ S7::method(kurtosis, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @name mean.LaplaceDistrib
 #'
 #' @description
-#' Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. The density
-#' is symmetric about \eqn{\mu}, so the location is the mean and the median at
-#' once. The value is recycled to the length the two parameters imply, and no
-#' quadrature is run.
+#' The closed form that replaces the numerical default is \eqn{E[Y] = \mu}. The
+#' density is symmetric about \eqn{\mu}, so the location is the mean and the
+#' median at once. The value is recycled to the length that the two parameters
+#' imply, and the method runs no quadrature.
 #'
 #' @param x A `LaplaceDistrib`, from [laplace_distrib()].
 #' @param theta A named list with components `mu` (the location) and `sigma`
-#'   (the scale, positive), each a numeric vector of length 1 or `n`.
+#'   (the scale, positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -1099,19 +1104,19 @@ S7::method(mean, LaplaceDistrib) <- function(x, theta, ...) {
 #' @name variance.LaplaceDistrib
 #'
 #' @description
-#' Closed form, replacing the numerical default:
+#' The closed form that replaces the numerical default is
 #' \eqn{\operatorname{Var}(Y) = 2\sigma^2}, so the standard deviation is
 #' \eqn{\sqrt2\,\sigma} and the scale is smaller than it by the factor
 #' \eqn{\sqrt2}.
 #'
 #' @param x A `LaplaceDistrib`, from [laplace_distrib()].
 #' @param theta A named list with components `mu` (the location) and `sigma`
-#'   (the scale, positive), each a numeric vector of length 1 or `n`.
+#'   (the scale, positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
 #'   `max(length(theta$mu), length(theta$sigma))`. The location does not
-#'   enter the value, so a setting that varies `mu` alone repeats one number.
+#'   enter the value, so a setting that varies only `mu` repeats one number.
 #'
 #' @seealso [mean.LaplaceDistrib()], [kurtosis.LaplaceDistrib()],
 #'   [variance.Laplace2Distrib()] for the rate parametrization,
@@ -1120,7 +1125,7 @@ S7::method(mean, LaplaceDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- laplace_distrib()
 #'
-#' # Twice the square of the scale.
+#' # The variance is twice the square of the scale.
 #' all.equal(variance(d, list(mu = 0, sigma = 2)), 8)
 #'
 #' # The standard deviation is sqrt(2) times the scale.
@@ -1136,14 +1141,15 @@ S7::method(variance, LaplaceDistrib) <- function(x, theta, ...) {
 #' @name skewness.LaplaceDistrib
 #'
 #' @description
-#' Exactly zero at every parameter value. The density is symmetric about
-#' \eqn{\mu}, so every odd central moment vanishes. The constant is returned
-#' directly, recycled to the length the parameters imply.
+#' The skewness is exactly zero at every parameter value. The density is
+#' symmetric about \eqn{\mu}, so every odd central moment vanishes. The
+#' constant is returned directly, recycled to the length that the parameters
+#' imply.
 #'
 #' @param x A `LaplaceDistrib`, from [laplace_distrib()].
-#' @param theta A named list with components `mu` and `sigma`, each a numeric
-#'   vector of length 1 or `n`. The values are not read, only their lengths,
-#'   and the list is still aligned and validated.
+#' @param theta A named list with components `mu` and `sigma`; each is a
+#'   numeric vector of length 1 or `n`. The values are not read, only their
+#'   lengths, and the list is still aligned and validated.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of length
@@ -1155,7 +1161,8 @@ S7::method(variance, LaplaceDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- laplace_distrib()
 #'
-#' # Zero at every location and scale, with one value per setting.
+#' # The skewness is zero at every location and scale, with one value per
+#' # setting.
 #' skewness(d, list(mu = c(0, 5), sigma = c(1, 2)))
 #'
 #' @keywords internal
@@ -1168,14 +1175,15 @@ S7::method(skewness, LaplaceDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.LaplaceDistrib
 #'
 #' @description
-#' Exactly 3 at every parameter value, the excess over the Gaussian's fourth
-#' standardized moment of 3. A standardized moment is free of location and
-#' scale, and the Laplace has no shape parameter, so the excess kurtosis is
-#' the same for the whole family.
+#' The excess kurtosis is exactly 3 at every parameter value, which is the
+#' excess over the Gaussian's fourth standardized moment of 3. A standardized
+#' moment is free of location and scale, and the Laplace has no shape parameter,
+#' so the excess kurtosis is the same for the whole family.
 #'
 #' @param x A `LaplaceDistrib`, from [laplace_distrib()].
-#' @param theta A named list with components `mu` and `sigma`, each a numeric
-#'   vector of length 1 or `n`. The values are not read, only their lengths.
+#' @param theta A named list with components `mu` and `sigma`; each is a
+#'   numeric vector of length 1 or `n`. The values are not read, only their
+#'   lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of 3s, of length
@@ -1188,7 +1196,7 @@ S7::method(skewness, LaplaceDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- laplace_distrib()
 #'
-#' # Three, whatever the location and the scale.
+#' # The value is three, whatever the location and the scale.
 #' kurtosis(d, list(mu = c(0, 5), sigma = c(1, 5)))
 #'
 #' @keywords internal
@@ -1201,14 +1209,14 @@ S7::method(kurtosis, LaplaceDistrib) <- function(x, theta, ...) {
 #' @name mean.Laplace2Distrib
 #'
 #' @description
-#' Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. This is the
-#' same family as [laplace_distrib()] written by its rate
-#' \eqn{\lambda = 1/\sigma}, and the mean does not see the difference: it is
+#' The closed form that replaces the numerical default is \eqn{E[Y] = \mu}.
+#' This is the same family as [laplace_distrib()] written by its rate
+#' \eqn{\lambda = 1/\sigma}, and the mean is the same in both, since it is
 #' the location in either parametrization.
 #'
 #' @param x A `Laplace2Distrib`, from [laplace2_distrib()].
 #' @param theta A named list with components `mu` (the location) and `lambda`
-#'   (the rate, positive), each a numeric vector of length 1 or `n`.
+#'   (the rate, positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -1233,7 +1241,7 @@ S7::method(mean, Laplace2Distrib) <- function(x, theta, ...) {
 #' @name variance.Laplace2Distrib
 #'
 #' @description
-#' Closed form, replacing the numerical default:
+#' The closed form that replaces the numerical default is
 #' \eqn{\operatorname{Var}(Y) = 2/\lambda^2}. With \eqn{\lambda = 1/\sigma}
 #' this is the \eqn{2\sigma^2} of [variance.LaplaceDistrib()], so the two
 #' parametrizations agree on the law and differ only in which number is
@@ -1241,13 +1249,13 @@ S7::method(mean, Laplace2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Laplace2Distrib`, from [laplace2_distrib()].
 #' @param theta A named list with components `mu` (the location) and `lambda`
-#'   (the rate, positive), each a numeric vector of length 1 or `n`. The
+#'   (the rate, positive); each is a numeric vector of length 1 or `n`. The
 #'   variance diverges as the rate approaches zero.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
 #'   `max(length(theta$mu), length(theta$lambda))`. The location does not
-#'   enter the value, so a setting that varies `mu` alone repeats one number.
+#'   enter the value, so a setting that varies only `mu` repeats one number.
 #'
 #' @seealso [variance.LaplaceDistrib()], the same quantity in the scale
 #'   parametrization; [mean.Laplace2Distrib()]; [laplace2_distrib()].
@@ -1255,7 +1263,7 @@ S7::method(mean, Laplace2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- laplace2_distrib()
 #'
-#' # Two over the square of the rate.
+#' # The variance is two over the square of the rate.
 #' all.equal(variance(d, list(mu = 0, lambda = 0.5)), 8)
 #'
 #' # The two parametrizations agree when lambda = 1 / sigma.
@@ -1272,14 +1280,16 @@ S7::method(variance, Laplace2Distrib) <- function(x, theta, ...) {
 #' @name skewness.Laplace2Distrib
 #'
 #' @description
-#' Exactly zero at every parameter value, the density being symmetric about
-#' \eqn{\mu}. A standardized moment is free of the parametrization as well as
+#' The skewness is exactly zero at every parameter value, because the density
+#' is symmetric about \eqn{\mu}. A standardized moment is free of the
+#' parametrization as well as
 #' of the location and the scale, so this agrees with
 #' [skewness.LaplaceDistrib()] identically.
 #'
 #' @param x A `Laplace2Distrib`, from [laplace2_distrib()].
-#' @param theta A named list with components `mu` and `lambda`, each a numeric
-#'   vector of length 1 or `n`. The values are not read, only their lengths.
+#' @param theta A named list with components `mu` and `lambda`; each is a
+#'   numeric vector of length 1 or `n`. The values are not read, only their
+#'   lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of length
@@ -1291,7 +1301,8 @@ S7::method(variance, Laplace2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- laplace2_distrib()
 #'
-#' # Zero at every location and rate, with one value per setting.
+#' # The skewness is zero at every location and rate, with one value per
+#' # setting.
 #' skewness(d, list(mu = c(0, 5), lambda = c(1, 2)))
 #'
 #' @keywords internal
@@ -1304,14 +1315,15 @@ S7::method(skewness, Laplace2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Laplace2Distrib
 #'
 #' @description
-#' Exactly 3 at every parameter value, the excess over the Gaussian. A
-#' standardized moment does not see a change of parametrization, so this is the
-#' same number [kurtosis.LaplaceDistrib()] returns and it moves with neither
-#' the location nor the rate.
+#' The excess kurtosis is exactly 3 at every parameter value, the excess over
+#' the Gaussian. A standardized moment is unchanged by a change of
+#' parametrization, so this is the same number that [kurtosis.LaplaceDistrib()]
+#' returns, and it moves with neither the location nor the rate.
 #'
 #' @param x A `Laplace2Distrib`, from [laplace2_distrib()].
-#' @param theta A named list with components `mu` and `lambda`, each a numeric
-#'   vector of length 1 or `n`. The values are not read, only their lengths.
+#' @param theta A named list with components `mu` and `lambda`; each is a
+#'   numeric vector of length 1 or `n`. The values are not read, only their
+#'   lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of 3s, of length
@@ -1323,7 +1335,7 @@ S7::method(skewness, Laplace2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- laplace2_distrib()
 #'
-#' # Three, in either parametrization.
+#' # The value is three in either parametrization.
 #' c(kurtosis(d, list(mu = 0, lambda = 2)),
 #'   kurtosis(laplace_distrib(), list(mu = 0, sigma = 0.5)))
 #'
@@ -1381,7 +1393,7 @@ S7::method(kurtosis, Laplace2Distrib) <- function(x, theta, ...) {
 #'
 #' @description
 #' Returns the pieces of the variance, the skewness and the excess kurtosis of
-#' a Weibull with shape \eqn{k}, which depend on the shape alone. With
+#' a Weibull with shape \eqn{k}, which depend only on the shape. With
 #' \eqn{t = 1/k}, \eqn{L(x) = \log\Gamma(1 + x)} and
 #' \eqn{D_j = L(jt) - jL(t)}, the raw moments divided by
 #' \eqn{\Gamma(1+t)^j} are \eqn{e^{D_j}}, so
@@ -1400,7 +1412,7 @@ S7::method(kurtosis, Laplace2Distrib) <- function(x, theta, ...) {
 #' @param sigma The shape, a positive numeric vector.
 #'
 #' @return A list with `L1` (\eqn{L(t)}), `lV` (\eqn{\log(e^{D_2} - 1)}),
-#'   `skew` and `kurt`, each a numeric vector of the length of `sigma`.
+#'   `skew` and `kurt`; each is a numeric vector of the length of `sigma`.
 #'
 #' @seealso [variance.Weibull1Distrib()], [skewness.Weibull1Distrib()] and
 #'   [kurtosis.Weibull1Distrib()], which read it.
@@ -1468,10 +1480,10 @@ weibull_moment_terms <- function(sigma) {
 #' @name mean.Weibull1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu\,\Gamma(1 + 1/\sigma)}. The first parameter of
-#' this parametrization is the scale, following `gamlss`'s `WEI`, so it is
-#' not the mean; the gamma factor is what separates the two, and it is 1 only
-#' at shape 1, where the family is exponential.
+#' The closed form is \eqn{E[Y] = \mu\,\Gamma(1 + 1/\sigma)}. The first
+#' parameter of this parametrization is the scale, following `gamlss`'s `WEI`,
+#' so it is not the mean. The two differ by the gamma factor, which equals 1
+#' only at shape 1, where the family is exponential.
 #'
 #' @details
 #' The package also ships the Weibull in its mean and shape,
@@ -1480,12 +1492,12 @@ weibull_moment_terms <- function(sigma) {
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the scale and \eqn{\sigma > 0} the shape, in the
-#' parametrization [weibull1_distrib()] uses.
+#' parametrization that [weibull1_distrib()] uses.
 #'
 #' @param x A `Weibull1Distrib`, from [weibull1_distrib()].
 #' @param theta A named list with components `mu` (the scale, positive) and
-#'   `sigma` (the shape, positive), each a numeric vector of length 1 or `n`.
-#'   The mean diverges as the shape approaches zero.
+#'   `sigma` (the shape, positive); each is a numeric vector of length 1 or
+#'   `n`. The mean diverges as the shape approaches zero.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -1497,7 +1509,7 @@ weibull_moment_terms <- function(sigma) {
 #' @examples
 #' d <- weibull1_distrib()
 #'
-#' # The scale times Gamma(1 + 1 / shape).
+#' # The mean is the scale times Gamma(1 + 1 / shape).
 #' all.equal(mean(d, list(mu = 2, sigma = 3)), 2 * gamma(1 + 1 / 3))
 #'
 #' # At shape 1 the family is exponential and the scale is the mean.
@@ -1513,10 +1525,10 @@ S7::method(mean, Weibull1Distrib) <- function(x, theta, ...) {
 #' @name variance.Weibull1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)} with
+#' The closed form is \eqn{\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)} with
 #' \eqn{g_k = \Gamma(1 + k/\sigma)}. The scale enters as a square and the shape
 #' through the two gamma factors, so the coefficient of variation
-#' \eqn{\sqrt{g_2 - g_1^2}/g_1} is a function of the shape alone. The method
+#' \eqn{\sqrt{g_2 - g_1^2}/g_1} depends only on the shape. The method
 #' computes \eqn{\mu^2 g_1^2 (g_2/g_1^2 - 1)} from the logarithms of the gamma
 #' factors ([weibull_moment_terms()]), so that \eqn{g_2 - g_1^2} is not formed
 #' as a difference; the value is `Inf` only where it exceeds the largest
@@ -1528,9 +1540,9 @@ S7::method(mean, Weibull1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Weibull1Distrib`, from [weibull1_distrib()].
 #' @param theta A named list with components `mu` (the scale, positive) and
-#'   `sigma` (the shape, positive), each a numeric vector of length 1 or `n`.
-#'   The variance exists for every positive shape and grows without bound as
-#'   the shape tends to zero.
+#'   `sigma` (the shape, positive); each is a numeric vector of length 1 or
+#'   `n`. The variance exists for every positive shape and grows without bound
+#'   as the shape tends to zero.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -1542,7 +1554,7 @@ S7::method(mean, Weibull1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- weibull1_distrib()
 #'
-#' # The two gamma factors, written out.
+#' # The variance is written out with the two gamma factors.
 #' g1 <- gamma(1 + 1 / 3); g2 <- gamma(1 + 2 / 3)
 #' all.equal(variance(d, list(mu = 2, sigma = 3)), 4 * (g2 - g1^2))
 #'
@@ -1560,10 +1572,10 @@ S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
 #' @name skewness.Weibull1Distrib
 #'
 #' @description
-#' Closed form:
+#' The skewness has the closed form
 #' \deqn{\gamma_1 = \frac{g_3 - 3 g_1 g_2 + 2 g_1^3}{(g_2 - g_1^2)^{3/2}},
 #'       \qquad g_k = \Gamma(1 + k/\sigma).}
-#' The scale cancels, so the value is a function of the shape alone. It is
+#' The scale cancels, so the value depends only on the shape. It is
 #' zero at a shape near 3.60235, so a Weibull is right-skewed below that value
 #' and left-skewed above it, whereas the skewness of a gamma is always
 #' positive. The method evaluates it through [weibull_moment_terms()], from
@@ -1576,13 +1588,13 @@ S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Weibull1Distrib`, from [weibull1_distrib()].
 #' @param theta A named list with components `mu` (the scale, positive) and
-#'   `sigma` (the shape, positive), each a numeric vector of length 1 or `n`.
-#'   The third moment exists for every positive shape.
+#'   `sigma` (the shape, positive); each is a numeric vector of length 1 or
+#'   `n`. The third moment exists for every positive shape.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
 #'   `max(length(theta$mu), length(theta$sigma))`. Only the shape enters the
-#'   value, so a setting that varies the scale alone repeats one number.
+#'   value, so a setting that varies only the scale repeats one number.
 #'
 #' @seealso [kurtosis.Weibull1Distrib()], also free of the scale;
 #'   [variance.Weibull1Distrib()], which is not;
@@ -1610,11 +1622,11 @@ S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Weibull1Distrib
 #'
 #' @description
-#' Closed form:
+#' The excess kurtosis has the closed form
 #' \deqn{\gamma_2 = \frac{g_4 - 4 g_1 g_3 + 6 g_1^2 g_2 - 3 g_1^4}
 #'                       {(g_2 - g_1^2)^2} - 3,
 #'       \qquad g_k = \Gamma(1 + k/\sigma).}
-#' The scale cancels, so the value depends on the shape alone. It is 6 at shape
+#' The scale cancels, so the value depends only on the shape. It is 6 at shape
 #' 1, where the family is exponential, dips below zero over a band of moderate
 #' shapes, and climbs again as the shape grows, towards 2.4. It is evaluated
 #' through [weibull_moment_terms()], as the skewness is.
@@ -1624,13 +1636,13 @@ S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Weibull1Distrib`, from [weibull1_distrib()].
 #' @param theta A named list with components `mu` (the scale, positive) and
-#'   `sigma` (the shape, positive), each a numeric vector of length 1 or `n`.
-#'   The fourth moment exists for every positive shape.
+#'   `sigma` (the shape, positive); each is a numeric vector of length 1 or
+#'   `n`. The fourth moment exists for every positive shape.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
 #'   `max(length(theta$mu), length(theta$sigma))`. Only the shape enters the
-#'   value, so a setting that varies the scale alone repeats one number.
+#'   value, so a setting that varies only the scale repeats one number.
 #'
 #' @seealso [skewness.Weibull1Distrib()], [variance.Weibull1Distrib()],
 #'   [weibull_moment_terms()], [weibull1_distrib()].
@@ -1661,7 +1673,7 @@ S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
 #' @name mean.GumbelDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu + \gamma\sigma}, with
+#' The closed form is \eqn{E[Y] = \mu + \gamma\sigma}, with
 #' \eqn{\gamma \approx 0.5772157} the Euler-Mascheroni constant. The location
 #' is therefore not the mean: the distribution of a maximum is shifted to the
 #' right of its location by a fixed multiple of the scale. The constant is
@@ -1674,7 +1686,7 @@ S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `GumbelDistrib`, from [gumbel_distrib()].
 #' @param theta A named list with components `mu` (the location) and `sigma`
-#'   (the scale, positive), each a numeric vector of length 1 or `n`.
+#'   (the scale, positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -1686,7 +1698,7 @@ S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gumbel_distrib()
 #'
-#' # The location plus the Euler-Mascheroni constant times the scale.
+#' # The mean is the location plus the Euler-Mascheroni constant times sigma.
 #' all.equal(mean(d, list(mu = 0, sigma = 1)), -digamma(1))
 #'
 #' # The gap between location and mean grows with the scale.
@@ -1702,18 +1714,20 @@ S7::method(mean, GumbelDistrib) <- function(x, theta, ...) {
 #' @name variance.GumbelDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/6}. The scale is not
-#' the standard deviation: it is smaller by \eqn{\pi/\sqrt6 \approx 1.2825}.
-#' The location does not enter, the family being location-scale.
+#' The closed form is \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/6}. The scale
+#' is not the standard deviation: it is smaller by
+#' \eqn{\pi/\sqrt6 \approx 1.2825}.
+#' The location does not enter the value, because the family is
+#' location-scale.
 #'
 #' @param x A `GumbelDistrib`, from [gumbel_distrib()].
 #' @param theta A named list with components `mu` (the location) and `sigma`
-#'   (the scale, positive), each a numeric vector of length 1 or `n`.
+#'   (the scale, positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
 #'   `max(length(theta$mu), length(theta$sigma))`. The location does not
-#'   enter the value, so a setting that varies `mu` alone repeats one number.
+#'   enter the value, so a setting that varies only `mu` repeats one number.
 #'
 #' @seealso [mean.GumbelDistrib()], [kurtosis.GumbelDistrib()],
 #'   [gumbel_distrib()].
@@ -1721,7 +1735,7 @@ S7::method(mean, GumbelDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gumbel_distrib()
 #'
-#' # pi^2 sigma^2 / 6.
+#' # The variance is pi^2 sigma^2 / 6.
 #' all.equal(variance(d, list(mu = 0, sigma = 2)), pi^2 * 4 / 6)
 #'
 #' # The standard deviation is pi / sqrt(6) times the scale.
@@ -1737,7 +1751,8 @@ S7::method(variance, GumbelDistrib) <- function(x, theta, ...) {
 #' @name skewness.GumbelDistrib
 #'
 #' @description
-#' Constant: \eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \approx 1.1395}, with
+#' The skewness is the constant
+#' \eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \approx 1.1395}, with
 #' \eqn{\zeta(3)} Apery's constant. The Gumbel is a location-scale family with
 #' no shape parameter, so its standardized moments are constants: every Gumbel
 #' has this same right skew, whatever its location and scale.
@@ -1748,11 +1763,12 @@ S7::method(variance, GumbelDistrib) <- function(x, theta, ...) {
 #'
 #' @section Notation:
 #' \eqn{\zeta} is the Riemann zeta function; \eqn{\mu} and \eqn{\sigma > 0} are
-#' the location and the scale, neither of which enters the value.
+#' the location and the scale, which do not enter the value.
 #'
 #' @param x A `GumbelDistrib`, from [gumbel_distrib()].
-#' @param theta A named list with components `mu` and `sigma`, each a numeric
-#'   vector of length 1 or `n`. The values are not read, only their lengths.
+#' @param theta A named list with components `mu` and `sigma`; each is a
+#'   numeric vector of length 1 or `n`. The values are not read, only their
+#'   lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, every element \eqn{12\sqrt6\,\zeta(3)/\pi^3}, of
@@ -1765,10 +1781,10 @@ S7::method(variance, GumbelDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gumbel_distrib()
 #'
-#' # One number for the whole family.
+#' # The skewness is one number for the whole family.
 #' skewness(d, list(mu = c(0, 5, -3), sigma = c(1, 7, 0.2)))
 #'
-#' # Against the published constant.
+#' # The value is compared with the published constant.
 #' all.equal(skewness(d, list(mu = 0, sigma = 1)),
 #'           12 * sqrt(6) * 1.2020569031595942854 / pi^3)
 #'
@@ -1785,13 +1801,15 @@ S7::method(skewness, GumbelDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.GumbelDistrib
 #'
 #' @description
-#' Constant: \eqn{\gamma_2 = 12/5 = 2.4}, the excess over the Gaussian. Like
-#' the skewness it is fixed for the whole family, there being no shape parameter
-#' for a standardized moment to depend on.
+#' The excess kurtosis is the constant \eqn{\gamma_2 = 12/5 = 2.4}, the excess
+#' over the Gaussian. Like the skewness, it is fixed for the whole family,
+#' because the family has no shape parameter on which a standardized moment
+#' could depend.
 #'
 #' @param x A `GumbelDistrib`, from [gumbel_distrib()].
-#' @param theta A named list with components `mu` and `sigma`, each a numeric
-#'   vector of length 1 or `n`. The values are not read, only their lengths.
+#' @param theta A named list with components `mu` and `sigma`; each is a
+#'   numeric vector of length 1 or `n`. The values are not read, only their
+#'   lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of 2.4s, of length
@@ -1803,7 +1821,7 @@ S7::method(skewness, GumbelDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gumbel_distrib()
 #'
-#' # 12 / 5 for every Gumbel.
+#' # The excess kurtosis is 12 / 5 for every Gumbel.
 #' kurtosis(d, list(mu = c(0, 5), sigma = c(1, 7)))
 #'
 #' @keywords internal
@@ -1820,7 +1838,7 @@ S7::method(kurtosis, GumbelDistrib) <- function(x, theta, ...) {
 # tends to 1, so the skewness and the kurtosis the family can reach are bounded
 # -- that bound is the reason the skew t exists.
 
-#' The Shape a Skew Normal's Moments Depend On
+#' The Shape on Which a Skew Normal's Moments Depend
 #'
 #' @description
 #' Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and the product
@@ -1841,8 +1859,8 @@ S7::method(kurtosis, GumbelDistrib) <- function(x, theta, ...) {
 #'   \eqn{\delta = 0} and the symmetric Gaussian case; the magnitude saturates
 #'   at one as the shape grows.
 #'
-#' @return A named list with `delta` and `bd`, each a numeric vector the length
-#'   of `alpha`.
+#' @return A named list with `delta` and `bd`, in which each component is a
+#'   numeric vector of the length of `alpha`.
 #'
 #' @seealso [mean.SkewNormal1Distrib()], [variance.SkewNormal1Distrib()],
 #'   [skewness.SkewNormal1Distrib()] and [kurtosis.SkewNormal1Distrib()] for
@@ -1864,7 +1882,7 @@ skewnormal_delta <- function(alpha) {
 #' @name mean.SkewNormal1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu + \sigma b \delta}, with
+#' The closed form is \eqn{E[Y] = \mu + \sigma b \delta}, with
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 #' location is not the mean unless the shape is zero: a positive shape pulls
 #' the mass to the right and the mean with it, by at most
@@ -1876,8 +1894,8 @@ skewnormal_delta <- function(alpha) {
 #'
 #' @param x A `SkewNormal1Distrib`, from [skewnormal1_distrib()].
 #' @param theta A named list with components `mu` (the location), `sigma` (the
-#'   scale, positive) and `alpha` (the shape, any sign), each a numeric vector
-#'   of length 1 or `n`.
+#'   scale, positive) and `alpha` (the shape, any sign); each is a numeric
+#'   vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length equal to the longest of the
@@ -1889,7 +1907,7 @@ skewnormal_delta <- function(alpha) {
 #' @examples
 #' d <- skewnormal1_distrib()
 #'
-#' # The location plus sigma b delta.
+#' # The mean is the location plus sigma b delta.
 #' delta <- 3 / sqrt(1 + 9)
 #' all.equal(mean(d, list(mu = 0, sigma = 1, alpha = 3)),
 #'           sqrt(2 / pi) * delta)
@@ -1907,7 +1925,8 @@ S7::method(mean, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @name variance.SkewNormal1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with
+#' The closed form is
+#' \eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 #' bracket is at most 1, a value attained only at shape zero, and it decreases
 #' towards \eqn{1 - 2/\pi \approx 0.3634} as the magnitude of the shape grows.
@@ -1919,13 +1938,13 @@ S7::method(mean, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `SkewNormal1Distrib`, from [skewnormal1_distrib()].
 #' @param theta A named list with components `mu` (the location), `sigma` (the
-#'   scale, positive) and `alpha` (the shape, any sign), each a numeric vector
-#'   of length 1 or `n`.
+#'   scale, positive) and `alpha` (the shape, any sign); each is a numeric
+#'   vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, of the length the recycled
+#' @return A numeric vector of variances, of the length that the recycled
 #'   parameters imply. The scale and `alpha` enter the value, so a setting
-#'   that varies `mu` alone repeats one number.
+#'   that varies only `mu` repeats one number.
 #'
 #' @seealso [mean.SkewNormal1Distrib()], [kurtosis.SkewNormal1Distrib()],
 #'   [skewnormal_delta()], [skewnormal1_distrib()].
@@ -1948,30 +1967,30 @@ S7::method(variance, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @name skewness.SkewNormal1Distrib
 #'
 #' @description
-#' Closed form:
+#' The closed form is
 #' \deqn{\gamma_1 = \frac{4-\pi}{2}\,
 #'       \frac{(b\delta)^3}{(1 - b^2\delta^2)^{3/2}},}
 #' with \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. It
 #' takes the sign of the shape and vanishes at zero. Because \eqn{\delta} is
-#' bounded by 1, the skewness the family can reach is bounded too, by about
-#' 0.9953 in absolute value. A sample skewness beyond that value lies outside
-#' the range a skew normal can have at any shape; the skewness of the skew t
-#' has no such bound.
+#' bounded by 1, the skewness that the family can reach is bounded too, by
+#' about 0.9953 in absolute value. A sample skewness beyond that value lies
+#' outside the range that a skew normal can have at any shape; the skewness of
+#' the skew t has no such bound.
 #'
 #' @section Notation:
 #' \eqn{\alpha} is the shape, \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
-#' \eqn{b = \sqrt{2/\pi}}. Neither the location nor the scale enters a
+#' \eqn{b = \sqrt{2/\pi}}. The location and the scale do not enter a
 #' standardized moment.
 #'
 #' @param x A `SkewNormal1Distrib`, from [skewnormal1_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive) and
-#'   `alpha` (any sign), each a numeric vector of length 1 or `n`. Only `alpha`
-#'   enters the value.
+#'   `alpha` (any sign); each is a numeric vector of length 1 or `n`. Only
+#'   `alpha` enters the value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector, of the length the recycled parameters imply,
+#' @return A numeric vector, of the length that the recycled parameters imply,
 #'   always inside \eqn{(-0.9953, 0.9953)}. Only `alpha` enters the value, so
-#'   a setting that varies the location or the scale alone repeats one number.
+#'   a setting that varies only the location or the scale repeats one number.
 #'
 #' @seealso [kurtosis.SkewNormal1Distrib()], bounded for the same reason;
 #'   [skewness.SkewTDistrib()], which is not bounded;
@@ -1997,14 +2016,14 @@ S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.SkewNormal1Distrib
 #'
 #' @description
-#' Closed form:
+#' The closed form is
 #' \deqn{\gamma_2 = 2(\pi - 3)\,
 #'       \frac{(b\delta)^4}{(1 - b^2\delta^2)^{2}},}
 #' with \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 #' fourth power makes it even in the shape and non-negative, so the excess
 #' kurtosis of a skew normal is never below the Gaussian's, and the bound on
 #' \eqn{\delta} caps it at about 0.8692. A sample excess kurtosis beyond that
-#' value lies outside the range a skew normal can have at any shape.
+#' value lies outside the range that a skew normal can have at any shape.
 #'
 #' @section Notation:
 #' \eqn{\alpha} is the shape, \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
@@ -2012,13 +2031,13 @@ S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `SkewNormal1Distrib`, from [skewnormal1_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive) and
-#'   `alpha` (any sign), each a numeric vector of length 1 or `n`. Only `alpha`
-#'   enters the value.
+#'   `alpha` (any sign); each is a numeric vector of length 1 or `n`. Only
+#'   `alpha` enters the value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, of the length the recycled
+#' @return A numeric vector of excess kurtoses, of the length that the recycled
 #'   parameters imply, always in \eqn{[0, 0.8692)}. Only `alpha` enters the
-#'   value, so a setting that varies the location or the scale alone repeats
+#'   value, so a setting that varies only the location or the scale repeats
 #'   one number.
 #'
 #' @seealso [skewness.SkewNormal1Distrib()], bounded for the same reason;
@@ -2028,7 +2047,7 @@ S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- skewnormal1_distrib()
 #'
-#' # Even in the shape, and zero only at zero.
+#' # The kurtosis is even in the shape, and zero only at zero.
 #' kurtosis(d, list(mu = 0, sigma = 1, alpha = c(-3, 0, 3)))
 #'
 #' # The reachable range stops short of 0.8692.
@@ -2048,10 +2067,10 @@ S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
 # The density is perfectly well defined there, so a family that reported a
 # number would be reporting one that does not exist.
 
-#' The Quantities a Skew t's Moments Are Built From
+#' The Quantities from Which a Skew t's Moments Are Built
 #'
 #' @description
-#' Returns the four pieces the family's four moment methods share:
+#' Returns the four pieces that the family's four moment methods share:
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, the constant
 #' \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}, the mean
 #' \eqn{\mu_z = \delta b_\nu} of the standardized variable and its variance
@@ -2060,9 +2079,9 @@ S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @details
 #' The gamma ratio in \eqn{b_\nu} is formed from the logarithm of the beta
 #' function, \eqn{\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2) = B\{(\nu-1)/2, 1/2\}/\sqrt{\pi}},
-#' so that neither the gamma functions nor the difference of two large
-#' log-gamma values is formed, and \eqn{b_\nu} keeps its accuracy as \eqn{\nu}
-#' grows (to \eqn{\nu = 10^{16}} and beyond). \eqn{\delta} comes from
+#' so that the gamma functions and the difference of two large log-gamma
+#' values are not formed, and \eqn{b_\nu} keeps its accuracy as \eqn{\nu} grows
+#' (to \eqn{\nu = 10^{16}} and beyond). \eqn{\delta} comes from
 #' [skewnormal_delta()].
 #'
 #' \eqn{b_\nu} is `NaN` at \eqn{\nu \le 1} and \eqn{\sigma_z^2} is `NaN` at
@@ -2075,7 +2094,7 @@ S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'   below 1 give `NaN` in `bnu` and `mz`; values at or below 2 give `NaN` in
 #'   `vz` as well.
 #'
-#' @return A named list with `nu`, `delta`, `bnu`, `mz` and `vz`, each a
+#' @return A named list with `nu`, `delta`, `bnu`, `mz` and `vz`; each is a
 #'   numeric vector recycled to the longer of `alpha` and `nu`.
 #'
 #' @seealso [mean.SkewTDistrib()], [variance.SkewTDistrib()],
@@ -2109,7 +2128,8 @@ skewt_moment_pieces <- function(alpha, nu) {
 #' @name mean.SkewTDistrib
 #'
 #' @description
-#' Closed form for \eqn{\nu > 1}: \eqn{E[Y] = \mu + \sigma\delta b_\nu}, with
+#' The closed form for \eqn{\nu > 1} is
+#' \eqn{E[Y] = \mu + \sigma\delta b_\nu}, with
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
 #' \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}. At
 #' \eqn{\nu \le 1} the value is `NaN`, because the first moment does not exist
@@ -2123,7 +2143,7 @@ skewt_moment_pieces <- function(alpha, nu) {
 #' @param x A `SkewTDistrib`, from [skewt_distrib()].
 #' @param theta A named list with components `mu` (the location), `sigma` (the
 #'   scale, positive), `alpha` (the shape, any sign) and `nu` (the degrees of
-#'   freedom, positive), each a numeric vector of length 1 or `n`. Settings
+#'   freedom, positive); each is a numeric vector of length 1 or `n`. Settings
 #'   with \eqn{\nu \le 1} give `NaN` in their own positions and do not affect
 #'   the others.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -2161,7 +2181,7 @@ S7::method(mean, SkewTDistrib) <- function(x, theta, ...) {
 #' @name variance.SkewTDistrib
 #'
 #' @description
-#' Closed form for \eqn{\nu > 2}:
+#' The closed form for \eqn{\nu > 2} is
 #' \eqn{\operatorname{Var}(Y) = \sigma^2\{\nu/(\nu-2) - \mu_z^2\}}, with
 #' \eqn{\mu_z = \delta b_\nu} the mean of the standardized variable. At
 #' \eqn{1 < \nu \le 2} the second moment diverges and the value is `Inf`, as
@@ -2177,12 +2197,12 @@ S7::method(mean, SkewTDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `SkewTDistrib`, from [skewt_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive), `alpha`
-#'   (any sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-#'   Settings with \eqn{1 < \nu \le 2} give `Inf` and those with
+#'   (any sign) and `nu` (positive); each is a numeric vector of length 1 or
+#'   `n`. Settings with \eqn{1 < \nu \le 2} give `Inf` and those with
 #'   \eqn{\nu \le 1} give `NaN`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, of the length the recycled
+#' @return A numeric vector of variances, of the length that the recycled
 #'   parameters imply, `Inf` wherever \eqn{1 < \nu \le 2} and `NaN` wherever
 #'   \eqn{\nu \le 1}. The scale, `alpha` and `nu` enter the value; the location
 #'   does not.
@@ -2221,7 +2241,7 @@ S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
 #' @name skewness.SkewTDistrib
 #'
 #' @description
-#' Closed form for \eqn{\nu > 3}, from Azzalini and Capitanio (2003):
+#' The closed form for \eqn{\nu > 3}, from Azzalini and Capitanio (2003), is
 #' \deqn{\gamma_1 = \frac{\mu_z}{\sigma_z^{3}}
 #'       \left\{\frac{\nu(3-\delta^2)}{\nu-3}
 #'              - \frac{3\nu}{\nu-2} + 2\mu_z^2\right\},}
@@ -2233,17 +2253,17 @@ S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
 #' @section Notation:
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, \eqn{\mu_z = \delta b_\nu} and
 #' \eqn{\sigma_z^2 = \nu/(\nu-2) - \mu_z^2} are the standardized mean and
-#' variance from [skewt_moment_pieces()]. Neither the location nor the scale
-#' enters a standardized moment.
+#' variance from [skewt_moment_pieces()]. The location and the scale do not
+#' enter a standardized moment.
 #'
 #' @param x A `SkewTDistrib`, from [skewt_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive), `alpha`
-#'   (any sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-#'   Only `alpha` and `nu` enter the value; settings with \eqn{\nu \le 3} give
-#'   `NaN`.
+#'   (any sign) and `nu` (positive); each is a numeric vector of length 1 or
+#'   `n`. Only `alpha` and `nu` enter the value; settings with
+#'   \eqn{\nu \le 3} give `NaN`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector, of the length the recycled parameters imply,
+#' @return A numeric vector, of the length that the recycled parameters imply,
 #'   `NaN` wherever \eqn{\nu \le 3}. Only `alpha` and `nu` enter the value.
 #'
 #' @references
@@ -2259,7 +2279,8 @@ S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- skewt_distrib()
 #'
-#' # Undefined at or below three degrees of freedom, then large and falling.
+#' # The skewness is undefined at or below three degrees of freedom, then large
+#' # and falling.
 #' round(skewness(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(3, 4, 10))), 4)
 #'
 #' # As nu grows it approaches the skew normal's value at the same shape.
@@ -2281,14 +2302,15 @@ S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.SkewTDistrib
 #'
 #' @description
-#' Closed form for \eqn{\nu > 4}, from Azzalini and Capitanio (2003):
+#' The excess kurtosis has the closed form, for \eqn{\nu > 4}, from Azzalini
+#' and Capitanio (2003):
 #' \deqn{\gamma_2 = \frac{1}{\sigma_z^{4}}
 #'       \left\{\frac{3\nu^2}{(\nu-2)(\nu-4)}
 #'              - \frac{4\mu_z^2\nu(3-\delta^2)}{\nu-3}
 #'              + \frac{6\mu_z^2\nu}{\nu-2} - 3\mu_z^4\right\} - 3,}
-#' `Inf` at \eqn{2 < \nu \le 4}, where the fourth moment diverges, as for the
-#' Student t, and `NaN` at \eqn{\nu \le 2}. As \eqn{\nu} decreases the fourth
-#' moment is the first of the four to cease to exist.
+#' It is `Inf` at \eqn{2 < \nu \le 4}, where the fourth moment diverges, as for
+#' the Student t, and `NaN` at \eqn{\nu \le 2}. As \eqn{\nu} decreases the
+#' fourth moment is the first of the four to cease to exist.
 #'
 #' @section Notation:
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, \eqn{\mu_z = \delta b_\nu} and
@@ -2297,14 +2319,15 @@ S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `SkewTDistrib`, from [skewt_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive), `alpha`
-#'   (any sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
+#'   (any sign) and `nu` (positive), in which each component is a numeric vector
+#'   of length 1 or `n`.
 #'   Only `alpha` and `nu` enter the value; settings with \eqn{2 < \nu \le 4}
 #'   give `Inf` and those with \eqn{\nu \le 2} give `NaN`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, of the length the recycled
-#'   parameters imply, `Inf` wherever \eqn{2 < \nu \le 4} and `NaN` wherever
-#'   \eqn{\nu \le 2}. Only `alpha` and `nu` enter the value.
+#' @return A numeric vector of excess kurtoses, whose length is the one that the
+#'   recycled parameters imply, with `Inf` wherever \eqn{2 < \nu \le 4} and
+#'   `NaN` wherever \eqn{\nu \le 2}. Only `alpha` and `nu` enter the value.
 #'
 #' @references
 #' Azzalini, A. and Capitanio, A. (2003). Distributions generated by
@@ -2358,17 +2381,18 @@ S7::method(kurtosis, SkewTDistrib) <- function(x, theta, ...) {
 #' Recycle a Constant Moment to the Length of the Parameters
 #'
 #' @description
-#' Returns `value` repeated to the length the parameters imply. A moment that
-#' does not depend on the parameters still has to come back one value per
-#' setting, so that every moment method returns the same shape whatever the
-#' family; this helper is what enforces that for the constants.
+#' Returns `value` repeated to the length that the parameters imply. A moment
+#' that does not depend on the parameters still has to come back one value per
+#' setting, so that every moment method returns the same shape for every
+#' family. This helper enforces that shape for the constants.
 #'
 #' @param theta An aligned named list of parameters, as [align_theta()] returns.
-#' @param k How many of its components to read the length from. A single whole
-#'   number, usually the number of parameters the family carries.
-#' @param value The constant to recycle. A numeric vector of length 1, which is
-#'   `NaN` for a moment that does not exist and a number for one that is fixed
-#'   by the family.
+#' @param k The number of components of `theta` from which the length is read.
+#'   It is a single whole number, usually the number of parameters that the
+#'   family carries.
+#' @param value The constant to recycle. It is a numeric vector of length 1,
+#'   which is `NaN` for a moment that does not exist and a number for one that
+#'   the family fixes.
 #'
 #' @return A numeric vector of length `max(lengths(theta[seq_len(k)]))`, every
 #'   element `value`.
@@ -2378,7 +2402,8 @@ S7::method(kurtosis, SkewTDistrib) <- function(x, theta, ...) {
 #'   constant.
 #'
 #' @examples
-#' # One value per parameter setting, even though the value is fixed.
+#' # The result has one value per parameter setting, although the value is
+#' # fixed.
 #' skewness(gumbel_distrib(), list(mu = c(0, 1, 2), sigma = 1))
 #'
 #' @keywords internal
@@ -2392,15 +2417,15 @@ moment_const <- function(theta, k, value) {
 #' @name mean.Gaussian1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. The first parameter of this parametrization
-#' is the mean itself, so the method reads it off and recycles it to the length
-#' the two parameters imply.
+#' The mean has the closed form \eqn{E[Y] = \mu}. The first parameter of this
+#' parametrization is the mean itself, so the method reads it off and recycles
+#' it to the length that the two parameters imply.
 #'
 #' @param x A `Gaussian1Distrib`, from [gaussian1_distrib()].
 #' @param theta A named list with components `mu` (the mean, any real value) and
-#'   `sigma` (the standard deviation, positive), each a numeric vector of length
-#'   1 or `n`. It is aligned and validated by name, so a missing or
-#'   out-of-bounds component signals an error.
+#'   `sigma` (the standard deviation, positive), in which each component is a
+#'   numeric vector of length 1 or `n`. It is aligned and validated by name, so
+#'   a missing or out-of-bounds component signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -2426,13 +2451,14 @@ S7::method(mean, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @name variance.Gaussian1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. This parametrization
-#' carries the standard deviation, so the variance is its square and
-#' [std_dev.distrib()] returns the parameter back unchanged.
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = \sigma^2}. This
+#' parametrization carries the standard deviation, so the variance is its square
+#' and [std_dev.distrib()] returns the parameter back unchanged.
 #'
 #' @param x A `Gaussian1Distrib`, from [gaussian1_distrib()].
 #' @param theta A named list with components `mu` (the mean) and `sigma` (the
-#'   standard deviation, positive), each a numeric vector of length 1 or `n`.
+#'   standard deviation, positive), in which each component is a numeric vector
+#'   of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -2445,7 +2471,7 @@ S7::method(mean, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian1_distrib()
 #'
-#' # The square of the second parameter.
+#' # The variance is the square of the second parameter.
 #' variance(d, list(mu = 0, sigma = c(1, 2, 4)))
 #'
 #' # The standard deviation is the parameter itself.
@@ -2461,14 +2487,15 @@ S7::method(variance, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @name skewness.Gaussian1Distrib
 #'
 #' @description
-#' Exactly zero at every parameter value. The density is symmetric about
-#' \eqn{\mu}, so every odd central moment vanishes. The constant is recycled to
-#' the length the parameters imply, and no quadrature is run.
+#' The skewness is exactly zero at every parameter value. The density is
+#' symmetric about \eqn{\mu}, so every odd central moment vanishes. The
+#' constant is recycled to the length that the parameters imply, and the method
+#' runs no quadrature.
 #'
 #' @param x A `Gaussian1Distrib`, from [gaussian1_distrib()].
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are not read, only their
-#'   lengths, and the list is still aligned and validated.
+#' @param theta A named list with components `mu` and `sigma` (positive), in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths, and the list is still aligned and validated.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of length
@@ -2480,7 +2507,7 @@ S7::method(variance, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian1_distrib()
 #'
-#' # Zero at every location and scale, with one value per setting.
+#' # The value is zero at every location and scale, with one value per setting.
 #' skewness(d, list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 #'
 #' @keywords internal
@@ -2492,14 +2519,14 @@ S7::method(skewness, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Gaussian1Distrib
 #'
 #' @description
-#' Exactly zero at every parameter value. The raw fourth standardized moment of
-#' a Gaussian is 3, and [kurtosis()] reports the excess over that number, so
-#' this family has excess kurtosis zero by construction.
+#' The excess kurtosis is exactly zero at every parameter value. The raw fourth
+#' standardized moment of a Gaussian is 3, and [kurtosis()] reports the excess
+#' over that number, so this family has excess kurtosis zero by construction.
 #'
 #' @param x A `Gaussian1Distrib`, from [gaussian1_distrib()].
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are not read, only their
-#'   lengths.
+#' @param theta A named list with components `mu` and `sigma` (positive), in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of length
@@ -2512,7 +2539,7 @@ S7::method(skewness, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian1_distrib()
 #'
-#' # Zero for every Gaussian, which is what the excess convention means.
+#' # The excess convention gives zero for every Gaussian.
 #' kurtosis(d, list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 #'
 #' @keywords internal
@@ -2528,12 +2555,12 @@ S7::method(kurtosis, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @description
 #' Returns `NaN`. The Cauchy density decays like \eqn{y^{-2}}, so
 #' \eqn{\int |y| f(y)\,\mathrm{d}y} diverges and the first moment does not
-#' exist. `NaN` is returned directly and no quadrature is attempted; the
-#' numerical route of [moment()] applied to a Cauchy signals an error, the
-#' quadrature not reaching the requested accuracy.
+#' exist. `NaN` is returned directly and the method attempts no quadrature; the
+#' numerical route of [moment()] applied to a Cauchy signals an error, because
+#' the quadrature does not reach the requested accuracy.
 #'
 #' @details
-#' What the family does have is a median, equal to \eqn{\mu}, and a
+#' The family has a median, equal to \eqn{\mu}, and a
 #' half-interquartile range, equal to \eqn{\sigma}. Both are exact at every
 #' parameter value and both come from [distrib_quantile()]. A Cauchy sample
 #' mean is itself Cauchy with the same scale, so it does not settle as the
@@ -2541,14 +2568,14 @@ S7::method(kurtosis, Gaussian1Distrib) <- function(x, theta, ...) {
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location and \eqn{\sigma > 0} the scale, in the
-#' parametrization [cauchy_distrib()] uses. Neither is a moment.
+#' parametrization [cauchy_distrib()] uses. The two parameters are not moments.
 #'
 #' @param x A `CauchyDistrib`, from [cauchy_distrib()].
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are not read, only their
-#'   lengths, and the list is still aligned and validated, so a missing or
-#'   out-of-bounds component signals an error as it would for a family whose
-#'   moments exist.
+#' @param theta A named list with components `mu` and `sigma` (positive), in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths, and the list is still aligned and validated,
+#'   so a missing or out-of-bounds component signals an error as it would for a
+#'   family whose moments exist.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `NaN`, of length
@@ -2561,7 +2588,7 @@ S7::method(kurtosis, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- cauchy_distrib()
 #'
-#' # No moment exists, so this is NaN at every parameter value.
+#' # The Cauchy has no moment, so the result is NaN at every parameter value.
 #' mean(d, list(mu = c(0, 1, 2), sigma = 1))
 #'
 #' # The median is mu and the half-interquartile range is sigma.
@@ -2580,11 +2607,13 @@ S7::method(mean, CauchyDistrib) <- function(x, theta, ...) {
 #' first moment to center on; the Cauchy has neither. Its density decays like
 #' \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges for every
 #' \eqn{p \ge 1}, so the second moment does not exist either.
-#' `NaN` is returned directly, so that no quadrature is attempted.
+#' `NaN` is returned directly, so that the method does not attempt a
+#' quadrature.
 #'
 #' @details
-#' The spread a Cauchy does have is its half-interquartile range, exactly
-#' \eqn{\sigma}, available from [distrib_quantile()]. The parameter \eqn{\sigma}
+#' A Cauchy has a spread in its half-interquartile range, which equals
+#' \eqn{\sigma} exactly and is available from [distrib_quantile()]. The
+#' parameter \eqn{\sigma}
 #' is a scale parameter, which sets the width of the density, but it is not a
 #' standard deviation.
 #'
@@ -2593,14 +2622,14 @@ S7::method(mean, CauchyDistrib) <- function(x, theta, ...) {
 #' parametrization [cauchy_distrib()] uses.
 #'
 #' @param x A `CauchyDistrib`, from [cauchy_distrib()].
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are not read, only their
-#'   lengths, and the list is still aligned and validated.
+#' @param theta A named list with components `mu` and `sigma` (positive), in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths, and the list is still aligned and validated.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `NaN`, of length
 #'   `max(length(theta$mu), length(theta$sigma))`. [std_dev()] gives `NaN` too,
-#'   being the square root of this.
+#'   because it is the square root of this.
 #'
 #' @seealso [skewness.CauchyDistrib()] for the full argument;
 #'   [mean.CauchyDistrib()] and [kurtosis.CauchyDistrib()], `NaN` for the same
@@ -2632,7 +2661,8 @@ S7::method(variance, CauchyDistrib) <- function(x, theta, ...) {
 #' density decays like \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,\mathrm{d}y}
 #' diverges for every \eqn{p \ge 1}; already the mean fails to exist, and the
 #' second and third moments fail worse. `NaN` is the value of a quantity that is
-#' not defined, and it is returned directly so that no quadrature is attempted.
+#' not defined, and it is returned directly so that the method does not attempt
+#' a quadrature.
 #'
 #' @details
 #' The generic [skewness()] evaluates
@@ -2644,7 +2674,8 @@ S7::method(variance, CauchyDistrib) <- function(x, theta, ...) {
 #' The same holds for [mean.CauchyDistrib()], [variance.CauchyDistrib()] and
 #' [kurtosis.CauchyDistrib()], and for the sample versions: a Cauchy sample mean
 #' does not converge as \eqn{n} grows, it is itself Cauchy with the same scale,
-#' so no amount of data settles it. The example below shows that.
+#' so it does not settle however large the sample is. The example below shows
+#' that.
 #'
 #' The Cauchy has a median, equal to \eqn{\mu}, and a half-interquartile
 #' range, equal to \eqn{\sigma}. Both are finite at every parameter value and
@@ -2653,38 +2684,40 @@ S7::method(variance, CauchyDistrib) <- function(x, theta, ...) {
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location and \eqn{\sigma > 0} the scale of the Cauchy, in
-#' the parametrization `cauchy_distrib()` uses. Neither is a moment: \eqn{\mu}
-#' is the median and \eqn{\sigma} the half-interquartile range.
+#' the parametrization `cauchy_distrib()` uses. The two parameters are not
+#' moments: \eqn{\mu} is the median and \eqn{\sigma} the half-interquartile
+#' range.
 #'
 #' @param x A `CauchyDistrib` object, from [cauchy_distrib()].
-#' @param theta A named list of parameters with components `mu` and `sigma`,
-#'   each a numeric vector of length 1 or `n`. The values are not read, only
-#'   their lengths, but they are still aligned and validated, so a missing or
-#'   out-of-bounds component signals an error exactly as it would for a family
-#'   whose moments exist.
+#' @param theta A named list of parameters with components `mu` and `sigma`, in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths, but they are still aligned and validated, so
+#'   a missing or out-of-bounds component signals an error exactly as it would
+#'   for a family whose moments exist.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
-#'   Arguments meaningful to [moment()] have no effect here, no quadrature
-#'   being run.
+#'   Arguments that are meaningful to [moment()] have no effect here, because
+#'   the method runs no quadrature.
 #'
 #' @return A numeric vector of `NaN`, of length
-#'   `max(length(theta$mu), length(theta$sigma))`, matching the one-value-per-
-#'   observation shape every moment method returns.
+#'   `max(length(theta$mu), length(theta$sigma))`, which matches the
+#'   one-value-per-observation shape that every moment method returns.
 #'
 #' @seealso [mean.CauchyDistrib()], [variance.CauchyDistrib()] and
 #'   [kurtosis.CauchyDistrib()], which return `NaN` for the same reason;
 #'   [distrib_quantile()] for the median and quartiles, which do exist;
-#'   [skewness()] for the generic and the families that answer it with a number.
+#'   [skewness()] for the generic and the families that return a number.
 #'
 #' @examples
 #' d <- cauchy_distrib()
 #'
-#' # No moment of the Cauchy exists, so all four are NaN.
+#' # The Cauchy has no moment, so all four are NaN.
 #' skewness(d, list(mu = 0, sigma = 1))
 #' c(mean(d, list(mu = 0, sigma = 1)),
 #'   variance(d, list(mu = 0, sigma = 1)),
 #'   kurtosis(d, list(mu = 0, sigma = 1)))
 #'
-#' # One value per observation, as for a family whose moments do exist.
+#' # The method returns one value per observation, as for a family whose moments
+#' # do exist.
 #' skewness(d, list(mu = c(0, 1, 2), sigma = 1))
 #'
 #' # Why: a Cauchy sample mean is itself Cauchy, so it never settles.
@@ -2710,7 +2743,7 @@ S7::method(skewness, CauchyDistrib) <- function(x, theta, ...) {
 #' moment less three, so it needs the first four moments of \eqn{Y}, and the
 #' Cauchy has none of them: its density decays like \eqn{y^{-2}}, and
 #' \eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges already at \eqn{p = 1}. `NaN` is
-#' returned directly, so that no quadrature is attempted.
+#' returned directly, so that the method does not attempt a quadrature.
 #'
 #' @details
 #' A large positive excess kurtosis usually indicates heavy tails. The Cauchy
@@ -2724,9 +2757,9 @@ S7::method(skewness, CauchyDistrib) <- function(x, theta, ...) {
 #' parametrization [cauchy_distrib()] uses.
 #'
 #' @param x A `CauchyDistrib`, from [cauchy_distrib()].
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are not read, only their
-#'   lengths, and the list is still aligned and validated.
+#' @param theta A named list with components `mu` and `sigma` (positive), in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths, and the list is still aligned and validated.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `NaN`, of length
@@ -2740,7 +2773,7 @@ S7::method(skewness, CauchyDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- cauchy_distrib()
 #'
-#' # NaN at every parameter value.
+#' # The value is NaN at every parameter value.
 #' kurtosis(d, list(mu = 0, sigma = c(1, 2)))
 #'
 #' # The Student t is the family that does report a number, above nu = 4.
@@ -2757,12 +2790,13 @@ S7::method(kurtosis, CauchyDistrib) <- function(x, theta, ...) {
 #' @name mean.LogisticDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. The density is symmetric about \eqn{\mu}, so
-#' the location is the mean, the median and the mode at once.
+#' The mean has the closed form \eqn{E[Y] = \mu}. The density is symmetric about
+#' \eqn{\mu}, so the location is the mean, the median and the mode at once.
 #'
 #' @param x A `LogisticDistrib`, from [logistic_distrib()].
 #' @param theta A named list with components `mu` (the location) and `sigma`
-#'   (the scale, positive), each a numeric vector of length 1 or `n`.
+#'   (the scale, positive), in which each component is a numeric vector of
+#'   length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -2787,7 +2821,8 @@ S7::method(mean, LogisticDistrib) <- function(x, theta, ...) {
 #' @name variance.LogisticDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The standard
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The standard
 #' deviation is \eqn{\sigma\pi/\sqrt3 \approx 1.8138\sigma}, so the scale is
 #' smaller than the standard deviation by the factor \eqn{\pi/\sqrt3}, and a
 #' logistic scale is not comparable with a Gaussian standard deviation as it
@@ -2795,7 +2830,8 @@ S7::method(mean, LogisticDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `LogisticDistrib`, from [logistic_distrib()].
 #' @param theta A named list with components `mu` (the location) and `sigma`
-#'   (the scale, positive), each a numeric vector of length 1 or `n`.
+#'   (the scale, positive), in which each component is a numeric vector of
+#'   length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -2807,7 +2843,7 @@ S7::method(mean, LogisticDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- logistic_distrib()
 #'
-#' # pi^2 sigma^2 / 3.
+#' # The variance is pi^2 sigma^2 / 3.
 #' all.equal(variance(d, list(mu = 0, sigma = 2)), pi^2 * 4 / 3)
 #'
 #' # The standard deviation is pi / sqrt(3) times the scale.
@@ -2823,14 +2859,14 @@ S7::method(variance, LogisticDistrib) <- function(x, theta, ...) {
 #' @name skewness.LogisticDistrib
 #'
 #' @description
-#' Exactly zero at every parameter value. The density is symmetric about
-#' \eqn{\mu}, so every odd central moment vanishes. The constant is recycled to
-#' the length the parameters imply.
+#' The skewness is exactly zero at every parameter value. The density is
+#' symmetric about \eqn{\mu}, so every odd central moment vanishes. The
+#' constant is recycled to the length that the parameters imply.
 #'
 #' @param x A `LogisticDistrib`, from [logistic_distrib()].
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are not read, only their
-#'   lengths.
+#' @param theta A named list with components `mu` and `sigma` (positive), in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of length
@@ -2842,7 +2878,7 @@ S7::method(variance, LogisticDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- logistic_distrib()
 #'
-#' # Zero at every location and scale, with one value per setting.
+#' # The value is zero at every location and scale, with one value per setting.
 #' skewness(d, list(mu = c(0, 5), sigma = c(1, 2)))
 #'
 #' @keywords internal
@@ -2854,16 +2890,16 @@ S7::method(skewness, LogisticDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.LogisticDistrib
 #'
 #' @description
-#' Constant: \eqn{\gamma_2 = 6/5 = 1.2}, the excess over the Gaussian. The
-#' family is location-scale with no shape parameter, so its standardized moments
-#' are constants. Every logistic has the same tail weight, a little heavier than
-#' that of a Gaussian and lighter than that of a Laplace, whose excess kurtosis
-#' is 3.
+#' The excess kurtosis is the constant \eqn{\gamma_2 = 6/5 = 1.2}, the excess
+#' over the Gaussian. The family is location-scale with no shape parameter, so
+#' its standardized moments are constants. Every logistic has the same tail
+#' weight, a little heavier than that of a Gaussian and lighter than that of a
+#' Laplace, whose excess kurtosis is 3.
 #'
 #' @param x A `LogisticDistrib`, from [logistic_distrib()].
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are not read, only their
-#'   lengths.
+#' @param theta A named list with components `mu` and `sigma` (positive), in
+#'   which each component is a numeric vector of length 1 or `n`. The values are
+#'   not read, only their lengths.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of 1.2s, of length
@@ -2871,15 +2907,15 @@ S7::method(skewness, LogisticDistrib) <- function(x, theta, ...) {
 #'
 #' @seealso [skewness.LogisticDistrib()], the other constant;
 #'   [kurtosis.Gaussian1Distrib()] and [kurtosis.LaplaceDistrib()], the two
-#'   families it sits between; [logistic_distrib()].
+#'   families between which it lies; [logistic_distrib()].
 #'
 #' @examples
 #' d <- logistic_distrib()
 #'
-#' # 6 / 5 for every logistic.
+#' # The value is 6 / 5 for every logistic.
 #' kurtosis(d, list(mu = c(0, 5), sigma = c(1, 3)))
 #'
-#' # Between the Gaussian's 0 and the Laplace's 3.
+#' # The logistic value lies between the Gaussian's 0 and the Laplace's 3.
 #' c(gaussian = kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1)),
 #'   logistic = kurtosis(d, list(mu = 0, sigma = 1)),
 #'   laplace  = kurtosis(laplace_distrib(), list(mu = 0, sigma = 1)))
@@ -2899,10 +2935,10 @@ S7::method(kurtosis, LogisticDistrib) <- function(x, theta, ...) {
 #' @name mean.StudentT1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu} for \eqn{\nu > 1}, and `NaN` at or below one,
-#' where the first moment does not exist. At \eqn{\nu = 1} the family is the
-#' Cauchy, whose divergence is the reason for the threshold; above it the
-#' density is symmetric about \eqn{\mu} and the location is the mean.
+#' The mean has the closed form \eqn{E[Y] = \mu} for \eqn{\nu > 1}, and is `NaN`
+#' at or below one, where the first moment does not exist. At \eqn{\nu = 1} the
+#' family is the Cauchy, whose divergence is the reason for the threshold; above
+#' it the density is symmetric about \eqn{\mu} and the location is the mean.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale and \eqn{\nu > 0} the
@@ -2910,13 +2946,14 @@ S7::method(kurtosis, LogisticDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `StudentT1Distrib`, from [student_t1_distrib()].
 #' @param theta A named list with components `mu` (the location), `sigma` (the
-#'   scale, positive) and `nu` (the degrees of freedom, positive), each a
-#'   numeric vector of length 1 or `n`. Settings with \eqn{\nu \le 1} give
-#'   `NaN` in their own positions and do not affect the others.
+#'   scale, positive) and `nu` (the degrees of freedom, positive), in which
+#'   each component is a numeric vector of length 1 or `n`. Settings with
+#'   \eqn{\nu \le 1} give `NaN` in their own positions and do not affect the
+#'   others.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of means, of length equal to the longest of the
-#'   three components, `NaN` wherever \eqn{\nu \le 1}.
+#' @return A numeric vector of means, whose length is the one that the
+#'   recycled parameters imply, with `NaN` wherever \eqn{\nu \le 1}.
 #'
 #' @seealso [variance.StudentT1Distrib()], whose threshold is 2;
 #'   [mean.CauchyDistrib()], the \eqn{\nu = 1} case;
@@ -2941,9 +2978,10 @@ S7::method(mean, StudentT1Distrib) <- function(x, theta, ...) {
 #' @name variance.StudentT1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2\nu/(\nu-2)} for
-#' \eqn{\nu > 2}, `Inf` for \eqn{1 < \nu \le 2}, and `NaN` at or below one. The
-#' three answers are three different statements: a finite value, a second
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = \sigma^2\nu/(\nu-2)} for
+#' \eqn{\nu > 2}; it is `Inf` for \eqn{1 < \nu \le 2} and `NaN` at or below one.
+#' These are three different statements: a finite value, a second
 #' moment that diverges to infinity while the first exists, and a second moment
 #' that is undefined because the first is.
 #'
@@ -2959,12 +2997,12 @@ S7::method(mean, StudentT1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `StudentT1Distrib`, from [student_t1_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive) and `nu`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive), in which each component is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, of length equal to the longest of the
-#'   three components, `Inf` where \eqn{1 < \nu \le 2} and `NaN` where
-#'   \eqn{\nu \le 1}.
+#' @return A numeric vector of variances, whose length is the one that the
+#'   recycled parameters imply, with `Inf` where \eqn{1 < \nu \le 2} and `NaN`
+#'   where \eqn{\nu \le 1}.
 #'
 #' @seealso [kurtosis.StudentT1Distrib()], whose threshold is 4;
 #'   [variance.CauchyDistrib()], the \eqn{\nu = 1} case;
@@ -2973,7 +3011,8 @@ S7::method(mean, StudentT1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- student_t1_distrib()
 #'
-#' # NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+#' # The values are NaN, infinite and finite, in that order, as nu crosses its
+#' # two thresholds.
 #' variance(d, list(mu = 0, sigma = 1, nu = c(1, 1.5, 2, 3)))
 #'
 #' # The scale is a lower bound, approached as the degrees of freedom grow.
@@ -2994,21 +3033,21 @@ S7::method(variance, StudentT1Distrib) <- function(x, theta, ...) {
 #' @name skewness.StudentT1Distrib
 #'
 #' @description
-#' Zero for \eqn{\nu > 3}, and `NaN` at or below three, where the third moment
-#' does not exist. The density is symmetric about \eqn{\mu}, so the value is
-#' zero wherever it is defined.
+#' The skewness is zero for \eqn{\nu > 3} and `NaN` at or below three, where the
+#' third moment does not exist. The density is symmetric about \eqn{\mu}, so the
+#' value is zero wherever it is defined.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location and \eqn{\nu > 0} the degrees of freedom.
 #'
 #' @param x A `StudentT1Distrib`, from [student_t1_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive) and `nu`
-#'   (positive), each a numeric vector of length 1 or `n`. Only `nu` enters the
-#'   value; settings with \eqn{\nu \le 3} give `NaN`.
+#'   (positive), in which each component is a numeric vector of length 1 or
+#'   `n`. Only `nu` enters the value; settings with \eqn{\nu \le 3} give `NaN`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector, of length equal to the longest of the three
-#'   components, zero where \eqn{\nu > 3} and `NaN` elsewhere.
+#' @return A numeric vector, whose length is the one that the recycled
+#'   parameters imply, with zero where \eqn{\nu > 3} and `NaN` elsewhere.
 #'
 #' @seealso [kurtosis.StudentT1Distrib()], whose threshold is 4;
 #'   [skewness.SkewTDistrib()], the asymmetric extension;
@@ -3017,7 +3056,8 @@ S7::method(variance, StudentT1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- student_t1_distrib()
 #'
-#' # Undefined at or below three degrees of freedom, then zero by symmetry.
+#' # The skewness is undefined at or below three degrees of freedom, and zero by
+#' # symmetry above.
 #' skewness(d, list(mu = 0, sigma = 1, nu = c(2, 3, 4)))
 #'
 #' @keywords internal
@@ -3032,24 +3072,25 @@ S7::method(skewness, StudentT1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.StudentT1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 6/(\nu-4)} for \eqn{\nu > 4}, `Inf` for
-#' \eqn{2 < \nu \le 4}, and `NaN` at or below two. The excess kurtosis is 6 at
+#' The excess kurtosis has the closed form \eqn{\gamma_2 = 6/(\nu-4)} for
+#' \eqn{\nu > 4}; it is `Inf` for \eqn{2 < \nu \le 4} and `NaN` at or below
+#' two. The excess kurtosis is 6 at
 #' \eqn{\nu = 5}, 1 at \eqn{\nu = 10}, and tends to the Gaussian's zero as the
 #' degrees of freedom increase.
 #'
 #' @section Notation:
-#' \eqn{\nu > 0} is the degrees of freedom. Neither the location nor the scale
-#' enters a standardized moment.
+#' \eqn{\nu > 0} is the degrees of freedom. The location and the scale do not
+#' enter a standardized moment.
 #'
 #' @param x A `StudentT1Distrib`, from [student_t1_distrib()].
 #' @param theta A named list with components `mu`, `sigma` (positive) and `nu`
-#'   (positive), each a numeric vector of length 1 or `n`. Only `nu` enters the
-#'   value.
+#'   (positive), in which each component is a numeric vector of length 1 or
+#'   `n`. Only `nu` enters the value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, of length equal to the longest
-#'   of the three components, `Inf` where \eqn{2 < \nu \le 4} and `NaN` where
-#'   \eqn{\nu \le 2}.
+#' @return A numeric vector of excess kurtoses, whose length is the one that the
+#'   recycled parameters imply, with `Inf` where \eqn{2 < \nu \le 4} and `NaN`
+#'   where \eqn{\nu \le 2}.
 #'
 #' @seealso [skewness.StudentT1Distrib()], whose threshold is 3;
 #'   [kurtosis.CauchyDistrib()], the \eqn{\nu = 1} case;
@@ -3058,10 +3099,11 @@ S7::method(skewness, StudentT1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- student_t1_distrib()
 #'
-#' # NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+#' # The values are NaN, infinite and finite, in that order, as nu crosses its
+#' # two thresholds.
 #' kurtosis(d, list(mu = 0, sigma = 1, nu = c(2, 3, 4, 5)))
 #'
-#' # 6 / (nu - 4), tending to the Gaussian's zero.
+#' # The value is 6 / (nu - 4), which tends to the Gaussian's zero.
 #' kurtosis(d, list(mu = 0, sigma = 1, nu = c(10, 100, 1e4)))
 #'
 #' @keywords internal
@@ -3083,15 +3125,15 @@ S7::method(kurtosis, StudentT1Distrib) <- function(x, theta, ...) {
 #' @name mean.Gamma2Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. The two parameters of this parametrization are
-#' the mean and the variance, so the method returns the first parameter. The
-#' shape \eqn{\mu^2/\sigma^2} and the rate \eqn{\mu/\sigma^2} are functions of
-#' the two.
+#' The mean has the closed form \eqn{E[Y] = \mu}. The two parameters of this
+#' parametrization are the mean and the variance, so the method returns the
+#' first parameter. The shape \eqn{\mu^2/\sigma^2} and the rate
+#' \eqn{\mu/\sigma^2} are functions of the two.
 #'
 #' @param x A `Gamma2Distrib`, from [gamma2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `sigma2` (the variance, positive), each a numeric vector of length 1 or
-#'   `n`.
+#'   `sigma2` (the variance, positive), in which each component is a numeric
+#'   vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -3117,15 +3159,15 @@ S7::method(mean, Gamma2Distrib) <- function(x, theta, ...) {
 #' @name variance.Gamma2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. The variance is the
-#' second parameter of this parametrization. The shape that the two parameters
-#' imply is \eqn{a = \mu^2/\sigma^2}, and the skewness and the kurtosis are
-#' functions of this shape.
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = \sigma^2}. The
+#' variance is the second parameter of this parametrization. The shape that the
+#' two parameters imply is \eqn{a = \mu^2/\sigma^2}, and the skewness and the
+#' kurtosis are functions of this shape.
 #'
 #' @param x A `Gamma2Distrib`, from [gamma2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `sigma2` (the variance, positive), each a numeric vector of length 1 or
-#'   `n`.
+#'   `sigma2` (the variance, positive), in which each component is a numeric
+#'   vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -3155,9 +3197,9 @@ S7::method(variance, Gamma2Distrib) <- function(x, theta, ...) {
 #' @name skewness.Gamma2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = 2/\sqrt a = 2\sigma/\mu} with shape
-#' \eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value, the
-#' support being the positive half-line, and it is exactly twice the
+#' The skewness has the closed form \eqn{\gamma_1 = 2/\sqrt a = 2\sigma/\mu}
+#' with shape \eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value,
+#' because the support is the positive half-line, and it is exactly twice the
 #' coefficient of variation, so a gamma's asymmetry and its relative spread
 #' carry the same information.
 #'
@@ -3167,7 +3209,8 @@ S7::method(variance, Gamma2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Gamma2Distrib`, from [gamma2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `sigma2`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive), in which each component is a numeric vector of length 1 or
+#'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -3180,7 +3223,7 @@ S7::method(variance, Gamma2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gamma2_distrib()
 #'
-#' # Twice the coefficient of variation.
+#' # The skewness is twice the coefficient of variation.
 #' all.equal(skewness(d, list(mu = 2, sigma2 = 1)), 2 * sqrt(1) / 2)
 #'
 #' # It flattens as the implied shape grows.
@@ -3196,7 +3239,8 @@ S7::method(skewness, Gamma2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Gamma2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 6/a = 6\sigma^2/\mu^2} with shape
+#' The excess kurtosis has the closed form
+#' \eqn{\gamma_2 = 6/a = 6\sigma^2/\mu^2} with shape
 #' \eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value and is
 #' exactly \eqn{3\gamma_1^2/2}, so the family occupies one curve of the
 #' skewness-kurtosis plane and cannot be tuned along the two axes separately.
@@ -3207,7 +3251,8 @@ S7::method(skewness, Gamma2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Gamma2Distrib`, from [gamma2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `sigma2`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive), in which each component is a numeric vector of length 1 or
+#'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -3223,7 +3268,7 @@ S7::method(skewness, Gamma2Distrib) <- function(x, theta, ...) {
 #' th <- list(mu = 2, sigma2 = 1)
 #' all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
 #'
-#' # Six over the implied shape.
+#' # The excess kurtosis is six over the implied shape.
 #' kurtosis(d, list(mu = 2, sigma2 = c(4, 1, 0.25)))
 #'
 #' @keywords internal
@@ -3238,8 +3283,9 @@ S7::method(kurtosis, Gamma2Distrib) <- function(x, theta, ...) {
 #' @name mean.ExponentialDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. The family carries one parameter and it is
-#' the mean, so this method reads it off. The rate is its reciprocal.
+#' The mean has the closed form \eqn{E[Y] = \mu}. The family carries one
+#' parameter and it is the mean, so this method reads it off. The rate is its
+#' reciprocal.
 #'
 #' @param x An `ExponentialDistrib`, from [exponential_distrib()].
 #' @param theta A named list with one component, `mu` (the mean, positive), a
@@ -3267,11 +3313,11 @@ S7::method(mean, ExponentialDistrib) <- function(x, theta, ...) {
 #' @name variance.ExponentialDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu^2}. The standard deviation
-#' equals the mean, so the coefficient of variation is exactly one at every
-#' parameter value. Among the gamma distributions, whose coefficient of
-#' variation is \eqn{1/\sqrt a} for shape \eqn{a}, the exponential is the one
-#' with coefficient of variation one.
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = \mu^2}. The
+#' standard deviation equals the mean, so the coefficient of variation is
+#' exactly one at every parameter value. Among the gamma distributions, whose
+#' coefficient of variation is \eqn{1/\sqrt a} for shape \eqn{a}, the
+#' exponential is the one with coefficient of variation one.
 #'
 #' @param x An `ExponentialDistrib`, from [exponential_distrib()].
 #' @param theta A named list with one component, `mu` (the mean, positive), a
@@ -3286,11 +3332,12 @@ S7::method(mean, ExponentialDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- exponential_distrib()
 #'
-#' # The square of the mean, so the coefficient of variation is one.
+#' # The variance is the square of the mean, so the coefficient of variation is
+#' # one.
 #' variance(d, list(mu = 3))
 #' std_dev(d, list(mu = 3)) / mean(d, list(mu = 3))
 #'
-#' # The same law as a Weibull of shape 1.
+#' # The law is the same as a Weibull of shape 1.
 #' all.equal(variance(d, list(mu = 3)),
 #'           variance(weibull1_distrib(), list(mu = 3, sigma = 1)))
 #'
@@ -3303,9 +3350,9 @@ S7::method(variance, ExponentialDistrib) <- function(x, theta, ...) {
 #' @name skewness.ExponentialDistrib
 #'
 #' @description
-#' Constant: \eqn{\gamma_1 = 2}. The family is a scale family with no shape
-#' parameter, so a standardized moment is a number: every exponential has the
-#' same asymmetry, whatever its mean.
+#' The skewness is the constant \eqn{\gamma_1 = 2}. The family is a scale family
+#' with no shape parameter, so a standardized moment is a number: every
+#' exponential has the same asymmetry, whatever its mean.
 #'
 #' @param x An `ExponentialDistrib`, from [exponential_distrib()].
 #' @param theta A named list with one component, `mu` (positive), a numeric
@@ -3321,7 +3368,7 @@ S7::method(variance, ExponentialDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- exponential_distrib()
 #'
-#' # Two, whatever the mean.
+#' # The skewness is two, whatever the mean.
 #' skewness(d, list(mu = c(0.1, 3, 100)))
 #'
 #' @keywords internal
@@ -3333,9 +3380,9 @@ S7::method(skewness, ExponentialDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.ExponentialDistrib
 #'
 #' @description
-#' Constant: \eqn{\gamma_2 = 6}, the excess over the Gaussian. Like the
-#' skewness it is fixed for the whole family, there being no shape parameter
-#' for a standardized moment to depend on.
+#' The excess kurtosis is the constant \eqn{\gamma_2 = 6}, the excess over the
+#' Gaussian. Like the skewness it is fixed for the whole family, because the
+#' family has no shape parameter on which a standardized moment could depend.
 #'
 #' @param x An `ExponentialDistrib`, from [exponential_distrib()].
 #' @param theta A named list with one component, `mu` (positive), a numeric
@@ -3370,8 +3417,9 @@ S7::method(kurtosis, ExponentialDistrib) <- function(x, theta, ...) {
 #' @name mean.ChisqDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. The family carries one parameter, which is
-#' both the mean and the degrees of freedom, the two coinciding for this law.
+#' The mean has the closed form \eqn{E[Y] = \mu}. The family carries one
+#' parameter, which is both the mean and the degrees of freedom, because the two
+#' coincide for this law.
 #' It is not restricted to whole numbers here, so the family is the gamma with
 #' variance tied to twice the mean.
 #'
@@ -3400,9 +3448,10 @@ S7::method(mean, ChisqDistrib) <- function(x, theta, ...) {
 #' @name variance.ChisqDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = 2\mu}. The variance is tied to the
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = 2\mu}. It is
+#' tied to the
 #' mean, so the family has one parameter where a gamma has two: it is exactly
-#' the gamma at \eqn{\sigma^2 = 2\mu}, .
+#' the gamma at \eqn{\sigma^2 = 2\mu}.
 #'
 #' @param x A `ChisqDistrib`, from [chisq_distrib()].
 #' @param theta A named list with one component, `mu` (positive), a numeric
@@ -3417,7 +3466,7 @@ S7::method(mean, ChisqDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- chisq_distrib()
 #'
-#' # Twice the mean.
+#' # The variance is twice the mean.
 #' all.equal(variance(d, list(mu = 5)), 10)
 #'
 #' # The gamma at sigma2 = 2 mu is the same law.
@@ -3433,8 +3482,9 @@ S7::method(variance, ChisqDistrib) <- function(x, theta, ...) {
 #' @name skewness.ChisqDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = \sqrt{8/\mu}}. It is positive at every degrees
-#' of freedom, the support being the positive half-line, and it decays like
+#' The skewness has the closed form \eqn{\gamma_1 = \sqrt{8/\mu}}. It is
+#' positive at every degrees
+#' of freedom because the support is the positive half-line, and it decays like
 #' \eqn{\mu^{-1/2}}, which is the rate at which the family approaches a
 #' Gaussian as its degrees of freedom grow.
 #'
@@ -3451,7 +3501,7 @@ S7::method(variance, ChisqDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- chisq_distrib()
 #'
-#' # Square root of eight over the degrees of freedom.
+#' # The value is the square root of eight over the degrees of freedom.
 #' all.equal(skewness(d, list(mu = 5)), sqrt(8 / 5))
 #'
 #' # It vanishes as the degrees of freedom grow.
@@ -3466,9 +3516,10 @@ S7::method(skewness, ChisqDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.ChisqDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 12/\mu}, the excess over the Gaussian. It is
-#' positive at every degrees of freedom and decays like \eqn{\mu^{-1}}, whereas
-#' the skewness decays like \eqn{\mu^{-1/2}}: \eqn{\gamma_2 = 3\gamma_1^2/2}.
+#' The excess kurtosis has the closed form \eqn{\gamma_2 = 12/\mu}, the excess
+#' over the Gaussian. It is positive at every degrees of freedom and decays like
+#' \eqn{\mu^{-1}}, whereas the skewness decays like \eqn{\mu^{-1/2}}:
+#' \eqn{\gamma_2 = 3\gamma_1^2/2}.
 #'
 #' @param x A `ChisqDistrib`, from [chisq_distrib()].
 #' @param theta A named list with one component, `mu` (positive), a numeric
@@ -3484,7 +3535,7 @@ S7::method(skewness, ChisqDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- chisq_distrib()
 #'
-#' # Twelve over the degrees of freedom.
+#' # The value is twelve over the degrees of freedom.
 #' all.equal(kurtosis(d, list(mu = 5)), 12 / 5)
 #'
 #' # It falls twice as fast as the skewness.
@@ -3504,7 +3555,8 @@ S7::method(kurtosis, ChisqDistrib) <- function(x, theta, ...) {
 #' @name mean.Lognormal1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \exp(\mu + \sigma^2/2)}. The parameters describe
+#' The mean has the closed form \eqn{E[Y] = \exp(\mu + \sigma^2/2)}. The
+#' parameters describe
 #' \eqn{\log Y} and not \eqn{Y}, so \eqn{\mu} is the mean of the logarithm and
 #' \eqn{\exp(\mu)} is the median of \eqn{Y}; the mean is larger than the
 #' median by the factor \eqn{\exp(\sigma^2/2)}, which grows with the spread.
@@ -3514,9 +3566,9 @@ S7::method(kurtosis, ChisqDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Lognormal1Distrib`, from [lognormal1_distrib()].
 #' @param theta A named list with components `mu` (the mean of the logarithm,
-#'   any real value) and `sigma2` (its variance, positive), each a numeric
-#'   vector of length 1 or `n`. The mean overflows to `Inf` for large `sigma2`,
-#'   the exponential of half of it being taken.
+#'   any real value) and `sigma2` (its variance, positive); each is a numeric
+#'   vector of length 1 or `n`. The mean overflows to `Inf` for large `sigma2`
+#'   because the exponential of half of it is taken.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -3543,20 +3595,20 @@ S7::method(mean, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @name variance.Lognormal1Distrib
 #'
 #' @description
-#' Closed form:
+#' The variance has the closed form
 #' \deqn{\operatorname{Var}(Y) = (e^{\sigma^2} - 1)\, e^{2\mu + \sigma^2}.}
 #' The two factors separate the two effects: \eqn{e^{2\mu+\sigma^2}} is the
 #' square of the mean and sets the scale, and \eqn{e^{\sigma^2} - 1} is the
-#' squared coefficient of variation and depends on the spread of the logarithm
-#' alone.
+#' squared coefficient of variation and depends only on the spread of the
+#' logarithm.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean of \eqn{\log Y} and \eqn{\sigma^2 > 0} its variance.
 #'
 #' @param x A `Lognormal1Distrib`, from [lognormal1_distrib()].
 #' @param theta A named list with components `mu` (any real value) and `sigma2`
-#'   (positive), each a numeric vector of length 1 or `n`. The variance grows
-#'   like \eqn{e^{2\sigma^2}} The variance overflows to `Inf` for `sigma2` above
+#'   (positive); each is a numeric vector of length 1 or `n`. The variance grows
+#'   like \eqn{e^{2\sigma^2}}. It overflows to `Inf` for `sigma2` above
 #'   about 355 at `mu = 0`, and the threshold rises as `mu` decreases.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -3569,7 +3621,7 @@ S7::method(mean, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- lognormal1_distrib()
 #'
-#' # (exp(sigma2) - 1) exp(2 mu + sigma2).
+#' # The variance is (exp(sigma2) - 1) exp(2 mu + sigma2).
 #' all.equal(variance(d, list(mu = 0, sigma2 = 1)), (exp(1) - 1) * exp(1))
 #'
 #' # The coefficient of variation depends on sigma2 alone.
@@ -3586,8 +3638,8 @@ S7::method(variance, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @name skewness.Lognormal1Distrib
 #'
 #' @description
-#' Closed form:
-#' \eqn{\gamma_1 = (e^{\sigma^2} + 2)\sqrt{e^{\sigma^2} - 1}}, free of
+#' The skewness has the closed form
+#' \eqn{\gamma_1 = (e^{\sigma^2} + 2)\sqrt{e^{\sigma^2} - 1}}, which is free of
 #' \eqn{\mu}. It is positive at every parameter value and grows without bound
 #' with the spread of the logarithm: at \eqn{\sigma^2 = 1} it is already 6.18,
 #' where a gamma of the same mean would need a shape near 0.1 to match it.
@@ -3598,8 +3650,9 @@ S7::method(variance, Lognormal1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Lognormal1Distrib`, from [lognormal1_distrib()].
 #' @param theta A named list with components `mu` (any real value) and `sigma2`
-#'   (positive), each a numeric vector of length 1 or `n`. Only `sigma2` enters
-#'   the value, and the exponentials overflow to `Inf` for large `sigma2`.
+#'   (positive); each is a numeric vector of length 1 or `n`. Only `sigma2`
+#'   enters the value, and the exponentials overflow to `Inf` for large
+#'   `sigma2`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -3611,7 +3664,7 @@ S7::method(variance, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- lognormal1_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(skewness(d, list(mu = 0, sigma2 = 1)),
 #'           (exp(1) + 2) * sqrt(exp(1) - 1))
 #'
@@ -3629,22 +3682,23 @@ S7::method(skewness, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Lognormal1Distrib
 #'
 #' @description
-#' Closed form:
+#' The excess kurtosis has the closed form
 #' \deqn{\gamma_2 = e^{4\sigma^2} + 2e^{3\sigma^2} + 3e^{2\sigma^2} - 6,}
-#' free of \eqn{\mu}. It is evaluated as \eqn{w(16 + 15w + 6w^2 + w^3)} with
-#' \eqn{w = e^{\sigma^2} - 1} formed by `expm1()`, which keeps its digits at a
-#' small \eqn{\sigma^2}. The leading term grows like \eqn{e^{4\sigma^2}}, so the
-#' tail weight explodes with the spread of the logarithm: at
-#' \eqn{\sigma^2 = 1} it is 110.9, and the numerical route would need a
-#' quadrature far into the tail to see it at all.
+#' which is free of \eqn{\mu}. It is evaluated as
+#' \eqn{w(16 + 15w + 6w^2 + w^3)} where
+#' \eqn{w = e^{\sigma^2} - 1} is formed by `expm1()`, which keeps its digits at
+#' a small \eqn{\sigma^2}. The leading term grows like \eqn{e^{4\sigma^2}}, so
+#' the tail weight explodes with the spread of the logarithm: at \eqn{\sigma^2 =
+#' 1} it is 110.9, and the numerical route would need a quadrature far into the
+#' tail to see it at all.
 #'
 #' @section Notation:
 #' \eqn{\sigma^2 > 0} is the variance of \eqn{\log Y}.
 #'
 #' @param x A `Lognormal1Distrib`, from [lognormal1_distrib()].
 #' @param theta A named list with components `mu` (any real value) and `sigma2`
-#'   (positive), each a numeric vector of length 1 or `n`. Only `sigma2` enters
-#'   the value; the leading exponential overflows to `Inf` past
+#'   (positive); each is a numeric vector of length 1 or `n`. Only `sigma2`
+#'   enters the value; the leading exponential overflows to `Inf` past
 #'   \eqn{\sigma^2 \approx 177}.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -3657,7 +3711,7 @@ S7::method(skewness, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- lognormal1_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(kurtosis(d, list(mu = 0, sigma2 = 1)),
 #'           exp(4) + 2 * exp(3) + 3 * exp(2) - 6)
 #'
@@ -3680,13 +3734,13 @@ S7::method(kurtosis, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @name mean.InvGauss1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and a
-#' dispersion, so the mean is a read and the higher moments are functions of
-#' the product \eqn{\phi\mu}.
+#' The mean has the closed form \eqn{E[Y] = \mu}. This parametrization carries
+#' the mean and a dispersion, so the mean is a read and the higher moments are
+#' functions of the product \eqn{\phi\mu}.
 #'
 #' @param x An `InvGauss1Distrib`, from [invgauss1_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `phi` (the dispersion, positive), each a numeric vector of length 1 or
+#'   `phi` (the dispersion, positive); each is a numeric vector of length 1 or
 #'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -3712,17 +3766,18 @@ S7::method(mean, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @name variance.InvGauss1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \phi\mu^3}. The cube is what
-#' distinguishes this family from the gamma, whose variance function is
-#' \eqn{\mu^2}: the inverse Gaussian's spread grows faster with the mean, so it
-#' is the heavier-tailed of the two standard positive-response families.
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = \phi\mu^3}. The
+#' cubic variance function distinguishes this family from the gamma, whose
+#' variance function is \eqn{\mu^2}: the inverse Gaussian's spread grows faster
+#' with the mean, so it is the heavier-tailed of the two standard
+#' positive-response families.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion.
 #'
 #' @param x An `InvGauss1Distrib`, from [invgauss1_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `phi` (the dispersion, positive), each a numeric vector of length 1 or
+#'   `phi` (the dispersion, positive); each is a numeric vector of length 1 or
 #'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -3738,7 +3793,7 @@ S7::method(mean, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- invgauss1_distrib()
 #'
-#' # The dispersion times the cube of the mean.
+#' # The variance is the dispersion times the cube of the mean.
 #' all.equal(variance(d, list(mu = 2, phi = 0.5)), 0.5 * 2^3)
 #'
 #' # The variance function is cubic, so it climbs faster than a gamma's.
@@ -3754,16 +3809,17 @@ S7::method(variance, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @name skewness.InvGauss1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = 3\sqrt{\phi\mu}}. It is positive at every
-#' parameter value and depends on the two parameters only through their
-#' product, so the whole family is one curve indexed by \eqn{\phi\mu}.
+#' The skewness has the closed form \eqn{\gamma_1 = 3\sqrt{\phi\mu}}. It is
+#' positive at every parameter value and depends on the two parameters only
+#' through their product, so the whole family is one curve indexed by
+#' \eqn{\phi\mu}.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion.
 #'
 #' @param x An `InvGauss1Distrib`, from [invgauss1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `phi`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -3775,7 +3831,7 @@ S7::method(variance, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- invgauss1_distrib()
 #'
-#' # Three times the square root of the product.
+#' # The skewness is three times the square root of the product.
 #' all.equal(skewness(d, list(mu = 2, phi = 0.5)), 3 * sqrt(1))
 #'
 #' # Only the product matters.
@@ -3791,17 +3847,18 @@ S7::method(skewness, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.InvGauss1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 15\phi\mu}, the excess over the Gaussian. Like
-#' the skewness it depends on the two parameters through their product alone,
-#' and it is exactly \eqn{5\gamma_1^2/3}, so the family occupies one curve of
-#' the skewness-kurtosis plane, as the gamma does with its own constant.
+#' The excess kurtosis has the closed form \eqn{\gamma_2 = 15\phi\mu}, the
+#' excess over the Gaussian. Like the skewness it depends on the two parameters
+#' only through their product, and it is exactly \eqn{5\gamma_1^2/3}, so the
+#' family occupies one curve of the skewness-kurtosis plane, as the gamma does
+#' with its own constant.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion.
 #'
 #' @param x An `InvGauss1Distrib`, from [invgauss1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `phi`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -3814,7 +3871,7 @@ S7::method(skewness, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- invgauss1_distrib()
 #'
-#' # Fifteen times the product.
+#' # The kurtosis is fifteen times the product.
 #' all.equal(kurtosis(d, list(mu = 2, phi = 0.5)), 15)
 #'
 #' # The family lies on the curve kurtosis = (5/3) skewness^2.
@@ -3835,10 +3892,10 @@ S7::method(kurtosis, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @name mean.Beta1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and a
-#' precision, so the mean is a read; the two shapes of the standard
-#' parametrization are recovered as \eqn{a = \mu\phi} and
-#' \eqn{b = (1-\mu)\phi}, and they sum to \eqn{\phi}.
+#' The mean has the closed form \eqn{E[Y] = \mu}. This parametrization carries
+#' the mean and a precision, so the mean is a read; the two shapes of the
+#' standard parametrization are recovered as \eqn{a = \mu\phi} and \eqn{b =
+#' (1-\mu)\phi}, and they sum to \eqn{\phi}.
 #'
 #' @section Notation:
 #' \eqn{\mu \in (0,1)} is the mean, \eqn{\phi > 0} the precision, and
@@ -3846,9 +3903,9 @@ S7::method(kurtosis, InvGauss1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Beta1Distrib`, from [beta1_distrib()].
 #' @param theta A named list with components `mu` (the mean, strictly between 0
-#'   and 1) and `phi` (the precision, positive), each a numeric vector of length
-#'   1 or `n`. It is aligned and validated by name, so a mean at or outside the
-#'   unit interval signals an error.
+#'   and 1) and `phi` (the precision, positive); each is a numeric vector of
+#'   length 1 or `n`. It is aligned and validated by name, so a mean at or
+#'   outside the unit interval signals an error.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -3874,7 +3931,8 @@ S7::method(mean, Beta1Distrib) <- function(x, theta, ...) {
 #' @name variance.Beta1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)/(\phi+1)}. The
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = \mu(1-\mu)/(\phi+1)}. The
 #' numerator is the Bernoulli variance at the same mean, which bounds the
 #' variance of every distribution on \eqn{[0, 1]} with that mean, and
 #' \eqn{\phi+1} divides it.
@@ -3886,7 +3944,7 @@ S7::method(mean, Beta1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Beta1Distrib`, from [beta1_distrib()].
 #' @param theta A named list with components `mu` (strictly between 0 and 1)
-#'   and `phi` (positive), each a numeric vector of length 1 or `n`. The
+#'   and `phi` (positive); each is a numeric vector of length 1 or `n`. The
 #'   variance tends to \eqn{\mu(1-\mu)} as the precision goes to zero, where
 #'   the mass piles up at the two endpoints.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -3900,7 +3958,7 @@ S7::method(mean, Beta1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- beta1_distrib()
 #'
-#' # mu (1 - mu) / (phi + 1).
+#' # The variance is mu (1 - mu) / (phi + 1).
 #' all.equal(variance(d, list(mu = 0.3, phi = 5)), 0.3 * 0.7 / 6)
 #'
 #' # At mu = 1/2 and phi = 2 the density is uniform, of variance 1/12.
@@ -3916,13 +3974,13 @@ S7::method(variance, Beta1Distrib) <- function(x, theta, ...) {
 #'
 #' @description
 #' Returns the variance, the skewness or the excess kurtosis of the beta law
-#' with mean \eqn{\mu} and precision \eqn{\phi = \alpha + \beta}, with the
-#' shapes divided out of every quotient:
+#' with mean \eqn{\mu} and precision \eqn{\phi = \alpha + \beta}, in forms in
+#' which the shapes are divided out of every quotient:
 #' \deqn{\mathrm{Var}(Y) = \frac{\mu(1-\mu)}{1+\phi},\qquad
 #'   \gamma_1 = \frac{2(1-2\mu)\sqrt{1+\phi}}{(2+\phi)\sqrt{\mu(1-\mu)}},}
 #' \deqn{\gamma_2 = \frac{6[(1-2\mu)^2(1+\phi)/(2+\phi) - \mu(1-\mu)]}
 #'   {\mu(1-\mu)(3+\phi)}.}
-#' Written in the shapes the same quotients carry \eqn{\alpha\beta}, which
+#' Written in the shapes, the same quotients carry \eqn{\alpha\beta}, which
 #' underflows below \eqn{\phi \approx 10^{-154}} and overflows above
 #' \eqn{10^{154}}; here \eqn{\phi} enters only through \eqn{1 + \phi},
 #' \eqn{2 + \phi} and \eqn{3 + \phi}, and never in a product of two of them.
@@ -3954,8 +4012,9 @@ beta_shape_moments <- function(mu, phi, what) {
 #' @name skewness.Beta1Distrib
 #'
 #' @description
-#' Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
-#' \deqn{\gamma_1 = \frac{2(b - a)\sqrt{a + b + 1}}
+#' The skewness has the closed form, in the two shapes \eqn{a = \mu\phi} and
+#' \eqn{b = (1-\mu)\phi},
+#' \deqn{\gamma_1 =\frac{2(b - a)\sqrt{a + b + 1}}
 #'                       {(a + b + 2)\sqrt{ab}}.}
 #' It takes the sign of \eqn{b - a}, so a beta is right-skewed below a mean of
 #' one half, left-skewed above it, and exactly symmetric at \eqn{\mu = 1/2}
@@ -3969,7 +4028,7 @@ beta_shape_moments <- function(mu, phi, what) {
 #'
 #' @param x A `Beta1Distrib`, from [beta1_distrib()].
 #' @param theta A named list with components `mu` (strictly between 0 and 1)
-#'   and `phi` (positive), each a numeric vector of length 1 or `n`.
+#'   and `phi` (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -3981,12 +4040,12 @@ beta_shape_moments <- function(mu, phi, what) {
 #' @examples
 #' d <- beta1_distrib()
 #'
-#' # The published form in the two shapes, written out.
+#' # The published form in the two shapes is written out.
 #' a <- 0.3 * 5; b <- 0.7 * 5
 #' all.equal(skewness(d, list(mu = 0.3, phi = 5)),
 #'           2 * (b - a) * sqrt(a + b + 1) / ((a + b + 2) * sqrt(a * b)))
 #'
-#' # Exactly zero at a mean of one half, at any precision.
+#' # The skewness is exactly zero at a mean of one half, at any precision.
 #' skewness(d, list(mu = 0.5, phi = c(0.5, 2, 50)))
 #'
 #' @keywords internal
@@ -3999,15 +4058,16 @@ S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Beta1Distrib
 #'
 #' @description
-#' Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
-#' \deqn{\gamma_2 = \frac{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}}
+#' The excess kurtosis has the closed form, in the two shapes \eqn{a = \mu\phi}
+#' and \eqn{b = (1-\mu)\phi},
+#' \deqn{\gamma_2 =\frac{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}}
 #'                       {ab(a+b+2)(a+b+3)}.}
-#' The excess kurtosis is negative over a wide range of parameters, the support
-#' being bounded. At \eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform and
-#' the value is \eqn{-6/5}; at \eqn{\mu = 1/2} it tends to \eqn{-2}, the
-#' smallest value any distribution can have, as \eqn{\phi} goes to zero. The
-#' method evaluates the form in \eqn{(\mu, \phi)} of [beta_shape_moments()], in
-#' which \eqn{ab} is not formed.
+#' The excess kurtosis is negative over a wide range of parameters because the
+#' support is bounded. At \eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform
+#' and the value is \eqn{-6/5}; at \eqn{\mu = 1/2} it tends to \eqn{-2}, the
+#' smallest value that any distribution can have, as \eqn{\phi} goes to zero.
+#' The method evaluates the form in \eqn{(\mu, \phi)} of [beta_shape_moments()],
+#' in which \eqn{ab} is not formed.
 #'
 #' @section Notation:
 #' \eqn{\mu \in (0,1)} is the mean, \eqn{\phi > 0} the precision, and
@@ -4015,7 +4075,7 @@ S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Beta1Distrib`, from [beta1_distrib()].
 #' @param theta A named list with components `mu` (strictly between 0 and 1)
-#'   and `phi` (positive), each a numeric vector of length 1 or `n`.
+#'   and `phi` (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -4031,7 +4091,8 @@ S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
 #' # values, down to -2.
 #' all.equal(kurtosis(d, list(mu = 0.5, phi = 2)), -1.2)
 #'
-#' # Negative over the symmetric middle, positive as the mass piles at an end.
+#' # The value is negative over the symmetric middle and positive as the mass
+#' # piles at an end.
 #' round(kurtosis(d, list(mu = c(0.5, 0.1, 0.02), phi = 5)), 4)
 #'
 #' @keywords internal
@@ -4049,10 +4110,11 @@ S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
 #' @name mean.GPDDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \sigma/(1-\xi)} for \eqn{\xi < 1}, and `Inf` at or
-#' above one, where the first moment diverges. The shape controls which moments
-#' exist at all: the moment of order \eqn{k} is finite exactly for
-#' \eqn{\xi < 1/k}, so a fitted object can report a mean and no variance.
+#' The mean has the closed form \eqn{E[Y] = \sigma/(1-\xi)} for \eqn{\xi < 1},
+#' and is `Inf` at or above one, where the first moment diverges. The shape
+#' controls which moments exist at all: the moment of order \eqn{k} is finite
+#' exactly for \eqn{\xi < 1/k}, so a fitted object can report a mean and no
+#' variance.
 #'
 #' @section Notation:
 #' \eqn{\sigma > 0} is the scale and \eqn{\xi} the shape, of either sign. At
@@ -4061,7 +4123,7 @@ S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `GPDDistrib`, from [gpd_distrib()].
 #' @param theta A named list with components `sigma` (the scale, positive) and
-#'   `xi` (the shape, any real value), each a numeric vector of length 1 or
+#'   `xi` (the shape, any real value); each is a numeric vector of length 1 or
 #'   `n`. Settings with \eqn{\xi \ge 1} give `Inf` in their own positions.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -4075,7 +4137,7 @@ S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gpd_distrib()
 #'
-#' # Finite below shape one and infinite at or above it.
+#' # The mean is finite below shape one and infinite at or above it.
 #' mean(d, list(sigma = 1, xi = c(0, 0.5, 1, 1.5)))
 #'
 #' # At shape zero the family is exponential of mean sigma.
@@ -4095,9 +4157,9 @@ S7::method(mean, GPDDistrib) <- function(x, theta, ...) {
 #' @name variance.GPDDistrib
 #'
 #' @description
-#' Closed form:
+#' The variance has the closed form
 #' \eqn{\operatorname{Var}(Y) = \sigma^2/\{(1-\xi)^2(1-2\xi)\}} for
-#' \eqn{\xi < 1/2}, and `Inf` at or above one half. The threshold is half the
+#' \eqn{\xi < 1/2}, and is `Inf` at or above one half. The threshold is half the
 #' mean's. As the shape increases, the excess kurtosis becomes infinite first
 #' (at \eqn{\xi = 1/4}), then the skewness (\eqn{1/3}), then the variance and
 #' finally the mean, so a fitted object at \eqn{\xi = 0.6} reports a finite mean
@@ -4108,7 +4170,7 @@ S7::method(mean, GPDDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `GPDDistrib`, from [gpd_distrib()].
 #' @param theta A named list with components `sigma` (positive) and `xi` (any
-#'   real value), each a numeric vector of length 1 or `n`. Settings with
+#'   real value); each is a numeric vector of length 1 or `n`. Settings with
 #'   \eqn{\xi \ge 1/2} give `Inf`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -4123,10 +4185,10 @@ S7::method(mean, GPDDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gpd_distrib()
 #'
-#' # Finite below shape one half and infinite at or above it.
+#' # The variance is finite below shape one half and infinite at or above it.
 #' variance(d, list(sigma = 1, xi = c(0, 0.4, 0.5, 0.6)))
 #'
-#' # A mean without a variance, which is what the two thresholds allow.
+#' # The two thresholds allow a mean without a variance.
 #' c(mean = mean(d, list(sigma = 1, xi = 0.6)),
 #'   variance = variance(d, list(sigma = 1, xi = 0.6)))
 #'
@@ -4143,11 +4205,12 @@ S7::method(variance, GPDDistrib) <- function(x, theta, ...) {
 #' @name skewness.GPDDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = 2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for
-#' \eqn{\xi < 1/3}, and `Inf` at or above one third. The scale cancels, so the
-#' value depends on the shape alone; it is 2 at \eqn{\xi = 0}, where the family
-#' is exponential, and it climbs without bound as the shape approaches its
-#' threshold.
+#' The skewness has the closed form
+#' \eqn{\gamma_1 = 2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for
+#' \eqn{\xi < 1/3}, and is `Inf` at or above one third. The scale cancels, so
+#' the value depends only on the shape; it is 2 at \eqn{\xi = 0}, where the
+#' family is exponential, and it climbs without bound as the shape approaches
+#' its threshold.
 #'
 #' @section Notation:
 #' \eqn{\xi} is the shape, of either sign. The scale does not enter a
@@ -4155,7 +4218,7 @@ S7::method(variance, GPDDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `GPDDistrib`, from [gpd_distrib()].
 #' @param theta A named list with components `sigma` (positive) and `xi` (any
-#'   real value), each a numeric vector of length 1 or `n`. Only `xi` enters
+#'   real value); each is a numeric vector of length 1 or `n`. Only `xi` enters
 #'   the value; settings with \eqn{\xi \ge 1/3} give `Inf`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -4169,7 +4232,8 @@ S7::method(variance, GPDDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gpd_distrib()
 #'
-#' # Two at shape zero, climbing steeply, infinite at or above one third.
+#' # The skewness is two at shape zero, climbs steeply, and is infinite at or
+#' # above one third.
 #' skewness(d, list(sigma = 1, xi = c(0, 0.3, 1 / 3, 0.4)))
 #'
 #' @keywords internal
@@ -4190,11 +4254,11 @@ S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.GPDDistrib
 #'
 #' @description
-#' Closed form:
+#' The excess kurtosis has the closed form
 #' \eqn{\gamma_2 = 3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
-#' \eqn{\xi < 1/4}, and `Inf` at or above one quarter. The threshold is the
-#' tightest of the four moments, so this is the first quantity to become
-#' unreportable as a fitted shape rises.
+#' \eqn{\xi < 1/4}, and is `Inf` at or above one quarter. The threshold is the
+#' tightest of the four moments, so this is the first quantity that can no
+#' longer be reported as a fitted shape rises.
 #'
 #' @section Notation:
 #' \eqn{\xi} is the shape, of either sign. The scale does not enter a
@@ -4202,7 +4266,7 @@ S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
 #'
 #' @param x A `GPDDistrib`, from [gpd_distrib()].
 #' @param theta A named list with components `sigma` (positive) and `xi` (any
-#'   real value), each a numeric vector of length 1 or `n`. Only `xi` enters
+#'   real value); each is a numeric vector of length 1 or `n`. Only `xi` enters
 #'   the value; settings with \eqn{\xi \ge 1/4} give `Inf`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -4216,10 +4280,10 @@ S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gpd_distrib()
 #'
-#' # Six at shape zero, and infinite at or above one quarter.
+#' # The kurtosis is six at shape zero and infinite at or above one quarter.
 #' kurtosis(d, list(sigma = 1, xi = c(0, 0.2, 0.25, 0.3)))
 #'
-#' # The four thresholds, from the mean's 1 down to this one's 1/4.
+#' # The four thresholds run from the mean's 1 down to this one's 1/4.
 #' th <- list(sigma = 1, xi = 0.3)
 #' c(mean = mean(d, th), variance = variance(d, th),
 #'   skewness = skewness(d, th), kurtosis = kurtosis(d, th))
@@ -4251,7 +4315,8 @@ S7::method(kurtosis, GPDDistrib) <- function(x, theta, ...) {
 #' @name mean.GenGamma1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = a\,\Gamma\{(d+1)/p\}/\Gamma(d/p)}, the first raw
+#' The mean has the closed form
+#' \eqn{E[Y] = a\,\Gamma\{(d+1)/p\}/\Gamma(d/p)}, the first raw
 #' moment. The mean is a function of all three parameters: \eqn{a} is a scale,
 #' \eqn{d} and \eqn{p} are shapes, and the gamma ratio carries the shapes into
 #' the mean.
@@ -4272,12 +4337,12 @@ S7::method(kurtosis, GPDDistrib) <- function(x, theta, ...) {
 #' \eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes.
 #'
 #' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
-#' @param theta A named list with components `a`, `d` and `p`, all positive,
-#'   each a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `a`, `d` and `p`, all positive;
+#'   each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of means, of length equal to the longest of the
-#'   three components.
+#' @return A numeric vector of means, whose length is the one that the recycled
+#'   parameters imply.
 #'
 #' @seealso [variance.GenGamma1Distrib()], [gengamma1_distrib()].
 #'
@@ -4304,7 +4369,7 @@ S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @name variance.GenGamma1Distrib
 #'
 #' @description
-#' Closed form from the first two raw moments,
+#' The variance has the closed form, from the first two raw moments,
 #' \eqn{\operatorname{Var}(Y) = m_2 - m_1^2} with
 #' \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale enters as a
 #' square and the two shapes through the gamma ratios.
@@ -4319,22 +4384,22 @@ S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
 #' \eqn{S} the Stirling numbers of the second kind, a sum in which the leading
 #' orders that cancel in \eqn{m_2 - m_1^2} are absent. It is evaluated in
 #' double-double arithmetic where \eqn{8h \le k} and \eqn{4h^2 \le k}. Elsewhere
-#' \eqn{\mu_2 = \exp(\log m_2 - 2\log m_1) - 1} is evaluated with `expm1()`, the
-#' log-gamma differences being taken in Stirling's form for \eqn{k \ge 10} and
-#' as differences of `lgamma()` below. Then \eqn{\operatorname{Var}(Y) =
-#' m_1^2\mu_2}.
+#' \eqn{\mu_2 = \exp(\log m_2 - 2\log m_1) - 1} is evaluated with `expm1()`,
+#' and the log-gamma differences are taken in Stirling's form for
+#' \eqn{k \ge 10} and as differences of `lgamma()` below. Then
+#' \eqn{\operatorname{Var}(Y) = m_1^2\mu_2}.
 #'
 #' @section Notation:
 #' \eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes, and
 #' \eqn{m_k} the \eqn{k}-th raw moment.
 #'
 #' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
-#' @param theta A named list with components `a`, `d` and `p`, all positive,
-#'   each a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `a`, `d` and `p`, all positive;
+#'   each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, of length equal to the longest of the
-#'   three components.
+#' @return A numeric vector of variances, whose length is the one that the
+#'   recycled parameters imply.
 #'
 #' @seealso [mean.GenGamma1Distrib()], [skewness.GenGamma1Distrib()],
 #'   [gengamma1_distrib()].
@@ -4365,10 +4430,10 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @name skewness.GenGamma1Distrib
 #'
 #' @description
-#' Assembled from the first three raw moments,
-#' \eqn{\gamma_1 = (m_3 - 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}} with
+#' The skewness is assembled from the first three raw moments,
+#' \eqn{\gamma_1 =(m_3 - 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}} with
 #' \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, so the
-#' value depends on the two shapes alone; unlike a gamma's it can be negative
+#' value depends only on the two shapes; unlike a gamma's it can be negative
 #' (for example at \eqn{d = p} with \eqn{p} above about 3.6, the Weibull case).
 #'
 #' @details
@@ -4381,13 +4446,13 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
 #' raw moment. The scale does not enter a standardized moment.
 #'
 #' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
-#' @param theta A named list with components `a`, `d` and `p`, all positive,
-#'   each a numeric vector of length 1 or `n`. Only `d` and `p` enter the
+#' @param theta A named list with components `a`, `d` and `p`, all positive;
+#'   each is a numeric vector of length 1 or `n`. Only `d` and `p` enter the
 #'   value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector, of length equal to the longest of the three
-#'   components.
+#' @return A numeric vector, whose length is the one that the recycled
+#'   parameters imply.
 #'
 #' @seealso [kurtosis.GenGamma1Distrib()], [gengamma1_distrib()].
 #'
@@ -4413,8 +4478,8 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.GenGamma1Distrib
 #'
 #' @description
-#' Assembled from the first four raw moments,
-#' \eqn{\gamma_2 = (m_4 - 4m_1m_3 + 6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3}
+#' The excess kurtosis is assembled from the first four raw moments,
+#' \eqn{\gamma_2 =(m_4 - 4m_1m_3 + 6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3}
 #' with \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, and
 #' the two shapes move the skewness and the kurtosis with some freedom, where a
 #' gamma ties them by \eqn{\gamma_2 = 3\gamma_1^2/2}.
@@ -4436,13 +4501,13 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
 #' raw moment.
 #'
 #' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
-#' @param theta A named list with components `a`, `d` and `p`, all positive,
-#'   each a numeric vector of length 1 or `n`. Only `d` and `p` enter the
+#' @param theta A named list with components `a`, `d` and `p`, all positive;
+#'   each is a numeric vector of length 1 or `n`. Only `d` and `p` enter the
 #'   value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, of length equal to the longest
-#'   of the three components.
+#' @return A numeric vector of excess kurtoses, whose length is the one that the
+#'   recycled parameters imply.
 #'
 #' @seealso [skewness.GenGamma1Distrib()], [gengamma1_distrib()].
 #'
@@ -4471,9 +4536,10 @@ S7::method(kurtosis, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @name mean.PoissonDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. The family carries one parameter and it is
-#' the mean, so this method reads it off. It is also the variance, which is the
-#' equidispersion the family is defined by.
+#' The mean has the closed form \eqn{E[Y] = \mu}. The family carries one
+#' parameter and it is the mean, so this method reads it off. It is also the
+#' variance, which gives
+#' the equidispersion that defines the family.
 #'
 #' @param x A `PoissonDistrib`, from [poisson_distrib()].
 #' @param theta A named list with one component, `mu` (the mean, positive), a
@@ -4502,10 +4568,11 @@ S7::method(mean, PoissonDistrib) <- function(x, theta, ...) {
 #' @name variance.PoissonDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu}, equal to the mean. This is
-#' equidispersion, and it is the assumption every overdispersed count family in
-#' the toolkit relaxes: a sample whose variance exceeds its mean is evidence
-#' against a Poisson and for a negative binomial or a Poisson-inverse Gaussian.
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = \mu}, which
+#' equals the mean. This is equidispersion, and it is the assumption that every
+#' overdispersed count family in the toolkit relaxes: a sample whose variance
+#' exceeds its mean is evidence against a Poisson and for a negative binomial or
+#' a Poisson-inverse Gaussian.
 #'
 #' @param x A `PoissonDistrib`, from [poisson_distrib()].
 #' @param theta A named list with one component, `mu` (positive), a numeric
@@ -4521,7 +4588,7 @@ S7::method(mean, PoissonDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- poisson_distrib()
 #'
-#' # Equal to the mean at every setting.
+#' # The variance equals the mean at every setting.
 #' variance(d, list(mu = c(0.5, 3, 100)))
 #'
 #' # The negative binomial exceeds it and falls onto it as theta grows.
@@ -4536,8 +4603,9 @@ S7::method(variance, PoissonDistrib) <- function(x, theta, ...) {
 #' @name skewness.PoissonDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = 1/\sqrt\mu}. It is positive at every mean, a
-#' count having a floor at zero and no ceiling, and it decays like
+#' The skewness has the closed form \eqn{\gamma_1 = 1/\sqrt\mu}. It is positive
+#' at every mean
+#' because a count has a floor at zero and no ceiling, and it decays like
 #' \eqn{\mu^{-1/2}}, which is the rate at which the family approaches a
 #' Gaussian as the counts grow.
 #'
@@ -4555,7 +4623,7 @@ S7::method(variance, PoissonDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- poisson_distrib()
 #'
-#' # One over the square root of the mean.
+#' # The skewness is one over the square root of the mean.
 #' all.equal(skewness(d, list(mu = 4)), 0.5)
 #'
 #' # It vanishes as the counts grow.
@@ -4570,10 +4638,10 @@ S7::method(skewness, PoissonDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.PoissonDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 1/\mu}, the excess over the Gaussian. It is
-#' positive at every mean and decays like \eqn{\mu^{-1}}, whereas the skewness
-#' decays like \eqn{\mu^{-1/2}}: the excess kurtosis is the square of the
-#' skewness.
+#' The excess kurtosis has the closed form \eqn{\gamma_2 = 1/\mu}, the excess
+#' over the Gaussian. It is positive at every mean and decays like
+#' \eqn{\mu^{-1}}, whereas the skewness decays like \eqn{\mu^{-1/2}}: the excess
+#' kurtosis is the square of the skewness.
 #'
 #' @param x A `PoissonDistrib`, from [poisson_distrib()].
 #' @param theta A named list with one component, `mu` (positive), a numeric
@@ -4589,7 +4657,7 @@ S7::method(skewness, PoissonDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- poisson_distrib()
 #'
-#' # One over the mean, falling twice as fast as the skewness.
+#' # The kurtosis is one over the mean and falls twice as fast as the skewness.
 #' rbind(skewness = skewness(d, list(mu = c(1, 25, 10000))),
 #'       kurtosis = kurtosis(d, list(mu = c(1, 25, 10000))))
 #'
@@ -4604,9 +4672,9 @@ S7::method(kurtosis, PoissonDistrib) <- function(x, theta, ...) {
 #' @name mean.BernoulliDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}, the success probability. The response takes
-#' the values 0 and 1, so the mean is the probability of the second value, and
-#' every other moment is a function of \eqn{\mu}.
+#' The mean has the closed form \eqn{E[Y] = \mu}, the success probability. The
+#' response takes the values 0 and 1, so the mean is the probability of the
+#' second value, and every other moment is a function of \eqn{\mu}.
 #'
 #' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
 #' @param theta A named list with one component, `mu` (the success probability,
@@ -4636,10 +4704,11 @@ S7::method(mean, BernoulliDistrib) <- function(x, theta, ...) {
 #' @name variance.BernoulliDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)}. It is largest at
-#' \eqn{\mu = 1/2}, where it is \eqn{1/4}, and goes to zero at either end, the
-#' response becoming deterministic there. That quarter is the largest variance
-#' any distribution on \eqn{\{0,1\}} can have.
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = \mu(1-\mu)}. It is largest at
+#' \eqn{\mu = 1/2}, where it is \eqn{1/4}, and goes to zero at either end,
+#' because the response becomes deterministic there. The value \eqn{1/4} is
+#' the largest variance that any distribution on \eqn{\{0,1\}} can have.
 #'
 #' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
 #' @param theta A named list with one component, `mu` (strictly between 0 and
@@ -4655,7 +4724,7 @@ S7::method(mean, BernoulliDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- bernoulli_distrib()
 #'
-#' # Largest at one half, vanishing at either end.
+#' # The variance is largest at one half and vanishes at either end.
 #' variance(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
 #'
 #' @keywords internal
@@ -4668,7 +4737,8 @@ S7::method(variance, BernoulliDistrib) <- function(x, theta, ...) {
 #' @name skewness.BernoulliDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = (1-2\mu)/\sqrt{\mu(1-\mu)}}. It is zero at
+#' The skewness has the closed form
+#' \eqn{\gamma_1 = (1-2\mu)/\sqrt{\mu(1-\mu)}}. It is zero at
 #' \eqn{\mu = 1/2}, positive below and negative above, and it diverges at
 #' either end of the unit interval, where almost all the mass sits on one of
 #' the two values.
@@ -4686,10 +4756,10 @@ S7::method(variance, BernoulliDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- bernoulli_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(skewness(d, list(mu = 0.3)), (1 - 0.6) / sqrt(0.3 * 0.7))
 #'
-#' # Zero at one half, and it diverges towards either end.
+#' # The skewness is zero at one half and diverges towards either end.
 #' skewness(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
 #'
 #' @keywords internal
@@ -4702,10 +4772,10 @@ S7::method(skewness, BernoulliDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.BernoulliDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}, the excess
-#' over the Gaussian. It reaches its minimum \eqn{-2} at \eqn{\mu = 1/2}, which
-#' is the smallest excess kurtosis any distribution attains, and diverges at
-#' either end of the unit interval.
+#' The excess kurtosis over the Gaussian has the closed form
+#' \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}. It reaches its minimum
+#' \eqn{-2} at \eqn{\mu = 1/2}, which is the smallest excess kurtosis that any
+#' distribution attains, and diverges at either end of the unit interval.
 #'
 #' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
 #' @param theta A named list with one component, `mu` (strictly between 0 and
@@ -4721,10 +4791,10 @@ S7::method(skewness, BernoulliDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- bernoulli_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(kurtosis(d, list(mu = 0.3)), (1 - 6 * 0.21) / 0.21)
 #'
-#' # Minus two at one half, the lower bound for any distribution.
+#' # The value is minus two at one half, the lower bound for any distribution.
 #' kurtosis(d, list(mu = c(0.1, 0.5, 0.9)))
 #'
 #' @keywords internal
@@ -4740,10 +4810,10 @@ S7::method(kurtosis, BernoulliDistrib) <- function(x, theta, ...) {
 #' @name mean.BinomialDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = n\mu}, with \eqn{n} the number of trials and
-#' \eqn{\mu} the success probability. The trial count is a property of the
-#' object and not a parameter, so it is read from `x@size` and does not appear
-#' in `theta`.
+#' The mean has the closed form \eqn{E[Y] = n\mu}, with \eqn{n} the number of
+#' trials and \eqn{\mu} the success probability. The trial count is a property
+#' of the object and not a parameter, so it is read from `x@size` and does not
+#' appear in `theta`.
 #'
 #' @section Notation:
 #' \eqn{n} is the number of trials, held on the object, and \eqn{\mu \in (0,1)}
@@ -4757,8 +4827,8 @@ S7::method(kurtosis, BernoulliDistrib) <- function(x, theta, ...) {
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length `max(length(theta$mu),
-#'   length(x@size))`, each in \eqn{(0, n)} for the number of trials \eqn{n} of
-#'   that observation.
+#'   length(x@size))`; each mean lies in \eqn{(0, n)} for the number of trials
+#'   \eqn{n} of that observation.
 #'
 #' @seealso [variance.BinomialDistrib()]; [mean.BernoulliDistrib()], the
 #'   one-trial case; [mean.BetaBinom1Distrib()], the overdispersed extension;
@@ -4767,7 +4837,7 @@ S7::method(kurtosis, BernoulliDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- binomial_distrib(size = 10)
 #'
-#' # Ten trials at probability 0.3.
+#' # The call uses ten trials at probability 0.3.
 #' mean(d, list(mu = 0.3))
 #'
 #' @keywords internal
@@ -4779,7 +4849,8 @@ S7::method(mean, BinomialDistrib) <- function(x, theta, ...) {
 #' @name variance.BinomialDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)}. The trials are
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)}. The trials are
 #' independent, so the variance is the trial count times the Bernoulli
 #' variance; a sample of counts out of \eqn{n} whose variance exceeds this is
 #' overdispersed, and a beta-binomial is the family that carries the excess.
@@ -4800,7 +4871,7 @@ S7::method(mean, BinomialDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- binomial_distrib(size = 10)
 #'
-#' # Ten times the Bernoulli variance.
+#' # The variance is ten times the Bernoulli variance.
 #' all.equal(variance(d, list(mu = 0.3)),
 #'           10 * variance(bernoulli_distrib(), list(mu = 0.3)))
 #'
@@ -4814,9 +4885,10 @@ S7::method(variance, BinomialDistrib) <- function(x, theta, ...) {
 #' @name skewness.BinomialDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = (1-2\mu)/\sqrt{n\mu(1-\mu)}}. It is the
-#' Bernoulli's divided by \eqn{\sqrt n}, so it vanishes as the trials
-#' accumulate, at the rate the central limit theorem gives. It is zero at
+#' The skewness has the closed form
+#' \eqn{\gamma_1 = (1-2\mu)/\sqrt{n\mu(1-\mu)}}. It is the
+#' Bernoulli skewness divided by \eqn{\sqrt n}, so it vanishes as the trials
+#' accumulate, at the rate that the central limit theorem gives. It is zero at
 #' \eqn{\mu = 1/2} at every trial count.
 #'
 #' @param x A `BinomialDistrib`, from [binomial_distrib()], carrying the trial
@@ -4834,11 +4906,12 @@ S7::method(variance, BinomialDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- binomial_distrib(size = 10)
 #'
-#' # The Bernoulli's divided by the square root of the trial count.
+#' # The skewness is the Bernoulli's divided by the square root of the trial
+#' # count.
 #' all.equal(skewness(d, list(mu = 0.3)),
 #'           skewness(bernoulli_distrib(), list(mu = 0.3)) / sqrt(10))
 #'
-#' # Zero at one half, at any trial count.
+#' # The skewness is zero at one half, at any trial count.
 #' skewness(d, list(mu = 0.5))
 #'
 #' @keywords internal
@@ -4851,8 +4924,9 @@ S7::method(skewness, BinomialDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.BinomialDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}, the
-#' excess over the Gaussian. It is the Bernoulli's divided by \eqn{n}, so it
+#' The excess kurtosis over the Gaussian has the closed form
+#' \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}. It is the
+#' Bernoulli excess kurtosis divided by \eqn{n}, so it
 #' decays like \eqn{1/n}, against \eqn{1/\sqrt{n}} for the skewness, and it can
 #' take either sign: it is negative where \eqn{\mu(1-\mu) > 1/6}, that is for
 #' \eqn{\mu} between about 0.211 and 0.789, and positive outside that interval.
@@ -4872,11 +4946,11 @@ S7::method(skewness, BinomialDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- binomial_distrib(size = 10)
 #'
-#' # The Bernoulli's divided by the trial count.
+#' # The excess kurtosis is the Bernoulli's divided by the trial count.
 #' all.equal(kurtosis(d, list(mu = 0.3)),
 #'           kurtosis(bernoulli_distrib(), list(mu = 0.3)) / 10)
 #'
-#' # Negative over the middle, positive towards either end.
+#' # The values are negative over the middle and positive towards either end.
 #' round(kurtosis(d, list(mu = c(0.05, 0.3, 0.5, 0.95))), 4)
 #'
 #' @keywords internal
@@ -4894,9 +4968,9 @@ S7::method(kurtosis, BinomialDistrib) <- function(x, theta, ...) {
 #' @name mean.GeometricDistrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. The family is parametrized by its mean, the
-#' expected number of failures before the first success, and the success
-#' probability it implies is \eqn{1/(1+\mu)}.
+#' The mean has the closed form \eqn{E[Y] = \mu}. The family is parametrized by
+#' its mean, the expected number of failures before the first success, and the
+#' implied success probability is \eqn{1/(1+\mu)}.
 #'
 #' @param x A `GeometricDistrib`, from [geometric_distrib()].
 #' @param theta A named list with one component, `mu` (the mean, positive), a
@@ -4924,7 +4998,8 @@ S7::method(mean, GeometricDistrib) <- function(x, theta, ...) {
 #' @name variance.GeometricDistrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\mu)}. It exceeds the mean
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = \mu(1+\mu)}. It exceeds the mean
 #' at every parameter value, so the family is overdispersed relative to a
 #' Poisson, and it is exactly the negative binomial's variance at
 #' \eqn{\theta = 1}.
@@ -4943,7 +5018,7 @@ S7::method(mean, GeometricDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- geometric_distrib()
 #'
-#' # Mean times one plus the mean.
+#' # The variance is the mean times one plus the mean.
 #' all.equal(variance(d, list(mu = 3)), 12)
 #'
 #' # The negative binomial at theta = 1 is the same law.
@@ -4960,7 +5035,8 @@ S7::method(variance, GeometricDistrib) <- function(x, theta, ...) {
 #' @name skewness.GeometricDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = (1+2\mu)/\sqrt{\mu(1+\mu)}}. It is positive at
+#' The skewness has the closed form
+#' \eqn{\gamma_1 = (1+2\mu)/\sqrt{\mu(1+\mu)}}. It is positive at
 #' every mean and, unlike a Poisson's, it does not vanish as the counts grow:
 #' it tends to 2 from above, the exponential's value, which is the continuous
 #' limit of the family.
@@ -4979,7 +5055,7 @@ S7::method(variance, GeometricDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- geometric_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(skewness(d, list(mu = 3)), 7 / sqrt(12))
 #'
 #' # It tends to the exponential's 2 as the mean grows.
@@ -4995,9 +5071,10 @@ S7::method(skewness, GeometricDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.GeometricDistrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 6 + 1/\{\mu(1+\mu)\}}, the excess over the
-#' Gaussian. It stays above 6 at every mean and tends to 6 as the counts grow,
-#' the exponential's value. The tails are geometric at every parameter setting,
+#' The excess kurtosis over the Gaussian has the closed form
+#' \eqn{\gamma_2 = 6 + 1/\{\mu(1+\mu)\}}. It stays above 6 at every mean and
+#' tends to 6 as the counts grow, the exponential's value. The tails are
+#' geometric at every parameter setting,
 #' so the family has a positive excess kurtosis everywhere and does not approach
 #' the Gaussian as a Poisson does.
 #'
@@ -5016,7 +5093,7 @@ S7::method(skewness, GeometricDistrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- geometric_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(kurtosis(d, list(mu = 3)), 6 + 1 / 12)
 #'
 #' # It stays above six where a Poisson's excess kurtosis vanishes.
@@ -5039,14 +5116,14 @@ S7::method(kurtosis, GeometricDistrib) <- function(x, theta, ...) {
 #' @name mean.NegBin1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean as its
-#' first parameter. NB1 and NB2 have the same mean and differ in the variance
-#' function.
+#' The mean has the closed form \eqn{E[Y] = \mu}. This parametrization carries
+#' the mean as its first parameter. NB1 and NB2 have the same mean and differ in
+#' the variance function.
 #'
 #' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
-#'   `n`.
+#'   `theta` (the dispersion, positive); each is a numeric vector of length 1
+#'   or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -5071,9 +5148,10 @@ S7::method(mean, NegBin1Distrib) <- function(x, theta, ...) {
 #' @name variance.NegBin1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, linear in the
-#' mean. This is what NB1 means: the variance is a fixed multiple of the mean,
-#' where NB2 makes it \eqn{\mu + \mu^2/\theta} and so quadratic. The two are
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, linear in the mean. In NB1 the
+#' variance is a fixed multiple of the mean, whereas NB2 makes it
+#' \eqn{\mu + \mu^2/\theta} and so quadratic. The two are
 #' different models of overdispersion and are not reparametrizations of each
 #' other.
 #'
@@ -5087,8 +5165,8 @@ S7::method(mean, NegBin1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `theta`
-#'   (positive), each a numeric vector of length 1 or `n`. The Poisson limit is
-#'   \eqn{\theta \to 0} here, the opposite end from NB2's.
+#'   (positive); each is a numeric vector of length 1 or `n`. The Poisson limit
+#'   is \eqn{\theta \to 0} here, the opposite end from NB2's.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -5121,7 +5199,8 @@ S7::method(variance, NegBin1Distrib) <- function(x, theta, ...) {
 #' @name skewness.NegBin1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = (1+2\theta)/\sqrt{\mu(1+\theta)}}. It is
+#' The skewness has the closed form
+#' \eqn{\gamma_1 = (1+2\theta)/\sqrt{\mu(1+\theta)}}. It is
 #' positive at every parameter value and tends to the Poisson's
 #' \eqn{\mu^{-1/2}} as the dispersion goes to zero, which is where NB1
 #' approaches a Poisson.
@@ -5131,7 +5210,7 @@ S7::method(variance, NegBin1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `theta`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -5144,7 +5223,7 @@ S7::method(variance, NegBin1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- negbin1_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(skewness(d, list(mu = 4, theta = 2)), 5 / sqrt(4 * 3))
 #'
 #' # It falls onto the Poisson's mu^(-1/2) = 0.5 as the dispersion vanishes.
@@ -5162,17 +5241,17 @@ S7::method(skewness, NegBin1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.NegBin1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 6\theta/\mu + 1/\{\mu(1+\theta)\}}, the excess
-#' over the Gaussian. Both terms are positive, so the family is always
-#' leptokurtic, and the expression tends to the Poisson's \eqn{1/\mu} as the
-#' dispersion goes to zero.
+#' The excess kurtosis over the Gaussian has the closed form
+#' \eqn{\gamma_2 = 6\theta/\mu + 1/\{\mu(1+\theta)\}}. Both terms are positive,
+#' so the family is always leptokurtic, and the expression tends to the
+#' Poisson's \eqn{1/\mu} as the dispersion goes to zero.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\theta > 0} the dispersion.
 #'
 #' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `theta`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -5185,7 +5264,7 @@ S7::method(skewness, NegBin1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- negbin1_distrib()
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(kurtosis(d, list(mu = 4, theta = 2)), 12 / 4 + 1 / 12)
 #'
 #' # It falls onto the Poisson's 1 / mu = 0.25 as the dispersion vanishes.
@@ -5344,17 +5423,17 @@ S7::method(kurtosis, NegBin1Distrib) <- function(x, theta, ...) {
 #' @description
 #' Returns the mean, the variance, the skewness or the excess kurtosis of the
 #' beta-binomial with \eqn{n} trials, mean proportion \eqn{\mu} and
-#' dispersion \eqn{\sigma = 1/(\alpha + \beta)}, each in a closed form that
-#' forms no difference of large raw moments. With \eqn{g = \mu(1-\mu)},
+#' dispersion \eqn{\sigma = 1/(\alpha + \beta)}, in a closed form that forms
+#' no difference of large raw moments. We write \eqn{g = \mu(1-\mu)}, so that
 #' \deqn{E[Y] = n\mu,\qquad \mathrm{Var}(Y) = ng\,\frac{1 + n\sigma}{1 + \sigma},}
 #' \deqn{\gamma_1 = (1 - 2\mu)\,\frac{1 + 2n\sigma}{1 + 2\sigma}
 #'   \sqrt{\frac{1 + \sigma}{gn(1 + n\sigma)}},}
 #' \deqn{\gamma_2 = \frac{6n\sigma(1 + n\sigma)\,[(1 - 6g)(1 + \sigma) + g]
 #'   + (1 + \sigma)(1 - 6g - \sigma)}{gn(1 + 2\sigma)(1 + 3\sigma)(1 + n\sigma)}.}
-#' At \eqn{\sigma = 0} these are the binomial's, \eqn{\gamma_2} reducing to
-#' \eqn{(1 - 6g)/(gn)}. The excess kurtosis is written as one quotient, so that
-#' it is not formed as a kurtosis near 3 minus 3, which loses the digits of a
-#' value of order \eqn{1/n}.
+#' At \eqn{\sigma = 0} these are the binomial's, and \eqn{\gamma_2} reduces to
+#' \eqn{(1 - 6g)/(gn)}. The excess kurtosis is computed as one quotient, which
+#' avoids forming a kurtosis near 3 and subtracting 3, a step that would lose
+#' the digits of a value of order \eqn{1/n}.
 #'
 #' @param mu The mean proportion, a numeric vector in \eqn{(0, 1)}.
 #' @param sigma The dispersion, a positive numeric vector.
@@ -5408,9 +5487,10 @@ beta_mu_sigma <- function(a, b) {
 #' @name mean.BetaBinom1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = n\mu}, the same as a binomial's. The mixing beta has
-#' mean \eqn{\mu}, so mixing the success probability over it does not change the
-#' mean; the dispersion enters the variance and the higher moments.
+#' The mean has the closed form \eqn{E[Y] = n\mu}, the same as a binomial's.
+#' The mixing beta has mean \eqn{\mu}, so mixing the success probability over
+#' it does not change the mean; the dispersion enters the variance and the
+#' higher moments.
 #'
 #' @section Notation:
 #' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
@@ -5419,8 +5499,8 @@ beta_mu_sigma <- function(a, b) {
 #' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
 #'   trial count in its `size` property.
 #' @param theta A named list with components `mu` (the success probability,
-#'   strictly between 0 and 1) and `sigma` (the dispersion, positive), each a
-#'   numeric vector of length 1 or of the common length of the parameter
+#'   strictly between 0 and 1) and `sigma` (the dispersion, positive); each is
+#'   a numeric vector of length 1 or of the common length of the parameter
 #'   settings.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5433,7 +5513,7 @@ beta_mu_sigma <- function(a, b) {
 #' @examples
 #' d <- betabinom1_distrib(size = 10)
 #'
-#' # n mu, and the dispersion does not move it.
+#' # The mean is n mu, and the dispersion does not move it.
 #' mean(d, list(mu = 0.3, sigma = c(0.01, 0.5, 5)))
 #'
 #' @keywords internal
@@ -5446,15 +5526,15 @@ S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @name variance.BetaBinom1Distrib
 #'
 #' @description
-#' Closed form:
+#' The variance has the closed form
 #' \deqn{\operatorname{Var}(Y) = n\mu(1-\mu)\,\frac{1 + n\sigma}{1 + \sigma}.}
 #' The first factor is the binomial variance and the second is the
 #' overdispersion, at least 1 for every \eqn{n \ge 1} and growing towards
 #' \eqn{n} as the dispersion rises. At \eqn{\sigma \to 0} the family is
 #' binomial; at large \eqn{\sigma} the variance approaches
 #' \eqn{n^2\mu(1-\mu)}, which is a Bernoulli scaled by the trial count and is
-#' the largest a distribution on \eqn{\{0, \ldots, n\}} with that mean can
-#' have.
+#' the largest variance that a distribution on \eqn{\{0, \ldots, n\}} with that
+#' mean can have.
 #'
 #' @section Notation:
 #' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
@@ -5463,8 +5543,8 @@ S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
 #'   trial count in its `size` property.
 #' @param theta A named list with components `mu` (strictly between 0 and 1)
-#'   and `sigma` (positive), each a numeric vector of length 1 or of the common
-#'   length of the parameter settings.
+#'   and `sigma` (positive); each is a numeric vector of length 1 or of the
+#'   common length of the parameter settings.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -5477,7 +5557,7 @@ S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- betabinom1_distrib(size = 10)
 #'
-#' # The published form, written out.
+#' # The published form is written out.
 #' all.equal(variance(d, list(mu = 0.3, sigma = 0.5)),
 #'           10 * 0.3 * 0.7 * (1 + 10 * 0.5) / (1 + 0.5))
 #'
@@ -5495,12 +5575,13 @@ S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @name skewness.BetaBinom1Distrib
 #'
 #' @description
-#' Closed form: \deqn{\gamma_1 = (1 - 2\mu)\,\frac{1 + 2n\sigma}{1 + 2\sigma}
+#' The skewness has the closed form
+#' \deqn{\gamma_1 = (1 - 2\mu)\,\frac{1 + 2n\sigma}{1 + 2\sigma}
 #' \sqrt{\frac{1 + \sigma}{n\mu(1-\mu)(1 + n\sigma)}},} computed by
-#' [betabinom_moments()]. It is zero at \eqn{\mu = 1/2} whatever the dispersion,
-#' the mixing beta being symmetric there, and it takes the sign of \eqn{1 -
-#' 2\mu} elsewhere. The closed form forms no difference of raw moments, so it
-#' keeps its accuracy at a small dispersion and a large \eqn{n}.
+#' [betabinom_moments()]. It is zero at \eqn{\mu = 1/2} whatever the
+#' dispersion, because the mixing beta is symmetric there, and it takes the
+#' sign of \eqn{1 - 2\mu} elsewhere. The closed form forms no difference of raw
+#' moments, so it keeps its accuracy at a small dispersion and a large \eqn{n}.
 #'
 #' @section Notation:
 #' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
@@ -5509,8 +5590,8 @@ S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
 #'   trial count in its `size` property.
 #' @param theta A named list with components `mu` (strictly between 0 and 1)
-#'   and `sigma` (positive), each a numeric vector of length 1 or of the common
-#'   length of the parameter settings.
+#'   and `sigma` (positive); each is a numeric vector of length 1 or of the
+#'   common length of the parameter settings.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -5523,7 +5604,8 @@ S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- betabinom1_distrib(size = 10)
 #'
-#' # Zero at a success probability of one half, at any dispersion.
+#' # The skewness is zero at a success probability of one half, at any
+#' # dispersion.
 #' round(skewness(d, list(mu = 0.5, sigma = c(0.1, 1, 10))), 12)
 #'
 #' # It falls onto the binomial's as the dispersion vanishes.
@@ -5540,13 +5622,13 @@ S7::method(skewness, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.BetaBinom1Distrib
 #'
 #' @description
-#' Closed form, written as one quotient by [betabinom_moments()] so that it is
-#' not formed as a kurtosis near 3 minus 3. The success probability is what sets
-#' its
-#' sign. Near \eqn{\mu = 1/2} it is negative and falls
-#' towards \eqn{-2} as the dispersion grows, the mass splitting between the two
-#' endpoints and the law approaching a scaled Bernoulli; near either end it is
-#' positive and large, the long tail towards the middle dominating.
+#' The method obtains the excess kurtosis from [betabinom_moments()] as one
+#' quotient, so that it does not form a kurtosis near 3 and
+#' subtract 3. The success probability sets its sign. Near \eqn{\mu = 1/2} it
+#' is negative and falls towards \eqn{-2} as the dispersion grows, because the
+#' mass splits between the two endpoints and the law approaches a scaled
+#' Bernoulli; near either end it is positive and large, because the long tail
+#' towards the middle dominates.
 #'
 #' @section Notation:
 #' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
@@ -5555,8 +5637,8 @@ S7::method(skewness, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
 #'   trial count in its `size` property.
 #' @param theta A named list with components `mu` (strictly between 0 and 1)
-#'   and `sigma` (positive), each a numeric vector of length 1 or of the common
-#'   length of the parameter settings.
+#'   and `sigma` (positive); each is a numeric vector of length 1 or of the
+#'   common length of the parameter settings.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -5594,14 +5676,14 @@ S7::method(kurtosis, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @name mean.Gaussian2Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This is the same law as
+#' The mean has the closed form \eqn{E[Y] = \mu}. This is the same law as
 #' [gaussian1_distrib()] written by its variance, and the mean is the location
-#' in all three of the toolkit's Gaussian parametrizations.
+#' in every Gaussian parametrization of the toolkit.
 #'
 #' @param x A `Gaussian2Distrib`, from [gaussian2_distrib()].
 #' @param theta A named list with components `mu` (the mean, any real value)
-#'   and `sigma2` (the variance, positive), each a numeric vector of length 1
-#'   or `n`.
+#'   and `sigma2` (the variance, positive); each is a numeric vector of length
+#'   1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -5627,15 +5709,15 @@ S7::method(mean, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @name variance.Gaussian2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. The variance is the
-#' second parameter here, so the method reads it off, where
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = \sigma^2}. The
+#' variance is the second parameter here, so the method reads it off, where
 #' [variance.Gaussian1Distrib()] squares a standard deviation and
 #' [variance.Gaussian3Distrib()] inverts a precision. All three describe the
 #' same law.
 #'
 #' @param x A `Gaussian2Distrib`, from [gaussian2_distrib()].
 #' @param theta A named list with components `mu` (any real value) and `sigma2`
-#'   (the variance, positive), each a numeric vector of length 1 or `n`.
+#'   (the variance, positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -5666,14 +5748,14 @@ S7::method(variance, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @name skewness.Gaussian2Distrib
 #'
 #' @description
-#' Exactly zero at every parameter value, the density being symmetric about
-#' \eqn{\mu}. A standardized moment is invariant under a change of
-#' parametrization, so this is the same zero that [skewness.Gaussian1Distrib()]
-#' returns.
+#' The skewness is exactly zero at every parameter value, because the density
+#' is symmetric about \eqn{\mu}. A standardized moment is invariant under a
+#' change of parametrization, so this is the same zero that
+#' [skewness.Gaussian1Distrib()] returns.
 #'
 #' @param x A `Gaussian2Distrib`, from [gaussian2_distrib()].
-#' @param theta A named list with components `mu` and `sigma2` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are checked against the
+#' @param theta A named list with components `mu` and `sigma2` (positive); each
+#'   is a numeric vector of length 1 or `n`. The values are checked against the
 #'   parameter bounds, and only their lengths enter the result.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5686,7 +5768,8 @@ S7::method(variance, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian2_distrib()
 #'
-#' # Zero at every location and variance, with one value per setting.
+#' # The skewness is zero at every location and variance, with one value per
+#' # setting.
 #' skewness(d, list(mu = c(-2, 0, 5), sigma2 = c(1, 4, 9)))
 #'
 #' @keywords internal
@@ -5698,14 +5781,14 @@ S7::method(skewness, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Gaussian2Distrib
 #'
 #' @description
-#' Exactly zero at every parameter value. [kurtosis()] reports the excess over
-#' the Gaussian's own fourth standardized moment of 3, so every Gaussian sits
-#' at the origin of the scale whichever of the three parametrizations it is
-#' written in.
+#' The excess kurtosis is exactly zero at every parameter value. [kurtosis()]
+#' reports the excess over the Gaussian's own fourth standardized moment of 3,
+#' so every Gaussian sits at the origin of the scale whichever
+#' parametrization it is written in.
 #'
 #' @param x A `Gaussian2Distrib`, from [gaussian2_distrib()].
-#' @param theta A named list with components `mu` and `sigma2` (positive), each
-#'   a numeric vector of length 1 or `n`. The values are checked against the
+#' @param theta A named list with components `mu` and `sigma2` (positive); each
+#'   is a numeric vector of length 1 or `n`. The values are checked against the
 #'   parameter bounds, and only their lengths enter the result.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5718,7 +5801,7 @@ S7::method(skewness, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian2_distrib()
 #'
-#' # Zero for every Gaussian, in every parametrization.
+#' # The excess kurtosis is zero for every Gaussian, in every parametrization.
 #' kurtosis(d, list(mu = 0, sigma2 = c(1, 100)))
 #'
 #' @keywords internal
@@ -5730,15 +5813,15 @@ S7::method(kurtosis, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @name mean.Gaussian3Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This is the Gaussian written by its
-#' precision \eqn{\tau = 1/\sigma^2}, a parametrization common in Bayesian
-#' models. As in the other two Gaussian parametrizations, the mean is the
-#' location parameter.
+#' The mean has the closed form \eqn{E[Y] = \mu}. This is the Gaussian written
+#' by its precision \eqn{\tau = 1/\sigma^2}, a parametrization common in
+#' Bayesian models. As in the other Gaussian parametrizations, the mean is
+#' the location parameter.
 #'
 #' @param x A `Gaussian3Distrib`, from [gaussian3_distrib()].
 #' @param theta A named list with components `mu` (the mean, any real value)
-#'   and `tau` (the precision, positive), each a numeric vector of length 1 or
-#'   `n`.
+#'   and `tau` (the precision, positive); each is a numeric vector of length 1
+#'   or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -5764,13 +5847,13 @@ S7::method(mean, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @name variance.Gaussian3Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = 1/\tau}. A larger precision gives a
-#' smaller variance. This parametrization differs from [gaussian2_distrib()]
-#' only by the reciprocal \eqn{\tau = 1/\sigma^2}.
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = 1/\tau}. A
+#' larger precision gives a smaller variance. This parametrization differs from
+#' [gaussian2_distrib()] only by the reciprocal \eqn{\tau = 1/\sigma^2}.
 #'
 #' @param x A `Gaussian3Distrib`, from [gaussian3_distrib()].
 #' @param theta A named list with components `mu` (any real value) and `tau`
-#'   (the precision, positive), each a numeric vector of length 1 or `n`. The
+#'   (the precision, positive); each is a numeric vector of length 1 or `n`. The
 #'   variance diverges as the precision approaches zero.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5783,7 +5866,7 @@ S7::method(mean, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian3_distrib()
 #'
-#' # One over the precision.
+#' # The variance is one over the precision.
 #' all.equal(variance(d, list(mu = 0, tau = 0.25)), 4)
 #'
 #' # The standard deviation is one over its square root.
@@ -5799,14 +5882,14 @@ S7::method(variance, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @name skewness.Gaussian3Distrib
 #'
 #' @description
-#' Exactly zero at every parameter value, the density being symmetric about
-#' \eqn{\mu}. A standardized moment is invariant under a change of
-#' parametrization, so this is the same zero that the other two Gaussian classes
-#' return.
+#' The skewness is exactly zero at every parameter value, because the density
+#' is symmetric about \eqn{\mu}. A standardized moment is invariant under a
+#' change of parametrization, so this is the same zero that the other two
+#' Gaussian classes return.
 #'
 #' @param x A `Gaussian3Distrib`, from [gaussian3_distrib()].
-#' @param theta A named list with components `mu` and `tau` (positive), each a
-#'   numeric vector of length 1 or `n`. The values are checked against the
+#' @param theta A named list with components `mu` and `tau` (positive); each is
+#'   a numeric vector of length 1 or `n`. The values are checked against the
 #'   parameter bounds, and only their lengths enter the result.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5819,7 +5902,8 @@ S7::method(variance, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian3_distrib()
 #'
-#' # Zero at every location and precision, with one value per setting.
+#' # The skewness is zero at every location and precision, with one value per
+#' # setting.
 #' skewness(d, list(mu = c(-2, 0, 5), tau = c(1, 4, 9)))
 #'
 #' @keywords internal
@@ -5831,13 +5915,13 @@ S7::method(skewness, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Gaussian3Distrib
 #'
 #' @description
-#' Exactly zero at every parameter value, the excess over the Gaussian's own
-#' fourth standardized moment being what [kurtosis()] reports. The
-#' parametrization does not enter a standardized moment.
+#' The excess kurtosis is exactly zero at every parameter value, because
+#' [kurtosis()] reports the excess over the Gaussian's own fourth standardized
+#' moment. The parametrization does not enter a standardized moment.
 #'
 #' @param x A `Gaussian3Distrib`, from [gaussian3_distrib()].
-#' @param theta A named list with components `mu` and `tau` (positive), each a
-#'   numeric vector of length 1 or `n`. The values are checked against the
+#' @param theta A named list with components `mu` and `tau` (positive); each is
+#'   a numeric vector of length 1 or `n`. The values are checked against the
 #'   parameter bounds, and only their lengths enter the result.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5850,7 +5934,7 @@ S7::method(skewness, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gaussian3_distrib()
 #'
-#' # Zero for every Gaussian, in every parametrization.
+#' # The excess kurtosis is zero for every Gaussian, in every parametrization.
 #' kurtosis(d, list(mu = 0, tau = c(0.01, 100)))
 #'
 #' @keywords internal
@@ -5862,14 +5946,14 @@ S7::method(kurtosis, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @name mean.Gamma1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This is the gamma written by its mean and a
-#' dispersion, the parametrization of a generalized linear model, so the mean is
-#' the first parameter and the variance is \eqn{\phi\mu^2}, the dispersion times
-#' the variance function \eqn{\mu^2}.
+#' The mean has the closed form \eqn{E[Y] = \mu}. This is the gamma written by
+#' its mean and a dispersion, the parametrization of a generalized linear model,
+#' so the mean is the first parameter and the variance is \eqn{\phi\mu^2}, the
+#' dispersion times the variance function \eqn{\mu^2}.
 #'
 #' @param x A `Gamma1Distrib`, from [gamma1_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `phi` (the dispersion, positive), each a numeric vector of length 1 or
+#'   `phi` (the dispersion, positive); each is a numeric vector of length 1 or
 #'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5896,10 +5980,10 @@ S7::method(mean, Gamma1Distrib) <- function(x, theta, ...) {
 #' @name variance.Gamma1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \phi\mu^2}. The quadratic variance
-#' function is why the gamma is the standard family for a positive response
-#' whose spread grows in proportion to its level: the coefficient of variation
-#' is \eqn{\sqrt\phi}, the same at every mean.
+#' The variance has the closed form \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
+#' Because the variance function is quadratic, the gamma is the standard family
+#' for a positive response whose spread grows in proportion to its level: the
+#' coefficient of variation is \eqn{\sqrt\phi}, the same at every mean.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion. The implied
@@ -5907,7 +5991,7 @@ S7::method(mean, Gamma1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Gamma1Distrib`, from [gamma1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `phi`
-#'   (positive), each a numeric vector of length 1 or `n`. Small `phi` is a
+#'   (positive); each is a numeric vector of length 1 or `n`. Small `phi` is a
 #'   large shape, where the family approaches a Gaussian.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -5922,7 +6006,7 @@ S7::method(mean, Gamma1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gamma1_distrib()
 #'
-#' # The dispersion times the square of the mean.
+#' # The variance is the dispersion times the square of the mean.
 #' all.equal(variance(d, list(mu = 2, phi = 0.25)), 1)
 #'
 #' # The coefficient of variation is sqrt(phi) at every mean.
@@ -5939,10 +6023,10 @@ S7::method(variance, Gamma1Distrib) <- function(x, theta, ...) {
 #' @name skewness.Gamma1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = 2\sqrt\phi}. The mean cancels, so the asymmetry
-#' is carried by the dispersion alone: it is twice the coefficient of variation
-#' and vanishes as the dispersion goes to zero, where the family approaches a
-#' Gaussian.
+#' The skewness has the closed form \eqn{\gamma_1 = 2\sqrt\phi}. The mean
+#' cancels, so only the dispersion carries the asymmetry: the skewness is twice
+#' the coefficient of variation and vanishes as the dispersion goes to zero,
+#' where the family approaches a Gaussian.
 #'
 #' @section Notation:
 #' \eqn{\phi > 0} is the dispersion. The mean does not enter a standardized
@@ -5950,8 +6034,8 @@ S7::method(variance, Gamma1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Gamma1Distrib`, from [gamma1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `phi`
-#'   (positive), each a numeric vector of length 1 or `n`. Only `phi` enters
-#'   the value, and the result is recycled to the length both imply.
+#'   (positive); each is a numeric vector of length 1 or `n`. Only `phi` enters
+#'   the value, and the result is recycled to the length that both imply.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -5964,7 +6048,7 @@ S7::method(variance, Gamma1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gamma1_distrib()
 #'
-#' # Twice the square root of the dispersion, whatever the mean.
+#' # The skewness is twice the square root of the dispersion, whatever the mean.
 #' skewness(d, list(mu = c(1, 2, 3), phi = 0.25))
 #'
 #' # It agrees with the mean-variance parametrization on the same law.
@@ -5981,8 +6065,9 @@ S7::method(skewness, Gamma1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Gamma1Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 6\phi}, the excess over the Gaussian. It is
-#' linear in the dispersion and free of the mean, and it is exactly
+#' The excess kurtosis has the closed form \eqn{\gamma_2 = 6\phi}, the excess
+#' over the Gaussian. It is linear in the dispersion and free of the mean, and
+#' it is exactly
 #' \eqn{3\gamma_1^2/2}, so a gamma occupies one curve of the
 #' skewness-kurtosis plane whichever parametrization it is written in.
 #'
@@ -5992,7 +6077,7 @@ S7::method(skewness, Gamma1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Gamma1Distrib`, from [gamma1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `phi`
-#'   (positive), each a numeric vector of length 1 or `n`. Only `phi` enters
+#'   (positive); each is a numeric vector of length 1 or `n`. Only `phi` enters
 #'   the value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -6005,7 +6090,7 @@ S7::method(skewness, Gamma1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- gamma1_distrib()
 #'
-#' # Six times the dispersion.
+#' # The excess kurtosis is six times the dispersion.
 #' all.equal(kurtosis(d, list(mu = 2, phi = 0.25)), 1.5)
 #'
 #' # The family lies on the curve kurtosis = 1.5 skewness^2.
@@ -6024,13 +6109,14 @@ S7::method(kurtosis, Gamma1Distrib) <- function(x, theta, ...) {
 #' @name mean.InvGauss2Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This is the inverse Gaussian written by its
-#' mean and the shape \eqn{\lambda = 1/\phi}, the classical parametrization, and
-#' the mean is the first parameter in either.
+#' The mean has the closed form \eqn{E[Y] = \mu}. This is the inverse Gaussian
+#' written by its mean and the shape \eqn{\lambda = 1/\phi}, the classical
+#' parametrization, and the mean is the first parameter in either.
 #'
 #' @param x An `InvGauss2Distrib`, from [invgauss2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `lambda` (the shape, positive), each a numeric vector of length 1 or `n`.
+#'   `lambda` (the shape, positive); each is a numeric vector of length 1 or
+#'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -6056,7 +6142,8 @@ S7::method(mean, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @name variance.InvGauss2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. With
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. With
 #' \eqn{\lambda = 1/\phi} this is the \eqn{\phi\mu^3} of
 #' [variance.InvGauss1Distrib()], so the two parametrizations agree on the law
 #' and differ only in which number is reported. The variance grows with the cube
@@ -6067,7 +6154,7 @@ S7::method(mean, InvGauss2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x An `InvGauss2Distrib`, from [invgauss2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `lambda`
-#'   (positive), each a numeric vector of length 1 or `n`. The variance
+#'   (positive); each is a numeric vector of length 1 or `n`. The variance
 #'   diverges as the shape approaches zero.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -6081,7 +6168,7 @@ S7::method(mean, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- invgauss2_distrib()
 #'
-#' # The cube of the mean over the shape.
+#' # The variance is the cube of the mean over the shape.
 #' all.equal(variance(d, list(mu = 2, lambda = 8)), 1)
 #'
 #' # The two parametrizations agree when lambda = 1 / phi.
@@ -6098,17 +6185,17 @@ S7::method(variance, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @name skewness.InvGauss2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_1 = 3\sqrt{\mu/\lambda}}. It is positive at every
-#' parameter value and depends on the two only through their ratio, so the
-#' whole family is one curve indexed by \eqn{\mu/\lambda}. A small mean or a
-#' large \eqn{\lambda} gives a nearly Gaussian shape.
+#' The skewness has the closed form \eqn{\gamma_1 = 3\sqrt{\mu/\lambda}}. It is
+#' positive at every parameter value and depends on the two only through their
+#' ratio, so the whole family is one curve indexed by \eqn{\mu/\lambda}. A small
+#' mean or a large \eqn{\lambda} gives a nearly Gaussian shape.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the shape.
 #'
 #' @param x An `InvGauss2Distrib`, from [invgauss2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `lambda`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -6120,7 +6207,7 @@ S7::method(variance, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- invgauss2_distrib()
 #'
-#' # Three times the square root of the ratio.
+#' # The skewness is three times the square root of the ratio.
 #' all.equal(skewness(d, list(mu = 2, lambda = 8)), 1.5)
 #'
 #' # It agrees with the dispersion parametrization on the same law.
@@ -6137,18 +6224,18 @@ S7::method(skewness, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.InvGauss2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\gamma_2 = 15\mu/\lambda}, the excess over the Gaussian.
-#' Like the skewness it depends on the two parameters through their ratio
-#' alone, and it is exactly \eqn{5\gamma_1^2/3}, so the family occupies one
-#' curve of the skewness-kurtosis plane, as it does in the other
-#' parametrization.
+#' The excess kurtosis has the closed form \eqn{\gamma_2 = 15\mu/\lambda}, the
+#' excess over the Gaussian. Like the skewness it depends on the two parameters
+#' only through their ratio, and it is exactly \eqn{5\gamma_1^2/3}, so the
+#' family occupies one curve of the skewness-kurtosis plane, as it does in the
+#' other parametrization.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the shape.
 #'
 #' @param x An `InvGauss2Distrib`, from [invgauss2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `lambda`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -6161,7 +6248,7 @@ S7::method(skewness, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- invgauss2_distrib()
 #'
-#' # Fifteen times the ratio.
+#' # The excess kurtosis is fifteen times the ratio.
 #' all.equal(kurtosis(d, list(mu = 2, lambda = 8)), 3.75)
 #'
 #' # The family lies on the curve kurtosis = (5/3) skewness^2.
@@ -6178,17 +6265,17 @@ S7::method(kurtosis, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @name mean.Beta2Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \alpha/(\alpha+\beta)}. This is the beta in its
-#' classical two-shape parametrization, so the mean is a ratio rather than a
-#' parameter; [beta1_distrib()] carries it directly, with
+#' The mean has the closed form \eqn{E[Y] = \alpha/(\alpha+\beta)}. This is the
+#' beta in its classical two-shape parametrization, so the mean is a ratio
+#' rather than a parameter; [beta1_distrib()] carries it directly, with
 #' \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\phi = \alpha+\beta}.
 #'
 #' @section Notation:
 #' \eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
 #'
 #' @param x A `Beta2Distrib`, from [beta2_distrib()].
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -6201,7 +6288,7 @@ S7::method(kurtosis, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- beta2_distrib()
 #'
-#' # The ratio of the first shape to their sum.
+#' # The mean is the ratio of the first shape to their sum.
 #' all.equal(mean(d, list(alpha = 2, beta = 3)), 0.4)
 #'
 #' @keywords internal
@@ -6214,7 +6301,7 @@ S7::method(mean, Beta2Distrib) <- function(x, theta, ...) {
 #' @name variance.Beta2Distrib
 #'
 #' @description
-#' Closed form:
+#' The variance has the closed form
 #' \deqn{\operatorname{Var}(Y) = \frac{\alpha\beta}
 #'       {(\alpha+\beta)^2(\alpha+\beta+1)}.}
 #' Writing \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\phi = \alpha+\beta} this
@@ -6227,8 +6314,8 @@ S7::method(mean, Beta2Distrib) <- function(x, theta, ...) {
 #' \eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
 #'
 #' @param x A `Beta2Distrib`, from [beta2_distrib()].
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or `n`. If both shapes are below 1 the
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or `n`. If both shapes are below 1 the
 #'   density is unbounded at both endpoints and U-shaped.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -6241,7 +6328,7 @@ S7::method(mean, Beta2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- beta2_distrib()
 #'
-#' # The published form, written out.
+#' # The variance agrees with the published form, written out.
 #' all.equal(variance(d, list(alpha = 2, beta = 3)), 2 * 3 / (25 * 6))
 #'
 #' # Both shapes 1 is the uniform, of variance 1/12.
@@ -6258,7 +6345,7 @@ S7::method(variance, Beta2Distrib) <- function(x, theta, ...) {
 #' @name skewness.Beta2Distrib
 #'
 #' @description
-#' Closed form:
+#' The skewness has the closed form
 #' \deqn{\gamma_1 = \frac{2(\beta - \alpha)\sqrt{\alpha + \beta + 1}}
 #'                       {(\alpha + \beta + 2)\sqrt{\alpha\beta}}.}
 #' It takes the sign of \eqn{\beta - \alpha}, so a beta is right-skewed when the
@@ -6270,8 +6357,8 @@ S7::method(variance, Beta2Distrib) <- function(x, theta, ...) {
 #' \eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
 #'
 #' @param x A `Beta2Distrib`, from [beta2_distrib()].
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -6283,7 +6370,7 @@ S7::method(variance, Beta2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- beta2_distrib()
 #'
-#' # Zero when the two shapes are equal.
+#' # The skewness is zero when the two shapes are equal.
 #' skewness(d, list(alpha = 3, beta = 3))
 #'
 #' # It agrees with the mean-precision parametrization on the same law.
@@ -6301,23 +6388,23 @@ S7::method(skewness, Beta2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Beta2Distrib
 #'
 #' @description
-#' Closed form:
+#' The excess kurtosis has the closed form
 #' \deqn{\gamma_2 = \frac{6\{(\alpha-\beta)^2(\alpha+\beta+1)
 #'                          - \alpha\beta(\alpha+\beta+2)\}}
 #'                       {\alpha\beta(\alpha+\beta+2)(\alpha+\beta+3)}.}
-#' It is negative over a wide range of shapes, the support being bounded at both
-#' ends: at \eqn{\alpha = \beta = 1} the density is uniform and the value is
-#' \eqn{-6/5}, and as both shapes go to zero it tends to \eqn{-2}, the smallest
-#' excess kurtosis any distribution can have. The method evaluates the form in
-#' the mean and the precision of [beta_shape_moments()], in which
-#' \eqn{\alpha\beta} is not formed.
+#' It is negative over a wide range of shapes, because the support is bounded at
+#' both ends: at \eqn{\alpha = \beta = 1} the density is uniform and the value
+#' is \eqn{-6/5}, and as both shapes go to zero it tends to \eqn{-2}, the
+#' smallest excess kurtosis that any distribution can have. The method
+#' evaluates the form in the mean and the precision of [beta_shape_moments()],
+#' in which \eqn{\alpha\beta} is not formed.
 #'
 #' @section Notation:
 #' \eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
 #'
 #' @param x A `Beta2Distrib`, from [beta2_distrib()].
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -6347,8 +6434,9 @@ S7::method(kurtosis, Beta2Distrib) <- function(x, theta, ...) {
 #' @name mean.BetaBinom2Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = n\alpha/(\alpha+\beta)}, the trial count times the
-#' mean of the mixing beta. This is the classical two-shape parametrization;
+#' The mean has the closed form \eqn{E[Y] = n\alpha/(\alpha+\beta)}, the trial
+#' count times the mean of the mixing beta. This is the classical two-shape
+#' parametrization;
 #' [betabinom1_distrib()] carries the same law with
 #' \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}.
 #'
@@ -6358,9 +6446,9 @@ S7::method(kurtosis, Beta2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `BetaBinom2Distrib`, from [betabinom2_distrib()], carrying the
 #'   trial count in its `size` property.
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or of the common length of the parameter
-#'   settings.
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or of the common length of the
+#'   parameter settings.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of length
@@ -6373,7 +6461,7 @@ S7::method(kurtosis, Beta2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- betabinom2_distrib(size = 10)
 #'
-#' # Ten trials times the mixing beta's mean of 0.4.
+#' # The mean is ten trials times the mixing beta's mean of 0.4.
 #' all.equal(mean(d, list(alpha = 2, beta = 3)), 4)
 #'
 #' @keywords internal
@@ -6387,9 +6475,10 @@ S7::method(mean, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @name variance.BetaBinom2Distrib
 #'
 #' @description
-#' Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)(1 + n\sigma)/(1 +
-#' \sigma)} at \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma =
-#' 1/(\alpha+\beta)}, computed by [betabinom_moments()]. For \eqn{n > 1} it
+#' The variance has the closed form
+#' \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)(1 + n\sigma)/(1 + \sigma)} at
+#' \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)},
+#' computed by [betabinom_moments()]. For \eqn{n > 1} it
 #' exceeds the binomial variance at the same mean, and the excess grows as the
 #' two shapes shrink; for \eqn{n = 1} it is the Bernoulli variance.
 #'
@@ -6399,9 +6488,9 @@ S7::method(mean, BetaBinom2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `BetaBinom2Distrib`, from [betabinom2_distrib()], carrying the
 #'   trial count in its `size` property.
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or of the common length of the parameter
-#'   settings. Large shapes concentrate the
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or of the common length of the
+#'   parameter settings. Large shapes concentrate the
 #'   mixing beta and take the family towards a binomial.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -6435,10 +6524,10 @@ S7::method(variance, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @name skewness.BetaBinom2Distrib
 #'
 #' @description
-#' The skewness of [skewness.BetaBinom1Distrib()] at \eqn{\mu =
+#' The skewness is that of [skewness.BetaBinom1Distrib()] at \eqn{\mu =
 #' \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}, computed by
-#' [betabinom_moments()]. It is
-#' zero when the two shapes are equal, the mixing beta being symmetric there.
+#' [betabinom_moments()]. It is zero when the two shapes are equal, because the
+#' mixing beta is symmetric there.
 #'
 #' @section Notation:
 #' \eqn{\alpha > 0} and \eqn{\beta > 0} are the shapes of the mixing beta,
@@ -6446,9 +6535,9 @@ S7::method(variance, BetaBinom2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `BetaBinom2Distrib`, from [betabinom2_distrib()], carrying the
 #'   trial count in its `size` property.
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or of the common length of the parameter
-#'   settings.
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or of the common length of the
+#'   parameter settings.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -6461,7 +6550,7 @@ S7::method(variance, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- betabinom2_distrib(size = 10)
 #'
-#' # Zero when the two shapes are equal.
+#' # The skewness is zero when the two shapes are equal.
 #' round(skewness(d, list(alpha = 3, beta = 3)), 12)
 #'
 #' # The two parametrizations agree on the law.
@@ -6480,7 +6569,7 @@ S7::method(skewness, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.BetaBinom2Distrib
 #'
 #' @description
-#' The excess kurtosis of [kurtosis.BetaBinom1Distrib()] at \eqn{\mu =
+#' The excess kurtosis is that of [kurtosis.BetaBinom1Distrib()] at \eqn{\mu =
 #' \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}, computed by
 #' [betabinom_moments()]. Its sign follows the balance of the two shapes:
 #' negative where they are comparable, positive where one dominates.
@@ -6491,9 +6580,9 @@ S7::method(skewness, BetaBinom2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `BetaBinom2Distrib`, from [betabinom2_distrib()], carrying the
 #'   trial count in its `size` property.
-#' @param theta A named list with components `alpha` and `beta`, both positive,
-#'   each a numeric vector of length 1 or of the common length of the parameter
-#'   settings.
+#' @param theta A named list with components `alpha` and `beta`, both positive;
+#'   each is a numeric vector of length 1 or of the common length of the
+#'   parameter settings.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -6506,7 +6595,8 @@ S7::method(skewness, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- betabinom2_distrib(size = 10)
 #'
-#' # Negative where the shapes are comparable, positive where one dominates.
+#' # The excess kurtosis is negative where the shapes are comparable, positive
+#' # where one dominates.
 #' round(kurtosis(d, list(alpha = c(3, 0.5, 0.2), beta = 3)), 4)
 #'
 #' # The two parametrizations agree on the law.
@@ -6528,10 +6618,10 @@ S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @name mean.Pig1Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}, the first cumulant. The family is a Poisson
-#' whose rate is mixed over an inverse Gaussian of mean 1, so the mixing leaves
-#' the mean where the Poisson put it and shows only from the second cumulant
-#' onwards.
+#' The mean has the closed form \eqn{E[Y] = \mu}, the first cumulant. The family
+#' is a Poisson whose rate is mixed over an inverse Gaussian of mean 1, so the
+#' mixing leaves the mean where the Poisson put it and shows only from the
+#' second cumulant onwards.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\sigma > 0} the dispersion of the mixing
@@ -6539,7 +6629,7 @@ S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Pig1Distrib`, from [pig1_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `sigma` (the dispersion, positive), each a numeric vector of length 1 or
+#'   `sigma` (the dispersion, positive); each is a numeric vector of length 1 or
 #'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -6567,11 +6657,11 @@ S7::method(mean, Pig1Distrib) <- function(x, theta, ...) {
 #' @name variance.Pig1Distrib
 #'
 #' @description
-#' Closed form, the second cumulant:
+#' The variance is the second cumulant and has the closed form
 #' \eqn{\operatorname{Var}(Y) = \kappa_2 = \mu + \sigma\mu^2}. The quadratic
-#' term is the overdispersion the inverse Gaussian mixing adds, and it has the
-#' same shape as a negative binomial's; the two families separate at the third
-#' cumulant and above, where this one is the heavier-tailed.
+#' term is the overdispersion that the inverse Gaussian mixing adds, and it has
+#' the same shape as that of a negative binomial; the two families separate at
+#' the third cumulant and above, where this one has the heavier tail.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{\sigma > 0} the dispersion and
@@ -6579,8 +6669,8 @@ S7::method(mean, Pig1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Pig1Distrib`, from [pig1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `sigma`
-#'   (positive), each a numeric vector of length 1 or `n`. The Poisson limit is
-#'   \eqn{\sigma \to 0}.
+#'   (positive); each is a numeric vector of length 1 or `n`. The Poisson limit
+#'   is \eqn{\sigma \to 0}.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -6593,7 +6683,7 @@ S7::method(mean, Pig1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- pig1_distrib()
 #'
-#' # Mean plus dispersion times the square of the mean.
+#' # The variance is the mean plus the dispersion times the square of the mean.
 #' all.equal(variance(d, list(mu = 3, sigma = 1)), 12)
 #'
 #' # It falls onto the Poisson variance as the dispersion vanishes.
@@ -6610,20 +6700,19 @@ S7::method(variance, Pig1Distrib) <- function(x, theta, ...) {
 #' @name skewness.Pig1Distrib
 #'
 #' @description
-#' Closed form from the cumulants, \eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}}
-#' with
+#' The skewness has the closed form
+#' \eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}} in the cumulants, with
 #' \deqn{\kappa_2 = \mu + \sigma\mu^2, \qquad
 #'       \kappa_3 = \mu + 3\sigma\mu^2 + 3\sigma^2\mu^3.}
-#' This is where the family separates from a negative binomial: matched on
-#' mean and variance, the Poisson-inverse Gaussian is the more skewed of the
-#' two, the coefficient of \eqn{\sigma^2\mu^3} in \eqn{\kappa_3} being 3 here
-#' and 2 for a negative binomial with \eqn{\theta = 1/\sigma}.
+#' Matched on mean and variance, the Poisson-inverse Gaussian is more skewed
+#' than a negative binomial, because the coefficient of \eqn{\sigma^2\mu^3} in
+#' \eqn{\kappa_3} is 3 here and 2 for a negative binomial with
+#' \eqn{\theta = 1/\sigma}.
 #'
 #' @details
 #' The cumulants of a mixed Poisson are the Poisson's plus what the mixing
-#' distribution contributes, which is why they are the natural quantities here
-#' and why a standardized moment follows from them without a sum over the
-#' support.
+#' distribution contributes. They are therefore the natural quantities here,
+#' and a standardized moment follows from them without a sum over the support.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{\sigma > 0} the dispersion and
@@ -6631,7 +6720,7 @@ S7::method(variance, Pig1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Pig1Distrib`, from [pig1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `sigma`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -6644,7 +6733,7 @@ S7::method(variance, Pig1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- pig1_distrib()
 #'
-#' # The cumulant ratio, written out.
+#' # The skewness equals the cumulant ratio, written out.
 #' all.equal(skewness(d, list(mu = 3, sigma = 1)),
 #'           (3 + 3 * 9 + 3 * 27) / 12^1.5)
 #'
@@ -6665,12 +6754,13 @@ S7::method(skewness, Pig1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Pig1Distrib
 #'
 #' @description
-#' Closed form from the cumulants, \eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} with
+#' The excess kurtosis has the closed form
+#' \eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} in the cumulants, with
 #' \deqn{\kappa_2 = \mu + \sigma\mu^2, \qquad
 #'       \kappa_4 = \mu + 7\sigma\mu^2 + 18\sigma^2\mu^3 + 15\sigma^3\mu^4.}
 #' The ratio of the fourth cumulant to the squared second equals the excess
 #' kurtosis, because the fourth cumulant already excludes the term 3 of the
-#' fourth standardized moment, so no 3 is subtracted here.
+#' fourth standardized moment, so the method does not subtract 3.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{\sigma > 0} the dispersion and
@@ -6678,7 +6768,7 @@ S7::method(skewness, Pig1Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Pig1Distrib`, from [pig1_distrib()].
 #' @param theta A named list with components `mu` (positive) and `sigma`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -6691,7 +6781,7 @@ S7::method(skewness, Pig1Distrib) <- function(x, theta, ...) {
 #' @examples
 #' d <- pig1_distrib()
 #'
-#' # The cumulant ratio, written out.
+#' # The excess kurtosis equals the cumulant ratio, written out.
 #' all.equal(kurtosis(d, list(mu = 3, sigma = 1)),
 #'           (3 + 7 * 9 + 18 * 27 + 15 * 81) / 144)
 #'
@@ -6712,17 +6802,17 @@ S7::method(kurtosis, Pig1Distrib) <- function(x, theta, ...) {
 #' @name mean.Pig2Distrib
 #'
 #' @description
-#' Closed form: \eqn{E[Y] = \mu}. This is the same law as [pig1_distrib()]
-#' written by a dispersion \eqn{\alpha} chosen so that the mean and the
-#' dispersion are orthogonal in the expected information; the mapping is
-#' [pig2_sigma()], and the mean is the first parameter either way.
+#' The mean has the closed form \eqn{E[Y] = \mu}. This is the same law as
+#' [pig1_distrib()] written by a dispersion \eqn{\alpha} that is chosen so that
+#' the mean and the dispersion are orthogonal in the expected information; the
+#' mapping is [pig2_sigma()], and the mean is the first parameter either way.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean and \eqn{\alpha > 0} the orthogonal dispersion.
 #'
 #' @param x A `Pig2Distrib`, from [pig2_distrib()].
 #' @param theta A named list with components `mu` (the mean, positive) and
-#'   `alpha` (the orthogonal dispersion, positive), each a numeric vector of
+#'   `alpha` (the orthogonal dispersion, positive); each is a numeric vector of
 #'   length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -6750,12 +6840,12 @@ S7::method(mean, Pig2Distrib) <- function(x, theta, ...) {
 #' @name variance.Pig2Distrib
 #'
 #' @description
-#' The second cumulant \eqn{\kappa_2 = \mu + \sigma\mu^2} of
+#' The variance is the second cumulant \eqn{\kappa_2 = \mu + \sigma\mu^2} of
 #' [variance.Pig1Distrib()], read at the dispersion
-#' \eqn{\sigma = } [pig2_sigma()]`(mu, alpha)` this parametrization implies.
-#' The law is the same; what changes is which number is reported, and the
-#' orthogonal dispersion is the one whose estimate is asymptotically
-#' uncorrelated with the mean's.
+#' \eqn{\sigma = } [pig2_sigma()]`(mu, alpha)` that this parametrization
+#' implies. The law is the same, and only the reported dispersion differs. The
+#' orthogonal dispersion has an estimate that is asymptotically uncorrelated
+#' with the mean's.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{\alpha > 0} the orthogonal dispersion,
@@ -6764,7 +6854,7 @@ S7::method(mean, Pig2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Pig2Distrib`, from [pig2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `alpha`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, of length
@@ -6793,7 +6883,8 @@ S7::method(variance, Pig2Distrib) <- function(x, theta, ...) {
 #' @name skewness.Pig2Distrib
 #'
 #' @description
-#' The cumulant ratio \eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}} of
+#' The skewness is the cumulant ratio
+#' \eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}} of
 #' [skewness.Pig1Distrib()], read at the dispersion
 #' \eqn{\sigma = } [pig2_sigma()]`(mu, alpha)`. A standardized moment is a
 #' property of the law, so it agrees with the other parametrization once the
@@ -6805,7 +6896,7 @@ S7::method(variance, Pig2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Pig2Distrib`, from [pig2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `alpha`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector, of length
@@ -6834,11 +6925,12 @@ S7::method(skewness, Pig2Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Pig2Distrib
 #'
 #' @description
-#' The cumulant ratio \eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} of
+#' The excess kurtosis is the cumulant ratio
+#' \eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} of
 #' [kurtosis.Pig1Distrib()], read at the dispersion
 #' \eqn{\sigma = } [pig2_sigma()]`(mu, alpha)`. As there, the ratio of the
-#' fourth cumulant to the squared second is already the excess, so no 3 is
-#' subtracted.
+#' fourth cumulant to the squared second is already the excess, so the method
+#' does not subtract 3.
 #'
 #' @section Notation:
 #' \eqn{\mu > 0} is the mean, \eqn{\alpha > 0} the orthogonal dispersion and
@@ -6846,7 +6938,7 @@ S7::method(skewness, Pig2Distrib) <- function(x, theta, ...) {
 #'
 #' @param x A `Pig2Distrib`, from [pig2_distrib()].
 #' @param theta A named list with components `mu` (positive) and `alpha`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length

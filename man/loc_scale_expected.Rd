@@ -10,8 +10,8 @@ loc_scale_expected(distrib, theta, order, n, threads = 1L)
 \item{distrib}{A family whose first two parameters are a location and a
 scale, and which carries analytic derivatives to the order needed.}
 
-\item{theta}{The aligned parameter list, each component of the common
-length \code{n}.}
+\item{theta}{The aligned parameter list, in which each component has the
+common length \code{n}.}
 
 \item{order}{\code{0L} for the expected information, \code{1L} for its first
 derivatives, \code{2L} for its second. At order 2 the first derivatives are
@@ -58,12 +58,12 @@ the integral moves the measure as well as the integrand:
 
 The integrals are taken by an exp-sinh rule on each half-line, from
 \code{\link[=loc_scale_rule]{loc_scale_rule()}}, centered at the point that \code{\link[=loc_scale_center]{loc_scale_center()}} returns.
-Its nodes cluster double-exponentially at that center, which is where the
-location-scale families that use it put their one sharp feature: zero for
-the core of the pseudo-Huber at a small shape and for the skew t, and the
-step of the skewing function, \eqn{w = -r}, for the centered skew normal, and the same transformation turns an algebraic
-tail into an exponential one, which is what the Student t's heavy tail
-needs.
+Its nodes cluster double-exponentially at that center. The location-scale
+families that use the rule have their one sharp feature there: at zero for
+the core of the pseudo-Huber at a small shape and for the skew t, and at the
+step of the skewing function, \eqn{w = -r}, for the centered skew normal.
+The same transformation turns an algebraic tail into an exponential one,
+which the heavy tail of the Student t requires.
 
 A node where the density is exactly zero contributes nothing, whatever the
 derivatives read there. Any other non-finite contribution makes the whole
@@ -72,6 +72,6 @@ shape row \code{NA} rather than a sum over the finite part.
 \seealso{
 \code{\link[=loc_scale_rule]{loc_scale_rule()}} for the quadrature,
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and
-\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} for the generics this serves.
+\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} for the generics that this function serves.
 }
 \keyword{internal}

@@ -21,14 +21,14 @@ NULL
 #' @description
 #' Returns \eqn{\partial^j (1+a^2)^{-1}/\partial a^j} for \eqn{j = 0, \ldots, 3}:
 #' \eqn{(1+a^2)^{-1}}, \eqn{-2a(1+a^2)^{-2}}, \eqn{(6a^2-2)(1+a^2)^{-3}} and
-#' \eqn{24a(1-a^2)(1+a^2)^{-4}}. This is the factor the skew normal's shape
+#' \eqn{24a(1-a^2)(1+a^2)^{-4}}. This is the factor that the skew normal's shape
 #' derivative carries, and writing it out saves a Faa di Bruno pass over a
 #' quantity whose derivatives are four short expressions.
 #'
 #' @param a A numeric vector, the shape.
-#' @param j The order, 0 to 3. Any other value returns `NULL`, `switch()`
-#'   falling through; three is the highest the fourth-order cdf derivative
-#'   needs.
+#' @param j The order, 0 to 3. Any other value returns `NULL`, because
+#'   `switch()` falls through; three is the highest order that the
+#'   fourth-order cdf derivative needs.
 #'
 #' @return A numeric vector the length of `a`.
 #'
@@ -75,12 +75,12 @@ recip_1p_sq <- function(a, j) {
 #' \eqn{G_\alpha = -2\varphi(z)\varphi(u)R} with \eqn{u = \alpha z} and
 #' \eqn{R = (1+\alpha^2)^{-1}}. The first is the skew normal's own density,
 #' which confirms the identity above; the second is checked against the
-#' gradient the family reports.
+#' gradient that the family reports.
 #'
 #' Everything above the first order is one Leibniz rule over those factors,
-#' with \eqn{\Phi(u)} and \eqn{\varphi(u)} differentiated by Faa di Bruno over
-#' \eqn{u}. That map is bilinear, so it has only three non-zero partials and
-#' the expansion stays short.
+#' in which \eqn{\Phi(u)} and \eqn{\varphi(u)} are differentiated by Faa di
+#' Bruno over \eqn{u}. That map is bilinear, so it has only three non-zero
+#' partials and the expansion stays short.
 #'
 #' @section Notation:
 #' \eqn{z} is the standardized quantile, \eqn{\alpha} the shape,
@@ -89,7 +89,7 @@ recip_1p_sq <- function(a, j) {
 #'
 #' @param z The standardized quantile, a numeric vector.
 #' @param al The shape, a numeric vector of any sign recyclable against `z`.
-#' @param order The highest total order wanted, 1 to 4.
+#' @param order The highest total order to compute, 1 to 4.
 #'
 #' @return A nested list indexed `[[i + 1]][[j + 1]]`, holding
 #'   \eqn{\partial^i_z\partial^j_\alpha G} as a numeric vector. Entries with
@@ -163,17 +163,17 @@ sn_cdf_std_derivs <- function(z, al, order) {
 #'
 #' @description
 #' Chains the standard-coordinate table of [sn_cdf_std_derivs()] through
-#' \eqn{z = (q-\mu)/\sigma}, the shape passing straight through as the second
-#' index of that table. Together the two functions give the family closed cdf
-#' derivatives at all four orders in all three parameters.
+#' \eqn{z = (q-\mu)/\sigma}, and the shape passes straight through as the
+#' second index of that table. Together the two functions give the family closed
+#' cdf derivatives at all four orders in all three parameters.
 #'
 #' @details
 #' The map is the one through which the other location-scale families are chained:
 #' \eqn{z} is linear in the location and a reciprocal in the scale, so a block
 #' naming the location twice contributes an exact zero and only eight partials
 #' of the map are non-zero up to order four. The shape does not enter \eqn{z}
-#' at all, which is why it can be carried as an index of the inner table rather
-#' than through the chain.
+#' at all, so it can be carried as an index of the inner table rather than
+#' through the chain.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
@@ -241,13 +241,13 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'   distrib_deriv4_cdf.SkewNormal1Distrib
 #'
 #' @description
-#' Closed form at every order from one to four, in the shape as well as in the
-#' location and the scale. With \eqn{z = (q-\mu)/\sigma} the distribution
-#' function is \eqn{\Phi(z) - 2T(z,\alpha)}, and Owen's \eqn{T} has elementary
-#' partial derivatives in both arguments, so the integral in its definition is
-#' differentiated away at the first order and never has to be differentiated
-#' again. The location and the scale then enter only through \eqn{z}, by the
-#' same chain rule the other location-scale families use.
+#' The derivatives are in closed form at every order from one to four, in the
+#' shape as well as in the location and the scale. With \eqn{z = (q-\mu)/\sigma}
+#' the distribution function is \eqn{\Phi(z) - 2T(z,\alpha)}, and Owen's \eqn{T}
+#' has elementary partial derivatives in both arguments, so the integral in its
+#' definition is differentiated away at the first order and never has to be
+#' differentiated again. The location and the scale then enter only through
+#' \eqn{z}, by the same chain rule that the other location-scale families use.
 #'
 #' @details
 #' # Accuracy
@@ -272,7 +272,7 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive) and
-#'   `alpha` (any sign), each a numeric vector of length 1 or `n`.
+#'   `alpha` (any sign); each is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
@@ -306,7 +306,7 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'                        log = FALSE)
 #' max(abs(g0$mu - gg$mu))
 #'
-#' # Three, six, ten and fifteen components as the order rises.
+#' # The number of components is three, six, ten and fifteen as the order rises.
 #' lengths(list(distrib_grad_cdf(d, q, th),
 #'              distrib_hess_cdf(d, q, th),
 #'              distrib_deriv3_cdf(d, q, th),

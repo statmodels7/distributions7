@@ -21,16 +21,16 @@ A named list of fifth-derivative component vectors, each of length
 \code{\link[=deriv_names]{deriv_names(distrib@params, 5)}} gives them.
 }
 \description{
-The route that a family takes at the fifth order when it registers no
-method of its own: one tensor-product difference of its highest analytic
+Defines the route that a family takes at the fifth order when it registers
+no method of its own: one tensor-product difference of its highest analytic
 order, through \code{\link[=numerical_deriv5]{numerical_deriv5()}}.
 }
 \details{
-This is registered on the base class. Ten families write the fifth order
-out themselves (see \code{\link[=distrib_deriv5]{distrib_deriv5()}}), and the wrappers override it.
-Among the families that reach it, what differs is the quantity being
-differenced: \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} reports whether that quantity is
-analytic, and \code{\link[=check_distrib]{check_distrib()}} emits no order-5 row where it is not.
+This is registered on the base class. The families that write the fifth
+order out themselves (see \code{\link[=distrib_deriv5]{distrib_deriv5()}}) and the wrappers override it.
+Among the families that reach it, the quantity that is differenced varies:
+\code{\link[=has_exact_deriv4]{has_exact_deriv4()}} reports whether that quantity is analytic, and
+\code{\link[=check_distrib]{check_distrib()}} emits no order-5 row where it is not.
 }
 \seealso{
 \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which does the differencing;

@@ -15,15 +15,16 @@ vector of length 1 or \code{n}.}
 A numeric vector, the length of \code{theta$mu}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = 1/\sqrt\mu}. It is positive at every mean, a
-count having a floor at zero and no ceiling, and it decays like
+The skewness has the closed form \eqn{\gamma_1 = 1/\sqrt\mu}. It is positive
+at every mean
+because a count has a floor at zero and no ceiling, and it decays like
 \eqn{\mu^{-1/2}}, which is the rate at which the family approaches a
 Gaussian as the counts grow.
 }
 \examples{
 d <- poisson_distrib()
 
-# One over the square root of the mean.
+# The skewness is one over the square root of the mean.
 all.equal(skewness(d, list(mu = 4)), 0.5)
 
 # It vanishes as the counts grow.

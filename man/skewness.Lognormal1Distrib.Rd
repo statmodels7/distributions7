@@ -7,8 +7,9 @@
 \item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
-(positive), each a numeric vector of length 1 or \code{n}. Only \code{sigma2} enters
-the value, and the exponentials overflow to \code{Inf} for large \code{sigma2}.}
+(positive); each is a numeric vector of length 1 or \code{n}. Only \code{sigma2}
+enters the value, and the exponentials overflow to \code{Inf} for large
+\code{sigma2}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,8 +18,8 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
-Closed form:
-\eqn{\gamma_1 = (e^{\sigma^2} + 2)\sqrt{e^{\sigma^2} - 1}}, free of
+The skewness has the closed form
+\eqn{\gamma_1 = (e^{\sigma^2} + 2)\sqrt{e^{\sigma^2} - 1}}, which is free of
 \eqn{\mu}. It is positive at every parameter value and grows without bound
 with the spread of the logarithm: at \eqn{\sigma^2 = 1} it is already 6.18,
 where a gamma of the same mean would need a shape near 0.1 to match it.
@@ -32,7 +33,7 @@ logarithm does not enter a standardized moment.
 \examples{
 d <- lognormal1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(skewness(d, list(mu = 0, sigma2 = 1)),
           (exp(1) + 2) * sqrt(exp(1) - 1))
 

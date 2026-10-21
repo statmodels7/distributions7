@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{skewt_moment_pieces}
 \alias{skewt_moment_pieces}
-\title{The Quantities a Skew t's Moments Are Built From}
+\title{The Quantities from Which a Skew t's Moments Are Built}
 \usage{
 skewt_moment_pieces(alpha, nu)
 }
@@ -14,11 +14,11 @@ below 1 give \code{NaN} in \code{bnu} and \code{mz}; values at or below 2 give \
 \code{vz} as well.}
 }
 \value{
-A named list with \code{nu}, \code{delta}, \code{bnu}, \code{mz} and \code{vz}, each a
+A named list with \code{nu}, \code{delta}, \code{bnu}, \code{mz} and \code{vz}; each is a
 numeric vector recycled to the longer of \code{alpha} and \code{nu}.
 }
 \description{
-Returns the four pieces the family's four moment methods share:
+Returns the four pieces that the family's four moment methods share:
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, the constant
 \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}, the mean
 \eqn{\mu_z = \delta b_\nu} of the standardized variable and its variance
@@ -27,9 +27,9 @@ Returns the four pieces the family's four moment methods share:
 \details{
 The gamma ratio in \eqn{b_\nu} is formed from the logarithm of the beta
 function, \eqn{\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2) = B\{(\nu-1)/2, 1/2\}/\sqrt{\pi}},
-so that neither the gamma functions nor the difference of two large
-log-gamma values is formed, and \eqn{b_\nu} keeps its accuracy as \eqn{\nu}
-grows (to \eqn{\nu = 10^{16}} and beyond). \eqn{\delta} comes from
+so that the gamma functions and the difference of two large log-gamma
+values are not formed, and \eqn{b_\nu} keeps its accuracy as \eqn{\nu} grows
+(to \eqn{\nu = 10^{16}} and beyond). \eqn{\delta} comes from
 \code{\link[=skewnormal_delta]{skewnormal_delta()}}.
 
 \eqn{b_\nu} is \code{NaN} at \eqn{\nu \le 1} and \eqn{\sigma_z^2} is \code{NaN} at

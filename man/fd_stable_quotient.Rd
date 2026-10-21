@@ -23,9 +23,9 @@ A numeric vector as long as \code{y}.
 \description{
 Evaluates a central difference in the response at both steps of
 \code{\link[=fd_steps_y]{fd_steps_y()}} and keeps, observation by observation, the one that agrees
-better with itself at half its step. It is the reference \code{\link[=check_distrib]{check_distrib()}}
-compares a family's response derivatives and its distribution function
-against.
+better with itself at half its step. \code{\link[=check_distrib]{check_distrib()}} uses it as the
+reference against which it compares a family's response derivatives and its
+distribution function.
 }
 \details{
 For each of the two steps the quotient \eqn{q(h)} is also taken at
@@ -33,10 +33,11 @@ For each of the two steps the quotient \eqn{q(h)} is also taken at
 infinite where \eqn{q(h/2)} is not finite, and undefined where \eqn{q(h)}
 is exactly zero. The step scaled on the distance to the bound is kept only
 where both readings are defined and its own is strictly the smaller;
-everywhere else, ties included, the clamped step is kept. The value
+everywhere else, including ties, the clamped step is kept. The value
 returned is the quotient at the full step.
 
-Neither step is accurate for every family, which is why both are read.
+Each of the two steps is inaccurate for some family, so both are
+read.
 Where the log-density is singular at a bound, the error of the clamped step
 stops falling once the clamp binds; where it is smooth at the bound, the
 scaled step is the less accurate one at the smallest distances. Where both
@@ -45,9 +46,9 @@ strictly better with itself at half the step.
 
 In a few cases the scaled step is kept although the clamped step would have
 been accurate. The scaled numerator is then a whole number of units in the
-last place of the log-density, which scales exactly with the step, so the
-quotient agrees with itself at half the step to the last bit and the test
-reads it as stable.
+last place of the log-density, and this numerator scales exactly with the
+step, so the quotient agrees with itself at half the step to the last bit and
+the test reads it as stable.
 
 It costs four quotients where one would do, except where the two steps
 coincide at every observation, which is every call on a family with no
@@ -61,14 +62,14 @@ about \eqn{10^{-10}} of it two things go wrong. A step that is not a whole
 number of units is not the step at which the evaluation points lie, so a
 quotient that divides by the nominal step is out by their rounding; and the
 scaled step falls below one unit and rounds to zero. The selection rule
-cannot tell these cases apart, because both candidates come from the same
+does not distinguish these cases, because both candidates come from the same
 arithmetic. Every candidate step is therefore at least
 \eqn{2\lvert y\rvert\varepsilon}, which leaves its half step at least one
 unit long, and the quotient that a caller passes divides by the steps
-actually taken, as \code{\link[=fd_first_taken]{fd_first_taken()}} and \code{\link[=fd_second_taken]{fd_second_taken()}} do. Neither
-repair reaches a point within a few units of such a bound, where the
+actually taken, as \code{\link[=fd_first_taken]{fd_first_taken()}} and \code{\link[=fd_second_taken]{fd_second_taken()}} do. The two
+repairs do not reach a point within a few units of such a bound, where the
 relative error of the reference decreases as about \eqn{5.4/d^2} in the
-distance \eqn{d} counted in units; \code{\link[=check_distrib]{check_distrib()}} leaves those draws
+distance \eqn{d}, counted in units; \code{\link[=check_distrib]{check_distrib()}} leaves those draws
 out.
 }
 

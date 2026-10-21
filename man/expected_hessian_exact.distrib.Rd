@@ -16,15 +16,15 @@ where it reaches one of the approximations of the package.
 \description{
 The default: a method owned by one of the base classes is one of the
 package's approximations, and anything else is taken to have written its
-expected information out. It answers \code{FALSE} for a family that registers
+expected information out. It returns \code{FALSE} for a family that registers
 nothing and \code{TRUE} for one that registers its own method.
 
 A family whose registered method chains onto a parent overrides this
-generic and returns the answer of the parent, which is why the test is a
-generic at all; the wrappers do so.
+generic and returns the answer of the parent, as the wrappers do. The test
+is a generic for this reason.
 }
 \seealso{
-\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the predicate consumers call;
+\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the predicate that consumers call;
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what the approximations are;
 \code{\link[=fit_distrib]{fit_distrib()}}, which rejects an \code{approx} given to \code{\link[=fisher_scoring]{fisher_scoring()}}
 where this is \code{TRUE}.

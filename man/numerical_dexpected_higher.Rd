@@ -21,8 +21,8 @@ numerical_dexpected_higher(distrib, y, theta, scale, order)
 A named list keyed as \code{\link[=d3expected_names]{d3expected_names()}} or \code{\link[=d4expected_names]{d4expected_names()}}.
 }
 \description{
-The default route behind \code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}} and
-\code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}}: one central stencil on the family's
+Computes the default route behind \code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}} and
+\code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} by one central stencil on the family's
 analytic second derivative of its expected information.
 }
 \details{

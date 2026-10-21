@@ -19,13 +19,13 @@ distrib_d2expected_hessian(
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters, each of length 1 or
+\item{theta}{A named list of parameters; each has length 1 or
 \code{length(y)}.}
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
 \item{approx, nsim}{Accepted for symmetry with
-\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; no method reads them.}
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; the methods ignore them.}
 
 \item{...}{Passed to methods.}
 }
@@ -34,8 +34,9 @@ A named list of numeric vectors, keyed as
 \code{\link[=d2expected_names]{d2expected_names(distrib@params)}}.
 }
 \description{
+Returns
 \eqn{\partial^2\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d},
-one component per pair \eqn{(a,b)} and per pair \eqn{(c,d)}.
+with one component per pair \eqn{(a,b)} and per pair \eqn{(c,d)}.
 }
 \details{
 Differentiating the identity of \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} once more

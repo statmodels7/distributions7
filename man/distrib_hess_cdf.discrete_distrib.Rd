@@ -19,19 +19,21 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
-length of \code{q} recycled against \code{theta}. The gradient is not returned
-alongside.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, in which
+each vector has the length of \code{q} recycled against \code{theta}. The gradient
+is not returned alongside.
 }
 \description{
-Exact, by the same finite sum as the gradient: at second order the summand
+Computes the Hessian exactly, by the same finite sum as the gradient: at
+second order the summand
 is \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}}, the Bartlett lemma's expansion
 of \eqn{\partial^2 f/f}. The first-order part comes from
 \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so a family's own simplification is used where it has
 one.
 }
 \examples{
-# A negative binomial: two parameters, so three Hessian components.
+# A negative binomial has two parameters, so the Hessian has three
+# components.
 d <- negbin2_distrib()
 distrib_hess_cdf(d, c(2, 5), list(mu = 3, theta = 2))
 

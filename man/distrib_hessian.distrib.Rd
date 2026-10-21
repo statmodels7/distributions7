@@ -17,13 +17,13 @@ returns the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list of Hessian component vectors, each of length
+A named list of Hessian component vectors, each of which has length
 \code{length(y)}, keyed by \code{\link[=hess_names]{hess_names()}}, which puts the diagonal first and is
-not the lexicographic keying \code{\link[=deriv_names]{deriv_names()}} uses above order 2.
+not the lexicographic keying that \code{\link[=deriv_names]{deriv_names()}} uses above order 2.
 }
 \description{
-The fallback for a family that implements no analytical Hessian. For a
-family with a density alone it takes second differences of
+This method is the fallback for a family that implements no analytical
+Hessian. For a family that has only a density it takes second differences of
 \code{distrib_pdf(..., log = TRUE)} through \code{\link[=numerical_hessian]{numerical_hessian()}}: a diagonal
 component takes the three-point stencil
 \eqn{[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)]/h^2} and an
@@ -36,14 +36,15 @@ difference of an analytical quantity, with the step
 \eqn{\varepsilon^{1/3}\max(1, |\theta_j|)}.
 }
 \section{The step and the cost}{
-For a family with a density alone, the step is \eqn{h = \varepsilon^{1/4}\max(1, |\theta_i|) \approx
-1.22\times10^{-4}}, twenty times the gradient's: a second difference divides
-by \eqn{h^2}, so rounding grows as \eqn{1/h^2} and the optimum moves out.
-\code{\link[=fd_steps]{fd_steps()}} applies the same boundary clamp. One Hessian costs
-\eqn{2p} evaluations for the diagonal, \eqn{4} per distinct pair and one at
-the center, which is 9 in all for a two-parameter family, and more when
-\code{\link[=fd_stable_step]{fd_stable_step()}} compares two candidate steps. A second difference is
-about two digits less accurate than the first difference of the gradient.
+For a family that has only a density, the step is \eqn{h =
+\varepsilon^{1/4}\max(1, |\theta_i|) \approx 1.22\times10^{-4}}, twenty times
+the gradient's: a second difference divides by \eqn{h^2}, so rounding grows
+as \eqn{1/h^2} and the optimum moves out. \code{\link[=fd_steps]{fd_steps()}} applies the same
+boundary clamp. One Hessian costs \eqn{2p} evaluations for the diagonal,
+\eqn{4} per distinct pair and one at the center, which is 9 in all for a
+two-parameter family, and more when \code{\link[=fd_stable_step]{fd_stable_step()}} compares two candidate
+steps. A second difference is about two digits less accurate than the first
+difference of the gradient.
 }
 
 \seealso{

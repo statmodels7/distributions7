@@ -15,9 +15,9 @@ vector of length 1 or \code{n}. The value is not read, only its length.}
 A numeric vector of 6s, the length of \code{theta$mu}.
 }
 \description{
-Constant: \eqn{\gamma_2 = 6}, the excess over the Gaussian. Like the
-skewness it is fixed for the whole family, there being no shape parameter
-for a standardized moment to depend on.
+The excess kurtosis is the constant \eqn{\gamma_2 = 6}, the excess over the
+Gaussian. Like the skewness it is fixed for the whole family, because the
+family has no shape parameter on which a standardized moment could depend.
 }
 \examples{
 d <- exponential_distrib()

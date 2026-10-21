@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive;
+each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,9 +17,9 @@ A numeric vector of means, of length
 \eqn{(0,1)}.
 }
 \description{
-Closed form: \eqn{E[Y] = \alpha/(\alpha+\beta)}. This is the beta in its
-classical two-shape parametrization, so the mean is a ratio rather than a
-parameter; \code{\link[=beta1_distrib]{beta1_distrib()}} carries it directly, with
+The mean has the closed form \eqn{E[Y] = \alpha/(\alpha+\beta)}. This is the
+beta in its classical two-shape parametrization, so the mean is a ratio
+rather than a parameter; \code{\link[=beta1_distrib]{beta1_distrib()}} carries it directly, with
 \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\phi = \alpha+\beta}.
 }
 \section{Notation}{
@@ -30,7 +30,7 @@ parameter; \code{\link[=beta1_distrib]{beta1_distrib()}} carries it directly, wi
 \examples{
 d <- beta2_distrib()
 
-# The ratio of the first shape to their sum.
+# The mean is the ratio of the first shape to their sum.
 all.equal(mean(d, list(alpha = 2, beta = 3)), 0.4)
 
 }

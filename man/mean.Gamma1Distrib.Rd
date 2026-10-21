@@ -7,7 +7,7 @@
 \item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{phi} (the dispersion, positive), each a numeric vector of length 1 or
+\code{phi} (the dispersion, positive); each is a numeric vector of length 1 or
 \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,10 +17,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This is the gamma written by its mean and a
-dispersion, the parametrization of a generalized linear model, so the mean is
-the first parameter and the variance is \eqn{\phi\mu^2}, the dispersion times
-the variance function \eqn{\mu^2}.
+The mean has the closed form \eqn{E[Y] = \mu}. This is the gamma written by
+its mean and a dispersion, the parametrization of a generalized linear model,
+so the mean is the first parameter and the variance is \eqn{\phi\mu^2}, the
+dispersion times the variance function \eqn{\mu^2}.
 }
 \examples{
 d <- gamma1_distrib()

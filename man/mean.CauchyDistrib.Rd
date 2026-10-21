@@ -6,11 +6,11 @@
 \arguments{
 \item{x}{A \code{CauchyDistrib}, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}. The values are not read, only their
-lengths, and the list is still aligned and validated, so a missing or
-out-of-bounds component signals an error as it would for a family whose
-moments exist.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), in
+which each component is a numeric vector of length 1 or \code{n}. The values are
+not read, only their lengths, and the list is still aligned and validated,
+so a missing or out-of-bounds component signals an error as it would for a
+family whose moments exist.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -21,12 +21,12 @@ A numeric vector of \code{NaN}, of length
 \description{
 Returns \code{NaN}. The Cauchy density decays like \eqn{y^{-2}}, so
 \eqn{\int |y| f(y)\,\mathrm{d}y} diverges and the first moment does not
-exist. \code{NaN} is returned directly and no quadrature is attempted; the
-numerical route of \code{\link[=moment]{moment()}} applied to a Cauchy signals an error, the
-quadrature not reaching the requested accuracy.
+exist. \code{NaN} is returned directly and the method attempts no quadrature; the
+numerical route of \code{\link[=moment]{moment()}} applied to a Cauchy signals an error, because
+the quadrature does not reach the requested accuracy.
 }
 \details{
-What the family does have is a median, equal to \eqn{\mu}, and a
+The family has a median, equal to \eqn{\mu}, and a
 half-interquartile range, equal to \eqn{\sigma}. Both are exact at every
 parameter value and both come from \code{\link[=distrib_quantile]{distrib_quantile()}}. A Cauchy sample
 mean is itself Cauchy with the same scale, so it does not settle as the
@@ -35,13 +35,13 @@ sample grows and cannot stand in for the missing moment either.
 \section{Notation}{
 
 \eqn{\mu} is the location and \eqn{\sigma > 0} the scale, in the
-parametrization \code{\link[=cauchy_distrib]{cauchy_distrib()}} uses. Neither is a moment.
+parametrization \code{\link[=cauchy_distrib]{cauchy_distrib()}} uses. The two parameters are not moments.
 }
 
 \examples{
 d <- cauchy_distrib()
 
-# No moment exists, so this is NaN at every parameter value.
+# The Cauchy has no moment, so the result is NaN at every parameter value.
 mean(d, list(mu = c(0, 1, 2), sigma = 1))
 
 # The median is mu and the half-interquartile range is sigma.

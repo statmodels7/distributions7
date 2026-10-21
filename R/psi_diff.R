@@ -1,10 +1,10 @@
 #' @title Differences of a Polygamma at an Integer Shift
 #' @name psi_shift_diff
 #' @description
-#' Returns \eqn{\psi^{(n)}(x+k) - \psi^{(n)}(x)} without the cancellation the
-#' direct difference carries. It is the R counterpart of `psi_A_rest()` and
-#' `psi_T_rest()` of `src/psi_diff.h`, which return the same difference with
-#' its leading behavior subtracted, and it is written for any order and not
+#' Returns \eqn{\psi^{(n)}(x+k) - \psi^{(n)}(x)} without the cancellation that
+#' the direct difference carries. It is the R counterpart of `psi_A_rest()` and
+#' `psi_T_rest()` of `src/psi_diff.h`, which return the same difference after
+#' subtracting its leading behavior, and it is written for any order and not
 #' only for the two orders that the compiled kernels need.
 #'
 #' @details
@@ -22,7 +22,7 @@
 #'   + \frac{n!}{2 z^{n+1}} + \frac{(n+1)!}{12 z^{n+2}}
 #'   - \frac{(n+3)!}{720 z^{n+4}} + \frac{(n+5)!}{30240 z^{n+6}}\Big],}
 #' whose \eqn{n = 0} case is \eqn{\log z - 1/(2z) - 1/(12 z^{2}) + \ldots}
-#' with the logarithm differenced as \eqn{\log(1 + k/x)}. Each power is
+#' and the logarithm is differenced as \eqn{\log(1 + k/x)}. Each power is
 #' differenced as
 #' \deqn{\frac{1}{(x+k)^{p}} - \frac{1}{x^{p}}
 #'   = \frac{1}{x^{p}}\,\big(e^{-p\log(1+k/x)} - 1\big),}
@@ -33,10 +33,10 @@
 #' @param n The order of the polygamma: `0` for `digamma`,
 #'   `1` for `trigamma`, and so on.
 #' @param k The shift, which for every caller here is a count or a size and
-#'   therefore a non-negative integer. Recycled against `x`.
-#' @param x The argument, strictly positive. Recycled against `k`.
+#'   therefore a non-negative integer. `k` is recycled against `x`.
+#' @param x The argument, strictly positive. `x` is recycled against `k`.
 #' @return A numeric vector of the same length as the recycled arguments.
-#'   Exactly zero wherever `k` is zero, by either branch.
+#'   The value is exactly zero wherever `k` is zero, by either branch.
 #' @keywords internal
 psi_shift_diff <- function(n, k, x) {
   n <- as.integer(n)

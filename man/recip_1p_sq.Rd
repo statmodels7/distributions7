@@ -9,9 +9,9 @@ recip_1p_sq(a, j)
 \arguments{
 \item{a}{A numeric vector, the shape.}
 
-\item{j}{The order, 0 to 3. Any other value returns \code{NULL}, \code{switch()}
-falling through; three is the highest the fourth-order cdf derivative
-needs.}
+\item{j}{The order, 0 to 3. Any other value returns \code{NULL}, because
+\code{switch()} falls through; three is the highest order that the
+fourth-order cdf derivative needs.}
 }
 \value{
 A numeric vector the length of \code{a}.
@@ -19,7 +19,7 @@ A numeric vector the length of \code{a}.
 \description{
 Returns \eqn{\partial^j (1+a^2)^{-1}/\partial a^j} for \eqn{j = 0, \ldots, 3}:
 \eqn{(1+a^2)^{-1}}, \eqn{-2a(1+a^2)^{-2}}, \eqn{(6a^2-2)(1+a^2)^{-3}} and
-\eqn{24a(1-a^2)(1+a^2)^{-4}}. This is the factor the skew normal's shape
+\eqn{24a(1-a^2)(1+a^2)^{-4}}. This is the factor that the skew normal's shape
 derivative carries, and writing it out saves a Faa di Bruno pass over a
 quantity whose derivatives are four short expressions.
 }

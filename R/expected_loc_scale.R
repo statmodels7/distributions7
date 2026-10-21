@@ -34,12 +34,12 @@ NULL
 #'
 #' The integrals are taken by an exp-sinh rule on each half-line, from
 #' [loc_scale_rule()], centered at the point that [loc_scale_center()] returns.
-#' Its nodes cluster double-exponentially at that center, which is where the
-#' location-scale families that use it put their one sharp feature: zero for
-#' the core of the pseudo-Huber at a small shape and for the skew t, and the
-#' step of the skewing function, \eqn{w = -r}, for the centered skew normal, and the same transformation turns an algebraic
-#' tail into an exponential one, which is what the Student t's heavy tail
-#' needs.
+#' Its nodes cluster double-exponentially at that center. The location-scale
+#' families that use the rule have their one sharp feature there: at zero for
+#' the core of the pseudo-Huber at a small shape and for the skew t, and at the
+#' step of the skewing function, \eqn{w = -r}, for the centered skew normal.
+#' The same transformation turns an algebraic tail into an exponential one,
+#' which the heavy tail of the Student t requires.
 #'
 #' A node where the density is exactly zero contributes nothing, whatever the
 #' derivatives read there. Any other non-finite contribution makes the whole
@@ -47,8 +47,8 @@ NULL
 #'
 #' @param distrib A family whose first two parameters are a location and a
 #'   scale, and which carries analytic derivatives to the order needed.
-#' @param theta The aligned parameter list, each component of the common
-#'   length `n`.
+#' @param theta The aligned parameter list, in which each component has the
+#'   common length `n`.
 #' @param order `0L` for the expected information, `1L` for its first
 #'   derivatives, `2L` for its second. At order 2 the first derivatives are
 #'   returned beside the second, from the same evaluation.
@@ -62,7 +62,7 @@ NULL
 #'
 #' @seealso [loc_scale_rule()] for the quadrature,
 #'   [distrib_expected_hessian()], [distrib_dexpected_hessian()] and
-#'   [distrib_d2expected_hessian()] for the generics this serves.
+#'   [distrib_d2expected_hessian()] for the generics that this function serves.
 #'
 #' @keywords internal
 loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
@@ -201,8 +201,8 @@ loc_scale_compiled <- function() {
 #' The Quadrature Rule of the Location-Scale Expectations
 #'
 #' @description
-#' Nodes and weights of an exp-sinh rule on each half-line, for integrals over
-#' the whole real line of a density at location 0 and scale 1.
+#' Returns the nodes and weights of an exp-sinh rule on each half-line, for
+#' integrals over the whole real line of a density at location 0 and scale 1.
 #'
 #' @details
 #' On \eqn{(0,\infty)} the substitution \eqn{z = \exp(\tfrac{\pi}{2}\sinh t)}
@@ -240,37 +240,36 @@ loc_scale_rule <- local({
 #' Is a Family's Exact Expected Information Costly to Compute?
 #'
 #' @description
-#' `TRUE` when the family's expected information is exact but costs far more
-#' than its observed information, because it is obtained by an integral or a
-#' sum for each observation or each distinct shape; `FALSE` otherwise.
+#' Returns `TRUE` when the family's expected information is exact but costs far
+#' more than its observed information, because it is obtained by an integral
+#' or a sum for each observation or each distinct shape, and `FALSE` otherwise.
 #'
 #' @details
 #' The answer is a statement about cost, and it is read beside
-#' [expected_hessian_exact()], which concerns accuracy. Three kinds of family
-#' return `TRUE`.
+#' [expected_hessian_exact()], which concerns accuracy.
 #'
 #' The location-scale families [skewnormal1_distrib()],
 #' [skewnormal2_distrib()], [skewt_distrib()], [pseudohuber_distrib()] and
-#' [pseudohuber2_distrib()] take one integral over the standardized response
-#' per distinct shape, from [loc_scale_expected()]: one integral where the
-#' shape is the same for every observation, and one per observation where it
-#' is modeled. A fit that takes the scoring step on this information then
-#' costs several times one that takes it on the observed information, at the
-#' same estimate.
+#' [pseudohuber2_distrib()] return `TRUE`. They take one integral over the
+#' standardized response per distinct shape, from [loc_scale_expected()]: one
+#' integral where the shape is the same for every observation, and one per
+#' observation where it is modeled. A fit that takes the scoring step on this
+#' information then costs several times one that takes it on the observed
+#' information, at the same estimate.
 #'
-#' The Poisson-inverse Gaussians [pig1_distrib()] and [pig2_distrib()] sum
-#' over the support for each observation, over a number of terms that grows
-#' as \eqn{\sigma\mu}, whereas their observed information is a closed form.
-#' A fit on it costs more than one on the observed information at the same
-#' estimate, and far more where the fit passes through a large
-#' \eqn{\sigma\mu}.
+#' The Poisson-inverse Gaussians [pig1_distrib()] and [pig2_distrib()] also
+#' return `TRUE`. They sum over the support for each observation, over a
+#' number of terms that grows as \eqn{\sigma\mu}, whereas their observed
+#' information is a closed form. A fit on it costs more than one on the observed
+#' information at the same estimate, and far more where the fit passes through a
+#' large \eqn{\sigma\mu}.
 #'
 #' A [folded()] distribution also returns `TRUE`.
 #'
-#' \pkg{statmodels7}'s `iwls(hessian = "auto")` therefore settles on the
-#' observed information for these families. The default answers for a
-#' wrapper's parent, read off its `parent_distrib` property, and `FALSE` for a
-#' family without one.
+#' \pkg{statmodels7}'s `iwls(hessian = "auto")` therefore uses the observed
+#' information for these families. For a wrapper, the default method returns
+#' the answer for its parent, read off its `parent_distrib` property, and for a
+#' family without one it returns `FALSE`.
 #'
 #' @param x An object inheriting from class `"distrib"`.
 #' @param ... Passed to methods.
@@ -302,14 +301,14 @@ S7::method(expected_hessian_costly, distrib) <- function(x, ...) {
 #'
 #' @description
 #' Registers [distrib_expected_hessian()], [distrib_dexpected_hessian()] and
-#' [distrib_d2expected_hessian()] on a location-scale class, each computed by
-#' [loc_scale_expected()], and [expected_hessian_costly()] answering
-#' `TRUE`.
+#' [distrib_d2expected_hessian()] on a location-scale class, each of which is
+#' computed by [loc_scale_expected()], and registers [expected_hessian_costly()]
+#' so that it returns `TRUE`.
 #'
 #' @details
 #' The `approx` and `nsim` arguments of the three generics are accepted and
-#' ignored, the expectation being taken by the rule of [loc_scale_rule()] and
-#' not by one of the approximations `approx` selects between.
+#' ignored, because the expectation is taken by the rule of [loc_scale_rule()]
+#' and not by one of the approximations between which `approx` selects.
 #'
 #' @param cls An S7 class whose first two parameters are a location and a
 #'   scale.

@@ -9,7 +9,7 @@ disc_upper_table(distrib, theta, need_p = NULL, need_k = NULL, kmax = 1e+06)
 \arguments{
 \item{distrib}{An object inheriting from class \code{"discrete_distrib"}.}
 
-\item{theta}{A named list of parameters, each of length 1.}
+\item{theta}{A named list of parameters; each has length 1.}
 
 \item{need_p}{The probability that the caller compares with the table: the
 table grows until the neglected mass is below \eqn{10^{-17}} of it.}

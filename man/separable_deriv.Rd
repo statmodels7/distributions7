@@ -7,8 +7,8 @@
 separable_deriv(nm, uderiv, vderiv)
 }
 \arguments{
-\item{nm}{A character vector of length 2, the two parameter names, the one
-\code{uderiv} differentiates first.}
+\item{nm}{A character vector of length 2 holding the two parameter names.
+\code{uderiv} differentiates the first of them.}
 
 \item{uderiv}{A function of a non-negative whole number \eqn{j} returning
 \eqn{\partial^j u/\partial\theta_1^j}.}
@@ -22,11 +22,11 @@ counted, so a block made only of such names gives the order-zero factor
 for both, which is the value itself.
 }
 \description{
-Builds the \code{wderiv} or \code{xderiv} callback \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} wants,
-for a quantity that factorizes as \eqn{u(\theta_1)\,v(\theta_2)}. A mixed
-partial of such a product is the product of two one-variable derivatives,
-so a block of parameter names is answered by counting how many of each it
-holds.
+Builds the \code{wderiv} or \code{xderiv} callback that \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}
+calls, for a quantity that factorizes as \eqn{u(\theta_1)\,v(\theta_2)}. A
+mixed partial of such a product is the product of two one-variable
+derivatives, so the partial for a block of parameter names is obtained by
+counting how many times each of the two names occurs in the block.
 }
 \details{
 The inverse Gaussian, which uses this function, is separable in this way. The
@@ -34,7 +34,7 @@ inverse Gaussian's \eqn{a}, \eqn{b} and \eqn{c} are each a function of the
 mean times a function of the dispersion; the elastic net's \eqn{s} and
 \eqn{x} are each a function of \eqn{\lambda} times a function of
 \eqn{\alpha}. Each mixed partial is therefore a product of two
-one-variable derivatives, which is why four orders are cheap here.
+one-variable derivatives, so four orders are cheap here.
 }
 \seealso{
 \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, whose \code{wderiv} and \code{xderiv} this builds;

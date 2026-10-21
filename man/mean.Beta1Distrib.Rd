@@ -7,9 +7,9 @@
 \item{x}{A \code{Beta1Distrib}, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, strictly between 0
-and 1) and \code{phi} (the precision, positive), each a numeric vector of length
-1 or \code{n}. It is aligned and validated by name, so a mean at or outside the
-unit interval signals an error.}
+and 1) and \code{phi} (the precision, positive); each is a numeric vector of
+length 1 or \code{n}. It is aligned and validated by name, so a mean at or
+outside the unit interval signals an error.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,10 +18,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$phi))}, strictly inside \eqn{(0,1)}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and a
-precision, so the mean is a read; the two shapes of the standard
-parametrization are recovered as \eqn{a = \mu\phi} and
-\eqn{b = (1-\mu)\phi}, and they sum to \eqn{\phi}.
+The mean has the closed form \eqn{E[Y] = \mu}. This parametrization carries
+the mean and a precision, so the mean is a read; the two shapes of the
+standard parametrization are recovered as \eqn{a = \mu\phi} and \eqn{b =
+(1-\mu)\phi}, and they sum to \eqn{\phi}.
 }
 \section{Notation}{
 

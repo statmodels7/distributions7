@@ -7,7 +7,7 @@
 \item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{phi}
-(positive), each a numeric vector of length 1 or \code{n}. Only \code{phi} enters
+(positive); each is a numeric vector of length 1 or \code{n}. Only \code{phi} enters
 the value.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,8 +17,9 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_2 = 6\phi}, the excess over the Gaussian. It is
-linear in the dispersion and free of the mean, and it is exactly
+The excess kurtosis has the closed form \eqn{\gamma_2 = 6\phi}, the excess
+over the Gaussian. It is linear in the dispersion and free of the mean, and
+it is exactly
 \eqn{3\gamma_1^2/2}, so a gamma occupies one curve of the
 skewness-kurtosis plane whichever parametrization it is written in.
 }
@@ -31,7 +32,7 @@ moment.
 \examples{
 d <- gamma1_distrib()
 
-# Six times the dispersion.
+# The excess kurtosis is six times the dispersion.
 all.equal(kurtosis(d, list(mu = 2, phi = 0.25)), 1.5)
 
 # The family lies on the curve kurtosis = 1.5 skewness^2.

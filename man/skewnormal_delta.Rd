@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{skewnormal_delta}
 \alias{skewnormal_delta}
-\title{The Shape a Skew Normal's Moments Depend On}
+\title{The Shape on Which a Skew Normal's Moments Depend}
 \usage{
 skewnormal_delta(alpha)
 }
@@ -12,8 +12,8 @@ skewnormal_delta(alpha)
 at one as the shape grows.}
 }
 \value{
-A named list with \code{delta} and \code{bd}, each a numeric vector the length
-of \code{alpha}.
+A named list with \code{delta} and \code{bd}, in which each component is a
+numeric vector of the length of \code{alpha}.
 }
 \description{
 Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and the product

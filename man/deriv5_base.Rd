@@ -2,7 +2,7 @@
 % Please edit documentation in R/higher_derivatives.R
 \name{deriv5_base}
 \alias{deriv5_base}
-\title{The Order a Fifth Derivative Is Differenced From}
+\title{The Order from Which a Fifth Derivative Is Differenced}
 \usage{
 deriv5_base(x)
 }
@@ -14,10 +14,10 @@ An integer from 0 to 4.
 }
 \description{
 Returns 4 where \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} is \code{TRUE}; 0 for a wrapper whose
-parent has no analytic fourth order, a wrapper being a class that
+parent has no analytic fourth order, where a wrapper is a class that
 overrides \code{\link[=has_exact_deriv4]{has_exact_deriv4()}} to read its parent; and otherwise the
-highest order the family registers itself, as \code{\link[=analytic_order]{analytic_order()}} gives it
-up to 3.
+highest order that the family registers itself, as \code{\link[=analytic_order]{analytic_order()}} gives
+it up to 3.
 }
 \seealso{
 \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which passes it to \code{\link[=tensor_derivatives]{tensor_derivatives()}}.

@@ -6,21 +6,21 @@
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
-each a numeric vector of length 1 or \code{n}. Only \code{d} and \code{p} enter the
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive;
+each is a numeric vector of length 1 or \code{n}. Only \code{d} and \code{p} enter the
 value.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, of length equal to the longest of the three
-components.
+A numeric vector, whose length is the one that the recycled
+parameters imply.
 }
 \description{
-Assembled from the first three raw moments,
-\eqn{\gamma_1 = (m_3 - 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}} with
+The skewness is assembled from the first three raw moments,
+\eqn{\gamma_1 =(m_3 - 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}} with
 \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, so the
-value depends on the two shapes alone; unlike a gamma's it can be negative
+value depends only on the two shapes; unlike a gamma's it can be negative
 (for example at \eqn{d = p} with \eqn{p} above about 3.6, the Weibull case).
 }
 \details{

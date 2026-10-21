@@ -28,14 +28,15 @@ over all of them together.}
 \item{h_rel}{The relative step size.}
 
 \item{need_value}{Whether the caller will use the quotient at the chosen
-step. \code{FALSE} for a caller that wants only the step, and then nothing is
-evaluated at all where the two candidates coincide: the higher orders read
-only \code{h}, and their quotient is a difference of whole Hessians.}
+step. A caller that needs only the step sets it to \code{FALSE}, and the
+function then skips every evaluation where the two candidates coincide: the
+higher orders read only \code{h}, and their quotient is a difference of whole
+Hessians.}
 
-\item{order, accuracy}{The stencil the quotient implements, passed to
-\code{\link[=fd_steps]{fd_steps()}} so that the clamp is on the outermost node. The defaults are
-the central difference; a caller whose quotient is a second difference
-passes \code{order = 2}.}
+\item{order, accuracy}{The stencil that the quotient implements; it is passed
+to \code{\link[=fd_steps]{fd_steps()}} so that the clamp applies to the outermost node. The
+defaults are the central difference; a caller whose quotient is a second
+difference passes \code{order = 2}.}
 }
 \value{
 A list of two elements: \code{h}, the step chosen, and \code{value}, the
@@ -71,7 +72,7 @@ signal.
 It costs four quotients where one would do, except where the two steps
 coincide at every entry, which is every call on a parameter with no finite
 bound and every positive parameter at or above one: there the clamped step
-is returned at once and nothing is evaluated twice.
+is returned at once and each quotient is evaluated only once.
 
 Each order selects its own step, with its own \code{h_rel} and its own stencil;
 a choice made at first order is not reused at higher orders.

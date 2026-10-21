@@ -22,15 +22,16 @@ NULL
 #' The Log-Tail Route of the CDF Derivatives
 #'
 #' @description
-#' Called from the bodies of [distrib_grad_cdf()], [distrib_hess_cdf()],
-#' [distrib_deriv3_cdf()] and [distrib_deriv4_cdf()] before dispatch. On the
-#' log scale it returns the derivatives of \eqn{\log P}, \eqn{P} the requested
-#' tail, from [ls_log_tail_derivs()] for the eight location-scale families
-#' listed in `log_tail_ls`, and from [quad_log_tail_derivs()] for the
+#' The function is called from the bodies of [distrib_grad_cdf()],
+#' [distrib_hess_cdf()], [distrib_deriv3_cdf()] and [distrib_deriv4_cdf()]
+#' before dispatch. On the
+#' log scale it returns the derivatives of \eqn{\log P}, where \eqn{P} is the
+#' requested tail, from [ls_log_tail_derivs()] for the eight location-scale
+#' families listed in `log_tail_ls`, and from [quad_log_tail_derivs()] for the
 #' families listed in `log_tail_quad` (and, for the lower tail,
-#' `log_tail_quad_lower`) at the quantiles where \eqn{\log P}
-#' is below `log_tail_cut`, the other quantiles going to the family's own
-#' method. Elsewhere it returns `NULL` and the generic dispatches as usual.
+#' `log_tail_quad_lower`) at the quantiles where \eqn{\log P} is below
+#' `log_tail_cut`; the other quantiles go to the family's own method. Elsewhere
+#' it returns `NULL` and the generic dispatches as usual.
 #'
 #' `log_tail_ls` maps each location-scale class to its base and to the map
 #' \eqn{w} of its second parameter; `log_tail_quad` lists the classes of the
@@ -39,10 +40,11 @@ NULL
 #' threshold, \eqn{-5}; `log_tail_off` holds the switch that turns the
 #' route off while quantiles are sent back to the family's method.
 #'
-#' The quantiles are selected on [tail_cdf()], the value the family's method
-#' computes first. While the method runs on the quantiles that are not far,
-#' `log_tail_stash` holds that value with the class, quantiles, parameters
-#' and tail it belongs to, and [tail_cdf()] returns it for a call with the
+#' The quantiles are selected on [tail_cdf()], the value that the family's
+#' method computes first. While the method runs on the quantiles that are not
+#' far, `log_tail_stash` holds that value with the class, quantiles,
+#' parameters and tail to which it belongs, and [tail_cdf()] returns it for a
+#' call with the
 #' same arguments instead of evaluating the distribution function again. A
 #' parameter of length one is passed to the method as a scalar.
 #'
@@ -65,7 +67,7 @@ NULL
 #'
 #' @examples
 #' d <- gaussian1_distrib()
-#' # log S = log(1 - Phi(z)) at z = 40, where 1 - Phi(z) underflows
+#' # This is log S = log(1 - Phi(z)) at z = 40, where 1 - Phi(z) underflows.
 #' distributions7:::log_tail_route(d, 40, list(mu = 0, sigma = 1), 1L,
 #'                                 FALSE, TRUE, distrib_grad_cdf)
 #'
@@ -209,8 +211,8 @@ log_tail_ls <- list(
 #'   \item Laplace: \eqn{g = \log\tfrac12 - z} for \eqn{z > 0} and
 #'     \eqn{\log(1 - u)}, \eqn{u = e^{z}/2}, otherwise, whose derivatives are
 #'     rational in \eqn{u}.
-#'   \item logistic: polynomials in \eqn{p = F} and \eqn{s = 1 - F}, each
-#'     taken from its own tail by [stats::plogis()].
+#'   \item logistic: polynomials in \eqn{p = F} and \eqn{s = 1 - F}, where
+#'     each is taken from its own tail by [stats::plogis()].
 #'   \item Gumbel, upper tail: with \eqn{w = e^{-z}}, \eqn{g' = -\beta(w)},
 #'     \eqn{\beta(w) = w/(e^{w} - 1)}, and each further order applies
 #'     \eqn{-w\,d/dw}; below \eqn{w = 1/2} by the Bernoulli series
@@ -243,7 +245,7 @@ log_tail_ls <- list(
 #'
 #' @examples
 #' d <- gaussian2_distrib()
-#' # log S at 400 standard deviations, where the tail underflows
+#' # This is log S at 400 standard deviations, where the tail underflows.
 #' distributions7:::ls_log_tail_derivs(d, 400, list(mu = 0, sigma2 = 1), 2L,
 #'   list(base = "gaussian", w = "invsqrt"), lower.tail = FALSE)
 #'
@@ -277,8 +279,8 @@ ls_log_tail_derivs <- function(distrib, q, theta, o, spec, lower.tail) {
 #' Log-Tail Derivatives by Quadrature of the Log-Density Derivatives
 #'
 #' @description
-#' Computes the derivatives of order `o` of \eqn{\log P}, \eqn{P} the tail
-#' beyond `q` on the side that `lower.tail` selects, from
+#' Computes the derivatives of order `o` of \eqn{\log P}, where \eqn{P} is the
+#' tail beyond `q` on the side that `lower.tail` selects, from
 #' \deqn{\log P = \ell(q) + \log J, \qquad
 #'   J = \int_{\mathrm{tail}} e^{D(y)}\,dy, \qquad D(y) = \ell(y) - \ell(q).}
 #' The derivatives of \eqn{\log J} follow from the ratios
@@ -286,11 +288,12 @@ ls_log_tail_derivs <- function(distrib, q, theta, o, spec, lower.tail) {
 #' polynomials in the partial derivatives of \eqn{D}, through the
 #' moment-to-cumulant sum; both sums are the recursions over the subsets of a
 #' multi-index that contain its first position, run in compiled code
-#' (`log_tail_cumulants_cpp()`) on the pairs `log_tail_pairs()` enumerates. Every partial of
+#' (`log_tail_cumulants_cpp()`) on the pairs that `log_tail_pairs()`
+#' enumerates. Every partial of
 #' \eqn{D} is a difference of the family's own log-density derivatives at
 #' \eqn{y} and at \eqn{q}, which stays small over the tail, so the sums carry
-#' no cancellation of the size the ratios of [cdf_scale_k()] carry, and
-#' nothing underflows where \eqn{P} does.
+#' no cancellation of the size that the ratios of [cdf_scale_k()] carry, and
+#' the computation does not underflow where \eqn{P} does.
 #'
 #' @details
 #' The integral is taken with the 15-point Kronrod rule on 16 panels in
@@ -305,7 +308,7 @@ ls_log_tail_derivs <- function(distrib, q, theta, o, spec, lower.tail) {
 #' meant for the far tail, where the density decreases away from `q`;
 #' [log_tail_route()] uses it below \eqn{\log P = -5}. Toward an end at zero,
 #' a row whose last node with a representable abscissa still carries a
-#' relative weight above \eqn{10^{-12}}, the nodes beyond it having
+#' relative weight above \eqn{10^{-12}}, while the nodes beyond it have
 #' underflowed to zero, has mass below the smallest double (a shape near
 #' zero); it is marked in the attribute `"lost"` of the result.
 #' Toward an infinite end the nodes past the largest double are dropped,
@@ -313,8 +316,8 @@ ls_log_tail_derivs <- function(distrib, q, theta, o, spec, lower.tail) {
 #' polynomial tail of index \eqn{\nu}.
 #'
 #' `quad_tail_parts()` returns the nodes at every quantile, the response
-#' vector \eqn{(q, y_1, \dots)} with the parameters repeated to match, the
-#' log densities and the weights \eqn{e^{D}} times the Jacobian and the
+#' vector \eqn{(q, y_1, \dots)}, in which the parameters are repeated to match,
+#' the log densities and the weights \eqn{e^{D}} times the Jacobian and the
 #' rule's weight; `log_tail_nodes()` the nodes and weights in \eqn{u},
 #' computed once; `log_tail_pairs()` the components of orders 1 to `o` in
 #' canonical form and, for each, the pairs (subset containing the first
@@ -322,7 +325,7 @@ ls_log_tail_derivs <- function(distrib, q, theta, o, spec, lower.tail) {
 #'
 #' @param distrib A continuous distribution object.
 #' @param q A numeric vector of quantiles inside the support.
-#' @param theta A named list of parameters, each of the length of `q`.
+#' @param theta A named list of parameters; each has the length of `q`.
 #' @param o The derivative order, 1 to 4.
 #' @param lower.tail A single logical; `TRUE` selects the lower tail and `FALSE`
 #'   the upper tail.
@@ -334,7 +337,7 @@ ls_log_tail_derivs <- function(distrib, q, theta, o, spec, lower.tail) {
 #'
 #' @examples
 #' d <- gamma1_distrib()
-#' # log S of a gamma at 3000, where S underflows
+#' # This is log S of a gamma at 3000, where S underflows.
 #' distributions7:::quad_log_tail_derivs(d, 3000, list(mu = 1.7, phi = 2.3),
 #'                                       1L, lower.tail = FALSE)
 #'

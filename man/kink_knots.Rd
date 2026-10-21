@@ -22,19 +22,19 @@ A numeric vector, possibly empty.
 Returns the points of \eqn{[\mathrm{lower}, \mathrm{upper}]} at which the
 log-density of a family is not smooth in its parameters, for one parameter
 combination. \code{\link[=expectation]{expectation()}} adds them to the knots of its quadrature, so
-that no panel straddles a jump of the score.
+that every panel stays on one side of each jump of the score.
 }
 \details{
 The base method solves \eqn{v(y, \theta) = 0} for the \eqn{v} of the
 family's \code{\link[=kink_decomposition]{kink_decomposition()}}. It evaluates \eqn{v} on a grid of the
 range, which is twice as dense on its central half, and refines each
 sign change with \code{\link[stats:uniroot]{stats::uniroot()}}, so that a \eqn{v} with several roots
-(a Huber likelihood has two) gives each of them. A family that declares no
-decomposition returns no point, even when \code{params_smooth} records a
+(a Huber likelihood has two) gives each of them. A family without a declared
+decomposition returns an empty vector, even when \code{params_smooth} records a
 non-smooth parameter, since the location of its kink is then unknown.
 
 A \code{\link[=folded]{folded()}} family has a kink at \eqn{\lvert y^* \rvert} for every kink
-\eqn{y^*} of its parent, its density being \eqn{f(y) + f(-y)}, and a
+\eqn{y^*} of its parent, because its density is \eqn{f(y) + f(-y)}, and a
 \code{\link[=truncated]{truncated()}} family has its parent's kinks.
 }
 \examples{

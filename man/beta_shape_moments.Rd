@@ -18,13 +18,13 @@ A numeric vector of the recycled length of \code{mu} and \code{phi}.
 }
 \description{
 Returns the variance, the skewness or the excess kurtosis of the beta law
-with mean \eqn{\mu} and precision \eqn{\phi = \alpha + \beta}, with the
-shapes divided out of every quotient:
+with mean \eqn{\mu} and precision \eqn{\phi = \alpha + \beta}, in forms in
+which the shapes are divided out of every quotient:
 \deqn{\mathrm{Var}(Y) = \frac{\mu(1-\mu)}{1+\phi},\qquad
   \gamma_1 = \frac{2(1-2\mu)\sqrt{1+\phi}}{(2+\phi)\sqrt{\mu(1-\mu)}},}
 \deqn{\gamma_2 = \frac{6[(1-2\mu)^2(1+\phi)/(2+\phi) - \mu(1-\mu)]}
   {\mu(1-\mu)(3+\phi)}.}
-Written in the shapes the same quotients carry \eqn{\alpha\beta}, which
+Written in the shapes, the same quotients carry \eqn{\alpha\beta}, which
 underflows below \eqn{\phi \approx 10^{-154}} and overflows above
 \eqn{10^{154}}; here \eqn{\phi} enters only through \eqn{1 + \phi},
 \eqn{2 + \phi} and \eqn{3 + \phi}, and never in a product of two of them.

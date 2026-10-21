@@ -17,7 +17,7 @@ series_rows(term, from, n_rows)
 A numeric vector of sums, one per row.
 }
 \description{
-Calls \code{\link[numericals7:series_vec]{numericals7::series_vec()}} with its warning muffled and
+Calls \code{\link[numericals7:series_vec]{numericals7::series_vec()}}, muffles its warning and
 promotes a row that did not converge to an error that names the row.
 }
 \keyword{internal}

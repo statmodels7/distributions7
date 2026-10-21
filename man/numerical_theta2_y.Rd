@@ -34,9 +34,9 @@ and for families with a scale and no location. The default methods for a
 continuous family use \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} instead.
 }
 \details{
-The reference is \code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, so a
-distribution with a closed form for those requires exactly one difference
-and never differences a difference.
+The reference is \code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}. If a
+distribution has a closed form for those, the function applies exactly one
+difference to that closed form.
 
 A mixed pair is differenced in both orders and the two results are averaged.
 They agree in exact arithmetic and differ in floating point because the two

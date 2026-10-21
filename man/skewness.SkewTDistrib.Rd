@@ -7,18 +7,18 @@
 \item{x}{A \code{SkewTDistrib}, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive), \code{alpha}
-(any sign) and \code{nu} (positive), each a numeric vector of length 1 or \code{n}.
-Only \code{alpha} and \code{nu} enter the value; settings with \eqn{\nu \le 3} give
-\code{NaN}.}
+(any sign) and \code{nu} (positive); each is a numeric vector of length 1 or
+\code{n}. Only \code{alpha} and \code{nu} enter the value; settings with
+\eqn{\nu \le 3} give \code{NaN}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, of the length the recycled parameters imply,
+A numeric vector, of the length that the recycled parameters imply,
 \code{NaN} wherever \eqn{\nu \le 3}. Only \code{alpha} and \code{nu} enter the value.
 }
 \description{
-Closed form for \eqn{\nu > 3}, from Azzalini and Capitanio (2003):
+The closed form for \eqn{\nu > 3}, from Azzalini and Capitanio (2003), is
 \deqn{\gamma_1 = \frac{\mu_z}{\sigma_z^{3}}
       \left\{\frac{\nu(3-\delta^2)}{\nu-3}
              - \frac{3\nu}{\nu-2} + 2\mu_z^2\right\},}
@@ -31,14 +31,15 @@ shape.
 
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, \eqn{\mu_z = \delta b_\nu} and
 \eqn{\sigma_z^2 = \nu/(\nu-2) - \mu_z^2} are the standardized mean and
-variance from \code{\link[=skewt_moment_pieces]{skewt_moment_pieces()}}. Neither the location nor the scale
-enters a standardized moment.
+variance from \code{\link[=skewt_moment_pieces]{skewt_moment_pieces()}}. The location and the scale do not
+enter a standardized moment.
 }
 
 \examples{
 d <- skewt_distrib()
 
-# Undefined at or below three degrees of freedom, then large and falling.
+# The skewness is undefined at or below three degrees of freedom, then large
+# and falling.
 round(skewness(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(3, 4, 10))), 4)
 
 # As nu grows it approaches the skew normal's value at the same shape.

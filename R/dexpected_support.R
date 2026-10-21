@@ -10,12 +10,12 @@ NULL
 #'   distrib_dexpected_hessian.BetaBinom2Distrib
 #'   distrib_d2expected_hessian.BetaBinom2Distrib
 #' @description
-#' The first and second derivatives of the expected information in the
-#' parameters for three families whose expected information is itself a sum
-#' over the support.
+#' Computes the first and second derivatives of the expected information in
+#' the parameters for three families whose expected information is itself a
+#' sum over the support.
 #'
 #' @details
-#' NB1. The expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
+#' For NB1, the expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
 #' G/\mu}, with \eqn{A} and \eqn{G = \mathbb{E}[\ell_{\theta\theta}]} the two
 #' sums over the support of [distrib_expected_hessian.NegBin1Distrib()]; below
 #' \eqn{\theta = 0.02} \eqn{G} is \eqn{-\mathbb{E}[\sum_{j<Y} j^2/(\mu +
@@ -24,11 +24,11 @@ NULL
 #' score of the mass beside the summand, \eqn{\partial_c F = \mathbb{E}[f_c + f
 #' s_c]} and \eqn{\partial_{ce} F = \mathbb{E}[f_{ce} + f_c s_e + f_e s_c +
 #' f(s_c s_e + h_{ce})]}, taken in \eqn{(\mu, \theta)} by a compiled kernel,
-#' with the scores \eqn{s} and second derivatives \eqn{h} of the log-mass
-#' written so that no term of order \eqn{\mu/\theta^2} is formed. Every
+#' in which the scores \eqn{s} and second derivatives \eqn{h} of the log-mass
+#' are written so that no term of order \eqn{\mu/\theta^2} is formed. Every
 #' component keeps its accuracy down to the Poisson limit \eqn{\theta \to 0}.
 #'
-#' Beta-binomial. The support \eqn{\{0, \dots, n\}} is finite, so the
+#' For the beta-binomial, the support \eqn{\{0, \dots, n\}} is finite, so the
 #' identities
 #' \deqn{\partial_c \mathbb{E}[\ell_{ab}] = \mathbb{E}[\ell_{abc} + \ell_{ab}\ell_c]}
 #' and its second-order counterpart,
@@ -37,13 +37,13 @@ NULL
 #' are exact finite sums against the mass. They are taken in the shapes by a
 #' compiled kernel, where every derivative of the log-mass is a polygamma
 #' difference at an integer shift and is therefore a sum of negative powers,
-#' accumulated beside the mass with no polygamma called; [betabinom1_distrib()]
-#' reads the same sums through its map to the shapes for \eqn{\sigma \ge 0.1},
-#' and below that sums the derivatives of its own direct sums over the support
-#' ([betabinom1_dexpected()]). [support_dexpected()] computes the same
-#' identities from the family's own observed derivatives, sharing no
-#' arithmetic with the kernel, and the compiled kernel is the faster of the
-#' two.
+#' accumulated beside the mass without calling a polygamma;
+#' [betabinom1_distrib()] reads the same sums through its map to the shapes for
+#' \eqn{\sigma \ge 0.1}, and below that sums the derivatives of its own direct
+#' sums over the support ([betabinom1_dexpected()]). [support_dexpected()]
+#' computes the same identities from the family's own observed derivatives,
+#' sharing no arithmetic with the kernel, and the compiled kernel is the faster
+#' of the two.
 #'
 #' @param distrib A distribution object of one of the classes above.
 #' @param y A numeric vector of observations, read for its length.
@@ -70,14 +70,14 @@ register_dexpected(NegBin1Distrib, function(d, y, th, k, t)
 #' against the mass, reading the family's own observed derivatives.
 #'
 #' @details
-#' The support being finite, each sum is the expectation exactly: no
-#' quadrature, no truncation. Every observation's parameters are crossed with
+#' Because the support is finite, each sum is the expectation exactly, with no
+#' quadrature and no truncation. Every observation's parameters are crossed with
 #' the \eqn{N + 1} support points and the derivative generics are called once
 #' on the whole grid.
 #'
 #' @param distrib A discrete distribution with a finite support.
 #' @param y The response, read for its length.
-#' @param theta A named list of parameters, each of length one or `length(y)`.
+#' @param theta A named list of parameters; each has length one or `length(y)`.
 #' @param order `1L` or `2L`.
 #' @param N The largest point of the support.
 #' @param threads Passed to the derivative generics.
@@ -140,15 +140,16 @@ register_dexpected(BetaBinom1Distrib, function(d, y, th, k, t)
 #' [betabinom1_distrib()] is the shapes \eqn{a = \mu/\sigma} and
 #' \eqn{b = (1-\mu)/\sigma} under another name, so its derivatives are the
 #' shapes' ones, summed exactly over the support by the compiled kernel, and
-#' carried across with the map's partials written out (at order 1 by the
-#' compiled kernel `betabinom1_dexpected1_cpp`, at order 2 by
+#' carried across by the map's partials, which are written out (at order 1 by
+#' the compiled kernel `betabinom1_dexpected1_cpp`, at order 2 by
 #' [dexpected_chain()]):
 #' \eqn{a_\mu = 1/\sigma}, \eqn{a_\sigma = -\mu/\sigma^2},
 #' \eqn{a_{\mu\sigma} = -1/\sigma^2}, \eqn{a_{\sigma\sigma} = 2\mu/\sigma^3},
 #' \eqn{a_{\mu\sigma\sigma} = 2/\sigma^3},
 #' \eqn{a_{\sigma\sigma\sigma} = -6\mu/\sigma^4}, and for \eqn{b} the same
-#' with \eqn{\mu} replaced by \eqn{1-\mu} and every derivative in \eqn{\mu}
-#' changing sign; every derivative taking \eqn{\mu} twice is zero. Below
+#' after replacing \eqn{\mu} by \eqn{1-\mu} and changing the sign of every
+#' derivative in \eqn{\mu}; every derivative that takes \eqn{\mu} twice is
+#' zero. Below
 #' [bb_direct_cut()] these partials, of order \eqn{\sigma^{-4}}, cancel among
 #' themselves, and the rows with \eqn{\sigma < 0.1} are computed instead by the
 #' compiled kernel `betabinom1_dexpected_direct_cpp`, which sums over the

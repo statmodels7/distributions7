@@ -7,7 +7,7 @@
 \item{x}{A \code{Pig2Distrib}, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{alpha}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,11 +16,12 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$alpha))}, positive throughout.
 }
 \description{
-The cumulant ratio \eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} of
+The excess kurtosis is the cumulant ratio
+\eqn{\gamma_2 = \kappa_4/\kappa_2^{2}} of
 \code{\link[=kurtosis.Pig1Distrib]{kurtosis.Pig1Distrib()}}, read at the dispersion
 \eqn{\sigma = } \code{\link[=pig2_sigma]{pig2_sigma()}}\verb{(mu, alpha)}. As there, the ratio of the
-fourth cumulant to the squared second is already the excess, so no 3 is
-subtracted.
+fourth cumulant to the squared second is already the excess, so the method
+does not subtract 3.
 }
 \section{Notation}{
 

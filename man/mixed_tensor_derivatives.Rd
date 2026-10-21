@@ -28,7 +28,7 @@ where \code{ctheta} is 1; one vector per unordered pair, keyed as
 \description{
 Computes the derivatives of the log-density of order \code{ay} in the response
 and \code{ctheta} in the parameters, for a continuous family that has no method
-of its own for them. Among the quantities the family implements itself
+of its own for them. Among the quantities that the family implements itself
 (the log-density, its response derivatives, its score and Hessian in the
 parameters, and the mixed derivatives of lower order), the one that leaves
 the smallest order to difference is taken, and each component is a single
@@ -44,10 +44,10 @@ itself, and the family's class registers its method, as \code{\link[=owns_method
 reads it, so that a numerical fallback is never differenced again. The
 log-density is always available. The candidate with the smallest residual
 order \eqn{r = (\mathrm{ay} - a) + (\mathrm{ctheta} - c)} is used, and
-among equal ones the one with more derivatives in the parameters, which
-declares more multi-indices; the candidates are declared in decreasing
-\eqn{c}, so that the order of declaration decides the same way when there
-is a single parameter.
+among equal ones the candidate with more derivatives in the parameters,
+which declares more multi-indices, is used; the candidates are declared in
+decreasing \eqn{c}, so that the order of declaration gives the same
+preference when there is a single parameter.
 
 The step is \eqn{h = \varepsilon^{1/(r+a)}\max(1, |x|)} in every
 direction, with \eqn{a} the accuracy, reduced so that every node stays
@@ -69,7 +69,7 @@ got <- distributions7:::mixed_tensor_derivatives(d, b, list(sigma2 = 0.26), 2L, 
 rbind(got$sigma2_sigma2, -2 * k^3 * exp(b))
 }
 \seealso{
-\code{\link[=tensor_derivatives]{tensor_derivatives()}} for the derivatives in the parameters alone,
+\code{\link[=tensor_derivatives]{tensor_derivatives()}} for the derivatives in the parameters only,
 \code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, \code{\link[=distrib_cross3_y]{distrib_cross3_y()}},
 \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, whose continuous
 fallbacks call this.

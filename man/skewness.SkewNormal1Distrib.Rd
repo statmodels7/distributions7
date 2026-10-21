@@ -7,31 +7,31 @@
 \item{x}{A \code{SkewNormal1Distrib}, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and
-\code{alpha} (any sign), each a numeric vector of length 1 or \code{n}. Only \code{alpha}
-enters the value.}
+\code{alpha} (any sign); each is a numeric vector of length 1 or \code{n}. Only
+\code{alpha} enters the value.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, of the length the recycled parameters imply,
+A numeric vector, of the length that the recycled parameters imply,
 always inside \eqn{(-0.9953, 0.9953)}. Only \code{alpha} enters the value, so
-a setting that varies the location or the scale alone repeats one number.
+a setting that varies only the location or the scale repeats one number.
 }
 \description{
-Closed form:
+The closed form is
 \deqn{\gamma_1 = \frac{4-\pi}{2}\,
       \frac{(b\delta)^3}{(1 - b^2\delta^2)^{3/2}},}
 with \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. It
 takes the sign of the shape and vanishes at zero. Because \eqn{\delta} is
-bounded by 1, the skewness the family can reach is bounded too, by about
-0.9953 in absolute value. A sample skewness beyond that value lies outside
-the range a skew normal can have at any shape; the skewness of the skew t
-has no such bound.
+bounded by 1, the skewness that the family can reach is bounded too, by
+about 0.9953 in absolute value. A sample skewness beyond that value lies
+outside the range that a skew normal can have at any shape; the skewness of
+the skew t has no such bound.
 }
 \section{Notation}{
 
 \eqn{\alpha} is the shape, \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
-\eqn{b = \sqrt{2/\pi}}. Neither the location nor the scale enters a
+\eqn{b = \sqrt{2/\pi}}. The location and the scale do not enter a
 standardized moment.
 }
 

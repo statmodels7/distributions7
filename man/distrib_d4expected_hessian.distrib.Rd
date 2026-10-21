@@ -20,7 +20,7 @@
 A named list keyed as \code{\link[=d4expected_names]{d4expected_names()}}.
 }
 \description{
-One second-order stencil on \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}; an error where
-the family has no analytic second derivative.
+Applies one second-order stencil to \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} and
+signals an error where the family has no analytic second derivative.
 }
 \keyword{internal}

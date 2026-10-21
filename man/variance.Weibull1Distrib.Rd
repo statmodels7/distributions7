@@ -7,9 +7,9 @@
 \item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
-\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
-The variance exists for every positive shape and grows without bound as
-the shape tends to zero.}
+\code{sigma} (the shape, positive); each is a numeric vector of length 1 or
+\code{n}. The variance exists for every positive shape and grows without bound
+as the shape tends to zero.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,10 +18,10 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)} with
+The closed form is \eqn{\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)} with
 \eqn{g_k = \Gamma(1 + k/\sigma)}. The scale enters as a square and the shape
 through the two gamma factors, so the coefficient of variation
-\eqn{\sqrt{g_2 - g_1^2}/g_1} is a function of the shape alone. The method
+\eqn{\sqrt{g_2 - g_1^2}/g_1} depends only on the shape. The method
 computes \eqn{\mu^2 g_1^2 (g_2/g_1^2 - 1)} from the logarithms of the gamma
 factors (\code{\link[=weibull_moment_terms]{weibull_moment_terms()}}), so that \eqn{g_2 - g_1^2} is not formed
 as a difference; the value is \code{Inf} only where it exceeds the largest
@@ -36,7 +36,7 @@ double, as at a shape of 0.01.
 \examples{
 d <- weibull1_distrib()
 
-# The two gamma factors, written out.
+# The variance is written out with the two gamma factors.
 g1 <- gamma(1 + 1 / 3); g2 <- gamma(1 + 2 / 3)
 all.equal(variance(d, list(mu = 2, sigma = 3)), 4 * (g2 - g1^2))
 

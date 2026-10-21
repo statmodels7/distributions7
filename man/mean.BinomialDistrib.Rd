@@ -14,14 +14,14 @@ the number of parameter settings.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means, of length \code{max(length(theta$mu), length(x@size))}, each in \eqn{(0, n)} for the number of trials \eqn{n} of
-that observation.
+A numeric vector of means, of length \code{max(length(theta$mu), length(x@size))}; each mean lies in \eqn{(0, n)} for the number of trials
+\eqn{n} of that observation.
 }
 \description{
-Closed form: \eqn{E[Y] = n\mu}, with \eqn{n} the number of trials and
-\eqn{\mu} the success probability. The trial count is a property of the
-object and not a parameter, so it is read from \code{x@size} and does not appear
-in \code{theta}.
+The mean has the closed form \eqn{E[Y] = n\mu}, with \eqn{n} the number of
+trials and \eqn{\mu} the success probability. The trial count is a property
+of the object and not a parameter, so it is read from \code{x@size} and does not
+appear in \code{theta}.
 }
 \section{Notation}{
 
@@ -32,7 +32,7 @@ the success probability.
 \examples{
 d <- binomial_distrib(size = 10)
 
-# Ten trials at probability 0.3.
+# The call uses ten trials at probability 0.3.
 mean(d, list(mu = 0.3))
 
 }

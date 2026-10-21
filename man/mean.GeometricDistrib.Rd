@@ -15,9 +15,9 @@ numeric vector of length 1 or \code{n}.}
 A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. The family is parametrized by its mean, the
-expected number of failures before the first success, and the success
-probability it implies is \eqn{1/(1+\mu)}.
+The mean has the closed form \eqn{E[Y] = \mu}. The family is parametrized by
+its mean, the expected number of failures before the first success, and the
+implied success probability is \eqn{1/(1+\mu)}.
 }
 \examples{
 d <- geometric_distrib()

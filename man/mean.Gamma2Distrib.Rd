@@ -7,8 +7,8 @@
 \item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{sigma2} (the variance, positive), each a numeric vector of length 1 or
-\code{n}.}
+\code{sigma2} (the variance, positive), in which each component is a numeric
+vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,10 +17,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. The two parameters of this parametrization are
-the mean and the variance, so the method returns the first parameter. The
-shape \eqn{\mu^2/\sigma^2} and the rate \eqn{\mu/\sigma^2} are functions of
-the two.
+The mean has the closed form \eqn{E[Y] = \mu}. The two parameters of this
+parametrization are the mean and the variance, so the method returns the
+first parameter. The shape \eqn{\mu^2/\sigma^2} and the rate
+\eqn{\mu/\sigma^2} are functions of the two.
 }
 \examples{
 d <- gamma2_distrib()

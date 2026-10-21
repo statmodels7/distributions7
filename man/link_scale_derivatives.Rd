@@ -11,8 +11,8 @@ derivative generics named above; the value returned is theirs.
 The derivative generics of the package (\code{\link[=distrib_gradient]{distrib_gradient()}},
 \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}},
 \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}, \code{\link[=distrib_deriv5]{distrib_deriv5()}}) accept a
-\code{scale} argument selecting the parametrization the derivatives are taken
-with respect to:
+\code{scale} argument that selects the parametrization with respect to which
+the derivatives are taken:
 \itemize{
 \item \code{scale = "parameter"} (default): derivatives with respect to the
 parameters \eqn{\theta} on their natural, possibly constrained scale.
@@ -68,8 +68,8 @@ h <- distrib_hessian(d, y, th)$sigma_sigma
 all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,
           h * 2^2 + g * 2)
 
-# For the EXPECTED Hessian the first-order term vanishes, the score having
-# mean zero, so the information transforms by congruence.
+# For the EXPECTED Hessian the first-order term vanishes because the score
+# has mean zero, so the information transforms by congruence.
 e <- distrib_expected_hessian(d, y, th)$sigma_sigma
 all.equal(distrib_expected_hessian(d, y, th, scale = "link")$sigma_sigma,
           e * 2^2)
@@ -83,7 +83,7 @@ all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}},
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}} and
 \code{\link[=distrib_deriv5]{distrib_deriv5()}}, the six generics that take \code{scale};
-\code{\link[=bell_partial]{bell_partial()}} for the polynomials this assembles;
+\code{\link[=bell_partial]{bell_partial()}} for the polynomials that the assembly combines;
 \code{\link[linkfunctions7:linkinvderiv]{linkfunctions7::linkinvderiv()}}, which supplies the five inverse-link
 derivatives;
 \code{\link[=fit_distrib]{fit_distrib()}}, which optimizes on this scale for the reason given above.

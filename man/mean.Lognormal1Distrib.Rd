@@ -7,9 +7,9 @@
 \item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean of the logarithm,
-any real value) and \code{sigma2} (its variance, positive), each a numeric
-vector of length 1 or \code{n}. The mean overflows to \code{Inf} for large \code{sigma2},
-the exponential of half of it being taken.}
+any real value) and \code{sigma2} (its variance, positive); each is a numeric
+vector of length 1 or \code{n}. The mean overflows to \code{Inf} for large \code{sigma2}
+because the exponential of half of it is taken.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,7 +18,8 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \exp(\mu + \sigma^2/2)}. The parameters describe
+The mean has the closed form \eqn{E[Y] = \exp(\mu + \sigma^2/2)}. The
+parameters describe
 \eqn{\log Y} and not \eqn{Y}, so \eqn{\mu} is the mean of the logarithm and
 \eqn{\exp(\mu)} is the median of \eqn{Y}; the mean is larger than the
 median by the factor \eqn{\exp(\sigma^2/2)}, which grows with the spread.

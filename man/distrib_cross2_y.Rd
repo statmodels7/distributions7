@@ -23,17 +23,18 @@ See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 \item{...}{Passed to the method.}
 }
 \value{
-A named list with one numeric vector per parameter, each as long as
-\code{y}, keyed by \code{distrib@params}.
+A named list with one numeric vector per parameter, keyed by
+\code{distrib@params}. Each vector is as long as \code{y}.
 }
 \description{
-Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i}, one
-component per parameter, each a vector along \code{y}. Where \code{\link[=distrib_hess_y]{distrib_hess_y()}}
-says how curved the log-density is in the RESPONSE, this says how that
-curvature moves with each parameter.
+Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i}, with one
+component per parameter, and each component is a vector along \code{y}.
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} gives
+the curvature of the log-density in the RESPONSE, and this quantity gives the
+rate at which that curvature changes with each parameter.
 }
 \section{What consumes it}{
-It completes the surface a marginal likelihood needs. A penalty is
+It completes the surface that a marginal likelihood needs. A penalty is
 \eqn{-\log f(D\beta;\theta)}, so its Hessian in the coefficients is
 \eqn{-D'\mathrm{diag}(\ell^{(yy)})D}, and the derivative of that in
 \eqn{\theta} is this component placed the same way. Differentiating the
@@ -54,10 +55,11 @@ A distribution with a closed form provides it. The rest apply one tensor
 stencil to the highest quantity that the family implements itself, through
 \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central difference of the analytic response
 Hessian in each parameter where the family has one, so that such a family
-pays for exactly one difference.
+requires exactly one difference.
 
-Continuous distributions only, as with every response derivative: a discrete
-family has no method and the call raises with its class named.
+The quantity exists for continuous distributions only, as with every
+response derivative: a discrete
+family has no method and the call raises an error that names its class.
 }
 
 \section{Notation}{
@@ -78,12 +80,13 @@ distrib_cross2_y(d, y, theta)
 # location, so the mu component is exactly zero.
 c(sigma = 2 / 1.3^3)
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::grad(f, c(0.4, 1.3))
 
-# On the link scale, sigma riding a log link, the component is multiplied
-# by h' = sigma and nothing else.
+# On the link scale, where sigma rides a log link, the component is
+# multiplied by h' = sigma and nothing else.
 c(link = distrib_cross2_y(d, y, theta, scale = "link")$sigma[1],
   hand = distrib_cross2_y(d, y, theta)$sigma[1] * 1.3)
 

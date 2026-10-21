@@ -16,9 +16,10 @@ a non-positive value signals an error.}
 A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. The family carries one parameter and it is
-the mean, so this method reads it off. It is also the variance, which is the
-equidispersion the family is defined by.
+The mean has the closed form \eqn{E[Y] = \mu}. The family carries one
+parameter and it is the mean, so this method reads it off. It is also the
+variance, which gives
+the equidispersion that defines the family.
 }
 \examples{
 d <- poisson_distrib()

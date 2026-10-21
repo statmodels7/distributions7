@@ -9,8 +9,8 @@ NULL
 #' The derivative generics of the package ([distrib_gradient()],
 #' [distrib_hessian()], [distrib_expected_hessian()],
 #' [distrib_deriv3()], [distrib_deriv4()], [distrib_deriv5()]) accept a
-#' `scale` argument selecting the parametrization the derivatives are taken
-#' with respect to:
+#' `scale` argument that selects the parametrization with respect to which
+#' the derivatives are taken:
 #'
 #' - `scale = "parameter"` (default): derivatives with respect to the
 #'   parameters \eqn{\theta} on their natural, possibly constrained scale.
@@ -68,8 +68,8 @@ NULL
 #' all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,
 #'           h * 2^2 + g * 2)
 #'
-#' # For the EXPECTED Hessian the first-order term vanishes, the score having
-#' # mean zero, so the information transforms by congruence.
+#' # For the EXPECTED Hessian the first-order term vanishes because the score
+#' # has mean zero, so the information transforms by congruence.
 #' e <- distrib_expected_hessian(d, y, th)$sigma_sigma
 #' all.equal(distrib_expected_hessian(d, y, th, scale = "link")$sigma_sigma,
 #'           e * 2^2)
@@ -81,7 +81,7 @@ NULL
 #' @seealso [distrib_gradient()], [distrib_hessian()],
 #'   [distrib_expected_hessian()], [distrib_deriv3()], [distrib_deriv4()] and
 #'   [distrib_deriv5()], the six generics that take `scale`;
-#'   [bell_partial()] for the polynomials this assembles;
+#'   [bell_partial()] for the polynomials that the assembly combines;
 #'   [linkfunctions7::linkinvderiv()], which supplies the five inverse-link
 #'   derivatives;
 #'   [fit_distrib()], which optimizes on this scale for the reason given above.
@@ -104,11 +104,11 @@ NULL
 #' Partial Bell Polynomials for Orders up to Five
 #'
 #' @description
-#' The partial (incomplete) Bell polynomial \eqn{B_{m,j}} evaluated at the
+#' Evaluates the partial (incomplete) Bell polynomial \eqn{B_{m,j}} at the
 #' derivatives of the inverse link, for \eqn{m \le 5}.
 #'
 #' @details
-#' These are the coefficients Faa di Bruno's formula needs. Because each
+#' These are the coefficients that Faa di Bruno's formula needs. Because each
 #' parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 #' diagonal and the multivariate formula factorizes into a product of univariate
 #' ones, so only \eqn{B_{m,j}} for a single variable is required. They are
@@ -167,12 +167,12 @@ bell_partial <- function(m, j, h) {
 #' Index Tuples Matching the Package's Component Naming
 #'
 #' @description
-#' Canonical (non-decreasing) index tuples for a derivative order, in exactly the
-#' output order of the corresponding name helper: parameter order at order 1,
-#' [hess_names()] at order 2, [deriv_names()] from order 3 up.
+#' Returns the canonical (non-decreasing) index tuples for a derivative order,
+#' in exactly the output order of the corresponding name helper: parameter order
+#' at order 1, [hess_names()] at order 2, [deriv_names()] from order 3 up.
 #'
 #' @details
-#' The order-2 case is the one to be careful with. `hess_names()` lists the
+#' The order-2 case needs care. `hess_names()` lists the
 #' diagonal first and the off-diagonal afterwards, whereas `deriv_names()`
 #' is lexicographic throughout; pairing this helper with `deriv_names()`
 #' would therefore label `"mu_sigma"` with the tuple `(sigma, sigma)`.
@@ -211,8 +211,8 @@ deriv_index_list <- function(p, order) {
 #' Inverse-Link Derivatives for Every Parameter
 #'
 #' @description
-#' The derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's inverse link,
-#' evaluated at \eqn{\eta = g(\theta)}, up to `order`.
+#' Returns the derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's
+#' inverse link, evaluated at \eqn{\eta = g(\theta)}, up to `order`.
 #'
 #' @details
 #' This is the hot path of the link scale, so it is written against the
@@ -224,8 +224,9 @@ deriv_index_list <- function(p, order) {
 #' @param theta A named list of parameters, on the natural scale.
 #' @param order The highest derivative order needed, 1 to 5.
 #'
-#' @return A list with one element per parameter, each a list whose \eqn{k}-th
-#'   element is \eqn{h^{(k)}} evaluated at that parameter's \eqn{\eta}.
+#' @return A list with one element per parameter; each element is a list whose
+#'   \eqn{k}-th element is \eqn{h^{(k)}} evaluated at that parameter's
+#'   \eqn{\eta}.
 #'
 #' @seealso [to_link_scale()]
 #' @keywords internal
@@ -267,7 +268,7 @@ inverse_link_derivs <- function(distrib, theta, order) {
 #'
 #' @description
 #' Collects the parameter-scale derivatives of every order strictly below
-#' `order`, in the layout [to_link_scale()] expects.
+#' `order`, in the layout that [to_link_scale()] expects.
 #'
 #' @details
 #' Faa di Bruno mixes all lower orders into each link-scale component, so they
@@ -280,11 +281,12 @@ inverse_link_derivs <- function(distrib, theta, order) {
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param expected Logical; whether the derivatives wanted are expected ones.
-#' @param order The order being assembled, 1 to 5.
+#' @param expected Logical; whether the derivatives to compute are expected
+#'   ones.
+#' @param order The order to assemble, 1 to 5.
 #'
-#' @return A list of length `order - 1`, its \eqn{m}-th element the named
-#'   list of order-\eqn{m} parameter-scale derivatives.
+#' @return A list of length `order - 1`, in which the \eqn{m}-th element is the
+#'   named list of order-\eqn{m} parameter-scale derivatives.
 #'
 #' @seealso [to_link_scale()]
 #' @keywords internal
@@ -323,9 +325,9 @@ link_scale_lower_orders <- function(distrib, y, theta, expected, order) {
 #' to the unconstrained \eqn{\eta}.
 #'
 #' @details
-#' The mathematics is set out in [link_scale_derivatives()]. Two things
-#' in the implementation are deliberate and are the reason it is not simply a
-#' transcription of the formula:
+#' The mathematics is set out in [link_scale_derivatives()]. The
+#' implementation is not a plain transcription of the formula, for two
+#' deliberate reasons.
 #'
 #' First order is special-cased. It is a diagonal rescaling,
 #' \eqn{\partial \ell/\partial \eta_i = (\partial \ell/\partial \theta_i) h_i'},
@@ -377,7 +379,7 @@ to_link_scale <- function(distrib, theta, nat, order) {
     for (cb in L$combos) {
       term <- nat[[cb$ord]][[cb$key]]
       if (is.null(term)) {
-        stop(sprintf("Missing parameter-scale derivative component '%s'.",
+        stop(sprintf("The parameter-scale derivative component '%s' is missing.",
                      cb$key), call. = FALSE)
       }
       coef <- 1
@@ -398,9 +400,9 @@ to_link_scale <- function(distrib, theta, nat, order) {
 #' The Index Layout of the Link-Scale Assembly
 #'
 #' @description
-#' Which parameter-scale components enter each link-scale component of a
-#' given order, with the multiplicities and the lookup keys, for one vector
-#' of parameter names.
+#' Lists the parameter-scale components that enter each link-scale component
+#' of a given order, with the multiplicities and the lookup keys, for one
+#' vector of parameter names.
 #'
 #' @details
 #' The multi-index list, the multiplicities and the keys of the
@@ -410,7 +412,7 @@ to_link_scale <- function(distrib, theta, nat, order) {
 #' score-driven filter reaches it once per observation and iteration.
 #'
 #' The combinations are enumerated by decoding a counter in mixed radix
-#' rather than with `expand.grid`, and the enumeration is paid once per
+#' rather than with `expand.grid`, and the enumeration runs once per
 #' family and order.
 #'
 #' The cache is keyed by the parameter names and the order, so it holds one
@@ -422,9 +424,9 @@ to_link_scale <- function(distrib, theta, nat, order) {
 #' @param params The parameter names, in the family's own order.
 #' @param order The derivative order.
 #'
-#' @return A list with one entry per component of that order, each carrying
-#'   `name`, the multi-index's distinct entries `uniq`, their
-#'   multiplicities `mult`, and `combos`, one entry per term of
+#' @return A list with one entry per component of that order. Each entry
+#'   contains `name`, the distinct entries `uniq` of the multi-index, their
+#'   multiplicities `mult`, and `combos`, which has one entry per term of
 #'   the nested sum with its exponents, its order and its lookup key.
 #'
 #' @keywords internal
@@ -458,10 +460,10 @@ link_scale_layout <- local({
 #' @title A Resolved Kernel for One Parameter's Link-Scale Derivatives
 #'
 #' @description
-#' The log-density, the score, the curvature, the expected information and
-#' its derivative for one parameter on its unconstrained scale, as five
-#' functions with everything that does not depend on the data already
-#' resolved.
+#' Returns five functions that evaluate the log-density, the score, the
+#' curvature, the expected information and its derivative for one parameter on
+#' its unconstrained scale. Everything that does not depend on the data is
+#' already resolved in them.
 #'
 #' @details
 #' The generic route validates its arguments, aligns `theta` by name,
@@ -470,26 +472,26 @@ link_scale_layout <- local({
 #' predictor that it has just produced, so these steps cannot be vectorized
 #' away and their cost dominates.
 #'
-#' This resolves the family's methods and the link's once, and applies the
-#' chain rule for the single component wanted rather than for all of them.
-#' The Jacobian of the parametrization is diagonal, so with
-#' \eqn{\theta_p = h(\eta_p)},
+#' The kernel resolves the family's methods and the link's once, and applies
+#' the chain rule for the single component that is needed rather than for all
+#' of them. The Jacobian of the parametrization is diagonal. With
+#' \eqn{\theta_p = h(\eta_p)}, the derivatives with respect to \eqn{\eta_p} are
 #'
 #' \deqn{\frac{\partial \ell}{\partial \eta_p} = \ell_p\,h'(\eta_p),
 #'   \qquad
 #'   \frac{\partial^2 \ell}{\partial \eta_p^2}
 #'     = \ell_{pp}\,h'(\eta_p)^2 + \ell_p\,h''(\eta_p),}
 #'
-#' which is what [to_link_scale()] computes for those two
-#' components and nothing else.
+#' These are the values that [to_link_scale()] gives for those two
+#' components, and the kernel computes only these.
 #'
 #' The caller takes on the checks that the generic would have made. `theta`
 #' must already be a list named by the parameters of the family, in the
 #' family's own order, with values of a length that the family accepts against
-#' `y`; nothing is checked. The entry named `param` is replaced, so its value
-#' on the way in is immaterial. A list without names is not replaced at that
-#' entry, and a list whose names are out of order is read by position. The
-#' inverse link is clamped strictly inside its bounds exactly as
+#' `y`; the function does not check this. The entry named `param` is replaced,
+#' so its value on the way in is immaterial. A list without names is not
+#' replaced at that entry, and a list whose names are out of order is read by
+#' position. The inverse link is clamped strictly inside its bounds exactly as
 #' [linkfunctions7::linkinv()] does, which correctness requires.
 #'
 #' The kernel also carries the expected information of the same coordinate and
@@ -517,7 +519,7 @@ link_scale_layout <- local({
 #' k <- distrib_kernel(d, "sigma")
 #' th <- list(mu = 0, sigma = 1)
 #' k$score(0.7, th, log(1.4))
-#' # the same number the generic gives
+#' # The generic gives the same number.
 #' distrib_gradient(d, 0.7, list(mu = 0, sigma = 1.4),
 #'                  scale = "link")[["sigma"]]
 #'

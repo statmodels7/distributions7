@@ -2,7 +2,7 @@
 % Please edit documentation in R/numerical_functions.R
 \name{distrib_const_rows}
 \alias{distrib_const_rows}
-\title{Number of Observations a Family's Constants Vary Over}
+\title{Number of Observations Over Which a Family's Constants Vary}
 \usage{
 distrib_const_rows(distrib)
 }
@@ -14,7 +14,7 @@ A single positive integer.
 }
 \description{
 Returns the length of the longest constant of \code{distrib} that varies by
-observation (a binomial's \code{size}), its parents' included, and 1 when
-there is none.
+observation (a binomial's \code{size}), including those of its parent families,
+and 1 when the family has none.
 }
 \keyword{internal}

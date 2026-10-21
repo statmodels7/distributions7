@@ -41,8 +41,8 @@ derivatives \eqn{g^{(k)}}, \eqn{k \le 4}, are written out:
 \item Laplace: \eqn{g = \log\tfrac12 - z} for \eqn{z > 0} and
 \eqn{\log(1 - u)}, \eqn{u = e^{z}/2}, otherwise, whose derivatives are
 rational in \eqn{u}.
-\item logistic: polynomials in \eqn{p = F} and \eqn{s = 1 - F}, each
-taken from its own tail by \code{\link[stats:Logistic]{stats::plogis()}}.
+\item logistic: polynomials in \eqn{p = F} and \eqn{s = 1 - F}, where
+each is taken from its own tail by \code{\link[stats:Logistic]{stats::plogis()}}.
 \item Gumbel, upper tail: with \eqn{w = e^{-z}}, \eqn{g' = -\beta(w)},
 \eqn{\beta(w) = w/(e^{w} - 1)}, and each further order applies
 \eqn{-w\,d/dw}; below \eqn{w = 1/2} by the Bernoulli series
@@ -65,7 +65,7 @@ Outside the support of a lognormal (\eqn{q \le 0}) the derivatives of
 
 \examples{
 d <- gaussian2_distrib()
-# log S at 400 standard deviations, where the tail underflows
+# This is log S at 400 standard deviations, where the tail underflows.
 distributions7:::ls_log_tail_derivs(d, 400, list(mu = 0, sigma2 = 1), 2L,
   list(base = "gaussian", w = "invsqrt"), lower.tail = FALSE)
 

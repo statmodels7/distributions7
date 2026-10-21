@@ -41,8 +41,8 @@ kernel.}
 
 \item{th}{A named list of scalar parameter values.}
 
-\item{log, log.p}{Are derivatives of (or values of) the log probability
-wanted? A single logical.}
+\item{log, log.p}{A single logical; if \code{TRUE}, derivatives of (or values
+of) the log probability are returned.}
 }
 \value{
 For \code{compiled_cdf()}, a numeric vector; for the two derivative
@@ -56,20 +56,20 @@ whose requested tail is below \eqn{e^{-5}}, inside the support.
 \eqn{\log(1 - P_{\mathrm{other}})} through \code{log1p()} where \code{out} is
 above one half, and as
 \eqn{\ell(q) + \log\int_{\mathrm{tail}} e^{\ell(y) - \ell(q)}\,dy}
-where \code{out} is below \eqn{e^{-5}}, the integral taken by
-\code{\link[=quad_log_tail_prob]{quad_log_tail_prob()}} on the scale \eqn{1/|\partial_y \ell(q)|}.
+where \code{out} is below \eqn{e^{-5}}; there \code{\link[=quad_log_tail_prob]{quad_log_tail_prob()}}
+computes the integral on the scale \eqn{1/|\partial_y \ell(q)|}.
 
 \code{log_tail_integral()} returns the logarithm of the probability of
 the tail beyond \code{q}, \eqn{\ell(q) + \log\int_0^\infty
   e^{\ell(q \mp u) - \ell(q)}\,du}, by \code{\link[stats:integrate]{stats::integrate()}} on a scale
 adjusted until one step changes \eqn{\ell} by between 1/2 and 50, and
-\eqn{\ell(q) - \log|\ell'(q)|} where no such step is resolved.
+\eqn{\ell(q) - \log|\ell'(q)|} where such a step cannot be resolved.
 
 \code{compiled_cdf_args()} returns the class name, the recycled
-quantiles and the parameter matrix the kernels read.
+quantiles and the parameter matrix that the kernels read.
 }
 \description{
-Method bodies for \code{\link[=distrib_cdf]{distrib_cdf()}}, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
+Provides the method bodies for \code{\link[=distrib_cdf]{distrib_cdf()}}, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
 \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} that read the compiled distribution functions of the
 package's scalar registry, for the families whose distribution function
 has no closed derivative in a shape parameter: the gamma (both
@@ -114,7 +114,7 @@ mixed components with a shape \eqn{k} are \eqn{-f s_k} and
 \code{pt()}, \code{pgamma()}, \code{pchisq()} or \code{pbeta()} where the family has one, and
 the same integral of the density otherwise; with \code{log.p = TRUE} its
 logarithm is formed by \code{compiled_log_cdf()}, so that it stays finite in
-either tail. The tail and the log scale of the derivatives are applied as
-for every family, by the conversion of the lower-tail derivatives.
+either tail. The lower-tail derivatives are converted to the requested
+tail and log scale, as for every family.
 }
 \keyword{internal}

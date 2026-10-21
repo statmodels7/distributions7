@@ -20,7 +20,7 @@ value per observation.}
 
 \item{dv}{A function of \verb{(y, theta)} returning a named list with one entry
 per parameter, \eqn{\partial v / \partial \theta_p}. An entry that is
-identically zero says the kink does not move with that parameter.}
+identically zero indicates that the kink does not move with it.}
 
 \item{coef}{A function of \code{theta} returning the multiplier \eqn{c(\theta)}
 standing in front of \eqn{\phi}.}
@@ -36,9 +36,9 @@ origin and everything else is. A family declares one through
 differentiability off it.
 }
 \details{
-The five compositions and the order each one leaves, which is the number
-of continuous derivatives at \eqn{v = 0}, one less than the order of the
-first derivative that jumps there:
+The table lists the five compositions and, for each, the order that it
+leaves, which is the number of continuous derivatives at \eqn{v = 0}, one
+less than the order of the first derivative that jumps there:
 
 \tabular{lll}{
 \code{phi}      \tab \eqn{\phi(v)}          \tab order \cr
@@ -60,7 +60,7 @@ parameters is read off \eqn{\partial v / \partial \theta_p \ne 0} rather
 than assumed.
 }
 \examples{
-# the Laplace: l = -log(2 sigma) - |y - mu| / sigma
+# The Laplace log-density is l = -log(2 sigma) - |y - mu| / sigma.
 k <- kink_spec(
   phi  = "abs",
   v    = function(y, theta) y - theta$mu,
@@ -71,7 +71,7 @@ kink_order(k@phi)
 
 }
 \seealso{
-\code{\link[=kink_decomposition]{kink_decomposition()}} for the generic a family answers,
+\code{\link[=kink_decomposition]{kink_decomposition()}} for the generic that a family implements,
 \code{\link[=params_order]{params_order()}} for the order deduced from it, and \code{\link[=check_kink]{check_kink()}} for
 the validator.
 }

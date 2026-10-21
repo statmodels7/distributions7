@@ -7,7 +7,7 @@
 \item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{theta}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,10 +16,10 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$theta))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_2 = 6\theta/\mu + 1/\{\mu(1+\theta)\}}, the excess
-over the Gaussian. Both terms are positive, so the family is always
-leptokurtic, and the expression tends to the Poisson's \eqn{1/\mu} as the
-dispersion goes to zero.
+The excess kurtosis over the Gaussian has the closed form
+\eqn{\gamma_2 = 6\theta/\mu + 1/\{\mu(1+\theta)\}}. Both terms are positive,
+so the family is always leptokurtic, and the expression tends to the
+Poisson's \eqn{1/\mu} as the dispersion goes to zero.
 }
 \section{Notation}{
 
@@ -29,7 +29,7 @@ dispersion goes to zero.
 \examples{
 d <- negbin1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(kurtosis(d, list(mu = 4, theta = 2)), 12 / 4 + 1 / 12)
 
 # It falls onto the Poisson's 1 / mu = 0.25 as the dispersion vanishes.

@@ -15,9 +15,9 @@ params_order(distrib, ...)
 A named numeric vector, one entry per element of \code{distrib@params}.
 }
 \description{
-One integer per parameter: the largest \code{k} such that the log-density has \code{k}
-continuous derivatives in that parameter everywhere in \code{y}. \code{Inf} marks a
-smooth parameter, which is the value for a family that declares no
+Returns one integer per parameter: the largest \code{k} such that the log-density
+has \code{k} continuous derivatives in that parameter everywhere in \code{y}. \code{Inf}
+marks a smooth parameter, which is the value for a family that declares no
 \code{\link[=kink_decomposition]{kink_decomposition()}} and records every parameter as smooth in
 \code{params_smooth}.
 }
@@ -34,10 +34,10 @@ scale as smooth, which it then is.
 A family that declares no decomposition but records a parameter as
 non-smooth through \code{params_smooth} reports \code{NA} for it: there is a kink and
 its order has not been established. A consumer must treat that as unusable
-rather than as smooth, which is what \code{\link[=check_distrib]{check_distrib()}} and the fitting layer
-do. This is the state of every wrapper of a kinked family today.
+rather than as smooth, and \code{\link[=check_distrib]{check_distrib()}} and the fitting layer do so.
+This is the state of every wrapper of a kinked family today.
 
-The consumers and the order each one needs:
+Each consumer needs the order shown below:
 
 \tabular{ll}{
 1 \tab a score continuous in the coefficients \cr
@@ -48,7 +48,7 @@ The consumers and the order each one needs:
 }
 }
 \examples{
-# smooth everywhere
+# The Gaussian is smooth in every parameter.
 params_order(gaussian1_distrib())
 
 # the Laplace: the location carries the kink, the scale does not

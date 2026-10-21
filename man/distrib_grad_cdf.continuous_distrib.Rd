@@ -22,19 +22,19 @@ Far into a tail the probability underflows and the result is \code{-Inf} or
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors, one per parameter, each the length
-of \code{q} recycled against \code{theta}.
+A named list of numeric vectors, one per parameter, in which each
+vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-The fallback for a continuous family that registers no closed form: one
-central difference of \code{\link[=distrib_cdf]{distrib_cdf()}} per parameter, through
-\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}, put on the requested tail and scale by
+Computes the fallback gradient for a continuous family that registers no
+closed form: one central difference of \code{\link[=distrib_cdf]{distrib_cdf()}} per parameter,
+through \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}, put on the requested tail and scale by
 \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}. The step is \eqn{\varepsilon^{1/3}} relative, about
 \eqn{6.1\times10^{-6}}.
 }
 \details{
-No shipped univariate family reaches this method. Every one registers its
-own gradient: a closed form or, for the families whose derivative in a
+The shipped univariate families do not reach this method. Every one registers
+its own gradient: a closed form or, for the families whose derivative in a
 shape parameter has no elementary form, the compiled quadrature of
 \code{\link[=compiled_cdf]{compiled_cdf()}}. The method serves continuous families defined by the user
 and the wrappers of continuous families.

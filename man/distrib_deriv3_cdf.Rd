@@ -27,7 +27,7 @@ derivatives of the log probability and \code{FALSE} those of the probability.
 Far into a tail the probability underflows to zero and the result is \code{-Inf}
 or \code{NaN}.}
 
-\item{...}{Passed to methods. No shipped method reads it.}
+\item{...}{Passed to methods. The shipped methods do not use it.}
 }
 \value{
 A named list of numeric vectors, keyed as
@@ -55,10 +55,10 @@ distribution function through \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_
 }
 
 \section{What consumes them}{
-Truncation. \code{\link[=truncated]{truncated()}} needs the derivatives of its normalizing constant
-\eqn{Z = F(U) - F(L^-)}, and with only the first two orders available it
-pays one quadrature per component at orders three and four; with these it
-pays two calls on the parent instead.
+Truncation consumes them. \code{\link[=truncated]{truncated()}} requires the derivatives of its
+normalizing constant \eqn{Z = F(U) - F(L^-)}, and when only the first two
+orders are available it computes one quadrature per component at orders
+three and four; with these it makes two calls on the parent instead.
 }
 
 \section{Accuracy}{
@@ -75,14 +75,14 @@ and \eqn{\theta} the parameter on its own scale.
 }
 
 \examples{
-# Four third-order components for a two-parameter family.
+# A two-parameter family has four third-order components.
 distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 
 # On the upper tail every sign flips.
 distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1),
                    lower.tail = FALSE, log = FALSE)
 
-# One component for a one-parameter family, and the sum is exact here.
+# A one-parameter family has one component, and the sum is exact here.
 distrib_deriv4_cdf(poisson_distrib(), 3, list(mu = 2))
 
 }

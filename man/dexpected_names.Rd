@@ -13,15 +13,16 @@ dexpected_names(params)
 A character vector, \code{length(hess_names(params)) * length(params)} long.
 }
 \description{
-One key per pair \eqn{(a,b)} and differentiating parameter \eqn{c}, built by
-joining \code{\link[=hess_names]{hess_names()}} with the parameter differentiated in.
+Returns one key per pair \eqn{(a,b)} and differentiating parameter
+\eqn{c}, built by joining \code{\link[=hess_names]{hess_names()}} with the name of the
+differentiating parameter.
 }
 \details{
 The keys are built and never parsed, which is the package's rule wherever a
 component name is a concatenation of parameter names: a parameter whose own
 name contains an underscore makes the string ambiguous to read back, and
 \code{\link[=dexpected_key]{dexpected_key()}} exists so that a consumer composes the same
-string this function enumerates.
+string that this function enumerates.
 }
 \examples{
 dexpected_names(c("mu", "sigma"))

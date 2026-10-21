@@ -21,18 +21,18 @@ natural scale and the lower tail, keyed as
 \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-The derivatives of \eqn{F} of order three or four in the parameters, for
-the families whose compiled distribution function integrates its shape
-derivatives (\code{\link[=compiled_cdf]{compiled_cdf()}}): gamma1, gamma2, chisq, both generalized
-gammas, both betas, both von Mises, both Student t, both pseudo-Huber and
-the skew t.
+Computes the derivatives of \eqn{F} of order three or four in the
+parameters, for the families whose compiled distribution function
+integrates its shape derivatives (\code{\link[=compiled_cdf]{compiled_cdf()}}): gamma1, gamma2, chisq,
+both generalized gammas, both betas, both von Mises, both Student t, both
+pseudo-Huber and the skew t.
 }
 \details{
 With \eqn{f = e^{\ell}}, the derivative of \eqn{f} in a multi-index
 \eqn{I} is \eqn{f B_I}, where \eqn{B_I} is the complete Bell polynomial
 in the derivatives of \eqn{\ell} (\code{\link[=bell_f_ratio]{bell_f_ratio()}}), so
 \eqn{\partial_I F(q) = \int_{lo}^{q} f B_I}, taken as
-\eqn{-\int_{q}^{hi} f B_I} on the side \code{cdf_rule_cpp()} chooses, by the
+\eqn{-\int_{q}^{hi} f B_I} on the side that \code{cdf_rule_cpp()} chooses, by the
 nodes and weights of the rule of the first two orders. The family's own
 third and fourth derivatives of \eqn{\ell} supply \eqn{B_I}.
 
@@ -46,7 +46,7 @@ the scale at \eqn{q}: with \eqn{\partial_\mu F = -f(q)} and
 with \eqn{c_j = -(q - \mu)(-1)^j j!/\sigma^{j+1}}.
 }
 \seealso{
-\code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}, the stencil this replaces for these
+\code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}, the stencil that this replaces for these
 families; \code{\link[=continuous_cdf_deriv_k]{continuous_cdf_deriv_k()}}, which chooses between them.
 }
 \keyword{internal}

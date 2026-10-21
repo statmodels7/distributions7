@@ -26,7 +26,8 @@ A named list with one numeric vector, \code{mu}, the length of \code{q}
 recycled against \code{theta}.
 }
 \description{
-Closed form, and exact: the sum defining \eqn{F} telescopes, so
+Computes the gradient in closed form, and exactly: the sum defining
+\eqn{F} telescopes, so
 \deqn{\frac{\partial}{\partial\mu}\sum_{j \le k} \frac{e^{-\mu}\mu^j}{j!}
       = \sum_{j \le k} \{f(j-1) - f(j)\} = -f(k).}
 The sensitivity of the distribution function to the mean is minus the mass
@@ -43,11 +44,11 @@ distribution function and \eqn{k = \lfloor q \rfloor}.
 d <- poisson_distrib()
 q <- c(0, 2, 5)
 
-# Minus the mass at the last point retained.
+# The component is minus the mass at the last point retained.
 all.equal(distrib_grad_cdf(d, q, list(mu = 3), log = FALSE)$mu,
           -distrib_pdf(d, q, list(mu = 3)))
 
-# On the log scale, and on the upper tail.
+# The gradient is also computed on the log scale and on the upper tail.
 distrib_grad_cdf(d, q, list(mu = 3))$mu
 distrib_grad_cdf(d, q, list(mu = 3), lower.tail = FALSE)$mu
 }

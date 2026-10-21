@@ -7,18 +7,18 @@
 \item{x}{A \code{PseudoHuberDistrib}, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
-scale, positive) and \code{nu} (the shape, positive), each a numeric vector of
-length 1 or \code{n}.}
+scale, positive) and \code{nu} (the shape, positive); each is a numeric vector
+of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, of the length the recycled
+A numeric vector of variances, of the length that the recycled
 parameters imply. The scale and \code{nu} enter the value, so a setting that
-varies \code{mu} alone repeats one number.
+varies only \code{mu} repeats one number.
 }
 \description{
-Closed form, replacing the numerical default:
+The closed form that replaces the numerical default is
 \deqn{\operatorname{Var}(Y) = \sigma^2 \sqrt{\nu}\,
       \frac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})},}
 with \eqn{K_r} the modified Bessel function of the second kind. The scale
@@ -43,7 +43,7 @@ modified Bessel function of the second kind of order \eqn{r}.
 \examples{
 d <- pseudohuber_distrib()
 
-# The Bessel ratio, written out against the method.
+# The Bessel ratio is written out against the method.
 nu <- 4
 all.equal(variance(d, list(mu = 0, sigma = 1, nu = nu)),
           sqrt(nu) * besselK(sqrt(nu), 2, expon.scaled = TRUE) /

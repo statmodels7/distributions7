@@ -6,17 +6,17 @@
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
-each a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive;
+each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, of length equal to the longest of the
-three components.
+A numeric vector of variances, whose length is the one that the
+recycled parameters imply.
 }
 \description{
-Closed form from the first two raw moments,
+The variance has the closed form, from the first two raw moments,
 \eqn{\operatorname{Var}(Y) = m_2 - m_1^2} with
 \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale enters as a
 square and the two shapes through the gamma ratios.
@@ -31,10 +31,10 @@ cumulant generating function of \eqn{\log(Y/m_1)} is
 \eqn{S} the Stirling numbers of the second kind, a sum in which the leading
 orders that cancel in \eqn{m_2 - m_1^2} are absent. It is evaluated in
 double-double arithmetic where \eqn{8h \le k} and \eqn{4h^2 \le k}. Elsewhere
-\eqn{\mu_2 = \exp(\log m_2 - 2\log m_1) - 1} is evaluated with \code{expm1()}, the
-log-gamma differences being taken in Stirling's form for \eqn{k \ge 10} and
-as differences of \code{lgamma()} below. Then \eqn{\operatorname{Var}(Y) =
-m_1^2\mu_2}.
+\eqn{\mu_2 = \exp(\log m_2 - 2\log m_1) - 1} is evaluated with \code{expm1()},
+and the log-gamma differences are taken in Stirling's form for
+\eqn{k \ge 10} and as differences of \code{lgamma()} below. Then
+\eqn{\operatorname{Var}(Y) = m_1^2\mu_2}.
 }
 \section{Notation}{
 

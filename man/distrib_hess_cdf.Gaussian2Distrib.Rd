@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -20,15 +20,16 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
-the length of \code{q} recycled against \code{theta}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}; each
+has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, by the second-order chain rule on the scale parametrization's
-derivatives through \eqn{\sigma = \sqrt{\sigma^2}}. The map's second partial
+Computes the derivatives in closed form, by the second-order chain rule on
+the scale parametrization's derivatives through
+\eqn{\sigma = \sqrt{\sigma^2}}. The map's second partial
 \eqn{\partial^2\sigma/\partial(\sigma^2)^2 = -1/(4\sigma^3)} contributes to
-the variance-variance component, which is the term a first-order chain does
-not have.
+the variance-variance component, which is the term that a first-order chain
+does not have.
 }
 \section{Notation}{
 
@@ -40,7 +41,8 @@ distribution function.
 q <- c(-1, 0.5, 2)
 th <- list(mu = 0.3, sigma2 = 1.44)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic.
 exact <- distrib_hess_cdf(gaussian2_distrib(), q, th, log = FALSE)
 fd <- numerical_cdf_deriv(gaussian2_distrib(), q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))

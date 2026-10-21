@@ -13,14 +13,15 @@ may be vectors, giving one standard deviation per setting.}
 }
 \value{
 A numeric vector of standard deviations, of length equal to the
-longest component of \code{theta}. \code{NaN} where the variance is \code{NaN}, \code{Inf}
-where it is \code{Inf}.
+longest component of \code{theta}. The value is \code{NaN} where the variance is
+\code{NaN} and \code{Inf} where it is \code{Inf}.
 }
 \description{
-The square root of \code{\link[=variance]{variance()}}, evaluated at the same parameters. This is
-the only route to a distribution's standard deviation: no shipped family
-registers a method of its own, so whatever a family does for its variance,
-closed form or quadrature, is what happens here and the root is taken after.
+Returns the square root of \code{\link[=variance]{variance()}}, evaluated at the same parameters.
+This is the only route to a distribution's standard deviation, because a
+shipped family registers no method of its own. The variance of the family, by
+closed form or by quadrature, is therefore computed first and the root is
+taken after.
 }
 \examples{
 d <- weibull1_distrib()

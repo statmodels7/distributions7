@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive;
+each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,16 +16,16 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form:
+The excess kurtosis has the closed form
 \deqn{\gamma_2 = \frac{6\{(\alpha-\beta)^2(\alpha+\beta+1)
                          - \alpha\beta(\alpha+\beta+2)\}}
                       {\alpha\beta(\alpha+\beta+2)(\alpha+\beta+3)}.}
-It is negative over a wide range of shapes, the support being bounded at both
-ends: at \eqn{\alpha = \beta = 1} the density is uniform and the value is
-\eqn{-6/5}, and as both shapes go to zero it tends to \eqn{-2}, the smallest
-excess kurtosis any distribution can have. The method evaluates the form in
-the mean and the precision of \code{\link[=beta_shape_moments]{beta_shape_moments()}}, in which
-\eqn{\alpha\beta} is not formed.
+It is negative over a wide range of shapes, because the support is bounded at
+both ends: at \eqn{\alpha = \beta = 1} the density is uniform and the value
+is \eqn{-6/5}, and as both shapes go to zero it tends to \eqn{-2}, the
+smallest excess kurtosis that any distribution can have. The method
+evaluates the form in the mean and the precision of \code{\link[=beta_shape_moments]{beta_shape_moments()}},
+in which \eqn{\alpha\beta} is not formed.
 }
 \section{Notation}{
 

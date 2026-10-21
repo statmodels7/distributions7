@@ -7,7 +7,7 @@
 \item{x}{A \code{GumbelDistrib}, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
-(the scale, positive), each a numeric vector of length 1 or \code{n}.}
+(the scale, positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,7 +16,7 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu + \gamma\sigma}, with
+The closed form is \eqn{E[Y] = \mu + \gamma\sigma}, with
 \eqn{\gamma \approx 0.5772157} the Euler-Mascheroni constant. The location
 is therefore not the mean: the distribution of a maximum is shifted to the
 right of its location by a fixed multiple of the scale. The constant is
@@ -32,7 +32,7 @@ Euler-Mascheroni constant.
 \examples{
 d <- gumbel_distrib()
 
-# The location plus the Euler-Mascheroni constant times the scale.
+# The mean is the location plus the Euler-Mascheroni constant times sigma.
 all.equal(mean(d, list(mu = 0, sigma = 1)), -digamma(1))
 
 # The gap between location and mean grows with the scale.

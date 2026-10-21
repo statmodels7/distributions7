@@ -10,13 +10,13 @@ variance(x, ...)
 \item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
 \item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
-any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
-single logical, \code{FALSE} by default.}
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector, the argument
+is \code{na.rm}, a single logical that is \code{FALSE} by default.}
 }
 \value{
 A numeric vector for a \code{distrib}, one value per parameter setting; a
-single number for a numeric vector. \code{NaN} for a family with no moments,
-\code{Inf} for one whose variance diverges.
+single number for a numeric vector. The value is \code{NaN} for a family with
+no moments and \code{Inf} for one whose variance diverges.
 }
 \description{
 Computes \eqn{\operatorname{Var}(Y) = E[(Y - E[Y])^2]} for a distribution
@@ -38,13 +38,13 @@ The two routes agree to the accuracy of the quadrature.
 \section{What the sample method returns}{
 On a numeric vector the value is \code{\link[stats:cor]{stats::var()}}, which divides by
 \eqn{n - 1}. That is the unbiased estimator, and it differs from the
-convention \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} use for their sample versions,
+convention that \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} use for their sample versions,
 which divide by \eqn{n}. The difference is deliberate: both follow the
 commonest convention for the quantity in question.
 }
 
 \examples{
-# A closed form, one value per setting.
+# A closed form gives one value per setting.
 variance(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 
 # A Poisson is equidispersed: the variance is the mean.

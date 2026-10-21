@@ -18,14 +18,16 @@ returns the parameter scale.}
 }
 \value{
 A named list with one numeric vector per parameter, keyed by
-\code{distrib@params}, each of length \code{length(y)}.
+\code{distrib@params}; each vector has length \code{length(y)}.
 }
 \description{
-The fallback for a family that implements no analytical score: the gradient
-of \code{distrib_pdf(..., log = TRUE)} by one central difference per
-parameter, through \code{\link[=numerical_gradient]{numerical_gradient()}}. This is why \code{\link[=distrib_pdf]{distrib_pdf()}} is
-the only compulsory method of the package: a family that defines the density
-alone gets a score, an information, five orders of derivative and a fit.
+This method is the fallback for a family that implements no analytical
+score. It computes the gradient of \code{distrib_pdf(..., log = TRUE)} by one
+central difference per parameter, through \code{\link[=numerical_gradient]{numerical_gradient()}}. For this
+reason \code{\link[=distrib_pdf]{distrib_pdf()}}
+is the only compulsory method of the package: a family that defines only the
+density has a score, an information, five orders of derivative and a fit
+available.
 }
 \section{The stencil, the step and the cost}{
 Each component is \eqn{[\ell(\theta_i + h) - \ell(\theta_i - h)]/(2h)}, so

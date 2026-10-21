@@ -15,8 +15,9 @@ numeric vector of length 1 or \code{n}.}
 A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. The family carries one parameter and it is
-the mean, so this method reads it off. The rate is its reciprocal.
+The mean has the closed form \eqn{E[Y] = \mu}. The family carries one
+parameter and it is the mean, so this method reads it off. The rate is its
+reciprocal.
 }
 \examples{
 d <- exponential_distrib()

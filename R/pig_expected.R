@@ -11,14 +11,14 @@ NULL
 #'   distrib_d2expected_hessian.Pig1Distrib
 #'
 #' @description
-#' The expected information of the Poisson-inverse Gaussian and its first and
-#' second derivatives in the parameters, computed exactly by one pass over the
+#' Computes the expected information of the Poisson-inverse Gaussian and its
+#' first and second derivatives in the parameters exactly, by one pass over the
 #' support for each observation.
 #'
 #' @details
 #' For [pig2_distrib()] the expectations are sums over the support of the mass
-#' times products of the observed derivatives, written through the second
-#' Bartlett identity with the measure moving:
+#' times products of the observed derivatives, and they are written through the
+#' second Bartlett identity, in which the measure moves:
 #' \deqn{\mathbb{E}[\ell_{ab}] = -\mathbb{E}[\ell_a\ell_b],}
 #' \deqn{\partial_c\,\mathbb{E}[\ell_{ab}] = -\mathbb{E}[\ell_{ac}\ell_b
 #'   + \ell_a\ell_{bc} + \ell_a\ell_b\ell_c],}
@@ -55,7 +55,7 @@ NULL
 #' in \eqn{\sigma} whose coefficients are polynomials in \eqn{y}, so every
 #' expectation is a combination of Poisson moments and its coefficients are
 #' polynomials in \eqn{\mu} and \eqn{1/\mu}. The mixed entry of pig2 is zero at
-#' every order of that series, the parametrization being orthogonal.
+#' every order of that series, because the parametrization is orthogonal.
 #'
 #' The `approx` and `nsim` arguments are accepted and ignored.
 #'
@@ -79,7 +79,8 @@ NULL
 #' th <- list(mu = 3, alpha = 2)
 #' distrib_expected_hessian(d, 1, th)
 #'
-#' # Against the outer product of the scores summed over the support.
+#' # The kernel is compared with the outer product of the scores summed over
+#' # the support.
 #' y <- 0:400
 #' f <- distrib_pdf(d, y, th)
 #' g <- distrib_gradient(d, y, th)

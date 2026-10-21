@@ -24,11 +24,12 @@ of numeric vectors of that order.
 }
 \description{
 Builds the \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} or \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} body that the
-location-scale families register: \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} at every order
-up to the one wanted, put on the requested tail and scale by
-\code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. Four families use it, the Gaussian, the logistic
-and the Laplace here and the Gumbel in \code{cdf_mapped_higher.R}; the Cauchy
-has its own closed form, \code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}}.
+location-scale families register. The body evaluates
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} at every order up to the one wanted and puts the
+result on the requested tail and scale by \code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. Four
+families use it: the Gaussian, the logistic and the Laplace here, and the
+Gumbel in \code{cdf_mapped_higher.R}; the Cauchy has its own closed form,
+\code{\link[=cauchy_cdf_method]{cauchy_cdf_method()}}.
 }
 \details{
 Every lower order is computed because the log-scale conversion reads them

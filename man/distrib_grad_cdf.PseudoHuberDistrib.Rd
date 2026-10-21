@@ -9,7 +9,7 @@
 \item{q}{A numeric vector of quantiles.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -18,15 +18,16 @@ lower tail and \code{FALSE} the upper tail.}
 derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
-A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{nu}, each
-the length of \code{q} recycled against \code{theta}.
+A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{nu}, in
+which each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-with \eqn{z = (q-\mu)/\sigma}; the component in the shape \eqn{\nu} is the integral of
-the density's own derivative, taken by the compiled rule. The method is
-\code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} itself, shared with the other families whose
-distribution function has no closed derivative in a shape parameter.
+Computes the location and scale components in closed form, \eqn{-f(q)} and
+\eqn{-z f(q)} with \eqn{z = (q-\mu)/\sigma}; the component in the shape
+\eqn{\nu} is the integral of the density's own derivative, taken by the
+compiled rule. The method is \code{\link[=compiled_grad_cdf]{compiled_grad_cdf()}} itself, shared with the
+other families whose distribution function has no closed derivative in a
+shape parameter.
 }
 \section{Notation}{
 
@@ -43,7 +44,7 @@ q <- c(-1, 0.5, 2)
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 
-# The shape component, on the log scale of the lower tail.
+# The shape component is computed on the log scale of the lower tail.
 distrib_grad_cdf(d, q, th)$nu
 }
 \seealso{

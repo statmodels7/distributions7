@@ -21,18 +21,19 @@ NULL
 #' Returns the factor \eqn{h_m} in \eqn{\Phi^{(m)}(x) = h_m(x)\,\varphi(x)} for
 #' \eqn{m = 1, \ldots, 4}: \eqn{1}, \eqn{-x}, \eqn{x^2 - 1} and
 #' \eqn{3x - x^3}. These are the probabilists' Hermite polynomials up to a
-#' sign, and factoring the density out of them is what keeps the tails
-#' evaluable: \eqn{\varphi} is supplied by the caller and multiplied in once.
+#' sign. Factoring the density out of them keeps the tails evaluable, because
+#' \eqn{\varphi} is supplied by the caller and multiplied in once.
 #'
 #' @section Notation:
 #' \eqn{\Phi} is the standard normal distribution function and \eqn{\varphi}
 #' its density.
 #'
 #' @param x A numeric vector of arguments.
-#' @param m The order, 1 to 4. Any other value returns `NULL`, `switch()`
-#'   falling through; no caller passes one.
+#' @param m The order, 1 to 4. Any other value makes `switch()` fall through
+#'   and return `NULL`; every caller passes a value from 1 to 4.
 #'
-#' @return A numeric vector the length of `x`, the polynomial factor alone.
+#' @return A numeric vector the length of `x`, holding only the polynomial
+#'   factor.
 #'   Multiply by `dnorm(x)` for the derivative itself.
 #'
 #' @seealso [phi_terms_cdf_deriv_k()] and [sn_cdf_std_derivs()], the two
@@ -85,8 +86,8 @@ phi_hermite <- function(x, m) {
 #' standard normal distribution and density, \eqn{w} a log weight, \eqn{x} a
 #' tail argument and \eqn{B_S} the complete Bell polynomial.
 #'
-#' @param distrib An object inheriting from `distrib`. Its `params` name and
-#'   order the components.
+#' @param distrib An object inheriting from `distrib`. Its `params` give the
+#'   names and the order of the components.
 #' @param q A numeric vector of quantiles.
 #' @param order The derivative order, 1 to 4.
 #' @param terms A list of terms. Each is a list with `sign` (\eqn{\pm 1}),
@@ -154,18 +155,18 @@ phi_terms_cdf_deriv_k <- function(distrib, q, order, terms) {
 #' net are the two families registered through it.
 #'
 #' @details
-#' All four orders are registered, [distrib_grad_cdf()] included, so these
+#' All four orders are registered, including [distrib_grad_cdf()], so these
 #' families take the closed route from the first order up and never reach a
-#' stencil. `force(o)` inside the factory is what keeps the four registrations
-#' from sharing one order.
+#' stencil. `force(o)` inside the factory prevents the four registrations from
+#' sharing one order.
 #'
 #' @param cls The S7 class to register on.
 #' @param term_fn A function of `(distrib, q, theta)` returning the list of
-#'   terms [phi_terms_cdf_deriv_k()] documents.
+#'   terms that [phi_terms_cdf_deriv_k()] documents.
 #'
-#' @return Invisibly `NULL`. Called for the registration.
+#' @return Invisibly `NULL`. The function is called for the registration.
 #'
-#' @seealso [phi_terms_cdf_deriv_k()], the body it registers;
+#' @seealso [phi_terms_cdf_deriv_k()], the body that it registers;
 #'   [distrib_grad_cdf.InvGauss1Distrib()] and
 #'   [distrib_grad_cdf.EnetDistrib()], the two families.
 #'
@@ -193,11 +194,11 @@ register_phi_terms_cdf <- function(cls, term_fn) {
 #' Partial Derivatives of a Product of a Location Term and a Scale Term
 #'
 #' @description
-#' Builds the `wderiv` or `xderiv` callback [phi_terms_cdf_deriv_k()] wants,
-#' for a quantity that factorizes as \eqn{u(\theta_1)\,v(\theta_2)}. A mixed
-#' partial of such a product is the product of two one-variable derivatives,
-#' so a block of parameter names is answered by counting how many of each it
-#' holds.
+#' Builds the `wderiv` or `xderiv` callback that [phi_terms_cdf_deriv_k()]
+#' calls, for a quantity that factorizes as \eqn{u(\theta_1)\,v(\theta_2)}. A
+#' mixed partial of such a product is the product of two one-variable
+#' derivatives, so the partial for a block of parameter names is obtained by
+#' counting how many times each of the two names occurs in the block.
 #'
 #' @details
 #' The inverse Gaussian, which uses this function, is separable in this way. The
@@ -205,10 +206,10 @@ register_phi_terms_cdf <- function(cls, term_fn) {
 #' mean times a function of the dispersion; the elastic net's \eqn{s} and
 #' \eqn{x} are each a function of \eqn{\lambda} times a function of
 #' \eqn{\alpha}. Each mixed partial is therefore a product of two
-#' one-variable derivatives, which is why four orders are cheap here.
+#' one-variable derivatives, so four orders are cheap here.
 #'
-#' @param nm A character vector of length 2, the two parameter names, the one
-#'   `uderiv` differentiates first.
+#' @param nm A character vector of length 2 holding the two parameter names.
+#'   `uderiv` differentiates the first of them.
 #' @param uderiv A function of a non-negative whole number \eqn{j} returning
 #'   \eqn{\partial^j u/\partial\theta_1^j}.
 #' @param vderiv The same for \eqn{v} in the second parameter.
@@ -235,7 +236,8 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #'   distrib_deriv4_cdf.InvGauss1Distrib
 #'
 #' @description
-#' Closed form at every order from one to four. The inverse Gaussian's
+#' Returns the derivatives in closed form at every order from one to four. The
+#' inverse Gaussian's
 #' distribution function is elementary,
 #' \deqn{F(q) = \Phi(a) + e^{c}\,\Phi(b), \qquad
 #'       a = \frac{q/\mu - 1}{\sqrt{\phi q}}, \quad
@@ -263,7 +265,7 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #' # Accuracy
 #'
 #' The derivatives are closed forms. A product stencil on the same
-#' distribution function loses accuracy as the order grows, which is why the
+#' distribution function loses accuracy as the order grows, so the
 #' family registers all four orders.
 #'
 #' @section Notation:
@@ -273,7 +275,7 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #' @param distrib An `InvGauss1Distrib` object, from [invgauss1_distrib()].
 #' @param q A numeric vector of quantiles, positive.
 #' @param theta A named list with components `mu` (positive) and `phi`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
@@ -295,11 +297,13 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #' q <- c(0.5, 2, 5)
 #' th <- list(mu = 2, phi = 0.5)
 #'
-#' # Against a central difference of the cdf, which shares no arithmetic.
+#' # The gradient is compared with a central difference of the cdf, which
+#' # shares no arithmetic.
 #' fd <- numerical_cdf_deriv(d, q, th, order = 1)
 #' max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 #'
-#' # Finite where the weight alone is not: exp(2 / (phi mu)) is Inf here.
+#' # The gradient is finite although the weight overflows: exp(2 / (phi mu))
+#' # is Inf here.
 #' exp(2 / (0.01 * 0.1))
 #' distrib_grad_cdf(d, 0.02, list(mu = 0.01, phi = 0.1), log = FALSE)
 #'
@@ -340,8 +344,8 @@ register_phi_terms_cdf(InvGauss1Distrib, function(distrib, q, theta) {
 #' Derivatives of a Power of an Affine Function
 #'
 #' @description
-#' Returns \eqn{\partial^k u^p/\partial\theta^k} where \eqn{u} is affine in
-#' \eqn{\theta} with slope `inner`, which is
+#' Returns \eqn{\partial^k u^p/\partial\theta^k}, where \eqn{u} is affine in
+#' \eqn{\theta} with slope `inner`. The value is
 #' \eqn{(\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}}. The elastic net's
 #' tail arguments are powers of affine functions of its two hyperparameters, so
 #' this supplies their one-variable derivatives to the term function of the
@@ -375,7 +379,8 @@ dpow_affine <- function(u, p, k, inner) {
 #'   distrib_deriv4_cdf.EnetDistrib
 #'
 #' @description
-#' Closed form at every order from one to four. Each half of the distribution
+#' Returns the derivatives in closed form at every order from one to four. Each
+#' half of the distribution
 #' function is a truncated Gaussian: with \eqn{z = q - \mu}, \eqn{s = \sqrt c}
 #' and \eqn{x = a/\sqrt c} it is \eqn{e^{w}\Phi(X)} below the location and
 #' \eqn{1 - e^{w}\Phi(X)} above it, for \eqn{X = \pm sz - x} and a weight
@@ -409,8 +414,8 @@ dpow_affine <- function(u, p, k, inner) {
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu` (any real value), `lambda`
-#'   (positive) and `alpha` (strictly between 0 and 1), each a numeric vector
-#'   of length 1 or `n`.
+#'   (positive) and `alpha` (strictly between 0 and 1); each is a numeric
+#'   vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
@@ -432,11 +437,12 @@ dpow_affine <- function(u, p, k, inner) {
 #' q <- c(-1, 0.5, 2)
 #' th <- list(mu = 0, lambda = 1, alpha = 0.5)
 #'
-#' # Against a central difference of the cdf, which shares no arithmetic.
+#' # The gradient is compared with a central difference of the cdf, which
+#' # shares no arithmetic.
 #' fd <- numerical_cdf_deriv(d, q, th, order = 1)
 #' max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 #'
-#' # Three, six, ten and fifteen components as the order rises.
+#' # The number of components is three, six, ten and fifteen as the order rises.
 #' lengths(list(distrib_grad_cdf(d, q, th),
 #'              distrib_hess_cdf(d, q, th),
 #'              distrib_deriv3_cdf(d, q, th),

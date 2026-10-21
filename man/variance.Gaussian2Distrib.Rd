@@ -7,7 +7,7 @@
 \item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
-(the variance, positive), each a numeric vector of length 1 or \code{n}.}
+(the variance, positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,8 +16,8 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. The variance is the
-second parameter here, so the method reads it off, where
+The variance has the closed form \eqn{\operatorname{Var}(Y) = \sigma^2}. The
+variance is the second parameter here, so the method reads it off, where
 \code{\link[=variance.Gaussian1Distrib]{variance.Gaussian1Distrib()}} squares a standard deviation and
 \code{\link[=variance.Gaussian3Distrib]{variance.Gaussian3Distrib()}} inverts a precision. All three describe the
 same law.

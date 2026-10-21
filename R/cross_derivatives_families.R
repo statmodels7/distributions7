@@ -28,15 +28,16 @@ NULL
 #' @title The Location and Scale Components of a Mixed Derivative
 #'
 #' @description
-#' Returns the two mixed components a location-scale family has in closed form,
-#' from the response derivatives the family already provides. Where the
-#' response enters the log-density only through \eqn{z = (y - \mu)/\sigma},
-#' differentiating \eqn{\ell^{(y)} = g'(z)/\sigma} gives
+#' Returns the two mixed components that a location-scale family has in closed
+#' form, from the response derivatives that the family already provides. Where
+#' the response enters the log-density only through
+#' \eqn{z = (y - \mu)/\sigma}, differentiating
+#' \eqn{\ell^{(y)} = g'(z)/\sigma} gives
 #' \deqn{\frac{\partial^2\ell}{\partial y\,\partial\mu} = -\ell^{(yy)},
 #'       \qquad
 #'       \frac{\partial^2\ell}{\partial y\,\partial\sigma} =
 #'       -z\,\ell^{(yy)} - \frac{\ell^{(y)}}{\sigma},}
-#' so no new algebra is needed for either.
+#' so both components follow without new algebra.
 #'
 #' @details
 #' The scale formula uses only that \eqn{\sigma} is a scale, so it holds when
@@ -55,9 +56,9 @@ NULL
 #' @param theta A named list of parameters with the location first and the
 #'   scale second. The order is positional and is not checked.
 #'
-#' @return An unnamed list of two numeric vectors, each of length
-#'   `length(y)`: the location component then the scale one. The caller names
-#'   them.
+#' @return An unnamed list of two numeric vectors; each has length
+#'   `length(y)`. The first is the location component and the second the scale
+#'   one. The caller names them.
 #'
 #' @seealso [loc_scale_cross_y()], the body built on this; [distrib_grad_y()]
 #'   and [distrib_hess_y()], the two quantities that it reads;
@@ -74,10 +75,10 @@ loc_scale_cross_block <- function(distrib, y, theta) {
 #' @title Mixed Derivatives of a Location-Scale Family
 #'
 #' @description
-#' The [distrib_cross_y()] body shared by every family that is location-scale
-#' in both its parameters: it takes the two components of
+#' Provides the [distrib_cross_y()] body shared by every family that is
+#' location-scale in both its parameters. The body takes the two components of
 #' [loc_scale_cross_block()] and names them after the family's own parameters.
-#' Registered on the logistic, the Cauchy, the Gumbel and the Laplace.
+#' It is registered on the logistic, the Cauchy, the Gumbel and the Laplace.
 #'
 #' @param distrib An object inheriting from `distrib` with exactly two
 #'   parameters, a location and a scale, in that order.
@@ -146,16 +147,17 @@ loc_scale_cross_y <- function(distrib, y, theta,
 #' @title Logistic Mixed Derivatives
 #' @name distrib_cross_y.LogisticDistrib
 #' @description
-#' Closed form from the location-scale identity: the location component is
-#' \eqn{-\ell^{(yy)}} and the scale one \eqn{-z\ell^{(yy)} - \ell^{(y)}/\sigma}.
+#' The mixed derivatives are in closed form from the location-scale identity:
+#' the location component is \eqn{-\ell^{(yy)}} and the scale one
+#' \eqn{-z\ell^{(yy)} - \ell^{(y)}/\sigma}.
 #' @param distrib A `LogisticDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma`, each a numeric vector
-#'   of length `length(y)`.
+#' @return A named list with components `mu` and `sigma`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [loc_scale_cross_y()], the shared body, and
 #'   [loc_scale_cross_block()] for the identity;
@@ -176,41 +178,42 @@ S7::method(distrib_cross_y, GumbelDistrib) <- loc_scale_cross_y
 #' @title Laplace Mixed Derivatives
 #' @name distrib_cross_y.LaplaceDistrib
 #' @description
-#' Closed form from the location-scale identity, away from the kink at
-#' \eqn{y = \mu}, where the density has no derivative in the response and the
-#' quantity does not exist.
+#' The mixed derivatives are in closed form from the location-scale identity,
+#' away from the kink at \eqn{y = \mu}, where the density has no derivative in
+#' the response and the quantity does not exist.
 #' @param distrib A `LaplaceDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma`, each a numeric vector
-#'   of length `length(y)`. The `mu` component is exactly zero
-#'   everywhere, the second response derivative of a Laplace being zero
+#' @return A named list with components `mu` and `sigma`; each is a numeric
+#'   vector of length `length(y)`. The `mu` component is exactly zero
+#'   everywhere, because the second response derivative of a Laplace is zero
 #'   almost everywhere, and the `sigma` component is
 #'   \eqn{\mathrm{sign}(y-\mu)/\sigma^2}, which jumps sign at the kink.
 #'
 #' @seealso [loc_scale_cross_y()], the shared body;
 #'   [distrib_cross_y.Laplace2Distrib()] for the rate chart;
-#'   [distrib_hess_y()], which is zero here and is why.
+#'   [distrib_hess_y()], whose value of zero here gives the zero `mu` component.
 #' @keywords internal
 S7::method(distrib_cross_y, LaplaceDistrib) <- loc_scale_cross_y
 
 #' @title Laplace Mixed Derivatives in Location and Rate
 #' @name distrib_cross_y.Laplace2Distrib
 #' @description
-#' Closed form, away from the kink at \eqn{y = \mu}: with
-#' \eqn{\ell^{(y)} = -\lambda\,\mathrm{sign}(y-\mu)}, the location component
-#' is 0 almost everywhere and the rate component is \eqn{-\mathrm{sign}(y-\mu)}.
+#' The mixed derivatives are in closed form away from the kink at
+#' \eqn{y = \mu}: with \eqn{\ell^{(y)} = -\lambda\,\mathrm{sign}(y-\mu)}, the
+#' location component is 0 almost everywhere and the rate component is
+#' \eqn{-\mathrm{sign}(y-\mu)}.
 #' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `lambda`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `lambda`, each a numeric vector
-#'   of length `length(y)`. The `mu` component is exactly zero almost
+#' @return A named list with components `mu` and `lambda`; each is a numeric
+#'   vector of length `length(y)`. The `mu` component is exactly zero almost
 #'   everywhere and the `lambda` component is \eqn{\pm 1}.
 #'
 #' @seealso [distrib_cross_y.LaplaceDistrib()] for the scale chart;
@@ -226,18 +229,18 @@ S7::method(distrib_cross_y, Laplace2Distrib) <- function(distrib, y, theta,
 #' @title Pseudo-Huber Mixed Derivatives
 #' @name distrib_cross_y.PseudoHuberDistrib
 #' @description
-#' Closed form throughout. The location and scale components come from the
-#' location-scale identity; the response enters the shape only through
-#' \eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape component is
-#' \eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
+#' The mixed derivatives are in closed form throughout. The location and scale
+#' components come from the location-scale identity; the response enters the
+#' shape only through \eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape
+#' component is \eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
 #' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`, `sigma` and `nu`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu`, `sigma` and `nu`, each a numeric
-#'   vector of length `length(y)`. All three are exact.
+#' @return A named list with components `mu`, `sigma` and `nu`; each is a
+#'   numeric vector of length `length(y)`. All three are exact.
 #'
 #' @seealso [loc_scale_cross_block()] for the first two components;
 #'   [pseudohuber_distrib()] for the family;
@@ -258,12 +261,13 @@ S7::method(distrib_cross_y, PseudoHuberDistrib) <- function(distrib, y, theta,
 #' @title Skew Normal Mixed Derivatives
 #' @name distrib_cross_y.SkewNormal1Distrib
 #' @description
-#' Closed form throughout, written in the inverse Mills ratio \eqn{R} at
-#' \eqn{t = \alpha z}. The location and scale components are the
-#' location-scale identity with \eqn{\ell^{(y)} = (\alpha R - z)/\sigma} and
-#' \eqn{\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2} substituted, and the shape
-#' component is \eqn{(R + t R')/\sigma}, the response entering \eqn{\alpha}
-#' only through \eqn{t}. The three are assembled from a single evaluation of
+#' The mixed derivatives are in closed form throughout, written in the inverse
+#' Mills ratio \eqn{R} at \eqn{t = \alpha z}. The location and scale components
+#' are the location-scale identity after the substitution of
+#' \eqn{\ell^{(y)} = (\alpha R - z)/\sigma} and
+#' \eqn{\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2}, and the shape component is
+#' \eqn{(R + t R')/\sigma}, since the response enters \eqn{\alpha} only
+#' through \eqn{t}. The three are assembled from a single evaluation of
 #' [numericals7::mills_ratio()] rather than by calling
 #' [distrib_grad_y()] and [distrib_hess_y()], which would
 #' evaluate it twice more.
@@ -273,8 +277,8 @@ S7::method(distrib_cross_y, PseudoHuberDistrib) <- function(distrib, y, theta,
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu`, `sigma` and `alpha`, each a numeric
-#'   vector of length `length(y)`. All three are exact.
+#' @return A named list with components `mu`, `sigma` and `alpha`; each is a
+#'   numeric vector of length `length(y)`. All three are exact.
 #'
 #' @seealso [numericals7::mills_ratio()], evaluated once for all three;
 #'   [skewnormal1_distrib()] for the family;
@@ -302,9 +306,9 @@ S7::method(distrib_cross_y, SkewNormal1Distrib) <- function(distrib, y, theta,
 #' @title Skew t Mixed Derivatives
 #' @name distrib_cross_y.SkewTDistrib
 #' @description
-#' Closed form in the location and the scale, from the location-scale
-#' identity. The two shape components are minus the mixed entries of
-#' [distrib_hessian.SkewTDistrib()], since the response and the location
+#' The location and scale components are in closed form, from the
+#' location-scale identity. The two shape components are minus the mixed entries
+#' of [distrib_hessian.SkewTDistrib()], since the response and the location
 #' enter the density only through their difference, so that
 #' \eqn{\partial_y\partial_\theta\ell = -\partial_\mu\partial_\theta\ell}.
 #' @param distrib A `SkewTDistrib` object.
@@ -314,8 +318,8 @@ S7::method(distrib_cross_y, SkewNormal1Distrib) <- function(distrib, y, theta,
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu`, `sigma`, `alpha` and `nu`, each a
-#'   numeric vector of length `length(y)`.
+#' @return A named list with components `mu`, `sigma`, `alpha` and `nu`; each is
+#'   a numeric vector of length `length(y)`.
 #'
 #' @seealso [loc_scale_cross_block()] for the location-scale identity and
 #'   [distrib_hessian.SkewTDistrib()] for the mixed entries.
@@ -336,17 +340,17 @@ S7::method(distrib_cross_y, SkewTDistrib) <- function(distrib, y, theta,
 #' @title Exponential Mixed Derivatives
 #' @name distrib_cross_y.ExponentialDistrib
 #' @description
-#' Closed form: the mean is a pure scale, so the identity
-#' \eqn{-z\ell^{(yy)} - \ell^{(y)}/\mu} applies with \eqn{z = y/\mu} and
-#' returns \eqn{1/\mu^2}.
+#' The mixed derivative is in closed form: the mean is a pure scale, so the
+#' identity \eqn{-z\ell^{(yy)} - \ell^{(y)}/\mu} applies with \eqn{z = y/\mu}
+#' and gives \eqn{1/\mu^2}.
 #' @param distrib An `ExponentialDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with the single component `mu`, a numeric vector of length
-#'   `length(y)` holding \eqn{1/\mu^2} at every observation.
+#' @return A named list with the single component `mu`, a numeric vector of
+#'   length `length(y)` that holds \eqn{1/\mu^2} at every observation.
 #'
 #' @seealso [loc_scale_cross_block()] for the identity, whose scale half applies
 #'   here with no location; [exponential_distrib()] for the family;
@@ -361,19 +365,19 @@ S7::method(distrib_cross_y, ExponentialDistrib) <- function(distrib, y, theta,
 #' @title Weibull Mixed Derivatives
 #' @name distrib_cross_y.Weibull1Distrib
 #' @description
-#' Closed form at both parameters. The scale follows the pure-scale identity
-#' and reduces to \eqn{\sigma^2 w/(\mu y)} with \eqn{w = (y/\mu)^\sigma}; the
-#' shape comes from differentiating
-#' \eqn{\ell^{(y)} = ((\sigma-1) - \sigma w)/y}, giving
-#' \eqn{(1 - w - \sigma w L)/y} with \eqn{L = \log(y/\mu)}.
+#' The mixed derivatives are in closed form at both parameters. The scale
+#' follows the pure-scale identity and reduces to \eqn{\sigma^2 w/(\mu y)} with
+#' \eqn{w = (y/\mu)^\sigma}; the shape comes from differentiating
+#' \eqn{\ell^{(y)} = ((\sigma-1) - \sigma w)/y}, giving \eqn{(1 - w - \sigma w
+#' L)/y} with \eqn{L = \log(y/\mu)}.
 #' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic after dispatch; this method returns
 #'   the parameter scale.
 #' @param ... Unused.
-#' @return A named list with components `mu` and `sigma`, each a numeric vector of
-#'   length `length(y)`.
+#' @return A named list with components `mu` and `sigma`; each is a numeric
+#'   vector of length `length(y)`.
 #'
 #' @seealso [distrib_cross_y.ExponentialDistrib()], the case \eqn{\sigma = 1};
 #'   [weibull1_distrib()] for the family;
@@ -403,9 +407,10 @@ S7::method(distrib_cross_y, Weibull1Distrib) <- function(distrib, y, theta,
 #' Mixed Derivatives Through a Map
 #'
 #' @description
-#' The parent's mixed block carried onto a new parametrization by the
-#' first-order chain rule, which is all that is needed: the response
-#' derivative does not interact with a reparametrization of the parameters.
+#' Carries the parent's mixed block onto a new parametrization by the
+#' first-order chain rule. That rule is all that is needed, because the
+#' response derivative does not interact with a reparametrization of the
+#' parameters.
 #'
 #' @param distrib The distribution in the new parametrization.
 #' @param parent The parent distribution.
@@ -435,7 +440,7 @@ mapped_cross_y <- function(distrib, parent, th_par, maps, y) {
 #' @title Mixed Derivatives of a Reparametrized Distribution
 #' @name distrib_cross_y.ReparamContinuousDistrib
 #' @description
-#' The parent's mixed block carried by the first-order chain rule on the map.
+#' Carries the parent's mixed block by the first-order chain rule on the map.
 #' @param distrib A reparametrized distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the new parameters.
@@ -460,9 +465,10 @@ S7::method(distrib_cross_y, ReparamContinuousDistrib) <-
 #' @title Inverse Gaussian Response and Mixed Derivatives in Mean and Shape
 #' @name distrib_grad_y.InvGauss2Distrib
 #' @description
-#' The dispersion parametrization's, at \eqn{\phi = 1/\lambda}: a derivative
-#' in the response does not see the parameters, so the response derivatives
-#' are the parent's unchanged, and the mixed block is one first-order chain.
+#' Obtains the derivatives from those of the dispersion parametrization, at
+#' \eqn{\phi = 1/\lambda}. A derivative in the response is unaffected by the
+#' parametrization, so the response derivatives are the parent's unchanged,
+#' and the mixed block is one first-order chain.
 #' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing `mu` and `lambda`.
@@ -497,9 +503,10 @@ S7::method(distrib_cross_y, InvGauss2Distrib) <-
 #' @title von Mises Response and Mixed Derivatives in the Resultant Length
 #' @name distrib_grad_y.VonMises2Distrib
 #' @description
-#' The concentration parametrization's, at \eqn{\kappa = A^{-1}(\rho)}. The
-#' response derivatives are the parent's unchanged; the mixed block is the
-#' parent's carried by \eqn{\kappa'(\rho)}, the location passing through.
+#' Obtains the derivatives from those of the concentration parametrization,
+#' at \eqn{\kappa = A^{-1}(\rho)}. The response derivatives are the parent's
+#' unchanged; the mixed block is the parent's carried by \eqn{\kappa'(\rho)},
+#' and the location passes through.
 #' @param distrib A `VonMises2Distrib` object.
 #' @param y A numeric vector of angles.
 #' @param theta A list containing `mu` and `rho`.

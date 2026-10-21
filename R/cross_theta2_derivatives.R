@@ -28,11 +28,10 @@ NULL
 #' These are the second-order column of the mixed grid whose first-order column
 #' is [distrib_cross_y()] and [distrib_cross2_y()]:
 #'
-#' | | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} |
-#' \eqn{\partial^2/\partial\theta^2} | |---|---|---|---| |
-#' \eqn{\partial/\partial y} | [distrib_grad_y()] | [distrib_cross_y()] |
-#' [distrib_grad_y_hess()] | | \eqn{\partial^2/\partial y^2} |
-#' [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
+#' | | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} | \eqn{\partial^2/\partial\theta^2} |
+#' |---|---|---|---|
+#' | \eqn{\partial/\partial y} | [distrib_grad_y()] | [distrib_cross_y()] | [distrib_grad_y_hess()] |
+#' | \eqn{\partial^2/\partial y^2} | [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
 #'
 #' The second derivative of a marginal criterion requires the right-hand column
 #' from a penalty. A penalty is a negative log-density read
@@ -94,7 +93,7 @@ NULL
 #' theta <- list(mu = 0.4, sigma = 1.3)
 #' distrib_grad_y_hess(d, y, theta)
 #'
-#' # Closed form: the response gradient is -r / sigma^2, so the location pair
+#' # In closed form, the response gradient is -r / sigma^2, so the location pair
 #' # vanishes and the other two are elementary.
 #' r <- y - 0.4
 #' c(mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
@@ -139,11 +138,10 @@ distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", functio
 #' These are the second-order column of the mixed grid whose first-order column
 #' is [distrib_cross_y()] and [distrib_cross2_y()]:
 #'
-#' | | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} |
-#' \eqn{\partial^2/\partial\theta^2} | |---|---|---|---| |
-#' \eqn{\partial/\partial y} | [distrib_grad_y()] | [distrib_cross_y()] |
-#' [distrib_grad_y_hess()] | | \eqn{\partial^2/\partial y^2} |
-#' [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
+#' | | \eqn{\partial^0/\partial\theta^0} | \eqn{\partial^1/\partial\theta^1} | \eqn{\partial^2/\partial\theta^2} |
+#' |---|---|---|---|
+#' | \eqn{\partial/\partial y} | [distrib_grad_y()] | [distrib_cross_y()] | [distrib_grad_y_hess()] |
+#' | \eqn{\partial^2/\partial y^2} | [distrib_hess_y()] | [distrib_cross2_y()] | [distrib_hess_y_hess()] |
 #'
 #' The second derivative of a marginal criterion requires the right-hand column
 #' from a penalty. A penalty is a negative log-density read
@@ -316,9 +314,9 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #' continuous family use [mixed_tensor_derivatives()] instead.
 #'
 #' @details
-#' The reference is [distrib_cross_y()] or [distrib_cross2_y()], so a
-#' distribution with a closed form for those requires exactly one difference
-#' and never differences a difference.
+#' The reference is [distrib_cross_y()] or [distrib_cross2_y()]. If a
+#' distribution has a closed form for those, the function applies exactly one
+#' difference to that closed form.
 #'
 #' A mixed pair is differenced in both orders and the two results are averaged.
 #' They agree in exact arithmetic and differ in floating point because the two

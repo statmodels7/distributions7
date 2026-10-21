@@ -33,16 +33,17 @@ rounding.}
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}}.
 }
 \description{
-The default route behind \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}: a central
-difference in each parameter of the family's own expected information.
+Computes the default route behind \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} by a
+central difference in each parameter of the family's own expected
+information.
 }
 \details{
 On the parameter scale the step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}} from the
 candidates of \code{\link[=fd_steps]{fd_steps()}}, which shrink near a finite boundary so that
 both evaluation points stay strictly inside the parameter's open domain;
 with \code{approx = "mc"} the step of \code{\link[=fd_steps]{fd_steps()}} is used directly. On the link
-scale the domain is the whole line and no clamp is needed, so the step is
-the plain relative one.
+scale the domain is the whole line, so the step needs no clamp and is the
+plain relative one.
 
 The method signals an error where the expected information is itself an
 approximation. Where the expected information is obtained by quadrature

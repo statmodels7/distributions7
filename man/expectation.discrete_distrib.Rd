@@ -19,7 +19,7 @@ A numeric vector of expected values.
 Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by
 summation over the support, every parameter combination in one batched
 pass: a finite support is summed exactly in a single matrix evaluation,
-an infinite one through \code{\link[numericals7:series_vec]{numericals7::series_vec()}}, whose rows
-retire as they converge.
+an infinite one through \code{\link[numericals7:series_vec]{numericals7::series_vec()}}, which drops each row
+from the computation as it converges.
 }
 \keyword{internal}

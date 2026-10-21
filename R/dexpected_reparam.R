@@ -8,8 +8,8 @@ NULL
 #'   distrib_dexpected_hessian.GenGamma1Distrib
 #'   distrib_d2expected_hessian.GenGamma1Distrib
 #' @description
-#' The first and second derivatives of the expected information in the
-#' parameters, from compiled kernels.
+#' Computes the first and second derivatives of the expected information in
+#' the parameters, from compiled kernels.
 #'
 #' @details
 #' For the Student t, with \eqn{w_1 = 1 + 1/\nu} and \eqn{w_3 = 1 + 3/\nu},
@@ -103,11 +103,11 @@ reparam_dexpected <- function(distrib, y, theta, order, threads = 1L) {
 #' The Chain Rule for the Expected Information's Derivatives
 #'
 #' @description
-#' The arithmetic of [reparam_dexpected()], given the parent's quantities
-#' rather than the parent: \eqn{E}, \eqn{\partial E} and, at order 2,
-#' \eqn{\partial^2 E} on the parent's scale, and the map's partials as keyed
-#' tables. It serves a reparametrized family and any family written as a map
-#' of another's coordinates, such as [betabinom1_distrib()] over the shapes.
+#' Computes the arithmetic of [reparam_dexpected()] from the parent's
+#' quantities rather than from the parent: \eqn{E}, \eqn{\partial E} and, at
+#' order 2, \eqn{\partial^2 E} on the parent's scale, and the map's partials as
+#' keyed tables. It serves a reparametrized family and any family written as a
+#' map of another's coordinates, such as [betabinom1_distrib()] over the shapes.
 #'
 #' @param Pp,Pn The parent's parameter names and the new ones.
 #' @param E,d1,d2 Named lists keyed as [hess_names()], [dexpected_names()]
@@ -229,9 +229,10 @@ reparam_dexpected_method <- function(order) {
 #'   distrib_dexpected_hessian.ReparamDiscreteDistrib
 #'   distrib_d2expected_hessian.ReparamDiscreteDistrib
 #' @description
-#' The parent's derivatives carried through the map by
+#' Carries the parent's derivatives through the map by
 #' [reparam_dexpected()]. A parent without an analytic second derivative
-#' leaves the reparametrized family without one, the error naming the parent.
+#' leaves the reparametrized family without one, and the error names the
+#' parent.
 #' @param distrib A reparametrized distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the new parameters.

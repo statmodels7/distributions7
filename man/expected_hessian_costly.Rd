@@ -15,37 +15,36 @@ expected_hessian_costly(x, ...)
 A single logical.
 }
 \description{
-\code{TRUE} when the family's expected information is exact but costs far more
-than its observed information, because it is obtained by an integral or a
-sum for each observation or each distinct shape; \code{FALSE} otherwise.
+Returns \code{TRUE} when the family's expected information is exact but costs far
+more than its observed information, because it is obtained by an integral
+or a sum for each observation or each distinct shape, and \code{FALSE} otherwise.
 }
 \details{
 The answer is a statement about cost, and it is read beside
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which concerns accuracy. Three kinds of family
-return \code{TRUE}.
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which concerns accuracy.
 
 The location-scale families \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}},
 \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}}, \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} and
-\code{\link[=pseudohuber2_distrib]{pseudohuber2_distrib()}} take one integral over the standardized response
-per distinct shape, from \code{\link[=loc_scale_expected]{loc_scale_expected()}}: one integral where the
-shape is the same for every observation, and one per observation where it
-is modeled. A fit that takes the scoring step on this information then
-costs several times one that takes it on the observed information, at the
-same estimate.
+\code{\link[=pseudohuber2_distrib]{pseudohuber2_distrib()}} return \code{TRUE}. They take one integral over the
+standardized response per distinct shape, from \code{\link[=loc_scale_expected]{loc_scale_expected()}}: one
+integral where the shape is the same for every observation, and one per
+observation where it is modeled. A fit that takes the scoring step on this
+information then costs several times one that takes it on the observed
+information, at the same estimate.
 
-The Poisson-inverse Gaussians \code{\link[=pig1_distrib]{pig1_distrib()}} and \code{\link[=pig2_distrib]{pig2_distrib()}} sum
-over the support for each observation, over a number of terms that grows
-as \eqn{\sigma\mu}, whereas their observed information is a closed form.
-A fit on it costs more than one on the observed information at the same
-estimate, and far more where the fit passes through a large
-\eqn{\sigma\mu}.
+The Poisson-inverse Gaussians \code{\link[=pig1_distrib]{pig1_distrib()}} and \code{\link[=pig2_distrib]{pig2_distrib()}} also
+return \code{TRUE}. They sum over the support for each observation, over a
+number of terms that grows as \eqn{\sigma\mu}, whereas their observed
+information is a closed form. A fit on it costs more than one on the observed
+information at the same estimate, and far more where the fit passes through a
+large \eqn{\sigma\mu}.
 
 A \code{\link[=folded]{folded()}} distribution also returns \code{TRUE}.
 
-\pkg{statmodels7}'s \code{iwls(hessian = "auto")} therefore settles on the
-observed information for these families. The default answers for a
-wrapper's parent, read off its \code{parent_distrib} property, and \code{FALSE} for a
-family without one.
+\pkg{statmodels7}'s \code{iwls(hessian = "auto")} therefore uses the observed
+information for these families. For a wrapper, the default method returns
+the answer for its parent, read off its \code{parent_distrib} property, and for a
+family without one it returns \code{FALSE}.
 }
 \examples{
 expected_hessian_costly(skewt_distrib())

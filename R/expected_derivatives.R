@@ -39,16 +39,16 @@ NULL
 #'     log-likelihood is not differentiable in a parameter, where
 #'     \eqn{\mathbb{E}[H]} degenerates but the score variance still gives the
 #'     information (see [laplace_distrib()]).
-#'     Deterministic. At higher orders it needs several integrals, so it is
-#'     usually slower than `"integrate"`. It never requires the top-order
+#'     It is deterministic. At higher orders it needs several integrals, so it
+#'     is usually slower than `"integrate"`. It never requires the top-order
 #'     derivative itself, which is useful where only the lower orders are
 #'     available in closed form.}
 #'
 #'   \item{`"integrate"`}{Integrates the observed derivative of that order
 #'     directly against the density (numerical quadrature for continuous
-#'     distributions, series summation for discrete ones). Deterministic and
-#'     normally the most accurate when the observed derivative is available in
-#'     closed form. Estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
+#'     distributions, series summation for discrete ones). It is deterministic
+#'     and normally the most accurate when the observed derivative is available
+#'     in closed form. It estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
 #'     with one exception: at order 2, for a family with a non-smooth
 #'     parameter (see [param_smoothness()]), it evaluates
 #'     \eqn{-\mathbb{E}[\ell_i \ell_j]} as `"bartlett"` does, because the
@@ -56,11 +56,12 @@ NULL
 #'
 #'   \item{`"mc"`}{Simulates `nsim` observations from the distribution
 #'     and averages the observed derivative over them. The simplest and most
-#'     robust option when quadrature struggles (heavy tails, awkward supports),
-#'     but stochastic: the error decreases only as \eqn{1/\sqrt{n_{sim}}}, so
-#'     results are not exactly reproducible unless the seed is fixed. Estimates
+#'     robust option when quadrature performs poorly (heavy tails, awkward
+#'     supports), but it is stochastic: the error decreases only as
+#'     \eqn{1/\sqrt{n_{sim}}}, so results are not exactly reproducible unless
+#'     the seed is fixed. Estimates
 #'     the same quantity as `"integrate"`.
-#'     Note: the cost of this option is the cost of simulating from the
+#'     The cost of this option is the cost of simulating from the
 #'     distribution. A native [distrib_rng()] is best; failing that, the
 #'     default generator uses inverse transform when the family has a quantile
 #'     method of its own and [rng_grou()], which only needs the density,
@@ -69,19 +70,19 @@ NULL
 #'     bottleneck; prefer `"bartlett"` or `"integrate"` in that case.}
 #' }
 #'
-#' Defaults. `distrib_expected_hessian` defaults to `"opg"`, which needs
+#' The generic `distrib_expected_hessian` defaults to `"opg"`, which needs
 #' one score evaluation per observation and no expectation. `distrib_deriv3` and
 #' `distrib_deriv4` default to `"integrate"`, since at those orders
 #' direct integration of the available derivative is usually cheaper and more
 #' accurate.
 #'
-#' Non-smooth parameters. Where the log-density has a kink in a
+#' Where the log-density has a kink in a
 #' parameter, the observed second derivative has a point mass at the kink, and
 #' an average of its pointwise values does not contain that mass. For the
 #' Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its
 #' pointwise average is zero, while the information is \eqn{1/\sigma^2}. The
-#' information of such a family is the variance of the score, which is what
-#' the second Bartlett identity evaluates. `"bartlett"`, `"opg"` and, at
+#' information of such a family is the variance of the score, and the second
+#' Bartlett identity evaluates that variance. `"bartlett"`, `"opg"` and, at
 #' order 2, `"integrate"` therefore return \eqn{-1/\sigma^2} per observation;
 #' `"mc"` averages the observed \eqn{\ell_{\mu\mu}} and returns 0. When the
 #' family declares where its kink is, through [kink_decomposition()], the
@@ -146,7 +147,7 @@ NULL
 #' @param order The derivative order, a single integer from 1 to 4. Anything
 #'   else signals an error.
 #'
-#' @return A named list of derivative component vectors, each of length
+#' @return A named list of derivative component vectors; each has length
 #'   `length(y)`. The keys are `distrib@params` at order 1, [hess_names()] at
 #'   order 2 (diagonal first) and [deriv_names()] above it (lexicographic), so
 #'   a caller pairing two orders must match by name.
@@ -174,8 +175,8 @@ observed_deriv <- function(distrib, y, theta, order) {
 #' in closed form.
 #'
 #' @details
-#' What this estimates is \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
-#' regular model that is the quantity wanted. For a family with a non-smooth
+#' The function estimates \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
+#' regular model that is the required quantity. For a family with a non-smooth
 #' parameter it is not: the observed \eqn{\ell_{ij}} has a point mass at the
 #' kink, which an integral of its pointwise values does not contain (on a
 #' Laplace the location component would be 0 instead of
@@ -183,10 +184,10 @@ observed_deriv <- function(distrib, y, theta, order) {
 #' [expected_by_bartlett()], which needs only the score.
 #'
 #' Quadrature is also unreliable where the observed derivative is itself a
-#' finite difference, since it then integrates numerical noise. That error is
-#' caught and re-raised naming the component and pointing at the alternatives,
-#' so it reaches the caller as a statement about the route rather than as an
-#' opaque failure from the integrator.
+#' finite difference, since it then integrates numerical noise. The function
+#' catches that error and signals it again, naming the component and pointing
+#' at the alternatives, so that the caller receives a statement about the route
+#' rather than an opaque failure from the integrator.
 #'
 #' @param distrib An object inheriting from `distrib`.
 #' @param y A numeric vector of observations. Only its length is used, to
@@ -194,12 +195,13 @@ observed_deriv <- function(distrib, y, theta, order) {
 #' @param theta A named list of parameters, aligned to `distrib@params`.
 #' @param order The derivative order, a single integer from 2 to 4.
 #'
-#' @return A named list of expected derivative component vectors, each of
-#'   length `length(y)`, keyed as [observed_deriv()] keys that order.
+#' @return A named list of expected derivative component vectors; each has
+#'   length `length(y)`, and the names are the keys that [observed_deriv()]
+#'   uses at that order.
 #'
 #' @seealso [expected_derivative_methods()] for the three strategies;
 #'   [expected_by_bartlett()], the route that survives a kink;
-#'   [expected_by_mc()] where quadrature struggles;
+#'   [expected_by_mc()] where quadrature performs poorly;
 #'   [expectation()], which does the integration.
 #' @keywords internal
 expected_by_integrate <- function(distrib, y, theta, order) {
@@ -246,9 +248,9 @@ expected_by_integrate <- function(distrib, y, theta, order) {
 #' varies over the observations costs one simulation per observation, and a
 #' scalar `theta` costs one simulation however long `y` is.
 #'
-#' Estimates the same quantity as [expected_by_integrate()], with an
-#' error falling as \eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed is
-#' fixed. Its cost is the cost of [distrib_rng()], so it is expensive for a
+#' Estimates the same quantity as [expected_by_integrate()], has an
+#' error that falls as \eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed
+#' is fixed. Its cost is the cost of [distrib_rng()], so it is expensive for a
 #' distribution whose generator inverts a slow quantile function.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
@@ -257,8 +259,8 @@ expected_by_integrate <- function(distrib, y, theta, order) {
 #' @param order The derivative order, 2 to 4.
 #' @param nsim The number of draws per parameter configuration.
 #'
-#' @return A named list of expected derivative component vectors, each of length
-#'   `length(y)`.
+#' @return A named list of expected derivative component vectors; each has
+#'   length `length(y)`.
 #'
 #' @seealso [expected_derivative_methods()]
 #' @keywords internal
@@ -288,11 +290,11 @@ expected_by_mc <- function(distrib, y, theta, order, nsim) {
 #' Returns \eqn{\ell^{(ij)} \approx -\ell^{(i)}\ell^{(j)}} evaluated at each
 #' observation, the per-observation outer product of the score. It is the
 #' BHHH estimator of the information, and unlike every other route here it
-#' takes no expectation: nothing is integrated and nothing is summed over the
+#' takes no expectation: it integrates nothing and sums nothing over the
 #' support, so it costs one call to [distrib_gradient()].
 #'
 #' @details
-#' This route differs from the identity that it comes from. The second
+#' This route differs from the identity from which it comes. The second
 #' Bartlett identity states that
 #' \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, and
 #' [expected_by_bartlett()] evaluates the right-hand side as written, which
@@ -307,21 +309,23 @@ expected_by_mc <- function(distrib, y, theta, order, nsim) {
 #' consistent.
 #' \eqn{-\ell^{(i)}\ell^{(j)}} is an unbiased estimate of the corresponding
 #' component of \eqn{\mathbb{E}[\ell^{(ij)}]} at that observation, so the sum
-#' over observations, which is what a scoring step aggregates into
+#' over observations, which a scoring step aggregates into
 #' \eqn{X^\top W X}, estimates the information consistently. Component by
 #' component it is a rank-one matrix and correlates poorly with the exact
 #' expectation; summed over the observations it approximates the exact
 #' information, and a fit driven by it reaches the same maximum.
 #'
-#' Two properties make it the right default for a scoring step. It is positive
-#' semidefinite by construction, being a sum of outer products, where the
-#' observed Hessian need not be away from the optimum; and the fixed point is
-#' unchanged, because the score is exact and any positive definite matrix
-#' takes a scoring iteration to the same stationary point. What it is not
-#' suited to is a reported standard error, which is read off the observed
-#' information instead -- see [fit_distrib()] and its `vcov()` method.
+#' It is the right default for a scoring step because it is a sum of outer
+#' products and is therefore positive semidefinite by construction, whereas the
+#' observed Hessian need not be positive semidefinite away from the optimum, and
+#' because the fixed point is unchanged, since the score is exact and any
+#' positive definite matrix takes a scoring iteration to the same stationary
+#' point. The route is not suited to a reported standard error, which is read
+#' off the observed information instead; see [fit_distrib()] and its `vcov()`
+#' method.
 #'
-#' Order 2 only. The outer product of scores is the second-order identity and
+#' The function applies at order 2 only. The outer product of scores is the
+#' second-order identity and
 #' has no counterpart above it, so [expected_derivative()] routes a higher
 #' order to [expected_by_bartlett()].
 #'
@@ -330,11 +334,11 @@ expected_by_mc <- function(distrib, y, theta, order, nsim) {
 #' @param theta A named list of parameters.
 #'
 #' @return A named list of expected Hessian component vectors, named by
-#'   [hess_names()], each of the length of `y`.
+#'   [hess_names()]; each has the length of `y`.
 #'
-#' @seealso [expected_by_bartlett()] for the identity this estimates,
-#'   [expected_derivative_methods()] for the catalog of routes, and
-#'   [expected_hessian_exact()] for the predicate that says whether a family
+#' @seealso [expected_by_bartlett()] for the identity that this function
+#'   estimates, [expected_derivative_methods()] for the catalog of routes, and
+#'   [expected_hessian_exact()] for the predicate that tests whether a family
 #'   needs any of them.
 #' @keywords internal
 expected_by_opg <- function(distrib, y, theta) {
@@ -357,10 +361,10 @@ expected_by_opg <- function(distrib, y, theta) {
 #' @details
 #' The identity of order \eqn{k} states that
 #' \deqn{\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,}
-#' the sum running over every partition \eqn{\pi} of the index set. The
+#' where the sum runs over every partition \eqn{\pi} of the index set. The
 #' single-block partition is the target, so it equals minus the sum of all the
-#' others -- which is why [numericals7::set_partitions()] is the whole algorithm and
-#' why the top-order derivative is never needed.
+#' others, so that [numericals7::set_partitions()] is the whole algorithm and
+#' the top-order derivative is never needed.
 #'
 #' At order 2 this reduces to
 #' \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]}, which needs only
@@ -374,8 +378,8 @@ expected_by_opg <- function(distrib, y, theta) {
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 2 to 4.
 #'
-#' @return A named list of expected derivative component vectors, each of length
-#'   `length(y)`.
+#' @return A named list of expected derivative component vectors; each has
+#'   length `length(y)`.
 #'
 #' @seealso [expected_derivative_methods()], [numericals7::set_partitions()]
 #' @keywords internal
@@ -424,8 +428,8 @@ expected_by_bartlett <- function(distrib, y, theta, order) {
 #' Dispatch an Expected-Derivative Strategy
 #'
 #' @description
-#' Shared entry point for the fallback expected-derivative methods: validates
-#' `approx` and routes to the chosen strategy.
+#' Validates `approx` and routes to the chosen strategy. It is the shared entry
+#' point for the fallback expected-derivative methods.
 #'
 #' @details
 #' `"opg"` and `"bartlett"` are two readings of the second Bartlett identity
@@ -434,12 +438,12 @@ expected_by_bartlett <- function(distrib, y, theta, order) {
 #' `"bartlett"` evaluates the expectation, which is a sum over the support or a
 #' quadrature, while `"opg"` reads the integrand at the observation and takes
 #' no expectation at all. They agree in expectation and differ by orders of
-#' magnitude in cost, which is why `"opg"` is the default at order 2.
+#' magnitude in cost, so `"opg"` is the default at order 2.
 #'
 #' Above order 2 the outer product of scores is not an identity, so `"opg"` is
-#' routed to `"bartlett"` and no error is signaled. The argument is one
-#' setting for a whole call, and a method of order 4 can receive the value that
-#' a method of order 2 received.
+#' routed to `"bartlett"` and the function does not signal an error. The
+#' argument is one setting for a whole call, and a method of order 4 can receive
+#' the value that a method of order 2 received.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.

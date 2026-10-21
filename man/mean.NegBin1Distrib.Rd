@@ -7,8 +7,8 @@
 \item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
-\code{n}.}
+\code{theta} (the dispersion, positive); each is a numeric vector of length 1
+or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,9 +17,9 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean as its
-first parameter. NB1 and NB2 have the same mean and differ in the variance
-function.
+The mean has the closed form \eqn{E[Y] = \mu}. This parametrization carries
+the mean as its first parameter. NB1 and NB2 have the same mean and differ in
+the variance function.
 }
 \examples{
 d <- negbin1_distrib()

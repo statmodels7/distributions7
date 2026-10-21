@@ -19,13 +19,13 @@ distrib_d4expected_hessian(
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters, each of length 1 or
+\item{theta}{A named list of parameters; each has length 1 or
 \code{length(y)}.}
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
 \item{approx, nsim}{Accepted for symmetry with
-\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; no method reads them.}
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; the methods ignore them.}
 
 \item{...}{Passed to methods.}
 }
@@ -34,9 +34,9 @@ A named list of numeric vectors, keyed as
 \code{\link[=d4expected_names]{d4expected_names(distrib@params)}}.
 }
 \description{
-\eqn{\partial^4\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d\,
-\partial\theta_e\,\partial\theta_f}, one component per pair \eqn{(a,b)} and
-per unordered quadruple \eqn{(c,d,e,f)}.
+Returns \eqn{\partial^4\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,
+\partial\theta_d\,\partial\theta_e\,\partial\theta_f}, with one component
+per pair \eqn{(a,b)} and per unordered quadruple \eqn{(c,d,e,f)}.
 }
 \details{
 The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e,f)}

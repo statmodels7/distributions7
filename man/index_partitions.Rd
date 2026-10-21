@@ -10,11 +10,12 @@ index_partitions(idx)
 \item{idx}{A character vector of parameter names, with repetition.}
 }
 \value{
-A list of partitions, each a list of character-vector blocks.
+A list of partitions, each of which is a list of character-vector
+blocks.
 }
 \description{
-Every way of splitting a multi-index into blocks, with the parameter names
-carried through rather than the positions.
+Returns every way of splitting a multi-index into blocks. The blocks hold
+the parameter names and not the positions.
 }
 \seealso{
 \code{\link[numericals7:set_partitions]{numericals7::set_partitions()}}

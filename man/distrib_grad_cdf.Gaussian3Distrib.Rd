@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{tau} (positive), each a
-numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{tau} (positive); each is
+a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -20,15 +20,15 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{tau}, each the length
-of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{tau}; each has the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, by the chain rule on the scale parametrization's derivatives
-through \eqn{\sigma = \tau^{-1/2}}. The mean component is unchanged,
-\eqn{-f(q)}; the precision component is the scale one times
-\eqn{-\tfrac12\tau^{-3/2}}, so it carries the opposite sign, a larger
-precision being a tighter distribution.
+Computes the derivatives in closed form, by the chain rule on the scale
+parametrization's derivatives through \eqn{\sigma = \tau^{-1/2}}. The mean
+component is unchanged, \eqn{-f(q)}; the precision component is the scale one
+times \eqn{-\tfrac12\tau^{-3/2}}, so it carries the opposite sign, because a
+larger precision gives a tighter distribution.
 }
 \section{Notation}{
 

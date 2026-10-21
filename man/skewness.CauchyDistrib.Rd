@@ -6,20 +6,20 @@
 \arguments{
 \item{x}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{theta}{A named list of parameters with components \code{mu} and \code{sigma},
-each a numeric vector of length 1 or \code{n}. The values are not read, only
-their lengths, but they are still aligned and validated, so a missing or
-out-of-bounds component signals an error exactly as it would for a family
-whose moments exist.}
+\item{theta}{A named list of parameters with components \code{mu} and \code{sigma}, in
+which each component is a numeric vector of length 1 or \code{n}. The values are
+not read, only their lengths, but they are still aligned and validated, so
+a missing or out-of-bounds component signals an error exactly as it would
+for a family whose moments exist.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.
-Arguments meaningful to \code{\link[=moment]{moment()}} have no effect here, no quadrature
-being run.}
+Arguments that are meaningful to \code{\link[=moment]{moment()}} have no effect here, because
+the method runs no quadrature.}
 }
 \value{
 A numeric vector of \code{NaN}, of length
-\code{max(length(theta$mu), length(theta$sigma))}, matching the one-value-per-
-observation shape every moment method returns.
+\code{max(length(theta$mu), length(theta$sigma))}, which matches the
+one-value-per-observation shape that every moment method returns.
 }
 \description{
 Returns \code{NaN}. Skewness is the third standardized central moment, so it needs
@@ -27,7 +27,8 @@ the first three moments of \eqn{Y}, and the Cauchy has none of them. Its
 density decays like \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,\mathrm{d}y}
 diverges for every \eqn{p \ge 1}; already the mean fails to exist, and the
 second and third moments fail worse. \code{NaN} is the value of a quantity that is
-not defined, and it is returned directly so that no quadrature is attempted.
+not defined, and it is returned directly so that the method does not attempt
+a quadrature.
 }
 \details{
 The generic \code{\link[=skewness]{skewness()}} evaluates
@@ -39,7 +40,8 @@ returns \code{NaN} without running a quadrature.
 The same holds for \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}}, \code{\link[=variance.CauchyDistrib]{variance.CauchyDistrib()}} and
 \code{\link[=kurtosis.CauchyDistrib]{kurtosis.CauchyDistrib()}}, and for the sample versions: a Cauchy sample mean
 does not converge as \eqn{n} grows, it is itself Cauchy with the same scale,
-so no amount of data settles it. The example below shows that.
+so it does not settle however large the sample is. The example below shows
+that.
 
 The Cauchy has a median, equal to \eqn{\mu}, and a half-interquartile
 range, equal to \eqn{\sigma}. Both are finite at every parameter value and
@@ -49,20 +51,22 @@ spread where the mean and the variance do not exist.
 \section{Notation}{
 
 \eqn{\mu} is the location and \eqn{\sigma > 0} the scale of the Cauchy, in
-the parametrization \code{cauchy_distrib()} uses. Neither is a moment: \eqn{\mu}
-is the median and \eqn{\sigma} the half-interquartile range.
+the parametrization \code{cauchy_distrib()} uses. The two parameters are not
+moments: \eqn{\mu} is the median and \eqn{\sigma} the half-interquartile
+range.
 }
 
 \examples{
 d <- cauchy_distrib()
 
-# No moment of the Cauchy exists, so all four are NaN.
+# The Cauchy has no moment, so all four are NaN.
 skewness(d, list(mu = 0, sigma = 1))
 c(mean(d, list(mu = 0, sigma = 1)),
   variance(d, list(mu = 0, sigma = 1)),
   kurtosis(d, list(mu = 0, sigma = 1)))
 
-# One value per observation, as for a family whose moments do exist.
+# The method returns one value per observation, as for a family whose moments
+# do exist.
 skewness(d, list(mu = c(0, 1, 2), sigma = 1))
 
 # Why: a Cauchy sample mean is itself Cauchy, so it never settles.
@@ -80,6 +84,6 @@ diff(q) / 2
 \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}}, \code{\link[=variance.CauchyDistrib]{variance.CauchyDistrib()}} and
 \code{\link[=kurtosis.CauchyDistrib]{kurtosis.CauchyDistrib()}}, which return \code{NaN} for the same reason;
 \code{\link[=distrib_quantile]{distrib_quantile()}} for the median and quartiles, which do exist;
-\code{\link[=skewness]{skewness()}} for the generic and the families that answer it with a number.
+\code{\link[=skewness]{skewness()}} for the generic and the families that return a number.
 }
 \keyword{internal}

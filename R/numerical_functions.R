@@ -6,9 +6,9 @@
 #' Batched Quadrature with Rejection
 #'
 #' @description
-#' Calls [numericals7::quad_vec()] with its warning muffled and
+#' Calls [numericals7::quad_vec()], muffles its warning and
 #' returns the per-row integrals, `NA` where the accuracy was not
-#' reached; the caller decides what a failed row means and names it.
+#' reached. The calling function handles a failed row and reports it.
 #'
 #' @param integrand The integrand, in the matrix convention of `quad_vec`.
 #' @param lower,upper Numeric vectors of panel endpoints.
@@ -61,7 +61,7 @@ discrete_support_sum <- function(term, from, to, n_rows) {
 #' Batched Series Summation with Rejection
 #'
 #' @description
-#' Calls [numericals7::series_vec()] with its warning muffled and
+#' Calls [numericals7::series_vec()], muffles its warning and
 #' promotes a row that did not converge to an error that names the row.
 #'
 #' @param term A function `term(k, i)` in the convention of `series_vec`.
@@ -91,8 +91,8 @@ series_rows <- function(term, from, n_rows) {
 #'
 #' @description
 #' Computes \eqn{E[f(Y)]} under the distribution: by numerical integration for a
-#' continuous distribution and by series summation for a discrete one, with the
-#' methods described on their own pages.
+#' continuous distribution and by series summation for a discrete one. The
+#' methods are described on their own pages.
 #'
 #' @param distrib An object inheriting from [distrib()].
 #' @param f The function whose expectation is taken, with signature
@@ -158,12 +158,12 @@ expectation_columns <- function(distrib, f_env_theta, dots) {
   )
 }
 
-#' Number of Observations a Family's Constants Vary Over
+#' Number of Observations Over Which a Family's Constants Vary
 #'
 #' @description
 #' Returns the length of the longest constant of `distrib` that varies by
-#' observation (a binomial's `size`), its parents' included, and 1 when
-#' there is none.
+#' observation (a binomial's `size`), including those of its parent families,
+#' and 1 when the family has none.
 #'
 #' @param distrib A univariate family.
 #' @return A single positive integer.
@@ -186,8 +186,8 @@ distrib_const_rows <- function(distrib) {
 #' value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 #' quantiles, which anchors the quadrature on the probability mass wherever it
 #' sits. For a family with a non-smooth parameter, the points that
-#' [kink_knots()] returns are knots as well, so that no panel contains a jump
-#' of the score. A combination that the batched quadrature rejects (an
+#' [kink_knots()] returns are knots as well, so that every panel is free of a
+#' jump of the score. A combination that the batched quadrature rejects (an
 #' integrable endpoint singularity too harsh for bisection) is rescued by one scalar
 #' [stats::integrate()] run, whose extrapolation reaches it; an
 #' error naming the combination is raised only when both routes fail.
@@ -307,8 +307,8 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
 #' @description Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by
 #' summation over the support, every parameter combination in one batched
 #' pass: a finite support is summed exactly in a single matrix evaluation,
-#' an infinite one through [numericals7::series_vec()], whose rows
-#' retire as they converge.
+#' an infinite one through [numericals7::series_vec()], which drops each row
+#' from the computation as it converges.
 #' @param distrib A `discrete_distrib`.
 #' @param f The function whose expectation is taken.
 #' @param theta A named list of parameters.

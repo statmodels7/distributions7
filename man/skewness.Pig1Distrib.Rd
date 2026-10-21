@@ -7,7 +7,7 @@
 \item{x}{A \code{Pig1Distrib}, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{sigma}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,20 +16,19 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$sigma))}, positive throughout.
 }
 \description{
-Closed form from the cumulants, \eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}}
-with
+The skewness has the closed form
+\eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}} in the cumulants, with
 \deqn{\kappa_2 = \mu + \sigma\mu^2, \qquad
       \kappa_3 = \mu + 3\sigma\mu^2 + 3\sigma^2\mu^3.}
-This is where the family separates from a negative binomial: matched on
-mean and variance, the Poisson-inverse Gaussian is the more skewed of the
-two, the coefficient of \eqn{\sigma^2\mu^3} in \eqn{\kappa_3} being 3 here
-and 2 for a negative binomial with \eqn{\theta = 1/\sigma}.
+Matched on mean and variance, the Poisson-inverse Gaussian is more skewed
+than a negative binomial, because the coefficient of \eqn{\sigma^2\mu^3} in
+\eqn{\kappa_3} is 3 here and 2 for a negative binomial with
+\eqn{\theta = 1/\sigma}.
 }
 \details{
 The cumulants of a mixed Poisson are the Poisson's plus what the mixing
-distribution contributes, which is why they are the natural quantities here
-and why a standardized moment follows from them without a sum over the
-support.
+distribution contributes. They are therefore the natural quantities here,
+and a standardized moment follows from them without a sum over the support.
 }
 \section{Notation}{
 
@@ -40,7 +39,7 @@ support.
 \examples{
 d <- pig1_distrib()
 
-# The cumulant ratio, written out.
+# The skewness equals the cumulant ratio, written out.
 all.equal(skewness(d, list(mu = 3, sigma = 1)),
           (3 + 3 * 9 + 3 * 27) / 12^1.5)
 

@@ -18,18 +18,18 @@ returns the parameter scale.}
 }
 \value{
 A named list with one numeric vector per parameter, keyed by
-\code{distrib@params}, each of length \code{length(y)}.
+\code{distrib@params}. Each vector has length \code{length(y)}.
 }
 \description{
-The fallback: one tensor stencil on the highest quantity the family
-implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}. A family with an
-analytic response gradient or score differences it once, in the parameter
-or in the response; a family with a density alone takes one four-point
-mixed stencil of the log-density.
+The fallback applies one tensor stencil to the highest quantity that the
+family implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}. A family
+with an analytic response gradient or score differences it once, in the
+parameter or in the response; a family with only a density takes one
+four-point mixed stencil of the log-density.
 
 Every continuous family shipped in this package registers a closed form,
 so this method serves a family defined outside the package, which obtains
-the mixed block from its density alone.
+the mixed block only from its density.
 }
 \seealso{
 \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}, which does the work;

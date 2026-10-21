@@ -7,8 +7,8 @@
 \item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{phi}
-(positive), each a numeric vector of length 1 or \code{n}. Only \code{phi} enters
-the value, and the result is recycled to the length both imply.}
+(positive); each is a numeric vector of length 1 or \code{n}. Only \code{phi} enters
+the value, and the result is recycled to the length that both imply.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,10 +17,10 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = 2\sqrt\phi}. The mean cancels, so the asymmetry
-is carried by the dispersion alone: it is twice the coefficient of variation
-and vanishes as the dispersion goes to zero, where the family approaches a
-Gaussian.
+The skewness has the closed form \eqn{\gamma_1 = 2\sqrt\phi}. The mean
+cancels, so only the dispersion carries the asymmetry: the skewness is twice
+the coefficient of variation and vanishes as the dispersion goes to zero,
+where the family approaches a Gaussian.
 }
 \section{Notation}{
 
@@ -31,7 +31,7 @@ moment.
 \examples{
 d <- gamma1_distrib()
 
-# Twice the square root of the dispersion, whatever the mean.
+# The skewness is twice the square root of the dispersion, whatever the mean.
 skewness(d, list(mu = c(1, 2, 3), phi = 0.25))
 
 # It agrees with the mean-variance parametrization on the same law.

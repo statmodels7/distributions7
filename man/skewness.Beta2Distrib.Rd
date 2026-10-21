@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive;
+each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,7 +16,7 @@ A numeric vector, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form:
+The skewness has the closed form
 \deqn{\gamma_1 = \frac{2(\beta - \alpha)\sqrt{\alpha + \beta + 1}}
                       {(\alpha + \beta + 2)\sqrt{\alpha\beta}}.}
 It takes the sign of \eqn{\beta - \alpha}, so a beta is right-skewed when the
@@ -32,7 +32,7 @@ method evaluates the form in the mean and the precision of
 \examples{
 d <- beta2_distrib()
 
-# Zero when the two shapes are equal.
+# The skewness is zero when the two shapes are equal.
 skewness(d, list(alpha = 3, beta = 3))
 
 # It agrees with the mean-precision parametrization on the same law.

@@ -16,13 +16,13 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{sigma2}, each a numeric vector of
-length \code{length(y)}.
+A named list with components \code{mu} and \code{sigma2}; each is a numeric
+vector of length \code{length(y)}.
 }
 \description{
-Closed form. On the log scale the family is location-scale, and
-\eqn{\ell^{(y)} = -1/y - (\log y - \mu)/(\sigma^2 y)} gives
-\eqn{1/(\sigma^2 y)} and \eqn{(\log y - \mu)/(\sigma^4 y)}.
+The mixed derivatives are in closed form. On the log scale the family is
+location-scale, and \eqn{\ell^{(y)} = -1/y - (\log y - \mu)/(\sigma^2 y)}
+gives \eqn{1/(\sigma^2 y)} and \eqn{(\log y - \mu)/(\sigma^4 y)}.
 }
 \seealso{
 \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the family;

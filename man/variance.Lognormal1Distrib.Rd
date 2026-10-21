@@ -7,8 +7,8 @@
 \item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
-(positive), each a numeric vector of length 1 or \code{n}. The variance grows
-like \eqn{e^{2\sigma^2}} The variance overflows to \code{Inf} for \code{sigma2} above
+(positive); each is a numeric vector of length 1 or \code{n}. The variance grows
+like \eqn{e^{2\sigma^2}}. It overflows to \code{Inf} for \code{sigma2} above
 about 355 at \code{mu = 0}, and the threshold rises as \code{mu} decreases.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,12 +18,12 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form:
+The variance has the closed form
 \deqn{\operatorname{Var}(Y) = (e^{\sigma^2} - 1)\, e^{2\mu + \sigma^2}.}
 The two factors separate the two effects: \eqn{e^{2\mu+\sigma^2}} is the
 square of the mean and sets the scale, and \eqn{e^{\sigma^2} - 1} is the
-squared coefficient of variation and depends on the spread of the logarithm
-alone.
+squared coefficient of variation and depends only on the spread of the
+logarithm.
 }
 \section{Notation}{
 
@@ -33,7 +33,7 @@ alone.
 \examples{
 d <- lognormal1_distrib()
 
-# (exp(sigma2) - 1) exp(2 mu + sigma2).
+# The variance is (exp(sigma2) - 1) exp(2 mu + sigma2).
 all.equal(variance(d, list(mu = 0, sigma2 = 1)), (exp(1) - 1) * exp(1))
 
 # The coefficient of variation depends on sigma2 alone.

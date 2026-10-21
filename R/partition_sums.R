@@ -14,12 +14,13 @@ NULL
 #' Set Partitions of a Multi-Index
 #'
 #' @description
-#' Every way of splitting a multi-index into blocks, with the parameter names
-#' carried through rather than the positions.
+#' Returns every way of splitting a multi-index into blocks. The blocks hold
+#' the parameter names and not the positions.
 #'
 #' @param idx A character vector of parameter names, with repetition.
 #'
-#' @return A list of partitions, each a list of character-vector blocks.
+#' @return A list of partitions, each of which is a list of character-vector
+#'   blocks.
 #'
 #' @seealso [numericals7::set_partitions()]
 #' @keywords internal
@@ -31,7 +32,7 @@ index_partitions <- function(idx) {
 #'
 #' @description
 #' Names a block of parameters the way [deriv_names()] does: in the
-#' order the distribution declares them, joined by an underscore.
+#' order in which the distribution declares them, joined by an underscore.
 #'
 #' @param block A character vector of parameter names.
 #' @param params The distribution's parameter names, in declaration order.
@@ -55,23 +56,23 @@ canon_key <- function(block, params) {
 #'
 #' @details
 #' This is the Bartlett lemma read backwards. The identity is normally used to
-#' eliminate a derivative; here it builds one, and that is what every wrapper
-#' needs: each wrapper's log-likelihood is the parent's log-density plus, or in
+#' eliminate a derivative; here it builds one, which every wrapper needs
+#' because each wrapper's log-likelihood is the parent's log-density plus, or in
 #' place of, \eqn{\log L} for some \eqn{\theta}-dependent \eqn{L}, and the
 #' orders above two are assembled from this sum together with [log_deriv()].
 #'
 #' At order 1 it returns \eqn{\ell^{(i)}} and at order 2
 #' \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}}, the ordinary relation between the
 #' second derivative of a density and of its logarithm. Those two cases
-#' reproduce the hand-written closed forms exactly, and that agreement is the
-#' license for the orders that have nothing to compare against.
+#' reproduce the hand-written closed forms exactly, which supports the use of
+#' the sum at the orders that have no closed form for comparison.
 #'
 #' @param idx A character vector of parameter names, with repetition, naming
 #'   the multi-index \eqn{I}: `c("mu", "mu", "sigma")` is
 #'   \eqn{\partial^3/\partial\mu^2\partial\sigma}. Its length is the order.
 #' @param ell A function of one block, returning \eqn{\ell^{(B)}} for the
-#'   parameters that block names, as a numeric vector. Called once per block of
-#'   every partition, so a caller with an expensive parent memoizes it.
+#'   parameters that block names, as a numeric vector. `ell` is called once per
+#'   block of every partition, so a caller with an expensive parent memoizes it.
 #'
 #' @return A numeric vector, the length of whatever `ell` returns: the ratio
 #'   \eqn{d^I f / f} at each observation.
@@ -90,7 +91,7 @@ bell_f_ratio <- function(idx, ell) {
   total
 }
 
-#' @title Derivatives of a Logarithm From the Ratios Alone
+#' @title Derivatives of a Logarithm From the Ratios Only
 #'
 #' @description
 #' Computes \eqn{d^I \log L} from the ratios \eqn{d^B L / L}, as
@@ -98,7 +99,7 @@ bell_f_ratio <- function(idx, ell) {
 #'       \prod_{B \in \pi} \frac{d^B L}{L},}
 #' the moment-to-cumulant relation. Only the ratios are needed, never
 #' \eqn{L}'s own derivatives and never \eqn{L} itself, so a wrapper can
-#' differentiate a normalizing constant it can only evaluate up to scale.
+#' differentiate a normalizing constant that it can only evaluate up to scale.
 #'
 #' @details
 #' It is the inverse of [bell_f_ratio()]: that sum carries derivatives of a
@@ -110,7 +111,8 @@ bell_f_ratio <- function(idx, ell) {
 #' @param idx A character vector of parameter names, with repetition, naming
 #'   the multi-index \eqn{I}. Its length is the order.
 #' @param ratio A function of one block, returning \eqn{d^B L / L} for that
-#'   block as a numeric vector. Called once per block of every partition.
+#'   block as a numeric vector. `ratio` is called once per block of every
+#'   partition.
 #'
 #' @return A numeric vector, the length of whatever `ratio` returns:
 #'   \eqn{d^I \log L} at each observation.

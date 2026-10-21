@@ -4,11 +4,11 @@
 \alias{skewness.numeric}
 \title{Sample Skewness}
 \arguments{
-\item{x}{A numeric vector. A constant vector gives \code{NaN}, the standardizing
-denominator being zero.}
+\item{x}{A numeric vector. A constant vector gives \code{NaN}, because the
+standardizing denominator is zero.}
 
 \item{na.rm}{Should missing values be dropped before the moments are taken?
-A single logical, \code{FALSE} by default, which propagates \code{NA}.}
+It is a single logical, \code{FALSE} by default, and \code{FALSE} propagates \code{NA}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,17 +16,18 @@ A single logical, \code{FALSE} by default, which propagates \code{NA}.}
 A single number.
 }
 \description{
-The sample skewness of a numeric vector, \eqn{m_3 / m_2^{3/2}} with
+Computes the sample skewness of a numeric vector, \eqn{m_3 / m_2^{3/2}} with
 \eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both central moments divide by
 \eqn{n}, so this is the population denominator and the estimator is biased
 towards zero in small samples. \code{\link[=variance.numeric]{variance.numeric()}} uses \eqn{n - 1}
-instead, each following the commonest convention for its own quantity.
+instead, and each of the two follows the commonest convention for its own
+quantity.
 }
 \examples{
 set.seed(1)
 y <- rgamma(500, shape = 2)
 
-# The n denominator, written out.
+# The denominator is n, written out.
 m <- mean(y)
 all.equal(skewness(y),
           mean((y - m)^3) / mean((y - m)^2)^1.5)

@@ -6,9 +6,9 @@
 \arguments{
 \item{x}{A \code{CauchyDistrib}, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}. The values are not read, only their
-lengths, and the list is still aligned and validated.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), in
+which each component is a numeric vector of length 1 or \code{n}. The values are
+not read, only their lengths, and the list is still aligned and validated.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -21,7 +21,7 @@ Returns \code{NaN}. The excess kurtosis is the fourth standardized central
 moment less three, so it needs the first four moments of \eqn{Y}, and the
 Cauchy has none of them: its density decays like \eqn{y^{-2}}, and
 \eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges already at \eqn{p = 1}. \code{NaN} is
-returned directly, so that no quadrature is attempted.
+returned directly, so that the method does not attempt a quadrature.
 }
 \details{
 A large positive excess kurtosis usually indicates heavy tails. The Cauchy
@@ -39,7 +39,7 @@ parametrization \code{\link[=cauchy_distrib]{cauchy_distrib()}} uses.
 \examples{
 d <- cauchy_distrib()
 
-# NaN at every parameter value.
+# The value is NaN at every parameter value.
 kurtosis(d, list(mu = 0, sigma = c(1, 2)))
 
 # The Student t is the family that does report a number, above nu = 4.

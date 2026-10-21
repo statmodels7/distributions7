@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -18,12 +18,12 @@ lower tail and \code{FALSE} the upper tail.}
 derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
-A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
-the length of \code{q} recycled against \code{theta}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}; each
+has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form from the same location-scale structure, through
-\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. The response derivative that it reads is
+Computes the Hessian in closed form from the same location-scale structure,
+through \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. The response derivative that it reads is
 \eqn{\ell_y = (e^{-z} - 1)/\sigma}, which is smooth everywhere, so all three
 components are continuous on the whole line.
 }
@@ -39,7 +39,8 @@ d <- gumbel_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic.
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))

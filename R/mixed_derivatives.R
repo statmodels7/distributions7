@@ -3,7 +3,7 @@
 #' @description
 #' Computes the derivatives of the log-density of order `ay` in the response
 #' and `ctheta` in the parameters, for a continuous family that has no method
-#' of its own for them. Among the quantities the family implements itself
+#' of its own for them. Among the quantities that the family implements itself
 #' (the log-density, its response derivatives, its score and Hessian in the
 #' parameters, and the mixed derivatives of lower order), the one that leaves
 #' the smallest order to difference is taken, and each component is a single
@@ -19,10 +19,10 @@
 #' reads it, so that a numerical fallback is never differenced again. The
 #' log-density is always available. The candidate with the smallest residual
 #' order \eqn{r = (\mathrm{ay} - a) + (\mathrm{ctheta} - c)} is used, and
-#' among equal ones the one with more derivatives in the parameters, which
-#' declares more multi-indices; the candidates are declared in decreasing
-#' \eqn{c}, so that the order of declaration decides the same way when there
-#' is a single parameter.
+#' among equal ones the candidate with more derivatives in the parameters,
+#' which declares more multi-indices, is used; the candidates are declared in
+#' decreasing \eqn{c}, so that the order of declaration gives the same
+#' preference when there is a single parameter.
 #'
 #' The step is \eqn{h = \varepsilon^{1/(r+a)}\max(1, |x|)} in every
 #' direction, with \eqn{a} the accuracy, reduced so that every node stays
@@ -46,7 +46,7 @@
 #'   where `ctheta` is 1; one vector per unordered pair, keyed as
 #'   [`hess_names(distrib@params)`][hess_names], where it is 2.
 #'
-#' @seealso [tensor_derivatives()] for the derivatives in the parameters alone,
+#' @seealso [tensor_derivatives()] for the derivatives in the parameters only,
 #'   [distrib_cross_y()], [distrib_cross2_y()], [distrib_cross3_y()],
 #'   [distrib_grad_y_hess()] and [distrib_hess_y_hess()], whose continuous
 #'   fallbacks call this.

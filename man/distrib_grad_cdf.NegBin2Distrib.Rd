@@ -10,9 +10,9 @@
 values below zero give a derivative of zero in both components.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{theta}
-(positive), each a numeric vector of length 1 or \code{n}. The cost of the
-dispersion component grows with the largest quantile, the sum running the
-support up to it.}
+(positive); each is a numeric vector of length 1 or \code{n}. The cost of the
+dispersion component grows with the largest quantile, because the sum
+runs over the support up to it.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -23,11 +23,12 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{theta}, each the
-length of \code{q} recycled against the parameters.
+A named list of two numeric vectors, \code{mu} and \code{theta}, in which
+each vector has the length of \code{q} recycled against the parameters.
 }
 \description{
-Closed form in the mean and an exact sum in the dispersion. The mean
+Computes the gradient in closed form in the mean and by an exact sum in
+the dispersion. The mean
 component collapses like the Poisson's,
 \deqn{\frac{\partial F(k)}{\partial\mu}
       = -f(k)\,\frac{k + \theta}{\theta + \mu},}
@@ -47,7 +48,7 @@ d <- negbin2_distrib()
 q <- c(2, 5)
 th <- list(mu = 3, theta = 2)
 
-# The mean component, written out.
+# The mean component is written out.
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th) * (q + 2) / (2 + 3))
 
@@ -58,7 +59,7 @@ rbind(negbin = distrib_grad_cdf(d, q, list(mu = 3, theta = 1e8),
                                  log = FALSE)$mu)
 }
 \seealso{
-\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}} for the summation the dispersion uses;
+\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}} for the summation that the dispersion uses;
 \code{\link[=distrib_grad_cdf.PoissonDistrib]{distrib_grad_cdf.PoissonDistrib()}} for the limit;
 \code{\link[=negbin2_distrib]{negbin2_distrib()}}.
 }

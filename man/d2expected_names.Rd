@@ -13,8 +13,8 @@ d2expected_names(params)
 A character vector, \code{length(hess_names(params))^2} long.
 }
 \description{
-One key per pair \eqn{(a,b)} and pair \eqn{(c,d)}, each pair spelled as
-\code{\link[=hess_names]{hess_names()}} spells it, joined \code{ab} first.
+Returns one key per pair \eqn{(a,b)} and pair \eqn{(c,d)}. Each pair is
+spelled as \code{\link[=hess_names]{hess_names()}} spells it, and \code{ab} comes first in the key.
 }
 \examples{
 d2expected_names(c("mu", "sigma"))

@@ -7,7 +7,7 @@
 \item{x}{A \code{GPDDistrib}, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
 \item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
-real value), each a numeric vector of length 1 or \code{n}. Only \code{xi} enters
+real value); each is a numeric vector of length 1 or \code{n}. Only \code{xi} enters
 the value; settings with \eqn{\xi \ge 1/4} give \code{Inf}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,11 +18,11 @@ A numeric vector of excess kurtoses, of length
 \eqn{\xi \ge 1/4}.
 }
 \description{
-Closed form:
+The excess kurtosis has the closed form
 \eqn{\gamma_2 = 3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
-\eqn{\xi < 1/4}, and \code{Inf} at or above one quarter. The threshold is the
-tightest of the four moments, so this is the first quantity to become
-unreportable as a fitted shape rises.
+\eqn{\xi < 1/4}, and is \code{Inf} at or above one quarter. The threshold is the
+tightest of the four moments, so this is the first quantity that can no
+longer be reported as a fitted shape rises.
 }
 \section{Notation}{
 
@@ -33,10 +33,10 @@ standardized moment.
 \examples{
 d <- gpd_distrib()
 
-# Six at shape zero, and infinite at or above one quarter.
+# The kurtosis is six at shape zero and infinite at or above one quarter.
 kurtosis(d, list(sigma = 1, xi = c(0, 0.2, 0.25, 0.3)))
 
-# The four thresholds, from the mean's 1 down to this one's 1/4.
+# The four thresholds run from the mean's 1 down to this one's 1/4.
 th <- list(sigma = 1, xi = 0.3)
 c(mean = mean(d, th), variance = variance(d, th),
   skewness = skewness(d, th), kurtosis = kurtosis(d, th))

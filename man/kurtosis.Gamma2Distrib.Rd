@@ -7,7 +7,8 @@
 \item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{sigma2}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive), in which each component is a numeric vector of length 1 or
+\code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,7 +17,8 @@ A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_2 = 6/a = 6\sigma^2/\mu^2} with shape
+The excess kurtosis has the closed form
+\eqn{\gamma_2 = 6/a = 6\sigma^2/\mu^2} with shape
 \eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value and is
 exactly \eqn{3\gamma_1^2/2}, so the family occupies one curve of the
 skewness-kurtosis plane and cannot be tuned along the two axes separately.
@@ -34,7 +36,7 @@ d <- gamma2_distrib()
 th <- list(mu = 2, sigma2 = 1)
 all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
 
-# Six over the implied shape.
+# The excess kurtosis is six over the implied shape.
 kurtosis(d, list(mu = 2, sigma2 = c(4, 1, 0.25)))
 
 }

@@ -17,7 +17,8 @@ A numeric vector of variances,
 of length \code{max(length(theta$mu), length(x@size))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)}. The trials are
+The variance has the closed form
+\eqn{\operatorname{Var}(Y) = n\mu(1-\mu)}. The trials are
 independent, so the variance is the trial count times the Bernoulli
 variance; a sample of counts out of \eqn{n} whose variance exceeds this is
 overdispersed, and a beta-binomial is the family that carries the excess.
@@ -25,7 +26,7 @@ overdispersed, and a beta-binomial is the family that carries the excess.
 \examples{
 d <- binomial_distrib(size = 10)
 
-# Ten times the Bernoulli variance.
+# The variance is ten times the Bernoulli variance.
 all.equal(variance(d, list(mu = 0.3)),
           10 * variance(bernoulli_distrib(), list(mu = 0.3)))
 

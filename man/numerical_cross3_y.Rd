@@ -17,7 +17,7 @@ numerical_cross3_y(
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters, the point to differentiate at.}
+\item{theta}{A named list of parameters at which the derivative is computed.}
 
 \item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
 the optimal exponent for a central first difference.}
@@ -26,8 +26,8 @@ the optimal exponent for a central first difference.}
 \code{distrib@params}. The default, \code{NULL}, computes every component.}
 }
 \value{
-A named list with one numeric vector per requested parameter, each
-as long as \code{y}.
+A named list with one numeric vector per requested parameter. Each
+vector is as long as \code{y}.
 }
 \description{
 Computes \eqn{\partial^4 \ell / \partial y^3\, \partial \theta_i} by one
@@ -36,7 +36,7 @@ central difference of \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in eac
 \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}.
 }
 \details{
-A family carrying an analytic \code{distrib_deriv3_y} pays for exactly one
+A family carrying an analytic \code{distrib_deriv3_y} requires exactly one
 difference. Where that derivative is itself the base class's stencil on the
 log-density, the two differences act on different variables and compose
 into one mixed stencil. The step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}}, so that
@@ -48,7 +48,7 @@ d <- student_t1_distrib()
 y <- c(-1, 0, 2)
 theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
 
-# Against the identity the location family uses.
+# The result is compared with the identity that the location family uses.
 max(abs(unlist(numerical_cross3_y(d, y, theta)) -
         unlist(distrib_cross3_y(d, y, theta))))
 

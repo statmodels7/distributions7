@@ -9,7 +9,7 @@ no method of its own.}
 
 \item{n}{The number of draws, a single non-negative integer.}
 
-\item{theta}{A named list of parameters, each of length 1 or \code{n}. A
+\item{theta}{A named list of parameters; each has length 1 or \code{n}. A
 component of length \code{n} gives one draw per parameter setting, taken in
 order, and the table is rebuilt whenever the setting changes from one draw
 to the next.}
@@ -17,16 +17,16 @@ to the next.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of \code{n} draws, every one a support point.
+A numeric vector of \code{n} draws, all of which are support points.
 }
 \description{
-The fallback for a discrete family that implements no generator of its own:
-inverse transform sampling against the cumulative table
+The fallback for a discrete family that implements no generator of its own
+is inverse transform sampling against the cumulative table that
 \code{\link[=disc_cum_table]{disc_cum_table()}} builds.
 
 This method uses no rejection scheme. Inverting the cumulative mass
-function is exact, the distribution function of a discrete variable being a
-step function, so there is nothing to solve. With scalar parameters the
+function is exact, because the distribution function of a discrete variable
+is a step function, so there is nothing to solve. With scalar parameters the
 table is built once and the whole sample is located in it by one binary
 search.
 }

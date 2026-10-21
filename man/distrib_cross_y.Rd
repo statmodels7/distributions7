@@ -13,30 +13,30 @@ distrib_cross_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 \item{theta}{A named list, or a named numeric vector, of parameters. Each
 component must have length 1 or \code{length(y)}; a component of length 1 is
-recycled. Reordered by name and validated against \code{params_bounds}, which
-are treated as open, before dispatch.}
+recycled. The generic reorders \code{theta} by name and validates it against
+\code{params_bounds}, which are treated as open, before dispatch.}
 
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
-\code{\link[base:match.arg]{base::match.arg()}}. Applied by the generic after dispatch, so a method
-always returns the parameter scale and never reads this.}
+\code{\link[base:match.arg]{base::match.arg()}}. The generic applies it after dispatch, so a method
+always returns the parameter scale and never reads this argument.}
 
 \item{...}{Passed to the method. The shipped methods do not read it.}
 }
 \value{
 A named list with one numeric vector per parameter, keyed and
-ordered by \code{distrib@params}, each of length \code{length(y)}.
+ordered by \code{distrib@params}. Each vector has length \code{length(y)}.
 }
 \description{
 Computes the mixed second derivatives
-\eqn{\partial^2 \ell / \partial y\, \partial \theta_i}, one component per
-parameter and each a vector along \code{y}. Together with \code{\link[=distrib_hess_y]{distrib_hess_y()}} and
-\code{\link[=distrib_hessian]{distrib_hessian()}} this completes the joint Hessian of the log-density in
-\eqn{(y, \theta)}: those two are the diagonal blocks and this is the
-off-diagonal one.
+\eqn{\partial^2 \ell / \partial y\, \partial \theta_i}, with one component
+per parameter, and each component is a vector along \code{y}. Together with
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} and \code{\link[=distrib_hessian]{distrib_hessian()}} this completes the joint Hessian
+of the log-density in \eqn{(y, \theta)}: those two are the diagonal blocks
+and this is the off-diagonal one.
 
-Defined for continuous families only. A discrete family has no derivative
-in \eqn{y} to cross, so no method is registered for it and the call signals
-an error.
+The function is defined only for continuous families. A discrete family has
+no derivative in \eqn{y} to cross, so the package registers no method for it
+and the call signals an error.
 }
 \section{What consumes it}{
 A penalty in \pkg{penalties7} is a negative log-density read at the

@@ -21,9 +21,10 @@ mapped_cross_y(distrib, parent, th_par, maps, y)
 A named list with one numeric vector per new parameter.
 }
 \description{
-The parent's mixed block carried onto a new parametrization by the
-first-order chain rule, which is all that is needed: the response
-derivative does not interact with a reparametrization of the parameters.
+Carries the parent's mixed block onto a new parametrization by the
+first-order chain rule. That rule is all that is needed, because the
+response derivative does not interact with a reparametrization of the
+parameters.
 }
 \seealso{
 \code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=reparam_tables]{reparam_tables()}}

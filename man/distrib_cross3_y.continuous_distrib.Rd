@@ -20,7 +20,7 @@ A named list with one numeric vector per parameter, keyed by
 \code{distrib@params}.
 }
 \description{
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}}: a central
 difference of an analytic \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} in each parameter, a third
 difference in the response of an analytic score, or one mixed stencil of

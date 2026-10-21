@@ -21,8 +21,8 @@ vector recyclable against \code{u}.}
 A numeric vector the length of \code{u}.
 }
 \description{
-Returns \eqn{\partial^k u^p/\partial\theta^k} where \eqn{u} is affine in
-\eqn{\theta} with slope \code{inner}, which is
+Returns \eqn{\partial^k u^p/\partial\theta^k}, where \eqn{u} is affine in
+\eqn{\theta} with slope \code{inner}. The value is
 \eqn{(\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}}. The elastic net's
 tail arguments are powers of affine functions of its two hyperparameters, so
 this supplies their one-variable derivatives to the term function of the

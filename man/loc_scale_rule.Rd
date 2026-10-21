@@ -10,8 +10,8 @@ loc_scale_rule()
 A list with the nodes \code{x} and the weights \code{w}.
 }
 \description{
-Nodes and weights of an exp-sinh rule on each half-line, for integrals over
-the whole real line of a density at location 0 and scale 1.
+Returns the nodes and weights of an exp-sinh rule on each half-line, for
+integrals over the whole real line of a density at location 0 and scale 1.
 }
 \details{
 On \eqn{(0,\infty)} the substitution \eqn{z = \exp(\tfrac{\pi}{2}\sinh t)}

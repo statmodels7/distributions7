@@ -16,12 +16,12 @@ assembly uses 1 to 5.}
 A list of integer vectors, each of length \code{order}.
 }
 \description{
-Canonical (non-decreasing) index tuples for a derivative order, in exactly the
-output order of the corresponding name helper: parameter order at order 1,
-\code{\link[=hess_names]{hess_names()}} at order 2, \code{\link[=deriv_names]{deriv_names()}} from order 3 up.
+Returns the canonical (non-decreasing) index tuples for a derivative order,
+in exactly the output order of the corresponding name helper: parameter order
+at order 1, \code{\link[=hess_names]{hess_names()}} at order 2, \code{\link[=deriv_names]{deriv_names()}} from order 3 up.
 }
 \details{
-The order-2 case is the one to be careful with. \code{hess_names()} lists the
+The order-2 case needs care. \code{hess_names()} lists the
 diagonal first and the off-diagonal afterwards, whereas \code{deriv_names()}
 is lexicographic throughout; pairing this helper with \code{deriv_names()}
 would therefore label \code{"mu_sigma"} with the tuple \verb{(sigma, sigma)}.

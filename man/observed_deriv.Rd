@@ -17,7 +17,7 @@ observed_deriv(distrib, y, theta, order)
 else signals an error.}
 }
 \value{
-A named list of derivative component vectors, each of length
+A named list of derivative component vectors; each has length
 \code{length(y)}. The keys are \code{distrib@params} at order 1, \code{\link[=hess_names]{hess_names()}} at
 order 2 (diagonal first) and \code{\link[=deriv_names]{deriv_names()}} above it (lexicographic), so
 a caller pairing two orders must match by name.

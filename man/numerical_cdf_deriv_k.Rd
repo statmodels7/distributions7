@@ -21,9 +21,10 @@ numerical_cdf_deriv_k(
 
 \item{order}{The derivative order, 3 or 4.}
 
-\item{h_rel}{The relative step. A single number, defaulting to
+\item{h_rel}{The relative step. It is a single number that defaults to
 \eqn{\varepsilon^{1/(\mathrm{order}+2)}}. A step much smaller than the
-default is worse, the rounding growing as \eqn{h^{-\mathrm{order}}}.}
+default is worse, because the rounding grows as
+\eqn{h^{-\mathrm{order}}}.}
 }
 \value{
 A named list of numeric vectors, derivatives of \eqn{F} itself on
@@ -31,12 +32,12 @@ the natural scale, keyed as
 \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-One product stencil of the requested order applied to \code{\link[=distrib_cdf]{distrib_cdf()}}, which
+Applies one product stencil of the requested order to \code{\link[=distrib_cdf]{distrib_cdf()}}, which
 is analytic for every family in the catalog. This is the continuous
 family's route above second order, and it is a single stencil: a repeated
 parameter contributes the matching one-dimensional higher-order factor and
-distinct parameters each contribute a central two-point factor, so no
-difference of a difference is ever taken.
+distinct parameters each contribute a central two-point factor, so a
+difference of a difference is never taken.
 }
 \section{The step}{
 The relative step is \eqn{\varepsilon^{1/(k+2)}}, which is
@@ -50,7 +51,7 @@ per observation because \code{theta} may vary by observation.
 Against the closed forms of a location-scale family the stencil has a
 relative error, normwise over each component, of the order of
 \eqn{10^{-5}} at order 3 and \eqn{10^{-4}} at order 4. The closed forms are
-accurate to rounding error, which is why a family registers one where it
+accurate to rounding error, so a family registers one where it
 can.
 }
 
@@ -63,6 +64,6 @@ scale, \eqn{h} the step and \eqn{\varepsilon} the machine epsilon.
 \seealso{
 \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} for orders 1 and 2;
 \code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}}, the exact route for a discrete family;
-\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}, the closed route this is measured against.
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}, the closed route against which this is measured.
 }
 \keyword{internal}

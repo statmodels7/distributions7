@@ -28,10 +28,10 @@ its own class, so the owner test reads it as analytic, while the partition
 sum that it evaluates is over the first four derivatives of the parent
 and is analytic only when those are. Every wrapper therefore overrides the
 generic and takes the answer from
-its parent, which is why the test is a generic at all.
+its parent. The test is a generic for this reason.
 }
 \seealso{
 \code{\link[=has_exact_deriv4]{has_exact_deriv4()}}, the generic; \code{\link[=expected_hessian_exact]{expected_hessian_exact()}},
-which answers the same shape of question about the expected information.
+which tests the same property for the expected information.
 }
 \keyword{internal}

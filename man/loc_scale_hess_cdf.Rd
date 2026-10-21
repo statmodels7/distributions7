@@ -12,8 +12,8 @@ parameters are a location and a scale.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters, the location first and the scale
-second.}
+\item{theta}{A named list of parameters, in which the location comes first
+and the scale second.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -24,16 +24,17 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
-the length of \code{q} recycled against \code{theta}. The gradient is not returned
-alongside.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, in
+which each vector has the length of \code{q} recycled against \code{theta}. The
+gradient is not returned alongside.
 }
 \description{
-The \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body the location-scale families share:
-the factors of \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at both orders, put on the
-requested tail and scale by \code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. Both orders are needed
-even when only the Hessian was requested, the log-scale correction
-reading the first derivatives.
+This function is the \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body that the location-scale
+families share: it computes the factors of \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at both
+orders and puts them on the requested tail and scale by
+\code{\link[=loc_scale_cdf_route]{loc_scale_cdf_route()}}. Both orders are needed even when only the Hessian
+was requested, because the log-scale correction reads the first
+derivatives.
 }
 \seealso{
 \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} for the formulas;

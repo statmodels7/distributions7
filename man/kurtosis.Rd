@@ -10,17 +10,17 @@ kurtosis(x, ...)
 \item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
 \item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
-any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
-single logical, \code{FALSE} by default.}
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector, the argument
+is \code{na.rm}, a single logical that is \code{FALSE} by default.}
 }
 \value{
 A numeric vector for a \code{distrib}, one value per parameter setting; a
-single number for a numeric vector. \code{NaN} for a family with no moments,
-\code{Inf} where the fourth moment diverges.
+single number for a numeric vector. The value is \code{NaN} for a family with
+no moments and \code{Inf} where the fourth moment diverges.
 }
 \description{
 Computes the excess kurtosis, the fourth standardized central moment less
-the three a Gaussian has:
+the three that a Gaussian has:
 
 \deqn{\gamma_2 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{4}\right] - 3.}
 
@@ -37,24 +37,25 @@ the Laplace and \eqn{6/(\nu-4)} for a Student t with \eqn{\nu > 4}.
 }
 
 \section{When it fails to exist}{
-The fourth moment is needed, so the threshold is higher than for
-\code{\link[=skewness]{skewness()}}: a Student t has an excess kurtosis only above four degrees of
-freedom. Between two and four degrees of freedom it returns \code{Inf}, at two or
-fewer it returns \code{NaN}, and a Cauchy returns \code{NaN} at every parameter value.
+The excess kurtosis requires the fourth moment, so its threshold is higher
+than for \code{\link[=skewness]{skewness()}}: a Student t has an excess kurtosis only above four
+degrees of freedom. Between two and four degrees of freedom it returns \code{Inf},
+at two or fewer it returns \code{NaN}, and a Cauchy returns \code{NaN} at every
+parameter value.
 }
 
 \section{What the sample method returns}{
 On a numeric vector the fourth and second central moments both divide by
 \eqn{n}, giving \eqn{m_4 / m_2^{2} - 3}. This is the population denominator,
-the same convention \code{\link[=skewness]{skewness()}} uses. \code{\link[=variance]{variance()}} divides by \eqn{n - 1}
-instead.
+the same convention that \code{\link[=skewness]{skewness()}} uses. \code{\link[=variance]{variance()}} divides by
+\eqn{n - 1} instead.
 }
 
 \examples{
-# Zero for every Gaussian, by construction.
+# The excess kurtosis is zero for every Gaussian, by construction.
 kurtosis(gaussian1_distrib(), list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 
-# Three for the Laplace, which is the textbook heavy-tailed comparison.
+# The Laplace has an excess kurtosis of three, the heavy-tailed benchmark.
 all.equal(kurtosis(laplace_distrib(), list(mu = 0, sigma = 2)), 3)
 
 # A Student t is 6 / (nu - 4), and infinite at or below four.

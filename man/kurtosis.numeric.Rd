@@ -4,11 +4,11 @@
 \alias{kurtosis.numeric}
 \title{Sample Excess Kurtosis}
 \arguments{
-\item{x}{A numeric vector. A constant vector gives \code{NaN}, the standardizing
-denominator being zero.}
+\item{x}{A numeric vector. A constant vector gives \code{NaN}, because the
+standardizing denominator is zero.}
 
 \item{na.rm}{Should missing values be dropped before the moments are taken?
-A single logical, \code{FALSE} by default, which propagates \code{NA}.}
+It is a single logical, \code{FALSE} by default, and \code{FALSE} propagates \code{NA}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,18 +16,18 @@ A single logical, \code{FALSE} by default, which propagates \code{NA}.}
 A single number.
 }
 \description{
-The sample excess kurtosis of a numeric vector, \eqn{m_4 / m_2^{2} - 3} with
-\eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both central moments divide by
-\eqn{n}, so this is the population denominator, the convention
-\code{\link[=skewness.numeric]{skewness.numeric()}} also uses. The estimator is biased downwards in small
-samples, and heavy tails make it slow to settle: it depends on the fourth
-moment, so a handful of extreme points dominate it.
+Computes the sample excess kurtosis of a numeric vector,
+\eqn{m_4 / m_2^{2} - 3} with \eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both
+central moments divide by \eqn{n}, so this is the population denominator, the
+convention that \code{\link[=skewness.numeric]{skewness.numeric()}} also uses. The estimator is biased
+downwards in small samples, and heavy tails make it slow to settle: it
+depends on the fourth moment, so a handful of extreme points dominate it.
 }
 \examples{
 set.seed(1)
 y <- rt(1000, df = 10)
 
-# The n denominator, written out.
+# The denominator is n, written out.
 m <- mean(y)
 all.equal(kurtosis(y), mean((y - m)^4) / mean((y - m)^2)^2 - 3)
 

@@ -16,18 +16,18 @@ A numeric vector of excess kurtoses, the length of \code{theta$mu}, at or
 above \eqn{-2}.
 }
 \description{
-Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}, the excess
-over the Gaussian. It reaches its minimum \eqn{-2} at \eqn{\mu = 1/2}, which
-is the smallest excess kurtosis any distribution attains, and diverges at
-either end of the unit interval.
+The excess kurtosis over the Gaussian has the closed form
+\eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}. It reaches its minimum
+\eqn{-2} at \eqn{\mu = 1/2}, which is the smallest excess kurtosis that any
+distribution attains, and diverges at either end of the unit interval.
 }
 \examples{
 d <- bernoulli_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(kurtosis(d, list(mu = 0.3)), (1 - 6 * 0.21) / 0.21)
 
-# Minus two at one half, the lower bound for any distribution.
+# The value is minus two at one half, the lower bound for any distribution.
 kurtosis(d, list(mu = c(0.1, 0.5, 0.9)))
 
 }

@@ -37,7 +37,7 @@ function for the others.
 }
 \details{
 Every order below the one wanted is collected, and not just the one wanted,
-because the moment-to-cumulant relation \code{\link[=cdf_scale_k]{cdf_scale_k()}} applies is a sum
+because the moment-to-cumulant relation that \code{\link[=cdf_scale_k]{cdf_scale_k()}} applies is a sum
 over partitions of the multi-index: a partition into \eqn{k} blocks reads
 \eqn{k} lower-order ratios.
 

@@ -13,17 +13,18 @@ link_scale_lower_orders(distrib, y, theta, expected, order)
 
 \item{theta}{A named list of parameters.}
 
-\item{expected}{Logical; whether the derivatives wanted are expected ones.}
+\item{expected}{Logical; whether the derivatives to compute are expected
+ones.}
 
-\item{order}{The order being assembled, 1 to 5.}
+\item{order}{The order to assemble, 1 to 5.}
 }
 \value{
-A list of length \code{order - 1}, its \eqn{m}-th element the named
-list of order-\eqn{m} parameter-scale derivatives.
+A list of length \code{order - 1}, in which the \eqn{m}-th element is the
+named list of order-\eqn{m} parameter-scale derivatives.
 }
 \description{
 Collects the parameter-scale derivatives of every order strictly below
-\code{order}, in the layout \code{\link[=to_link_scale]{to_link_scale()}} expects.
+\code{order}, in the layout that \code{\link[=to_link_scale]{to_link_scale()}} expects.
 }
 \details{
 Faa di Bruno mixes all lower orders into each link-scale component, so they

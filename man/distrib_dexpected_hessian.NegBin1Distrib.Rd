@@ -27,12 +27,12 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The first and second derivatives of the expected information in the
-parameters for three families whose expected information is itself a sum
-over the support.
+Computes the first and second derivatives of the expected information in
+the parameters for three families whose expected information is itself a
+sum over the support.
 }
 \details{
-NB1. The expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
+For NB1, the expected information is \eqn{-A}, \eqn{G} and \eqn{-\theta
 G/\mu}, with \eqn{A} and \eqn{G = \mathbb{E}[\ell_{\theta\theta}]} the two
 sums over the support of \code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}}; below
 \eqn{\theta = 0.02} \eqn{G} is \eqn{-\mathbb{E}[\sum_{j<Y} j^2/(\mu +
@@ -41,11 +41,11 @@ j\theta)^2] - \mu q'(\theta)}, whose summands are all positive, and above it
 score of the mass beside the summand, \eqn{\partial_c F = \mathbb{E}[f_c + f
 s_c]} and \eqn{\partial_{ce} F = \mathbb{E}[f_{ce} + f_c s_e + f_e s_c +
 f(s_c s_e + h_{ce})]}, taken in \eqn{(\mu, \theta)} by a compiled kernel,
-with the scores \eqn{s} and second derivatives \eqn{h} of the log-mass
-written so that no term of order \eqn{\mu/\theta^2} is formed. Every
+in which the scores \eqn{s} and second derivatives \eqn{h} of the log-mass
+are written so that no term of order \eqn{\mu/\theta^2} is formed. Every
 component keeps its accuracy down to the Poisson limit \eqn{\theta \to 0}.
 
-Beta-binomial. The support \eqn{\{0, \dots, n\}} is finite, so the
+For the beta-binomial, the support \eqn{\{0, \dots, n\}} is finite, so the
 identities
 \deqn{\partial_c \mathbb{E}[\ell_{ab}] = \mathbb{E}[\ell_{abc} + \ell_{ab}\ell_c]}
 and its second-order counterpart,
@@ -54,13 +54,13 @@ and its second-order counterpart,
 are exact finite sums against the mass. They are taken in the shapes by a
 compiled kernel, where every derivative of the log-mass is a polygamma
 difference at an integer shift and is therefore a sum of negative powers,
-accumulated beside the mass with no polygamma called; \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
-reads the same sums through its map to the shapes for \eqn{\sigma \ge 0.1},
-and below that sums the derivatives of its own direct sums over the support
-(\code{\link[=betabinom1_dexpected]{betabinom1_dexpected()}}). \code{\link[=support_dexpected]{support_dexpected()}} computes the same
-identities from the family's own observed derivatives, sharing no
-arithmetic with the kernel, and the compiled kernel is the faster of the
-two.
+accumulated beside the mass without calling a polygamma;
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} reads the same sums through its map to the shapes for
+\eqn{\sigma \ge 0.1}, and below that sums the derivatives of its own direct
+sums over the support (\code{\link[=betabinom1_dexpected]{betabinom1_dexpected()}}). \code{\link[=support_dexpected]{support_dexpected()}}
+computes the same identities from the family's own observed derivatives,
+sharing no arithmetic with the kernel, and the compiled kernel is the faster
+of the two.
 }
 \seealso{
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}

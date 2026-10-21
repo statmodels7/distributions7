@@ -7,17 +7,17 @@
 \item{x}{A \code{LaplaceDistrib}, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
-(the scale, positive), each a numeric vector of length 1 or \code{n}.}
+(the scale, positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma))}. The location does not
-enter the value, so a setting that varies \code{mu} alone repeats one number.
+enter the value, so a setting that varies only \code{mu} repeats one number.
 }
 \description{
-Closed form, replacing the numerical default:
+The closed form that replaces the numerical default is
 \eqn{\operatorname{Var}(Y) = 2\sigma^2}, so the standard deviation is
 \eqn{\sqrt2\,\sigma} and the scale is smaller than it by the factor
 \eqn{\sqrt2}.
@@ -25,7 +25,7 @@ Closed form, replacing the numerical default:
 \examples{
 d <- laplace_distrib()
 
-# Twice the square of the scale.
+# The variance is twice the square of the scale.
 all.equal(variance(d, list(mu = 0, sigma = 2)), 8)
 
 # The standard deviation is sqrt(2) times the scale.

@@ -7,7 +7,8 @@
 \item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{sigma2}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive), in which each component is a numeric vector of length 1 or
+\code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,9 +17,9 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = 2/\sqrt a = 2\sigma/\mu} with shape
-\eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value, the
-support being the positive half-line, and it is exactly twice the
+The skewness has the closed form \eqn{\gamma_1 = 2/\sqrt a = 2\sigma/\mu}
+with shape \eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value,
+because the support is the positive half-line, and it is exactly twice the
 coefficient of variation, so a gamma's asymmetry and its relative spread
 carry the same information.
 }
@@ -31,7 +32,7 @@ carry the same information.
 \examples{
 d <- gamma2_distrib()
 
-# Twice the coefficient of variation.
+# The skewness is twice the coefficient of variation.
 all.equal(skewness(d, list(mu = 2, sigma2 = 1)), 2 * sqrt(1) / 2)
 
 # It flattens as the implied shape grows.

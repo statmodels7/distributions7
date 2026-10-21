@@ -14,8 +14,8 @@ NULL
 #' @title Mixed Third-Response Parameter Derivatives of the Log-Density
 #'
 #' @description
-#' Computes \eqn{\partial^4 \ell / \partial y^3\, \partial \theta_i}, one
-#' component per parameter, each a vector along `y`. It is
+#' Computes \eqn{\partial^4 \ell / \partial y^3\, \partial \theta_i}, with one
+#' component per parameter, and each component is a vector along `y`. It is
 #' [distrib_deriv3_y()] differentiated once in each parameter.
 #'
 #' @details
@@ -55,8 +55,8 @@ NULL
 #' @inheritParams distrib_gradient
 #' @param ... Passed to the method.
 #'
-#' @return A named list with one numeric vector per parameter, each as long as
-#'   `y`, keyed by `distrib@params`.
+#' @return A named list with one numeric vector per parameter, keyed by
+#'   `distrib@params`. Each vector is as long as `y`.
 #'
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{y} the response,
@@ -74,7 +74,8 @@ NULL
 #' theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
 #' distrib_cross3_y(d, y, theta)
 #'
-#' # Against a numerical derivative of the analytic third response derivative.
+#' # The result is compared with a numerical derivative of the analytic third
+#' # response derivative.
 #' f <- function(v) distrib_deriv3_y(d, y[1], list(mu = 0.4, sigma = v, nu = 6))
 #' numDeriv::grad(f, 1.3)
 #'
@@ -101,7 +102,7 @@ distrib_cross3_y <- S7::new_generic("distrib_cross3_y", "distrib", function(dist
 #' [mixed_tensor_derivatives()].
 #'
 #' @details
-#' A family carrying an analytic `distrib_deriv3_y` pays for exactly one
+#' A family carrying an analytic `distrib_deriv3_y` requires exactly one
 #' difference. Where that derivative is itself the base class's stencil on the
 #' log-density, the two differences act on different variables and compose
 #' into one mixed stencil. The step is chosen by [fd_stable_step()], so that
@@ -110,14 +111,14 @@ distrib_cross3_y <- S7::new_generic("distrib_cross3_y", "distrib", function(dist
 #'
 #' @param distrib A distribution object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters, the point to differentiate at.
+#' @param theta A named list of parameters at which the derivative is computed.
 #' @param h_rel The relative step, defaulting to `.Machine$double.eps^(1/3)`,
 #'   the optimal exponent for a central first difference.
 #' @param which An optional character vector naming a subset of
 #'   `distrib@params`. The default, `NULL`, computes every component.
 #'
-#' @return A named list with one numeric vector per requested parameter, each
-#'   as long as `y`.
+#' @return A named list with one numeric vector per requested parameter. Each
+#'   vector is as long as `y`.
 #'
 #' @seealso [distrib_cross3_y()], the generic that it serves, and
 #'   [distrib_deriv3_y()] for the quantity that it differences.
@@ -127,7 +128,7 @@ distrib_cross3_y <- S7::new_generic("distrib_cross3_y", "distrib", function(dist
 #' y <- c(-1, 0, 2)
 #' theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
 #'
-#' # Against the identity the location family uses.
+#' # The result is compared with the identity that the location family uses.
 #' max(abs(unlist(numerical_cross3_y(d, y, theta)) -
 #'         unlist(distrib_cross3_y(d, y, theta))))
 #'
@@ -161,7 +162,7 @@ numerical_cross3_y <- function(distrib, y, theta,
 #' @name distrib_cross3_y.continuous_distrib
 #'
 #' @description
-#' Falls back to one tensor stencil on the highest quantity the family
+#' Falls back to one tensor stencil on the highest quantity that the family
 #' implements itself, through [mixed_tensor_derivatives()]: a central
 #' difference of an analytic [distrib_deriv3_y()] in each parameter, a third
 #' difference in the response of an analytic score, or one mixed stencil of
@@ -211,16 +212,16 @@ S7::method(distrib_cross3_y, continuous_distrib) <- function(distrib, y, theta,
 #'   dispatch.
 #' @param ... Unused.
 #'
-#' @return A named list with one numeric vector per parameter, each as long as
-#'   `y`.
+#' @return A named list with one numeric vector per parameter. Each vector is
+#'   as long as `y`.
 #'
 #' @section Registered on:
-#' The fourteen location families on which this function is registered:
+#' This function is registered on the fourteen location families
 #' `Gaussian1Distrib`, `Gaussian2Distrib`,
 #' `Gaussian3Distrib`, `CauchyDistrib`, `LogisticDistrib`, `LaplaceDistrib`,
 #' `Laplace2Distrib`, `EnetDistrib`, `PseudoHuberDistrib`, `StudentT1Distrib`,
 #' `SkewNormal1Distrib`, `SkewNormal2Distrib`, `SkewTDistrib`,
-#' `GumbelDistrib`.
+#' and `GumbelDistrib`.
 #'
 #' @aliases distrib_cross3_y.Gaussian1Distrib distrib_cross3_y.Gaussian2Distrib
 #' @aliases distrib_cross3_y.Gaussian3Distrib distrib_cross3_y.CauchyDistrib

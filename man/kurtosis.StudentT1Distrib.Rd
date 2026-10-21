@@ -7,35 +7,37 @@
 \item{x}{A \code{StudentT1Distrib}, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
-(positive), each a numeric vector of length 1 or \code{n}. Only \code{nu} enters the
-value.}
+(positive), in which each component is a numeric vector of length 1 or
+\code{n}. Only \code{nu} enters the value.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, of length equal to the longest
-of the three components, \code{Inf} where \eqn{2 < \nu \le 4} and \code{NaN} where
-\eqn{\nu \le 2}.
+A numeric vector of excess kurtoses, whose length is the one that the
+recycled parameters imply, with \code{Inf} where \eqn{2 < \nu \le 4} and \code{NaN}
+where \eqn{\nu \le 2}.
 }
 \description{
-Closed form: \eqn{\gamma_2 = 6/(\nu-4)} for \eqn{\nu > 4}, \code{Inf} for
-\eqn{2 < \nu \le 4}, and \code{NaN} at or below two. The excess kurtosis is 6 at
+The excess kurtosis has the closed form \eqn{\gamma_2 = 6/(\nu-4)} for
+\eqn{\nu > 4}; it is \code{Inf} for \eqn{2 < \nu \le 4} and \code{NaN} at or below
+two. The excess kurtosis is 6 at
 \eqn{\nu = 5}, 1 at \eqn{\nu = 10}, and tends to the Gaussian's zero as the
 degrees of freedom increase.
 }
 \section{Notation}{
 
-\eqn{\nu > 0} is the degrees of freedom. Neither the location nor the scale
-enters a standardized moment.
+\eqn{\nu > 0} is the degrees of freedom. The location and the scale do not
+enter a standardized moment.
 }
 
 \examples{
 d <- student_t1_distrib()
 
-# NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+# The values are NaN, infinite and finite, in that order, as nu crosses its
+# two thresholds.
 kurtosis(d, list(mu = 0, sigma = 1, nu = c(2, 3, 4, 5)))
 
-# 6 / (nu - 4), tending to the Gaussian's zero.
+# The value is 6 / (nu - 4), which tends to the Gaussian's zero.
 kurtosis(d, list(mu = 0, sigma = 1, nu = c(10, 100, 1e4)))
 
 }

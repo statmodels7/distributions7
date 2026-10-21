@@ -6,17 +6,18 @@
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
-each a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive;
+each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means, of length equal to the longest of the
-three components.
+A numeric vector of means, whose length is the one that the recycled
+parameters imply.
 }
 \description{
-Closed form: \eqn{E[Y] = a\,\Gamma\{(d+1)/p\}/\Gamma(d/p)}, the first raw
+The mean has the closed form
+\eqn{E[Y] = a\,\Gamma\{(d+1)/p\}/\Gamma(d/p)}, the first raw
 moment. The mean is a function of all three parameters: \eqn{a} is a scale,
 \eqn{d} and \eqn{p} are shapes, and the gamma ratio carries the shapes into
 the mean.

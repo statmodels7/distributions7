@@ -9,7 +9,7 @@ no method of its own.}
 
 \item{n}{The number of draws, a single non-negative integer.}
 
-\item{theta}{A named list of parameters, each of length 1 or \code{n}. A
+\item{theta}{A named list of parameters; each has length 1 or \code{n}. A
 component of length \code{n} gives one draw per parameter setting.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,9 +18,9 @@ component of length \code{n} gives one draw per parameter setting.}
 A numeric vector of \code{n} draws.
 }
 \description{
-The fallback for a continuous family that implements no generator of its
-own. It chooses between two routes according to whether the family has a
-quantile method of its own:
+This method is the fallback for a continuous family that implements no
+generator of its own. The method uses one of two routes, according to
+whether the family has a quantile method of its own:
 \itemize{
 \item inverse transform where \code{\link[=has_analytic_quantile]{has_analytic_quantile()}} is \code{TRUE}, which
 costs one quantile evaluation per draw;
@@ -43,7 +43,7 @@ setting, one bounding rectangle per group.
 }
 \seealso{
 \code{\link[=rng_grou]{rng_grou()}} for the ratio-of-uniforms sampler and its theory;
-\code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, which chooses between the two routes;
+\code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, which determines the route that is taken;
 \code{\link[=distrib_rng.discrete_distrib]{distrib_rng.discrete_distrib()}}, where the question does not arise;
 \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

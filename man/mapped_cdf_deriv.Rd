@@ -19,7 +19,7 @@ mapped_cdf_deriv(
 \arguments{
 \item{distrib}{The mapped family, whose cdf and parameter names are read.}
 
-\item{parent}{The distribution it maps onto.}
+\item{parent}{The distribution onto which the mapped family maps.}
 
 \item{th_par}{The parent's parameters, evaluated at the new ones.}
 
@@ -43,18 +43,19 @@ per new parameter at order 1, and one per \code{\link[=hess_names]{hess_names()}
 order 2.
 }
 \description{
-The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body that every mapped
-family shares. It tests whether the parent's cdf derivatives are exact at every
-order up to the one wanted, takes \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} if they are, and falls
-back to \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} on the new family's own cdf if they are not.
+This is the \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body that every
+mapped family shares. The body tests whether the parent's cdf derivatives are
+exact at every order up to the one wanted. If they are, it calls
+\code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}; if they are not, it calls \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} on the
+new family's own cdf.
 }
 \section{The exactness test}{
 \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} is applied to the parent at order 1 and, for a
 Hessian, at order 2 as well. The chain is exact only if what it carries is
-exact; taken over a differenced parent it would add rounding to rounding and
-cost more than differencing the child's cdf once. The test is made at each
-call, so a parent that gains a closed order moves its mapped families onto
-the chain without any edit here.
+exact; if it is taken over a differenced parent, it adds rounding to rounding
+and costs more than differencing the child's cdf once. The test is made at
+each call, so a parent that gains a closed order moves its mapped families
+onto the chain without any edit here.
 }
 
 \seealso{

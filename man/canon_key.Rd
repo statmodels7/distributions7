@@ -16,6 +16,6 @@ A single string.
 }
 \description{
 Names a block of parameters the way \code{\link[=deriv_names]{deriv_names()}} does: in the
-order the distribution declares them, joined by an underscore.
+order in which the distribution declares them, joined by an underscore.
 }
 \keyword{internal}

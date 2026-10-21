@@ -25,15 +25,16 @@ at order 1 and as \code{\link[=d2expected_names]{d2expected_names()}} at order 2
 \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} is the shapes \eqn{a = \mu/\sigma} and
 \eqn{b = (1-\mu)/\sigma} under another name, so its derivatives are the
 shapes' ones, summed exactly over the support by the compiled kernel, and
-carried across with the map's partials written out (at order 1 by the
-compiled kernel \code{betabinom1_dexpected1_cpp}, at order 2 by
+carried across by the map's partials, which are written out (at order 1 by
+the compiled kernel \code{betabinom1_dexpected1_cpp}, at order 2 by
 \code{\link[=dexpected_chain]{dexpected_chain()}}):
 \eqn{a_\mu = 1/\sigma}, \eqn{a_\sigma = -\mu/\sigma^2},
 \eqn{a_{\mu\sigma} = -1/\sigma^2}, \eqn{a_{\sigma\sigma} = 2\mu/\sigma^3},
 \eqn{a_{\mu\sigma\sigma} = 2/\sigma^3},
 \eqn{a_{\sigma\sigma\sigma} = -6\mu/\sigma^4}, and for \eqn{b} the same
-with \eqn{\mu} replaced by \eqn{1-\mu} and every derivative in \eqn{\mu}
-changing sign; every derivative taking \eqn{\mu} twice is zero. Below
+after replacing \eqn{\mu} by \eqn{1-\mu} and changing the sign of every
+derivative in \eqn{\mu}; every derivative that takes \eqn{\mu} twice is
+zero. Below
 \code{\link[=bb_direct_cut]{bb_direct_cut()}} these partials, of order \eqn{\sigma^{-4}}, cancel among
 themselves, and the rows with \eqn{\sigma < 0.1} are computed instead by the
 compiled kernel \code{betabinom1_dexpected_direct_cpp}, which sums over the

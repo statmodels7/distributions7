@@ -7,7 +7,8 @@
 \item{x}{A \code{Gaussian1Distrib}, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean) and \code{sigma} (the
-standard deviation, positive), each a numeric vector of length 1 or \code{n}.}
+standard deviation, positive), in which each component is a numeric vector
+of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,14 +17,14 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. This parametrization
-carries the standard deviation, so the variance is its square and
-\code{\link[=std_dev.distrib]{std_dev.distrib()}} returns the parameter back unchanged.
+The variance has the closed form \eqn{\operatorname{Var}(Y) = \sigma^2}. This
+parametrization carries the standard deviation, so the variance is its square
+and \code{\link[=std_dev.distrib]{std_dev.distrib()}} returns the parameter back unchanged.
 }
 \examples{
 d <- gaussian1_distrib()
 
-# The square of the second parameter.
+# The variance is the square of the second parameter.
 variance(d, list(mu = 0, sigma = c(1, 2, 4)))
 
 # The standard deviation is the parameter itself.

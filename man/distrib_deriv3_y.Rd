@@ -22,17 +22,18 @@ distrib_deriv4_y(distrib, y, theta, ...)
 A numeric vector the length of \code{y}.
 }
 \description{
+\code{distrib_deriv3_y()} and \code{distrib_deriv4_y()} return
 \eqn{\partial^{3}\ell/\partial y^{3}} and
-\eqn{\partial^{4}\ell/\partial y^{4}}, completing the sequence begun by
+\eqn{\partial^{4}\ell/\partial y^{4}}, which complete the sequence begun by
 \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}.
 }
 \details{
-A family whose response enters only as \eqn{y - \mu} gets these from the
-derivatives it already has in the location, since
-\eqn{\partial^{k}\ell/\partial y^{k} = (-1)^{k}\,
+For a family whose response enters only as \eqn{y - \mu}, these derivatives
+follow from the derivatives that the family already has in the location,
+since \eqn{\partial^{k}\ell/\partial y^{k} = (-1)^{k}\,
 \partial^{k}\ell/\partial\mu^{k}}. The other shipped families take them from
-closed forms of their own, and a family defined by its density alone takes
-one stencil of the requested order on the log-density.
+closed forms of their own, and a family that is defined only by its density
+takes one stencil of the requested order on the log-density.
 
 As with the lower orders, a discrete family has no such derivative, and the
 call signals an error instead of returning a difference between support

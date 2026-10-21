@@ -2,7 +2,7 @@
 % Please edit documentation in R/partition_sums.R
 \name{log_deriv}
 \alias{log_deriv}
-\title{Derivatives of a Logarithm From the Ratios Alone}
+\title{Derivatives of a Logarithm From the Ratios Only}
 \usage{
 log_deriv(idx, ratio)
 }
@@ -11,7 +11,8 @@ log_deriv(idx, ratio)
 the multi-index \eqn{I}. Its length is the order.}
 
 \item{ratio}{A function of one block, returning \eqn{d^B L / L} for that
-block as a numeric vector. Called once per block of every partition.}
+block as a numeric vector. \code{ratio} is called once per block of every
+partition.}
 }
 \value{
 A numeric vector, the length of whatever \code{ratio} returns:
@@ -23,7 +24,7 @@ Computes \eqn{d^I \log L} from the ratios \eqn{d^B L / L}, as
       \prod_{B \in \pi} \frac{d^B L}{L},}
 the moment-to-cumulant relation. Only the ratios are needed, never
 \eqn{L}'s own derivatives and never \eqn{L} itself, so a wrapper can
-differentiate a normalizing constant it can only evaluate up to scale.
+differentiate a normalizing constant that it can only evaluate up to scale.
 }
 \details{
 It is the inverse of \code{\link[=bell_f_ratio]{bell_f_ratio()}}: that sum carries derivatives of a

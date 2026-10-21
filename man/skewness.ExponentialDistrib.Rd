@@ -15,14 +15,14 @@ vector of length 1 or \code{n}. The value is not read, only its length.}
 A numeric vector of 2s, the length of \code{theta$mu}.
 }
 \description{
-Constant: \eqn{\gamma_1 = 2}. The family is a scale family with no shape
-parameter, so a standardized moment is a number: every exponential has the
-same asymmetry, whatever its mean.
+The skewness is the constant \eqn{\gamma_1 = 2}. The family is a scale family
+with no shape parameter, so a standardized moment is a number: every
+exponential has the same asymmetry, whatever its mean.
 }
 \examples{
 d <- exponential_distrib()
 
-# Two, whatever the mean.
+# The skewness is two, whatever the mean.
 skewness(d, list(mu = c(0.1, 3, 100)))
 
 }

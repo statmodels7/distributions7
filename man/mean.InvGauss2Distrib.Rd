@@ -7,7 +7,8 @@
 \item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{lambda} (the shape, positive), each a numeric vector of length 1 or \code{n}.}
+\code{lambda} (the shape, positive); each is a numeric vector of length 1 or
+\code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,9 +17,9 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This is the inverse Gaussian written by its
-mean and the shape \eqn{\lambda = 1/\phi}, the classical parametrization, and
-the mean is the first parameter in either.
+The mean has the closed form \eqn{E[Y] = \mu}. This is the inverse Gaussian
+written by its mean and the shape \eqn{\lambda = 1/\phi}, the classical
+parametrization, and the mean is the first parameter in either.
 }
 \examples{
 d <- invgauss2_distrib()

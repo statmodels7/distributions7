@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
-a numeric vector of length 1 or \code{n}. The values are checked against the
+\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive); each
+is a numeric vector of length 1 or \code{n}. The values are checked against the
 parameter bounds, and only their lengths enter the result.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,15 +17,15 @@ A numeric vector of zeros, of length
 \code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Exactly zero at every parameter value. \code{\link[=kurtosis]{kurtosis()}} reports the excess over
-the Gaussian's own fourth standardized moment of 3, so every Gaussian sits
-at the origin of the scale whichever of the three parametrizations it is
-written in.
+The excess kurtosis is exactly zero at every parameter value. \code{\link[=kurtosis]{kurtosis()}}
+reports the excess over the Gaussian's own fourth standardized moment of 3,
+so every Gaussian sits at the origin of the scale whichever
+parametrization it is written in.
 }
 \examples{
 d <- gaussian2_distrib()
 
-# Zero for every Gaussian, in every parametrization.
+# The excess kurtosis is zero for every Gaussian, in every parametrization.
 kurtosis(d, list(mu = 0, sigma2 = c(1, 100)))
 
 }

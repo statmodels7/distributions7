@@ -7,7 +7,7 @@
 \item{x}{A \code{Laplace2Distrib}, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location) and \code{lambda}
-(the rate, positive), each a numeric vector of length 1 or \code{n}. The
+(the rate, positive); each is a numeric vector of length 1 or \code{n}. The
 variance diverges as the rate approaches zero.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -15,10 +15,10 @@ variance diverges as the rate approaches zero.}
 \value{
 A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$lambda))}. The location does not
-enter the value, so a setting that varies \code{mu} alone repeats one number.
+enter the value, so a setting that varies only \code{mu} repeats one number.
 }
 \description{
-Closed form, replacing the numerical default:
+The closed form that replaces the numerical default is
 \eqn{\operatorname{Var}(Y) = 2/\lambda^2}. With \eqn{\lambda = 1/\sigma}
 this is the \eqn{2\sigma^2} of \code{\link[=variance.LaplaceDistrib]{variance.LaplaceDistrib()}}, so the two
 parametrizations agree on the law and differ only in which number is
@@ -27,7 +27,7 @@ reported. A larger rate is a tighter distribution.
 \examples{
 d <- laplace2_distrib()
 
-# Two over the square of the rate.
+# The variance is two over the square of the rate.
 all.equal(variance(d, list(mu = 0, lambda = 0.5)), 8)
 
 # The two parametrizations agree when lambda = 1 / sigma.

@@ -19,26 +19,27 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors, one per new parameter, each the
-length of \code{q} recycled against \code{theta}.
+A named list of numeric vectors, one per new parameter; each
+has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-The chain rule on the parent's cdf derivatives, through
+Applies the chain rule to the parent's cdf derivatives, through
 \code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}}. It is exact whenever the derivatives of the parent
 and the partials of the map are; where the parent differences its own cdf,
-so does this, the chain having nothing closed to carry.
+so does this method, because the chain then carries only numerical
+derivatives.
 }
 \details{
-The partials of the map come from the object itself, \code{reparam_tables()}
-reading the keyed tables that the reparametrization was built with. They
+The partials of the map come from the object itself: \code{reparam_tables()}
+reads the keyed tables with which the reparametrization was built. They
 are exact when \code{\link[=reparametrize]{reparametrize()}} was given \code{map_derivs}, and single
 stencils on the map otherwise, so a family created by \code{\link[=reparametrize]{reparametrize()}}
 carries the closed cdf derivatives of its parent through the map to the
 accuracy of those partials.
 }
 \examples{
-# A Gaussian reparametrized in the variance. Its parent has closed cdf
-# derivatives, and the map's partials here come from a stencil.
+# This example reparametrizes a Gaussian in the variance. Its parent has
+# closed cdf derivatives, and the map's partials here come from a stencil.
 d <- reparametrize(
   gaussian1_distrib(),
   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),

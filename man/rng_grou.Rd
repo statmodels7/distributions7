@@ -11,7 +11,7 @@ rng_grou(distrib, n, theta, r = 2)
 
 \item{n}{Number of observations to generate.}
 
-\item{theta}{A named list of parameters, each of length one.}
+\item{theta}{A named list of parameters; each has length one.}
 
 \item{r}{Numeric tuning parameter of the transformation power, default \code{2}.
 \code{r=1} is the classical ratio-of-uniforms method, whose acceptance region
@@ -53,37 +53,38 @@ numerical range whatever the height of the density, and all computations are
 carried out on the log scale.
 }
 
-The bounds \eqn{v_{\min}, v_{\max}} are obtained by expanding geometrically away
-from the mode until \eqn{h} has clearly turned back towards zero (finite support
-bounds are used directly), then combining \code{\link[stats:optimize]{stats::optimize()}} with a grid
-search over the resulting bracket; the box is enclosing by construction for a
-unimodal kernel. Candidates are generated and filtered in vectorized batches whose
-size adapts to the observed acceptance rate.
+The function obtains the bounds \eqn{v_{\min}, v_{\max}} by expanding
+geometrically away from the mode until \eqn{h} has clearly turned back
+towards zero (finite support bounds are used directly), and then combines
+\code{\link[stats:optimize]{stats::optimize()}} with a grid search over the resulting bracket; the box is
+enclosing by construction for a unimodal kernel. Candidates are generated and
+filtered in vectorized batches whose size adapts to the observed acceptance
+rate.
 }
 \section{Unbounded densities}{
 
 The method needs the supremum of the kernel to be attained, so a density that
 diverges at a finite edge of its support would have its acceptance region
-clipped. Rather than give up, such an edge is transformed away.
+clipped. Such an edge is transformed away, so that the sampler still applies.
 
 If \eqn{f(y) \sim |y-a|^{\alpha-1}} near the edge \eqn{a}, with \eqn{\alpha < 1},
 then \eqn{X = |Y-a|^{1/\lambda}} has density proportional to
 \eqn{x^{\lambda\alpha-1}} there, which is bounded as soon as
-\eqn{\lambda\alpha > 1}. Sampling \eqn{X} and mapping back is exact: no
-quadrature and no inversion are involved. The exponent \eqn{\alpha} is read off
+\eqn{\lambda\alpha > 1}. Sampling \eqn{X} and mapping back is exact and uses
+no quadrature and no inversion. The exponent \eqn{\alpha} is read off
 the same probe that detects the divergence: walking towards the edge in
 decades lifts the log-density by \eqn{(1-\alpha)\log 10} per step, and
 \eqn{\lambda} follows from that slope. A Gamma of shape \eqn{0.4}, for instance, is
 sampled through \eqn{X = Y^{1/4}}.
 
 A density diverging at \emph{both} edges, such as a Beta with both shapes below
-one, is beyond any single power: flattening one edge steepens the other. What
-does work is a map that behaves like a different power at each end,
-\deqn{T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a + (b-a)\,T(U),}
-monotone from 0 to 1, with a closed-form derivative, and carrying the exponents
-\eqn{p\alpha - 1} and \eqn{q\beta - 1} at the two ends. Choosing
-\eqn{p\alpha > 1} and \eqn{q\beta > 1} makes the density of \eqn{U} vanish at
-both ends, turning a U-shaped density into a single-peaked one.
+one, is beyond any single power: flattening one edge steepens the other. A
+map that behaves like a different power at each end works,
+\deqn{T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a + (b-a)\,T(U).}
+The map is monotone from 0 to 1, has a closed-form derivative, and carries
+the exponents \eqn{p\alpha - 1} and \eqn{q\beta - 1} at the two ends.
+Choosing \eqn{p\alpha > 1} and \eqn{q\beta > 1} makes the density of \eqn{U}
+vanish at both ends, turning a U-shaped density into a single-peaked one.
 
 Near an edge the variable itself stops being resolvable: at a non-zero edge the
 spacing of doubles is absolute, so a slab of \eqn{u} collapses onto the edge and

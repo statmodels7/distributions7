@@ -12,8 +12,8 @@ the multi-index \eqn{I}: \code{c("mu", "mu", "sigma")} is
 \eqn{\partial^3/\partial\mu^2\partial\sigma}. Its length is the order.}
 
 \item{ell}{A function of one block, returning \eqn{\ell^{(B)}} for the
-parameters that block names, as a numeric vector. Called once per block of
-every partition, so a caller with an expensive parent memoizes it.}
+parameters that block names, as a numeric vector. \code{ell} is called once per
+block of every partition, so a caller with an expensive parent memoizes it.}
 }
 \value{
 A numeric vector, the length of whatever \code{ell} returns: the ratio
@@ -29,16 +29,16 @@ block names.
 }
 \details{
 This is the Bartlett lemma read backwards. The identity is normally used to
-eliminate a derivative; here it builds one, and that is what every wrapper
-needs: each wrapper's log-likelihood is the parent's log-density plus, or in
+eliminate a derivative; here it builds one, which every wrapper needs
+because each wrapper's log-likelihood is the parent's log-density plus, or in
 place of, \eqn{\log L} for some \eqn{\theta}-dependent \eqn{L}, and the
 orders above two are assembled from this sum together with \code{\link[=log_deriv]{log_deriv()}}.
 
 At order 1 it returns \eqn{\ell^{(i)}} and at order 2
 \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}}, the ordinary relation between the
 second derivative of a density and of its logarithm. Those two cases
-reproduce the hand-written closed forms exactly, and that agreement is the
-license for the orders that have nothing to compare against.
+reproduce the hand-written closed forms exactly, which supports the use of
+the sum at the orders that have no closed form for comparison.
 }
 \seealso{
 \code{\link[=log_deriv]{log_deriv()}}, the companion identity for a logarithm;

@@ -12,15 +12,15 @@ link_scale_layout(params, order)
 \item{order}{The derivative order.}
 }
 \value{
-A list with one entry per component of that order, each carrying
-\code{name}, the multi-index's distinct entries \code{uniq}, their
-multiplicities \code{mult}, and \code{combos}, one entry per term of
+A list with one entry per component of that order. Each entry
+contains \code{name}, the distinct entries \code{uniq} of the multi-index, their
+multiplicities \code{mult}, and \code{combos}, which has one entry per term of
 the nested sum with its exponents, its order and its lookup key.
 }
 \description{
-Which parameter-scale components enter each link-scale component of a
-given order, with the multiplicities and the lookup keys, for one vector
-of parameter names.
+Lists the parameter-scale components that enter each link-scale component
+of a given order, with the multiplicities and the lookup keys, for one
+vector of parameter names.
 }
 \details{
 The multi-index list, the multiplicities and the keys of the
@@ -30,7 +30,7 @@ instead of rebuilding them on every call, which matters because a
 score-driven filter reaches it once per observation and iteration.
 
 The combinations are enumerated by decoding a counter in mixed radix
-rather than with \code{expand.grid}, and the enumeration is paid once per
+rather than with \code{expand.grid}, and the enumeration runs once per
 family and order.
 
 The cache is keyed by the parameter names and the order, so it holds one

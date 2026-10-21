@@ -14,7 +14,7 @@ grou_two_sided(lp, b, div, n, r)
 \item{div}{The exponents at the two edges, from
 \code{\link[=lp_edge_divergence]{lp_edge_divergence()}}.}
 
-\item{n}{The number of draws wanted.}
+\item{n}{The number of draws.}
 
 \item{r}{The ratio-of-uniforms tuning parameter.}
 }
@@ -38,8 +38,8 @@ The density of \eqn{U} therefore carries the exponents \eqn{p\alpha - 1} and
 \eqn{q\beta - 1} at the two ends and is bounded as soon as \eqn{p\alpha > 1}
 and \eqn{q\beta > 1}. It vanishes there, in fact, turning the original
 U-shaped density into a single-peaked one, the shape that the sampler
-requires. Both exponents come from the same probe that detected the divergence,
-so nothing has to be searched for.
+requires. Both exponents come from the same probe that detected the
+divergence, so they are obtained without a search.
 }
 \seealso{
 \code{\link[=grou_core]{grou_core()}}, \code{\link[=lp_edge_divergence]{lp_edge_divergence()}}

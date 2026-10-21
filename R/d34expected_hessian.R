@@ -23,9 +23,9 @@ NULL
 #' The Third Derivative of the Expected Information
 #'
 #' @description
-#' \eqn{\partial^3\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d\,
-#' \partial\theta_e}, one component per pair \eqn{(a,b)} and per unordered
-#' triple \eqn{(c,d,e)}.
+#' Returns \eqn{\partial^3\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,
+#' \partial\theta_d\,\partial\theta_e}, with one component per pair
+#' \eqn{(a,b)} and per unordered triple \eqn{(c,d,e)}.
 #'
 #' @details
 #' The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e)}
@@ -44,11 +44,11 @@ NULL
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters, each of length 1 or
+#' @param theta A named list of parameters; each has length 1 or
 #'   `length(y)`.
 #' @param scale `"parameter"` or `"link"`.
 #' @param approx,nsim Accepted for symmetry with
-#'   [distrib_dexpected_hessian()]; no method reads them.
+#'   [distrib_dexpected_hessian()]; the methods ignore them.
 #' @param ... Passed to methods.
 #'
 #' @return A named list of numeric vectors, keyed as
@@ -77,8 +77,9 @@ distrib_d3expected_hessian <- S7::new_generic(
 #' @title Default Third Derivative of the Expected Information
 #' @name distrib_d3expected_hessian.distrib
 #' @description
-#' One central difference of [distrib_d2expected_hessian()] per parameter;
-#' an error where the family has no analytic second derivative.
+#' Takes one central difference of [distrib_d2expected_hessian()] per
+#' parameter and signals an error where the family has no analytic second
+#' derivative.
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
@@ -97,9 +98,9 @@ S7::method(distrib_d3expected_hessian, distrib) <- function(
 #' The Fourth Derivative of the Expected Information
 #'
 #' @description
-#' \eqn{\partial^4\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d\,
-#' \partial\theta_e\,\partial\theta_f}, one component per pair \eqn{(a,b)} and
-#' per unordered quadruple \eqn{(c,d,e,f)}.
+#' Returns \eqn{\partial^4\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,
+#' \partial\theta_d\,\partial\theta_e\,\partial\theta_f}, with one component
+#' per pair \eqn{(a,b)} and per unordered quadruple \eqn{(c,d,e,f)}.
 #'
 #' @details
 #' The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e,f)}
@@ -142,8 +143,8 @@ distrib_d4expected_hessian <- S7::new_generic(
 #' @title Default Fourth Derivative of the Expected Information
 #' @name distrib_d4expected_hessian.distrib
 #' @description
-#' One second-order stencil on [distrib_d2expected_hessian()]; an error where
-#' the family has no analytic second derivative.
+#' Applies one second-order stencil to [distrib_d2expected_hessian()] and
+#' signals an error where the family has no analytic second derivative.
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
@@ -162,9 +163,9 @@ S7::method(distrib_d4expected_hessian, distrib) <- function(
 #' The Names of the Expected Information's Third Derivative
 #'
 #' @description
-#' One key per pair \eqn{(a,b)}, spelled as [hess_names()] spells it, and per
-#' unordered triple, spelled as [deriv_names()] spells it at order three,
-#' joined `ab` first.
+#' Returns one key per pair \eqn{(a,b)}, spelled as [hess_names()] spells it,
+#' and per unordered triple, spelled as [deriv_names()] spells it at order
+#' three, joined `ab` first.
 #'
 #' @param params A character vector of parameter names, in the family's order.
 #'
@@ -186,9 +187,9 @@ d3expected_names <- function(params) {
 #' The Names of the Expected Information's Fourth Derivative
 #'
 #' @description
-#' One key per pair \eqn{(a,b)}, spelled as [hess_names()] spells it, and per
-#' unordered quadruple, spelled as [deriv_names()] spells it at order four,
-#' joined `ab` first.
+#' Returns one key per pair \eqn{(a,b)}, spelled as [hess_names()] spells it,
+#' and per unordered quadruple, spelled as [deriv_names()] spells it at order
+#' four, joined `ab` first.
 #'
 #' @param params A character vector of parameter names, in the family's order.
 #'
@@ -210,14 +211,14 @@ d4expected_names <- function(params) {
 #' The Key of One Component of the Expected Information's Third Derivative
 #'
 #' @description
-#' The name under which [distrib_d3expected_hessian()] returns
+#' Returns the name under which [distrib_d3expected_hessian()] returns
 #' \eqn{\partial^3\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d\,
 #' \partial\theta_e}.
 #'
 #' @param params A character vector of parameter names, in the family's order.
 #' @param a,b Indices of the information's pair; their order does not matter.
-#' @param c,d,e Indices of the parameters differentiated in; their order does
-#'   not matter either.
+#' @param c,d,e Indices of the parameters with respect to which the derivative
+#'   is taken; their order does not matter either.
 #'
 #' @return A single string.
 #'
@@ -236,14 +237,14 @@ d3expected_key <- function(params, a, b, c, d, e) {
 #' The Key of One Component of the Expected Information's Fourth Derivative
 #'
 #' @description
-#' The name under which [distrib_d4expected_hessian()] returns
+#' Returns the name under which [distrib_d4expected_hessian()] returns
 #' \eqn{\partial^4\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d\,
 #' \partial\theta_e\,\partial\theta_f}.
 #'
 #' @param params A character vector of parameter names, in the family's order.
 #' @param a,b Indices of the information's pair; their order does not matter.
-#' @param c,d,e,f Indices of the parameters differentiated in; their order
-#'   does not matter either.
+#' @param c,d,e,f Indices of the parameters with respect to which the
+#'   derivative is taken; their order does not matter either.
 #'
 #' @return A single string.
 #'
@@ -263,9 +264,9 @@ d4expected_key <- function(params, a, b, c, d, e, f) {
 #' Information?
 #'
 #' @description
-#' `TRUE` where the [distrib_d2expected_hessian()] method that dispatches is
-#' registered on a class other than the base class, whose method signals an
-#' error.
+#' Returns `TRUE` when the [distrib_d2expected_hessian()] method that
+#' dispatches is registered on a class other than the base class. The method
+#' of the base class signals an error.
 #'
 #' @param x A distribution object.
 #'
@@ -283,8 +284,8 @@ has_d2expected_hessian <- function(x) {
 #' The Third or Fourth Derivative of the Expected Information by One Stencil
 #'
 #' @description
-#' The default route behind [distrib_d3expected_hessian()] and
-#' [distrib_d4expected_hessian()]: one central stencil on the family's
+#' Computes the default route behind [distrib_d3expected_hessian()] and
+#' [distrib_d4expected_hessian()] by one central stencil on the family's
 #' analytic second derivative of its expected information.
 #'
 #' @details

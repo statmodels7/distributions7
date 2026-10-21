@@ -27,7 +27,8 @@ components keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, 3)}}; 
 recycled against \code{theta}.
 }
 \description{
-The fallback both generics take when a family registers no closed form.
+Provides the fallback that both generics take when a family registers no
+closed form.
 \code{\link[=cdf_tables]{cdf_tables()}} assembles the derivatives of \eqn{F} of every order up to the
 one wanted, by the exact sum for a discrete family and by one product
 stencil for a continuous one, and \code{\link[=cdf_scale_k]{cdf_scale_k()}} puts the top order on the
@@ -54,7 +55,7 @@ distrib_deriv4_cdf(betabinom1_distrib(size = 10), 4,
 }
 \seealso{
 \code{\link[=cdf_tables]{cdf_tables()}} and \code{\link[=cdf_scale_k]{cdf_scale_k()}}, the two halves;
-\code{\link[=loc_scale_deriv_cdf_k]{loc_scale_deriv_cdf_k()}}, the closed route that five families take
+\code{\link[=loc_scale_deriv_cdf_k]{loc_scale_deriv_cdf_k()}}, the closed route that four families take
 instead.
 }
 \keyword{internal}

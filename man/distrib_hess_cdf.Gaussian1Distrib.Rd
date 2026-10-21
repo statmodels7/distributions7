@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -19,11 +19,12 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
 A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}},
-\code{mu_mu}, \code{sigma_sigma} and \code{mu_sigma}, each the length of \code{q} recycled
-against \code{theta}. The gradient is not returned alongside.
+\code{mu_mu}, \code{sigma_sigma} and \code{mu_sigma}, in which each vector has the length
+of \code{q} recycled against \code{theta}. The gradient is not returned alongside.
 }
 \description{
-Closed form, from the same location-scale structure. With
+Computes the Hessian in closed form, from the same location-scale
+structure. With
 \eqn{\ell_y = \partial\log f/\partial y}, which for a Gaussian is
 \eqn{-z/\sigma},
 \deqn{\frac{\partial^2 F}{\partial\mu^2} = f\,\ell_y, \qquad
@@ -48,7 +49,8 @@ q <- c(-1, 0.5, 2)
 
 distrib_hess_cdf(d, q, th)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic with it.
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))

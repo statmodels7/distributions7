@@ -7,7 +7,7 @@
 \item{x}{A \code{GPDDistrib}, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
 \item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
-real value), each a numeric vector of length 1 or \code{n}. Settings with
+real value); each is a numeric vector of length 1 or \code{n}. Settings with
 \eqn{\xi \ge 1/2} give \code{Inf}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,9 +18,9 @@ A numeric vector of variances, of length
 \eqn{\xi \ge 1/2}.
 }
 \description{
-Closed form:
+The variance has the closed form
 \eqn{\operatorname{Var}(Y) = \sigma^2/\{(1-\xi)^2(1-2\xi)\}} for
-\eqn{\xi < 1/2}, and \code{Inf} at or above one half. The threshold is half the
+\eqn{\xi < 1/2}, and is \code{Inf} at or above one half. The threshold is half the
 mean's. As the shape increases, the excess kurtosis becomes infinite first
 (at \eqn{\xi = 1/4}), then the skewness (\eqn{1/3}), then the variance and
 finally the mean, so a fitted object at \eqn{\xi = 0.6} reports a finite mean
@@ -34,10 +34,10 @@ beside an infinite variance.
 \examples{
 d <- gpd_distrib()
 
-# Finite below shape one half and infinite at or above it.
+# The variance is finite below shape one half and infinite at or above it.
 variance(d, list(sigma = 1, xi = c(0, 0.4, 0.5, 0.6)))
 
-# A mean without a variance, which is what the two thresholds allow.
+# The two thresholds allow a mean without a variance.
 c(mean = mean(d, list(sigma = 1, xi = 0.6)),
   variance = variance(d, list(sigma = 1, xi = 0.6)))
 

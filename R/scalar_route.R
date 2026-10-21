@@ -8,7 +8,7 @@ NULL
 #' Returns how the package's compiled scalar entry points address a
 #' distribution: the name that the C function `d7_scalar_id()` recognizes,
 #' and the constants of the distribution that follow its parameters in the
-#' parameter vector those entry points read. A consumer that resolves the
+#' parameter vector that those entry points read. A consumer that resolves the
 #' entry points with `R_GetCCallable()` uses the name to obtain the
 #' distribution's identifier once, and appends the constants to the
 #' parameters of every observation.
@@ -18,8 +18,8 @@ NULL
 #' out)`, which writes the score and the \eqn{(k, k)} second derivative of
 #' the log-density in parameter \eqn{k}, and `d7_info_dinfo(id, k, y, th,
 #' out)`, which writes the \eqn{(k, k)} expected second derivative and its
-#' derivative in the same parameter, all on the parameter scale, with `k`
-#' counted from zero over `distrib@params` and `th` the parameters of one
+#' derivative in the same parameter, all on the parameter scale. Here `k` is
+#' counted from zero over `distrib@params`, and `th` holds the parameters of one
 #' observation followed by its constants. `d7_logpdf(id, y, th)` returns the
 #' log-density of one observation. `d7_scalar_thread_safe(id)` returns
 #' 1 for every distribution or wrapped family that the registry covers, whose
@@ -30,20 +30,21 @@ NULL
 #' class and no constants; the binomial and the two beta-binomials carry
 #' their size as a constant.
 #'
-#' A wrapped family is named `"<wrapper class>[:aux]|<inner name>"`, `aux` being
-#' what the wrapper needs besides its constants and the inner name being the
+#' A wrapped family is named `"<wrapper class>[:aux]|<inner name>"`, where `aux`
+#' is the additional input that the wrapper needs besides its constants and the
+#' inner name is the
 #' route's name of the wrapped family, which may itself be a wrapper; its
 #' constants are the inner family's followed by the wrapper's. For [fixed()],
 #' `aux` is the mask of the fixed parameters (bit `j - 1` for the `j`-th
 #' parameter of the inner family) and the wrapper's constants are the fixed
 #' values in the inner family's order. For [zero_inflated()] and
-#' [zero_adjusted()] there is no `aux` and no constant of the wrapper's own, the
-#' probability being the last parameter. For [folded()] there is no `aux` and no
-#' constant of the wrapper's own. For [truncated()] there is no `aux` and the
-#' wrapper's constants are `lower` and `upper`. For [transformation()], `aux` is
-#' the code of the transformer, which must be one of the ready-made ones, and
-#' the wrapper's constants are the transformer's parameters; a transformer built
-#' with [transformer()] has no route.
+#' [zero_adjusted()] there is no `aux` and no constant of the wrapper's own,
+#' because the probability is the last parameter. For [folded()] there is no
+#' `aux` and no constant of the wrapper's own. For [truncated()] there is no
+#' `aux` and the wrapper's constants are `lower` and `upper`. For
+#' [transformation()], `aux` is the code of the transformer, which must be one
+#' of the ready-made ones, and the wrapper's constants are the transformer's
+#' parameters; a transformer built with [transformer()] has no route.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param ... Passed to methods.
@@ -52,8 +53,8 @@ NULL
 #'   otherwise a list with `name`, a single character string, and
 #'   `constants`, a list of numeric vectors (named for the size, the truncation
 #'   points and the transformer parameters, unnamed for the fixed values), each
-#'   of length 1 or of the number of observations, in the order they follow the
-#'   parameters.
+#'   of which has length 1 or the number of observations, in the order in which
+#'   they follow the parameters.
 #'
 #' @examples
 #' distrib_scalar_route(gaussian1_distrib())

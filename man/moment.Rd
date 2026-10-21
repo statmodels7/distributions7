@@ -23,13 +23,13 @@ to 1, the mean. A non-integer order is accepted where \eqn{(y - c)^p} is
 real over the support. A negative order on a family whose support reaches
 zero gives a divergent integral, and the quadrature signals an error.}
 
-\item{central}{Should the moment be taken about the mean? A single logical,
-\code{FALSE} by default, which gives the raw moment and needs no extra pass.
+\item{central}{Should the moment be taken about the mean? It is a single
+logical whose default \code{FALSE} gives the raw moment and needs no extra pass.
 \code{TRUE} costs one further evaluation unless \code{mu} is supplied.}
 
-\item{mu}{The centering value used when \code{central = TRUE}. A numeric vector
-of length 1 or of the number of settings, or \code{NULL} (the default), which
-computes the mean numerically. Read only when \code{central = TRUE}.}
+\item{mu}{The centering value used when \code{central = TRUE}. It is a numeric
+vector of length 1 or of the number of settings, or \code{NULL} (the default),
+which computes the mean numerically. Read only when \code{central = TRUE}.}
 
 \item{...}{Passed to \code{\link[=expectation]{expectation()}}, and from there to the quadrature or
 the series. Names here must not collide with the names in \code{theta}.}
@@ -46,7 +46,7 @@ Computes the raw moment \eqn{E[Y^p]} or the central moment
 expectation is taken numerically by \code{\link[=expectation]{expectation()}}, which integrates over
 the support of a continuous family and sums the series of a discrete one.
 The order \eqn{p} may be fractional where \eqn{(y - c)^p} is real over the
-whole support, \eqn{c} being the centering value (for example a raw moment
+whole support, where \eqn{c} is the centering value (for example a raw moment
 of a family on the positive half-line); the integrand is \eqn{(y - c)^p} and
 not \eqn{|y - c|^p}. Every setting supplied in \code{theta} is evaluated in one
 batched call, and the result carries one value per setting.
@@ -93,7 +93,7 @@ above a threshold returns \code{Inf} or \code{NaN} below it, as the Student t do
 \examples{
 d <- gaussian1_distrib()
 
-# The first four moments of a Gaussian, raw and central.
+# These calls compute the first four moments of a Gaussian, raw and central.
 moment(d, list(mu = 2, sigma = 3), p = 1)                  # 2
 moment(d, list(mu = 2, sigma = 3), p = 2)                  # mu^2 + sigma^2
 moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE)  # sigma^2
@@ -105,7 +105,7 @@ moment(d, list(mu = 0, sigma = 1), p = 1:4, central = TRUE)   # 0, 1, 0, 3
 all.equal(moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE, mu = 0),
           moment(d, list(mu = 2, sigma = 3), p = 2))
 
-# One value per parameter setting.
+# The call returns one value per parameter setting.
 moment(d, list(mu = c(0, 1, 2), sigma = 1), p = 2, central = TRUE)
 
 # On a discrete family the expectation is an exact sum.
@@ -113,8 +113,8 @@ all.equal(moment(poisson_distrib(), list(mu = 3), p = 2, central = TRUE), 3)
 
 }
 \seealso{
-\code{\link[=expectation]{expectation()}} for the quadrature and the series this rests on;
-\code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}}
-for the standard moments, which use a family's closed form when one is
-registered.
+\code{\link[=expectation]{expectation()}} for the quadrature and the series on which this
+rests; \code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}} and
+\code{\link[=kurtosis]{kurtosis()}} for the standard moments, which use a family's closed form
+when one is registered.
 }

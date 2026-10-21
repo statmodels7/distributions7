@@ -11,7 +11,7 @@ Outside it the parent's value is returned, because the method performs
 no test.}
 
 \item{theta}{A named list of parameters of the parent, aligned by the
-generic. Truncation adds no parameter, the endpoints being constants.}
+generic. Truncation adds no parameter, because the endpoints are constants.}
 
 \item{scale}{Handled by the generic after dispatch; this method always
 returns the parameter scale, and passes \code{"parameter"} down so the chain
@@ -21,18 +21,18 @@ rule is applied once rather than twice.}
 }
 \value{
 A named list with one numeric vector per parameter, keyed by the
-parent's \code{params}, each of length \code{length(y)}.
+parent's \code{params}. Each vector has length \code{length(y)}.
 }
 \description{
-The parent's mixed derivatives, unchanged. Truncation replaces the parent's
-log-density by \eqn{\ell(y;\theta) - \log Z(\theta)}, and the normalizing
-constant does not depend on \eqn{y}, so it vanishes from any derivative
-taking one derivative in the response. The equality is exact, not
+Returns the parent's mixed derivatives unchanged. Truncation replaces the
+parent's log-density by \eqn{\ell(y;\theta) - \log Z(\theta)}, and the
+normalizing constant does not depend on \eqn{y}, so it vanishes from any
+derivative taking one derivative in the response. The equality is exact, not
 approximate, and holds at every observation inside the support.
 
 Like the response gradient and the response Hessian of a truncated family,
 this block costs nothing beyond the parent's. The gradient and the Hessian
-in the parameters both need \eqn{\log Z} and its derivatives, which is one
+in the parameters both need \eqn{\log Z} and its derivatives, which cost one
 quadrature or one pair of cdf evaluations per component.
 }
 \examples{
@@ -41,7 +41,7 @@ tr <- truncated(d, lower = -2, upper = 3)
 y <- c(-1, 0, 2)
 th <- list(mu = 0.3, sigma = 1.4)
 
-# Identical to the parent's, component for component.
+# The result is identical to the parent's, component for component.
 all.equal(distrib_cross_y(tr, y, th), distrib_cross_y(d, y, th))
 
 # The gradient is not: there log Z does depend on theta.

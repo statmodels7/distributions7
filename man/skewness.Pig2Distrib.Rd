@@ -7,7 +7,7 @@
 \item{x}{A \code{Pig2Distrib}, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{alpha}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,7 +16,8 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$alpha))}, positive throughout.
 }
 \description{
-The cumulant ratio \eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}} of
+The skewness is the cumulant ratio
+\eqn{\gamma_1 = \kappa_3/\kappa_2^{3/2}} of
 \code{\link[=skewness.Pig1Distrib]{skewness.Pig1Distrib()}}, read at the dispersion
 \eqn{\sigma = } \code{\link[=pig2_sigma]{pig2_sigma()}}\verb{(mu, alpha)}. A standardized moment is a
 property of the law, so it agrees with the other parametrization once the

@@ -7,7 +7,7 @@
 \item{x}{A \code{GPDDistrib}, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
 \item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
-real value), each a numeric vector of length 1 or \code{n}. Only \code{xi} enters
+real value); each is a numeric vector of length 1 or \code{n}. Only \code{xi} enters
 the value; settings with \eqn{\xi \ge 1/3} give \code{Inf}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -18,11 +18,12 @@ A numeric vector, of length
 \eqn{\xi \ge 1/3}.
 }
 \description{
-Closed form: \eqn{\gamma_1 = 2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for
-\eqn{\xi < 1/3}, and \code{Inf} at or above one third. The scale cancels, so the
-value depends on the shape alone; it is 2 at \eqn{\xi = 0}, where the family
-is exponential, and it climbs without bound as the shape approaches its
-threshold.
+The skewness has the closed form
+\eqn{\gamma_1 = 2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for
+\eqn{\xi < 1/3}, and is \code{Inf} at or above one third. The scale cancels, so
+the value depends only on the shape; it is 2 at \eqn{\xi = 0}, where the
+family is exponential, and it climbs without bound as the shape approaches
+its threshold.
 }
 \section{Notation}{
 
@@ -33,7 +34,8 @@ standardized moment.
 \examples{
 d <- gpd_distrib()
 
-# Two at shape zero, climbing steeply, infinite at or above one third.
+# The skewness is two at shape zero, climbs steeply, and is infinite at or
+# above one third.
 skewness(d, list(sigma = 1, xi = c(0, 0.3, 1 / 3, 0.4)))
 
 }

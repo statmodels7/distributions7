@@ -6,9 +6,9 @@
 \arguments{
 \item{x}{A \code{Gaussian1Distrib}, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}. The values are not read, only their
-lengths.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), in
+which each component is a numeric vector of length 1 or \code{n}. The values are
+not read, only their lengths.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,14 +17,14 @@ A numeric vector of zeros, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Exactly zero at every parameter value. The raw fourth standardized moment of
-a Gaussian is 3, and \code{\link[=kurtosis]{kurtosis()}} reports the excess over that number, so
-this family has excess kurtosis zero by construction.
+The excess kurtosis is exactly zero at every parameter value. The raw fourth
+standardized moment of a Gaussian is 3, and \code{\link[=kurtosis]{kurtosis()}} reports the excess
+over that number, so this family has excess kurtosis zero by construction.
 }
 \examples{
 d <- gaussian1_distrib()
 
-# Zero for every Gaussian, which is what the excess convention means.
+# The excess convention gives zero for every Gaussian.
 kurtosis(d, list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 
 }

@@ -8,8 +8,8 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
-a numeric vector of length 1 or \code{n}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive); each
+is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail. With \code{log = FALSE}, \code{FALSE} flips
@@ -23,16 +23,16 @@ The ratio \eqn{f/P} is formed as \eqn{\exp(\log f - \log P)}, so the result
 stays finite far into either tail, where \eqn{f} and \eqn{P} underflow.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, in which
+each vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the location-scale structure:
+Computes the gradient in closed form, from the location-scale structure:
 \eqn{\partial F/\partial\mu = -f(q)} and
 \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself, shared with the logistic, the
-Laplace and the Gumbel, so nothing here is particular to the Gaussian
-beyond its density.
+Laplace and the Gumbel, so the method uses nothing particular to the
+Gaussian beyond its density.
 }
 \details{
 A censored Gaussian likelihood is cheap for this reason: a right-censored

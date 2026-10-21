@@ -17,7 +17,7 @@ numerical_cross2_y(
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters, the point to differentiate at.}
+\item{theta}{A named list of parameters at which the derivative is computed.}
 
 \item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
 the optimal exponent for a central first difference.}
@@ -27,8 +27,8 @@ the optimal exponent for a central first difference.}
 returns only those, keyed the same way, and costs one difference each.}
 }
 \value{
-A named list with one numeric vector per requested parameter, each
-as long as \code{y}.
+A named list with one numeric vector per requested parameter. Each
+vector is as long as \code{y}.
 }
 \description{
 Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i} by one
@@ -39,7 +39,7 @@ closed form for some components calls it for the rest. The default
 }
 \details{
 The reference is the response HESSIAN, one order up from the log-density, so
-a distribution carrying an analytic \code{distrib_hess_y} pays for exactly one
+a distribution carrying an analytic \code{distrib_hess_y} requires exactly one
 finite-difference layer. Where that Hessian is itself a fallback the two
 differences act on different variables and compose into a single mixed
 stencil, rather than into the nested differencing of one variable that the
@@ -65,13 +65,14 @@ theta <- list(mu = 0.4, sigma = 1.3)
 num <- numerical_cross2_y(d, y, theta)
 num$sigma
 
-# Against the gaussian's own closed form, which it does not need this for.
+# The result is compared with the gaussian's own closed form, which does
+# not need this route.
 max(abs(unlist(num) - unlist(distrib_cross2_y(d, y, theta))))
 
-# One parameter at a time, when only one is wanted.
+# A single parameter is computed when only that one is wanted.
 numerical_cross2_y(d, y, theta, which = "sigma")
 
-# A family that does take this route, checked against numDeriv.
+# A family that does take this route is checked against numDeriv.
 dg <- gamma2_distrib()
 yg <- c(0.5, 1, 2)
 vapply(distrib_cross2_y(dg, yg, list(mu = 2, sigma2 = 1)),

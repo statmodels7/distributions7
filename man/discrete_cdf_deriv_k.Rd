@@ -9,8 +9,8 @@ discrete_cdf_deriv_k(distrib, q, theta, order)
 \arguments{
 \item{distrib}{An object inheriting from \code{discrete_distrib}.}
 
-\item{q}{A numeric vector of quantiles. Each is handled separately, the
-support being walked up to it, so the cost grows with the largest one.}
+\item{q}{A numeric vector of quantiles. Each is handled separately and the
+support is walked up to it, so the cost grows with the largest one.}
 
 \item{theta}{A named list of parameters on the parameter scale.}
 
@@ -22,16 +22,17 @@ the natural scale, keyed as
 \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-The general form of \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}: evaluates
+Evaluates
 \eqn{\partial^I F(q) = \sum_{y \le q} f(y)\,\partial^I f/f\,(y)} for a
-discrete family at any order up to four. Nothing is differenced; the sum is
+discrete family at any order up to four, and is the general form of
+\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}. The function does not use differences; the sum is
 exact wherever the support has a finite lower bound, which the discrete class
 requires. Where \eqn{P(Y > q)} is below 0.01 the sum is computed as minus the
-sum above \eqn{q}, the derivatives of the mass summing to zero over the
+sum above \eqn{q}, because the derivatives of the mass sum to zero over the
 support.
 }
 \details{
-What changes above second order is only the summand. \eqn{\partial^I f/f} is
+Above second order only the summand changes. \eqn{\partial^I f/f} is
 the complete Bell polynomial in the derivatives of \eqn{\log f}, and
 \code{\link[=bell_f_ratio]{bell_f_ratio()}} already computes it for the distribution wrappers, so this
 function reuses it and carries no second copy of the enumeration.

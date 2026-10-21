@@ -7,8 +7,8 @@
 \item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
-\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
-The mean diverges as the shape approaches zero.}
+\code{sigma} (the shape, positive); each is a numeric vector of length 1 or
+\code{n}. The mean diverges as the shape approaches zero.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -17,10 +17,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu\,\Gamma(1 + 1/\sigma)}. The first parameter of
-this parametrization is the scale, following \code{gamlss}'s \code{WEI}, so it is
-not the mean; the gamma factor is what separates the two, and it is 1 only
-at shape 1, where the family is exponential.
+The closed form is \eqn{E[Y] = \mu\,\Gamma(1 + 1/\sigma)}. The first
+parameter of this parametrization is the scale, following \code{gamlss}'s \code{WEI},
+so it is not the mean. The two differ by the gamma factor, which equals 1
+only at shape 1, where the family is exponential.
 }
 \details{
 The package also ships the Weibull in its mean and shape,
@@ -30,13 +30,13 @@ needs one gamma evaluation per setting.
 \section{Notation}{
 
 \eqn{\mu > 0} is the scale and \eqn{\sigma > 0} the shape, in the
-parametrization \code{\link[=weibull1_distrib]{weibull1_distrib()}} uses.
+parametrization that \code{\link[=weibull1_distrib]{weibull1_distrib()}} uses.
 }
 
 \examples{
 d <- weibull1_distrib()
 
-# The scale times Gamma(1 + 1 / shape).
+# The mean is the scale times Gamma(1 + 1 / shape).
 all.equal(mean(d, list(mu = 2, sigma = 3)), 2 * gamma(1 + 1 / 3))
 
 # At shape 1 the family is exponential and the scale is the mean.

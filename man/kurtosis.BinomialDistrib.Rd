@@ -16,8 +16,9 @@ count in its \code{size} property.}
 A numeric vector of excess kurtoses, of length \code{max(length(theta$mu), length(x@size))}.
 }
 \description{
-Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}, the
-excess over the Gaussian. It is the Bernoulli's divided by \eqn{n}, so it
+The excess kurtosis over the Gaussian has the closed form
+\eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}. It is the
+Bernoulli excess kurtosis divided by \eqn{n}, so it
 decays like \eqn{1/n}, against \eqn{1/\sqrt{n}} for the skewness, and it can
 take either sign: it is negative where \eqn{\mu(1-\mu) > 1/6}, that is for
 \eqn{\mu} between about 0.211 and 0.789, and positive outside that interval.
@@ -25,11 +26,11 @@ take either sign: it is negative where \eqn{\mu(1-\mu) > 1/6}, that is for
 \examples{
 d <- binomial_distrib(size = 10)
 
-# The Bernoulli's divided by the trial count.
+# The excess kurtosis is the Bernoulli's divided by the trial count.
 all.equal(kurtosis(d, list(mu = 0.3)),
           kurtosis(bernoulli_distrib(), list(mu = 0.3)) / 10)
 
-# Negative over the middle, positive towards either end.
+# The values are negative over the middle and positive towards either end.
 round(kurtosis(d, list(mu = c(0.05, 0.3, 0.5, 0.95))), 4)
 
 }

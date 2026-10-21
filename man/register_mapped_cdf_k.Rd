@@ -33,9 +33,9 @@ register_mapped_cdf_k(
 \item{cls}{The S7 class to register on.}
 
 \item{parent_fn}{A function of no arguments returning the parent
-distribution. A function rather than the object, so that the parent is
-built at call time; at load time the class that it names may not exist
-yet.}
+distribution. The parent is given as a function rather than as the
+object, so that it is built at call time; at load time the class that it
+names may not exist yet.}
 
 \item{th_fn}{A function of \code{theta} returning the parent's parameters.}
 
@@ -43,8 +43,8 @@ yet.}
 partial tables up to that order.}
 
 \item{q_fn}{The transformation of the response, for a parent that is the
-same law on a transformed scale. \code{identity} by default, and \code{log} for the
-lognormal.}
+same law on a transformed scale. The default is \code{identity}, and the
+lognormal uses \code{log}.}
 
 \item{q_ok}{\code{NULL}, the default, or a function of \code{q} returning a logical
 vector that is \code{FALSE} where \code{q_fn} is undefined and the distribution
@@ -56,7 +56,7 @@ A family whose written-out route stops below the fourth order takes the
 rest here.}
 }
 \value{
-Invisibly \code{NULL}. Called for the registration.
+Invisibly \code{NULL}. The function is called for the registration.
 }
 \description{
 Turns a parent and a map into the two or three S7 methods that a mapped family
@@ -66,16 +66,16 @@ parametrizations, the second inverse Gaussian, the second Laplace and the
 lognormal.
 }
 \details{
-\code{orders} is how a family takes more than the top two. The second inverse
-Gaussian is registered at 2 to 4 because its written-out route in
-\code{cdf_derivatives_families.R} registers only the gradient, so its Hessian is
-taken from the chain here.
+A family registers more than the top two orders by setting \code{orders}. The
+second inverse Gaussian is registered at 2 to 4 because its written-out
+route in \code{cdf_derivatives_families.R} registers only the gradient, so its
+Hessian is taken from the chain here.
 
-\code{force(o)} inside the factory is what keeps the registrations from sharing
-one order.
+\code{force(o)} inside the factory prevents the registrations from sharing one
+order.
 }
 \seealso{
-\code{\link[=mapped_cdf_deriv_k]{mapped_cdf_deriv_k()}}, the body it registers;
+\code{\link[=mapped_cdf_deriv_k]{mapped_cdf_deriv_k()}}, the body that it registers;
 \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} for the generics.
 }
 \keyword{internal}

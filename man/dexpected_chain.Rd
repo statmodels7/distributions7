@@ -26,11 +26,11 @@ A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code
 on the new parameters.
 }
 \description{
-The arithmetic of \code{\link[=reparam_dexpected]{reparam_dexpected()}}, given the parent's quantities
-rather than the parent: \eqn{E}, \eqn{\partial E} and, at order 2,
-\eqn{\partial^2 E} on the parent's scale, and the map's partials as keyed
-tables. It serves a reparametrized family and any family written as a map
-of another's coordinates, such as \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} over the shapes.
+Computes the arithmetic of \code{\link[=reparam_dexpected]{reparam_dexpected()}} from the parent's
+quantities rather than from the parent: \eqn{E}, \eqn{\partial E} and, at
+order 2, \eqn{\partial^2 E} on the parent's scale, and the map's partials as
+keyed tables. It serves a reparametrized family and any family written as a
+map of another's coordinates, such as \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} over the shapes.
 }
 \seealso{
 \code{\link[=reparam_dexpected]{reparam_dexpected()}}

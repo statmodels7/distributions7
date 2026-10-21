@@ -7,18 +7,19 @@
 \item{x}{A \code{SkewNormal1Distrib}, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
-scale, positive) and \code{alpha} (the shape, any sign), each a numeric vector
-of length 1 or \code{n}.}
+scale, positive) and \code{alpha} (the shape, any sign); each is a numeric
+vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, of the length the recycled
+A numeric vector of variances, of the length that the recycled
 parameters imply. The scale and \code{alpha} enter the value, so a setting
-that varies \code{mu} alone repeats one number.
+that varies only \code{mu} repeats one number.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with
+The closed form is
+\eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 bracket is at most 1, a value attained only at shape zero, and it decreases
 towards \eqn{1 - 2/\pi \approx 0.3634} as the magnitude of the shape grows.

@@ -7,7 +7,7 @@
 \item{distrib}{A \code{discrete_distrib} object.}
 
 \item{q}{A numeric vector of quantiles. Values below the support give a
-derivative of zero, the sum being empty.}
+derivative of zero, because the sum is empty.}
 
 \item{theta}{A named list of parameters on the parameter scale.}
 
@@ -20,12 +20,12 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors, one per parameter, each the length
-of \code{q} recycled against \code{theta}.
+A named list of numeric vectors, one per parameter, in which each
+vector has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Exact, and nothing is differenced. The partial expectation of the score is a
-finite sum over the support up to \eqn{q},
+Computes the gradient exactly, without differencing. The partial
+expectation of the score is a finite sum over the support up to \eqn{q},
 \eqn{\partial^I F(q) = \sum_{y \le q} f(y)\,\partial^I f/f\,(y)}, evaluated
 by \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}} and put on the requested tail by
 \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
@@ -36,8 +36,8 @@ on the support. The cost therefore grows with the largest requested
 quantile and not with the number of parameters, and each quantile is summed
 separately.
 
-Six of the shipped discrete families use this method; the rest register a
-formula, several of which are exact simplifications of this same sum. A
+Some of the shipped discrete families use this method; the others register
+a formula, several of which are exact simplifications of this same sum. A
 Poisson's, for instance, telescopes to \eqn{\partial F(k)/\partial\mu =
 -f(k)}.
 }

@@ -8,10 +8,11 @@ NULL
 #'   distrib_dexpected_hessian.VonMises2Distrib
 #'   distrib_d2expected_hessian.VonMises2Distrib
 #' @description
-#' The first and second derivatives of the expected information in the
-#' parameters, from the derivatives of the Bessel ratio
-#' \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} and of its inverse, computed by
-#' one compiled kernel per order from numericals7's compiled Bessel ratio.
+#' Computes the first and second derivatives of the expected information in
+#' the parameters from the derivatives of the Bessel ratio
+#' \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} and of its inverse. One compiled
+#' kernel per order performs the computation from numericals7's compiled
+#' Bessel ratio.
 #'
 #' @details
 #' By the concentration, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\kappa A(\kappa)} and
@@ -20,7 +21,8 @@ NULL
 #' length \eqn{\rho = A(\kappa)}, \eqn{\mathbb{E}[\ell_{\mu\mu}] = -\rho\,\kappa(\rho)}
 #' and \eqn{\mathbb{E}[\ell_{\rho\rho}] = -\kappa'(\rho)}, so they read the
 #' inverse's derivatives \eqn{\kappa'}, \eqn{\kappa''} and \eqn{\kappa'''}.
-#' Nothing moves with the direction \eqn{\mu}. The first-order kernel reads
+#' The expected information does not depend on the direction \eqn{\mu}. The
+#' first-order kernel reads
 #' \eqn{A} to \eqn{A''} (or \eqn{\kappa} to \eqn{\kappa''}), the second-order
 #' one \eqn{A'} to \eqn{A'''} (or \eqn{\kappa'} to \eqn{\kappa'''}).
 #'
@@ -40,9 +42,10 @@ NULL
 #' The von Mises Families' Derivative Tables
 #'
 #' @description
-#' Assembles the keyed components for a two-parameter family in which nothing
-#' moves with the first parameter, \eqn{E_{11} = f(c)},
-#' \eqn{E_{22} = g(c)} and \eqn{E_{12} = 0} in the second parameter \eqn{c}.
+#' Assembles the keyed components for a two-parameter family in which the
+#' expected information does not depend on the first parameter and, in the
+#' second parameter \eqn{c}, \eqn{E_{11} = f(c)}, \eqn{E_{22} = g(c)} and
+#' \eqn{E_{12} = 0}.
 #'
 #' @param P The two parameter names.
 #' @param n The length of the result.

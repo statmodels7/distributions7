@@ -9,7 +9,7 @@
 \item{q}{A numeric vector of quantiles, positive.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -20,13 +20,14 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of two numeric vectors, \code{mu} and \code{lambda}, each the
-length of \code{q} recycled against \code{theta}.
+A named list of two numeric vectors, \code{mu} and \code{lambda}; each
+has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, by the chain rule on the dispersion parametrization's gradient
-through \eqn{\phi = 1/\lambda}. The mean component is unchanged; the rate
-component is the dispersion one times \eqn{-1/\lambda^2}.
+Computes the gradient in closed form, by the chain rule on the dispersion
+parametrization's gradient through \eqn{\phi = 1/\lambda}. The mean
+component is unchanged; the rate component is the dispersion one times
+\eqn{-1/\lambda^2}.
 }
 \details{
 The inverse Gaussian has an elementary distribution function,
@@ -48,7 +49,8 @@ d <- invgauss2_distrib()
 q <- c(0.5, 2, 5)
 th <- list(mu = 2, lambda = 8)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 

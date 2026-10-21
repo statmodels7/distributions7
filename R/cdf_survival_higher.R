@@ -17,25 +17,25 @@ NULL
 #' Returns \eqn{\partial^I F} for every component of the requested order, for a
 #' family whose survival function is the exponential of something elementary.
 #' Given \eqn{L = \log(1-F)} and a function evaluating its partial derivatives,
-#' all four orders follow at once, so a family has only to say what \eqn{L} is.
+#' all four orders follow at once, so it is enough to supply \eqn{L}.
 #'
 #' @details
 #' # The identity
 #'
 #' \eqn{S = e^{L}} gives \eqn{\partial^I S = S\,B_I}, with \eqn{B_I} the
 #' complete Bell polynomial in the partials of \eqn{L}, and \eqn{F = 1 - S}
-#' turns that into \eqn{\partial^I F = -S\,B_I}. It is the same identity the
-#' distribution wrappers use, read on the survival function instead of on the
-#' density, and [bell_f_ratio()] runs the partition sum, so the derivatives
+#' turns that into \eqn{\partial^I F = -S\,B_I}. It is the same identity that
+#' the distribution wrappers use, read on the survival function instead of on
+#' the density, and [bell_f_ratio()] runs the partition sum, so the derivatives
 #' come from that sum and not from a transcribed expansion.
 #'
-#' # Two things the arithmetic needs
+#' # The survival function and the support
 #'
 #' The survival function is evaluated as `exp(Lval)` and not as `1 - F`, which
-#' keeps the far tail from canceling. And below the support \eqn{F} is
+#' keeps the far tail from canceling. Below the support \eqn{F} is
 #' identically zero and so is every derivative, while \eqn{L} is still finite
-#' there and would otherwise give a survival above one; the `inside` mask is
-#' what suppresses that.
+#' there and would otherwise give a survival above one; the `inside` mask
+#' suppresses that.
 #'
 #' @section Notation:
 #' \eqn{F} is the distribution function, \eqn{S = 1 - F} the survival function,
@@ -50,10 +50,11 @@ NULL
 #' @param Lderiv A function of a character vector of parameter names returning
 #'   the corresponding partial derivative of \eqn{L}. An empty block is the
 #'   zeroth order and is never requested.
-#' @param inside A logical vector saying which quantiles lie inside the
-#'   support, or `NULL` (the default), which reads `q > distrib@bounds[1]`. A
-#'   family whose support depends on a parameter supplies its own; the fixed
-#'   bounds cannot see it.
+#' @param inside A logical vector that marks the quantiles lying inside the
+#'   support, or `NULL` (the default), in which case the mask is
+#'   `q > distrib@bounds[1]`. A family whose support depends on a parameter
+#'   supplies its own mask, because the fixed bounds do not vary with the
+#'   parameter.
 #'
 #' @return A named list of numeric vectors, derivatives of \eqn{F} itself on
 #'   the natural scale, keyed as
@@ -90,13 +91,13 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
 #' it: the exponential and the Weibull.
 #'
 #' @details
-#' All four orders are registered, [distrib_grad_cdf()] included, so these
+#' All four orders are registered, including [distrib_grad_cdf()], so these
 #' families take the closed route from the first order up. Where the upper tail
 #' is requested on the natural scale the derivatives of \eqn{S} are returned
 #' directly, \eqn{\partial^I S = -\partial^I F}, which is the one case where
-#' the survival function is the quantity the construction produces first.
+#' the survival function is the quantity that the construction produces first.
 #'
-#' `force(o)` inside the factory is what keeps the four registrations from
+#' `force(o)` inside the factory prevents the four registrations from
 #' sharing one order.
 #'
 #' @param cls The S7 class to register on.
@@ -104,9 +105,9 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
 #'   `Lval` and `Lderiv`, and optionally `inside`, as
 #'   [surv_cdf_deriv_k()] documents.
 #'
-#' @return Invisibly `NULL`. Called for the registration.
+#' @return Invisibly `NULL`. The function is called for its registration.
 #'
-#' @seealso [surv_cdf_deriv_k()], the body it registers;
+#' @seealso [surv_cdf_deriv_k()], the body that it registers;
 #'   [distrib_grad_cdf.ExponentialDistrib()] and
 #'   [distrib_grad_cdf.Weibull1Distrib()], the two families.
 #'
@@ -155,14 +156,15 @@ register_surv_cdf <- function(cls, pieces) {
 #'   distrib_deriv4_cdf.ExponentialDistrib
 #'
 #' @description
-#' Closed form at every order from one to four, from the survival function
-#' \eqn{S = e^{-q/\mu}}. Its logarithm is \eqn{L = -q/\mu}, whose partial
-#' derivatives are \eqn{\partial^j L/\partial\mu^j = -q(-1)^j j!/\mu^{j+1}},
-#' and [surv_cdf_deriv_k()] turns those into the derivatives of \eqn{F}.
+#' The derivatives have closed form at every order from one to four, obtained
+#' from the survival function \eqn{S = e^{-q/\mu}}. Its logarithm is \eqn{L =
+#' -q/\mu}, whose partial derivatives are \eqn{\partial^j L/\partial\mu^j =
+#' -q(-1)^j j!/\mu^{j+1}}, and [surv_cdf_deriv_k()] turns those into the
+#' derivatives of \eqn{F}.
 #'
 #' @details
-#' Below the support every derivative of \eqn{F} is exactly zero, the mask in
-#' [surv_cdf_deriv_k()] suppressing the finite value that \eqn{L} would
+#' Below the support every derivative of \eqn{F} is exactly zero, because the
+#' mask in [surv_cdf_deriv_k()] suppresses the finite value that \eqn{L} would
 #' otherwise give there.
 #'
 #' @section Notation:
@@ -172,7 +174,7 @@ register_surv_cdf <- function(cls, pieces) {
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param q A numeric vector of quantiles. Values at or below zero give
 #'   derivatives of exactly zero on the natural scale; on the log scale of the
-#'   lower tail they are `NaN`, \eqn{\log F} being infinite there.
+#'   lower tail they are `NaN`, because \eqn{\log F} is infinite there.
 #' @param theta A named list with one component, `mu` (positive), a numeric
 #'   vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
@@ -182,7 +184,7 @@ register_surv_cdf <- function(cls, pieces) {
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector per component of the requested
-#'   order, which for a one-parameter family is one at every order.
+#'   order; a one-parameter family has one component at every order.
 #'
 #' @seealso [surv_cdf_deriv_k()] for the identity;
 #'   [distrib_grad_cdf.Weibull1Distrib()] and [distrib_grad_cdf.GPDDistrib()],
@@ -192,11 +194,12 @@ register_surv_cdf <- function(cls, pieces) {
 #' d <- exponential_distrib()
 #' q <- c(0.5, 2, 5)
 #'
-#' # Against a central difference of the cdf, which shares no arithmetic.
+#' # The result is compared with a central difference of the cdf, which
+#' # shares no arithmetic.
 #' fd <- numerical_cdf_deriv(d, q, list(mu = 3), order = 1)
 #' max(abs(distrib_grad_cdf(d, q, list(mu = 3), log = FALSE)$mu / fd$mu - 1))
 #'
-#' # Exactly zero below the support.
+#' # The derivative is exactly zero below the support.
 #' distrib_grad_cdf(d, c(-1, 0.5), list(mu = 3), log = FALSE)$mu
 #'
 #' @keywords internal
@@ -218,8 +221,8 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #'   distrib_deriv4_cdf.Weibull1Distrib
 #'
 #' @description
-#' Closed form at every order from one to four, from the survival function
-#' \eqn{S = \exp\{-(q/\mu)^{\sigma}\}}. Writing
+#' The derivatives have closed form at every order from one to four, obtained
+#' from the survival function \eqn{S = \exp\{-(q/\mu)^{\sigma}\}}. Writing
 #' \eqn{h = \sigma(\log q - \log\mu)} the exponent is \eqn{L = -e^{h}}, so its
 #' partial derivatives are \eqn{-e^{h}} times the complete Bell polynomial in
 #' the partials of \eqn{h}, and those are elementary.
@@ -229,7 +232,7 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #'
 #' \eqn{\partial^j h/\partial\mu^j = \sigma(-1)^j(j-1)!/\mu^j}, the same
 #' without the factor \eqn{\sigma} when one index names the shape, and exactly
-#' zero when two do: \eqn{h} is linear in the shape. That is what keeps the
+#' zero when two do: \eqn{h} is linear in the shape. This keeps the
 #' expansion short at the higher orders.
 #'
 #' # The shape component at q equal to mu
@@ -249,9 +252,9 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #' @param distrib A `Weibull1Distrib` object, from [weibull1_distrib()].
 #' @param q A numeric vector of quantiles. Values at or below zero give
 #'   derivatives of exactly zero on the natural scale; on the log scale of the
-#'   lower tail they are `NaN`, \eqn{\log F} being infinite there.
+#'   lower tail they are `NaN`, because \eqn{\log F} is infinite there.
 #' @param theta A named list with components `mu` (the scale, positive) and
-#'   `sigma` (the shape, positive), each a numeric vector of length 1 or `n`.
+#'   `sigma` (the shape, positive); each is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
@@ -272,7 +275,8 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #' q <- c(0.5, 2, 5)
 #' th <- list(mu = 2, sigma = 3)
 #'
-#' # Against a central difference of the cdf, on an absolute scale.
+#' # The result is compared with a central difference of the cdf, on an
+#' # absolute scale.
 #' fd <- numerical_cdf_deriv(d, q, th, order = 1)
 #' max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) - unlist(fd)))
 #'

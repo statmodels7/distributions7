@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
-each a numeric vector of length 1 or \code{n}. If both shapes are below 1 the
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive;
+each is a numeric vector of length 1 or \code{n}. If both shapes are below 1 the
 density is unbounded at both endpoints and U-shaped.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,7 +17,7 @@ A numeric vector of variances, of length
 \code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form:
+The variance has the closed form
 \deqn{\operatorname{Var}(Y) = \frac{\alpha\beta}
       {(\alpha+\beta)^2(\alpha+\beta+1)}.}
 Writing \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\phi = \alpha+\beta} this
@@ -34,7 +34,7 @@ that form, with \eqn{\mu = 1/(1 + \beta/\alpha)} (\code{\link[=beta_mu_sigma]{be
 \examples{
 d <- beta2_distrib()
 
-# The published form, written out.
+# The variance agrees with the published form, written out.
 all.equal(variance(d, list(alpha = 2, beta = 3)), 2 * 3 / (25 * 6))
 
 # Both shapes 1 is the uniform, of variance 1/12.

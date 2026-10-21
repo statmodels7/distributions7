@@ -17,7 +17,7 @@
 
 \item{kd}{A \code{\link[=kink_spec]{kink_spec()}}.}
 
-\item{ord}{The order the composition leaves.}
+\item{ord}{The order that the composition leaves.}
 
 \item{distrib}{The family.}
 }

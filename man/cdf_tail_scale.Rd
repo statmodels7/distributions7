@@ -39,10 +39,10 @@ Converts derivatives of the distribution function \eqn{F} into derivatives
 of whichever tail was requested, on the natural or the logarithmic scale.
 Every route to a cdf derivative in this package produces derivatives of
 \eqn{F} itself, so the \code{lower.tail} and \code{log} arguments are handled once,
-here, and no method has to implement four cases.
+here, and a method does not have to implement four cases.
 }
 \section{The two conversions}{
-Switching to the upper tail flips the sign, \eqn{S = 1 - F} giving
+Switching to the upper tail flips the sign, because \eqn{S = 1 - F} gives
 \eqn{\partial^I S = -\partial^I F} at every order. The probability \eqn{S}
 by which the log scale divides is the family's own upper tail when \code{Fq}
 comes from \code{\link[=tail_cdf]{tail_cdf()}}, and \eqn{1 - F} otherwise (\code{\link[=tail_probability]{tail_probability()}}). Switching to the log
@@ -57,7 +57,7 @@ The two commute, and both are applied to whatever was handed in.
 \code{dF1} is always read, at second order as well: the correction above needs
 the first derivatives of the same tail. A caller requesting a Hessian
 therefore passes both lists, and passes them as derivatives of \eqn{F} on
-the natural scale, whichever tail the result is wanted on.
+the natural scale, on whichever tail the result is wanted.
 }
 
 \section{Notation}{

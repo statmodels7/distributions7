@@ -24,9 +24,9 @@ NULL
 #' CDF Derivatives on the Requested Tail and Scale, at Any Order
 #'
 #' @description
-#' The general form of [cdf_tail_scale()]: converts derivatives of \eqn{F} into
-#' derivatives of whichever tail was requested, on the natural or the
-#' logarithmic scale, at any order from 1 to 4.
+#' Converts derivatives of \eqn{F} into derivatives of whichever tail was
+#' requested, on the natural or the logarithmic scale, at any order from 1 to
+#' 4. It is the general form of [cdf_tail_scale()].
 #'
 #' @details
 #' # The two conversions
@@ -45,8 +45,8 @@ NULL
 #' # Why every lower order is needed
 #'
 #' A partition into \eqn{k} blocks reads \eqn{k} ratios, so the relation at
-#' order 4 needs the tables of orders 1, 2 and 3 as well. That is why `dF` is a
-#' list of tables, and why a caller that wants only the fourth order still
+#' order 4 needs the tables of orders 1, 2 and 3 as well. Therefore `dF` is a
+#' list of tables, and a caller that wants only the fourth order still
 #' assembles the first three.
 #'
 #' @section Notation:
@@ -69,7 +69,7 @@ NULL
 #'   probability and `FALSE` those of the probability. `FALSE` reads only
 #'   `dF[[order]]` and the lower tables are then unused.
 #'
-#' @return A named list of numeric vectors of the requested order alone. The
+#' @return A named list of numeric vectors of the requested order only. The
 #'   lower orders are consumed on the way and do not appear in the result.
 #'
 #' @seealso [cdf_tail_scale()], the written-out version for orders 1 and 2;
@@ -98,16 +98,18 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #' @name tail_probability
 #'
 #' @description
-#' Internal helpers of [cdf_tail_scale()] and [cdf_scale_k()].
+#' These functions are internal helpers of [cdf_tail_scale()] and
+#' [cdf_scale_k()].
 #' `tail_cdf()` returns the probability of the requested tail at `q`, from
 #' the family's own distribution function for that tail (so that the upper
 #' tail is not formed as \eqn{1 - F}, which loses its digits once \eqn{F} is
-#' close to one), with the attribute `"tail"` set to `"lower"` or `"upper"`.
+#' close to one); the result carries the attribute `"tail"`, set to `"lower"`
+#' or `"upper"`.
 #' Called with the arguments that [log_tail_route()] has stored in
 #' `log_tail_stash`, it returns the stored value.
 #' `tail_probability()` returns the requested tail: the value itself when it
-#' carries the attribute `"tail"` for that tail, and otherwise, the value being
-#' read as the distribution function, \eqn{F} or \eqn{1 - F}.
+#' carries the attribute `"tail"` for that tail, and otherwise \eqn{F} or
+#' \eqn{1 - F}, because the value is then read as the distribution function.
 #'
 #' @param distrib A distribution object.
 #' @param q A numeric vector of quantiles.
@@ -117,8 +119,8 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #' @param Fq The value of `tail_cdf()`, or a plain numeric vector of
 #'   distribution function values.
 #'
-#' @return A numeric vector of probabilities; for `tail_cdf()`, with the
-#'   attribute `"tail"`.
+#' @return A numeric vector of probabilities; `tail_cdf()` sets the
+#'   attribute `"tail"` on it.
 #'
 #' @examples
 #' d <- logistic_distrib()
@@ -150,16 +152,17 @@ tail_probability <- function(Fq, lower.tail) {
 #' CDF Derivatives of a Discrete Distribution at Any Order
 #'
 #' @description
-#' The general form of [discrete_cdf_deriv()]: evaluates
+#' Evaluates
 #' \eqn{\partial^I F(q) = \sum_{y \le q} f(y)\,\partial^I f/f\,(y)} for a
-#' discrete family at any order up to four. Nothing is differenced; the sum is
+#' discrete family at any order up to four, and is the general form of
+#' [discrete_cdf_deriv()]. The function does not use differences; the sum is
 #' exact wherever the support has a finite lower bound, which the discrete class
 #' requires. Where \eqn{P(Y > q)} is below 0.01 the sum is computed as minus the
-#' sum above \eqn{q}, the derivatives of the mass summing to zero over the
+#' sum above \eqn{q}, because the derivatives of the mass sum to zero over the
 #' support.
 #'
 #' @details
-#' What changes above second order is only the summand. \eqn{\partial^I f/f} is
+#' Above second order only the summand changes. \eqn{\partial^I f/f} is
 #' the complete Bell polynomial in the derivatives of \eqn{\log f}, and
 #' [bell_f_ratio()] already computes it for the distribution wrappers, so this
 #' function reuses it and carries no second copy of the enumeration.
@@ -170,8 +173,8 @@ tail_probability <- function(Fq, lower.tail) {
 #' multi-index of parameters.
 #'
 #' @param distrib An object inheriting from `discrete_distrib`.
-#' @param q A numeric vector of quantiles. Each is handled separately, the
-#'   support being walked up to it, so the cost grows with the largest one.
+#' @param q A numeric vector of quantiles. Each is handled separately and the
+#'   support is walked up to it, so the cost grows with the largest one.
 #' @param theta A named list of parameters on the parameter scale.
 #' @param order The derivative order, 1 to 4.
 #'
@@ -236,12 +239,12 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' Numerical CDF Derivatives of Any Order
 #'
 #' @description
-#' One product stencil of the requested order applied to [distrib_cdf()], which
+#' Applies one product stencil of the requested order to [distrib_cdf()], which
 #' is analytic for every family in the catalog. This is the continuous
 #' family's route above second order, and it is a single stencil: a repeated
 #' parameter contributes the matching one-dimensional higher-order factor and
-#' distinct parameters each contribute a central two-point factor, so no
-#' difference of a difference is ever taken.
+#' distinct parameters each contribute a central two-point factor, so a
+#' difference of a difference is never taken.
 #'
 #' @details
 #' # The step
@@ -257,7 +260,7 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' Against the closed forms of a location-scale family the stencil has a
 #' relative error, normwise over each component, of the order of
 #' \eqn{10^{-5}} at order 3 and \eqn{10^{-4}} at order 4. The closed forms are
-#' accurate to rounding error, which is why a family registers one where it
+#' accurate to rounding error, so a family registers one where it
 #' can.
 #'
 #' @section Notation:
@@ -268,9 +271,10 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters on the parameter scale.
 #' @param order The derivative order, 3 or 4.
-#' @param h_rel The relative step. A single number, defaulting to
+#' @param h_rel The relative step. It is a single number that defaults to
 #'   \eqn{\varepsilon^{1/(\mathrm{order}+2)}}. A step much smaller than the
-#'   default is worse, the rounding growing as \eqn{h^{-\mathrm{order}}}.
+#'   default is worse, because the rounding grows as
+#'   \eqn{h^{-\mathrm{order}}}.
 #'
 #' @return A named list of numeric vectors, derivatives of \eqn{F} itself on
 #'   the natural scale, keyed as
@@ -278,7 +282,7 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'
 #' @seealso [numerical_cdf_deriv()] for orders 1 and 2;
 #'   [discrete_cdf_deriv_k()], the exact route for a discrete family;
-#'   [loc_scale_cdf_deriv_k()], the closed route this is measured against.
+#'   [loc_scale_cdf_deriv_k()], the closed route against which this is measured.
 #'
 #' @keywords internal
 numerical_cdf_deriv_k <- function(distrib, q, theta, order,
@@ -332,7 +336,7 @@ numerical_cdf_deriv_k <- function(distrib, q, theta, order,
 #'
 #' @details
 #' Every order below the one wanted is collected, and not just the one wanted,
-#' because the moment-to-cumulant relation [cdf_scale_k()] applies is a sum
+#' because the moment-to-cumulant relation that [cdf_scale_k()] applies is a sum
 #' over partitions of the multi-index: a partition into \eqn{k} blocks reads
 #' \eqn{k} lower-order ratios.
 #'
@@ -383,8 +387,8 @@ cdf_tables <- function(distrib, q, theta, order, closed = TRUE) {
 #' @description
 #' Calls the family's [distrib_grad_cdf()] (`k = 1`) or [distrib_hess_cdf()]
 #' (`k = 2`) on the lower tail and the natural scale, and orders the result as
-#' [`deriv_names(distrib@params, k)`][deriv_names], the keying [cdf_tables()]
-#' and [cdf_scale_k()] use.
+#' [`deriv_names(distrib@params, k)`][deriv_names], the keying that
+#' [cdf_tables()] and [cdf_scale_k()] use.
 #'
 #' @param distrib An object inheriting from `continuous_distrib`.
 #' @param q A numeric vector of quantiles.
@@ -431,10 +435,10 @@ own_cdf_deriv <- function(distrib, q, theta, k) {
 #'
 #' # What consumes them
 #'
-#' Truncation. [truncated()] needs the derivatives of its normalizing constant
-#' \eqn{Z = F(U) - F(L^-)}, and with only the first two orders available it
-#' pays one quadrature per component at orders three and four; with these it
-#' pays two calls on the parent instead.
+#' Truncation consumes them. [truncated()] requires the derivatives of its
+#' normalizing constant \eqn{Z = F(U) - F(L^-)}, and when only the first two
+#' orders are available it computes one quadrature per component at orders
+#' three and four; with these it makes two calls on the parent instead.
 #'
 #' # Accuracy
 #'
@@ -459,7 +463,7 @@ own_cdf_deriv <- function(distrib, q, theta, k) {
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #'   Far into a tail the probability underflows to zero and the result is `-Inf`
 #'   or `NaN`.
-#' @param ... Passed to methods. No shipped method reads it.
+#' @param ... Passed to methods. The shipped methods do not use it.
 #'
 #' @return A named list of numeric vectors, keyed as
 #'   [`deriv_names(distrib@params, 3)`][deriv_names] for
@@ -472,7 +476,7 @@ own_cdf_deriv <- function(distrib, q, theta, k) {
 #'   [discrete_cdf_deriv_k()] for the two routes.
 #'
 #' @examples
-#' # Four third-order components for a two-parameter family.
+#' # A two-parameter family has four third-order components.
 #' distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 #'
 #' # On the upper tail every sign flips.
@@ -495,7 +499,7 @@ distrib_deriv3_cdf <- S7::new_generic(
 #' @rdname distrib_deriv3_cdf
 #'
 #' @examples
-#' # One component for a one-parameter family, and the sum is exact here.
+#' # A one-parameter family has one component, and the sum is exact here.
 #' distrib_deriv4_cdf(poisson_distrib(), 3, list(mu = 2))
 #'
 #' @export
@@ -515,7 +519,8 @@ distrib_deriv4_cdf <- S7::new_generic(
 #' @name distrib_deriv3_cdf.distrib
 #'
 #' @description
-#' The fallback both generics take when a family registers no closed form.
+#' Provides the fallback that both generics take when a family registers no
+#' closed form.
 #' [cdf_tables()] assembles the derivatives of \eqn{F} of every order up to the
 #' one wanted, by the exact sum for a discrete family and by one product
 #' stencil for a continuous one, and [cdf_scale_k()] puts the top order on the
@@ -546,7 +551,7 @@ distrib_deriv4_cdf <- S7::new_generic(
 #'   recycled against `theta`.
 #'
 #' @seealso [cdf_tables()] and [cdf_scale_k()], the two halves;
-#'   [loc_scale_deriv_cdf_k()], the closed route that five families take
+#'   [loc_scale_deriv_cdf_k()], the closed route that four families take
 #'   instead.
 #'
 #' @examples
@@ -579,9 +584,9 @@ S7::method(distrib_deriv4_cdf, distrib) <- function(distrib, q, theta,
 #' Location-Scale CDF Derivatives at Any Order
 #'
 #' @description
-#' Closed-form derivatives of \eqn{F} of any order up to four, for a family
-#' that is location-scale in its first two parameters. The general form of
-#' [loc_scale_cdf_deriv()], which stops at second order.
+#' Computes closed-form derivatives of \eqn{F} of any order up to four, for a
+#' family that is location-scale in its first two parameters. It is the
+#' general form of [loc_scale_cdf_deriv()], which stops at second order.
 #'
 #' @details
 #' # The construction
@@ -600,10 +605,10 @@ S7::method(distrib_deriv4_cdf, distrib) <- function(distrib, q, theta,
 #'
 #' # What it depends on
 #'
-#' The response derivatives of orders 3 and 4 are what make this reach past
-#' second order: with only [distrib_grad_y()] and [distrib_hess_y()] the
-#' construction stops where [loc_scale_cdf_deriv()] stops. At orders 1 and 2
-#' the two agree to rounding error, which is the check that supports the
+#' The construction reaches past second order through the response
+#' derivatives of orders 3 and 4: with only [distrib_grad_y()] and
+#' [distrib_hess_y()] it stops where [loc_scale_cdf_deriv()] stops. At orders
+#' 1 and 2 the two agree to rounding error, which is the check that supports the
 #' orders above.
 #'
 #' @section Notation:
@@ -615,8 +620,8 @@ S7::method(distrib_deriv4_cdf, distrib) <- function(distrib, q, theta,
 #'   parameters are a location and a scale, and which supplies response
 #'   derivatives to the requested order.
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list of parameters, the location first and the scale
-#'   second.
+#' @param theta A named list of parameters, in which the location comes first
+#'   and the scale second.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of numeric vectors, derivatives of \eqn{F} itself on
@@ -659,11 +664,12 @@ loc_scale_cdf_deriv_k <- function(distrib, q, theta, order, over_f = FALSE) {
 #'
 #' @description
 #' Builds the [distrib_deriv3_cdf()] or [distrib_deriv4_cdf()] body that the
-#' location-scale families register: [loc_scale_cdf_deriv_k()] at every order
-#' up to the one wanted, put on the requested tail and scale by
-#' [loc_scale_cdf_route()]. Four families use it, the Gaussian, the logistic
-#' and the Laplace here and the Gumbel in `cdf_mapped_higher.R`; the Cauchy
-#' has its own closed form, [cauchy_cdf_method()].
+#' location-scale families register. The body evaluates
+#' [loc_scale_cdf_deriv_k()] at every order up to the one wanted and puts the
+#' result on the requested tail and scale by [loc_scale_cdf_route()]. Four
+#' families use it: the Gaussian, the logistic and the Laplace here, and the
+#' Gumbel in `cdf_mapped_higher.R`; the Cauchy has its own closed form,
+#' [cauchy_cdf_method()].
 #'
 #' @details
 #' Every lower order is computed because the log-scale conversion reads them
@@ -697,13 +703,13 @@ loc_scale_deriv_cdf_k <- function(order) {
 #' @title Location-Scale Distribution Function Derivatives on Either Tail
 #' @name loc_scale_cdf_route
 #' @description
-#' The body shared by the location-scale families' [distrib_grad_cdf()],
+#' This is the body shared by the location-scale families' [distrib_grad_cdf()],
 #' [distrib_hess_cdf()], [distrib_deriv3_cdf()] and [distrib_deriv4_cdf()].
 #' Every table of [loc_scale_cdf_deriv_k()] is the density times a factor, so
 #' on the log scale the factors are multiplied by
 #' \eqn{f/P = \exp(\log f - \log P)}, from the family's log-density and the
-#' log probability of the requested tail: neither \eqn{f} nor \eqn{P} is
-#' formed where it underflows, and the upper tail is the family's own.
+#' log probability of the requested tail: \eqn{f} and \eqn{P} are not formed
+#' where they underflow, and the upper tail is the family's own.
 #' @param distrib A location-scale distribution object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameter values.

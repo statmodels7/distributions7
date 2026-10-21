@@ -41,16 +41,16 @@ sums, so it is slower than \code{"opg"}. It stays valid when the
 log-likelihood is not differentiable in a parameter, where
 \eqn{\mathbb{E}[H]} degenerates but the score variance still gives the
 information (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
-Deterministic. At higher orders it needs several integrals, so it is
-usually slower than \code{"integrate"}. It never requires the top-order
+It is deterministic. At higher orders it needs several integrals, so it
+is usually slower than \code{"integrate"}. It never requires the top-order
 derivative itself, which is useful where only the lower orders are
 available in closed form.}
 
 \item{\code{"integrate"}}{Integrates the observed derivative of that order
 directly against the density (numerical quadrature for continuous
-distributions, series summation for discrete ones). Deterministic and
-normally the most accurate when the observed derivative is available in
-closed form. Estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
+distributions, series summation for discrete ones). It is deterministic
+and normally the most accurate when the observed derivative is available
+in closed form. It estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
 with one exception: at order 2, for a family with a non-smooth
 parameter (see \code{\link[=param_smoothness]{param_smoothness()}}), it evaluates
 \eqn{-\mathbb{E}[\ell_i \ell_j]} as \code{"bartlett"} does, because the
@@ -58,11 +58,12 @@ observed \eqn{\ell_{ij}} then lacks the point mass at the kink.}
 
 \item{\code{"mc"}}{Simulates \code{nsim} observations from the distribution
 and averages the observed derivative over them. The simplest and most
-robust option when quadrature struggles (heavy tails, awkward supports),
-but stochastic: the error decreases only as \eqn{1/\sqrt{n_{sim}}}, so
-results are not exactly reproducible unless the seed is fixed. Estimates
+robust option when quadrature performs poorly (heavy tails, awkward
+supports), but it is stochastic: the error decreases only as
+\eqn{1/\sqrt{n_{sim}}}, so results are not exactly reproducible unless
+the seed is fixed. Estimates
 the same quantity as \code{"integrate"}.
-Note: the cost of this option is the cost of simulating from the
+The cost of this option is the cost of simulating from the
 distribution. A native \code{\link[=distrib_rng]{distrib_rng()}} is best; failing that, the
 default generator uses inverse transform when the family has a quantile
 method of its own and \code{\link[=rng_grou]{rng_grou()}}, which only needs the density,
@@ -71,19 +72,19 @@ quantile function slow enough to make inverse transform sampling the
 bottleneck; prefer \code{"bartlett"} or \code{"integrate"} in that case.}
 }
 
-Defaults. \code{distrib_expected_hessian} defaults to \code{"opg"}, which needs
+The generic \code{distrib_expected_hessian} defaults to \code{"opg"}, which needs
 one score evaluation per observation and no expectation. \code{distrib_deriv3} and
 \code{distrib_deriv4} default to \code{"integrate"}, since at those orders
 direct integration of the available derivative is usually cheaper and more
 accurate.
 
-Non-smooth parameters. Where the log-density has a kink in a
+Where the log-density has a kink in a
 parameter, the observed second derivative has a point mass at the kink, and
 an average of its pointwise values does not contain that mass. For the
 Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its
 pointwise average is zero, while the information is \eqn{1/\sigma^2}. The
-information of such a family is the variance of the score, which is what
-the second Bartlett identity evaluates. \code{"bartlett"}, \code{"opg"} and, at
+information of such a family is the variance of the score, and the second
+Bartlett identity evaluates that variance. \code{"bartlett"}, \code{"opg"} and, at
 order 2, \code{"integrate"} therefore return \eqn{-1/\sigma^2} per observation;
 \code{"mc"} averages the observed \eqn{\ell_{\mu\mu}} and returns 0. When the
 family declares where its kink is, through \code{\link[=kink_decomposition]{kink_decomposition()}}, the

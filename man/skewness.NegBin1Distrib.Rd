@@ -7,7 +7,7 @@
 \item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{theta}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,7 +16,8 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$theta))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = (1+2\theta)/\sqrt{\mu(1+\theta)}}. It is
+The skewness has the closed form
+\eqn{\gamma_1 = (1+2\theta)/\sqrt{\mu(1+\theta)}}. It is
 positive at every parameter value and tends to the Poisson's
 \eqn{\mu^{-1/2}} as the dispersion goes to zero, which is where NB1
 approaches a Poisson.
@@ -29,7 +30,7 @@ approaches a Poisson.
 \examples{
 d <- negbin1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(skewness(d, list(mu = 4, theta = 2)), 5 / sqrt(4 * 3))
 
 # It falls onto the Poisson's mu^(-1/2) = 0.5 as the dispersion vanishes.

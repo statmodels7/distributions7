@@ -15,14 +15,15 @@ vector of length 1 or \code{n}.}
 A numeric vector of variances, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = 2\mu}. The variance is tied to the
+The variance has the closed form \eqn{\operatorname{Var}(Y) = 2\mu}. It is
+tied to the
 mean, so the family has one parameter where a gamma has two: it is exactly
-the gamma at \eqn{\sigma^2 = 2\mu}, .
+the gamma at \eqn{\sigma^2 = 2\mu}.
 }
 \examples{
 d <- chisq_distrib()
 
-# Twice the mean.
+# The variance is twice the mean.
 all.equal(variance(d, list(mu = 5)), 10)
 
 # The gamma at sigma2 = 2 mu is the same law.

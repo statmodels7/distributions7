@@ -11,7 +11,7 @@ no method of its own.}
 logarithms under \code{log.p}. The bounds of the support are returned at 0 and
 1, and \code{NaN} for a value outside \eqn{[0, 1]}.}
 
-\item{theta}{A named list of parameters, each of length 1 or \code{length(p)}.}
+\item{theta}{A named list of parameters; each has length 1 or \code{length(p)}.}
 
 \item{lower.tail}{Logical of length 1. \code{TRUE}, the default, treats \code{p} as
 \eqn{P(Y \le q)}; \code{FALSE} treats it as the upper-tail probability.}
@@ -40,8 +40,8 @@ diffuse one
 take a comparable number of expansions; after thirty doublings the step is
 multiplied by a thousand, so that a quantile far in a tail is reached. The
 expansion stops at a quarter of the largest double: a root beyond it is
-returned as \code{Inf} (or \code{-Inf}), the quadrature of a distribution function
-being unable to reach the mass past the largest double.
+returned as \code{Inf} (or \code{-Inf}), because the quadrature of a distribution
+function cannot reach the mass past the largest double.
 
 The probability is first turned into the logarithms of both tails by
 \code{\link[=quantile_log_tails]{quantile_log_tails()}}, without forming \eqn{1 - p} or exponentiating a
@@ -61,9 +61,9 @@ computed by quadrature, so the quantile is less accurate than the
 distribution function that it inverts.
 }
 \seealso{
-\code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}, the function it inverts;
+\code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}, the function that it inverts;
 \code{\link[=find_pdf_anchor]{find_pdf_anchor()}} for the bracket's starting point;
-\code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, which tests whether this method is what a caller
-would reach; \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
+\code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, which tests whether a caller reaches this
+method; \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }
 \keyword{internal}

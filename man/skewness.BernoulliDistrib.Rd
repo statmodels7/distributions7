@@ -15,7 +15,8 @@
 A numeric vector, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\gamma_1 = (1-2\mu)/\sqrt{\mu(1-\mu)}}. It is zero at
+The skewness has the closed form
+\eqn{\gamma_1 = (1-2\mu)/\sqrt{\mu(1-\mu)}}. It is zero at
 \eqn{\mu = 1/2}, positive below and negative above, and it diverges at
 either end of the unit interval, where almost all the mass sits on one of
 the two values.
@@ -23,10 +24,10 @@ the two values.
 \examples{
 d <- bernoulli_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(skewness(d, list(mu = 0.3)), (1 - 0.6) / sqrt(0.3 * 0.7))
 
-# Zero at one half, and it diverges towards either end.
+# The skewness is zero at one half and diverges towards either end.
 skewness(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
 
 }

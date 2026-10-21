@@ -9,19 +9,20 @@ phi_hermite(x, m)
 \arguments{
 \item{x}{A numeric vector of arguments.}
 
-\item{m}{The order, 1 to 4. Any other value returns \code{NULL}, \code{switch()}
-falling through; no caller passes one.}
+\item{m}{The order, 1 to 4. Any other value makes \code{switch()} fall through
+and return \code{NULL}; every caller passes a value from 1 to 4.}
 }
 \value{
-A numeric vector the length of \code{x}, the polynomial factor alone.
+A numeric vector the length of \code{x}, holding only the polynomial
+factor.
 Multiply by \code{dnorm(x)} for the derivative itself.
 }
 \description{
 Returns the factor \eqn{h_m} in \eqn{\Phi^{(m)}(x) = h_m(x)\,\varphi(x)} for
 \eqn{m = 1, \ldots, 4}: \eqn{1}, \eqn{-x}, \eqn{x^2 - 1} and
 \eqn{3x - x^3}. These are the probabilists' Hermite polynomials up to a
-sign, and factoring the density out of them is what keeps the tails
-evaluable: \eqn{\varphi} is supplied by the caller and multiplied in once.
+sign. Factoring the density out of them keeps the tails evaluable, because
+\eqn{\varphi} is supplied by the caller and multiplied in once.
 }
 \section{Notation}{
 

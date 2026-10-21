@@ -6,8 +6,9 @@
 \arguments{
 \item{x}{A \code{LaplaceDistrib}, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
-vector of length 1 or \code{n}. The values are not read, only their lengths.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}; each is a
+numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,15 +17,15 @@ A numeric vector of 3s, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Exactly 3 at every parameter value, the excess over the Gaussian's fourth
-standardized moment of 3. A standardized moment is free of location and
-scale, and the Laplace has no shape parameter, so the excess kurtosis is
-the same for the whole family.
+The excess kurtosis is exactly 3 at every parameter value, which is the
+excess over the Gaussian's fourth standardized moment of 3. A standardized
+moment is free of location and scale, and the Laplace has no shape parameter,
+so the excess kurtosis is the same for the whole family.
 }
 \examples{
 d <- laplace_distrib()
 
-# Three, whatever the location and the scale.
+# The value is three, whatever the location and the scale.
 kurtosis(d, list(mu = c(0, 5), sigma = c(1, 5)))
 
 }

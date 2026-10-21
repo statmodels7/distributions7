@@ -7,7 +7,7 @@
 \item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{phi}
-(positive), each a numeric vector of length 1 or \code{n}. Small \code{phi} is a
+(positive); each is a numeric vector of length 1 or \code{n}. Small \code{phi} is a
 large shape, where the family approaches a Gaussian.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,10 +17,10 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \phi\mu^2}. The quadratic variance
-function is why the gamma is the standard family for a positive response
-whose spread grows in proportion to its level: the coefficient of variation
-is \eqn{\sqrt\phi}, the same at every mean.
+The variance has the closed form \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
+Because the variance function is quadratic, the gamma is the standard family
+for a positive response whose spread grows in proportion to its level: the
+coefficient of variation is \eqn{\sqrt\phi}, the same at every mean.
 }
 \section{Notation}{
 
@@ -31,7 +31,7 @@ shape is \eqn{1/\phi}.
 \examples{
 d <- gamma1_distrib()
 
-# The dispersion times the square of the mean.
+# The variance is the dispersion times the square of the mean.
 all.equal(variance(d, list(mu = 2, phi = 0.25)), 1)
 
 # The coefficient of variation is sqrt(phi) at every mean.

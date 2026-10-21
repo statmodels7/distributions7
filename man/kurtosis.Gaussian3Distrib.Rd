@@ -6,8 +6,8 @@
 \arguments{
 \item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{tau} (positive), each a
-numeric vector of length 1 or \code{n}. The values are checked against the
+\item{theta}{A named list with components \code{mu} and \code{tau} (positive); each is
+a numeric vector of length 1 or \code{n}. The values are checked against the
 parameter bounds, and only their lengths enter the result.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,14 +17,14 @@ A numeric vector of zeros, of length
 \code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Exactly zero at every parameter value, the excess over the Gaussian's own
-fourth standardized moment being what \code{\link[=kurtosis]{kurtosis()}} reports. The
-parametrization does not enter a standardized moment.
+The excess kurtosis is exactly zero at every parameter value, because
+\code{\link[=kurtosis]{kurtosis()}} reports the excess over the Gaussian's own fourth standardized
+moment. The parametrization does not enter a standardized moment.
 }
 \examples{
 d <- gaussian3_distrib()
 
-# Zero for every Gaussian, in every parametrization.
+# The excess kurtosis is zero for every Gaussian, in every parametrization.
 kurtosis(d, list(mu = 0, tau = c(0.01, 100)))
 
 }

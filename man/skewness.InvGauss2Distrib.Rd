@@ -7,7 +7,7 @@
 \item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,10 +16,10 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$lambda))}, positive throughout.
 }
 \description{
-Closed form: \eqn{\gamma_1 = 3\sqrt{\mu/\lambda}}. It is positive at every
-parameter value and depends on the two only through their ratio, so the
-whole family is one curve indexed by \eqn{\mu/\lambda}. A small mean or a
-large \eqn{\lambda} gives a nearly Gaussian shape.
+The skewness has the closed form \eqn{\gamma_1 = 3\sqrt{\mu/\lambda}}. It is
+positive at every parameter value and depends on the two only through their
+ratio, so the whole family is one curve indexed by \eqn{\mu/\lambda}. A small
+mean or a large \eqn{\lambda} gives a nearly Gaussian shape.
 }
 \section{Notation}{
 
@@ -29,7 +29,7 @@ large \eqn{\lambda} gives a nearly Gaussian shape.
 \examples{
 d <- invgauss2_distrib()
 
-# Three times the square root of the ratio.
+# The skewness is three times the square root of the ratio.
 all.equal(skewness(d, list(mu = 2, lambda = 8)), 1.5)
 
 # It agrees with the dispersion parametrization on the same law.

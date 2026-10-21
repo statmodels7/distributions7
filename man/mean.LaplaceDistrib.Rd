@@ -7,7 +7,7 @@
 \item{x}{A \code{LaplaceDistrib}, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
-(the scale, positive), each a numeric vector of length 1 or \code{n}.}
+(the scale, positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,10 +16,10 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. The density
-is symmetric about \eqn{\mu}, so the location is the mean and the median at
-once. The value is recycled to the length the two parameters imply, and no
-quadrature is run.
+The closed form that replaces the numerical default is \eqn{E[Y] = \mu}. The
+density is symmetric about \eqn{\mu}, so the location is the mean and the
+median at once. The value is recycled to the length that the two parameters
+imply, and the method runs no quadrature.
 }
 \examples{
 d <- laplace_distrib()

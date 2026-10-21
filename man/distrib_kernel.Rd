@@ -17,10 +17,10 @@ A list of five functions of \verb{(y, theta, eta)}:
 \code{logdens}, \code{score}, \code{curvature}, \code{information} and \code{dinformation}.
 }
 \description{
-The log-density, the score, the curvature, the expected information and
-its derivative for one parameter on its unconstrained scale, as five
-functions with everything that does not depend on the data already
-resolved.
+Returns five functions that evaluate the log-density, the score, the
+curvature, the expected information and its derivative for one parameter on
+its unconstrained scale. Everything that does not depend on the data is
+already resolved in them.
 }
 \details{
 The generic route validates its arguments, aligns \code{theta} by name,
@@ -29,26 +29,26 @@ score-driven filter evaluates the score once per observation, at a
 predictor that it has just produced, so these steps cannot be vectorized
 away and their cost dominates.
 
-This resolves the family's methods and the link's once, and applies the
-chain rule for the single component wanted rather than for all of them.
-The Jacobian of the parametrization is diagonal, so with
-\eqn{\theta_p = h(\eta_p)},
+The kernel resolves the family's methods and the link's once, and applies
+the chain rule for the single component that is needed rather than for all
+of them. The Jacobian of the parametrization is diagonal. With
+\eqn{\theta_p = h(\eta_p)}, the derivatives with respect to \eqn{\eta_p} are
 
 \deqn{\frac{\partial \ell}{\partial \eta_p} = \ell_p\,h'(\eta_p),
   \qquad
   \frac{\partial^2 \ell}{\partial \eta_p^2}
     = \ell_{pp}\,h'(\eta_p)^2 + \ell_p\,h''(\eta_p),}
 
-which is what \code{\link[=to_link_scale]{to_link_scale()}} computes for those two
-components and nothing else.
+These are the values that \code{\link[=to_link_scale]{to_link_scale()}} gives for those two
+components, and the kernel computes only these.
 
 The caller takes on the checks that the generic would have made. \code{theta}
 must already be a list named by the parameters of the family, in the
 family's own order, with values of a length that the family accepts against
-\code{y}; nothing is checked. The entry named \code{param} is replaced, so its value
-on the way in is immaterial. A list without names is not replaced at that
-entry, and a list whose names are out of order is read by position. The
-inverse link is clamped strictly inside its bounds exactly as
+\code{y}; the function does not check this. The entry named \code{param} is replaced,
+so its value on the way in is immaterial. A list without names is not
+replaced at that entry, and a list whose names are out of order is read by
+position. The inverse link is clamped strictly inside its bounds exactly as
 \code{\link[linkfunctions7:linkinv]{linkfunctions7::linkinv()}} does, which correctness requires.
 
 The kernel also carries the expected information of the same coordinate and
@@ -69,7 +69,7 @@ d <- gaussian1_distrib()
 k <- distrib_kernel(d, "sigma")
 th <- list(mu = 0, sigma = 1)
 k$score(0.7, th, log(1.4))
-# the same number the generic gives
+# The generic gives the same number.
 distrib_gradient(d, 0.7, list(mu = 0, sigma = 1.4),
                  scale = "link")[["sigma"]]
 

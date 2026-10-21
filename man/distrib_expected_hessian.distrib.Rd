@@ -15,7 +15,7 @@ are reported. The transformation is applied in the generic's body, so this
 method always returns the parameter scale.}
 
 \item{approx}{One of \code{"opg"}, \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, the
-strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. Defaults to \code{"opg"}.}
+strategy that \code{\link[=expected_derivative]{expected_derivative()}} uses. Defaults to \code{"opg"}.}
 
 \item{nsim}{Number of draws, read only by \code{approx = "mc"}.}
 
@@ -26,8 +26,8 @@ generic's.}
 A named list of expected Hessian component vectors.
 }
 \description{
-Fallback method, for a family that does not write its expected information
-out. It rests on the second Bartlett identity,
+This method is the fallback for a family that does not write its expected
+information out. It rests on the second Bartlett identity,
 \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, which
 holds for a regular model and, unlike \eqn{\mathbb{E}[\ell^{(ij)}]} read
 directly, survives a log-likelihood that is not differentiable in a
@@ -41,7 +41,8 @@ strategies differ in cost. The default \code{"opg"} reads
 so it costs one call to \code{\link[=distrib_gradient]{distrib_gradient()}}; \code{"bartlett"} evaluates the
 expectation itself, which is a sum over the support for a discrete family
 and a quadrature for a continuous one, and is orders of magnitude dearer.
-See \code{\link[=expected_by_opg]{expected_by_opg()}} for what the default gives up and what it does not.
+See \code{\link[=expected_by_opg]{expected_by_opg()}} for the properties that the default loses and those
+that it retains.
 
 The score is taken from \code{\link[=distrib_gradient]{distrib_gradient()}}, so it uses the analytical
 gradient where the family has one and finite differences otherwise.
@@ -49,6 +50,6 @@ gradient where the family has one and finite differences otherwise.
 \seealso{
 \code{\link[=expected_by_opg]{expected_by_opg()}} and \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} for the two
 readings of the identity, and \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} for the
-predicate that says whether a family reaches this method at all.
+predicate that determines whether a family reaches this method at all.
 }
 \keyword{internal}

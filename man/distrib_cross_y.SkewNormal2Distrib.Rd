@@ -21,9 +21,9 @@ parametrization, keyed by \code{distrib@params}, each of length
 \code{length(y)}.
 }
 \description{
-The derivatives of the log-density in the response and once in each
-parameter, from a compiled kernel written as the parameter derivatives are
-(see \code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}).
+Returns the derivatives of the log-density in the response and once in each
+parameter, from a compiled kernel that is written as the parameter
+derivatives are (see \code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}}).
 }
 \seealso{
 \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the family;

@@ -17,13 +17,13 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu}, each a
-numeric vector of length \code{length(y)}.
+A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu}; each is
+a numeric vector of length \code{length(y)}.
 }
 \description{
-Closed form in the location and the scale, from the location-scale
-identity. The two shape components are minus the mixed entries of
-\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}}, since the response and the location
+The location and scale components are in closed form, from the
+location-scale identity. The two shape components are minus the mixed entries
+of \code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}}, since the response and the location
 enter the density only through their difference, so that
 \eqn{\partial_y\partial_\theta\ell = -\partial_\mu\partial_\theta\ell}.
 }

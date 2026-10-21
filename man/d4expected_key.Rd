@@ -11,14 +11,14 @@ d4expected_key(params, a, b, c, d, e, f)
 
 \item{a, b}{Indices of the information's pair; their order does not matter.}
 
-\item{c, d, e, f}{Indices of the parameters differentiated in; their order
-does not matter either.}
+\item{c, d, e, f}{Indices of the parameters with respect to which the
+derivative is taken; their order does not matter either.}
 }
 \value{
 A single string.
 }
 \description{
-The name under which \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} returns
+Returns the name under which \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} returns
 \eqn{\partial^4\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,\partial\theta_d\,
 \partial\theta_e\,\partial\theta_f}.
 }

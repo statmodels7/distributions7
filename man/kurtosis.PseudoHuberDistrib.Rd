@@ -6,26 +6,26 @@
 \arguments{
 \item{x}{A \code{PseudoHuberDistrib}, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
-numeric vector of length 1 or \code{n}. Only \code{nu} enters the value; the other
-two are read for their lengths and are still validated.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}; each
+is a numeric vector of length 1 or \code{n}. Only \code{nu} enters the value; the
+other two are read for their lengths and are still validated.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, of the length the recycled
-parameters imply. Only \code{nu} enters the value, so a setting that varies
-the location or the scale alone repeats one number.
+A numeric vector of excess kurtoses, of the length that the recycled
+parameters imply. Only \code{nu} enters the value, so a setting that leaves
+\code{nu} fixed repeats one number.
 }
 \description{
-Closed form, replacing the numerical default:
+The closed form that replaces the numerical default is
 \deqn{\gamma_2 = 3\,\frac{K_3(\sqrt{\nu})\,K_1(\sqrt{\nu})}
                          {K_2(\sqrt{\nu})^2} - 3,}
 with \eqn{K_r} the modified Bessel function of the second kind. It depends
-on the shape alone, the location and the scale canceling in a standardized
-moment, and it interpolates between the two limits the family is built to
-span: about 3, the Laplace's, as \eqn{\nu \to 0}, and 0, the Gaussian's, as
-\eqn{\nu} grows.
+only on the shape, because the location and the scale cancel in a
+standardized moment, and it interpolates between the two limits that the
+family is built to span: about 3, the Laplace's, as \eqn{\nu \to 0}, and 0,
+the Gaussian's, as \eqn{\nu} grows.
 }
 \details{
 All three Bessel functions are evaluated exponentially scaled. Each carries
@@ -45,7 +45,7 @@ d <- pseudohuber_distrib()
 # The shape carries the tail weight, from the Laplace's 3 to the Gaussian's 0.
 round(kurtosis(d, list(mu = 0, sigma = 1, nu = c(1e-4, 1, 1e2, 1e4))), 4)
 
-# Neither the location nor the scale enters a standardized moment.
+# The location and the scale do not enter a standardized moment.
 kurtosis(d, list(mu = c(0, 5), sigma = c(1, 9), nu = 4))
 
 }

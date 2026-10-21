@@ -7,7 +7,7 @@
 \item{x}{An \code{InvGauss1Distrib}, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{phi} (the dispersion, positive), each a numeric vector of length 1 or
+\code{phi} (the dispersion, positive); each is a numeric vector of length 1 or
 \code{n}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -17,9 +17,9 @@ A numeric vector of means, of length
 \code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and a
-dispersion, so the mean is a read and the higher moments are functions of
-the product \eqn{\phi\mu}.
+The mean has the closed form \eqn{E[Y] = \mu}. This parametrization carries
+the mean and a dispersion, so the mean is a read and the higher moments are
+functions of the product \eqn{\phi\mu}.
 }
 \examples{
 d <- invgauss1_distrib()

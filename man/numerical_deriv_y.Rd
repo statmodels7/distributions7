@@ -27,7 +27,7 @@ numerical_deriv_y(
 A numeric vector the length of \code{y}.
 }
 \description{
-One central stencil of the requested order applied to
+Applies one central stencil of the requested order to
 \code{distrib_pdf(..., log = TRUE)}.
 }
 \details{

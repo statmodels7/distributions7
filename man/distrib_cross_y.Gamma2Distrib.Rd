@@ -16,11 +16,12 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{sigma2}, each a numeric vector
-of length \code{length(y)}.
+A named list with components \code{mu} and \code{sigma2}; each is a numeric
+vector of length \code{length(y)}.
 }
 \description{
-Closed form: \eqn{\ell^{(y)} = (\mu^2/\sigma^2 - 1)/y - \mu/\sigma^2} gives
+The mixed derivatives are in closed form:
+\eqn{\ell^{(y)} = (\mu^2/\sigma^2 - 1)/y - \mu/\sigma^2} gives
 \eqn{2\mu/(\sigma^2 y) - 1/\sigma^2} and
 \eqn{-\mu^2/(\sigma^4 y) + \mu/\sigma^4}.
 }

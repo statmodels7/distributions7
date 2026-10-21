@@ -7,22 +7,22 @@
 \item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the scale, positive) and
-\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
-The fourth moment exists for every positive shape.}
+\code{sigma} (the shape, positive); each is a numeric vector of length 1 or
+\code{n}. The fourth moment exists for every positive shape.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of excess kurtoses, of length
 \code{max(length(theta$mu), length(theta$sigma))}. Only the shape enters the
-value, so a setting that varies the scale alone repeats one number.
+value, so a setting that varies only the scale repeats one number.
 }
 \description{
-Closed form:
+The excess kurtosis has the closed form
 \deqn{\gamma_2 = \frac{g_4 - 4 g_1 g_3 + 6 g_1^2 g_2 - 3 g_1^4}
                       {(g_2 - g_1^2)^2} - 3,
       \qquad g_k = \Gamma(1 + k/\sigma).}
-The scale cancels, so the value depends on the shape alone. It is 6 at shape
+The scale cancels, so the value depends only on the shape. It is 6 at shape
 1, where the family is exponential, dips below zero over a band of moderate
 shapes, and climbs again as the shape grows, towards 2.4. It is evaluated
 through \code{\link[=weibull_moment_terms]{weibull_moment_terms()}}, as the skewness is.

@@ -11,7 +11,7 @@
 
 \item{q}{A numeric vector of quantiles. Values at or below zero give
 derivatives of exactly zero on the natural scale; on the log scale of the
-lower tail they are \code{NaN}, \eqn{\log F} being infinite there.}
+lower tail they are \code{NaN}, because \eqn{\log F} is infinite there.}
 
 \item{theta}{A named list with one component, \code{mu} (positive), a numeric
 vector of length 1 or \code{n}.}
@@ -26,17 +26,18 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
 A named list with one numeric vector per component of the requested
-order, which for a one-parameter family is one at every order.
+order; a one-parameter family has one component at every order.
 }
 \description{
-Closed form at every order from one to four, from the survival function
-\eqn{S = e^{-q/\mu}}. Its logarithm is \eqn{L = -q/\mu}, whose partial
-derivatives are \eqn{\partial^j L/\partial\mu^j = -q(-1)^j j!/\mu^{j+1}},
-and \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} turns those into the derivatives of \eqn{F}.
+The derivatives have closed form at every order from one to four, obtained
+from the survival function \eqn{S = e^{-q/\mu}}. Its logarithm is \eqn{L =
+-q/\mu}, whose partial derivatives are \eqn{\partial^j L/\partial\mu^j =
+-q(-1)^j j!/\mu^{j+1}}, and \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} turns those into the
+derivatives of \eqn{F}.
 }
 \details{
-Below the support every derivative of \eqn{F} is exactly zero, the mask in
-\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} suppressing the finite value that \eqn{L} would
+Below the support every derivative of \eqn{F} is exactly zero, because the
+mask in \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} suppresses the finite value that \eqn{L} would
 otherwise give there.
 }
 \section{Notation}{
@@ -49,11 +50,12 @@ otherwise give there.
 d <- exponential_distrib()
 q <- c(0.5, 2, 5)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which
+# shares no arithmetic.
 fd <- numerical_cdf_deriv(d, q, list(mu = 3), order = 1)
 max(abs(distrib_grad_cdf(d, q, list(mu = 3), log = FALSE)$mu / fd$mu - 1))
 
-# Exactly zero below the support.
+# The derivative is exactly zero below the support.
 distrib_grad_cdf(d, c(-1, 0.5), list(mu = 3), log = FALSE)$mu
 
 }

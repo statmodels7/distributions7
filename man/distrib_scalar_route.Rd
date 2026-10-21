@@ -16,14 +16,14 @@ distrib_scalar_route(distrib, ...)
 otherwise a list with \code{name}, a single character string, and
 \code{constants}, a list of numeric vectors (named for the size, the truncation
 points and the transformer parameters, unnamed for the fixed values), each
-of length 1 or of the number of observations, in the order they follow the
-parameters.
+of which has length 1 or the number of observations, in the order in which
+they follow the parameters.
 }
 \description{
 Returns how the package's compiled scalar entry points address a
 distribution: the name that the C function \code{d7_scalar_id()} recognizes,
 and the constants of the distribution that follow its parameters in the
-parameter vector those entry points read. A consumer that resolves the
+parameter vector that those entry points read. A consumer that resolves the
 entry points with \code{R_GetCCallable()} uses the name to obtain the
 distribution's identifier once, and appends the constants to the
 parameters of every observation.
@@ -31,8 +31,8 @@ parameters of every observation.
 \details{
 The entry points are \code{d7_scalar_id(name)}, \code{d7_score_curv(id, k, y, th, out)}, which writes the score and the \eqn{(k, k)} second derivative of
 the log-density in parameter \eqn{k}, and \code{d7_info_dinfo(id, k, y, th, out)}, which writes the \eqn{(k, k)} expected second derivative and its
-derivative in the same parameter, all on the parameter scale, with \code{k}
-counted from zero over \code{distrib@params} and \code{th} the parameters of one
+derivative in the same parameter, all on the parameter scale. Here \code{k} is
+counted from zero over \code{distrib@params}, and \code{th} holds the parameters of one
 observation followed by its constants. \code{d7_logpdf(id, y, th)} returns the
 log-density of one observation. \code{d7_scalar_thread_safe(id)} returns
 1 for every distribution or wrapped family that the registry covers, whose
@@ -43,20 +43,21 @@ The default method returns the class name when the registry covers the
 class and no constants; the binomial and the two beta-binomials carry
 their size as a constant.
 
-A wrapped family is named \code{"<wrapper class>[:aux]|<inner name>"}, \code{aux} being
-what the wrapper needs besides its constants and the inner name being the
+A wrapped family is named \code{"<wrapper class>[:aux]|<inner name>"}, where \code{aux}
+is the additional input that the wrapper needs besides its constants and the
+inner name is the
 route's name of the wrapped family, which may itself be a wrapper; its
 constants are the inner family's followed by the wrapper's. For \code{\link[=fixed]{fixed()}},
 \code{aux} is the mask of the fixed parameters (bit \code{j - 1} for the \code{j}-th
 parameter of the inner family) and the wrapper's constants are the fixed
 values in the inner family's order. For \code{\link[=zero_inflated]{zero_inflated()}} and
-\code{\link[=zero_adjusted]{zero_adjusted()}} there is no \code{aux} and no constant of the wrapper's own, the
-probability being the last parameter. For \code{\link[=folded]{folded()}} there is no \code{aux} and no
-constant of the wrapper's own. For \code{\link[=truncated]{truncated()}} there is no \code{aux} and the
-wrapper's constants are \code{lower} and \code{upper}. For \code{\link[=transformation]{transformation()}}, \code{aux} is
-the code of the transformer, which must be one of the ready-made ones, and
-the wrapper's constants are the transformer's parameters; a transformer built
-with \code{\link[=transformer]{transformer()}} has no route.
+\code{\link[=zero_adjusted]{zero_adjusted()}} there is no \code{aux} and no constant of the wrapper's own,
+because the probability is the last parameter. For \code{\link[=folded]{folded()}} there is no
+\code{aux} and no constant of the wrapper's own. For \code{\link[=truncated]{truncated()}} there is no
+\code{aux} and the wrapper's constants are \code{lower} and \code{upper}. For
+\code{\link[=transformation]{transformation()}}, \code{aux} is the code of the transformer, which must be one
+of the ready-made ones, and the wrapper's constants are the transformer's
+parameters; a transformer built with \code{\link[=transformer]{transformer()}} has no route.
 }
 \examples{
 distrib_scalar_route(gaussian1_distrib())

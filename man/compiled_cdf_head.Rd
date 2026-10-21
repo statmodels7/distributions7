@@ -9,7 +9,7 @@ compiled_cdf_head(distrib, rule, th, order, params)
 \arguments{
 \item{distrib}{A family named in \code{\link[=compiled_cdf_deriv_k]{compiled_cdf_deriv_k()}}.}
 
-\item{rule}{The list \code{cdf_rule_cpp()} returns.}
+\item{rule}{The list that \code{cdf_rule_cpp()} returns.}
 
 \item{th}{The named list of parameter vectors, one value per point.}
 
@@ -23,7 +23,7 @@ points that have one, and \code{integral}, a function of a multi-index that
 returns the head's integral at those points.
 }
 \description{
-The part of \eqn{\partial_I F(q) = \int_0^q f B_I} below the cut
+Computes the part of \eqn{\partial_I F(q) = \int_0^q f B_I} below the cut
 \eqn{y_0} that \code{cdf_rule_cpp()} reports for a family on
 \eqn{(0, \infty)} whose density behaves like \eqn{y^{\alpha - 1}} near
 zero (a gamma or a generalized gamma with a small shape), where part of

@@ -6,8 +6,9 @@
 \arguments{
 \item{x}{A \code{Laplace2Distrib}, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
-vector of length 1 or \code{n}. The values are not read, only their lengths.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}; each is a
+numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -16,15 +17,15 @@ A numeric vector of 3s, of length
 \code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Exactly 3 at every parameter value, the excess over the Gaussian. A
-standardized moment does not see a change of parametrization, so this is the
-same number \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}} returns and it moves with neither
-the location nor the rate.
+The excess kurtosis is exactly 3 at every parameter value, the excess over
+the Gaussian. A standardized moment is unchanged by a change of
+parametrization, so this is the same number that \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}}
+returns, and it moves with neither the location nor the rate.
 }
 \examples{
 d <- laplace2_distrib()
 
-# Three, in either parametrization.
+# The value is three in either parametrization.
 c(kurtosis(d, list(mu = 0, lambda = 2)),
   kurtosis(laplace_distrib(), list(mu = 0, sigma = 0.5)))
 

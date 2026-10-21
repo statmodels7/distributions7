@@ -7,9 +7,9 @@
 \item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
 \item{theta}{A named list with components \code{mu} (the mean, positive) and
-\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
-\code{n}. Small \code{theta} means heavy overdispersion; the variance diverges as it
-approaches zero.}
+\code{theta} (the dispersion, positive); each is a numeric vector of length 1
+or \code{n}. Small \code{theta} means heavy overdispersion; the variance diverges as
+it approaches zero.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,7 +18,7 @@ A numeric vector of variances, of length
 \code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default:
+The closed form that replaces the numerical default is
 \eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. The quadratic term is the
 overdispersion, so the variance exceeds the mean at every finite \eqn{\theta}
 and falls back onto it as \eqn{\theta} grows, which is the Poisson limit of

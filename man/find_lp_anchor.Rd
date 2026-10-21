@@ -15,13 +15,14 @@ find_lp_anchor(lp_raw, b)
 A single number.
 }
 \description{
-The search behind \code{\link[=find_pdf_anchor]{find_pdf_anchor()}}, expressed on a plain
+Runs the search behind \code{\link[=find_pdf_anchor]{find_pdf_anchor()}} on a plain
 log-density over an interval.
 }
 \details{
-Kept separate from the \code{distrib} object so that it can also be applied to
-a reparametrized density, which is what the divergence-removing transforms in
-this file produce and which has no distribution object of its own.
+The function is kept separate from the \code{distrib} object so that it can also
+be applied to a reparametrized density. The divergence-removing transforms in
+this file produce such a density, which has no distribution object of its
+own.
 }
 \seealso{
 \code{\link[=find_pdf_anchor]{find_pdf_anchor()}}

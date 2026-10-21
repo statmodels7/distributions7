@@ -16,16 +16,17 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a numeric
-vector of length \code{length(y)}. All three are exact.
+A named list with components \code{mu}, \code{sigma} and \code{alpha}; each is a
+numeric vector of length \code{length(y)}. All three are exact.
 }
 \description{
-Closed form throughout, written in the inverse Mills ratio \eqn{R} at
-\eqn{t = \alpha z}. The location and scale components are the
-location-scale identity with \eqn{\ell^{(y)} = (\alpha R - z)/\sigma} and
-\eqn{\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2} substituted, and the shape
-component is \eqn{(R + t R')/\sigma}, the response entering \eqn{\alpha}
-only through \eqn{t}. The three are assembled from a single evaluation of
+The mixed derivatives are in closed form throughout, written in the inverse
+Mills ratio \eqn{R} at \eqn{t = \alpha z}. The location and scale components
+are the location-scale identity after the substitution of
+\eqn{\ell^{(y)} = (\alpha R - z)/\sigma} and
+\eqn{\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2}, and the shape component is
+\eqn{(R + t R')/\sigma}, since the response enters \eqn{\alpha} only
+through \eqn{t}. The three are assembled from a single evaluation of
 \code{\link[numericals7:mills_ratio]{numericals7::mills_ratio()}} rather than by calling
 \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}, which would
 evaluate it twice more.

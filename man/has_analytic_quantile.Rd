@@ -13,20 +13,20 @@ has_analytic_quantile(distrib)
 A single logical.
 }
 \description{
-\code{TRUE} when the object gets its quantile function from a class-specific
-method rather than from the numerical fallback.
+Returns \code{TRUE} when the quantile function of the object comes from a
+class-specific method rather than from the numerical fallback.
 }
 \details{
-Used to decide whether inverse transform sampling is cheap enough to prefer
-over the ratio-of-uniforms sampler: inverting a \emph{numerical} quantile costs
-several evaluations of the distribution function per draw, each of them a
-quadrature.
+The result selects inverse transform sampling over the ratio-of-uniforms
+sampler when the quantile is analytic, because inverting a \emph{numerical}
+quantile costs several evaluations of the distribution function per draw,
+and each of them is a quadrature.
 
-The test uses the documented S7 trick. S7 records the class a method was
-registered on in the method's \code{signature} attribute, so an inherited
-fallback is recognized by that class being \code{continuous_distrib} itself.
-Note that \code{identical()} does not work for this. S7 wraps the method object,
-so comparing against the fallback fails even when it is the fallback.
+The test uses the documented S7 trick. S7 records the class on which a
+method was registered in the method's \code{signature} attribute, so an inherited
+fallback is recognized when that class is \code{continuous_distrib} itself.
+The test does not use \code{identical()}, because S7 wraps the method object, so
+comparing against the fallback fails even when the method is the fallback.
 }
 \seealso{
 \code{\link[=rng_grou]{rng_grou()}}

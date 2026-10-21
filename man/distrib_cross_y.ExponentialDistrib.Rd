@@ -16,13 +16,13 @@ the parameter scale.}
 \item{...}{Unused.}
 }
 \value{
-A named list with the single component \code{mu}, a numeric vector of length
-\code{length(y)} holding \eqn{1/\mu^2} at every observation.
+A named list with the single component \code{mu}, a numeric vector of
+length \code{length(y)} that holds \eqn{1/\mu^2} at every observation.
 }
 \description{
-Closed form: the mean is a pure scale, so the identity
-\eqn{-z\ell^{(yy)} - \ell^{(y)}/\mu} applies with \eqn{z = y/\mu} and
-returns \eqn{1/\mu^2}.
+The mixed derivative is in closed form: the mean is a pure scale, so the
+identity \eqn{-z\ell^{(yy)} - \ell^{(y)}/\mu} applies with \eqn{z = y/\mu}
+and gives \eqn{1/\mu^2}.
 }
 \seealso{
 \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the identity, whose scale half applies

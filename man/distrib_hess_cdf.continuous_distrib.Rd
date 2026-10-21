@@ -19,15 +19,15 @@ derivatives of the log probability and \code{FALSE} those of the probability.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
-length of \code{q} recycled against \code{theta}. The gradient is not returned
-alongside.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, in which
+each vector has the length of \code{q} recycled against \code{theta}. The gradient
+is not returned alongside.
 }
 \description{
-The fallback for a continuous family that registers no closed second
-derivative: \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} at order 2, with the first-order part
-taken from \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so a closed gradient the family does
-register is used here too. The step is
+Computes the fallback Hessian for a continuous family that registers no
+closed second derivative, by \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} at order 2. The
+first-order part is taken from \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so a closed gradient
+that the family does register is used here too. The step is
 \eqn{\varepsilon^{1/4}} relative, about \eqn{1.2\times10^{-4}}.
 }
 \details{
@@ -35,7 +35,7 @@ A diagonal component is the three-point second difference and an
 off-diagonal one the four-point mixed stencil, which differences two
 different variables and is therefore a single stencil. The log-scale
 correction \eqn{\partial^2 P/P - (\partial P/P)^2} is applied afterwards by
-\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, which is why the gradient is fetched even when only the
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, so the gradient is fetched even when only the
 Hessian was requested.
 }
 \examples{

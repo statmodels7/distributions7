@@ -47,8 +47,8 @@ NULL
 #' partials of the map are, and no better than they are otherwise: applied to
 #' a parent that differences its own cdf, the chain adds an exact
 #' transformation to an approximate quantity and gains nothing over
-#' differencing the new cdf directly. Checking that is the
-#' caller's business, and [mapped_cdf_deriv()] is where it is done.
+#' differencing the new cdf directly. The caller checks that, and
+#' [mapped_cdf_deriv()] performs the check.
 #'
 #' @section Notation:
 #' \eqn{F} is the parent's distribution function, \eqn{\psi} the new
@@ -56,10 +56,10 @@ NULL
 #' \eqn{F_{kl}} the parent's cdf derivatives and \eqn{h^k_a}, \eqn{h^k_{ab}}
 #' the map's partials.
 #'
-#' @param parent The distribution being reparametrized.
+#' @param parent The distribution that is reparametrized.
 #' @param q A numeric vector of quantiles.
 #' @param th_par The parent's parameters, evaluated at the new ones.
-#' @param maps The map's keyed partial tables, in the form
+#' @param maps The map's keyed partial tables, in the form that
 #'   [reparam_map_derivs()] produces: a missing key is an exact zero, so a map
 #'   with many vanishing partials costs nothing for them.
 #' @param new_params A character vector naming the new parameters, which names
@@ -123,23 +123,24 @@ chain_cdf_deriv <- function(parent, q, th_par, maps, new_params, order) {
 #' CDF Derivatives of a Family Written as a Map of Another
 #'
 #' @description
-#' The [distrib_grad_cdf()] and [distrib_hess_cdf()] body that every mapped
-#' family shares. It tests whether the parent's cdf derivatives are exact at every
-#' order up to the one wanted, takes [chain_cdf_deriv()] if they are, and falls
-#' back to [numerical_cdf_deriv()] on the new family's own cdf if they are not.
+#' This is the [distrib_grad_cdf()] and [distrib_hess_cdf()] body that every
+#' mapped family shares. The body tests whether the parent's cdf derivatives are
+#' exact at every order up to the one wanted. If they are, it calls
+#' [chain_cdf_deriv()]; if they are not, it calls [numerical_cdf_deriv()] on the
+#' new family's own cdf.
 #'
 #' @details
 #' # The exactness test
 #'
 #' [has_exact_cdf_deriv()] is applied to the parent at order 1 and, for a
 #' Hessian, at order 2 as well. The chain is exact only if what it carries is
-#' exact; taken over a differenced parent it would add rounding to rounding and
-#' cost more than differencing the child's cdf once. The test is made at each
-#' call, so a parent that gains a closed order moves its mapped families onto
-#' the chain without any edit here.
+#' exact; if it is taken over a differenced parent, it adds rounding to rounding
+#' and costs more than differencing the child's cdf once. The test is made at
+#' each call, so a parent that gains a closed order moves its mapped families
+#' onto the chain without any edit here.
 #'
 #' @param distrib The mapped family, whose cdf and parameter names are read.
-#' @param parent The distribution it maps onto.
+#' @param parent The distribution onto which the mapped family maps.
 #' @param th_par The parent's parameters, evaluated at the new ones.
 #' @param maps The map's keyed partial tables.
 #' @param q A numeric vector of quantiles.
@@ -186,14 +187,15 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
 #' @name distrib_grad_cdf.ReparamContinuousDistrib
 #'
 #' @description
-#' The chain rule on the parent's cdf derivatives, through
+#' Applies the chain rule to the parent's cdf derivatives, through
 #' [mapped_cdf_deriv()]. It is exact whenever the derivatives of the parent
 #' and the partials of the map are; where the parent differences its own cdf,
-#' so does this, the chain having nothing closed to carry.
+#' so does this method, because the chain then carries only numerical
+#' derivatives.
 #'
 #' @details
-#' The partials of the map come from the object itself, `reparam_tables()`
-#' reading the keyed tables that the reparametrization was built with. They
+#' The partials of the map come from the object itself: `reparam_tables()`
+#' reads the keyed tables with which the reparametrization was built. They
 #' are exact when [reparametrize()] was given `map_derivs`, and single
 #' stencils on the map otherwise, so a family created by [reparametrize()]
 #' carries the closed cdf derivatives of its parent through the map to the
@@ -208,15 +210,15 @@ mapped_cdf_deriv <- function(distrib, parent, th_par, maps, q, theta, order,
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of numeric vectors, one per new parameter, each the
-#'   length of `q` recycled against `theta`.
+#' @return A named list of numeric vectors, one per new parameter; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [distrib_hess_cdf.ReparamContinuousDistrib()] for the second order;
 #'   [chain_cdf_deriv()] for the identity; [reparametrize()].
 #'
 #' @examples
-#' # A Gaussian reparametrized in the variance. Its parent has closed cdf
-#' # derivatives, and the map's partials here come from a stencil.
+#' # This example reparametrizes a Gaussian in the variance. Its parent has
+#' # closed cdf derivatives, and the map's partials here come from a stencil.
 #' d <- reparametrize(
 #'   gaussian1_distrib(),
 #'   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
@@ -240,12 +242,12 @@ S7::method(distrib_grad_cdf, ReparamContinuousDistrib) <-
 #' @name distrib_hess_cdf.ReparamContinuousDistrib
 #'
 #' @description
-#' The second-order chain rule on the parent's cdf derivatives, through
+#' Applies the second-order chain rule to the parent's cdf derivatives, through
 #' [mapped_cdf_deriv()]:
 #' \eqn{\partial^2 F/\partial\psi_a\partial\psi_b
-#'      = \sum_{k,l} F_{kl} h^k_a h^l_b + \sum_k F_k h^k_{ab}}. The second sum
-#' is the one that a first-order chain does not have, and it is why the map's second
-#' partials are needed as well as its first.
+#'      = \sum_{k,l} F_{kl} h^k_a h^l_b + \sum_k F_k h^k_{ab}}. A first-order
+#' chain lacks the second sum, so the map's second partials are needed as well
+#' as its first.
 #'
 #' @details
 #' The test requires the parent to be exact at both orders. A parent with a
@@ -262,9 +264,9 @@ S7::method(distrib_grad_cdf, ReparamContinuousDistrib) <-
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of numeric vectors keyed as [hess_names()], each the
-#'   length of `q` recycled against `theta`. The gradient is not returned
-#'   alongside.
+#' @return A named list of numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`. The gradient is not
+#'   returned alongside.
 #'
 #' @seealso [distrib_grad_cdf.ReparamContinuousDistrib()] for the first order;
 #'   [chain_cdf_deriv()] for the identity; [reparametrize()].
@@ -281,7 +283,7 @@ S7::method(distrib_grad_cdf, ReparamContinuousDistrib) <-
 #' q <- c(-1, 0.5, 2)
 #' th <- list(mu = 0.3, sigma2 = 1.44)
 #'
-#' # Against a central difference of the reparametrized cdf.
+#' # The result is compared with a central difference of the reparametrized cdf.
 #' exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 #' fd <- numerical_cdf_deriv(d, q, th, order = 2)
 #' max(abs(unlist(exact[names(fd)]) - unlist(fd)))
@@ -306,10 +308,11 @@ S7::method(distrib_hess_cdf, ReparamContinuousDistrib) <-
 #' @name distrib_grad_cdf.Gaussian2Distrib
 #'
 #' @description
-#' Closed form, by the chain rule on the scale parametrization's derivatives
-#' through \eqn{\sigma = \sqrt{\sigma^2}}. The mean component is unchanged,
-#' \eqn{-f(q)}, and the variance component is the scale one divided by
-#' \eqn{2\sigma}, which is the map's only non-zero partial.
+#' Computes the derivatives in closed form, by the chain rule on the scale
+#' parametrization's derivatives through \eqn{\sigma = \sqrt{\sigma^2}}. The
+#' mean component is unchanged, \eqn{-f(q)}, and the variance component is the
+#' scale one divided by \eqn{2\sigma}. This factor is the derivative of
+#' \eqn{\sigma} in \eqn{\sigma^2}, the only non-zero partial of the map.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean, \eqn{\sigma^2 > 0} the variance, \eqn{f} the density
@@ -317,16 +320,16 @@ S7::method(distrib_hess_cdf, ReparamContinuousDistrib) <-
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list with components `mu` and `sigma2` (positive), each
-#'   a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `mu` and `sigma2` (positive); each
+#'   is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of two numeric vectors, `mu` and `sigma2`, each the
-#'   length of `q` recycled against `theta`.
+#' @return A named list of two numeric vectors, `mu` and `sigma2`; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [distrib_hess_cdf.Gaussian2Distrib()] for the second order;
 #'   [distrib_grad_cdf.Gaussian1Distrib()], the parent;
@@ -357,11 +360,12 @@ S7::method(distrib_grad_cdf, Gaussian2Distrib) <-
 #' @name distrib_hess_cdf.Gaussian2Distrib
 #'
 #' @description
-#' Closed form, by the second-order chain rule on the scale parametrization's
-#' derivatives through \eqn{\sigma = \sqrt{\sigma^2}}. The map's second partial
+#' Computes the derivatives in closed form, by the second-order chain rule on
+#' the scale parametrization's derivatives through
+#' \eqn{\sigma = \sqrt{\sigma^2}}. The map's second partial
 #' \eqn{\partial^2\sigma/\partial(\sigma^2)^2 = -1/(4\sigma^3)} contributes to
-#' the variance-variance component, which is the term a first-order chain does
-#' not have.
+#' the variance-variance component, which is the term that a first-order chain
+#' does not have.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean, \eqn{\sigma^2 > 0} the variance and \eqn{F} the
@@ -369,16 +373,16 @@ S7::method(distrib_grad_cdf, Gaussian2Distrib) <-
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list with components `mu` and `sigma2` (positive), each
-#'   a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `mu` and `sigma2` (positive); each
+#'   is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of three numeric vectors keyed as [hess_names()], each
-#'   the length of `q` recycled against `theta`.
+#' @return A named list of three numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [distrib_grad_cdf.Gaussian2Distrib()] for the first order;
 #'   [chain_cdf_deriv()] for the identity; [gaussian2_distrib()].
@@ -387,7 +391,8 @@ S7::method(distrib_grad_cdf, Gaussian2Distrib) <-
 #' q <- c(-1, 0.5, 2)
 #' th <- list(mu = 0.3, sigma2 = 1.44)
 #'
-#' # Against a central difference of the cdf, which shares no arithmetic.
+#' # The result is compared with a central difference of the cdf, which shares
+#' # no arithmetic.
 #' exact <- distrib_hess_cdf(gaussian2_distrib(), q, th, log = FALSE)
 #' fd <- numerical_cdf_deriv(gaussian2_distrib(), q, th, order = 2)
 #' max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
@@ -404,11 +409,11 @@ S7::method(distrib_hess_cdf, Gaussian2Distrib) <-
 #' @name distrib_grad_cdf.Gaussian3Distrib
 #'
 #' @description
-#' Closed form, by the chain rule on the scale parametrization's derivatives
-#' through \eqn{\sigma = \tau^{-1/2}}. The mean component is unchanged,
-#' \eqn{-f(q)}; the precision component is the scale one times
-#' \eqn{-\tfrac12\tau^{-3/2}}, so it carries the opposite sign, a larger
-#' precision being a tighter distribution.
+#' Computes the derivatives in closed form, by the chain rule on the scale
+#' parametrization's derivatives through \eqn{\sigma = \tau^{-1/2}}. The mean
+#' component is unchanged, \eqn{-f(q)}; the precision component is the scale one
+#' times \eqn{-\tfrac12\tau^{-3/2}}, so it carries the opposite sign, because a
+#' larger precision gives a tighter distribution.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean, \eqn{\tau > 0} the precision, \eqn{f} the density and
@@ -416,16 +421,16 @@ S7::method(distrib_hess_cdf, Gaussian2Distrib) <-
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list with components `mu` and `tau` (positive), each a
-#'   numeric vector of length 1 or `n`.
+#' @param theta A named list with components `mu` and `tau` (positive); each is
+#'   a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of two numeric vectors, `mu` and `tau`, each the length
-#'   of `q` recycled against `theta`.
+#' @return A named list of two numeric vectors, `mu` and `tau`; each has the
+#'   length of `q` recycled against `theta`.
 #'
 #' @seealso [distrib_hess_cdf.Gaussian3Distrib()] for the second order;
 #'   [distrib_grad_cdf.Gaussian1Distrib()], the parent; [gaussian3_distrib()].
@@ -452,8 +457,8 @@ S7::method(distrib_grad_cdf, Gaussian3Distrib) <-
 #' @name distrib_hess_cdf.Gaussian3Distrib
 #'
 #' @description
-#' Closed form, by the second-order chain rule through
-#' \eqn{\sigma = \tau^{-1/2}}. The map's second partial
+#' Computes the derivatives in closed form, by the second-order chain rule
+#' through \eqn{\sigma = \tau^{-1/2}}. The map's second partial
 #' \eqn{\partial^2\sigma/\partial\tau^2 = \tfrac34\tau^{-5/2}} contributes to
 #' the precision-precision component.
 #'
@@ -463,16 +468,16 @@ S7::method(distrib_grad_cdf, Gaussian3Distrib) <-
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list with components `mu` and `tau` (positive), each a
-#'   numeric vector of length 1 or `n`.
+#' @param theta A named list with components `mu` and `tau` (positive); each is
+#'   a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of three numeric vectors keyed as [hess_names()], each
-#'   the length of `q` recycled against `theta`.
+#' @return A named list of three numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [distrib_grad_cdf.Gaussian3Distrib()] for the first order;
 #'   [chain_cdf_deriv()] for the identity; [gaussian3_distrib()].
@@ -481,7 +486,8 @@ S7::method(distrib_grad_cdf, Gaussian3Distrib) <-
 #' q <- c(-1, 0.5, 2)
 #' th <- list(mu = 0.3, tau = 1 / 1.44)
 #'
-#' # Against a central difference of the cdf, which shares no arithmetic.
+#' # The result is compared with a central difference of the cdf, which shares
+#' # no arithmetic.
 #' exact <- distrib_hess_cdf(gaussian3_distrib(), q, th, log = FALSE)
 #' fd <- numerical_cdf_deriv(gaussian3_distrib(), q, th, order = 2)
 #' max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
@@ -498,9 +504,10 @@ S7::method(distrib_hess_cdf, Gaussian3Distrib) <-
 #' @name distrib_grad_cdf.InvGauss2Distrib
 #'
 #' @description
-#' Closed form, by the chain rule on the dispersion parametrization's gradient
-#' through \eqn{\phi = 1/\lambda}. The mean component is unchanged; the rate
-#' component is the dispersion one times \eqn{-1/\lambda^2}.
+#' Computes the gradient in closed form, by the chain rule on the dispersion
+#' parametrization's gradient through \eqn{\phi = 1/\lambda}. The mean
+#' component is unchanged; the rate component is the dispersion one times
+#' \eqn{-1/\lambda^2}.
 #'
 #' @details
 #' The inverse Gaussian has an elementary distribution function,
@@ -518,15 +525,15 @@ S7::method(distrib_hess_cdf, Gaussian3Distrib) <-
 #' @param distrib An `InvGauss2Distrib` object, from [invgauss2_distrib()].
 #' @param q A numeric vector of quantiles, positive.
 #' @param theta A named list with components `mu` (positive) and `lambda`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of two numeric vectors, `mu` and `lambda`, each the
-#'   length of `q` recycled against `theta`.
+#' @return A named list of two numeric vectors, `mu` and `lambda`; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [distrib_grad_cdf()] for the generic;
 #'   [mapped_cdf_deriv()] and [chain_cdf_deriv()];
@@ -537,7 +544,8 @@ S7::method(distrib_hess_cdf, Gaussian3Distrib) <-
 #' q <- c(0.5, 2, 5)
 #' th <- list(mu = 2, lambda = 8)
 #'
-#' # Against a central difference of the cdf, which shares no arithmetic.
+#' # The result is compared with a central difference of the cdf, which shares
+#' # no arithmetic.
 #' fd <- numerical_cdf_deriv(d, q, th, order = 1)
 #' max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 #'
@@ -556,8 +564,8 @@ S7::method(distrib_grad_cdf, InvGauss2Distrib) <-
 #' @name distrib_grad_cdf.GumbelDistrib
 #'
 #' @description
-#' Closed form from the location-scale structure, as for the Gaussian:
-#' \eqn{\partial F/\partial\mu = -f(q)} and
+#' Computes the gradient in closed form from the location-scale structure, as
+#' for the Gaussian: \eqn{\partial F/\partial\mu = -f(q)} and
 #' \eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
 #' method is [loc_scale_grad_cdf()] itself.
 #'
@@ -576,15 +584,15 @@ S7::method(distrib_grad_cdf, InvGauss2Distrib) <-
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `mu` and `sigma` (positive); each
+#'   is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #'
-#' @return A named list of two numeric vectors, `mu` and `sigma`, each the
-#'   length of `q` recycled against `theta`.
+#' @return A named list of two numeric vectors, `mu` and `sigma`; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [loc_scale_grad_cdf()] for the shared body;
 #'   [distrib_hess_cdf.GumbelDistrib()] for the second order;
@@ -605,8 +613,8 @@ S7::method(distrib_grad_cdf, GumbelDistrib) <- loc_scale_grad_cdf
 #' @name distrib_hess_cdf.GumbelDistrib
 #'
 #' @description
-#' Closed form from the same location-scale structure, through
-#' [loc_scale_hess_cdf()]. The response derivative that it reads is
+#' Computes the Hessian in closed form from the same location-scale structure,
+#' through [loc_scale_hess_cdf()]. The response derivative that it reads is
 #' \eqn{\ell_y = (e^{-z} - 1)/\sigma}, which is smooth everywhere, so all three
 #' components are continuous on the whole line.
 #'
@@ -617,15 +625,15 @@ S7::method(distrib_grad_cdf, GumbelDistrib) <- loc_scale_grad_cdf
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list with components `mu` and `sigma` (positive), each
-#'   a numeric vector of length 1 or `n`.
+#' @param theta A named list with components `mu` and `sigma` (positive); each
+#'   is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #'
-#' @return A named list of three numeric vectors keyed as [hess_names()], each
-#'   the length of `q` recycled against `theta`.
+#' @return A named list of three numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [loc_scale_hess_cdf()] for the shared body;
 #'   [distrib_grad_cdf.GumbelDistrib()] for the first order;
@@ -636,7 +644,8 @@ S7::method(distrib_grad_cdf, GumbelDistrib) <- loc_scale_grad_cdf
 #' th <- list(mu = 0.3, sigma = 1.2)
 #' q <- c(-1, 0.5, 2)
 #'
-#' # Against a central difference of the cdf, which shares no arithmetic.
+#' # The result is compared with a central difference of the cdf, which shares
+#' # no arithmetic.
 #' exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 #' fd <- numerical_cdf_deriv(d, q, th, order = 2)
 #' max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
@@ -722,10 +731,11 @@ S7::method(distrib_hess_cdf, GumbelDistrib) <- loc_scale_hess_cdf
 #' @name distrib_hess_cdf.StudentT1Distrib
 #'
 #' @description
-#' Closed form in the location-scale block, and in the mixed components
-#' with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
-#' components in the shape parameters alone are integrals of the density's
-#' own derivatives, taken by the compiled rule. The method is
+#' Computes the Hessian in closed form in the location-scale block, and in the
+#' mixed components with a shape \eqn{k}, which are \eqn{-f s_k} and
+#' \eqn{-z f s_k} at \eqn{q}; the components that involve only shape parameters
+#' are integrals of the density's own derivatives, taken by the compiled rule.
+#' The method is
 #' [compiled_hess_cdf()] itself.
 #'
 #' @section Notation:
@@ -735,14 +745,14 @@ S7::method(distrib_hess_cdf, GumbelDistrib) <- loc_scale_hess_cdf
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive) and `nu`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #'
-#' @return A named list of six numeric vectors keyed as [hess_names()], each
-#'   the length of `q` recycled against `theta`.
+#' @return A named list of six numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [compiled_hess_cdf()] for the shared body;
 #'   [distrib_grad_cdf.StudentT1Distrib()] for the first order;
@@ -753,7 +763,7 @@ S7::method(distrib_hess_cdf, GumbelDistrib) <- loc_scale_hess_cdf
 #' th <- list(mu = 0.3, sigma = 1.2, nu = 6)
 #' q <- c(-1, 0.5, 2)
 #'
-#' # Six components, keyed as hess_names().
+#' # The result has six components, keyed as hess_names().
 #' names(distrib_hess_cdf(d, q, th))
 #'
 #' @keywords internal
@@ -763,10 +773,11 @@ S7::method(distrib_hess_cdf, StudentT1Distrib) <- compiled_hess_cdf
 #' @name distrib_hess_cdf.PseudoHuberDistrib
 #'
 #' @description
-#' Closed form in the location-scale block, and in the mixed components
-#' with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
-#' components in the shape parameters alone are integrals of the density's
-#' own derivatives, taken by the compiled rule. The method is
+#' Computes the Hessian in closed form in the location-scale block, and in the
+#' mixed components with a shape \eqn{k}, which are \eqn{-f s_k} and
+#' \eqn{-z f s_k} at \eqn{q}; the components that involve only shape parameters
+#' are integrals of the density's own derivatives, taken by the compiled rule.
+#' The method is
 #' [compiled_hess_cdf()] itself.
 #'
 #' @section Notation:
@@ -776,14 +787,14 @@ S7::method(distrib_hess_cdf, StudentT1Distrib) <- compiled_hess_cdf
 #' @param distrib A `PseudoHuberDistrib` object, from [pseudohuber_distrib()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive) and `nu`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #'
-#' @return A named list of six numeric vectors keyed as [hess_names()], each
-#'   the length of `q` recycled against `theta`.
+#' @return A named list of six numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [compiled_hess_cdf()] for the shared body;
 #'   [distrib_grad_cdf.PseudoHuberDistrib()] for the first order;
@@ -802,10 +813,10 @@ S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- compiled_hess_cdf
 #' @name distrib_grad_cdf.SkewTDistrib
 #'
 #' @description
-#' Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
-#' with \eqn{z = (q-\mu)/\sigma}; the components in the shape and in the
-#' degrees of freedom are integrals of the density's own derivatives, taken by
-#' the compiled rule. The method is
+#' Computes the gradient in closed form in the location and the scale,
+#' \eqn{-f(q)} and \eqn{-z f(q)} with \eqn{z = (q-\mu)/\sigma}; the components
+#' in the shape and in the degrees of freedom are integrals of the density's
+#' own derivatives, taken by the compiled rule. The method is
 #' [compiled_grad_cdf()] itself, shared with the other families whose
 #' distribution function has no closed derivative in a shape parameter.
 #'
@@ -817,14 +828,15 @@ S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- compiled_hess_cdf
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive), `alpha`
-#'   (any sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
+#'   (any sign) and `nu` (positive); each is a numeric vector of length 1 or
+#'   `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #'
 #' @return A named list of four numeric vectors, `mu`, `sigma`, `alpha` and
-#'   `nu`, each the length of `q` recycled against `theta`.
+#'   `nu`; each has the length of `q` recycled against `theta`.
 #'
 #' @seealso [compiled_grad_cdf()] for the shared body;
 #'   [distrib_hess_cdf.SkewTDistrib()] for the second order;
@@ -846,10 +858,11 @@ S7::method(distrib_grad_cdf, SkewTDistrib) <- compiled_grad_cdf
 #' @name distrib_hess_cdf.SkewTDistrib
 #'
 #' @description
-#' Closed form in the location-scale block, and in the mixed components
-#' with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
-#' components in the shape parameters alone are integrals of the density's
-#' own derivatives, taken by the compiled rule. The method is
+#' Computes the Hessian in closed form in the location-scale block, and in the
+#' mixed components with a shape \eqn{k}, which are \eqn{-f s_k} and
+#' \eqn{-z f s_k} at \eqn{q}; the components that involve only shape parameters
+#' are integrals of the density's own derivatives, taken by the compiled rule.
+#' The method is
 #' [compiled_hess_cdf()] itself.
 #'
 #' @section Notation:
@@ -860,14 +873,15 @@ S7::method(distrib_grad_cdf, SkewTDistrib) <- compiled_grad_cdf
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list with components `mu`, `sigma` (positive), `alpha`
-#'   (any sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
+#'   (any sign) and `nu` (positive); each is a numeric vector of length 1 or
+#'   `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #'
-#' @return A named list of ten numeric vectors keyed as [hess_names()], each
-#'   the length of `q` recycled against `theta`.
+#' @return A named list of ten numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [compiled_hess_cdf()] for the shared body;
 #'   [distrib_grad_cdf.SkewTDistrib()] for the first order;
@@ -877,7 +891,7 @@ S7::method(distrib_grad_cdf, SkewTDistrib) <- compiled_grad_cdf
 #' d <- skewt_distrib()
 #' th <- list(mu = 0.3, sigma = 1.2, alpha = 2, nu = 6)
 #'
-#' # Ten components, keyed as hess_names().
+#' # The result has ten components, keyed as hess_names().
 #' names(distrib_hess_cdf(d, c(-1, 2), th))
 #'
 #' @keywords internal
@@ -890,9 +904,9 @@ S7::method(distrib_hess_cdf, SkewTDistrib) <- compiled_hess_cdf
 #' @name distrib_hess_cdf.Lognormal1Distrib
 #'
 #' @description
-#' Closed form. On the log scale the family is location-scale, so with
-#' \eqn{z = (\log q - \mu)/\sigma} and \eqn{\varphi} the standard normal
-#' density,
+#' Computes the Hessian in closed form. On the log scale the family is
+#' location-scale, so with \eqn{z = (\log q - \mu)/\sigma} and \eqn{\varphi} the
+#' standard normal density, the components are
 #' \deqn{\frac{\partial^2 F}{\partial\mu^2} = -\frac{z\varphi}{\sigma^2},
 #'       \qquad
 #'       \frac{\partial^2 F}{\partial\mu\,\partial\sigma^2}
@@ -908,8 +922,8 @@ S7::method(distrib_hess_cdf, SkewTDistrib) <- compiled_hess_cdf
 #'
 #' The three components vanish at the points where their polynomial in \eqn{z}
 #' does, so `mu_mu` is exactly zero at the median \eqn{q = e^{\mu}}. A relative
-#' comparison against a numerical derivative is meaningless there and an
-#' absolute one is what to use.
+#' comparison against a numerical derivative is meaningless there, so an
+#' absolute comparison should be used.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the mean of \eqn{\log Y}, \eqn{\sigma^2 > 0} its variance,
@@ -918,17 +932,17 @@ S7::method(distrib_hess_cdf, SkewTDistrib) <- compiled_hess_cdf
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param q A numeric vector of quantiles. At or below zero every component is
-#'   zero, the distribution function being flat there.
+#'   zero, because the distribution function is flat there.
 #' @param theta A named list with components `mu` (any real value) and `sigma2`
-#'   (positive), each a numeric vector of length 1 or `n`.
+#'   (positive); each is a numeric vector of length 1 or `n`.
 #' @param lower.tail A single logical, `TRUE` by default; `TRUE` selects the
 #'   lower tail and `FALSE` the upper tail.
 #' @param log A single logical, `TRUE` by default; `TRUE` selects the
 #'   derivatives of the log probability and `FALSE` those of the probability.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list of three numeric vectors keyed as [hess_names()], each
-#'   the length of `q` recycled against `theta`.
+#' @return A named list of three numeric vectors keyed as [hess_names()]; each
+#'   has the length of `q` recycled against `theta`.
 #'
 #' @seealso [distrib_grad_cdf.Lognormal1Distrib()] for the first order;
 #'   [distrib_hess_cdf.Gaussian1Distrib()], the family on the log scale;

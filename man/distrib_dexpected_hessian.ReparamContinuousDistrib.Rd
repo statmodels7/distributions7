@@ -25,8 +25,9 @@
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}} or \code{\link[=d2expected_names]{d2expected_names()}}.
 }
 \description{
-The parent's derivatives carried through the map by
+Carries the parent's derivatives through the map by
 \code{\link[=reparam_dexpected]{reparam_dexpected()}}. A parent without an analytic second derivative
-leaves the reparametrized family without one, the error naming the parent.
+leaves the reparametrized family without one, and the error names the
+parent.
 }
 \keyword{internal}

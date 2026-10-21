@@ -9,7 +9,7 @@
 \item{q}{A numeric vector of quantiles.}
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
-(positive), each a numeric vector of length 1 or \code{n}.}
+(positive); each is a numeric vector of length 1 or \code{n}.}
 
 \item{lower.tail}{A single logical, \code{TRUE} by default; \code{TRUE} selects the
 lower tail and \code{FALSE} the upper tail.}
@@ -18,14 +18,15 @@ lower tail and \code{FALSE} the upper tail.}
 derivatives of the log probability and \code{FALSE} those of the probability.}
 }
 \value{
-A named list of six numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
-the length of \code{q} recycled against \code{theta}.
+A named list of six numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}; each
+has the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location-scale block, and in the mixed components
-with a shape \eqn{k}, \eqn{-f s_k} and \eqn{-z f s_k} at \eqn{q}; the
-components in the shape parameters alone are integrals of the density's
-own derivatives, taken by the compiled rule. The method is
+Computes the Hessian in closed form in the location-scale block, and in the
+mixed components with a shape \eqn{k}, which are \eqn{-f s_k} and
+\eqn{-z f s_k} at \eqn{q}; the components that involve only shape parameters
+are integrals of the density's own derivatives, taken by the compiled rule.
+The method is
 \code{\link[=compiled_hess_cdf]{compiled_hess_cdf()}} itself.
 }
 \section{Notation}{

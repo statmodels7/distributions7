@@ -8,8 +8,8 @@
 trial count in its \code{size} property.}
 
 \item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
-and \code{sigma} (positive), each a numeric vector of length 1 or of the common
-length of the parameter settings.}
+and \code{sigma} (positive); each is a numeric vector of length 1 or of the
+common length of the parameter settings.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -18,12 +18,13 @@ A numeric vector, of length
 \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \deqn{\gamma_1 = (1 - 2\mu)\,\frac{1 + 2n\sigma}{1 + 2\sigma}
+The skewness has the closed form
+\deqn{\gamma_1 = (1 - 2\mu)\,\frac{1 + 2n\sigma}{1 + 2\sigma}
 \sqrt{\frac{1 + \sigma}{n\mu(1-\mu)(1 + n\sigma)}},} computed by
-\code{\link[=betabinom_moments]{betabinom_moments()}}. It is zero at \eqn{\mu = 1/2} whatever the dispersion,
-the mixing beta being symmetric there, and it takes the sign of \eqn{1 -
-2\mu} elsewhere. The closed form forms no difference of raw moments, so it
-keeps its accuracy at a small dispersion and a large \eqn{n}.
+\code{\link[=betabinom_moments]{betabinom_moments()}}. It is zero at \eqn{\mu = 1/2} whatever the
+dispersion, because the mixing beta is symmetric there, and it takes the
+sign of \eqn{1 - 2\mu} elsewhere. The closed form forms no difference of raw
+moments, so it keeps its accuracy at a small dispersion and a large \eqn{n}.
 }
 \section{Notation}{
 
@@ -34,7 +35,8 @@ dispersion, \eqn{n} the number of trials.
 \examples{
 d <- betabinom1_distrib(size = 10)
 
-# Zero at a success probability of one half, at any dispersion.
+# The skewness is zero at a success probability of one half, at any
+# dispersion.
 round(skewness(d, list(mu = 0.5, sigma = c(0.1, 1, 10))), 12)
 
 # It falls onto the binomial's as the dispersion vanishes.

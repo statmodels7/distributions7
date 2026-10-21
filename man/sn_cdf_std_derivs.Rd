@@ -11,7 +11,7 @@ sn_cdf_std_derivs(z, al, order)
 
 \item{al}{The shape, a numeric vector of any sign recyclable against \code{z}.}
 
-\item{order}{The highest total order wanted, 1 to 4.}
+\item{order}{The highest total order to compute, 1 to 4.}
 }
 \value{
 A nested list indexed \verb{[[i + 1]][[j + 1]]}, holding
@@ -40,12 +40,12 @@ has to be differentiated again.
 \eqn{G_\alpha = -2\varphi(z)\varphi(u)R} with \eqn{u = \alpha z} and
 \eqn{R = (1+\alpha^2)^{-1}}. The first is the skew normal's own density,
 which confirms the identity above; the second is checked against the
-gradient the family reports.
+gradient that the family reports.
 
 Everything above the first order is one Leibniz rule over those factors,
-with \eqn{\Phi(u)} and \eqn{\varphi(u)} differentiated by Faa di Bruno over
-\eqn{u}. That map is bilinear, so it has only three non-zero partials and
-the expansion stays short.
+in which \eqn{\Phi(u)} and \eqn{\varphi(u)} are differentiated by Faa di
+Bruno over \eqn{u}. That map is bilinear, so it has only three non-zero
+partials and the expansion stays short.
 }
 
 \section{Notation}{

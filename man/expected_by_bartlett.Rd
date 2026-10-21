@@ -16,8 +16,8 @@ expected_by_bartlett(distrib, y, theta, order)
 \item{order}{The derivative order, 2 to 4.}
 }
 \value{
-A named list of expected derivative component vectors, each of length
-\code{length(y)}.
+A named list of expected derivative component vectors; each has
+length \code{length(y)}.
 }
 \description{
 Obtains the expected derivative of a given order from expectations of
@@ -27,10 +27,10 @@ the index set.
 \details{
 The identity of order \eqn{k} states that
 \deqn{\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,}
-the sum running over every partition \eqn{\pi} of the index set. The
+where the sum runs over every partition \eqn{\pi} of the index set. The
 single-block partition is the target, so it equals minus the sum of all the
-others -- which is why \code{\link[numericals7:set_partitions]{numericals7::set_partitions()}} is the whole algorithm and
-why the top-order derivative is never needed.
+others, so that \code{\link[numericals7:set_partitions]{numericals7::set_partitions()}} is the whole algorithm and
+the top-order derivative is never needed.
 
 At order 2 this reduces to
 \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]}, which needs only
