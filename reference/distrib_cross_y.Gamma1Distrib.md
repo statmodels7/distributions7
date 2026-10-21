@@ -1,8 +1,8 @@
 # Gamma Mixed Derivatives in Mean and Dispersion
 
-Closed form. The shape is \\1/\phi\\ and the rate \\1/(\phi\mu)\\, so
-the mean component is \\1/(\phi\mu^2)\\ and the dispersion one
-\\1/(\phi^2\mu) - 1/(\phi^2 y)\\.
+The mixed derivatives are in closed form. The shape is \\1/\phi\\ and
+the rate \\1/(\phi\mu)\\, so the mean component is \\1/(\phi\mu^2)\\ and
+the dispersion one \\1/(\phi^2\mu) - 1/(\phi^2 y)\\.
 
 ## Arguments
 
@@ -29,7 +29,7 @@ the mean component is \\1/(\phi\mu^2)\\ and the dispersion one
 
 ## Value
 
-A named list with components `mu` and `phi`, each a numeric vector of
+A named list with components `mu` and `phi`; each is a numeric vector of
 length `length(y)`.
 
 ## See also

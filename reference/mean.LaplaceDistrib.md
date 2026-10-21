@@ -1,9 +1,9 @@
 # Mean of the Laplace Distribution
 
-Closed form, replacing the numerical default: \\E\[Y\] = \mu\\. The
-density is symmetric about \\\mu\\, so the location is the mean and the
-median at once. The value is recycled to the length the two parameters
-imply, and no quadrature is run.
+The closed form that replaces the numerical default is \\E\[Y\] = \mu\\.
+The density is symmetric about \\\mu\\, so the location is the mean and
+the median at once. The value is recycled to the length that the two
+parameters imply, and the method runs no quadrature.
 
 ## Arguments
 
@@ -15,7 +15,7 @@ imply, and no quadrature is run.
 - theta:
 
   A named list with components `mu` (the location) and `sigma` (the
-  scale, positive), each a numeric vector of length 1 or `n`.
+  scale, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 

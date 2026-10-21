@@ -1,15 +1,16 @@
 # CDF Derivatives of a Family Written as a Map of Another
 
-The
+This is the
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
 and
 [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
-body that every mapped family shares. It tests whether the parent's cdf
-derivatives are exact at every order up to the one wanted, takes
-[`chain_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.md)
-if they are, and falls back to
+body that every mapped family shares. The body tests whether the
+parent's cdf derivatives are exact at every order up to the one wanted.
+If they are, it calls
+[`chain_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.md);
+if they are not, it calls
 [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
-on the new family's own cdf if they are not.
+on the new family's own cdf.
 
 ## Usage
 
@@ -35,7 +36,7 @@ mapped_cdf_deriv(
 
 - parent:
 
-  The distribution it maps onto.
+  The distribution onto which the mapped family maps.
 
 - th_par:
 
@@ -78,11 +79,11 @@ component at order 2.
 
 [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
 is applied to the parent at order 1 and, for a Hessian, at order 2 as
-well. The chain is exact only if what it carries is exact; taken over a
-differenced parent it would add rounding to rounding and cost more than
-differencing the child's cdf once. The test is made at each call, so a
-parent that gains a closed order moves its mapped families onto the
-chain without any edit here.
+well. The chain is exact only if what it carries is exact; if it is
+taken over a differenced parent, it adds rounding to rounding and costs
+more than differencing the child's cdf once. The test is made at each
+call, so a parent that gains a closed order moves its mapped families
+onto the chain without any edit here.
 
 ## See also
 

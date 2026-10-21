@@ -1,11 +1,11 @@
 # Variance of the Skew Normal Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)\\, with
-\\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b = \sqrt{2/\pi}\\. The
-bracket is at most 1, a value attained only at shape zero, and it
-decreases towards \\1 - 2/\pi \approx 0.3634\\ as the magnitude of the
-shape grows. The scale is therefore an upper bound on the standard
-deviation.
+The closed form is \\\operatorname{Var}(Y) = \sigma^2(1 -
+b^2\delta^2)\\, with \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b =
+\sqrt{2/\pi}\\. The bracket is at most 1, a value attained only at shape
+zero, and it decreases towards \\1 - 2/\pi \approx 0.3634\\ as the
+magnitude of the shape grows. The scale is therefore an upper bound on
+the standard deviation.
 
 ## Arguments
 
@@ -17,8 +17,8 @@ deviation.
 - theta:
 
   A named list with components `mu` (the location), `sigma` (the scale,
-  positive) and `alpha` (the shape, any sign), each a numeric vector of
-  length 1 or `n`.
+  positive) and `alpha` (the shape, any sign); each is a numeric vector
+  of length 1 or `n`.
 
 - ...:
 
@@ -26,9 +26,9 @@ deviation.
 
 ## Value
 
-A numeric vector of variances, of the length the recycled parameters
-imply. The scale and `alpha` enter the value, so a setting that varies
-`mu` alone repeats one number.
+A numeric vector of variances, of the length that the recycled
+parameters imply. The scale and `alpha` enter the value, so a setting
+that varies only `mu` repeats one number.
 
 ## Notation
 

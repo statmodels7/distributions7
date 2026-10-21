@@ -1,9 +1,9 @@
 # Mean of the Poisson-Inverse Gaussian Distribution
 
-Closed form: \\E\[Y\] = \mu\\, the first cumulant. The family is a
-Poisson whose rate is mixed over an inverse Gaussian of mean 1, so the
-mixing leaves the mean where the Poisson put it and shows only from the
-second cumulant onwards.
+The mean has the closed form \\E\[Y\] = \mu\\, the first cumulant. The
+family is a Poisson whose rate is mixed over an inverse Gaussian of mean
+1, so the mixing leaves the mean where the Poisson put it and shows only
+from the second cumulant onwards.
 
 ## Arguments
 
@@ -15,7 +15,8 @@ second cumulant onwards.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `sigma`
-  (the dispersion, positive), each a numeric vector of length 1 or `n`.
+  (the dispersion, positive); each is a numeric vector of length 1 or
+  `n`.
 
 - ...:
 

@@ -1,9 +1,9 @@
 # Mean of the Gamma Distribution in Mean and Dispersion
 
-Closed form: \\E\[Y\] = \mu\\. This is the gamma written by its mean and
-a dispersion, the parametrization of a generalized linear model, so the
-mean is the first parameter and the variance is \\\phi\mu^2\\, the
-dispersion times the variance function \\\mu^2\\.
+The mean has the closed form \\E\[Y\] = \mu\\. This is the gamma written
+by its mean and a dispersion, the parametrization of a generalized
+linear model, so the mean is the first parameter and the variance is
+\\\phi\mu^2\\, the dispersion times the variance function \\\mu^2\\.
 
 ## Arguments
 
@@ -15,7 +15,7 @@ dispersion times the variance function \\\mu^2\\.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `phi` (the
-  dispersion, positive), each a numeric vector of length 1 or `n`.
+  dispersion, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 

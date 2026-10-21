@@ -5,8 +5,8 @@ by central finite differences of `distrib_pdf(..., log = TRUE)`. This
 powers the default
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
 method for distributions that do not implement an analytical gradient:
-any `distrib` subclass that defines only `distrib_pdf` gets its score
-function for free.
+any `distrib` subclass that defines only `distrib_pdf` receives its
+score function from this default at no further cost to its author.
 
 ## Usage
 
@@ -26,12 +26,12 @@ numerical_gradient(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
 - theta:
 
-  A named list of parameters (each of length 1 or `length(y)`).
+  A named list of parameters (each element has length 1 or `length(y)`).
 
 - h_rel:
 
-  Numeric. Relative step size. Defaults to `.Machine$double.eps^(1/3)`
-  (optimal for central differences).
+  Numeric, the relative step size. Defaults to
+  `.Machine$double.eps^(1/3)` (optimal for central differences).
 
 ## Value
 

@@ -1,7 +1,8 @@
 # Exponential Mixed Derivatives
 
-Closed form: the mean is a pure scale, so the identity \\-z\ell^{(yy)} -
-\ell^{(y)}/\mu\\ applies with \\z = y/\mu\\ and returns \\1/\mu^2\\.
+The mixed derivative is in closed form: the mean is a pure scale, so the
+identity \\-z\ell^{(yy)} - \ell^{(y)}/\mu\\ applies with \\z = y/\mu\\
+and gives \\1/\mu^2\\.
 
 ## Arguments
 
@@ -29,7 +30,7 @@ Closed form: the mean is a pure scale, so the identity \\-z\ell^{(yy)} -
 ## Value
 
 A named list with the single component `mu`, a numeric vector of length
-`length(y)` holding \\1/\mu^2\\ at every observation.
+`length(y)` that holds \\1/\mu^2\\ at every observation.
 
 ## See also
 

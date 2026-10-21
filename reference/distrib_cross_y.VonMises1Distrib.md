@@ -1,8 +1,8 @@
 # von Mises Mixed Derivatives
 
-Closed form. With \\\ell^{(y)} = -\kappa\sin(y-\mu)\\, the location
-component is \\\kappa\cos(y-\mu)\\ and the concentration one
-\\-\sin(y-\mu)\\.
+The mixed derivatives are in closed form. With \\\ell^{(y)} =
+-\kappa\sin(y-\mu)\\, the location component is \\\kappa\cos(y-\mu)\\
+and the concentration one is \\-\sin(y-\mu)\\.
 
 ## Arguments
 
@@ -29,8 +29,8 @@ component is \\\kappa\cos(y-\mu)\\ and the concentration one
 
 ## Value
 
-A named list with components `mu` and `kappa`, each a numeric vector of
-length `length(y)`.
+A named list with components `mu` and `kappa`; each is a numeric vector
+of length `length(y)`.
 
 ## See also
 

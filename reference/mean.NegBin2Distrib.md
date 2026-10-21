@@ -1,9 +1,9 @@
 # Mean of the Negative Binomial Distribution
 
-Closed form, replacing the numerical default: \\E\[Y\] = \mu\\. This
-parametrization carries the mean as its first parameter, so the method
-reads it off and recycles it to the length the two parameters imply.
-Nothing is integrated and nothing is summed.
+The closed form that replaces the numerical default is \\E\[Y\] = \mu\\.
+This parametrization carries the mean as its first parameter, so the
+method reads it off and recycles it to the length that the two
+parameters imply. The method performs no integration and no summation.
 
 ## Arguments
 
@@ -15,9 +15,9 @@ Nothing is integrated and nothing is summed.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `theta`
-  (the dispersion, positive), each a numeric vector of length 1 or `n`.
-  It is aligned and validated by name, so a missing or out-of-bounds
-  component signals an error.
+  (the dispersion, positive); each is a numeric vector of length 1 or
+  `n`. It is aligned and validated by name, so a missing or
+  out-of-bounds component signals an error.
 
 - ...:
 

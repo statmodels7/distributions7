@@ -1,8 +1,8 @@
 # Mean of the Gaussian Distribution
 
-Closed form: \\E\[Y\] = \mu\\. The first parameter of this
-parametrization is the mean itself, so the method reads it off and
-recycles it to the length the two parameters imply.
+The mean has the closed form \\E\[Y\] = \mu\\. The first parameter of
+this parametrization is the mean itself, so the method reads it off and
+recycles it to the length that the two parameters imply.
 
 ## Arguments
 
@@ -14,9 +14,9 @@ recycles it to the length the two parameters imply.
 - theta:
 
   A named list with components `mu` (the mean, any real value) and
-  `sigma` (the standard deviation, positive), each a numeric vector of
-  length 1 or `n`. It is aligned and validated by name, so a missing or
-  out-of-bounds component signals an error.
+  `sigma` (the standard deviation, positive), in which each component is
+  a numeric vector of length 1 or `n`. It is aligned and validated by
+  name, so a missing or out-of-bounds component signals an error.
 
 - ...:
 

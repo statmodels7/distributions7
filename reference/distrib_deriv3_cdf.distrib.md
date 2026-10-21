@@ -1,6 +1,7 @@
 # Default Third and Fourth Log-CDF Derivatives
 
-The fallback both generics take when a family registers no closed form.
+Provides the fallback that both generics take when a family registers no
+closed form.
 [`cdf_tables()`](https://statmodels7.github.io/distributions7/reference/cdf_tables.md)
 assembles the derivatives of \\F\\ of every order up to the one wanted,
 by the exact sum for a discrete family and by one product stencil for a
@@ -65,7 +66,7 @@ and
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md),
 the two halves;
 [`loc_scale_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_deriv_cdf_k.md),
-the closed route that five families take instead.
+the closed route that four families take instead.
 
 ## Examples
 

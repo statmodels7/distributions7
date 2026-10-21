@@ -1,10 +1,10 @@
 # Mean of the Laplace Distribution in Location and Rate
 
-Closed form, replacing the numerical default: \\E\[Y\] = \mu\\. This is
-the same family as
+The closed form that replaces the numerical default is \\E\[Y\] = \mu\\.
+This is the same family as
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
-written by its rate \\\lambda = 1/\sigma\\, and the mean does not see
-the difference: it is the location in either parametrization.
+written by its rate \\\lambda = 1/\sigma\\, and the mean is the same in
+both, since it is the location in either parametrization.
 
 ## Arguments
 
@@ -16,7 +16,7 @@ the difference: it is the location in either parametrization.
 - theta:
 
   A named list with components `mu` (the location) and `lambda` (the
-  rate, positive), each a numeric vector of length 1 or `n`.
+  rate, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 

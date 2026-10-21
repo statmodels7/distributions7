@@ -1,8 +1,8 @@
 # Variance of the Chi-Squared Distribution
 
-Closed form: \\\operatorname{Var}(Y) = 2\mu\\. The variance is tied to
-the mean, so the family has one parameter where a gamma has two: it is
-exactly the gamma at \\\sigma^2 = 2\mu\\, .
+The variance has the closed form \\\operatorname{Var}(Y) = 2\mu\\. It is
+tied to the mean, so the family has one parameter where a gamma has two:
+it is exactly the gamma at \\\sigma^2 = 2\mu\\.
 
 ## Arguments
 
@@ -36,7 +36,7 @@ where the two moments are free of each other;
 ``` r
 d <- chisq_distrib()
 
-# Twice the mean.
+# The variance is twice the mean.
 all.equal(variance(d, list(mu = 5)), 10)
 #> [1] TRUE
 

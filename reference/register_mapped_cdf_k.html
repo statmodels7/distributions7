@@ -15,7 +15,7 @@ lognormal."><meta property="og:image" content="https://statmodels7.github.io/dis
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,9 +78,9 @@ lognormal.</p>
 
 <dt id="arg-parent-fn">parent_fn<a class="anchor" aria-label="anchor" href="#arg-parent-fn"></a></dt>
 <dd><p>A function of no arguments returning the parent
-distribution. A function rather than the object, so that the parent is
-built at call time; at load time the class that it names may not exist
-yet.</p></dd>
+distribution. The parent is given as a function rather than as the
+object, so that it is built at call time; at load time the class that it
+names may not exist yet.</p></dd>
 
 
 <dt id="arg-th-fn">th_fn<a class="anchor" aria-label="anchor" href="#arg-th-fn"></a></dt>
@@ -94,8 +94,8 @@ partial tables up to that order.</p></dd>
 
 <dt id="arg-q-fn">q_fn<a class="anchor" aria-label="anchor" href="#arg-q-fn"></a></dt>
 <dd><p>The transformation of the response, for a parent that is the
-same law on a transformed scale. <code>identity</code> by default, and <code>log</code> for the
-lognormal.</p></dd>
+same law on a transformed scale. The default is <code>identity</code>, and the
+lognormal uses <code>log</code>.</p></dd>
 
 
 <dt id="arg-q-ok">q_ok<a class="anchor" aria-label="anchor" href="#arg-q-ok"></a></dt>
@@ -113,20 +113,20 @@ rest here.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly <code>NULL</code>. Called for the registration.</p>
+    <p>Invisibly <code>NULL</code>. The function is called for the registration.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>orders</code> is how a family takes more than the top two. The second inverse
-Gaussian is registered at 2 to 4 because its written-out route in
-<code>cdf_derivatives_families.R</code> registers only the gradient, so its Hessian is
-taken from the chain here.</p>
-<p><code>force(o)</code> inside the factory is what keeps the registrations from sharing
-one order.</p>
+    <p>A family registers more than the top two orders by setting <code>orders</code>. The
+second inverse Gaussian is registered at 2 to 4 because its written-out
+route in <code>cdf_derivatives_families.R</code> registers only the gradient, so its
+Hessian is taken from the chain here.</p>
+<p><code>force(o)</code> inside the factory prevents the registrations from sharing one
+order.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mapped_cdf_deriv_k.html">mapped_cdf_deriv_k()</a></code>, the body it registers;
+    <div class="dont-index"><p><code><a href="mapped_cdf_deriv_k.html">mapped_cdf_deriv_k()</a></code>, the body that it registers;
 <code><a href="distrib_deriv3_cdf.html">distrib_deriv3_cdf()</a></code> for the generics.</p></div>
     </div>
 

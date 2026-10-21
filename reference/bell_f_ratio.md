@@ -23,8 +23,8 @@ bell_f_ratio(idx, ell)
 - ell:
 
   A function of one block, returning \\\ell^{(B)}\\ for the parameters
-  that block names, as a numeric vector. Called once per block of every
-  partition, so a caller with an expensive parent memoizes it.
+  that block names, as a numeric vector. `ell` is called once per block
+  of every partition, so a caller with an expensive parent memoizes it.
 
 ## Value
 
@@ -34,17 +34,17 @@ f / f\\ at each observation.
 ## Details
 
 This is the Bartlett lemma read backwards. The identity is normally used
-to eliminate a derivative; here it builds one, and that is what every
-wrapper needs: each wrapper's log-likelihood is the parent's log-density
-plus, or in place of, \\\log L\\ for some \\\theta\\-dependent \\L\\,
-and the orders above two are assembled from this sum together with
+to eliminate a derivative; here it builds one, which every wrapper needs
+because each wrapper's log-likelihood is the parent's log-density plus,
+or in place of, \\\log L\\ for some \\\theta\\-dependent \\L\\, and the
+orders above two are assembled from this sum together with
 [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md).
 
 At order 1 it returns \\\ell^{(i)}\\ and at order 2 \\\ell^{(ij)} +
 \ell^{(i)}\ell^{(j)}\\, the ordinary relation between the second
 derivative of a density and of its logarithm. Those two cases reproduce
-the hand-written closed forms exactly, and that agreement is the license
-for the orders that have nothing to compare against.
+the hand-written closed forms exactly, which supports the use of the sum
+at the orders that have no closed form for comparison.
 
 ## See also
 

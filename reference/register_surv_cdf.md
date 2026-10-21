@@ -26,25 +26,25 @@ register_surv_cdf(cls, pieces)
 
 ## Value
 
-Invisibly `NULL`. Called for the registration.
+Invisibly `NULL`. The function is called for its registration.
 
 ## Details
 
-All four orders are registered,
-[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
-included, so these families take the closed route from the first order
-up. Where the upper tail is requested on the natural scale the
-derivatives of \\S\\ are returned directly, \\\partial^I S = -\partial^I
-F\\, which is the one case where the survival function is the quantity
-the construction produces first.
+All four orders are registered, including
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
+so these families take the closed route from the first order up. Where
+the upper tail is requested on the natural scale the derivatives of
+\\S\\ are returned directly, \\\partial^I S = -\partial^I F\\, which is
+the one case where the survival function is the quantity that the
+construction produces first.
 
-`force(o)` inside the factory is what keeps the four registrations from
+`force(o)` inside the factory prevents the four registrations from
 sharing one order.
 
 ## See also
 
 [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md),
-the body it registers;
+the body that it registers;
 [`distrib_grad_cdf.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
 and
 [`distrib_grad_cdf.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md),

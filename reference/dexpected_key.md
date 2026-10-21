@@ -1,6 +1,6 @@
 # The Key of One Component of the Expected Information's Derivative
 
-The name under which
+Returns the name under which
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
 returns \\\partial\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\.
 
@@ -18,12 +18,12 @@ dexpected_key(params, a, b, k)
 
 - a, b:
 
-  Indices into `params`; their order does not matter, the component
-  being symmetric in them.
+  Indices into `params`; their order does not matter, because the
+  component is symmetric in them.
 
 - k:
 
-  The index of the parameter differentiated in, which does matter.
+  The index of the differentiating parameter, which does matter.
 
 ## Value
 

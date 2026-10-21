@@ -17,7 +17,7 @@ tensor_derivatives() and numerical_deriv5() use rules of their own."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,16 +97,17 @@ over all of them together.</p></dd>
 
 <dt id="arg-need-value">need_value<a class="anchor" aria-label="anchor" href="#arg-need-value"></a></dt>
 <dd><p>Whether the caller will use the quotient at the chosen
-step. <code>FALSE</code> for a caller that wants only the step, and then nothing is
-evaluated at all where the two candidates coincide: the higher orders read
-only <code>h</code>, and their quotient is a difference of whole Hessians.</p></dd>
+step. A caller that needs only the step sets it to <code>FALSE</code>, and the
+function then skips every evaluation where the two candidates coincide: the
+higher orders read only <code>h</code>, and their quotient is a difference of whole
+Hessians.</p></dd>
 
 
 <dt id="arg-order-accuracy">order, accuracy<a class="anchor" aria-label="anchor" href="#arg-order-accuracy"></a></dt>
-<dd><p>The stencil the quotient implements, passed to
-<code><a href="fd_steps.html">fd_steps()</a></code> so that the clamp is on the outermost node. The defaults are
-the central difference; a caller whose quotient is a second difference
-passes <code>order = 2</code>.</p></dd>
+<dd><p>The stencil that the quotient implements; it is passed
+to <code><a href="fd_steps.html">fd_steps()</a></code> so that the clamp applies to the outermost node. The
+defaults are the central difference; a caller whose quotient is a second
+difference passes <code>order = 2</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -135,7 +136,7 @@ signal.</p>
 <p>It costs four quotients where one would do, except where the two steps
 coincide at every entry, which is every call on a parameter with no finite
 bound and every positive parameter at or above one: there the clamped step
-is returned at once and nothing is evaluated twice.</p>
+is returned at once and each quotient is evaluated only once.</p>
 <p>Each order selects its own step, with its own <code>h_rel</code> and its own stencil;
 a choice made at first order is not reused at higher orders.</p>
     </div>

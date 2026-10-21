@@ -44,8 +44,8 @@ calls.
 
 Every continuous family that the package ships writes its own response
 gradient, so this method serves user-defined families only. A discrete
-family has no derivative in the response, so no default is registered
-there and the call signals an error that names the class.
+family has no derivative in the response, so the package registers no
+default for it and the call signals an error that names the class.
 
 ## Notation
 
@@ -65,8 +65,8 @@ for the second order.
 ## Examples
 
 ``` r
-# A family that supplies a density and nothing else, which is what the
-# fallback exists for: every family the package ships writes its own
+# A family that supplies a density and nothing else is the case for which
+# the fallback exists: every family that the package ships writes its own
 # response derivatives.
 Toy <- S7::new_class("Toy", parent = continuous_distrib)
 S7::method(distrib_pdf, Toy) <- function(distrib, y, theta, ...) {
@@ -101,8 +101,8 @@ attr(S7::method(distrib_grad_y, Toy), "signature")[[1]]
 distrib_grad_y(d, y, theta)
 #> [1]  1.0138889 -0.8472222 -0.9305556
 
-# Against a Richardson-extrapolated derivative of the same log-density,
-# which shares no arithmetic with the stencil.
+# The result is compared with a Richardson-extrapolated derivative of the
+# same log-density, which shares no arithmetic with the stencil.
 f <- function(v) distrib_pdf(d, v, theta, log = TRUE)
 vapply(y, function(v) numDeriv::grad(f, v), numeric(1))
 #> [1]  1.0138889 -0.8472222 -0.9305556

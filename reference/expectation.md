@@ -2,7 +2,7 @@
 
 Computes \\E\[f(Y)\]\\ under the distribution: by numerical integration
 for a continuous distribution and by series summation for a discrete
-one, with the methods described on their own pages.
+one. The methods are described on their own pages.
 
 ## Usage
 

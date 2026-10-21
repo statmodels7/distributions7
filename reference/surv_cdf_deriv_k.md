@@ -3,8 +3,8 @@
 Returns \\\partial^I F\\ for every component of the requested order, for
 a family whose survival function is the exponential of something
 elementary. Given \\L = \log(1-F)\\ and a function evaluating its
-partial derivatives, all four orders follow at once, so a family has
-only to say what \\L\\ is.
+partial derivatives, all four orders follow at once, so it is enough to
+supply \\L\\.
 
 ## Usage
 
@@ -43,10 +43,11 @@ surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv, inside = NULL)
 
 - inside:
 
-  A logical vector saying which quantiles lie inside the support, or
-  `NULL` (the default), which reads `q > distrib@bounds[1]`. A family
-  whose support depends on a parameter supplies its own; the fixed
-  bounds cannot see it.
+  A logical vector that marks the quantiles lying inside the support, or
+  `NULL` (the default), in which case the mask is
+  `q > distrib@bounds[1]`. A family whose support depends on a parameter
+  supplies its own mask, because the fixed bounds do not vary with the
+  parameter.
 
 ## Value
 
@@ -59,20 +60,20 @@ and exactly zero wherever `inside` is `FALSE`.
 
 \\S = e^{L}\\ gives \\\partial^I S = S\\B_I\\, with \\B_I\\ the complete
 Bell polynomial in the partials of \\L\\, and \\F = 1 - S\\ turns that
-into \\\partial^I F = -S\\B_I\\. It is the same identity the
+into \\\partial^I F = -S\\B_I\\. It is the same identity that the
 distribution wrappers use, read on the survival function instead of on
 the density, and
 [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
 runs the partition sum, so the derivatives come from that sum and not
 from a transcribed expansion.
 
-## Two things the arithmetic needs
+## The survival function and the support
 
 The survival function is evaluated as `exp(Lval)` and not as `1 - F`,
-which keeps the far tail from canceling. And below the support \\F\\ is
+which keeps the far tail from canceling. Below the support \\F\\ is
 identically zero and so is every derivative, while \\L\\ is still finite
 there and would otherwise give a survival above one; the `inside` mask
-is what suppresses that.
+suppresses that.
 
 ## Notation
 

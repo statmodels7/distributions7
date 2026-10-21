@@ -54,19 +54,11 @@ column is
 and
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md):
 
-\| \| \\\partial^0/\partial\theta^0\\ \| \\\partial^1/\partial\theta^1\\
-\| \\\partial^2/\partial\theta^2\\ \| \|—\|—\|—\|—\| \|
-\\\partial/\partial y\\ \|
-[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-\|
-[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
-\| `distrib_grad_y_hess()` \| \| \\\partial^2/\partial y^2\\ \|
-[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
-\|
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
-\|
-[`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
-\|
+|  |  |  |  |
+|----|----|----|----|
+|  | \\\partial^0/\partial\theta^0\\ | \\\partial^1/\partial\theta^1\\ | \\\partial^2/\partial\theta^2\\ |
+| \\\partial/\partial y\\ | [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md) | [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md) | `distrib_grad_y_hess()` |
+| \\\partial^2/\partial y^2\\ | [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md) | [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md) | [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md) |
 
 The second derivative of a marginal criterion requires the right-hand
 column from a penalty. A penalty is a negative log-density read at the
@@ -141,7 +133,7 @@ distrib_grad_y_hess(d, y, theta)
 #> [1] -0.9103323 -0.9103323 -0.9103323
 #> 
 
-# Closed form: the response gradient is -r / sigma^2, so the location pair
+# In closed form, the response gradient is -r / sigma^2, so the location pair
 # vanishes and the other two are elementary.
 r <- y - 0.4
 c(mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)

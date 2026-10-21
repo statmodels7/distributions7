@@ -1,8 +1,9 @@
 # Gaussian Mixed Derivatives
 
-Closed form. With \\r = y - \mu\\, \$\$\frac{\partial^2 \ell}{\partial
-y\\ \partial \mu} = \frac{1}{\sigma^2}, \qquad \frac{\partial^2
-\ell}{\partial y\\ \partial \sigma} = \frac{2r}{\sigma^3}.\$\$
+Computes the closed form. With \\r = y - \mu\\, \$\$\frac{\partial^2
+\ell}{\partial y\\ \partial \mu} = \frac{1}{\sigma^2}, \qquad
+\frac{\partial^2 \ell}{\partial y\\ \partial \sigma} =
+\frac{2r}{\sigma^3}.\$\$
 
 The first component is constant in `y`, because the log-density is
 quadratic in the response and in the location. The second is zero at the
@@ -34,8 +35,8 @@ mean and grows linearly with the residual, so it changes sign there.
 
 ## Value
 
-A named list with components `mu` and `sigma`, each a numeric vector of
-length `length(y)`.
+A named list with components `mu` and `sigma`. Each component is a
+numeric vector of length `length(y)`.
 
 ## See also
 

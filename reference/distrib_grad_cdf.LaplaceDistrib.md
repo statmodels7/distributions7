@@ -1,12 +1,12 @@
 # Laplace Log-CDF Gradient
 
-Closed form, from the location-scale structure: \\\partial F/\partial\mu
-= -f(q)\\ and \\\partial F/\partial\sigma = -z f(q)\\ with \\z =
-(q-\mu)/\sigma\\. The method is
+Computes the gradient in closed form, from the location-scale structure:
+\\\partial F/\partial\mu = -f(q)\\ and \\\partial F/\partial\sigma = -z
+f(q)\\ with \\z = (q-\mu)/\sigma\\. The method is
 [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
-itself. Both are continuous everywhere, including at \\q = \mu\\: the
-density has a kink there but no jump, and the first derivatives of \\F\\
-read the density itself.
+itself. Both components are continuous everywhere, including at \\q =
+\mu\\: the density has a kink there but no jump, and the first
+derivatives of \\F\\ read the density itself.
 
 ## Arguments
 
@@ -21,7 +21,7 @@ read the density itself.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
+  A named list with components `mu` and `sigma` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -36,8 +36,8 @@ read the density itself.
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `sigma`, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `sigma`, in which each
+vector has the length of `q` recycled against `theta`.
 
 ## Notation
 
@@ -66,7 +66,7 @@ all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 #> [1] TRUE
 
-# Continuous through the kink at q = mu.
+# The result is continuous through the kink at q = mu.
 distrib_grad_cdf(d, 0.3 + c(-1e-8, 0, 1e-8), th, log = FALSE)$mu
 #> [1] -0.4166667 -0.4166667 -0.4166667
 ```

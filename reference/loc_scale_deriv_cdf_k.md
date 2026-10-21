@@ -4,12 +4,12 @@ Builds the
 [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
 or
 [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
-body that the location-scale families register:
+body that the location-scale families register. The body evaluates
 [`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md)
-at every order up to the one wanted, put on the requested tail and scale
-by
+at every order up to the one wanted and puts the result on the requested
+tail and scale by
 [`loc_scale_cdf_route()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_route.md).
-Four families use it, the Gaussian, the logistic and the Laplace here
+Four families use it: the Gaussian, the logistic and the Laplace here,
 and the Gumbel in `cdf_mapped_higher.R`; the Cauchy has its own closed
 form,
 [`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md).

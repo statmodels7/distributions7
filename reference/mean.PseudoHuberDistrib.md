@@ -1,7 +1,7 @@
 # Mean of the Pseudo-Huber Distribution
 
-Closed form, replacing the numerical default: \\E\[Y\] = \mu\\. The
-density is symmetric about \\\mu\\ at every scale and shape, so the
+The closed form that replaces the numerical default is \\E\[Y\] = \mu\\.
+The density is symmetric about \\\mu\\ at every scale and shape, so the
 location parameter is the mean, the median and the mode at once.
 
 ## Arguments
@@ -14,7 +14,7 @@ location parameter is the mean, the median and the mode at once.
 - theta:
 
   A named list with components `mu` (the location), `sigma` (the scale,
-  positive) and `nu` (the shape, positive), each a numeric vector of
+  positive) and `nu` (the shape, positive); each is a numeric vector of
   length 1 or `n`.
 
 - ...:

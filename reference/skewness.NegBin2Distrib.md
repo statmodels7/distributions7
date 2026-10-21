@@ -1,6 +1,6 @@
 # Skewness of the Negative Binomial Distribution
 
-Closed form, replacing the numerical default: \\(\theta +
+The closed form that replaces the numerical default is \\(\theta +
 2\mu)/\sqrt{\mu\theta(\theta+\mu)}\\. It is positive at every parameter
 value and decreases towards the Poisson value \\\mu^{-1/2}\\ as
 \\\theta\\ grows.
@@ -15,7 +15,8 @@ value and decreases towards the Poisson value \\\mu^{-1/2}\\ as
 - theta:
 
   A named list with components `mu` (the mean, positive) and `theta`
-  (the dispersion, positive), each a numeric vector of length 1 or `n`.
+  (the dispersion, positive); each is a numeric vector of length 1 or
+  `n`.
 
 - ...:
 
@@ -38,7 +39,7 @@ for the limit.
 ``` r
 d <- negbin2_distrib()
 
-# The published form, written out.
+# The published form is written out.
 mu <- 4; th <- 2
 all.equal(skewness(d, list(mu = mu, theta = th)),
           (th + 2 * mu) / sqrt(mu * th * (th + mu)))

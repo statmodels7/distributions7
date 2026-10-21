@@ -1,10 +1,10 @@
 # Excess Kurtosis of the Gamma Distribution
 
-Closed form: \\\gamma_2 = 6/a = 6\sigma^2/\mu^2\\ with shape \\a =
-\mu^2/\sigma^2\\. It is positive at every parameter value and is exactly
-\\3\gamma_1^2/2\\, so the family occupies one curve of the
-skewness-kurtosis plane and cannot be tuned along the two axes
-separately.
+The excess kurtosis has the closed form \\\gamma_2 = 6/a =
+6\sigma^2/\mu^2\\ with shape \\a = \mu^2/\sigma^2\\. It is positive at
+every parameter value and is exactly \\3\gamma_1^2/2\\, so the family
+occupies one curve of the skewness-kurtosis plane and cannot be tuned
+along the two axes separately.
 
 ## Arguments
 
@@ -16,7 +16,7 @@ separately.
 - theta:
 
   A named list with components `mu` (positive) and `sigma2` (positive),
-  each a numeric vector of length 1 or `n`.
+  in which each component is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -50,7 +50,7 @@ th <- list(mu = 2, sigma2 = 1)
 all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
 #> [1] TRUE
 
-# Six over the implied shape.
+# The excess kurtosis is six over the implied shape.
 kurtosis(d, list(mu = 2, sigma2 = c(4, 1, 0.25)))
 #> [1] 6.000 1.500 0.375
 ```

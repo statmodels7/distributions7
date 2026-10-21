@@ -11,7 +11,7 @@ against the mass, reading the family's own observed derivatives."><meta property
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ against the mass, reading the family's own observed derivatives.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each of length one or <code>length(y)</code>.</p></dd>
+<dd><p>A named list of parameters; each has length one or <code>length(y)</code>.</p></dd>
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
@@ -91,8 +91,8 @@ call.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The support being finite, each sum is the expectation exactly: no
-quadrature, no truncation. Every observation's parameters are crossed with
+    <p>Because the support is finite, each sum is the expectation exactly, with no
+quadrature and no truncation. Every observation's parameters are crossed with
 the \(N + 1\) support points and the derivative generics are called once
 on the whole grid.</p>
     </div>

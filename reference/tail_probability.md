@@ -1,19 +1,19 @@
 # The Probability of the Requested Tail
 
-Internal helpers of
+These functions are internal helpers of
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md)
 and
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md).
 `tail_cdf()` returns the probability of the requested tail at `q`, from
 the family's own distribution function for that tail (so that the upper
 tail is not formed as \\1 - F\\, which loses its digits once \\F\\ is
-close to one), with the attribute `"tail"` set to `"lower"` or
-`"upper"`. Called with the arguments that
+close to one); the result carries the attribute `"tail"`, set to
+`"lower"` or `"upper"`. Called with the arguments that
 [`log_tail_route()`](https://statmodels7.github.io/distributions7/reference/log_tail_route.md)
 has stored in `log_tail_stash`, it returns the stored value.
 `tail_probability()` returns the requested tail: the value itself when
-it carries the attribute `"tail"` for that tail, and otherwise, the
-value being read as the distribution function, \\F\\ or \\1 - F\\.
+it carries the attribute `"tail"` for that tail, and otherwise \\F\\ or
+\\1 - F\\, because the value is then read as the distribution function.
 
 ## Usage
 
@@ -49,8 +49,8 @@ tail_probability(Fq, lower.tail)
 
 ## Value
 
-A numeric vector of probabilities; for `tail_cdf()`, with the attribute
-`"tail"`.
+A numeric vector of probabilities; `tail_cdf()` sets the attribute
+`"tail"` on it.
 
 ## Examples
 

@@ -13,7 +13,7 @@ mixed_tensor_derivatives()."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ central difference of <code><a href="distrib_deriv3_y.html">distrib_deriv3_y()</
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, the point to differentiate at.</p></dd>
+<dd><p>A named list of parameters at which the derivative is computed.</p></dd>
 
 
 <dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
@@ -91,12 +91,12 @@ the optimal exponent for a central first difference.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with one numeric vector per requested parameter, each
-as long as <code>y</code>.</p>
+    <p>A named list with one numeric vector per requested parameter. Each
+vector is as long as <code>y</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A family carrying an analytic <code>distrib_deriv3_y</code> pays for exactly one
+    <p>A family carrying an analytic <code>distrib_deriv3_y</code> requires exactly one
 difference. Where that derivative is itself the base class's stencil on the
 log-density, the two differences act on different variables and compose
 into one mixed stencil. The step is chosen by <code><a href="fd_stable_step.html">fd_stable_step()</a></code>, so that
@@ -115,7 +115,7 @@ domain.</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0.4</span>, sigma <span class="op">=</span> <span class="fl">1.3</span>, nu <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Against the identity the location family uses.</span></span></span>
+<span class="r-in"><span><span class="co"># The result is compared with the identity that the location family uses.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu">numerical_cross3_y</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span></span></span>
 <span class="r-in"><span>        <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="distrib_cross3_y.html">distrib_cross3_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.227025e-11</span>

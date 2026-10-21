@@ -1,9 +1,9 @@
 # Variance of the Gamma Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \sigma^2\\. The variance is the
-second parameter of this parametrization. The shape that the two
-parameters imply is \\a = \mu^2/\sigma^2\\, and the skewness and the
-kurtosis are functions of this shape.
+The variance has the closed form \\\operatorname{Var}(Y) = \sigma^2\\.
+The variance is the second parameter of this parametrization. The shape
+that the two parameters imply is \\a = \mu^2/\sigma^2\\, and the
+skewness and the kurtosis are functions of this shape.
 
 ## Arguments
 
@@ -15,7 +15,8 @@ kurtosis are functions of this shape.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `sigma2`
-  (the variance, positive), each a numeric vector of length 1 or `n`.
+  (the variance, positive), in which each component is a numeric vector
+  of length 1 or `n`.
 
 - ...:
 

@@ -15,7 +15,7 @@ neither a native RNG nor an analytical quantile function."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ neither a native RNG nor an analytical quantile function.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each of length one.</p></dd>
+<dd><p>A named list of parameters; each has length one.</p></dd>
 
 
 <dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
@@ -108,12 +108,13 @@ non-positive for \(z \le 0\) and non-negative for \(z \ge 0\), so
 that \(\max K = 1\) and \(u_{\max} = 1\). Every quantity stays in a safe
 numerical range whatever the height of the density, and all computations are
 carried out on the log scale.</p></li>
-</ul><p>The bounds \(v_{\min}, v_{\max}\) are obtained by expanding geometrically away
-from the mode until \(h\) has clearly turned back towards zero (finite support
-bounds are used directly), then combining <code><a href="https://rdrr.io/r/stats/optimize.html" class="external-link">stats::optimize()</a></code> with a grid
-search over the resulting bracket; the box is enclosing by construction for a
-unimodal kernel. Candidates are generated and filtered in vectorized batches whose
-size adapts to the observed acceptance rate.</p>
+</ul><p>The function obtains the bounds \(v_{\min}, v_{\max}\) by expanding
+geometrically away from the mode until \(h\) has clearly turned back
+towards zero (finite support bounds are used directly), and then combines
+<code><a href="https://rdrr.io/r/stats/optimize.html" class="external-link">stats::optimize()</a></code> with a grid search over the resulting bracket; the box is
+enclosing by construction for a unimodal kernel. Candidates are generated and
+filtered in vectorized batches whose size adapts to the observed acceptance
+rate.</p>
     </div>
     <div class="section level2">
     <h2 id="unbounded-densities">Unbounded densities<a class="anchor" aria-label="anchor" href="#unbounded-densities"></a></h2>
@@ -121,24 +122,24 @@ size adapts to the observed acceptance rate.</p>
 
 <p>The method needs the supremum of the kernel to be attained, so a density that
 diverges at a finite edge of its support would have its acceptance region
-clipped. Rather than give up, such an edge is transformed away.</p>
+clipped. Such an edge is transformed away, so that the sampler still applies.</p>
 <p>If \(f(y) \sim |y-a|^{\alpha-1}\) near the edge \(a\), with \(\alpha &lt; 1\),
 then \(X = |Y-a|^{1/\lambda}\) has density proportional to
 \(x^{\lambda\alpha-1}\) there, which is bounded as soon as
-\(\lambda\alpha &gt; 1\). Sampling \(X\) and mapping back is exact: no
-quadrature and no inversion are involved. The exponent \(\alpha\) is read off
+\(\lambda\alpha &gt; 1\). Sampling \(X\) and mapping back is exact and uses
+no quadrature and no inversion. The exponent \(\alpha\) is read off
 the same probe that detects the divergence: walking towards the edge in
 decades lifts the log-density by \((1-\alpha)\log 10\) per step, and
 \(\lambda\) follows from that slope. A Gamma of shape \(0.4\), for instance, is
 sampled through \(X = Y^{1/4}\).</p>
 <p>A density diverging at <em>both</em> edges, such as a Beta with both shapes below
-one, is beyond any single power: flattening one edge steepens the other. What
-does work is a map that behaves like a different power at each end,
-$$T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a + (b-a)\,T(U),$$
-monotone from 0 to 1, with a closed-form derivative, and carrying the exponents
-\(p\alpha - 1\) and \(q\beta - 1\) at the two ends. Choosing
-\(p\alpha &gt; 1\) and \(q\beta &gt; 1\) makes the density of \(U\) vanish at
-both ends, turning a U-shaped density into a single-peaked one.</p>
+one, is beyond any single power: flattening one edge steepens the other. A
+map that behaves like a different power at each end works,
+$$T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a + (b-a)\,T(U).$$
+The map is monotone from 0 to 1, has a closed-form derivative, and carries
+the exponents \(p\alpha - 1\) and \(q\beta - 1\) at the two ends.
+Choosing \(p\alpha &gt; 1\) and \(q\beta &gt; 1\) makes the density of \(U\)
+vanish at both ends, turning a U-shaped density into a single-peaked one.</p>
 <p>Near an edge the variable itself stops being resolvable: at a non-zero edge the
 spacing of doubles is absolute, so a slab of \(u\) collapses onto the edge and
 the density evaluated there returns infinity. The distance from the edge is

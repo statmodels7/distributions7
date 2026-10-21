@@ -2,9 +2,9 @@
 
 Returns \\\partial^j (1+a^2)^{-1}/\partial a^j\\ for \\j = 0, \ldots,
 3\\: \\(1+a^2)^{-1}\\, \\-2a(1+a^2)^{-2}\\, \\(6a^2-2)(1+a^2)^{-3}\\ and
-\\24a(1-a^2)(1+a^2)^{-4}\\. This is the factor the skew normal's shape
-derivative carries, and writing it out saves a Faa di Bruno pass over a
-quantity whose derivatives are four short expressions.
+\\24a(1-a^2)(1+a^2)^{-4}\\. This is the factor that the skew normal's
+shape derivative carries, and writing it out saves a Faa di Bruno pass
+over a quantity whose derivatives are four short expressions.
 
 ## Usage
 
@@ -20,9 +20,9 @@ recip_1p_sq(a, j)
 
 - j:
 
-  The order, 0 to 3. Any other value returns `NULL`,
-  [`switch()`](https://rdrr.io/r/base/switch.html) falling through;
-  three is the highest the fourth-order cdf derivative needs.
+  The order, 0 to 3. Any other value returns `NULL`, because
+  [`switch()`](https://rdrr.io/r/base/switch.html) falls through; three
+  is the highest order that the fourth-order cdf derivative needs.
 
 ## Value
 

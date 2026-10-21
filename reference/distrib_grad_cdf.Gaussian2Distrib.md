@@ -1,9 +1,10 @@
 # Gaussian Log-CDF Gradient in Mean and Variance
 
-Closed form, by the chain rule on the scale parametrization's
-derivatives through \\\sigma = \sqrt{\sigma^2}\\. The mean component is
-unchanged, \\-f(q)\\, and the variance component is the scale one
-divided by \\2\sigma\\, which is the map's only non-zero partial.
+Computes the derivatives in closed form, by the chain rule on the scale
+parametrization's derivatives through \\\sigma = \sqrt{\sigma^2}\\. The
+mean component is unchanged, \\-f(q)\\, and the variance component is
+the scale one divided by \\2\sigma\\. This factor is the derivative of
+\\\sigma\\ in \\\sigma^2\\, the only non-zero partial of the map.
 
 ## Arguments
 
@@ -18,7 +19,7 @@ divided by \\2\sigma\\, which is the map's only non-zero partial.
 
 - theta:
 
-  A named list with components `mu` and `sigma2` (positive), each a
+  A named list with components `mu` and `sigma2` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -37,8 +38,8 @@ divided by \\2\sigma\\, which is the map's only non-zero partial.
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `sigma2`, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `sigma2`; each has the
+length of `q` recycled against `theta`.
 
 ## Notation
 

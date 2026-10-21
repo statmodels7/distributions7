@@ -1,8 +1,9 @@
 # Mean of the Inverse Gaussian Distribution in Mean and Shape
 
-Closed form: \\E\[Y\] = \mu\\. This is the inverse Gaussian written by
-its mean and the shape \\\lambda = 1/\phi\\, the classical
-parametrization, and the mean is the first parameter in either.
+The mean has the closed form \\E\[Y\] = \mu\\. This is the inverse
+Gaussian written by its mean and the shape \\\lambda = 1/\phi\\, the
+classical parametrization, and the mean is the first parameter in
+either.
 
 ## Arguments
 
@@ -14,7 +15,7 @@ parametrization, and the mean is the first parameter in either.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `lambda`
-  (the shape, positive), each a numeric vector of length 1 or `n`.
+  (the shape, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 

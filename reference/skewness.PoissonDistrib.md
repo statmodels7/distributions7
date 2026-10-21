@@ -1,9 +1,9 @@
 # Skewness of the Poisson Distribution
 
-Closed form: \\\gamma_1 = 1/\sqrt\mu\\. It is positive at every mean, a
-count having a floor at zero and no ceiling, and it decays like
-\\\mu^{-1/2}\\, which is the rate at which the family approaches a
-Gaussian as the counts grow.
+The skewness has the closed form \\\gamma_1 = 1/\sqrt\mu\\. It is
+positive at every mean because a count has a floor at zero and no
+ceiling, and it decays like \\\mu^{-1/2}\\, which is the rate at which
+the family approaches a Gaussian as the counts grow.
 
 ## Arguments
 
@@ -38,7 +38,7 @@ which tends to this;
 ``` r
 d <- poisson_distrib()
 
-# One over the square root of the mean.
+# The skewness is one over the square root of the mean.
 all.equal(skewness(d, list(mu = 4)), 0.5)
 #> [1] TRUE
 

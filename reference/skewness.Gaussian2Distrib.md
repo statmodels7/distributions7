@@ -1,8 +1,8 @@
 # Skewness of the Gaussian Distribution in Location and Variance
 
-Exactly zero at every parameter value, the density being symmetric about
-\\\mu\\. A standardized moment is invariant under a change of
-parametrization, so this is the same zero that
+The skewness is exactly zero at every parameter value, because the
+density is symmetric about \\\mu\\. A standardized moment is invariant
+under a change of parametrization, so this is the same zero that
 [`skewness.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.Gaussian1Distrib.md)
 returns.
 
@@ -15,7 +15,7 @@ returns.
 
 - theta:
 
-  A named list with components `mu` and `sigma2` (positive), each a
+  A named list with components `mu` and `sigma2` (positive); each is a
   numeric vector of length 1 or `n`. The values are checked against the
   parameter bounds, and only their lengths enter the result.
 
@@ -40,7 +40,8 @@ also zero;
 ``` r
 d <- gaussian2_distrib()
 
-# Zero at every location and variance, with one value per setting.
+# The skewness is zero at every location and variance, with one value per
+# setting.
 skewness(d, list(mu = c(-2, 0, 5), sigma2 = c(1, 4, 9)))
 #> [1] 0 0 0
 ```

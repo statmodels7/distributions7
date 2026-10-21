@@ -1,13 +1,13 @@
 # Excess Kurtosis of the Lognormal Distribution
 
-Closed form: \$\$\gamma_2 = e^{4\sigma^2} + 2e^{3\sigma^2} +
-3e^{2\sigma^2} - 6,\$\$ free of \\\mu\\. It is evaluated as \\w(16 +
-15w + 6w^2 + w^3)\\ with \\w = e^{\sigma^2} - 1\\ formed by
-[`expm1()`](https://rdrr.io/r/base/Log.html), which keeps its digits at
-a small \\\sigma^2\\. The leading term grows like \\e^{4\sigma^2}\\, so
-the tail weight explodes with the spread of the logarithm: at \\\sigma^2
-= 1\\ it is 110.9, and the numerical route would need a quadrature far
-into the tail to see it at all.
+The excess kurtosis has the closed form \$\$\gamma_2 = e^{4\sigma^2} +
+2e^{3\sigma^2} + 3e^{2\sigma^2} - 6,\$\$ which is free of \\\mu\\. It is
+evaluated as \\w(16 + 15w + 6w^2 + w^3)\\ where \\w = e^{\sigma^2} - 1\\
+is formed by [`expm1()`](https://rdrr.io/r/base/Log.html), which keeps
+its digits at a small \\\sigma^2\\. The leading term grows like
+\\e^{4\sigma^2}\\, so the tail weight explodes with the spread of the
+logarithm: at \\\sigma^2 = 1\\ it is 110.9, and the numerical route
+would need a quadrature far into the tail to see it at all.
 
 ## Arguments
 
@@ -19,7 +19,7 @@ into the tail to see it at all.
 - theta:
 
   A named list with components `mu` (any real value) and `sigma2`
-  (positive), each a numeric vector of length 1 or `n`. Only `sigma2`
+  (positive); each is a numeric vector of length 1 or `n`. Only `sigma2`
   enters the value; the leading exponential overflows to `Inf` past
   \\\sigma^2 \approx 177\\.
 
@@ -47,7 +47,7 @@ A numeric vector of excess kurtoses, of length
 ``` r
 d <- lognormal1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(kurtosis(d, list(mu = 0, sigma2 = 1)),
           exp(4) + 2 * exp(3) + 3 * exp(2) - 6)
 #> [1] TRUE

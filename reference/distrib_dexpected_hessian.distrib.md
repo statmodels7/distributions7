@@ -1,8 +1,9 @@
 # Default Derivative of the Expected Information
 
-One central difference of
+Takes one central difference of
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-per parameter; an error where that quantity is itself approximated.
+per parameter and signals an error where that quantity is itself
+approximated.
 
 ## Arguments
 

@@ -1,9 +1,10 @@
 # Binomial Log-CDF Gradient
 
-Closed form, and exact: the companion identity to the Poisson's,
-\$\$\frac{\partial}{\partial p} P(X \le k) = -n\\\mathrm{dbinom}(k, n-1,
-p).\$\$ The whole sum collapses to one binomial mass at one fewer trial,
-so nothing is summed and nothing is differenced.
+Computes the gradient in closed form, and exactly, by the companion
+identity to the Poisson's, \$\$\frac{\partial}{\partial p} P(X \le k) =
+-n\\\mathrm{dbinom}(k, n-1, p).\$\$ The whole sum collapses to one
+binomial mass at one fewer trial, so the function neither sums nor
+differences.
 
 ## Arguments
 
@@ -63,7 +64,7 @@ the general sum;
 d <- binomial_distrib(size = 10)
 q <- c(2, 5, 8)
 
-# Minus n times a binomial mass at one fewer trial.
+# The component is minus n times a binomial mass at one fewer trial.
 all.equal(distrib_grad_cdf(d, q, list(mu = 0.3), log = FALSE)$mu,
           -10 * dbinom(q, 9, 0.3))
 #> [1] TRUE

@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Negative Binomial Distribution in the NB1 Parametrization
 
-Closed form: \\\gamma_2 = 6\theta/\mu + 1/\\\mu(1+\theta)\\\\, the
-excess over the Gaussian. Both terms are positive, so the family is
-always leptokurtic, and the expression tends to the Poisson's \\1/\mu\\
-as the dispersion goes to zero.
+The excess kurtosis over the Gaussian has the closed form \\\gamma_2 =
+6\theta/\mu + 1/\\\mu(1+\theta)\\\\. Both terms are positive, so the
+family is always leptokurtic, and the expression tends to the Poisson's
+\\1/\mu\\ as the dispersion goes to zero.
 
 ## Arguments
 
@@ -14,8 +14,8 @@ as the dispersion goes to zero.
 
 - theta:
 
-  A named list with components `mu` (positive) and `theta` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `theta` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -44,7 +44,7 @@ the limit;
 ``` r
 d <- negbin1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(kurtosis(d, list(mu = 4, theta = 2)), 12 / 4 + 1 / 12)
 #> [1] TRUE
 

@@ -1,7 +1,7 @@
 # Variance of the Inverse Gaussian Distribution in Mean and Shape
 
-Closed form: \\\operatorname{Var}(Y) = \mu^3/\lambda\\. With \\\lambda =
-1/\phi\\ this is the \\\phi\mu^3\\ of
+The variance has the closed form \\\operatorname{Var}(Y) =
+\mu^3/\lambda\\. With \\\lambda = 1/\phi\\ this is the \\\phi\mu^3\\ of
 [`variance.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.InvGauss1Distrib.md),
 so the two parametrizations agree on the law and differ only in which
 number is reported. The variance grows with the cube of the mean, where
@@ -16,9 +16,9 @@ that of the gamma grows with its square.
 
 - theta:
 
-  A named list with components `mu` (positive) and `lambda` (positive),
-  each a numeric vector of length 1 or `n`. The variance diverges as the
-  shape approaches zero.
+  A named list with components `mu` (positive) and `lambda` (positive);
+  each is a numeric vector of length 1 or `n`. The variance diverges as
+  the shape approaches zero.
 
 - ...:
 
@@ -46,7 +46,7 @@ the same quantity in the dispersion parametrization;
 ``` r
 d <- invgauss2_distrib()
 
-# The cube of the mean over the shape.
+# The variance is the cube of the mean over the shape.
 all.equal(variance(d, list(mu = 2, lambda = 8)), 1)
 #> [1] TRUE
 

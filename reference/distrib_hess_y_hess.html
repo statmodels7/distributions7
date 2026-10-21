@@ -15,7 +15,7 @@ the mixed grid below."><meta property="og:image" content="https://statmodels7.gi
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,13 +99,7 @@ parameters. Each vector is as long as <code>y</code>, and the list is keyed as
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>These are the second-order column of the mixed grid whose first-order column
-is <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> and <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code>:</p>
-<p>| | \(\partial^0/\partial\theta^0\) | \(\partial^1/\partial\theta^1\) |
-\(\partial^2/\partial\theta^2\) | |—|—|—|—| |
-\(\partial/\partial y\) | <code><a href="distrib_grad_y.html">distrib_grad_y()</a></code> | <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> |
-<code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> | | \(\partial^2/\partial y^2\) |
-<code><a href="distrib_hess_y.html">distrib_hess_y()</a></code> | <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code> | <code>distrib_hess_y_hess()</code> |</p>
-<p>The second derivative of a marginal criterion requires the right-hand column
+is <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> and <code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code>:</p><table class="table table"><tr><td></td><td>\(\partial^0/\partial\theta^0\)</td><td>\(\partial^1/\partial\theta^1\)</td><td>\(\partial^2/\partial\theta^2\)</td></tr><tr><td>\(\partial/\partial y\)</td><td><code><a href="distrib_grad_y.html">distrib_grad_y()</a></code></td><td><code><a href="distrib_cross_y.html">distrib_cross_y()</a></code></td><td><code><a href="distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code></td></tr><tr><td>\(\partial^2/\partial y^2\)</td><td><code><a href="distrib_hess_y.html">distrib_hess_y()</a></code></td><td><code><a href="distrib_cross2_y.html">distrib_cross2_y()</a></code></td><td><code>distrib_hess_y_hess()</code></td></tr></table><p>The second derivative of a marginal criterion requires the right-hand column
 from a penalty. A penalty is a negative log-density read
 at the
 coefficients, so \(\partial^2\rho/\partial\beta^2\) carries the density's

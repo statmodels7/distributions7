@@ -1,12 +1,13 @@
 # Skewness of the Beta-Binomial Distribution
 
-Closed form: \$\$\gamma_1 = (1 - 2\mu)\\\frac{1 + 2n\sigma}{1 + 2\sigma}
-\sqrt{\frac{1 + \sigma}{n\mu(1-\mu)(1 + n\sigma)}},\$\$ computed by
+The skewness has the closed form \$\$\gamma_1 = (1 - 2\mu)\\\frac{1 +
+2n\sigma}{1 + 2\sigma} \sqrt{\frac{1 + \sigma}{n\mu(1-\mu)(1 +
+n\sigma)}},\$\$ computed by
 [`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md).
-It is zero at \\\mu = 1/2\\ whatever the dispersion, the mixing beta
-being symmetric there, and it takes the sign of \\1 - 2\mu\\ elsewhere.
-The closed form forms no difference of raw moments, so it keeps its
-accuracy at a small dispersion and a large \\n\\.
+It is zero at \\\mu = 1/2\\ whatever the dispersion, because the mixing
+beta is symmetric there, and it takes the sign of \\1 - 2\mu\\
+elsewhere. The closed form forms no difference of raw moments, so it
+keeps its accuracy at a small dispersion and a large \\n\\.
 
 ## Arguments
 
@@ -19,8 +20,8 @@ accuracy at a small dispersion and a large \\n\\.
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and
-  `sigma` (positive), each a numeric vector of length 1 or of the common
-  length of the parameter settings.
+  `sigma` (positive); each is a numeric vector of length 1 or of the
+  common length of the parameter settings.
 
 - ...:
 
@@ -50,7 +51,8 @@ the \\\sigma \to 0\\ limit;
 ``` r
 d <- betabinom1_distrib(size = 10)
 
-# Zero at a success probability of one half, at any dispersion.
+# The skewness is zero at a success probability of one half, at any
+# dispersion.
 round(skewness(d, list(mu = 0.5, sigma = c(0.1, 1, 10))), 12)
 #> [1] 0 0 0
 

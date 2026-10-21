@@ -1,13 +1,13 @@
 # The Location and Scale Components of a Mixed Derivative
 
-Returns the two mixed components a location-scale family has in closed
-form, from the response derivatives the family already provides. Where
-the response enters the log-density only through \\z = (y -
-\mu)/\sigma\\, differentiating \\\ell^{(y)} = g'(z)/\sigma\\ gives
+Returns the two mixed components that a location-scale family has in
+closed form, from the response derivatives that the family already
+provides. Where the response enters the log-density only through \\z =
+(y - \mu)/\sigma\\, differentiating \\\ell^{(y)} = g'(z)/\sigma\\ gives
 \$\$\frac{\partial^2\ell}{\partial y\\\partial\mu} = -\ell^{(yy)},
 \qquad \frac{\partial^2\ell}{\partial y\\\partial\sigma} =
--z\\\ell^{(yy)} - \frac{\ell^{(y)}}{\sigma},\$\$ so no new algebra is
-needed for either.
+-z\\\ell^{(yy)} - \frac{\ell^{(y)}}{\sigma},\$\$ so both components
+follow without new algebra.
 
 ## Usage
 
@@ -33,8 +33,9 @@ loc_scale_cross_block(distrib, y, theta)
 
 ## Value
 
-An unnamed list of two numeric vectors, each of length `length(y)`: the
-location component then the scale one. The caller names them.
+An unnamed list of two numeric vectors; each has length `length(y)`. The
+first is the location component and the second the scale one. The caller
+names them.
 
 ## Details
 

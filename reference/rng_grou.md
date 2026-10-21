@@ -26,7 +26,7 @@ rng_grou(distrib, n, theta, r = 2)
 
 - theta:
 
-  A named list of parameters, each of length one.
+  A named list of parameters; each has length one.
 
 - r:
 
@@ -67,38 +67,40 @@ density:
   safe numerical range whatever the height of the density, and all
   computations are carried out on the log scale.
 
-The bounds \\v\_{\min}, v\_{\max}\\ are obtained by expanding
+The function obtains the bounds \\v\_{\min}, v\_{\max}\\ by expanding
 geometrically away from the mode until \\h\\ has clearly turned back
-towards zero (finite support bounds are used directly), then combining
-[`stats::optimize()`](https://rdrr.io/r/stats/optimize.html) with a grid
-search over the resulting bracket; the box is enclosing by construction
-for a unimodal kernel. Candidates are generated and filtered in
-vectorized batches whose size adapts to the observed acceptance rate.
+towards zero (finite support bounds are used directly), and then
+combines [`stats::optimize()`](https://rdrr.io/r/stats/optimize.html)
+with a grid search over the resulting bracket; the box is enclosing by
+construction for a unimodal kernel. Candidates are generated and
+filtered in vectorized batches whose size adapts to the observed
+acceptance rate.
 
 ## Unbounded densities
 
 The method needs the supremum of the kernel to be attained, so a density
 that diverges at a finite edge of its support would have its acceptance
-region clipped. Rather than give up, such an edge is transformed away.
+region clipped. Such an edge is transformed away, so that the sampler
+still applies.
 
 If \\f(y) \sim \|y-a\|^{\alpha-1}\\ near the edge \\a\\, with \\\alpha
 \< 1\\, then \\X = \|Y-a\|^{1/\lambda}\\ has density proportional to
 \\x^{\lambda\alpha-1}\\ there, which is bounded as soon as
-\\\lambda\alpha \> 1\\. Sampling \\X\\ and mapping back is exact: no
-quadrature and no inversion are involved. The exponent \\\alpha\\ is
-read off the same probe that detects the divergence: walking towards the
-edge in decades lifts the log-density by \\(1-\alpha)\log 10\\ per step,
-and \\\lambda\\ follows from that slope. A Gamma of shape \\0.4\\, for
+\\\lambda\alpha \> 1\\. Sampling \\X\\ and mapping back is exact and
+uses no quadrature and no inversion. The exponent \\\alpha\\ is read off
+the same probe that detects the divergence: walking towards the edge in
+decades lifts the log-density by \\(1-\alpha)\log 10\\ per step, and
+\\\lambda\\ follows from that slope. A Gamma of shape \\0.4\\, for
 instance, is sampled through \\X = Y^{1/4}\\.
 
 A density diverging at *both* edges, such as a Beta with both shapes
 below one, is beyond any single power: flattening one edge steepens the
-other. What does work is a map that behaves like a different power at
-each end, \$\$T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a +
-(b-a)\\T(U),\$\$ monotone from 0 to 1, with a closed-form derivative,
-and carrying the exponents \\p\alpha - 1\\ and \\q\beta - 1\\ at the two
-ends. Choosing \\p\alpha \> 1\\ and \\q\beta \> 1\\ makes the density of
-\\U\\ vanish at both ends, turning a U-shaped density into a
+other. A map that behaves like a different power at each end works,
+\$\$T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a +
+(b-a)\\T(U).\$\$ The map is monotone from 0 to 1, has a closed-form
+derivative, and carries the exponents \\p\alpha - 1\\ and \\q\beta - 1\\
+at the two ends. Choosing \\p\alpha \> 1\\ and \\q\beta \> 1\\ makes the
+density of \\U\\ vanish at both ends, turning a U-shaped density into a
 single-peaked one.
 
 Near an edge the variable itself stops being resolvable: at a non-zero

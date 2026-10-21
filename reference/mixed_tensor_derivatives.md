@@ -2,7 +2,7 @@
 
 Computes the derivatives of the log-density of order `ay` in the
 response and `ctheta` in the parameters, for a continuous family that
-has no method of its own for them. Among the quantities the family
+has no method of its own for them. Among the quantities that the family
 implements itself (the log-density, its response derivatives, its score
 and Hessian in the parameters, and the mixed derivatives of lower
 order), the one that leaves the smallest order to difference is taken,
@@ -61,10 +61,10 @@ not the target itself, and the family's class registers its method, as
 reads it, so that a numerical fallback is never differenced again. The
 log-density is always available. The candidate with the smallest
 residual order \\r = (\mathrm{ay} - a) + (\mathrm{ctheta} - c)\\ is
-used, and among equal ones the one with more derivatives in the
-parameters, which declares more multi-indices; the candidates are
-declared in decreasing \\c\\, so that the order of declaration decides
-the same way when there is a single parameter.
+used, and among equal ones the candidate with more derivatives in the
+parameters, which declares more multi-indices, is used; the candidates
+are declared in decreasing \\c\\, so that the order of declaration gives
+the same preference when there is a single parameter.
 
 The step is \\h = \varepsilon^{1/(r+a)}\max(1, \|x\|)\\ in every
 direction, with \\a\\ the accuracy, reduced so that every node stays
@@ -81,7 +81,7 @@ analytical Hessian, so \\r = 2\\.
 ## See also
 
 [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
-for the derivatives in the parameters alone,
+for the derivatives in the parameters only,
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
 [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
 [`distrib_cross3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross3_y.md),

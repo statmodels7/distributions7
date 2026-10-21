@@ -1,7 +1,7 @@
 # Default Log-CDF Gradient for Continuous Distributions
 
-The fallback for a continuous family that registers no closed form: one
-central difference of
+Computes the fallback gradient for a continuous family that registers no
+closed form: one central difference of
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 per parameter, through
 [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md),
@@ -41,14 +41,15 @@ The step is \\\varepsilon^{1/3}\\ relative, about \\6.1\times10^{-6}\\.
 
 ## Value
 
-A named list of numeric vectors, one per parameter, each the length of
-`q` recycled against `theta`.
+A named list of numeric vectors, one per parameter, in which each vector
+has the length of `q` recycled against `theta`.
 
 ## Details
 
-No shipped univariate family reaches this method. Every one registers
-its own gradient: a closed form or, for the families whose derivative in
-a shape parameter has no elementary form, the compiled quadrature of
+The shipped univariate families do not reach this method. Every one
+registers its own gradient: a closed form or, for the families whose
+derivative in a shape parameter has no elementary form, the compiled
+quadrature of
 [`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md).
 The method serves continuous families defined by the user and the
 wrappers of continuous families.

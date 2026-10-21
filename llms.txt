@@ -2548,7 +2548,7 @@ transforms that make it work on a divergent density.
   : Align Parameters to the Distribution's Parameter Order
 
 - [`analytic_order()`](https://statmodels7.github.io/distributions7/reference/analytic_order.md)
-  : The Highest Derivative Order a Family Implements Itself
+  : The Highest Derivative Order That a Family Implements Itself
 
 - [`as_mv_matrix()`](https://statmodels7.github.io/distributions7/reference/as_mv_matrix.md)
   : Coerce a Multivariate Response to a Matrix
@@ -2694,7 +2694,7 @@ transforms that make it work on a divergent density.
   : Does a Distribution Declare Atoms
 
 - [`deriv5_base()`](https://statmodels7.github.io/distributions7/reference/deriv5_base.md)
-  : The Order a Fifth Derivative Is Differenced From
+  : The Order from Which a Fifth Derivative Is Differenced
 
 - [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
   : Carry an Analytic Fifth Order to the Link Scale
@@ -2770,7 +2770,7 @@ transforms that make it work on a divergent density.
   : Distribution Function of a Multivariate Distribution
 
 - [`distrib_const_rows()`](https://statmodels7.github.io/distributions7/reference/distrib_const_rows.md)
-  : Number of Observations a Family's Constants Vary Over
+  : Number of Observations Over Which a Family's Constants Vary
 
 - [`distrib_cross2_y.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.md)
   : Gaussian Mixed Second-Response Derivatives
@@ -3370,7 +3370,7 @@ transforms that make it work on a divergent density.
   : The Roots of a Kink's Argument in a Range
 
 - [`.kink_touched()`](https://statmodels7.github.io/distributions7/reference/dot-kink_touched.md)
-  : Which Parameters a Kink Moves With
+  : The Parameters with Which a Kink Moves
 
 - [`.mvt_const_slices()`](https://statmodels7.github.io/distributions7/reference/dot-mvt_const_slices.md)
   : Repeat a Constant Matrix Across Slices
@@ -3813,7 +3813,7 @@ transforms that make it work on a divergent density.
   : The Location and Scale Block of a Second-Order Mixed Derivative
 
 - [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
-  : Derivatives of a Logarithm From the Ratios Alone
+  : Derivatives of a Logarithm From the Ratios Only
 
 - [`log_neg_log1mexp()`](https://statmodels7.github.io/distributions7/reference/log_neg_log1mexp.md)
   : The Logarithm of minus log(1 - e^p)
@@ -4492,10 +4492,10 @@ transforms that make it work on a divergent density.
   : Sample Skewness
 
 - [`skewnormal_delta()`](https://statmodels7.github.io/distributions7/reference/skewnormal_delta.md)
-  : The Shape a Skew Normal's Moments Depend On
+  : The Shape on Which a Skew Normal's Moments Depend
 
 - [`skewt_moment_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_moment_pieces.md)
-  : The Quantities a Skew t's Moments Are Built From
+  : The Quantities from Which a Skew t's Moments Are Built
 
 - [`skewt_msa_component()`](https://statmodels7.github.io/distributions7/reference/skewt_msa_component.md)
   : One Skew t Derivative in the Location, Scale and Shape

@@ -1,16 +1,16 @@
 # Student's t Mixed Derivatives
 
-Closed form in all three parameters. With \\r = y - \mu\\ and \\D =
-\nu\sigma^2 + r^2\\, \$\$\frac{\partial^2 \ell}{\partial y\\ \partial
-\mu} = \frac{(\nu+1)(\nu\sigma^2 - r^2)}{D^2}, \qquad \frac{\partial^2
-\ell}{\partial y\\ \partial \sigma} = \frac{2\nu\sigma(\nu+1) r}{D^2},
-\qquad \frac{\partial^2 \ell}{\partial y\\ \partial \nu} =
--\frac{r(r^2 - \sigma^2)}{D^2}.\$\$
+Computes the closed form in all three parameters. With \\r = y - \mu\\
+and \\D = \nu\sigma^2 + r^2\\, \$\$\frac{\partial^2 \ell}{\partial y\\
+\partial \mu} = \frac{(\nu+1)(\nu\sigma^2 - r^2)}{D^2}, \qquad
+\frac{\partial^2 \ell}{\partial y\\ \partial \sigma} =
+\frac{2\nu\sigma(\nu+1) r}{D^2}, \qquad \frac{\partial^2 \ell}{\partial
+y\\ \partial \nu} = -\frac{r(r^2 - \sigma^2)}{D^2}.\$\$
 
 The \\\nu\\ component is elementary here, unlike the \\\nu\\ components
 of the cdf derivatives: the log-density carries `lgamma` and a logarithm
-of \\D\\, both differentiable in \\\nu\\ in closed form, and no
-distribution function appears.
+of \\D\\, both differentiable in \\\nu\\ in closed form, and the
+expression does not involve a distribution function.
 
 The \\\mu\\ component changes sign at \\\|r\| = \sigma\sqrt\nu\\ and
 decays as \\r^{-2}\\, where the Gaussian's is constant. It is the
@@ -42,8 +42,8 @@ derivative in \\\mu\\ of the response score, which redescends.
 
 ## Value
 
-A named list with components `mu`, `sigma` and `nu`, each a numeric
-vector of length `length(y)`.
+A named list with components `mu`, `sigma` and `nu`. Each component is a
+numeric vector of length `length(y)`.
 
 ## See also
 

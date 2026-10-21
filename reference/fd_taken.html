@@ -11,7 +11,7 @@ evaluation points actually lie rather than by the nominal step."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,10 +91,10 @@ $$f'(x) \approx \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
   f''(x) \approx \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
   {h_+ h_- (h_+ + h_-)},$$
 which are the uniform formulas wherever \(h_+ = h_- = h\). The
-correction is of the order of one unit of the last place over the step:
-negligible for a step of many units, and the whole of the accuracy for a
-step of a few, which is what a step within about \(10^{-10}\) of a
-non-zero bound is.</p>
+correction is of the order of one unit of the last place over the step. It
+is negligible for a step of many units and accounts for the whole of the
+accuracy for a step of a few units, which is the case for a step within
+about \(10^{-10}\) of a non-zero bound.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

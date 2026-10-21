@@ -1,7 +1,7 @@
 # Derivatives of the Expected Information, Student t and Generalized Gamma
 
-The first and second derivatives of the expected information in the
-parameters, from compiled kernels.
+Computes the first and second derivatives of the expected information in
+the parameters, from compiled kernels.
 
 ## Arguments
 

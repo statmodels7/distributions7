@@ -1,10 +1,10 @@
 # Excess Kurtosis of the Generalized Gamma Distribution
 
-Assembled from the first four raw moments, \\\gamma_2 = (m_4 - 4m_1m_3 +
-6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3\\ with \\m_k =
-a^k\\\Gamma\\(d+k)/p\\/\Gamma(d/p)\\. The scale cancels, and the two
-shapes move the skewness and the kurtosis with some freedom, where a
-gamma ties them by \\\gamma_2 = 3\gamma_1^2/2\\.
+The excess kurtosis is assembled from the first four raw moments,
+\\\gamma_2 =(m_4 - 4m_1m_3 + 6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3\\
+with \\m_k = a^k\\\Gamma\\(d+k)/p\\/\Gamma(d/p)\\. The scale cancels,
+and the two shapes move the skewness and the kurtosis with some freedom,
+where a gamma ties them by \\\gamma_2 = 3\gamma_1^2/2\\.
 
 ## Arguments
 
@@ -15,7 +15,7 @@ gamma ties them by \\\gamma_2 = 3\gamma_1^2/2\\.
 
 - theta:
 
-  A named list with components `a`, `d` and `p`, all positive, each a
+  A named list with components `a`, `d` and `p`, all positive; each is a
   numeric vector of length 1 or `n`. Only `d` and `p` enter the value.
 
 - ...:
@@ -24,8 +24,8 @@ gamma ties them by \\\gamma_2 = 3\gamma_1^2/2\\.
 
 ## Value
 
-A numeric vector of excess kurtoses, of length equal to the longest of
-the three components.
+A numeric vector of excess kurtoses, whose length is the one that the
+recycled parameters imply.
 
 ## Details
 

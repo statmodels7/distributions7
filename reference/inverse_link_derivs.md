@@ -1,7 +1,7 @@
 # Inverse-Link Derivatives for Every Parameter
 
-The derivatives \\h', h'', \dots, h^{(5)}\\ of each parameter's inverse
-link, evaluated at \\\eta = g(\theta)\\, up to `order`.
+Returns the derivatives \\h', h'', \dots, h^{(5)}\\ of each parameter's
+inverse link, evaluated at \\\eta = g(\theta)\\, up to `order`.
 
 ## Usage
 
@@ -25,8 +25,8 @@ inverse_link_derivs(distrib, theta, order)
 
 ## Value
 
-A list with one element per parameter, each a list whose \\k\\-th
-element is \\h^{(k)}\\ evaluated at that parameter's \\\eta\\.
+A list with one element per parameter; each element is a list whose
+\\k\\-th element is \\h^{(k)}\\ evaluated at that parameter's \\\eta\\.
 
 ## Details
 

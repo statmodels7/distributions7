@@ -1,7 +1,7 @@
 # Gaussian Mixed Derivatives in Mean and Precision
 
-Closed form: \\\ell^{(y)} = -\tau(y-\mu)\\ gives \\\tau\\ and
-\\-(y-\mu)\\.
+The mixed derivatives are in closed form: \\\ell^{(y)} = -\tau(y-\mu)\\
+gives \\\tau\\ and \\-(y-\mu)\\.
 
 ## Arguments
 
@@ -28,7 +28,7 @@ Closed form: \\\ell^{(y)} = -\tau(y-\mu)\\ gives \\\tau\\ and
 
 ## Value
 
-A named list with components `mu` and `tau`, each a numeric vector of
+A named list with components `mu` and `tau`; each is a numeric vector of
 length `length(y)`.
 
 ## See also

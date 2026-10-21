@@ -1,7 +1,7 @@
 # Default Third-Order Derivatives for `distrib` Objects
 
-The fallback for a family that registers no third-order method. Observed
-derivatives come from
+Provides the fallback for a family that registers no third-order method.
+Observed derivatives come from
 [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md):
 one central difference of the family's own
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
@@ -9,12 +9,13 @@ along each parameter, or, for a family without its own Hessian, one
 tensor-product stencil on its score or its log-density. Expected ones
 come from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-at the strategy `approx` names.
+at the strategy selected by `approx`.
 
 Every family shipped in this package writes the observed third order
-out, so this method serves a family defined outside the package, which
-gets five orders from a density alone. It is also the reference against
-which the analytical kernels are validated.
+out, so this method serves a family defined outside the package, and
+five orders are available for such a family from its density without any
+other method. It is also the reference against which the analytical
+kernels are validated.
 
 ## Arguments
 

@@ -1,11 +1,11 @@
 # Gaussian Log-CDF Gradient
 
-Closed form, from the location-scale structure: \\\partial F/\partial\mu
-= -f(q)\\ and \\\partial F/\partial\sigma = -z f(q)\\ with \\z =
-(q-\mu)/\sigma\\. The method is
+Computes the gradient in closed form, from the location-scale structure:
+\\\partial F/\partial\mu = -f(q)\\ and \\\partial F/\partial\sigma = -z
+f(q)\\ with \\z = (q-\mu)/\sigma\\. The method is
 [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
-itself, shared with the logistic, the Laplace and the Gumbel, so nothing
-here is particular to the Gaussian beyond its density.
+itself, shared with the logistic, the Laplace and the Gumbel, so the
+method uses nothing particular to the Gaussian beyond its density.
 
 ## Arguments
 
@@ -20,7 +20,7 @@ here is particular to the Gaussian beyond its density.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
+  A named list with components `mu` and `sigma` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -40,8 +40,8 @@ here is particular to the Gaussian beyond its density.
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `sigma`, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `sigma`, in which each
+vector has the length of `q` recycled against `theta`.
 
 ## Details
 

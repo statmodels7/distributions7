@@ -1,9 +1,10 @@
 # Skewness of the Pseudo-Huber Distribution
 
-Exactly zero at every parameter value. The density is symmetric about
-\\\mu\\, so every odd central moment vanishes and the third standardized
-one with it. The constant is returned directly, recycled to the length
-the parameters imply, so no quadrature is run.
+The skewness is exactly zero at every parameter value. The density is
+symmetric about \\\mu\\, so every odd central moment vanishes and the
+third standardized one with it. The constant is returned directly,
+recycled to the length that the parameters imply, so the method runs no
+quadrature.
 
 ## Arguments
 
@@ -14,7 +15,7 @@ the parameters imply, so no quadrature is run.
 
 - theta:
 
-  A named list with components `mu`, `sigma` and `nu`, each a numeric
+  A named list with components `mu`, `sigma` and `nu`; each is a numeric
   vector of length 1 or `n`. The values are not read, only their
   lengths, but the list is still aligned and validated.
 
@@ -39,7 +40,7 @@ which is not constant;
 ``` r
 d <- pseudohuber_distrib()
 
-# Zero at every shape, by symmetry, with one value per setting.
+# The skewness is zero at every shape, by symmetry, for each setting.
 skewness(d, list(mu = 0, sigma = 1, nu = c(1, 2, 3)))
 #> [1] 0 0 0
 ```

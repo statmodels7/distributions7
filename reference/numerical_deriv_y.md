@@ -1,6 +1,6 @@
 # Numerical Third and Fourth Response Derivatives
 
-One central stencil of the requested order applied to
+Applies one central stencil of the requested order to
 `distrib_pdf(..., log = TRUE)`.
 
 ## Usage

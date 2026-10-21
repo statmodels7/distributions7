@@ -1,6 +1,6 @@
 # Location-Scale Distribution Function Derivatives on Either Tail
 
-The body shared by the location-scale families'
+This is the body shared by the location-scale families'
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
 [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
 [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
@@ -10,8 +10,8 @@ Every table of
 [`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md)
 is the density times a factor, so on the log scale the factors are
 multiplied by \\f/P = \exp(\log f - \log P)\\, from the family's
-log-density and the log probability of the requested tail: neither \\f\\
-nor \\P\\ is formed where it underflows, and the upper tail is the
+log-density and the log probability of the requested tail: \\f\\ and
+\\P\\ are not formed where they underflow, and the upper tail is the
 family's own.
 
 ## Usage

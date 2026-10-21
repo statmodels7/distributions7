@@ -1,10 +1,11 @@
 # Mean of the Gumbel Distribution
 
-Closed form: \\E\[Y\] = \mu + \gamma\sigma\\, with \\\gamma \approx
-0.5772157\\ the Euler-Mascheroni constant. The location is therefore not
-the mean: the distribution of a maximum is shifted to the right of its
-location by a fixed multiple of the scale. The constant is obtained as
-`-digamma(1)`, which agrees with \\\gamma\\ to about \\10^{-15}\\.
+The closed form is \\E\[Y\] = \mu + \gamma\sigma\\, with \\\gamma
+\approx 0.5772157\\ the Euler-Mascheroni constant. The location is
+therefore not the mean: the distribution of a maximum is shifted to the
+right of its location by a fixed multiple of the scale. The constant is
+obtained as `-digamma(1)`, which agrees with \\\gamma\\ to about
+\\10^{-15}\\.
 
 ## Arguments
 
@@ -16,7 +17,7 @@ location by a fixed multiple of the scale. The constant is obtained as
 - theta:
 
   A named list with components `mu` (the location) and `sigma` (the
-  scale, positive), each a numeric vector of length 1 or `n`.
+  scale, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -46,7 +47,7 @@ which are constants;
 ``` r
 d <- gumbel_distrib()
 
-# The location plus the Euler-Mascheroni constant times the scale.
+# The mean is the location plus the Euler-Mascheroni constant times sigma.
 all.equal(mean(d, list(mu = 0, sigma = 1)), -digamma(1))
 #> [1] TRUE
 

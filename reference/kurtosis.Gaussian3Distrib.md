@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Gaussian Distribution in Location and Precision
 
-Exactly zero at every parameter value, the excess over the Gaussian's
-own fourth standardized moment being what
+The excess kurtosis is exactly zero at every parameter value, because
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
-reports. The parametrization does not enter a standardized moment.
+reports the excess over the Gaussian's own fourth standardized moment.
+The parametrization does not enter a standardized moment.
 
 ## Arguments
 
@@ -14,8 +14,8 @@ reports. The parametrization does not enter a standardized moment.
 
 - theta:
 
-  A named list with components `mu` and `tau` (positive), each a numeric
-  vector of length 1 or `n`. The values are checked against the
+  A named list with components `mu` and `tau` (positive); each is a
+  numeric vector of length 1 or `n`. The values are checked against the
   parameter bounds, and only their lengths enter the result.
 
 - ...:
@@ -39,7 +39,7 @@ also zero;
 ``` r
 d <- gaussian3_distrib()
 
-# Zero for every Gaussian, in every parametrization.
+# The excess kurtosis is zero for every Gaussian, in every parametrization.
 kurtosis(d, list(mu = 0, tau = c(0.01, 100)))
 #> [1] 0 0
 ```

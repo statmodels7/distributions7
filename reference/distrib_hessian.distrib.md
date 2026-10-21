@@ -1,8 +1,8 @@
 # Default Numerical Hessian for `distrib` Objects
 
-The fallback for a family that implements no analytical Hessian. For a
-family with a density alone it takes second differences of
-`distrib_pdf(..., log = TRUE)` through
+This method is the fallback for a family that implements no analytical
+Hessian. For a family that has only a density it takes second
+differences of `distrib_pdf(..., log = TRUE)` through
 [`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md):
 a diagonal component takes the three-point stencil
 \\\[\ell(\theta_i+h) - 2\ell(\theta_i) + \ell(\theta_i-h)\]/h^2\\ and an
@@ -40,16 +40,16 @@ quantity, with the step \\\varepsilon^{1/3}\max(1, \|\theta_j\|)\\.
 
 ## Value
 
-A named list of Hessian component vectors, each of length `length(y)`,
-keyed by
+A named list of Hessian component vectors, each of which has length
+`length(y)`, keyed by
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-which puts the diagonal first and is not the lexicographic keying
+which puts the diagonal first and is not the lexicographic keying that
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 uses above order 2.
 
 ## The step and the cost
 
-For a family with a density alone, the step is \\h =
+For a family that has only a density, the step is \\h =
 \varepsilon^{1/4}\max(1, \|\theta_i\|) \approx 1.22\times10^{-4}\\,
 twenty times the gradient's: a second difference divides by \\h^2\\, so
 rounding grows as \\1/h^2\\ and the optimum moves out.

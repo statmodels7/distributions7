@@ -1,6 +1,6 @@
 # Does a Family Register a Method of Its Own for a Generic?
 
-`TRUE` where the method of `generic` that dispatches on `x` is
+Returns `TRUE` where the method of `generic` that dispatches on `x` is
 registered on a class other than the four base classes, whose methods
 are the numerical fallbacks.
 

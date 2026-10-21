@@ -1,7 +1,8 @@
 # Mean of the Exponential Distribution
 
-Closed form: \\E\[Y\] = \mu\\. The family carries one parameter and it
-is the mean, so this method reads it off. The rate is its reciprocal.
+The mean has the closed form \\E\[Y\] = \mu\\. The family carries one
+parameter and it is the mean, so this method reads it off. The rate is
+its reciprocal.
 
 ## Arguments
 

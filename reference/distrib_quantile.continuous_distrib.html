@@ -13,7 +13,7 @@ distrib_cdf.continuous_distrib()."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@ logarithms under <code>log.p</code>. The bounds of the support are returned at 0
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters, each of length 1 or <code>length(p)</code>.</p></dd>
+<dd><p>A named list of parameters; each has length 1 or <code>length(p)</code>.</p></dd>
 
 
 <dt id="arg-lower-tail">lower.tail<a class="anchor" aria-label="anchor" href="#arg-lower-tail"></a></dt>
@@ -101,8 +101,8 @@ diffuse one
 take a comparable number of expansions; after thirty doublings the step is
 multiplied by a thousand, so that a quantile far in a tail is reached. The
 expansion stops at a quarter of the largest double: a root beyond it is
-returned as <code>Inf</code> (or <code>-Inf</code>), the quadrature of a distribution function
-being unable to reach the mass past the largest double.</p>
+returned as <code>Inf</code> (or <code>-Inf</code>), because the quadrature of a distribution
+function cannot reach the mass past the largest double.</p>
 <p>The probability is first turned into the logarithms of both tails by
 <code><a href="tail_helpers.html">quantile_log_tails()</a></code>, without forming \(1 - p\) or exponentiating a
 logarithm, and each root is solved on the tail with the smaller
@@ -121,10 +121,10 @@ distribution function that it inverts.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_cdf.continuous_distrib.html">distrib_cdf.continuous_distrib()</a></code>, the function it inverts;
+    <div class="dont-index"><p><code><a href="distrib_cdf.continuous_distrib.html">distrib_cdf.continuous_distrib()</a></code>, the function that it inverts;
 <code><a href="find_pdf_anchor.html">find_pdf_anchor()</a></code> for the bracket's starting point;
-<code><a href="has_analytic_quantile.html">has_analytic_quantile()</a></code>, which tests whether this method is what a caller
-would reach; <code><a href="distrib_quantile.html">distrib_quantile()</a></code> for the generic.</p></div>
+<code><a href="has_analytic_quantile.html">has_analytic_quantile()</a></code>, which tests whether a caller reaches this
+method; <code><a href="distrib_quantile.html">distrib_quantile()</a></code> for the generic.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

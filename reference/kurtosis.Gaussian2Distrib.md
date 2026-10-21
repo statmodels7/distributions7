@@ -1,10 +1,10 @@
 # Excess Kurtosis of the Gaussian Distribution in Location and Variance
 
-Exactly zero at every parameter value.
+The excess kurtosis is exactly zero at every parameter value.
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
 reports the excess over the Gaussian's own fourth standardized moment of
-3, so every Gaussian sits at the origin of the scale whichever of the
-three parametrizations it is written in.
+3, so every Gaussian sits at the origin of the scale whichever
+parametrization it is written in.
 
 ## Arguments
 
@@ -15,7 +15,7 @@ three parametrizations it is written in.
 
 - theta:
 
-  A named list with components `mu` and `sigma2` (positive), each a
+  A named list with components `mu` and `sigma2` (positive); each is a
   numeric vector of length 1 or `n`. The values are checked against the
   parameter bounds, and only their lengths enter the result.
 
@@ -40,7 +40,7 @@ also zero;
 ``` r
 d <- gaussian2_distrib()
 
-# Zero for every Gaussian, in every parametrization.
+# The excess kurtosis is zero for every Gaussian, in every parametrization.
 kurtosis(d, list(mu = 0, sigma2 = c(1, 100)))
 #> [1] 0 0
 ```

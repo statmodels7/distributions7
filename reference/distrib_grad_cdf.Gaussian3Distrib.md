@@ -1,10 +1,10 @@
 # Gaussian Log-CDF Gradient in Mean and Precision
 
-Closed form, by the chain rule on the scale parametrization's
-derivatives through \\\sigma = \tau^{-1/2}\\. The mean component is
-unchanged, \\-f(q)\\; the precision component is the scale one times
-\\-\tfrac12\tau^{-3/2}\\, so it carries the opposite sign, a larger
-precision being a tighter distribution.
+Computes the derivatives in closed form, by the chain rule on the scale
+parametrization's derivatives through \\\sigma = \tau^{-1/2}\\. The mean
+component is unchanged, \\-f(q)\\; the precision component is the scale
+one times \\-\tfrac12\tau^{-3/2}\\, so it carries the opposite sign,
+because a larger precision gives a tighter distribution.
 
 ## Arguments
 
@@ -19,8 +19,8 @@ precision being a tighter distribution.
 
 - theta:
 
-  A named list with components `mu` and `tau` (positive), each a numeric
-  vector of length 1 or `n`.
+  A named list with components `mu` and `tau` (positive); each is a
+  numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -38,8 +38,8 @@ precision being a tighter distribution.
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `tau`, each the length of
-`q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `tau`; each has the length
+of `q` recycled against `theta`.
 
 ## Notation
 

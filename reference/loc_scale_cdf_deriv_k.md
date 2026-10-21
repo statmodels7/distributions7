@@ -1,7 +1,8 @@
 # Location-Scale CDF Derivatives at Any Order
 
-Closed-form derivatives of \\F\\ of any order up to four, for a family
-that is location-scale in its first two parameters. The general form of
+Computes closed-form derivatives of \\F\\ of any order up to four, for a
+family that is location-scale in its first two parameters. It is the
+general form of
 [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md),
 which stops at second order.
 
@@ -25,7 +26,8 @@ loc_scale_cdf_deriv_k(distrib, q, theta, order, over_f = FALSE)
 
 - theta:
 
-  A named list of parameters, the location first and the scale second.
+  A named list of parameters, in which the location comes first and the
+  scale second.
 
 - order:
 
@@ -52,12 +54,12 @@ exact zeros.
 
 ## What it depends on
 
-The response derivatives of orders 3 and 4 are what make this reach past
-second order: with only
+The construction reaches past second order through the response
+derivatives of orders 3 and 4: with only
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
 and
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
-the construction stops where
+it stops where
 [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md)
 stops. At orders 1 and 2 the two agree to rounding error, which is the
 check that supports the orders above.

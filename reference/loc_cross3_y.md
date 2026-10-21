@@ -36,7 +36,8 @@ loc_cross3_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 ## Value
 
-A named list with one numeric vector per parameter, each as long as `y`.
+A named list with one numeric vector per parameter. Each vector is as
+long as `y`.
 
 ## Details
 
@@ -50,11 +51,11 @@ generates them, rather than written.
 
 ## Registered on
 
-The fourteen location families on which this function is registered:
+This function is registered on the fourteen location families
 `Gaussian1Distrib`, `Gaussian2Distrib`, `Gaussian3Distrib`,
 `CauchyDistrib`, `LogisticDistrib`, `LaplaceDistrib`, `Laplace2Distrib`,
 `EnetDistrib`, `PseudoHuberDistrib`, `StudentT1Distrib`,
-`SkewNormal1Distrib`, `SkewNormal2Distrib`, `SkewTDistrib`,
+`SkewNormal1Distrib`, `SkewNormal2Distrib`, `SkewTDistrib`, and
 `GumbelDistrib`.
 
 ## See also

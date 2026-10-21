@@ -1,10 +1,10 @@
 # Weibull Log-CDF Derivatives
 
-Closed form at every order from one to four, from the survival function
-\\S = \exp\\-(q/\mu)^{\sigma}\\\\. Writing \\h = \sigma(\log q -
-\log\mu)\\ the exponent is \\L = -e^{h}\\, so its partial derivatives
-are \\-e^{h}\\ times the complete Bell polynomial in the partials of
-\\h\\, and those are elementary.
+The derivatives have closed form at every order from one to four,
+obtained from the survival function \\S = \exp\\-(q/\mu)^{\sigma}\\\\.
+Writing \\h = \sigma(\log q - \log\mu)\\ the exponent is \\L = -e^{h}\\,
+so its partial derivatives are \\-e^{h}\\ times the complete Bell
+polynomial in the partials of \\h\\, and those are elementary.
 
 ## Arguments
 
@@ -17,12 +17,12 @@ are \\-e^{h}\\ times the complete Bell polynomial in the partials of
 
   A numeric vector of quantiles. Values at or below zero give
   derivatives of exactly zero on the natural scale; on the log scale of
-  the lower tail they are `NaN`, \\\log F\\ being infinite there.
+  the lower tail they are `NaN`, because \\\log F\\ is infinite there.
 
 - theta:
 
   A named list with components `mu` (the scale, positive) and `sigma`
-  (the shape, positive), each a numeric vector of length 1 or `n`.
+  (the shape, positive); each is a numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -49,8 +49,8 @@ and five at order 4.
 
 \\\partial^j h/\partial\mu^j = \sigma(-1)^j(j-1)!/\mu^j\\, the same
 without the factor \\\sigma\\ when one index names the shape, and
-exactly zero when two do: \\h\\ is linear in the shape. That is what
-keeps the expansion short at the higher orders.
+exactly zero when two do: \\h\\ is linear in the shape. This keeps the
+expansion short at the higher orders.
 
 ## The shape component at q equal to mu
 
@@ -81,7 +81,8 @@ d <- weibull1_distrib()
 q <- c(0.5, 2, 5)
 th <- list(mu = 2, sigma = 3)
 
-# Against a central difference of the cdf, on an absolute scale.
+# The result is compared with a central difference of the cdf, on an
+# absolute scale.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) - unlist(fd)))
 #> [1] 2.329359e-11

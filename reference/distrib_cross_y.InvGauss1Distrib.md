@@ -1,8 +1,8 @@
 # Inverse Gaussian Mixed Derivatives
 
-Closed form. With \\\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi
-y^2)\\, the components are \\1/(\phi\mu^3)\\ and \\1/(2\phi^2\mu^2) -
-1/(2\phi^2 y^2)\\.
+The mixed derivatives are in closed form. With \\\ell^{(y)} = -3/(2y) -
+1/(2\phi\mu^2) + 1/(2\phi y^2)\\, the components are \\1/(\phi\mu^3)\\
+and \\1/(2\phi^2\mu^2) - 1/(2\phi^2 y^2)\\.
 
 ## Arguments
 
@@ -29,7 +29,7 @@ y^2)\\, the components are \\1/(\phi\mu^3)\\ and \\1/(2\phi^2\mu^2) -
 
 ## Value
 
-A named list with components `mu` and `phi`, each a numeric vector of
+A named list with components `mu` and `phi`; each is a numeric vector of
 length `length(y)`.
 
 ## See also

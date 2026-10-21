@@ -1,7 +1,8 @@
 # The Second Derivative of the Expected Information
 
+Returns
 \\\partial^2\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\\partial\theta_d\\,
-one component per pair \\(a,b)\\ and per pair \\(c,d)\\.
+with one component per pair \\(a,b)\\ and per pair \\(c,d)\\.
 
 ## Usage
 
@@ -29,7 +30,7 @@ distrib_d2expected_hessian(
 
 - theta:
 
-  A named list of parameters, each of length 1 or `length(y)`.
+  A named list of parameters; each has length 1 or `length(y)`.
 
 - scale:
 
@@ -39,7 +40,7 @@ distrib_d2expected_hessian(
 
   Accepted for symmetry with
   [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md);
-  no method reads them.
+  the methods ignore them.
 
 - ...:
 

@@ -1,7 +1,7 @@
 # Excess Kurtosis of the Gaussian Distribution
 
-Exactly zero at every parameter value. The raw fourth standardized
-moment of a Gaussian is 3, and
+The excess kurtosis is exactly zero at every parameter value. The raw
+fourth standardized moment of a Gaussian is 3, and
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
 reports the excess over that number, so this family has excess kurtosis
 zero by construction.
@@ -15,9 +15,9 @@ zero by construction.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths.
+  A named list with components `mu` and `sigma` (positive), in which
+  each component is a numeric vector of length 1 or `n`. The values are
+  not read, only their lengths.
 
 - ...:
 
@@ -43,7 +43,7 @@ which is 6/5;
 ``` r
 d <- gaussian1_distrib()
 
-# Zero for every Gaussian, which is what the excess convention means.
+# The excess convention gives zero for every Gaussian.
 kurtosis(d, list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 #> [1] 0 0 0
 ```

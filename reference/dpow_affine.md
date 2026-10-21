@@ -1,7 +1,7 @@
 # Derivatives of a Power of an Affine Function
 
-Returns \\\partial^k u^p/\partial\theta^k\\ where \\u\\ is affine in
-\\\theta\\ with slope `inner`, which is
+Returns \\\partial^k u^p/\partial\theta^k\\, where \\u\\ is affine in
+\\\theta\\ with slope `inner`. The value is
 \\(\mathrm{inner})^k\\p(p-1)\cdots(p-k+1)\\u^{p-k}\\. The elastic net's
 tail arguments are powers of affine functions of its two
 hyperparameters, so this supplies their one-variable derivatives to the

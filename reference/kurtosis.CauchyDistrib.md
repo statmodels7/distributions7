@@ -4,7 +4,7 @@ Returns `NaN`. The excess kurtosis is the fourth standardized central
 moment less three, so it needs the first four moments of \\Y\\, and the
 Cauchy has none of them: its density decays like \\y^{-2}\\, and \\\int
 \|y\|^p f(y)\\\mathrm{d}y\\ diverges already at \\p = 1\\. `NaN` is
-returned directly, so that no quadrature is attempted.
+returned directly, so that the method does not attempt a quadrature.
 
 ## Arguments
 
@@ -15,9 +15,10 @@ returned directly, so that no quadrature is attempted.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths, and the list is still aligned and validated.
+  A named list with components `mu` and `sigma` (positive), in which
+  each component is a numeric vector of length 1 or `n`. The values are
+  not read, only their lengths, and the list is still aligned and
+  validated.
 
 - ...:
 
@@ -59,7 +60,7 @@ which reports a number above four degrees of freedom.
 ``` r
 d <- cauchy_distrib()
 
-# NaN at every parameter value.
+# The value is NaN at every parameter value.
 kurtosis(d, list(mu = 0, sigma = c(1, 2)))
 #> [1] NaN NaN
 

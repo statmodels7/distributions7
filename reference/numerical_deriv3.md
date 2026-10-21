@@ -1,8 +1,8 @@
 # Numerical Third-Order Derivatives of the Log-Density
 
 Computes the unique third-order partial derivatives of the log-density
-by central finite differences of the highest order the family implements
-itself. This powers the default
+by central finite differences of the highest order that the family
+implements itself. This powers the default
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 method for distributions without a closed-form implementation, and is
 the reference used to validate the analytical kernels.
@@ -35,9 +35,9 @@ numerical_deriv3(
 
 - h_rel:
 
-  Numeric. Relative finite-difference step. Defaults to
+  Numeric; the relative finite-difference step. Defaults to
   `.Machine$double.eps^(1/3)` for a family with its own Hessian, and to
-  the step
+  the step that
   [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md)
   chooses for the order of its difference otherwise; a value given
   explicitly is used on either route.
@@ -47,8 +47,8 @@ numerical_deriv3(
   Character vector of component names, or `NULL`, the default. A named
   component is left `NULL` in the result rather than computed, for a
   caller that supplies it in closed form. The names and their order are
-  unchanged, so a downstream caller does not need to know which were
-  skipped.
+  unchanged, so a downstream caller can read the result without checking
+  which components were skipped.
 
 ## Value
 

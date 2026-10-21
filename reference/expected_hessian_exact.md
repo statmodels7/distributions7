@@ -12,10 +12,10 @@ calls it and
 [`expected_hessian_exact.distrib()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.distrib.md)
 is the default.
 
-The test that
+Implements the test that
 [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
-applies, written as a generic so that a family whose registered method
-differs from what its owning class indicates can supply its own answer.
+applies, as a generic so that a family whose registered method differs
+from what its owning class indicates can supply its own answer.
 
 ## Usage
 
@@ -65,9 +65,9 @@ its own, which is why the generic exists: a method registered on the
 class of a family may chain onto a parent that approximates, and a
 family that does so returns the answer of its parent.
 
-The default reads the class the
+The default reads the class on which the
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-method is registered on: the base classes carry the approximating method
+method is registered: the base classes carry the approximating method
 and every other registration is, by default, a family that wrote the
 expectation out.
 
@@ -75,7 +75,7 @@ Reading the owner is not sufficient in general. A method registered on
 the class of a family may be a chain onto a parent that approximates,
 and then the owner reads as "written out" although the arithmetic is
 not. A family that chains onto another therefore returns the answer of
-its parent, which is what the wrappers do;
+its parent, as the wrappers do;
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
 returns `FALSE` unconditionally.
 

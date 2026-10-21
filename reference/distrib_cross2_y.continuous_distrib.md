@@ -1,6 +1,6 @@
 # Default Mixed Second-Response Derivatives for Continuous Distributions
 
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through
 [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md):
 a central difference of an analytic
@@ -76,7 +76,8 @@ vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 #>     mu sigma2 
 #>    -16     16 
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
 numDeriv::grad(f, c(2, 1))
 #> [1] -16  16

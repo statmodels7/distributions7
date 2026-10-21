@@ -34,7 +34,7 @@ numerical_cross2_y(
 
 - theta:
 
-  A named list of parameters, the point to differentiate at.
+  A named list of parameters at which the derivative is computed.
 
 - h_rel:
 
@@ -49,14 +49,14 @@ numerical_cross2_y(
 
 ## Value
 
-A named list with one numeric vector per requested parameter, each as
-long as `y`.
+A named list with one numeric vector per requested parameter. Each
+vector is as long as `y`.
 
 ## Details
 
 The reference is the response HESSIAN, one order up from the
 log-density, so a distribution carrying an analytic `distrib_hess_y`
-pays for exactly one finite-difference layer. Where that Hessian is
+requires exactly one finite-difference layer. Where that Hessian is
 itself a fallback the two differences act on different variables and
 compose into a single mixed stencil, rather than into the nested
 differencing of one variable that the package does not use.
@@ -95,17 +95,18 @@ num <- numerical_cross2_y(d, y, theta)
 num$sigma
 #> [1] 0.9103323 0.9103323 0.9103323
 
-# Against the gaussian's own closed form, which it does not need this for.
+# The result is compared with the gaussian's own closed form, which does
+# not need this route.
 max(abs(unlist(num) - unlist(distrib_cross2_y(d, y, theta))))
 #> [1] 6.796563e-11
 
-# One parameter at a time, when only one is wanted.
+# A single parameter is computed when only that one is wanted.
 numerical_cross2_y(d, y, theta, which = "sigma")
 #> $sigma
 #> [1] 0.9103323 0.9103323 0.9103323
 #> 
 
-# A family that does take this route, checked against numDeriv.
+# A family that does take this route is checked against numDeriv.
 dg <- gamma2_distrib()
 yg <- c(0.5, 1, 2)
 vapply(distrib_cross2_y(dg, yg, list(mu = 2, sigma2 = 1)),

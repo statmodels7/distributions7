@@ -1,6 +1,6 @@
 # Excess Kurtosis of the Beta-Binomial Distribution in Two Shapes
 
-The excess kurtosis of
+The excess kurtosis is that of
 [`kurtosis.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom1Distrib.md)
 at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\,
 computed by
@@ -18,9 +18,9 @@ comparable, positive where one dominates.
 
 - theta:
 
-  A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or of the common length of the parameter
-  settings.
+  A named list with components `alpha` and `beta`, both positive; each
+  is a numeric vector of length 1 or of the common length of the
+  parameter settings.
 
 - ...:
 
@@ -49,7 +49,8 @@ from the same moments;
 ``` r
 d <- betabinom2_distrib(size = 10)
 
-# Negative where the shapes are comparable, positive where one dominates.
+# The excess kurtosis is negative where the shapes are comparable, positive
+# where one dominates.
 round(kurtosis(d, list(alpha = c(3, 0.5, 0.2), beta = 3)), 4)
 #> [1] -0.7250  2.2219  9.3036
 

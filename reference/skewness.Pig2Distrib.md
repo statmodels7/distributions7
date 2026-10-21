@@ -1,6 +1,7 @@
 # Skewness of the Orthogonal Poisson-Inverse Gaussian Distribution
 
-The cumulant ratio \\\gamma_1 = \kappa_3/\kappa_2^{3/2}\\ of
+The skewness is the cumulant ratio \\\gamma_1 =
+\kappa_3/\kappa_2^{3/2}\\ of
 [`skewness.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.Pig1Distrib.md),
 read at the dispersion \\\sigma = \\
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)`(mu, alpha)`.
@@ -16,8 +17,8 @@ other parametrization once the mapping is applied.
 
 - theta:
 
-  A named list with components `mu` (positive) and `alpha` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `alpha` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 

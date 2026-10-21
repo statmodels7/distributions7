@@ -7,8 +7,8 @@ The derivative generics of the package
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md))
-accept a `scale` argument selecting the parametrization the derivatives
-are taken with respect to:
+accept a `scale` argument that selects the parametrization with respect
+to which the derivatives are taken:
 
 - `scale = "parameter"` (default): derivatives with respect to the
   parameters \\\theta\\ on their natural, possibly constrained scale.
@@ -72,7 +72,7 @@ and
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
 the six generics that take `scale`;
 [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
-for the polynomials this assembles;
+for the polynomials that the assembly combines;
 [`linkfunctions7::linkinvderiv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
 which supplies the five inverse-link derivatives;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
@@ -101,8 +101,8 @@ all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,
           h * 2^2 + g * 2)
 #> [1] TRUE
 
-# For the EXPECTED Hessian the first-order term vanishes, the score having
-# mean zero, so the information transforms by congruence.
+# For the EXPECTED Hessian the first-order term vanishes because the score
+# has mean zero, so the information transforms by congruence.
 e <- distrib_expected_hessian(d, y, th)$sigma_sigma
 all.equal(distrib_expected_hessian(d, y, th, scale = "link")$sigma_sigma,
           e * 2^2)

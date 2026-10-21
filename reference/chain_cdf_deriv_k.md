@@ -2,12 +2,12 @@
 
 Carries a parent's derivatives of \\F\\ in its own parameters onto the
 new ones, for a map given as keyed partial tables, at any order up to
-four. The general form of
+four. This is the general form of
 [`chain_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.md),
-which writes orders 1 and 2 out; above them the same sum comes from
+which writes orders 1 and 2 out. Above them the same sum comes from
 [`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md),
-the enumeration the reparametrized parameter derivatives already run on,
-so the package carries no second copy of the partition sum.
+the enumeration on which the reparametrized parameter derivatives
+already run, so the package carries no second copy of the partition sum.
 
 ## Usage
 
@@ -19,7 +19,7 @@ chain_cdf_deriv_k(parent, q, th_par, maps, new_params, order)
 
 - parent:
 
-  The distribution being mapped.
+  The distribution that is mapped.
 
 - q:
 

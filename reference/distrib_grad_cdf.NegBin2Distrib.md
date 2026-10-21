@@ -1,12 +1,12 @@
 # Negative Binomial Log-CDF Gradient
 
-Closed form in the mean and an exact sum in the dispersion. The mean
-component collapses like the Poisson's, \$\$\frac{\partial
-F(k)}{\partial\mu} = -f(k)\\\frac{k + \theta}{\theta + \mu},\$\$ which
-tends to the Poisson's \\-f(k)\\ as \\\theta\\ grows. The dispersion
-component is a derivative of the incomplete beta function with respect
-to its parameter, which has no elementary form, so it keeps the exact
-summation of
+Computes the gradient in closed form in the mean and by an exact sum in
+the dispersion. The mean component collapses like the Poisson's,
+\$\$\frac{\partial F(k)}{\partial\mu} = -f(k)\\\frac{k +
+\theta}{\theta + \mu},\$\$ which tends to the Poisson's \\-f(k)\\ as
+\\\theta\\ grows. The dispersion component is a derivative of the
+incomplete beta function with respect to its parameter, which has no
+elementary form, so it keeps the exact summation of
 [`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md).
 
 ## Arguments
@@ -23,10 +23,10 @@ summation of
 
 - theta:
 
-  A named list with components `mu` (positive) and `theta` (positive),
-  each a numeric vector of length 1 or `n`. The cost of the dispersion
-  component grows with the largest quantile, the sum running the support
-  up to it.
+  A named list with components `mu` (positive) and `theta` (positive);
+  each is a numeric vector of length 1 or `n`. The cost of the
+  dispersion component grows with the largest quantile, because the sum
+  runs over the support up to it.
 
 - lower.tail:
 
@@ -44,8 +44,8 @@ summation of
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `theta`, each the length
-of `q` recycled against the parameters.
+A named list of two numeric vectors, `mu` and `theta`, in which each
+vector has the length of `q` recycled against the parameters.
 
 ## Notation
 
@@ -55,7 +55,7 @@ function, \\F\\ the distribution function and \\k = \lfloor q \rfloor\\.
 ## See also
 
 [`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md)
-for the summation the dispersion uses;
+for the summation that the dispersion uses;
 [`distrib_grad_cdf.PoissonDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PoissonDistrib.md)
 for the limit;
 [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md).
@@ -67,7 +67,7 @@ d <- negbin2_distrib()
 q <- c(2, 5)
 th <- list(mu = 3, theta = 2)
 
-# The mean component, written out.
+# The mean component is written out.
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th) * (q + 2) / (2 + 3))
 #> [1] TRUE

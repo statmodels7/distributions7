@@ -1,8 +1,9 @@
 # The von Mises Families' Derivative Tables
 
-Assembles the keyed components for a two-parameter family in which
-nothing moves with the first parameter, \\E\_{11} = f(c)\\, \\E\_{22} =
-g(c)\\ and \\E\_{12} = 0\\ in the second parameter \\c\\.
+Assembles the keyed components for a two-parameter family in which the
+expected information does not depend on the first parameter and, in the
+second parameter \\c\\, \\E\_{11} = f(c)\\, \\E\_{22} = g(c)\\ and
+\\E\_{12} = 0\\.
 
 ## Usage
 

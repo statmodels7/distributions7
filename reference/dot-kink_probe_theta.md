@@ -1,9 +1,9 @@
 # A Trial Parameter Value Inside Every Interval
 
-The midpoint of a bounded interval, one unit inside a half-line, and
-zero on the whole line. The same rule
+Returns the midpoint of a bounded interval, one unit inside a half-line,
+and zero on the whole line. This is the rule with which
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
-probes a map with.
+probes a map.
 
 ## Usage
 

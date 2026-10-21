@@ -1,7 +1,8 @@
 # Mixed Third-Response Parameter Derivatives of the Log-Density
 
-Computes \\\partial^4 \ell / \partial y^3\\ \partial \theta_i\\, one
-component per parameter, each a vector along `y`. It is
+Computes \\\partial^4 \ell / \partial y^3\\ \partial \theta_i\\, with
+one component per parameter, and each component is a vector along `y`.
+It is
 [`distrib_deriv3_y()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.md)
 differentiated once in each parameter.
 
@@ -40,8 +41,8 @@ distrib_cross3_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 ## Value
 
-A named list with one numeric vector per parameter, each as long as `y`,
-keyed by `distrib@params`.
+A named list with one numeric vector per parameter, keyed by
+`distrib@params`. Each vector is as long as `y`.
 
 ## What consumes it
 
@@ -112,7 +113,8 @@ distrib_cross3_y(d, y, theta)
 #> [1]  0.03085952  0.02819720 -0.02265895
 #> 
 
-# Against a numerical derivative of the analytic third response derivative.
+# The result is compared with a numerical derivative of the analytic third
+# response derivative.
 f <- function(v) distrib_deriv3_y(d, y[1], list(mu = 0.4, sigma = v, nu = 6))
 numDeriv::grad(f, 1.3)
 #> [1] 0.7000737

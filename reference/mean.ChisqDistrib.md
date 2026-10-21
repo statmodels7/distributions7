@@ -1,9 +1,9 @@
 # Mean of the Chi-Squared Distribution
 
-Closed form: \\E\[Y\] = \mu\\. The family carries one parameter, which
-is both the mean and the degrees of freedom, the two coinciding for this
-law. It is not restricted to whole numbers here, so the family is the
-gamma with variance tied to twice the mean.
+The mean has the closed form \\E\[Y\] = \mu\\. The family carries one
+parameter, which is both the mean and the degrees of freedom, because
+the two coincide for this law. It is not restricted to whole numbers
+here, so the family is the gamma with variance tied to twice the mean.
 
 ## Arguments
 

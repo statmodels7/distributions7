@@ -1,7 +1,8 @@
 # Variance of the Laplace Distribution in Location and Rate
 
-Closed form, replacing the numerical default: \\\operatorname{Var}(Y) =
-2/\lambda^2\\. With \\\lambda = 1/\sigma\\ this is the \\2\sigma^2\\ of
+The closed form that replaces the numerical default is
+\\\operatorname{Var}(Y) = 2/\lambda^2\\. With \\\lambda = 1/\sigma\\
+this is the \\2\sigma^2\\ of
 [`variance.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.md),
 so the two parametrizations agree on the law and differ only in which
 number is reported. A larger rate is a tighter distribution.
@@ -16,7 +17,7 @@ number is reported. A larger rate is a tighter distribution.
 - theta:
 
   A named list with components `mu` (the location) and `lambda` (the
-  rate, positive), each a numeric vector of length 1 or `n`. The
+  rate, positive); each is a numeric vector of length 1 or `n`. The
   variance diverges as the rate approaches zero.
 
 - ...:
@@ -27,7 +28,7 @@ number is reported. A larger rate is a tighter distribution.
 
 A numeric vector of variances, of length
 `max(length(theta$mu), length(theta$lambda))`. The location does not
-enter the value, so a setting that varies `mu` alone repeats one number.
+enter the value, so a setting that varies only `mu` repeats one number.
 
 ## See also
 
@@ -41,7 +42,7 @@ the same quantity in the scale parametrization;
 ``` r
 d <- laplace2_distrib()
 
-# Two over the square of the rate.
+# The variance is two over the square of the rate.
 all.equal(variance(d, list(mu = 0, lambda = 0.5)), 8)
 #> [1] TRUE
 

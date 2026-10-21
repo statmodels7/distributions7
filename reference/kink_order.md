@@ -1,9 +1,9 @@
 # The Order Left by a Composition
 
-The largest `k` for which a composition has `k` continuous derivatives
-at the origin: 0 for \\\lvert v \rvert\\ and \\(v)\_+\\, whose first
-derivative jumps; 1 for \\(v)\_+^2\\; 2 for \\(v)\_+^3\\; and -1 for
-\\1\\v\>0\\\\, which is not continuous at all.
+Returns the largest `k` for which a composition has `k` continuous
+derivatives at the origin: 0 for \\\lvert v \rvert\\ and \\(v)\_+\\,
+whose first derivative jumps; 1 for \\(v)\_+^2\\; 2 for \\(v)\_+^3\\;
+and -1 for \\1\\v\>0\\\\, which is not continuous at all.
 
 ## Usage
 

@@ -1,11 +1,11 @@
 # CDF Derivatives of a Location-Scale Family
 
-Closed-form derivatives of \\F\\ for a family that is location-scale in
-its first two parameters. Writing \\F(q) = G(z)\\ with \\z =
-(q-\mu)/\sigma\\ and differentiating the composition puts everything in
-terms of the density and its response derivative, both of which every
-distribution already supplies, so a family has only to declare that it
-is location-scale.
+Computes closed-form derivatives of \\F\\ for a family that is
+location-scale in its first two parameters. Writing \\F(q) = G(z)\\ with
+\\z = (q-\mu)/\sigma\\ and differentiating the composition puts
+everything in terms of the density and its response derivative, both of
+which every distribution already supplies, so a family has only to
+declare that it is location-scale.
 
 ## Usage
 
@@ -18,8 +18,9 @@ loc_scale_cdf_deriv(distrib, q, theta, order)
 - distrib:
 
   An object inheriting from `distrib` whose first two parameters are a
-  location and a scale. Nothing checks that; a family that is not
-  location-scale and registers this body gets wrong numbers.
+  location and a scale. The function does not check that, and it returns
+  wrong numbers for a family that is not location-scale but registers
+  this body.
 
 - q:
 
@@ -27,12 +28,12 @@ loc_scale_cdf_deriv(distrib, q, theta, order)
 
 - theta:
 
-  A named list of parameters, the location first and the scale second.
-  Any further parameters are read by
+  A named list of parameters, in which the location comes first and the
+  scale second. Any further parameters are read by
   [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
   and
   [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-  but get no component here.
+  but have no component in the result.
 
 - order:
 

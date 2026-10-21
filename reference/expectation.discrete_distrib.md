@@ -5,7 +5,7 @@ the support, every parameter combination in one batched pass: a finite
 support is summed exactly in a single matrix evaluation, an infinite one
 through
 [`numericals7::series_vec()`](https://statmodels7.github.io/numericals7/reference/series_vec.html),
-whose rows retire as they converge.
+which drops each row from the computation as it converges.
 
 ## Arguments
 

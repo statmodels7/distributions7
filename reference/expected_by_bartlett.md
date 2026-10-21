@@ -30,18 +30,18 @@ expected_by_bartlett(distrib, y, theta, order)
 
 ## Value
 
-A named list of expected derivative component vectors, each of length
+A named list of expected derivative component vectors; each has length
 `length(y)`.
 
 ## Details
 
 The identity of order \\k\\ states that \$\$\sum\_{\pi}
-\mathbb{E}\left\[\prod\_{B \in \pi} \ell_B\right\] = 0,\$\$ the sum
-running over every partition \\\pi\\ of the index set. The single-block
-partition is the target, so it equals minus the sum of all the others –
-which is why
+\mathbb{E}\left\[\prod\_{B \in \pi} \ell_B\right\] = 0,\$\$ where the
+sum runs over every partition \\\pi\\ of the index set. The single-block
+partition is the target, so it equals minus the sum of all the others,
+so that
 [`numericals7::set_partitions()`](https://statmodels7.github.io/numericals7/reference/set_partitions.html)
-is the whole algorithm and why the top-order derivative is never needed.
+is the whole algorithm and the top-order derivative is never needed.
 
 At order 2 this reduces to \\\mathbb{E}\[\ell\_{ij}\] =
 -\mathbb{E}\[\ell_i \ell_j\]\\, which needs only the score and remains

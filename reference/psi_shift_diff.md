@@ -1,10 +1,11 @@
 # Differences of a Polygamma at an Integer Shift
 
-Returns \\\psi^{(n)}(x+k) - \psi^{(n)}(x)\\ without the cancellation the
-direct difference carries. It is the R counterpart of `psi_A_rest()` and
-`psi_T_rest()` of `src/psi_diff.h`, which return the same difference
-with its leading behavior subtracted, and it is written for any order
-and not only for the two orders that the compiled kernels need.
+Returns \\\psi^{(n)}(x+k) - \psi^{(n)}(x)\\ without the cancellation
+that the direct difference carries. It is the R counterpart of
+`psi_A_rest()` and `psi_T_rest()` of `src/psi_diff.h`, which return the
+same difference after subtracting its leading behavior, and it is
+written for any order and not only for the two orders that the compiled
+kernels need.
 
 ## Usage
 
@@ -22,16 +23,16 @@ psi_shift_diff(n, k, x)
 - k:
 
   The shift, which for every caller here is a count or a size and
-  therefore a non-negative integer. Recycled against `x`.
+  therefore a non-negative integer. `k` is recycled against `x`.
 
 - x:
 
-  The argument, strictly positive. Recycled against `k`.
+  The argument, strictly positive. `x` is recycled against `k`.
 
 ## Value
 
-A numeric vector of the same length as the recycled arguments. Exactly
-zero wherever `k` is zero, by either branch.
+A numeric vector of the same length as the recycled arguments. The value
+is exactly zero wherever `k` is zero, by either branch.
 
 ## Details
 
@@ -48,7 +49,7 @@ Above \\x = 100\\ the value comes from the asymptotic expansion
 \$\$\psi^{(n)}(z) \sim (-1)^{n-1}\Big\[\frac{(n-1)!}{z^{n}} +
 \frac{n!}{2 z^{n+1}} + \frac{(n+1)!}{12 z^{n+2}} - \frac{(n+3)!}{720
 z^{n+4}} + \frac{(n+5)!}{30240 z^{n+6}}\Big\],\$\$ whose \\n = 0\\ case
-is \\\log z - 1/(2z) - 1/(12 z^{2}) + \ldots\\ with the logarithm
+is \\\log z - 1/(2z) - 1/(12 z^{2}) + \ldots\\ and the logarithm is
 differenced as \\\log(1 + k/x)\\. Each power is differenced as
 \$\$\frac{1}{(x+k)^{p}} - \frac{1}{x^{p}} =
 \frac{1}{x^{p}}\\\big(e^{-p\log(1+k/x)} - 1\big),\$\$ which `expm1` and

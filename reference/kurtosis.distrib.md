@@ -1,12 +1,12 @@
 # Excess Kurtosis of a Distribution
 
-Evaluates the excess kurtosis numerically. Three calls of
+Evaluates the excess kurtosis numerically. The method calls
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
-are made: the mean at `p = 1`, then the second and fourth central
-moments about it, and the value is \\m_4 / m_2^{2} - 3\\. Passing the
-mean forward keeps the count at three quadratures. This is the fallback
-for a family with no closed form, which among the shipped families means
-the elastic net and the two von Mises.
+three times, for the mean at `p = 1` and then for the second and fourth
+central moments about it, and the value is \\m_4 / m_2^{2} - 3\\.
+Passing the mean forward keeps the count at three quadratures. This is
+the fallback for a family with no closed form, which among the shipped
+families means the elastic net and the two von Mises.
 
 ## Arguments
 
@@ -47,7 +47,7 @@ for the third order.
 round(kurtosis(enet_distrib(), list(mu = 0, lambda = 1, alpha = 0.5)), 4)
 #> [1] 0.5523
 
-# The same three moments, assembled by hand, on a family with a formula.
+# The same three moments are assembled by hand on a family with a formula.
 d <- gamma2_distrib(); th <- list(mu = 2, sigma2 = 1)
 m <- moment(d, th, p = 1)
 m2 <- moment(d, th, p = 2, central = TRUE, mu = m)

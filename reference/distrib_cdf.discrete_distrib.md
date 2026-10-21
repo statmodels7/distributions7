@@ -21,7 +21,7 @@ absolute, which is the rounding of the addition itself.
 
 - theta:
 
-  A named list of parameters, each of length 1 or `length(q)`.
+  A named list of parameters; each has length 1 or `length(q)`.
 
 - lower.tail:
 

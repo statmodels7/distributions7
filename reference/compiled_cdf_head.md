@@ -1,8 +1,8 @@
 # Power-Law Head of a Compiled CDF Derivative
 
-The part of \\\partial_I F(q) = \int_0^q f B_I\\ below the cut \\y_0\\
-that `cdf_rule_cpp()` reports for a family on \\(0, \infty)\\ whose
-density behaves like \\y^{\alpha - 1}\\ near zero (a gamma or a
+Computes the part of \\\partial_I F(q) = \int_0^q f B_I\\ below the cut
+\\y_0\\ that `cdf_rule_cpp()` reports for a family on \\(0, \infty)\\
+whose density behaves like \\y^{\alpha - 1}\\ near zero (a gamma or a
 generalized gamma with a small shape), where part of the mass lies below
 the smallest representable double.
 
@@ -21,7 +21,7 @@ compiled_cdf_head(distrib, rule, th, order, params)
 
 - rule:
 
-  The list `cdf_rule_cpp()` returns.
+  The list that `cdf_rule_cpp()` returns.
 
 - th:
 

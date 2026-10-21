@@ -1,12 +1,12 @@
 # Mixed Derivatives of a Location-Scale Family
 
-The
+Provides the
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 body shared by every family that is location-scale in both its
-parameters: it takes the two components of
+parameters. The body takes the two components of
 [`loc_scale_cross_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross_block.md)
-and names them after the family's own parameters. Registered on the
-logistic, the Cauchy, the Gumbel and the Laplace.
+and names them after the family's own parameters. It is registered on
+the logistic, the Cauchy, the Gumbel and the Laplace.
 
 ## Usage
 

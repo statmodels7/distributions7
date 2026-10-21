@@ -1,9 +1,9 @@
 # Skewness of the Negative Binomial Distribution in the NB1 Parametrization
 
-Closed form: \\\gamma_1 = (1+2\theta)/\sqrt{\mu(1+\theta)}\\. It is
-positive at every parameter value and tends to the Poisson's
-\\\mu^{-1/2}\\ as the dispersion goes to zero, which is where NB1
-approaches a Poisson.
+The skewness has the closed form \\\gamma_1 =
+(1+2\theta)/\sqrt{\mu(1+\theta)}\\. It is positive at every parameter
+value and tends to the Poisson's \\\mu^{-1/2}\\ as the dispersion goes
+to zero, which is where NB1 approaches a Poisson.
 
 ## Arguments
 
@@ -14,8 +14,8 @@ approaches a Poisson.
 
 - theta:
 
-  A named list with components `mu` (positive) and `theta` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `theta` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -44,7 +44,7 @@ the limit;
 ``` r
 d <- negbin1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(skewness(d, list(mu = 4, theta = 2)), 5 / sqrt(4 * 3))
 #> [1] TRUE
 

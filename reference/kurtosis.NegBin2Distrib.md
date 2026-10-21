@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Negative Binomial Distribution
 
-Closed form, replacing the numerical default: \\6/\theta +
+The closed form that replaces the numerical default is \\6/\theta +
 \theta/\\\mu(\theta+\mu)\\\\, the excess over the Gaussian's three. Both
-terms are positive, so the family is always leptokurtic, and the second
-is what survives in the Poisson limit, where the expression tends to
+terms are positive, so the family is always leptokurtic. Only the second
+term survives in the Poisson limit, where the expression tends to
 \\1/\mu\\.
 
 ## Arguments
@@ -16,7 +16,8 @@ is what survives in the Poisson limit, where the expression tends to
 - theta:
 
   A named list with components `mu` (the mean, positive) and `theta`
-  (the dispersion, positive), each a numeric vector of length 1 or `n`.
+  (the dispersion, positive); each is a numeric vector of length 1 or
+  `n`.
 
 - ...:
 
@@ -39,7 +40,7 @@ for the limit.
 ``` r
 d <- negbin2_distrib()
 
-# The published form, written out.
+# The published form is written out.
 mu <- 4; th <- 2
 all.equal(kurtosis(d, list(mu = mu, theta = th)),
           6 / th + th / (mu * (th + mu)))

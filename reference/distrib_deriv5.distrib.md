@@ -1,8 +1,8 @@
 # Default Fifth-Order Derivatives for `distrib` Objects
 
-The route that a family takes at the fifth order when it registers no
-method of its own: one tensor-product difference of its highest analytic
-order, through
+Defines the route that a family takes at the fifth order when it
+registers no method of its own: one tensor-product difference of its
+highest analytic order, through
 [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md).
 
 ## Arguments
@@ -40,11 +40,11 @@ gives them.
 
 ## Details
 
-This is registered on the base class. Ten families write the fifth order
-out themselves (see
-[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)),
-and the wrappers override it. Among the families that reach it, what
-differs is the quantity being differenced:
+This is registered on the base class. The families that write the fifth
+order out themselves (see
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md))
+and the wrappers override it. Among the families that reach it, the
+quantity that is differenced varies:
 [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
 reports whether that quantity is analytic, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)

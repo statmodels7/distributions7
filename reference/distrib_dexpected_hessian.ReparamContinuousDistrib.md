@@ -1,9 +1,9 @@
 # Derivatives of the Expected Information, Reparametrized Families
 
-The parent's derivatives carried through the map by
+Carries the parent's derivatives through the map by
 [`reparam_dexpected()`](https://statmodels7.github.io/distributions7/reference/reparam_dexpected.md).
 A parent without an analytic second derivative leaves the reparametrized
-family without one, the error naming the parent.
+family without one, and the error names the parent.
 
 ## Arguments
 

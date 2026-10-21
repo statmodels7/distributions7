@@ -13,7 +13,7 @@ net are the two families registered through it."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,23 +67,23 @@ net are the two families registered through it.</p>
 
 <dt id="arg-term-fn">term_fn<a class="anchor" aria-label="anchor" href="#arg-term-fn"></a></dt>
 <dd><p>A function of <code>(distrib, q, theta)</code> returning the list of
-terms <code><a href="phi_terms_cdf_deriv_k.html">phi_terms_cdf_deriv_k()</a></code> documents.</p></dd>
+terms that <code><a href="phi_terms_cdf_deriv_k.html">phi_terms_cdf_deriv_k()</a></code> documents.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly <code>NULL</code>. Called for the registration.</p>
+    <p>Invisibly <code>NULL</code>. The function is called for the registration.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>All four orders are registered, <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code> included, so these
+    <p>All four orders are registered, including <code><a href="distrib_grad_cdf.html">distrib_grad_cdf()</a></code>, so these
 families take the closed route from the first order up and never reach a
-stencil. <code>force(o)</code> inside the factory is what keeps the four registrations
-from sharing one order.</p>
+stencil. <code>force(o)</code> inside the factory prevents the four registrations from
+sharing one order.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="phi_terms_cdf_deriv_k.html">phi_terms_cdf_deriv_k()</a></code>, the body it registers;
+    <div class="dont-index"><p><code><a href="phi_terms_cdf_deriv_k.html">phi_terms_cdf_deriv_k()</a></code>, the body that it registers;
 <code><a href="distrib_grad_cdf.InvGauss1Distrib.html">distrib_grad_cdf.InvGauss1Distrib()</a></code> and
 <code><a href="distrib_grad_cdf.EnetDistrib.html">distrib_grad_cdf.EnetDistrib()</a></code>, the two families.</p></div>
     </div>

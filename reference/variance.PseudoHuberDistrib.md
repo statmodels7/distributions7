@@ -1,10 +1,11 @@
 # Variance of the Pseudo-Huber Distribution
 
-Closed form, replacing the numerical default: \$\$\operatorname{Var}(Y)
-= \sigma^2 \sqrt{\nu}\\ \frac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})},\$\$
-with \\K_r\\ the modified Bessel function of the second kind. The scale
-parameter is therefore not the standard deviation: the shape multiplies
-it, and the factor grows roughly like \\\sqrt{\nu}\\ at large \\\nu\\.
+The closed form that replaces the numerical default is
+\$\$\operatorname{Var}(Y) = \sigma^2 \sqrt{\nu}\\
+\frac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})},\$\$ with \\K_r\\ the modified
+Bessel function of the second kind. The scale parameter is therefore not
+the standard deviation: the shape multiplies it, and the factor grows
+roughly like \\\sqrt{\nu}\\ at large \\\nu\\.
 
 ## Arguments
 
@@ -16,7 +17,7 @@ it, and the factor grows roughly like \\\sqrt{\nu}\\ at large \\\nu\\.
 - theta:
 
   A named list with components `mu` (the location), `sigma` (the scale,
-  positive) and `nu` (the shape, positive), each a numeric vector of
+  positive) and `nu` (the shape, positive); each is a numeric vector of
   length 1 or `n`.
 
 - ...:
@@ -25,9 +26,9 @@ it, and the factor grows roughly like \\\sqrt{\nu}\\ at large \\\nu\\.
 
 ## Value
 
-A numeric vector of variances, of the length the recycled parameters
-imply. The scale and `nu` enter the value, so a setting that varies `mu`
-alone repeats one number.
+A numeric vector of variances, of the length that the recycled
+parameters imply. The scale and `nu` enter the value, so a setting that
+varies only `mu` repeats one number.
 
 ## Details
 
@@ -58,7 +59,7 @@ which is a ratio of the same Bessel functions;
 ``` r
 d <- pseudohuber_distrib()
 
-# The Bessel ratio, written out against the method.
+# The Bessel ratio is written out against the method.
 nu <- 4
 all.equal(variance(d, list(mu = 0, sigma = 1, nu = nu)),
           sqrt(nu) * besselK(sqrt(nu), 2, expon.scaled = TRUE) /

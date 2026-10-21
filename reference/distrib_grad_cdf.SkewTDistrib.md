@@ -1,9 +1,9 @@
 # Skew t Log-CDF Gradient
 
-Closed form in the location and the scale, \\-f(q)\\ and \\-z f(q)\\
-with \\z = (q-\mu)/\sigma\\; the components in the shape and in the
-degrees of freedom are integrals of the density's own derivatives, taken
-by the compiled rule. The method is
+Computes the gradient in closed form in the location and the scale,
+\\-f(q)\\ and \\-z f(q)\\ with \\z = (q-\mu)/\sigma\\; the components in
+the shape and in the degrees of freedom are integrals of the density's
+own derivatives, taken by the compiled rule. The method is
 [`compiled_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 itself, shared with the other families whose distribution function has
 no closed derivative in a shape parameter.
@@ -22,7 +22,8 @@ no closed derivative in a shape parameter.
 - theta:
 
   A named list with components `mu`, `sigma` (positive), `alpha` (any
-  sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
+  sign) and `nu` (positive); each is a numeric vector of length 1 or
+  `n`.
 
 - lower.tail:
 
@@ -36,8 +37,8 @@ no closed derivative in a shape parameter.
 
 ## Value
 
-A named list of four numeric vectors, `mu`, `sigma`, `alpha` and `nu`,
-each the length of `q` recycled against `theta`.
+A named list of four numeric vectors, `mu`, `sigma`, `alpha` and `nu`;
+each has the length of `q` recycled against `theta`.
 
 ## Notation
 

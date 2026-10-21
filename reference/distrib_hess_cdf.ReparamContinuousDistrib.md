@@ -1,11 +1,11 @@
 # Log-CDF Hessian of a Reparametrized Distribution
 
-The second-order chain rule on the parent's cdf derivatives, through
+Applies the second-order chain rule to the parent's cdf derivatives,
+through
 [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md):
 \\\partial^2 F/\partial\psi_a\partial\psi_b = \sum\_{k,l} F\_{kl} h^k_a
-h^l_b + \sum_k F_k h^k\_{ab}\\. The second sum is the one that a
-first-order chain does not have, and it is why the map's second partials
-are needed as well as its first.
+h^l_b + \sum_k F_k h^k\_{ab}\\. A first-order chain lacks the second
+sum, so the map's second partials are needed as well as its first.
 
 ## Arguments
 
@@ -39,8 +39,8 @@ are needed as well as its first.
 ## Value
 
 A named list of numeric vectors keyed as
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`. The gradient is not
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each has the length of `q` recycled against `theta`. The gradient is not
 returned alongside.
 
 ## Details
@@ -73,7 +73,7 @@ d <- reparametrize(
 q <- c(-1, 0.5, 2)
 th <- list(mu = 0.3, sigma2 = 1.44)
 
-# Against a central difference of the reparametrized cdf.
+# The result is compared with a central difference of the reparametrized cdf.
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) - unlist(fd)))

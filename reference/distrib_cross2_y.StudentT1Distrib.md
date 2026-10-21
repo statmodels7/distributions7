@@ -1,9 +1,9 @@
 # Student's t Mixed Second-Response Derivatives
 
-Closed form in all three parameters. With \\z = (y-\mu)/\sigma\\ and
-\\Q(z) = (\nu - z^2)/(\nu + z^2)^2\\ the response curvature is
-\\\ell^{(yy)} = -(\nu+1)Q/\sigma^2\\, so writing \\Q' = 2z(z^2 -
-3\nu)/(\nu+z^2)^3\\ and \\\partial Q/\partial\nu =
+Computes the closed form in all three parameters. With \\z =
+(y-\mu)/\sigma\\ and \\Q(z) = (\nu - z^2)/(\nu + z^2)^2\\ the response
+curvature is \\\ell^{(yy)} = -(\nu+1)Q/\sigma^2\\, so writing \\Q' =
+2z(z^2 - 3\nu)/(\nu+z^2)^3\\ and \\\partial Q/\partial\nu =
 (3z^2-\nu)/(\nu+z^2)^3\\, \$\$\frac{\partial\ell^{(yy)}}{\partial\mu} =
 \frac{(\nu+1)Q'}{\sigma^3}, \qquad
 \frac{\partial\ell^{(yy)}}{\partial\sigma} = \frac{(\nu+1)(2Q +
@@ -78,7 +78,8 @@ distrib_cross2_y(d, y, theta)
 #> [1] -0.02742339  0.01050930 -0.03278889
 #> 
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2],
                                               nu = v[3]))
 numDeriv::grad(f, c(0.4, 1.3, 6))

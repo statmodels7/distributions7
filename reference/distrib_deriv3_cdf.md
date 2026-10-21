@@ -48,7 +48,7 @@ distrib_deriv4_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
 - ...:
 
-  Passed to methods. No shipped method reads it.
+  Passed to methods. The shipped methods do not use it.
 
 ## Value
 
@@ -73,12 +73,12 @@ single product stencil on its distribution function through
 
 ## What consumes them
 
-Truncation.
+Truncation consumes them.
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
-needs the derivatives of its normalizing constant \\Z = F(U) - F(L^-)\\,
-and with only the first two orders available it pays one quadrature per
-component at orders three and four; with these it pays two calls on the
-parent instead.
+requires the derivatives of its normalizing constant \\Z = F(U) -
+F(L^-)\\, and when only the first two orders are available it computes
+one quadrature per component at orders three and four; with these it
+makes two calls on the parent instead.
 
 ## Accuracy
 
@@ -108,7 +108,7 @@ for the two routes.
 ## Examples
 
 ``` r
-# Four third-order components for a two-parameter family.
+# A two-parameter family has four third-order components.
 distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 #> $mu_mu_mu
 #> [1] -0.2957182
@@ -139,7 +139,7 @@ distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1),
 #> [1] 0
 #> 
 
-# One component for a one-parameter family, and the sum is exact here.
+# A one-parameter family has one component, and the sum is exact here.
 distrib_deriv4_cdf(poisson_distrib(), 3, list(mu = 2))
 #> $mu_mu_mu_mu
 #> [1] 0.04026212

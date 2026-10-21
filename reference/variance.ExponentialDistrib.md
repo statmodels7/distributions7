@@ -1,10 +1,10 @@
 # Variance of the Exponential Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \mu^2\\. The standard deviation
-equals the mean, so the coefficient of variation is exactly one at every
-parameter value. Among the gamma distributions, whose coefficient of
-variation is \\1/\sqrt a\\ for shape \\a\\, the exponential is the one
-with coefficient of variation one.
+The variance has the closed form \\\operatorname{Var}(Y) = \mu^2\\. The
+standard deviation equals the mean, so the coefficient of variation is
+exactly one at every parameter value. Among the gamma distributions,
+whose coefficient of variation is \\1/\sqrt a\\ for shape \\a\\, the
+exponential is the one with coefficient of variation one.
 
 ## Arguments
 
@@ -38,13 +38,14 @@ where the two moments are free of each other;
 ``` r
 d <- exponential_distrib()
 
-# The square of the mean, so the coefficient of variation is one.
+# The variance is the square of the mean, so the coefficient of variation is
+# one.
 variance(d, list(mu = 3))
 #> [1] 9
 std_dev(d, list(mu = 3)) / mean(d, list(mu = 3))
 #> [1] 1
 
-# The same law as a Weibull of shape 1.
+# The law is the same as a Weibull of shape 1.
 all.equal(variance(d, list(mu = 3)),
           variance(weibull1_distrib(), list(mu = 3, sigma = 1)))
 #> [1] TRUE

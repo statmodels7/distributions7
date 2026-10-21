@@ -1,8 +1,8 @@
 # Mean of the Negative Binomial Distribution in the NB1 Parametrization
 
-Closed form: \\E\[Y\] = \mu\\. This parametrization carries the mean as
-its first parameter. NB1 and NB2 have the same mean and differ in the
-variance function.
+The mean has the closed form \\E\[Y\] = \mu\\. This parametrization
+carries the mean as its first parameter. NB1 and NB2 have the same mean
+and differ in the variance function.
 
 ## Arguments
 
@@ -14,7 +14,8 @@ variance function.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `theta`
-  (the dispersion, positive), each a numeric vector of length 1 or `n`.
+  (the dispersion, positive); each is a numeric vector of length 1 or
+  `n`.
 
 - ...:
 

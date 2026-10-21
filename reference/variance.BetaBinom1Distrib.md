@@ -1,13 +1,13 @@
 # Variance of the Beta-Binomial Distribution
 
-Closed form: \$\$\operatorname{Var}(Y) = n\mu(1-\mu)\\\frac{1 +
-n\sigma}{1 + \sigma}.\$\$ The first factor is the binomial variance and
-the second is the overdispersion, at least 1 for every \\n \ge 1\\ and
-growing towards \\n\\ as the dispersion rises. At \\\sigma \to 0\\ the
-family is binomial; at large \\\sigma\\ the variance approaches
-\\n^2\mu(1-\mu)\\, which is a Bernoulli scaled by the trial count and is
-the largest a distribution on \\\\0, \ldots, n\\\\ with that mean can
-have.
+The variance has the closed form \$\$\operatorname{Var}(Y) =
+n\mu(1-\mu)\\\frac{1 + n\sigma}{1 + \sigma}.\$\$ The first factor is the
+binomial variance and the second is the overdispersion, at least 1 for
+every \\n \ge 1\\ and growing towards \\n\\ as the dispersion rises. At
+\\\sigma \to 0\\ the family is binomial; at large \\\sigma\\ the
+variance approaches \\n^2\mu(1-\mu)\\, which is a Bernoulli scaled by
+the trial count and is the largest variance that a distribution on
+\\\\0, \ldots, n\\\\ with that mean can have.
 
 ## Arguments
 
@@ -20,8 +20,8 @@ have.
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and
-  `sigma` (positive), each a numeric vector of length 1 or of the common
-  length of the parameter settings.
+  `sigma` (positive); each is a numeric vector of length 1 or of the
+  common length of the parameter settings.
 
 - ...:
 
@@ -50,7 +50,7 @@ the \\\sigma \to 0\\ limit;
 ``` r
 d <- betabinom1_distrib(size = 10)
 
-# The published form, written out.
+# The published form is written out.
 all.equal(variance(d, list(mu = 0.3, sigma = 0.5)),
           10 * 0.3 * 0.7 * (1 + 10 * 0.5) / (1 + 0.5))
 #> [1] TRUE

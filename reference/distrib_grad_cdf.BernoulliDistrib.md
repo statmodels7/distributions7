@@ -1,9 +1,9 @@
 # Bernoulli Log-CDF Gradient
 
-Closed form, the binomial identity at \\n = 1\\. The distribution
-function takes two values, \\F(0) = 1 - p\\ and \\F(1) = 1\\, so the
-derivative is \\-1\\ at \\k = 0\\ and exactly zero at \\k = 1\\, the
-upper value being 1 whatever \\p\\ is.
+Computes the gradient in closed form, by the binomial identity at \\n =
+1\\. The distribution function takes two values, \\F(0) = 1 - p\\ and
+\\F(1) = 1\\, so the derivative is \\-1\\ at \\k = 0\\ and exactly zero
+at \\k = 1\\, because the upper value is 1 whatever \\p\\ is.
 
 ## Arguments
 
@@ -60,7 +60,7 @@ of which this is the \\n = 1\\ case;
 ``` r
 d <- bernoulli_distrib()
 
-# -1 at zero, and exactly 0 at one.
+# The derivative is -1 at zero, and exactly 0 at one.
 distrib_grad_cdf(d, c(0, 1), list(mu = 0.3), log = FALSE)$mu
 #> [1] -1  0
 

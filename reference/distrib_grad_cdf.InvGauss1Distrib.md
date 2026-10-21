@@ -1,11 +1,11 @@
 # Inverse Gaussian Log-CDF Derivatives
 
-Closed form at every order from one to four. The inverse Gaussian's
-distribution function is elementary, \$\$F(q) = \Phi(a) +
-e^{c}\\\Phi(b), \qquad a = \frac{q/\mu - 1}{\sqrt{\phi q}}, \quad b =
--\frac{q/\mu + 1}{\sqrt{\phi q}}, \quad c = \frac{2}{\phi\mu},\$\$ so it
-can simply be differentiated. This page's four registrations are made
-together by
+Returns the derivatives in closed form at every order from one to four.
+The inverse Gaussian's distribution function is elementary, \$\$F(q) =
+\Phi(a) + e^{c}\\\Phi(b), \qquad a = \frac{q/\mu - 1}{\sqrt{\phi q}},
+\quad b = -\frac{q/\mu + 1}{\sqrt{\phi q}}, \quad c =
+\frac{2}{\phi\mu},\$\$ so it can simply be differentiated. This page's
+four registrations are made together by
 [`register_phi_terms_cdf()`](https://statmodels7.github.io/distributions7/reference/register_phi_terms_cdf.md).
 
 ## Arguments
@@ -21,8 +21,8 @@ together by
 
 - theta:
 
-  A named list with components `mu` (positive) and `phi` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `phi` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -65,8 +65,8 @@ and the tail are therefore combined as
 ## Accuracy
 
 The derivatives are closed forms. A product stencil on the same
-distribution function loses accuracy as the order grows, which is why
-the family registers all four orders.
+distribution function loses accuracy as the order grows, so the family
+registers all four orders.
 
 ## Notation
 
@@ -90,12 +90,14 @@ d <- invgauss1_distrib()
 q <- c(0.5, 2, 5)
 th <- list(mu = 2, phi = 0.5)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The gradient is compared with a central difference of the cdf, which
+# shares no arithmetic.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 #> [1] 9.956747e-11
 
-# Finite where the weight alone is not: exp(2 / (phi mu)) is Inf here.
+# The gradient is finite although the weight overflows: exp(2 / (phi mu))
+# is Inf here.
 exp(2 / (0.01 * 0.1))
 #> [1] Inf
 distrib_grad_cdf(d, 0.02, list(mu = 0.01, phi = 0.1), log = FALSE)

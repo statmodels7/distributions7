@@ -50,7 +50,7 @@ for the higher moments.
 
 ``` r
 # The von Mises is one of the two families with no closed-form mean, so this
-# method is what answers for it. On (-pi, pi] with mu = 0 the mean is 0.
+# method computes its mean. On (-pi, pi] with mu = 0 the mean is 0.
 round(mean(vonmises1_distrib(), list(mu = 0, kappa = 2)), 12)
 #> [1] 0
 

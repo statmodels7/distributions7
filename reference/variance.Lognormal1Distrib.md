@@ -1,10 +1,10 @@
 # Variance of the Lognormal Distribution
 
-Closed form: \$\$\operatorname{Var}(Y) = (e^{\sigma^2} - 1)\\ e^{2\mu +
-\sigma^2}.\$\$ The two factors separate the two effects:
-\\e^{2\mu+\sigma^2}\\ is the square of the mean and sets the scale, and
-\\e^{\sigma^2} - 1\\ is the squared coefficient of variation and depends
-on the spread of the logarithm alone.
+The variance has the closed form \$\$\operatorname{Var}(Y) =
+(e^{\sigma^2} - 1)\\ e^{2\mu + \sigma^2}.\$\$ The two factors separate
+the two effects: \\e^{2\mu+\sigma^2}\\ is the square of the mean and
+sets the scale, and \\e^{\sigma^2} - 1\\ is the squared coefficient of
+variation and depends only on the spread of the logarithm.
 
 ## Arguments
 
@@ -16,10 +16,9 @@ on the spread of the logarithm alone.
 - theta:
 
   A named list with components `mu` (any real value) and `sigma2`
-  (positive), each a numeric vector of length 1 or `n`. The variance
-  grows like \\e^{2\sigma^2}\\ The variance overflows to `Inf` for
-  `sigma2` above about 355 at `mu = 0`, and the threshold rises as `mu`
-  decreases.
+  (positive); each is a numeric vector of length 1 or `n`. The variance
+  grows like \\e^{2\sigma^2}\\. It overflows to `Inf` for `sigma2` above
+  about 355 at `mu = 0`, and the threshold rises as `mu` decreases.
 
 - ...:
 
@@ -45,7 +44,7 @@ A numeric vector of variances, of length
 ``` r
 d <- lognormal1_distrib()
 
-# (exp(sigma2) - 1) exp(2 mu + sigma2).
+# The variance is (exp(sigma2) - 1) exp(2 mu + sigma2).
 all.equal(variance(d, list(mu = 0, sigma2 = 1)), (exp(1) - 1) * exp(1))
 #> [1] TRUE
 

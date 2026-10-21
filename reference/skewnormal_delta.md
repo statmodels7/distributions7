@@ -1,4 +1,4 @@
-# The Shape a Skew Normal's Moments Depend On
+# The Shape on Which a Skew Normal's Moments Depend
 
 Returns \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and the product
 \\b\delta\\ with \\b = \sqrt{2/\pi}\\. Every moment of a skew normal is
@@ -21,8 +21,8 @@ skewnormal_delta(alpha)
 
 ## Value
 
-A named list with `delta` and `bd`, each a numeric vector the length of
-`alpha`.
+A named list with `delta` and `bd`, in which each component is a numeric
+vector of the length of `alpha`.
 
 ## Details
 

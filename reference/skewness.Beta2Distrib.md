@@ -1,10 +1,11 @@
 # Skewness of the Beta Distribution in Two Shapes
 
-Closed form: \$\$\gamma_1 = \frac{2(\beta - \alpha)\sqrt{\alpha +
-\beta + 1}} {(\alpha + \beta + 2)\sqrt{\alpha\beta}}.\$\$ It takes the
-sign of \\\beta - \alpha\\, so a beta is right-skewed when the first
-shape is the smaller and exactly symmetric when the two are equal. The
-method evaluates the form in the mean and the precision of
+The skewness has the closed form \$\$\gamma_1 = \frac{2(\beta -
+\alpha)\sqrt{\alpha + \beta + 1}} {(\alpha + \beta +
+2)\sqrt{\alpha\beta}}.\$\$ It takes the sign of \\\beta - \alpha\\, so a
+beta is right-skewed when the first shape is the smaller and exactly
+symmetric when the two are equal. The method evaluates the form in the
+mean and the precision of
 [`beta_shape_moments()`](https://statmodels7.github.io/distributions7/reference/beta_shape_moments.md),
 in which \\\alpha\beta\\ is not formed.
 
@@ -17,8 +18,8 @@ in which \\\alpha\beta\\ is not formed.
 
 - theta:
 
-  A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`.
+  A named list with components `alpha` and `beta`, both positive; each
+  is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -45,7 +46,7 @@ written in the same two shapes;
 ``` r
 d <- beta2_distrib()
 
-# Zero when the two shapes are equal.
+# The skewness is zero when the two shapes are equal.
 skewness(d, list(alpha = 3, beta = 3))
 #> [1] 0
 

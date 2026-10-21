@@ -1,8 +1,8 @@
 # Differencing the Expected Information Once
 
-The default route behind
-[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md):
-a central difference in each parameter of the family's own expected
+Computes the default route behind
+[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+by a central difference in each parameter of the family's own expected
 information.
 
 ## Usage
@@ -63,8 +63,8 @@ which shrink near a finite boundary so that both evaluation points stay
 strictly inside the parameter's open domain; with `approx = "mc"` the
 step of
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
-is used directly. On the link scale the domain is the whole line and no
-clamp is needed, so the step is the plain relative one.
+is used directly. On the link scale the domain is the whole line, so the
+step needs no clamp and is the plain relative one.
 
 The method signals an error where the expected information is itself an
 approximation. Where the expected information is obtained by quadrature

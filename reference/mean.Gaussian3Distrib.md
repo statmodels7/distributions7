@@ -1,9 +1,9 @@
 # Mean of the Gaussian Distribution in Location and Precision
 
-Closed form: \\E\[Y\] = \mu\\. This is the Gaussian written by its
-precision \\\tau = 1/\sigma^2\\, a parametrization common in Bayesian
-models. As in the other two Gaussian parametrizations, the mean is the
-location parameter.
+The mean has the closed form \\E\[Y\] = \mu\\. This is the Gaussian
+written by its precision \\\tau = 1/\sigma^2\\, a parametrization common
+in Bayesian models. As in the other Gaussian parametrizations, the mean
+is the location parameter.
 
 ## Arguments
 
@@ -15,7 +15,8 @@ location parameter.
 - theta:
 
   A named list with components `mu` (the mean, any real value) and `tau`
-  (the precision, positive), each a numeric vector of length 1 or `n`.
+  (the precision, positive); each is a numeric vector of length 1 or
+  `n`.
 
 - ...:
 

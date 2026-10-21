@@ -1,9 +1,9 @@
 # Higher Response Derivatives of a Reparametrized Distribution
 
-The parent's third and fourth response derivatives, read at the parent's
-parameters. A reparametrization acts on \\\theta\\ and these derivatives
-are taken in \\y\\, so the two do not interact: the chain rule does not
-enter, and the result of the parent is returned exactly.
+Returns the parent's third and fourth response derivatives, read at the
+parent's parameters. A reparametrization acts on \\\theta\\ and these
+derivatives are taken in \\y\\, so the two do not interact: the chain
+rule does not enter, and the result of the parent is returned exactly.
 
 The same holds at the first and second orders. It does not hold for the
 mixed block

@@ -1,12 +1,12 @@
 # Variance of the Orthogonal Poisson-Inverse Gaussian Distribution
 
-The second cumulant \\\kappa_2 = \mu + \sigma\mu^2\\ of
+The variance is the second cumulant \\\kappa_2 = \mu + \sigma\mu^2\\ of
 [`variance.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Pig1Distrib.md),
 read at the dispersion \\\sigma = \\
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)`(mu, alpha)`
-this parametrization implies. The law is the same; what changes is which
-number is reported, and the orthogonal dispersion is the one whose
-estimate is asymptotically uncorrelated with the mean's.
+that this parametrization implies. The law is the same, and only the
+reported dispersion differs. The orthogonal dispersion has an estimate
+that is asymptotically uncorrelated with the mean's.
 
 ## Arguments
 
@@ -17,8 +17,8 @@ estimate is asymptotically uncorrelated with the mean's.
 
 - theta:
 
-  A named list with components `mu` (positive) and `alpha` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `alpha` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 

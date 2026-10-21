@@ -1,8 +1,9 @@
 # Variance of the Generalized Gamma Distribution
 
-Closed form from the first two raw moments, \\\operatorname{Var}(Y) =
-m_2 - m_1^2\\ with \\m_k = a^k\\\Gamma\\(d+k)/p\\/\Gamma(d/p)\\. The
-scale enters as a square and the two shapes through the gamma ratios.
+The variance has the closed form, from the first two raw moments,
+\\\operatorname{Var}(Y) = m_2 - m_1^2\\ with \\m_k =
+a^k\\\Gamma\\(d+k)/p\\/\Gamma(d/p)\\. The scale enters as a square and
+the two shapes through the gamma ratios.
 
 ## Arguments
 
@@ -13,7 +14,7 @@ scale enters as a square and the two shapes through the gamma ratios.
 
 - theta:
 
-  A named list with components `a`, `d` and `p`, all positive, each a
+  A named list with components `a`, `d` and `p`, all positive; each is a
   numeric vector of length 1 or `n`.
 
 - ...:
@@ -22,8 +23,8 @@ scale enters as a square and the two shapes through the gamma ratios.
 
 ## Value
 
-A numeric vector of variances, of length equal to the longest of the
-three components.
+A numeric vector of variances, whose length is the one that the recycled
+parameters imply.
 
 ## Details
 
@@ -36,9 +37,9 @@ S(n, r)\\a_n,\$\$ \\S\\ the Stirling numbers of the second kind, a sum
 in which the leading orders that cancel in \\m_2 - m_1^2\\ are absent.
 It is evaluated in double-double arithmetic where \\8h \le k\\ and
 \\4h^2 \le k\\. Elsewhere \\\mu_2 = \exp(\log m_2 - 2\log m_1) - 1\\ is
-evaluated with [`expm1()`](https://rdrr.io/r/base/Log.html), the
-log-gamma differences being taken in Stirling's form for \\k \ge 10\\
-and as differences of [`lgamma()`](https://rdrr.io/r/base/Special.html)
+evaluated with [`expm1()`](https://rdrr.io/r/base/Log.html), and the
+log-gamma differences are taken in Stirling's form for \\k \ge 10\\ and
+as differences of [`lgamma()`](https://rdrr.io/r/base/Special.html)
 below. Then \\\operatorname{Var}(Y) = m_1^2\mu_2\\.
 
 ## Notation

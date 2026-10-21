@@ -46,19 +46,20 @@ derivatives with respect to the parameters. The strategies are:
   differentiable in a parameter, where \\\mathbb{E}\[H\]\\ degenerates
   but the score variance still gives the information (see
   [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)).
-  Deterministic. At higher orders it needs several integrals, so it is
-  usually slower than `"integrate"`. It never requires the top-order
-  derivative itself, which is useful where only the lower orders are
-  available in closed form.
+  It is deterministic. At higher orders it needs several integrals, so
+  it is usually slower than `"integrate"`. It never requires the
+  top-order derivative itself, which is useful where only the lower
+  orders are available in closed form.
 
 - `"integrate"`:
 
   Integrates the observed derivative of that order directly against the
   density (numerical quadrature for continuous distributions, series
-  summation for discrete ones). Deterministic and normally the most
-  accurate when the observed derivative is available in closed form.
-  Estimates \\\mathbb{E}\[\partial^k \ell\]\\ literally, with one
-  exception: at order 2, for a family with a non-smooth parameter (see
+  summation for discrete ones). It is deterministic and normally the
+  most accurate when the observed derivative is available in closed
+  form. It estimates \\\mathbb{E}\[\partial^k \ell\]\\ literally, with
+  one exception: at order 2, for a family with a non-smooth parameter
+  (see
   [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)),
   it evaluates \\-\mathbb{E}\[\ell_i \ell_j\]\\ as `"bartlett"` does,
   because the observed \\\ell\_{ij}\\ then lacks the point mass at the
@@ -68,11 +69,11 @@ derivatives with respect to the parameters. The strategies are:
 
   Simulates `nsim` observations from the distribution and averages the
   observed derivative over them. The simplest and most robust option
-  when quadrature struggles (heavy tails, awkward supports), but
-  stochastic: the error decreases only as \\1/\sqrt{n\_{sim}}\\, so
-  results are not exactly reproducible unless the seed is fixed.
-  Estimates the same quantity as `"integrate"`. Note: the cost of this
-  option is the cost of simulating from the distribution. A native
+  when quadrature performs poorly (heavy tails, awkward supports), but
+  it is stochastic: the error decreases only as \\1/\sqrt{n\_{sim}}\\,
+  so results are not exactly reproducible unless the seed is fixed.
+  Estimates the same quantity as `"integrate"`. The cost of this option
+  is the cost of simulating from the distribution. A native
   [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
   is best; failing that, the default generator uses inverse transform
   when the family has a quantile method of its own and
@@ -82,22 +83,22 @@ derivatives with respect to the parameters. The strategies are:
   inverse transform sampling the bottleneck; prefer `"bartlett"` or
   `"integrate"` in that case.
 
-Defaults. `distrib_expected_hessian` defaults to `"opg"`, which needs
+The generic `distrib_expected_hessian` defaults to `"opg"`, which needs
 one score evaluation per observation and no expectation.
 `distrib_deriv3` and `distrib_deriv4` default to `"integrate"`, since at
 those orders direct integration of the available derivative is usually
 cheaper and more accurate.
 
-Non-smooth parameters. Where the log-density has a kink in a parameter,
-the observed second derivative has a point mass at the kink, and an
-average of its pointwise values does not contain that mass. For the
-Laplace location, \\\ell\_{\mu\mu}\\ is zero almost everywhere, so its
-pointwise average is zero, while the information is \\1/\sigma^2\\. The
-information of such a family is the variance of the score, which is what
-the second Bartlett identity evaluates. `"bartlett"`, `"opg"` and, at
-order 2, `"integrate"` therefore return \\-1/\sigma^2\\ per observation;
-`"mc"` averages the observed \\\ell\_{\mu\mu}\\ and returns 0. When the
-family declares where its kink is, through
+Where the log-density has a kink in a parameter, the observed second
+derivative has a point mass at the kink, and an average of its pointwise
+values does not contain that mass. For the Laplace location,
+\\\ell\_{\mu\mu}\\ is zero almost everywhere, so its pointwise average
+is zero, while the information is \\1/\sigma^2\\. The information of
+such a family is the variance of the score, and the second Bartlett
+identity evaluates that variance. `"bartlett"`, `"opg"` and, at order 2,
+`"integrate"` therefore return \\-1/\sigma^2\\ per observation; `"mc"`
+averages the observed \\\ell\_{\mu\mu}\\ and returns 0. When the family
+declares where its kink is, through
 [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md),
 the quadrature of
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)

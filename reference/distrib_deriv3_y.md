@@ -1,7 +1,8 @@
 # Third and Fourth Derivatives With Respect to the Response
 
+`distrib_deriv3_y()` and `distrib_deriv4_y()` return
 \\\partial^{3}\ell/\partial y^{3}\\ and \\\partial^{4}\ell/\partial
-y^{4}\\, completing the sequence begun by
+y^{4}\\, which complete the sequence begun by
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
 and
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md).
@@ -38,12 +39,12 @@ A numeric vector the length of `y`.
 
 ## Details
 
-A family whose response enters only as \\y - \mu\\ gets these from the
-derivatives it already has in the location, since
-\\\partial^{k}\ell/\partial y^{k} = (-1)^{k}\\
+For a family whose response enters only as \\y - \mu\\, these
+derivatives follow from the derivatives that the family already has in
+the location, since \\\partial^{k}\ell/\partial y^{k} = (-1)^{k}\\
 \partial^{k}\ell/\partial\mu^{k}\\. The other shipped families take them
-from closed forms of their own, and a family defined by its density
-alone takes one stencil of the requested order on the log-density.
+from closed forms of their own, and a family that is defined only by its
+density takes one stencil of the requested order on the log-density.
 
 As with the lower orders, a discrete family has no such derivative, and
 the call signals an error instead of returning a difference between

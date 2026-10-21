@@ -1,8 +1,9 @@
 # Skewness of the Gaussian Distribution
 
-Exactly zero at every parameter value. The density is symmetric about
-\\\mu\\, so every odd central moment vanishes. The constant is recycled
-to the length the parameters imply, and no quadrature is run.
+The skewness is exactly zero at every parameter value. The density is
+symmetric about \\\mu\\, so every odd central moment vanishes. The
+constant is recycled to the length that the parameters imply, and the
+method runs no quadrature.
 
 ## Arguments
 
@@ -13,9 +14,10 @@ to the length the parameters imply, and no quadrature is run.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths, and the list is still aligned and validated.
+  A named list with components `mu` and `sigma` (positive), in which
+  each component is a numeric vector of length 1 or `n`. The values are
+  not read, only their lengths, and the list is still aligned and
+  validated.
 
 - ...:
 
@@ -39,7 +41,7 @@ for the generic;
 ``` r
 d <- gaussian1_distrib()
 
-# Zero at every location and scale, with one value per setting.
+# The value is zero at every location and scale, with one value per setting.
 skewness(d, list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 #> [1] 0 0 0
 ```

@@ -1,9 +1,9 @@
 # Mean of the Beta-Binomial Distribution
 
-Closed form: \\E\[Y\] = n\mu\\, the same as a binomial's. The mixing
-beta has mean \\\mu\\, so mixing the success probability over it does
-not change the mean; the dispersion enters the variance and the higher
-moments.
+The mean has the closed form \\E\[Y\] = n\mu\\, the same as a
+binomial's. The mixing beta has mean \\\mu\\, so mixing the success
+probability over it does not change the mean; the dispersion enters the
+variance and the higher moments.
 
 ## Arguments
 
@@ -16,7 +16,7 @@ moments.
 - theta:
 
   A named list with components `mu` (the success probability, strictly
-  between 0 and 1) and `sigma` (the dispersion, positive), each a
+  between 0 and 1) and `sigma` (the dispersion, positive); each is a
   numeric vector of length 1 or of the common length of the parameter
   settings.
 
@@ -47,7 +47,7 @@ which this equals;
 ``` r
 d <- betabinom1_distrib(size = 10)
 
-# n mu, and the dispersion does not move it.
+# The mean is n mu, and the dispersion does not move it.
 mean(d, list(mu = 0.3, sigma = c(0.01, 0.5, 5)))
 #> [1] 3 3 3
 ```

@@ -1,9 +1,9 @@
 # Mean of the Gaussian Distribution in Location and Variance
 
-Closed form: \\E\[Y\] = \mu\\. This is the same law as
+The mean has the closed form \\E\[Y\] = \mu\\. This is the same law as
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
-written by its variance, and the mean is the location in all three of
-the toolkit's Gaussian parametrizations.
+written by its variance, and the mean is the location in every Gaussian
+parametrization of the toolkit.
 
 ## Arguments
 
@@ -15,8 +15,8 @@ the toolkit's Gaussian parametrizations.
 - theta:
 
   A named list with components `mu` (the mean, any real value) and
-  `sigma2` (the variance, positive), each a numeric vector of length 1
-  or `n`.
+  `sigma2` (the variance, positive); each is a numeric vector of length
+  1 or `n`.
 
 - ...:
 

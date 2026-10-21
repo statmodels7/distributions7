@@ -33,7 +33,7 @@ Prints one line per check, with the worst gap behind it.
 
 - ord:
 
-  The order the composition leaves.
+  The order that the composition leaves.
 
 - distrib:
 

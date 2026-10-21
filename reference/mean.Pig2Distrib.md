@@ -1,9 +1,10 @@
 # Mean of the Orthogonal Poisson-Inverse Gaussian Distribution
 
-Closed form: \\E\[Y\] = \mu\\. This is the same law as
+The mean has the closed form \\E\[Y\] = \mu\\. This is the same law as
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
-written by a dispersion \\\alpha\\ chosen so that the mean and the
-dispersion are orthogonal in the expected information; the mapping is
+written by a dispersion \\\alpha\\ that is chosen so that the mean and
+the dispersion are orthogonal in the expected information; the mapping
+is
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md),
 and the mean is the first parameter either way.
 
@@ -17,8 +18,8 @@ and the mean is the first parameter either way.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `alpha`
-  (the orthogonal dispersion, positive), each a numeric vector of length
-  1 or `n`.
+  (the orthogonal dispersion, positive); each is a numeric vector of
+  length 1 or `n`.
 
 - ...:
 

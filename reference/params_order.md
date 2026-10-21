@@ -1,9 +1,9 @@
 # The Order of Differentiability of a Family in Each Parameter
 
-One integer per parameter: the largest `k` such that the log-density has
-`k` continuous derivatives in that parameter everywhere in `y`. `Inf`
-marks a smooth parameter, which is the value for a family that declares
-no
+Returns one integer per parameter: the largest `k` such that the
+log-density has `k` continuous derivatives in that parameter everywhere
+in `y`. `Inf` marks a smooth parameter, which is the value for a family
+that declares no
 [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md)
 and records every parameter as smooth in `params_smooth`.
 
@@ -41,12 +41,12 @@ at zero reports the scale as smooth, which it then is.
 A family that declares no decomposition but records a parameter as
 non-smooth through `params_smooth` reports `NA` for it: there is a kink
 and its order has not been established. A consumer must treat that as
-unusable rather than as smooth, which is what
+unusable rather than as smooth, and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-and the fitting layer do. This is the state of every wrapper of a kinked
-family today.
+and the fitting layer do so. This is the state of every wrapper of a
+kinked family today.
 
-The consumers and the order each one needs:
+Each consumer needs the order shown below:
 
 |  |  |
 |----|----|
@@ -65,7 +65,7 @@ The consumers and the order each one needs:
 ## Examples
 
 ``` r
-# smooth everywhere
+# The Gaussian is smooth in every parameter.
 params_order(gaussian1_distrib())
 #>    mu sigma 
 #>   Inf   Inf 

@@ -34,15 +34,15 @@ expected_by_integrate(distrib, y, theta, order)
 
 ## Value
 
-A named list of expected derivative component vectors, each of length
-`length(y)`, keyed as
+A named list of expected derivative component vectors; each has length
+`length(y)`, and the names are the keys that
 [`observed_deriv()`](https://statmodels7.github.io/distributions7/reference/observed_deriv.md)
-keys that order.
+uses at that order.
 
 ## Details
 
-What this estimates is \\\mathbb{E}\[\partial^k \ell\]\\ literally. For
-a regular model that is the quantity wanted. For a family with a
+The function estimates \\\mathbb{E}\[\partial^k \ell\]\\ literally. For
+a regular model that is the required quantity. For a family with a
 non-smooth parameter it is not: the observed \\\ell\_{ij}\\ has a point
 mass at the kink, which an integral of its pointwise values does not
 contain (on a Laplace the location component would be 0 instead of
@@ -51,10 +51,11 @@ contain (on a Laplace the location component would be 0 instead of
 which needs only the score.
 
 Quadrature is also unreliable where the observed derivative is itself a
-finite difference, since it then integrates numerical noise. That error
-is caught and re-raised naming the component and pointing at the
-alternatives, so it reaches the caller as a statement about the route
-rather than as an opaque failure from the integrator.
+finite difference, since it then integrates numerical noise. The
+function catches that error and signals it again, naming the component
+and pointing at the alternatives, so that the caller receives a
+statement about the route rather than an opaque failure from the
+integrator.
 
 ## See also
 
@@ -63,6 +64,6 @@ for the three strategies;
 [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md),
 the route that survives a kink;
 [`expected_by_mc()`](https://statmodels7.github.io/distributions7/reference/expected_by_mc.md)
-where quadrature struggles;
+where quadrature performs poorly;
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md),
 which does the integration.

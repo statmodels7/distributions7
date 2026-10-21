@@ -1,9 +1,9 @@
 # Variance of the Geometric Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \mu(1+\mu)\\. It exceeds the mean
-at every parameter value, so the family is overdispersed relative to a
-Poisson, and it is exactly the negative binomial's variance at \\\theta
-= 1\\.
+The variance has the closed form \\\operatorname{Var}(Y) = \mu(1+\mu)\\.
+It exceeds the mean at every parameter value, so the family is
+overdispersed relative to a Poisson, and it is exactly the negative
+binomial's variance at \\\theta = 1\\.
 
 ## Arguments
 
@@ -39,7 +39,7 @@ the equidispersed comparison;
 ``` r
 d <- geometric_distrib()
 
-# Mean times one plus the mean.
+# The variance is the mean times one plus the mean.
 all.equal(variance(d, list(mu = 3)), 12)
 #> [1] TRUE
 

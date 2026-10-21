@@ -1,7 +1,7 @@
 # Chi-Squared Mixed Derivative
 
-Closed form: the degrees of freedom are the mean, and \\\ell^{(y)} =
-(\mu/2 - 1)/y - 1/2\\ gives \\1/(2y)\\.
+The mixed derivative is in closed form: the degrees of freedom are the
+mean, and \\\ell^{(y)} = (\mu/2 - 1)/y - 1/2\\ gives \\1/(2y)\\.
 
 ## Arguments
 

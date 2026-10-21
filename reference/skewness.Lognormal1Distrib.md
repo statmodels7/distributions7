@@ -1,10 +1,10 @@
 # Skewness of the Lognormal Distribution
 
-Closed form: \\\gamma_1 = (e^{\sigma^2} + 2)\sqrt{e^{\sigma^2} - 1}\\,
-free of \\\mu\\. It is positive at every parameter value and grows
-without bound with the spread of the logarithm: at \\\sigma^2 = 1\\ it
-is already 6.18, where a gamma of the same mean would need a shape near
-0.1 to match it.
+The skewness has the closed form \\\gamma_1 = (e^{\sigma^2} +
+2)\sqrt{e^{\sigma^2} - 1}\\, which is free of \\\mu\\. It is positive at
+every parameter value and grows without bound with the spread of the
+logarithm: at \\\sigma^2 = 1\\ it is already 6.18, where a gamma of the
+same mean would need a shape near 0.1 to match it.
 
 ## Arguments
 
@@ -16,7 +16,7 @@ is already 6.18, where a gamma of the same mean would need a shape near
 - theta:
 
   A named list with components `mu` (any real value) and `sigma2`
-  (positive), each a numeric vector of length 1 or `n`. Only `sigma2`
+  (positive); each is a numeric vector of length 1 or `n`. Only `sigma2`
   enters the value, and the exponentials overflow to `Inf` for large
   `sigma2`.
 
@@ -46,7 +46,7 @@ which grows faster still;
 ``` r
 d <- lognormal1_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(skewness(d, list(mu = 0, sigma2 = 1)),
           (exp(1) + 2) * sqrt(exp(1) - 1))
 #> [1] TRUE

@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Chi-Squared Distribution
 
-Closed form: \\\gamma_2 = 12/\mu\\, the excess over the Gaussian. It is
-positive at every degrees of freedom and decays like \\\mu^{-1}\\,
-whereas the skewness decays like \\\mu^{-1/2}\\: \\\gamma_2 =
-3\gamma_1^2/2\\.
+The excess kurtosis has the closed form \\\gamma_2 = 12/\mu\\, the
+excess over the Gaussian. It is positive at every degrees of freedom and
+decays like \\\mu^{-1}\\, whereas the skewness decays like
+\\\mu^{-1/2}\\: \\\gamma_2 = 3\gamma_1^2/2\\.
 
 ## Arguments
 
@@ -38,7 +38,7 @@ for the containing family;
 ``` r
 d <- chisq_distrib()
 
-# Twelve over the degrees of freedom.
+# The value is twelve over the degrees of freedom.
 all.equal(kurtosis(d, list(mu = 5)), 12 / 5)
 #> [1] TRUE
 

@@ -1,8 +1,8 @@
 # Default Fourth Derivative of the Expected Information
 
-One second-order stencil on
-[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md);
-an error where the family has no analytic second derivative.
+Applies one second-order stencil to
+[`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
+and signals an error where the family has no analytic second derivative.
 
 ## Arguments
 

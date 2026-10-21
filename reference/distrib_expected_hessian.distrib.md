@@ -1,7 +1,7 @@
 # Default Expected Hessian for `distrib` Objects
 
-Fallback method, for a family that does not write its expected
-information out. It rests on the second Bartlett identity,
+This method is the fallback for a family that does not write its
+expected information out. It rests on the second Bartlett identity,
 \\\mathbb{E}\[\ell^{(ij)}\] = -\mathbb{E}\[\ell^{(i)}\ell^{(j)}\]\\,
 which holds for a regular model and, unlike
 \\\mathbb{E}\[\ell^{(ij)}\]\\ read directly, survives a log-likelihood
@@ -32,6 +32,7 @@ still the information).
 - approx:
 
   One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, the strategy
+  that
   [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
   uses. Defaults to `"opg"`.
 
@@ -58,7 +59,7 @@ so it costs one call to
 support for a discrete family and a quadrature for a continuous one, and
 is orders of magnitude dearer. See
 [`expected_by_opg()`](https://statmodels7.github.io/distributions7/reference/expected_by_opg.md)
-for what the default gives up and what it does not.
+for the properties that the default loses and those that it retains.
 
 The score is taken from
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
@@ -72,4 +73,5 @@ and
 [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md)
 for the two readings of the identity, and
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-for the predicate that says whether a family reaches this method at all.
+for the predicate that determines whether a family reaches this method
+at all.

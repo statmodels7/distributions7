@@ -17,7 +17,7 @@ it."><meta property="og:image" content="https://statmodels7.github.io/distributi
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,33 +96,33 @@ observation of a family with no finite bound.</p></dd>
 
 
 <dt id="arg-order-accuracy">order, accuracy<a class="anchor" aria-label="anchor" href="#arg-order-accuracy"></a></dt>
-<dd><p>The stencil the step is for, which fix its reach
-through <code><a href="https://statmodels7.github.io/numericals7/reference/fd_offsets.html" class="external-link">numericals7::fd_offsets()</a></code>: the clamp is on the outermost node,
-so a rule evaluating two steps out is cut to half of what a central
-difference is. The defaults are the central difference, whose reach is
-one. <code><a href="numerical_deriv_y.html">numerical_deriv_y()</a></code> and <code><a href="mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code> pass the
-order of their own stencils.</p></dd>
+<dd><p>The stencil for which the step is computed. Its reach,
+given by <code><a href="https://statmodels7.github.io/numericals7/reference/fd_offsets.html" class="external-link">numericals7::fd_offsets()</a></code>, determines the clamp, which acts on
+the outermost node, so a rule that evaluates two steps out is cut to half
+of what a central difference is. The defaults are the central difference,
+whose reach is one. <code><a href="numerical_deriv_y.html">numerical_deriv_y()</a></code> and <code><a href="mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>
+pass the order of their own stencils.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector of steps, as long as <code>y</code>. An observation strictly
-inside the support gets a positive step, and one on a finite bound gets
-zero.</p>
+    <p>A numeric vector of steps, as long as <code>y</code>. The step is positive for
+an observation strictly inside the support and zero for one on a finite
+bound.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The scaling by \(\max(1, |y|)\) makes the step relative where the response
 is large and absolute where it is small, so a value near zero is not
 differenced with a step below the resolution of a double.</p>
-<p><code>to_bound = "clamp"</code> is what the support requires and no more. A gamma
-observation at \(y = 10^{-3}\) differenced with the default step of
-\(6 \times 10^{-6}\) needs no help, but one at \(y = 10^{-8}\) would be
-evaluated at a negative point, where the log-density is not defined and
-<code>distrib_pdf(..., log = TRUE)</code> returns <code>-Inf</code>. The factor 0.49 leaves the step under half
-the distance to the bound, so both evaluation points stay inside with room
-to spare: at \(y = 10^{-8}\) the step becomes \(4.9\times 10^{-9}\) and
-the left point \(5.1\times 10^{-9}\).</p>
+<p><code>to_bound = "clamp"</code> applies only the correction that the support
+requires. A gamma observation at \(y = 10^{-3}\) differenced with the
+default step of \(6 \times 10^{-6}\) needs no help, but one at \(y =
+10^{-8}\) would be evaluated at a negative point, where the log-density is not
+defined and <code>distrib_pdf(..., log = TRUE)</code> returns <code>-Inf</code>. The factor 0.49
+leaves the step under half the distance to the bound, so both evaluation
+points stay inside with room to spare: at \(y = 10^{-8}\) the step becomes
+\(4.9\times 10^{-9}\) and the left point \(5.1\times 10^{-9}\).</p>
 <p><code>to_bound = "scale"</code> takes \(h = h_{rel}\min(\max(1, |y|), d)\), with
 \(d\) the distance to the nearest finite bound, so the step shrinks in
 proportion as the response approaches the bound rather than sitting at
@@ -173,7 +173,7 @@ step, and <code><a href="fd_stable_quotient.html">fd_stable_quotient()</a></code
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">fd_steps_y</span><span class="op">(</span><span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span>, <span class="va">h_rel</span>, <span class="st">"scale"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6.055454e-14 6.055454e-09 6.055454e-06</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The two steps the callers use differ by a factor of twenty.</span></span></span>
+<span class="r-in"><span><span class="co"># The two steps that the callers use differ by a factor of twenty.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>first_order <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  second_order <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  first_order second_order </span>

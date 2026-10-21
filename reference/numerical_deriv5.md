@@ -1,7 +1,8 @@
 # Fifth-Order Derivatives by One Tensor Stencil
 
-The fifth-order derivative components, each a single tensor-product
-central difference of the highest analytic order below it, through
+Computes the fifth-order derivative components, where each component is
+a single tensor-product central difference of the highest analytic order
+below it, through
 [`tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/tensor_derivatives.md).
 
 ## Usage
@@ -58,7 +59,7 @@ fourth-order component in one parameter: the component of a
 non-decreasing five-tuple is the four-tuple left when one index is
 dropped, and the whole order costs one stencil per parameter. Where the
 fourth order is not analytic, a family that registers no wrapper reads
-the highest order it implements itself, as
+the highest order that it implements itself, as
 [`analytic_order()`](https://statmodels7.github.io/distributions7/reference/analytic_order.md)
 gives it, and a wrapper of a parent without an analytic fourth order
 differences its log-density, because its lower orders are partition sums

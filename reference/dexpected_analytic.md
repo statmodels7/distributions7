@@ -41,7 +41,7 @@ dexpected_analytic(distrib, y, theta, scale, order, threads, kern)
   parameter scale. A kernel called for order 2 may return the order-1
   components beside the order-2 ones, and where it does they are read
   from that one call rather than from a second: a route that sums over
-  the support pays for the family's derivatives once.
+  the support computes the family's derivatives once.
 
 ## Value
 

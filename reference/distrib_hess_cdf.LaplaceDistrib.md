@@ -1,6 +1,7 @@
 # Laplace Log-CDF Hessian
 
-Closed form, from the same location-scale structure, through
+Computes the Hessian in closed form, from the same location-scale
+structure, through
 [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md).
 The response derivative that it reads is \\\ell_y =
 -\mathrm{sign}(z)/\sigma\\, which jumps at \\q = \mu\\. The component
@@ -23,7 +24,7 @@ at the kink, which is a property of the law. The components
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
+  A named list with components `mu` and `sigma` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -40,7 +41,7 @@ at the kink, which is a property of the law. The components
 
 A named list of three numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`.
+in which each vector has the length of `q` recycled against `theta`.
 
 ## Details
 

@@ -1,9 +1,9 @@
 # Pseudo-Huber Log-CDF Gradient
 
-Closed form in the location and the scale, \\-f(q)\\ and \\-z f(q)\\
-with \\z = (q-\mu)/\sigma\\; the component in the shape \\\nu\\ is the
-integral of the density's own derivative, taken by the compiled rule.
-The method is
+Computes the location and scale components in closed form, \\-f(q)\\ and
+\\-z f(q)\\ with \\z = (q-\mu)/\sigma\\; the component in the shape
+\\\nu\\ is the integral of the density's own derivative, taken by the
+compiled rule. The method is
 [`compiled_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 itself, shared with the other families whose distribution function has
 no closed derivative in a shape parameter.
@@ -22,7 +22,7 @@ no closed derivative in a shape parameter.
 - theta:
 
   A named list with components `mu`, `sigma` (positive) and `nu`
-  (positive), each a numeric vector of length 1 or `n`.
+  (positive); each is a numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -36,8 +36,8 @@ no closed derivative in a shape parameter.
 
 ## Value
 
-A named list of three numeric vectors, `mu`, `sigma` and `nu`, each the
-length of `q` recycled against `theta`.
+A named list of three numeric vectors, `mu`, `sigma` and `nu`, in which
+each vector has the length of `q` recycled against `theta`.
 
 ## Notation
 
@@ -64,7 +64,7 @@ all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 #> [1] TRUE
 
-# The shape component, on the log scale of the lower tail.
+# The shape component is computed on the log scale of the lower tail.
 distrib_grad_cdf(d, q, th)$nu
 #> [1]  0.033358345 -0.003435126 -0.011536871
 ```

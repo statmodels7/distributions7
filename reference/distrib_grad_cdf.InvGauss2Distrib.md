@@ -1,8 +1,9 @@
 # Inverse Gaussian Log-CDF Gradient in Mean and Rate
 
-Closed form, by the chain rule on the dispersion parametrization's
-gradient through \\\phi = 1/\lambda\\. The mean component is unchanged;
-the rate component is the dispersion one times \\-1/\lambda^2\\.
+Computes the gradient in closed form, by the chain rule on the
+dispersion parametrization's gradient through \\\phi = 1/\lambda\\. The
+mean component is unchanged; the rate component is the dispersion one
+times \\-1/\lambda^2\\.
 
 ## Arguments
 
@@ -17,8 +18,8 @@ the rate component is the dispersion one times \\-1/\lambda^2\\.
 
 - theta:
 
-  A named list with components `mu` (positive) and `lambda` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `lambda` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -36,8 +37,8 @@ the rate component is the dispersion one times \\-1/\lambda^2\\.
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `lambda`, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `lambda`; each has the
+length of `q` recycled against `theta`.
 
 ## Details
 
@@ -72,7 +73,8 @@ d <- invgauss2_distrib()
 q <- c(0.5, 2, 5)
 th <- list(mu = 2, lambda = 8)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 #> [1] 2.463587e-10

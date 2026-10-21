@@ -2,10 +2,10 @@
 
 Holds a
 [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md)
-to the family that declares it. The declaration says where the kink is,
-what sits on top of it and what stands in front; the family's own
-density and score are written independently of it, so the two can be
-compared.
+to the family that declares it. The declaration gives the location of
+the kink, the composition that sits on top of it and the multiplier that
+stands in front; the family's own density and score are written
+independently of it, so the two can be compared.
 
 ## Usage
 
@@ -39,7 +39,8 @@ check does not apply.
 
 ## Details
 
-Three checks, at probe parameters inside every interval:
+The function runs three checks, at probe parameters inside every
+interval:
 
 - `dv`:
 
@@ -49,19 +50,20 @@ Three checks, at probe parameters inside every interval:
 
 - `jump`:
 
-  the jump of the score across the kink against the one the declaration
-  predicts. Writing \\\Delta\phi'\\ for the jump of \\\phi'\\ at the
-  origin (2 for \\\lvert v \rvert\\ and 1 for \\(v)\_+\\), the score of
-  \\c(\theta)\phi(v)\\ jumps by \$\$c(\theta)\\ \Delta\phi' \\ \partial
-  v/\partial \theta_p\$\$ as \\y\\ crosses the surface \\v = 0\\. This
-  is the check that matters: it reads `phi`, `v`, `dv` and `coef` at
-  once, and a wrong `v` fails it.
+  the jump of the score across the kink against the one that the
+  declaration predicts. Writing \\\Delta\phi'\\ for the jump of
+  \\\phi'\\ at the origin (2 for \\\lvert v \rvert\\ and 1 for
+  \\(v)\_+\\), the score of \\c(\theta)\phi(v)\\ jumps by
+  \$\$c(\theta)\\ \Delta\phi' \\ \partial v/\partial \theta_p\$\$ as
+  \\y\\ crosses the surface \\v = 0\\. This is the most important check:
+  it reads `phi`, `v`, `dv` and `coef` at once, and a wrong `v` fails
+  it.
 
 - `smooth`:
 
-  the score of every parameter the declaration calls smooth really is
-  continuous across the same surface. Without this the check would pass
-  a declaration that named too few parameters.
+  the score of every parameter that the declaration calls smooth really
+  is continuous across the same surface. Without this the check would
+  pass a declaration that named too few parameters.
 
 A composition whose \\\Delta\phi'\\ is zero (\\(v)\_+^2\\ and
 \\(v)\_+^3\\, where the second and third derivative jump instead) is

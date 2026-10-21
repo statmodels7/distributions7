@@ -1,7 +1,8 @@
 # Laplace Log-CDF Gradient in Location and Rate
 
-Closed form: \\\partial F/\partial\mu = -f(q)\\ and \\\partial
-F/\partial\lambda = (q-\mu)\\f(q)/\lambda\\. This is the same law as
+Computes the gradient in closed form: \\\partial F/\partial\mu = -f(q)\\
+and \\\partial F/\partial\lambda = (q-\mu)\\f(q)/\lambda\\. This is the
+same law as
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
 written by its rate \\\lambda = 1/\sigma\\, and the chain rule turns the
 scale component into the one above.
@@ -19,7 +20,7 @@ scale component into the one above.
 
 - theta:
 
-  A named list with components `mu` and `lambda` (positive), each a
+  A named list with components `mu` and `lambda` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -38,8 +39,8 @@ scale component into the one above.
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `lambda`, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `lambda`, in which each
+vector has the length of `q` recycled against `theta`.
 
 ## Notation
 

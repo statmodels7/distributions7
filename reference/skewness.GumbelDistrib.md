@@ -1,9 +1,10 @@
 # Skewness of the Gumbel Distribution
 
-Constant: \\\gamma_1 = 12\sqrt6\\\zeta(3)/\pi^3 \approx 1.1395\\, with
-\\\zeta(3)\\ Apery's constant. The Gumbel is a location-scale family
-with no shape parameter, so its standardized moments are constants:
-every Gumbel has this same right skew, whatever its location and scale.
+The skewness is the constant \\\gamma_1 = 12\sqrt6\\\zeta(3)/\pi^3
+\approx 1.1395\\, with \\\zeta(3)\\ Apery's constant. The Gumbel is a
+location-scale family with no shape parameter, so its standardized
+moments are constants: every Gumbel has this same right skew, whatever
+its location and scale.
 
 ## Arguments
 
@@ -14,8 +15,9 @@ every Gumbel has this same right skew, whatever its location and scale.
 
 - theta:
 
-  A named list with components `mu` and `sigma`, each a numeric vector
-  of length 1 or `n`. The values are not read, only their lengths.
+  A named list with components `mu` and `sigma`; each is a numeric
+  vector of length 1 or `n`. The values are not read, only their
+  lengths.
 
 - ...:
 
@@ -34,7 +36,7 @@ base R has no function that returns it.
 ## Notation
 
 \\\zeta\\ is the Riemann zeta function; \\\mu\\ and \\\sigma \> 0\\ are
-the location and the scale, neither of which enters the value.
+the location and the scale, which do not enter the value.
 
 ## See also
 
@@ -51,11 +53,11 @@ which do move with the parameters;
 ``` r
 d <- gumbel_distrib()
 
-# One number for the whole family.
+# The skewness is one number for the whole family.
 skewness(d, list(mu = c(0, 5, -3), sigma = c(1, 7, 0.2)))
 #> [1] 1.139547 1.139547 1.139547
 
-# Against the published constant.
+# The value is compared with the published constant.
 all.equal(skewness(d, list(mu = 0, sigma = 1)),
           12 * sqrt(6) * 1.2020569031595942854 / pi^3)
 #> [1] TRUE

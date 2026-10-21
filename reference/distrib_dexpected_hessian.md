@@ -1,7 +1,7 @@
 # The Derivative of the Expected Information
 
-\\\partial\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\, one component
-per pair \\(a,b)\\ and differentiating parameter \\c\\.
+Returns \\\partial\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\, with
+one component per pair \\(a,b)\\ and differentiating parameter \\c\\.
 
 ## Usage
 
@@ -29,7 +29,7 @@ distrib_dexpected_hessian(
 
 - theta:
 
-  A named list of parameters, each of length 1 or `length(y)`.
+  A named list of parameters; each has length 1 or `length(y)`.
 
 - scale:
 
@@ -58,7 +58,7 @@ The components are symmetric in \\(a,b)\\ and not in \\c\\: writing
 first term is fully symmetric and the second is not, so the result is
 keyed by
 [`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
-rather than by the sorted triples
+rather than by the sorted triples that
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 uses at order three.
 
@@ -71,7 +71,7 @@ it is not, the method signals an error: see
 On `scale = "link"` the difference is taken along the free scale of the
 parameter being differentiated, and the expected information is read on
 the link scale at each of the two points, so the chain rule is never
-written out here and cannot disagree with the one
+written out here and cannot disagree with the one that
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 already applies.
 

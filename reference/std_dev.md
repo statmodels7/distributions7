@@ -2,8 +2,8 @@
 
 Computes \\\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}\\ for a
 distribution object, or the sample standard deviation for a numeric
-vector. No family registers a closed form of its own, so a `distrib`
-always reaches the square root of
+vector. The families register no closed form of their own, so a
+`distrib` always reaches the square root of
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),
 which is where a family's formula is consulted. A numeric vector is
 passed to [`stats::sd()`](https://rdrr.io/r/stats/sd.html).
@@ -25,7 +25,8 @@ std_dev(x, ...)
   For a `distrib`: `theta`, a named list of parameters, followed by any
   further arguments for
   [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md).
-  For a numeric vector: `na.rm`, a single logical, `FALSE` by default.
+  For a numeric vector, the argument is `na.rm`, a single logical that
+  is `FALSE` by default.
 
 ## Value
 
@@ -63,7 +64,7 @@ for the numerical route.
 std_dev(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 #> [1] 1 2 4
 
-# The square root of the variance, on any family.
+# The standard deviation is the square root of the variance, on any family.
 d <- gamma2_distrib()
 all.equal(std_dev(d, list(mu = 2, sigma2 = 1)),
           sqrt(variance(d, list(mu = 2, sigma2 = 1))))

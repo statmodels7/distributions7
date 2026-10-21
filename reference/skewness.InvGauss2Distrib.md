@@ -1,9 +1,10 @@
 # Skewness of the Inverse Gaussian Distribution in Mean and Shape
 
-Closed form: \\\gamma_1 = 3\sqrt{\mu/\lambda}\\. It is positive at every
-parameter value and depends on the two only through their ratio, so the
-whole family is one curve indexed by \\\mu/\lambda\\. A small mean or a
-large \\\lambda\\ gives a nearly Gaussian shape.
+The skewness has the closed form \\\gamma_1 = 3\sqrt{\mu/\lambda}\\. It
+is positive at every parameter value and depends on the two only through
+their ratio, so the whole family is one curve indexed by
+\\\mu/\lambda\\. A small mean or a large \\\lambda\\ gives a nearly
+Gaussian shape.
 
 ## Arguments
 
@@ -14,8 +15,8 @@ large \\\lambda\\ gives a nearly Gaussian shape.
 
 - theta:
 
-  A named list with components `mu` (positive) and `lambda` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `lambda` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -42,7 +43,7 @@ which is \\5/3\\ times the square of this;
 ``` r
 d <- invgauss2_distrib()
 
-# Three times the square root of the ratio.
+# The skewness is three times the square root of the ratio.
 all.equal(skewness(d, list(mu = 2, lambda = 8)), 1.5)
 #> [1] TRUE
 

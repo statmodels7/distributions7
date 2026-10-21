@@ -17,7 +17,7 @@ closed form; these two reach a quadrature through moment()."><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,40 +73,40 @@ closed form; these two reach a quadrature through <code><a href="moment.html">mo
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>For a <code>distrib</code>: <code>theta</code>, a named list of parameters, followed by
-any further arguments for <code><a href="moment.html">moment()</a></code>. For a numeric vector: <code>na.rm</code>, a
-single logical, <code>FALSE</code> by default.</p></dd>
+any further arguments for <code><a href="moment.html">moment()</a></code>. For a numeric vector, the argument
+is <code>na.rm</code>, a single logical that is <code>FALSE</code> by default.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector for a <code>distrib</code>, one value per parameter setting; a
-single number for a numeric vector. <code>NaN</code> where the third moment does not
-exist, as for the Cauchy and for the Student t at three degrees of freedom
-or fewer.</p>
+single number for a numeric vector. The value is <code>NaN</code> where the third
+moment does not exist, as for the Cauchy and for the Student t at three
+degrees of freedom or fewer.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-sign-and-the-size-mean">What the sign and the size mean<a class="anchor" aria-label="anchor" href="#what-the-sign-and-the-size-mean"></a></h2>
     <p>\(\gamma_1\) is invariant to location and to positive scaling, so it is a
-property of the shape alone: every Gaussian has \(\gamma_1 = 0\) and every
+property of the shape only: every Gaussian has \(\gamma_1 = 0\) and every
 exponential has \(\gamma_1 = 2\), whatever their parameters. In a family
-with a shape parameter \(\gamma_1\) varies with that parameter: a Poisson
+with a shape parameter, \(\gamma_1\) varies with that parameter: a Poisson
 at mean \(\mu\) has \(\gamma_1 = \mu^{-1/2}\), so its asymmetry vanishes
 as the counts grow.</p>
     </div>
     <div class="section level2">
     <h2 id="when-it-fails-to-exist">When it fails to exist<a class="anchor" aria-label="anchor" href="#when-it-fails-to-exist"></a></h2>
-    <p>The third moment is needed, so a family with heavy tails may have no
-skewness even where it has a mean. A Student t has one only above three
-degrees of freedom and returns <code>NaN</code> at or below them; a Cauchy has none at
-any parameter value and also returns <code>NaN</code>.</p>
+    <p>The skewness exists only where the third moment exists, so a family with
+heavy tails may have no skewness even where it has a mean. A Student t has
+one only above three degrees of freedom and returns <code>NaN</code> at or below them;
+a Cauchy has none at any parameter value and also returns <code>NaN</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-sample-method-returns">What the sample method returns<a class="anchor" aria-label="anchor" href="#what-the-sample-method-returns"></a></h2>
     <p>On a numeric vector the third and second central moments both divide by
 \(n\), so the value is \(m_3 / m_2^{3/2}\) with
 \(m_k = n^{-1}\sum_i (y_i - \bar y)^k\). This is the population
-denominator, and it differs from the \(n - 1\) convention <code><a href="variance.html">variance()</a></code>
-uses on a vector.</p>
+denominator, and it differs from the \(n - 1\) convention that
+<code><a href="variance.html">variance()</a></code> uses on a vector.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -116,7 +116,7 @@ uses on a vector.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Zero for a symmetric family, at every parameter value.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The skewness is zero for a symmetric family, at every parameter value.</span></span></span>
 <span class="r-in"><span><span class="fu">skewness</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0</span>
 <span class="r-in"><span></span></span>

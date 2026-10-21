@@ -1,8 +1,8 @@
 # Detect and Measure a Divergence at the Edges of the Support
 
-For each finite edge, the exponent \\\alpha\\ of a divergence \\f(y)
-\sim \lvert y - a \rvert^{\alpha - 1}\\, or `NA` when the density stays
-bounded there.
+Returns, for each finite edge, the exponent \\\alpha\\ of a divergence
+\\f(y) \sim \lvert y - a \rvert^{\alpha - 1}\\, or `NA` when the density
+stays bounded there.
 
 ## Usage
 
@@ -26,9 +26,10 @@ A numeric vector of length 2, named `lower` and `upper`.
 
 ## Details
 
-A density that diverges at an edge is the one case the ratio-of-uniforms
-sampler cannot handle directly, so it has to be detected and then
-removed by a change of variable, which needs the exponent.
+A density that diverges at an edge is the one case that the
+ratio-of-uniforms sampler cannot handle directly, so it has to be
+detected and then removed by a change of variable, which needs the
+exponent.
 
 Detecting and measuring are the same operation. Walking towards the edge
 in decades lifts the log-density by \\(1 - \alpha)\log 10\\ per step

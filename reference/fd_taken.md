@@ -44,9 +44,10 @@ of the last place. With them \$\$f'(x) \approx \frac{f(x+h) -
 f(x-h)}{h\_+ + h\_-}, \qquad f''(x) \approx \frac{2\\h\_- f(x+h) -
 (h\_+ + h\_-) f(x) + h\_+ f(x-h)\\} {h\_+ h\_- (h\_+ + h\_-)},\$\$ which
 are the uniform formulas wherever \\h\_+ = h\_- = h\\. The correction is
-of the order of one unit of the last place over the step: negligible for
-a step of many units, and the whole of the accuracy for a step of a few,
-which is what a step within about \\10^{-10}\\ of a non-zero bound is.
+of the order of one unit of the last place over the step. It is
+negligible for a step of many units and accounts for the whole of the
+accuracy for a step of a few units, which is the case for a step within
+about \\10^{-10}\\ of a non-zero bound.
 
 ## See also
 

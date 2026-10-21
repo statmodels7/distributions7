@@ -17,7 +17,7 @@ order."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ or <code>NaN</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Passed to methods. No shipped method reads it.</p></dd>
+<dd><p>Passed to methods. The shipped methods do not use it.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -120,10 +120,10 @@ distribution function through <code><a href="numerical_cdf_deriv_k.html">numeric
     </div>
     <div class="section level2">
     <h2 id="what-consumes-them">What consumes them<a class="anchor" aria-label="anchor" href="#what-consumes-them"></a></h2>
-    <p>Truncation. <code><a href="truncated.html">truncated()</a></code> needs the derivatives of its normalizing constant
-\(Z = F(U) - F(L^-)\), and with only the first two orders available it
-pays one quadrature per component at orders three and four; with these it
-pays two calls on the parent instead.</p>
+    <p>Truncation consumes them. <code><a href="truncated.html">truncated()</a></code> requires the derivatives of its
+normalizing constant \(Z = F(U) - F(L^-)\), and when only the first two
+orders are available it computes one quadrature per component at orders
+three and four; with these it makes two calls on the parent instead.</p>
     </div>
     <div class="section level2">
     <h2 id="accuracy">Accuracy<a class="anchor" aria-label="anchor" href="#accuracy"></a></h2>
@@ -148,7 +148,7 @@ below; <code><a href="truncated.html">truncated()</a></code>, the consumer; <cod
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Four third-order components for a two-parameter family.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A two-parameter family has four third-order components.</span></span></span>
 <span class="r-in"><span><span class="fu">distrib_deriv3_cdf</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.2957182</span>
@@ -179,7 +179,7 @@ below; <code><a href="truncated.html">truncated()</a></code>, the consumer; <cod
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># One component for a one-parameter family, and the sum is exact here.</span></span></span>
+<span class="r-in"><span><span class="co"># A one-parameter family has one component, and the sum is exact here.</span></span></span>
 <span class="r-in"><span><span class="fu">distrib_deriv4_cdf</span><span class="op">(</span><span class="fu"><a href="poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu_mu_mu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.04026212</span>

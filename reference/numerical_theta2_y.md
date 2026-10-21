@@ -52,9 +52,9 @@ keyed as
 The reference is
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 or
-[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
-so a distribution with a closed form for those requires exactly one
-difference and never differences a difference.
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md).
+If a distribution has a closed form for those, the function applies
+exactly one difference to that closed form.
 
 A mixed pair is differenced in both orders and the two results are
 averaged. They agree in exact arithmetic and differ in floating point

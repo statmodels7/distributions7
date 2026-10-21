@@ -17,7 +17,7 @@ distribution function: it integrates `distrib_pdf` numerically.
 
 - theta:
 
-  A named list of parameters, each of length 1 or `length(q)`.
+  A named list of parameters; each has length 1 or `length(q)`.
 
 - lower.tail:
 
@@ -47,7 +47,7 @@ names it.
 An approximate mode is located first by
 [`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md),
 and the integral is taken over whichever side of the mode holds \\q\\,
-the other side being reached through the complement. The quadrature
+and the other side is reached through the complement. The quadrature
 nodes then concentrate where the probability mass is, which gives the
 integral its accuracy without any information about the shape of the
 density.

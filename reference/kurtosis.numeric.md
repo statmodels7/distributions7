@@ -1,8 +1,9 @@
 # Sample Excess Kurtosis
 
-The sample excess kurtosis of a numeric vector, \\m_4 / m_2^{2} - 3\\
-with \\m_k = n^{-1}\sum_i (y_i - \bar y)^k\\. Both central moments
-divide by \\n\\, so this is the population denominator, the convention
+Computes the sample excess kurtosis of a numeric vector, \\m_4 /
+m_2^{2} - 3\\ with \\m_k = n^{-1}\sum_i (y_i - \bar y)^k\\. Both central
+moments divide by \\n\\, so this is the population denominator, the
+convention that
 [`skewness.numeric()`](https://statmodels7.github.io/distributions7/reference/skewness.numeric.md)
 also uses. The estimator is biased downwards in small samples, and heavy
 tails make it slow to settle: it depends on the fourth moment, so a
@@ -12,13 +13,13 @@ handful of extreme points dominate it.
 
 - x:
 
-  A numeric vector. A constant vector gives `NaN`, the standardizing
-  denominator being zero.
+  A numeric vector. A constant vector gives `NaN`, because the
+  standardizing denominator is zero.
 
 - na.rm:
 
-  Should missing values be dropped before the moments are taken? A
-  single logical, `FALSE` by default, which propagates `NA`.
+  Should missing values be dropped before the moments are taken? It is a
+  single logical, `FALSE` by default, and `FALSE` propagates `NA`.
 
 - ...:
 
@@ -43,7 +44,7 @@ whose denominator is \\n - 1\\.
 set.seed(1)
 y <- rt(1000, df = 10)
 
-# The n denominator, written out.
+# The denominator is n, written out.
 m <- mean(y)
 all.equal(kurtosis(y), mean((y - m)^4) / mean((y - m)^2)^2 - 3)
 #> [1] TRUE

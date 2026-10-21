@@ -1,8 +1,8 @@
 # Mean of the Gamma Distribution
 
-Closed form: \\E\[Y\] = \mu\\. The two parameters of this
-parametrization are the mean and the variance, so the method returns the
-first parameter. The shape \\\mu^2/\sigma^2\\ and the rate
+The mean has the closed form \\E\[Y\] = \mu\\. The two parameters of
+this parametrization are the mean and the variance, so the method
+returns the first parameter. The shape \\\mu^2/\sigma^2\\ and the rate
 \\\mu/\sigma^2\\ are functions of the two.
 
 ## Arguments
@@ -15,7 +15,8 @@ first parameter. The shape \\\mu^2/\sigma^2\\ and the rate
 - theta:
 
   A named list with components `mu` (the mean, positive) and `sigma2`
-  (the variance, positive), each a numeric vector of length 1 or `n`.
+  (the variance, positive), in which each component is a numeric vector
+  of length 1 or `n`.
 
 - ...:
 

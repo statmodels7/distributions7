@@ -1,12 +1,13 @@
 # Skew Normal Log-CDF Derivatives
 
-Closed form at every order from one to four, in the shape as well as in
-the location and the scale. With \\z = (q-\mu)/\sigma\\ the distribution
-function is \\\Phi(z) - 2T(z,\alpha)\\, and Owen's \\T\\ has elementary
-partial derivatives in both arguments, so the integral in its definition
-is differentiated away at the first order and never has to be
-differentiated again. The location and the scale then enter only through
-\\z\\, by the same chain rule the other location-scale families use.
+The derivatives are in closed form at every order from one to four, in
+the shape as well as in the location and the scale. With \\z =
+(q-\mu)/\sigma\\ the distribution function is \\\Phi(z) -
+2T(z,\alpha)\\, and Owen's \\T\\ has elementary partial derivatives in
+both arguments, so the integral in its definition is differentiated away
+at the first order and never has to be differentiated again. The
+location and the scale then enter only through \\z\\, by the same chain
+rule that the other location-scale families use.
 
 ## Arguments
 
@@ -22,7 +23,7 @@ differentiated again. The location and the scale then enter only through
 - theta:
 
   A named list with components `mu`, `sigma` (positive) and `alpha` (any
-  sign), each a numeric vector of length 1 or `n`.
+  sign); each is a numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -96,7 +97,7 @@ gg <- distrib_grad_cdf(gaussian1_distrib(), q, list(mu = 0.3, sigma = 1.2),
 max(abs(g0$mu - gg$mu))
 #> [1] 2.775558e-17
 
-# Three, six, ten and fifteen components as the order rises.
+# The number of components is three, six, ten and fifteen as the order rises.
 lengths(list(distrib_grad_cdf(d, q, th),
              distrib_hess_cdf(d, q, th),
              distrib_deriv3_cdf(d, q, th),

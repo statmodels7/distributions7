@@ -1,11 +1,12 @@
 # Excess Kurtosis of the Orthogonal Poisson-Inverse Gaussian Distribution
 
-The cumulant ratio \\\gamma_2 = \kappa_4/\kappa_2^{2}\\ of
+The excess kurtosis is the cumulant ratio \\\gamma_2 =
+\kappa_4/\kappa_2^{2}\\ of
 [`kurtosis.Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Pig1Distrib.md),
 read at the dispersion \\\sigma = \\
 [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)`(mu, alpha)`.
 As there, the ratio of the fourth cumulant to the squared second is
-already the excess, so no 3 is subtracted.
+already the excess, so the method does not subtract 3.
 
 ## Arguments
 
@@ -16,8 +17,8 @@ already the excess, so no 3 is subtracted.
 
 - theta:
 
-  A named list with components `mu` (positive) and `alpha` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `alpha` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 

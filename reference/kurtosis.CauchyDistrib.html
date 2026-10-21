@@ -3,11 +3,11 @@
 moment less three, so it needs the first four moments of \(Y\), and the
 Cauchy has none of them: its density decays like \(y^{-2}\), and
 \(\int |y|^p f(y)\,\mathrm{d}y\) diverges already at \(p = 1\). NaN is
-returned directly, so that no quadrature is attempted."><meta property="og:description" content="Returns NaN. The excess kurtosis is the fourth standardized central
+returned directly, so that the method does not attempt a quadrature."><meta property="og:description" content="Returns NaN. The excess kurtosis is the fourth standardized central
 moment less three, so it needs the first four moments of \(Y\), and the
 Cauchy has none of them: its density decays like \(y^{-2}\), and
 \(\int |y|^p f(y)\,\mathrm{d}y\) diverges already at \(p = 1\). NaN is
-returned directly, so that no quadrature is attempted."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+returned directly, so that the method does not attempt a quadrature."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +15,7 @@ returned directly, so that no quadrature is attempted."><meta property="og:image
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ returned directly, so that no quadrature is attempted."><meta property="og:image
 moment less three, so it needs the first four moments of \(Y\), and the
 Cauchy has none of them: its density decays like \(y^{-2}\), and
 \(\int |y|^p f(y)\,\mathrm{d}y\) diverges already at \(p = 1\). <code>NaN</code> is
-returned directly, so that no quadrature is attempted.</p>
+returned directly, so that the method does not attempt a quadrature.</p>
     </div>
 
 
@@ -65,9 +65,9 @@ returned directly, so that no quadrature is attempted.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list with components <code>mu</code> and <code>sigma</code> (positive), each
-a numeric vector of length 1 or <code>n</code>. The values are not read, only their
-lengths, and the list is still aligned and validated.</p></dd>
+<dd><p>A named list with components <code>mu</code> and <code>sigma</code> (positive), in
+which each component is a numeric vector of length 1 or <code>n</code>. The values are
+not read, only their lengths, and the list is still aligned and validated.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -106,7 +106,7 @@ degrees of freedom.</p></div>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="cauchy_distrib.html">cauchy_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># NaN at every parameter value.</span></span></span>
+<span class="r-in"><span><span class="co"># The value is NaN at every parameter value.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NaN NaN</span>
 <span class="r-in"><span></span></span>

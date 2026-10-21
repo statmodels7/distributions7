@@ -1,9 +1,9 @@
 # A Resolved Kernel for One Parameter's Link-Scale Derivatives
 
-The log-density, the score, the curvature, the expected information and
-its derivative for one parameter on its unconstrained scale, as five
-functions with everything that does not depend on the data already
-resolved.
+Returns five functions that evaluate the log-density, the score, the
+curvature, the expected information and its derivative for one parameter
+on its unconstrained scale. Everything that does not depend on the data
+is already resolved in them.
 
 ## Usage
 
@@ -35,27 +35,28 @@ score-driven filter evaluates the score once per observation, at a
 predictor that it has just produced, so these steps cannot be vectorized
 away and their cost dominates.
 
-This resolves the family's methods and the link's once, and applies the
-chain rule for the single component wanted rather than for all of them.
-The Jacobian of the parametrization is diagonal, so with \\\theta_p =
-h(\eta_p)\\,
+The kernel resolves the family's methods and the link's once, and
+applies the chain rule for the single component that is needed rather
+than for all of them. The Jacobian of the parametrization is diagonal.
+With \\\theta_p = h(\eta_p)\\, the derivatives with respect to
+\\\eta_p\\ are
 
 \$\$\frac{\partial \ell}{\partial \eta_p} = \ell_p\\h'(\eta_p), \qquad
 \frac{\partial^2 \ell}{\partial \eta_p^2} = \ell\_{pp}\\h'(\eta_p)^2 +
 \ell_p\\h''(\eta_p),\$\$
 
-which is what
+These are the values that
 [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
-computes for those two components and nothing else.
+gives for those two components, and the kernel computes only these.
 
 The caller takes on the checks that the generic would have made. `theta`
 must already be a list named by the parameters of the family, in the
 family's own order, with values of a length that the family accepts
-against `y`; nothing is checked. The entry named `param` is replaced, so
-its value on the way in is immaterial. A list without names is not
-replaced at that entry, and a list whose names are out of order is read
-by position. The inverse link is clamped strictly inside its bounds
-exactly as
+against `y`; the function does not check this. The entry named `param`
+is replaced, so its value on the way in is immaterial. A list without
+names is not replaced at that entry, and a list whose names are out of
+order is read by position. The inverse link is clamped strictly inside
+its bounds exactly as
 [`linkfunctions7::linkinv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinv.html)
 does, which correctness requires.
 
@@ -86,7 +87,7 @@ k <- distrib_kernel(d, "sigma")
 th <- list(mu = 0, sigma = 1)
 k$score(0.7, th, log(1.4))
 #> [1] -0.75
-# the same number the generic gives
+# The generic gives the same number.
 distrib_gradient(d, 0.7, list(mu = 0, sigma = 1.4),
                  scale = "link")[["sigma"]]
 #> [1] -0.75

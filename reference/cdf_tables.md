@@ -60,7 +60,7 @@ derivatives of \\F\\, on the natural scale and the lower tail, keyed as
 ## Details
 
 Every order below the one wanted is collected, and not just the one
-wanted, because the moment-to-cumulant relation
+wanted, because the moment-to-cumulant relation that
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md)
 applies is a sum over partitions of the multi-index: a partition into
 \\k\\ blocks reads \\k\\ lower-order ratios.

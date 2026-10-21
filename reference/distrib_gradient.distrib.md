@@ -1,14 +1,14 @@
 # Default Numerical Gradient for `distrib` Objects
 
-The fallback for a family that implements no analytical score: the
-gradient of `distrib_pdf(..., log = TRUE)` by one central difference per
-parameter, through
+This method is the fallback for a family that implements no analytical
+score. It computes the gradient of `distrib_pdf(..., log = TRUE)` by one
+central difference per parameter, through
 [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md).
-This is why
+For this reason
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
-is the only compulsory method of the package: a family that defines the
-density alone gets a score, an information, five orders of derivative
-and a fit.
+is the only compulsory method of the package: a family that defines only
+the density has a score, an information, five orders of derivative and a
+fit available.
 
 ## Arguments
 
@@ -37,7 +37,7 @@ and a fit.
 ## Value
 
 A named list with one numeric vector per parameter, keyed by
-`distrib@params`, each of length `length(y)`.
+`distrib@params`; each vector has length `length(y)`.
 
 ## The stencil, the step and the cost
 

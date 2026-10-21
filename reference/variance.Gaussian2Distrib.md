@@ -1,7 +1,8 @@
 # Variance of the Gaussian Distribution in Location and Variance
 
-Closed form: \\\operatorname{Var}(Y) = \sigma^2\\. The variance is the
-second parameter here, so the method reads it off, where
+The variance has the closed form \\\operatorname{Var}(Y) = \sigma^2\\.
+The variance is the second parameter here, so the method reads it off,
+where
 [`variance.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Gaussian1Distrib.md)
 squares a standard deviation and
 [`variance.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Gaussian3Distrib.md)
@@ -17,7 +18,7 @@ inverts a precision. All three describe the same law.
 - theta:
 
   A named list with components `mu` (any real value) and `sigma2` (the
-  variance, positive), each a numeric vector of length 1 or `n`.
+  variance, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 

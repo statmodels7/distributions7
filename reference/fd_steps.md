@@ -39,7 +39,7 @@ fd_steps(
 
 - order, accuracy:
 
-  The stencil the step is for, which fix its reach through
+  The stencil for which the step is built; they fix its reach through
   [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html).
   The defaults are the central difference, whose reach is one.
 
@@ -49,13 +49,12 @@ A numeric vector of steps, the same length as `theta_j`.
 
 ## Details
 
-The domain clamp is what allows a finite-difference fallback to be
-offered at all. Parameter domains here are open: a scale parameter is
-positive, not non-negative. A step chosen from the magnitude alone
-therefore takes a small \\\sigma\\ straight through zero, and the
-log-density comes back `NaN` for reasons that look like a bug in the
-density. Clamping to 49\\ distance to each finite boundary keeps both
-evaluation points inside.
+The domain clamp makes it possible to offer a finite-difference fallback
+at all. Parameter domains here are open: a scale parameter is positive,
+not non-negative. A step chosen only from the magnitude therefore takes
+a small \\\sigma\\ straight through zero, and the log-density comes back
+`NaN` for reasons that look like a bug in the density. Clamping to 49\\
+distance to each finite boundary keeps both evaluation points inside.
 
 `to_bound = "scale"` takes \\h = h\_{rel}\min(\max(1,\|\theta\|), d)\\,
 with \\d\\ the distance to the nearest finite bound, so the step shrinks
@@ -63,10 +62,10 @@ in proportion as the parameter approaches the bound rather than sitting
 at \\0.49\\d\\. Where the log-density is singular in that parameter at
 the bound the clamped step's error stops falling once the clamp binds,
 and where the log-density instead saturates the scaled step is the worse
-of the two, its shorter step letting the rounding dominate. Neither is
-right everywhere, and
+of the two, because its shorter step lets the rounding dominate. Each of
+the two is wrong somewhere, and
 [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
-is what chooses between them.
+chooses between them.
 
 The two give the same step wherever \\d \ge \max(1, \|\theta\|)\\, which
 is every parameter of a family with no finite bound, and also a positive
@@ -75,24 +74,26 @@ parameter at or above one.
 A parameter already on or outside its boundary cannot be rescued this
 way, and is reported rather than differentiated.
 
-The clamp is on the stencil's OUTERMOST node and not on the step, so it
-divides by the reach, the largest offset the rule evaluates at in units
-of \\h\\. That number is the stencil's and is read from
+The clamp applies to the stencil's OUTERMOST node and not to the step,
+so it divides by the reach, the largest offset (in units of \\h\\) at
+which the rule evaluates. That number belongs to the stencil and is read
+from
 [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html)
 rather than assumed: a central difference and a three-point second
-difference both reach one step out, which is every use this package
+difference both reach one step out, which is every use that this package
 makes of the clamped branch today, while the five-point rules of
 accuracy four reach two. Without the division a step cut to \\0.49 d\\
 puts the outermost node of a reach-two rule at \\0.98 d\\, which is
-inside the domain and not what the clamp says it is.
+inside the domain but lies farther out than the \\0.49 d\\ that the
+clamp is meant to enforce.
 
-With the reach accounted for, the clamped branch at the default `h_rel`
-is
+When the reach is accounted for, the clamped branch at the default
+`h_rel` is
 [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)
 with `bounds`, and a test asserts the two are
 [`identical()`](https://rdrr.io/r/base/identical.html) so they cannot
 drift. It is written here rather than delegated because `h_rel` is an
-argument the callers vary:
+argument that the callers vary:
 [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
 halves it and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)

@@ -1,8 +1,8 @@
-# The Highest Derivative Order a Family Implements Itself
+# The Highest Derivative Order That a Family Implements Itself
 
 Returns the highest order, up to `upto`, at which the family registers
-its own method: 0 for a family with a density alone, 1 with a score, 2
-with a Hessian, 3 with third derivatives, 4 with fourth derivatives. A
+its own method: 0 for a family that has only a density, 1 with a score,
+2 with a Hessian, 3 with third derivatives, 4 with fourth derivatives. A
 method inherited from one of the package's base classes is a numerical
 fallback and does not count; one inherited from a family class does.
 
@@ -20,7 +20,7 @@ analytic_order(distrib, upto)
 
 - upto:
 
-  The highest order to look for, 1 to 4.
+  The highest order to be examined, 1 to 4.
 
 ## Value
 

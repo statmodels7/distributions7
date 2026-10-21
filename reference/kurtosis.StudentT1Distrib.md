@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Student t Distribution
 
-Closed form: \\\gamma_2 = 6/(\nu-4)\\ for \\\nu \> 4\\, `Inf` for \\2 \<
-\nu \le 4\\, and `NaN` at or below two. The excess kurtosis is 6 at
-\\\nu = 5\\, 1 at \\\nu = 10\\, and tends to the Gaussian's zero as the
-degrees of freedom increase.
+The excess kurtosis has the closed form \\\gamma_2 = 6/(\nu-4)\\ for
+\\\nu \> 4\\; it is `Inf` for \\2 \< \nu \le 4\\ and `NaN` at or below
+two. The excess kurtosis is 6 at \\\nu = 5\\, 1 at \\\nu = 10\\, and
+tends to the Gaussian's zero as the degrees of freedom increase.
 
 ## Arguments
 
@@ -15,8 +15,8 @@ degrees of freedom increase.
 - theta:
 
   A named list with components `mu`, `sigma` (positive) and `nu`
-  (positive), each a numeric vector of length 1 or `n`. Only `nu` enters
-  the value.
+  (positive), in which each component is a numeric vector of length 1 or
+  `n`. Only `nu` enters the value.
 
 - ...:
 
@@ -24,14 +24,14 @@ degrees of freedom increase.
 
 ## Value
 
-A numeric vector of excess kurtoses, of length equal to the longest of
-the three components, `Inf` where \\2 \< \nu \le 4\\ and `NaN` where
-\\\nu \le 2\\.
+A numeric vector of excess kurtoses, whose length is the one that the
+recycled parameters imply, with `Inf` where \\2 \< \nu \le 4\\ and `NaN`
+where \\\nu \le 2\\.
 
 ## Notation
 
-\\\nu \> 0\\ is the degrees of freedom. Neither the location nor the
-scale enters a standardized moment.
+\\\nu \> 0\\ is the degrees of freedom. The location and the scale do
+not enter a standardized moment.
 
 ## See also
 
@@ -47,11 +47,12 @@ the \\\nu = 1\\ case;
 ``` r
 d <- student_t1_distrib()
 
-# NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+# The values are NaN, infinite and finite, in that order, as nu crosses its
+# two thresholds.
 kurtosis(d, list(mu = 0, sigma = 1, nu = c(2, 3, 4, 5)))
 #> [1] NaN Inf Inf   6
 
-# 6 / (nu - 4), tending to the Gaussian's zero.
+# The value is 6 / (nu - 4), which tends to the Gaussian's zero.
 kurtosis(d, list(mu = 0, sigma = 1, nu = c(10, 100, 1e4)))
 #> [1] 1.0000000000 0.0625000000 0.0006002401
 ```

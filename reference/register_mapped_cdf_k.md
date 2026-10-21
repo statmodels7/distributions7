@@ -28,9 +28,10 @@ register_mapped_cdf_k(
 
 - parent_fn:
 
-  A function of no arguments returning the parent distribution. A
-  function rather than the object, so that the parent is built at call
-  time; at load time the class that it names may not exist yet.
+  A function of no arguments returning the parent distribution. The
+  parent is given as a function rather than as the object, so that it is
+  built at call time; at load time the class that it names may not exist
+  yet.
 
 - th_fn:
 
@@ -44,8 +45,8 @@ register_mapped_cdf_k(
 - q_fn:
 
   The transformation of the response, for a parent that is the same law
-  on a transformed scale. `identity` by default, and `log` for the
-  lognormal.
+  on a transformed scale. The default is `identity`, and the lognormal
+  uses `log`.
 
 - q_ok:
 
@@ -62,21 +63,21 @@ register_mapped_cdf_k(
 
 ## Value
 
-Invisibly `NULL`. Called for the registration.
+Invisibly `NULL`. The function is called for the registration.
 
 ## Details
 
-`orders` is how a family takes more than the top two. The second inverse
-Gaussian is registered at 2 to 4 because its written-out route in
-`cdf_derivatives_families.R` registers only the gradient, so its Hessian
-is taken from the chain here.
+A family registers more than the top two orders by setting `orders`. The
+second inverse Gaussian is registered at 2 to 4 because its written-out
+route in `cdf_derivatives_families.R` registers only the gradient, so
+its Hessian is taken from the chain here.
 
-`force(o)` inside the factory is what keeps the registrations from
-sharing one order.
+`force(o)` inside the factory prevents the registrations from sharing
+one order.
 
 ## See also
 
 [`mapped_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv_k.md),
-the body it registers;
+the body that it registers;
 [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
 for the generics.

@@ -1,8 +1,9 @@
 # Skewness of the Inverse Gaussian Distribution
 
-Closed form: \\\gamma_1 = 3\sqrt{\phi\mu}\\. It is positive at every
-parameter value and depends on the two parameters only through their
-product, so the whole family is one curve indexed by \\\phi\mu\\.
+The skewness has the closed form \\\gamma_1 = 3\sqrt{\phi\mu}\\. It is
+positive at every parameter value and depends on the two parameters only
+through their product, so the whole family is one curve indexed by
+\\\phi\mu\\.
 
 ## Arguments
 
@@ -13,8 +14,8 @@ product, so the whole family is one curve indexed by \\\phi\mu\\.
 
 - theta:
 
-  A named list with components `mu` (positive) and `phi` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `phi` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -41,7 +42,7 @@ which is \\5/3\\ times the square of this;
 ``` r
 d <- invgauss1_distrib()
 
-# Three times the square root of the product.
+# The skewness is three times the square root of the product.
 all.equal(skewness(d, list(mu = 2, phi = 0.5)), 3 * sqrt(1))
 #> [1] TRUE
 

@@ -1,9 +1,9 @@
 # Variance of the Negative Binomial Distribution in the NB1 Parametrization
 
-Closed form: \\\operatorname{Var}(Y) = \mu(1+\theta)\\, linear in the
-mean. This is what NB1 means: the variance is a fixed multiple of the
-mean, where NB2 makes it \\\mu + \mu^2/\theta\\ and so quadratic. The
-two are different models of overdispersion and are not
+The variance has the closed form \\\operatorname{Var}(Y) =
+\mu(1+\theta)\\, linear in the mean. In NB1 the variance is a fixed
+multiple of the mean, whereas NB2 makes it \\\mu + \mu^2/\theta\\ and so
+quadratic. The two are different models of overdispersion and are not
 reparametrizations of each other.
 
 ## Arguments
@@ -15,8 +15,8 @@ reparametrizations of each other.
 
 - theta:
 
-  A named list with components `mu` (positive) and `theta` (positive),
-  each a numeric vector of length 1 or `n`. The Poisson limit is
+  A named list with components `mu` (positive) and `theta` (positive);
+  each is a numeric vector of length 1 or `n`. The Poisson limit is
   \\\theta \to 0\\ here, the opposite end from NB2's.
 
 - ...:

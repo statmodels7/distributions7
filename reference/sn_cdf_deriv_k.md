@@ -2,7 +2,7 @@
 
 Chains the standard-coordinate table of
 [`sn_cdf_std_derivs()`](https://statmodels7.github.io/distributions7/reference/sn_cdf_std_derivs.md)
-through \\z = (q-\mu)/\sigma\\, the shape passing straight through as
+through \\z = (q-\mu)/\sigma\\, and the shape passes straight through as
 the second index of that table. Together the two functions give the
 family closed cdf derivatives at all four orders in all three
 parameters.
@@ -45,8 +45,8 @@ The map is the one through which the other location-scale families are
 chained: \\z\\ is linear in the location and a reciprocal in the scale,
 so a block naming the location twice contributes an exact zero and only
 eight partials of the map are non-zero up to order four. The shape does
-not enter \\z\\ at all, which is why it can be carried as an index of
-the inner table rather than through the chain.
+not enter \\z\\ at all, so it can be carried as an index of the inner
+table rather than through the chain.
 
 ## Notation
 

@@ -1,9 +1,10 @@
 # Variance of the Bernoulli Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \mu(1-\mu)\\. It is largest at
-\\\mu = 1/2\\, where it is \\1/4\\, and goes to zero at either end, the
-response becoming deterministic there. That quarter is the largest
-variance any distribution on \\\\0,1\\\\ can have.
+The variance has the closed form \\\operatorname{Var}(Y) = \mu(1-\mu)\\.
+It is largest at \\\mu = 1/2\\, where it is \\1/4\\, and goes to zero at
+either end, because the response becomes deterministic there. The value
+\\1/4\\ is the largest variance that any distribution on \\\\0,1\\\\ can
+have.
 
 ## Arguments
 
@@ -38,7 +39,7 @@ which is `size` times this;
 ``` r
 d <- bernoulli_distrib()
 
-# Largest at one half, vanishing at either end.
+# The variance is largest at one half and vanishes at either end.
 variance(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
 #> [1] 0.0099 0.2100 0.2500 0.2100 0.0099
 ```

@@ -1,10 +1,10 @@
 # Excess Kurtosis of the Laplace Distribution in Location and Rate
 
-Exactly 3 at every parameter value, the excess over the Gaussian. A
-standardized moment does not see a change of parametrization, so this is
-the same number
+The excess kurtosis is exactly 3 at every parameter value, the excess
+over the Gaussian. A standardized moment is unchanged by a change of
+parametrization, so this is the same number that
 [`kurtosis.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.md)
-returns and it moves with neither the location nor the rate.
+returns, and it moves with neither the location nor the rate.
 
 ## Arguments
 
@@ -15,8 +15,9 @@ returns and it moves with neither the location nor the rate.
 
 - theta:
 
-  A named list with components `mu` and `lambda`, each a numeric vector
-  of length 1 or `n`. The values are not read, only their lengths.
+  A named list with components `mu` and `lambda`; each is a numeric
+  vector of length 1 or `n`. The values are not read, only their
+  lengths.
 
 - ...:
 
@@ -38,7 +39,7 @@ A numeric vector of 3s, of length
 ``` r
 d <- laplace2_distrib()
 
-# Three, in either parametrization.
+# The value is three in either parametrization.
 c(kurtosis(d, list(mu = 0, lambda = 2)),
   kurtosis(laplace_distrib(), list(mu = 0, sigma = 0.5)))
 #> [1] 3 3

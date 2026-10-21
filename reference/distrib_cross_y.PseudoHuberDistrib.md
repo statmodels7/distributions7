@@ -1,9 +1,9 @@
 # Pseudo-Huber Mixed Derivatives
 
-Closed form throughout. The location and scale components come from the
-location-scale identity; the response enters the shape only through \\D
-= \sqrt{\nu + r^2/\sigma^2}\\, so the shape component is \\r/(2\sigma^2
-D^3)\\ with \\r = y - \mu\\.
+The mixed derivatives are in closed form throughout. The location and
+scale components come from the location-scale identity; the response
+enters the shape only through \\D = \sqrt{\nu + r^2/\sigma^2}\\, so the
+shape component is \\r/(2\sigma^2 D^3)\\ with \\r = y - \mu\\.
 
 ## Arguments
 
@@ -30,7 +30,7 @@ D^3)\\ with \\r = y - \mu\\.
 
 ## Value
 
-A named list with components `mu`, `sigma` and `nu`, each a numeric
+A named list with components `mu`, `sigma` and `nu`; each is a numeric
 vector of length `length(y)`. All three are exact.
 
 ## See also

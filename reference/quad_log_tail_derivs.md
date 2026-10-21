@@ -1,20 +1,20 @@
 # Log-Tail Derivatives by Quadrature of the Log-Density Derivatives
 
-Computes the derivatives of order `o` of \\\log P\\, \\P\\ the tail
-beyond `q` on the side that `lower.tail` selects, from \$\$\log P =
+Computes the derivatives of order `o` of \\\log P\\, where \\P\\ is the
+tail beyond `q` on the side that `lower.tail` selects, from \$\$\log P =
 \ell(q) + \log J, \qquad J = \int\_{\mathrm{tail}} e^{D(y)}\\dy, \qquad
 D(y) = \ell(y) - \ell(q).\$\$ The derivatives of \\\log J\\ follow from
 the ratios \\\partial^B J / J\\, which are weighted means of the
 complete Bell polynomials in the partial derivatives of \\D\\, through
 the moment-to-cumulant sum; both sums are the recursions over the
 subsets of a multi-index that contain its first position, run in
-compiled code (`log_tail_cumulants_cpp()`) on the pairs
+compiled code (`log_tail_cumulants_cpp()`) on the pairs that
 `log_tail_pairs()` enumerates. Every partial of \\D\\ is a difference of
 the family's own log-density derivatives at \\y\\ and at \\q\\, which
 stays small over the tail, so the sums carry no cancellation of the size
-the ratios of
+that the ratios of
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md)
-carry, and nothing underflows where \\P\\ does.
+carry, and the computation does not underflow where \\P\\ does.
 
 ## Usage
 
@@ -36,7 +36,7 @@ quad_log_tail_prob(distrib, q, theta, lower.tail)
 
 - theta:
 
-  A named list of parameters, each of the length of `q`.
+  A named list of parameters; each has the length of `q`.
 
 - o:
 
@@ -76,25 +76,25 @@ route is meant for the far tail, where the density decreases away from
 [`log_tail_route()`](https://statmodels7.github.io/distributions7/reference/log_tail_route.md)
 uses it below \\\log P = -5\\. Toward an end at zero, a row whose last
 node with a representable abscissa still carries a relative weight above
-\\10^{-12}\\, the nodes beyond it having underflowed to zero, has mass
-below the smallest double (a shape near zero); it is marked in the
+\\10^{-12}\\, while the nodes beyond it have underflowed to zero, has
+mass below the smallest double (a shape near zero); it is marked in the
 attribute `"lost"` of the result. Toward an infinite end the nodes past
 the largest double are dropped, which leaves out a relative mass of
 order \\(q/x\_{\max})^{\nu}\\ for a polynomial tail of index \\\nu\\.
 
 `quad_tail_parts()` returns the nodes at every quantile, the response
-vector \\(q, y_1, \dots)\\ with the parameters repeated to match, the
-log densities and the weights \\e^{D}\\ times the Jacobian and the
-rule's weight; `log_tail_nodes()` the nodes and weights in \\u\\,
-computed once; `log_tail_pairs()` the components of orders 1 to `o` in
-canonical form and, for each, the pairs (subset containing the first
-position, rest) as indices into the components.
+vector \\(q, y_1, \dots)\\, in which the parameters are repeated to
+match, the log densities and the weights \\e^{D}\\ times the Jacobian
+and the rule's weight; `log_tail_nodes()` the nodes and weights in
+\\u\\, computed once; `log_tail_pairs()` the components of orders 1 to
+`o` in canonical form and, for each, the pairs (subset containing the
+first position, rest) as indices into the components.
 
 ## Examples
 
 ``` r
 d <- gamma1_distrib()
-# log S of a gamma at 3000, where S underflows
+# This is log S of a gamma at 3000, where S underflows.
 distributions7:::quad_log_tail_derivs(d, 3000, list(mu = 1.7, phi = 2.3),
                                       1L, lower.tail = FALSE)
 #> $mu

@@ -47,25 +47,25 @@ numerical_cross_y(
 - which:
 
   A character vector of parameter names to differentiate, or `NULL` (the
-  default) for all of them. Used by a family with a closed form for some
-  of its parameters, so that only the remaining ones cost a pair of
-  evaluations.
+  default) for all of them. A family with a closed form for some of its
+  parameters uses this argument, so that only the remaining ones cost a
+  pair of evaluations.
 
 ## Value
 
-A named list with one numeric vector per requested parameter, each of
-length `length(y)`, in the order `which` gives or `distrib@params` where
-it is `NULL`.
+A named list with one numeric vector per requested parameter, in the
+order that `which` gives, or in the order of `distrib@params` when
+`which` is `NULL`. Each vector has length `length(y)`.
 
 ## The quantity that is differenced
 
 The quantity differenced is the response gradient, not the log-density,
-so a family with an analytical `distrib_grad_y` pays for exactly one
+so a family with an analytical `distrib_grad_y` requires exactly one
 finite-difference layer. Where the response gradient is itself the
-finite-difference fallback the composition is the four-point mixed
+finite-difference fallback, the composition is the four-point mixed
 stencil on the log-density: the two differences act on different
 variables, so they commute into a single stencil instead of compounding
-the way nested differences in one variable do.
+as nested differences in one variable do.
 
 ## The step
 
@@ -101,7 +101,7 @@ all.equal(numerical_cross_y(d, y, th), distrib_cross_y(d, y, th),
           tolerance = 1e-8)
 #> [1] TRUE
 
-# 'which' costs a pair of evaluations for the named parameter alone.
+# 'which' costs a pair of evaluations only for the named parameter.
 numerical_cross_y(d, y, th, which = "sigma")
 #> $sigma
 #> [1] -2  0  2

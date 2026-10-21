@@ -1,8 +1,8 @@
 # Third and Fourth Derivatives of a Compiled Distribution Function
 
-The derivatives of \\F\\ of order three or four in the parameters, for
-the families whose compiled distribution function integrates its shape
-derivatives
+Computes the derivatives of \\F\\ of order three or four in the
+parameters, for the families whose compiled distribution function
+integrates its shape derivatives
 ([`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)):
 gamma1, gamma2, chisq, both generalized gammas, both betas, both von
 Mises, both Student t, both pseudo-Huber and the skew t.
@@ -44,9 +44,9 @@ With \\f = e^{\ell}\\, the derivative of \\f\\ in a multi-index \\I\\ is
 derivatives of \\\ell\\
 ([`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)),
 so \\\partial_I F(q) = \int\_{lo}^{q} f B_I\\, taken as
-\\-\int\_{q}^{hi} f B_I\\ on the side `cdf_rule_cpp()` chooses, by the
-nodes and weights of the rule of the first two orders. The family's own
-third and fourth derivatives of \\\ell\\ supply \\B_I\\.
+\\-\int\_{q}^{hi} f B_I\\ on the side that `cdf_rule_cpp()` chooses, by
+the nodes and weights of the rule of the first two orders. The family's
+own third and fourth derivatives of \\\ell\\ supply \\B_I\\.
 
 A family location-scale in its first two parameters (both Student t,
 both pseudo-Huber, the skew t) reads its components in the location and
@@ -59,6 +59,6 @@ B\_{\sigma^{m-1-j} S}\\ with \\c_j = -(q - \mu)(-1)^j j!/\sigma^{j+1}\\.
 ## See also
 
 [`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md),
-the stencil this replaces for these families;
+the stencil that this replaces for these families;
 [`continuous_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/continuous_cdf_deriv_k.md),
 which chooses between them.

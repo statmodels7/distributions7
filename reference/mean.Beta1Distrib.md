@@ -1,9 +1,9 @@
 # Mean of the Beta Distribution
 
-Closed form: \\E\[Y\] = \mu\\. This parametrization carries the mean and
-a precision, so the mean is a read; the two shapes of the standard
-parametrization are recovered as \\a = \mu\phi\\ and \\b =
-(1-\mu)\phi\\, and they sum to \\\phi\\.
+The mean has the closed form \\E\[Y\] = \mu\\. This parametrization
+carries the mean and a precision, so the mean is a read; the two shapes
+of the standard parametrization are recovered as \\a = \mu\phi\\ and \\b
+= (1-\mu)\phi\\, and they sum to \\\phi\\.
 
 ## Arguments
 
@@ -15,9 +15,9 @@ parametrization are recovered as \\a = \mu\phi\\ and \\b =
 - theta:
 
   A named list with components `mu` (the mean, strictly between 0 and 1)
-  and `phi` (the precision, positive), each a numeric vector of length 1
-  or `n`. It is aligned and validated by name, so a mean at or outside
-  the unit interval signals an error.
+  and `phi` (the precision, positive); each is a numeric vector of
+  length 1 or `n`. It is aligned and validated by name, so a mean at or
+  outside the unit interval signals an error.
 
 - ...:
 

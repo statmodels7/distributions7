@@ -1,12 +1,12 @@
-# The Order a Fifth Derivative Is Differenced From
+# The Order from Which a Fifth Derivative Is Differenced
 
 Returns 4 where
 [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
-is `TRUE`; 0 for a wrapper whose parent has no analytic fourth order, a
-wrapper being a class that overrides
+is `TRUE`; 0 for a wrapper whose parent has no analytic fourth order,
+where a wrapper is a class that overrides
 [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
-to read its parent; and otherwise the highest order the family registers
-itself, as
+to read its parent; and otherwise the highest order that the family
+registers itself, as
 [`analytic_order()`](https://statmodels7.github.io/distributions7/reference/analytic_order.md)
 gives it up to 3.
 

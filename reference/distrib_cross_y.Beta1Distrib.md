@@ -1,8 +1,9 @@
 # Beta Mixed Derivatives in Mean and Precision
 
-Closed form. The shapes are \\a = \mu\phi\\ and \\b = (1-\mu)\phi\\, and
-\\\ell^{(y)} = (a-1)/y - (b-1)/(1-y)\\, so the components are \\\phi/y +
-\phi/(1-y)\\ and \\\mu/y - (1-\mu)/(1-y)\\.
+The mixed derivatives are in closed form. The shapes are \\a = \mu\phi\\
+and \\b = (1-\mu)\phi\\, and \\\ell^{(y)} = (a-1)/y - (b-1)/(1-y)\\, so
+the components are \\\phi/y + \phi/(1-y)\\ and \\\mu/y -
+(1-\mu)/(1-y)\\.
 
 ## Arguments
 
@@ -29,7 +30,7 @@ Closed form. The shapes are \\a = \mu\phi\\ and \\b = (1-\mu)\phi\\, and
 
 ## Value
 
-A named list with components `mu` and `phi`, each a numeric vector of
+A named list with components `mu` and `phi`; each is a numeric vector of
 length `length(y)`.
 
 ## See also

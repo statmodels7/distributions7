@@ -1,12 +1,12 @@
 # Numerical CDF Derivatives of Any Order
 
-One product stencil of the requested order applied to
+Applies one product stencil of the requested order to
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
 which is analytic for every family in the catalog. This is the
 continuous family's route above second order, and it is a single
 stencil: a repeated parameter contributes the matching one-dimensional
 higher-order factor and distinct parameters each contribute a central
-two-point factor, so no difference of a difference is ever taken.
+two-point factor, so a difference of a difference is never taken.
 
 ## Usage
 
@@ -40,9 +40,10 @@ numerical_cdf_deriv_k(
 
 - h_rel:
 
-  The relative step. A single number, defaulting to
+  The relative step. It is a single number that defaults to
   \\\varepsilon^{1/(\mathrm{order}+2)}\\. A step much smaller than the
-  default is worse, the rounding growing as \\h^{-\mathrm{order}}\\.
+  default is worse, because the rounding grows as
+  \\h^{-\mathrm{order}}\\.
 
 ## Value
 
@@ -63,8 +64,7 @@ per observation because `theta` may vary by observation.
 Against the closed forms of a location-scale family the stencil has a
 relative error, normwise over each component, of the order of
 \\10^{-5}\\ at order 3 and \\10^{-4}\\ at order 4. The closed forms are
-accurate to rounding error, which is why a family registers one where it
-can.
+accurate to rounding error, so a family registers one where it can.
 
 ## Notation
 
@@ -78,4 +78,4 @@ for orders 1 and 2;
 [`discrete_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv_k.md),
 the exact route for a discrete family;
 [`loc_scale_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.md),
-the closed route this is measured against.
+the closed route against which this is measured.

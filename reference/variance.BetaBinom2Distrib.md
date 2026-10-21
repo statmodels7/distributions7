@@ -1,8 +1,8 @@
 # Variance of the Beta-Binomial Distribution in Two Shapes
 
-Closed form: \\\operatorname{Var}(Y) = n\mu(1-\mu)(1 + n\sigma)/(1 +
-\sigma)\\ at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma =
-1/(\alpha+\beta)\\, computed by
+The variance has the closed form \\\operatorname{Var}(Y) =
+n\mu(1-\mu)(1 + n\sigma)/(1 + \sigma)\\ at \\\mu =
+\alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\, computed by
 [`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md).
 For \\n \> 1\\ it exceeds the binomial variance at the same mean, and
 the excess grows as the two shapes shrink; for \\n = 1\\ it is the
@@ -18,10 +18,10 @@ Bernoulli variance.
 
 - theta:
 
-  A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or of the common length of the parameter
-  settings. Large shapes concentrate the mixing beta and take the family
-  towards a binomial.
+  A named list with components `alpha` and `beta`, both positive; each
+  is a numeric vector of length 1 or of the common length of the
+  parameter settings. Large shapes concentrate the mixing beta and take
+  the family towards a binomial.
 
 - ...:
 

@@ -1,7 +1,8 @@
 # Variance of the Gaussian Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \sigma^2\\. This parametrization
-carries the standard deviation, so the variance is its square and
+The variance has the closed form \\\operatorname{Var}(Y) = \sigma^2\\.
+This parametrization carries the standard deviation, so the variance is
+its square and
 [`std_dev.distrib()`](https://statmodels7.github.io/distributions7/reference/std_dev.distrib.md)
 returns the parameter back unchanged.
 
@@ -15,7 +16,8 @@ returns the parameter back unchanged.
 - theta:
 
   A named list with components `mu` (the mean) and `sigma` (the standard
-  deviation, positive), each a numeric vector of length 1 or `n`.
+  deviation, positive), in which each component is a numeric vector of
+  length 1 or `n`.
 
 - ...:
 
@@ -40,7 +42,7 @@ the same law written by its variance and by its precision;
 ``` r
 d <- gaussian1_distrib()
 
-# The square of the second parameter.
+# The variance is the square of the second parameter.
 variance(d, list(mu = 0, sigma = c(1, 2, 4)))
 #> [1]  1  4 16
 

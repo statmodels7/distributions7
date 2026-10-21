@@ -1,9 +1,9 @@
 # Skewness of the Weibull Distribution
 
-Closed form: \$\$\gamma_1 = \frac{g_3 - 3 g_1 g_2 + 2 g_1^3}{(g_2 -
-g_1^2)^{3/2}}, \qquad g_k = \Gamma(1 + k/\sigma).\$\$ The scale cancels,
-so the value is a function of the shape alone. It is zero at a shape
-near 3.60235, so a Weibull is right-skewed below that value and
+The skewness has the closed form \$\$\gamma_1 = \frac{g_3 - 3 g_1 g_2 +
+2 g_1^3}{(g_2 - g_1^2)^{3/2}}, \qquad g_k = \Gamma(1 + k/\sigma).\$\$
+The scale cancels, so the value depends only on the shape. It is zero at
+a shape near 3.60235, so a Weibull is right-skewed below that value and
 left-skewed above it, whereas the skewness of a gamma is always
 positive. The method evaluates it through
 [`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md),
@@ -21,8 +21,8 @@ from their series in \\1/\sigma\\, so that the cancellation among the
 - theta:
 
   A named list with components `mu` (the scale, positive) and `sigma`
-  (the shape, positive), each a numeric vector of length 1 or `n`. The
-  third moment exists for every positive shape.
+  (the shape, positive); each is a numeric vector of length 1 or `n`.
+  The third moment exists for every positive shape.
 
 - ...:
 
@@ -32,7 +32,7 @@ from their series in \\1/\sigma\\, so that the cancellation among the
 
 A numeric vector, of length
 `max(length(theta$mu), length(theta$sigma))`. Only the shape enters the
-value, so a setting that varies the scale alone repeats one number.
+value, so a setting that varies only the scale repeats one number.
 
 ## Notation
 

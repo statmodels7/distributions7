@@ -48,16 +48,17 @@ fd_stable_step(
 
 - need_value:
 
-  Whether the caller will use the quotient at the chosen step. `FALSE`
-  for a caller that wants only the step, and then nothing is evaluated
-  at all where the two candidates coincide: the higher orders read only
-  `h`, and their quotient is a difference of whole Hessians.
+  Whether the caller will use the quotient at the chosen step. A caller
+  that needs only the step sets it to `FALSE`, and the function then
+  skips every evaluation where the two candidates coincide: the higher
+  orders read only `h`, and their quotient is a difference of whole
+  Hessians.
 
 - order, accuracy:
 
-  The stencil the quotient implements, passed to
+  The stencil that the quotient implements; it is passed to
   [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
-  so that the clamp is on the outermost node. The defaults are the
+  so that the clamp applies to the outermost node. The defaults are the
   central difference; a caller whose quotient is a second difference
   passes `order = 2`.
 
@@ -90,7 +91,8 @@ reading across observations is the rounding rather than a signal.
 It costs four quotients where one would do, except where the two steps
 coincide at every entry, which is every call on a parameter with no
 finite bound and every positive parameter at or above one: there the
-clamped step is returned at once and nothing is evaluated twice.
+clamped step is returned at once and each quotient is evaluated only
+once.
 
 Each order selects its own step, with its own `h_rel` and its own
 stencil; a choice made at first order is not reused at higher orders.

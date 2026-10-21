@@ -3,11 +3,13 @@
 first moment to center on; the Cauchy has neither. Its density decays like
 \(y^{-2}\), so \(\int |y|^p f(y)\,\mathrm{d}y\) diverges for every
 \(p \ge 1\), so the second moment does not exist either.
-NaN is returned directly, so that no quadrature is attempted."><meta property="og:description" content="Returns NaN. The variance is the second central moment, and it needs a
+NaN is returned directly, so that the method does not attempt a
+quadrature."><meta property="og:description" content="Returns NaN. The variance is the second central moment, and it needs a
 first moment to center on; the Cauchy has neither. Its density decays like
 \(y^{-2}\), so \(\int |y|^p f(y)\,\mathrm{d}y\) diverges for every
 \(p \ge 1\), so the second moment does not exist either.
-NaN is returned directly, so that no quadrature is attempted."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+NaN is returned directly, so that the method does not attempt a
+quadrature."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +17,7 @@ NaN is returned directly, so that no quadrature is attempted."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +54,8 @@ NaN is returned directly, so that no quadrature is attempted."><meta property="o
 first moment to center on; the Cauchy has neither. Its density decays like
 \(y^{-2}\), so \(\int |y|^p f(y)\,\mathrm{d}y\) diverges for every
 \(p \ge 1\), so the second moment does not exist either.
-<code>NaN</code> is returned directly, so that no quadrature is attempted.</p>
+<code>NaN</code> is returned directly, so that the method does not attempt a
+quadrature.</p>
     </div>
 
 
@@ -65,9 +68,9 @@ first moment to center on; the Cauchy has neither. Its density decays like
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list with components <code>mu</code> and <code>sigma</code> (positive), each
-a numeric vector of length 1 or <code>n</code>. The values are not read, only their
-lengths, and the list is still aligned and validated.</p></dd>
+<dd><p>A named list with components <code>mu</code> and <code>sigma</code> (positive), in
+which each component is a numeric vector of length 1 or <code>n</code>. The values are
+not read, only their lengths, and the list is still aligned and validated.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -78,12 +81,13 @@ lengths, and the list is still aligned and validated.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of <code>NaN</code>, of length
 <code>max(length(theta$mu), length(theta$sigma))</code>. <code><a href="std_dev.html">std_dev()</a></code> gives <code>NaN</code> too,
-being the square root of this.</p>
+because it is the square root of this.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The spread a Cauchy does have is its half-interquartile range, exactly
-\(\sigma\), available from <code><a href="distrib_quantile.html">distrib_quantile()</a></code>. The parameter \(\sigma\)
+    <p>A Cauchy has a spread in its half-interquartile range, which equals
+\(\sigma\) exactly and is available from <code><a href="distrib_quantile.html">distrib_quantile()</a></code>. The
+parameter \(\sigma\)
 is a scale parameter, which sets the width of the density, but it is not a
 standard deviation.</p>
     </div>

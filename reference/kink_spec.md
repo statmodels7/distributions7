@@ -34,7 +34,7 @@ kink_spec(
 
   A function of `(y, theta)` returning a named list with one entry per
   parameter, \\\partial v / \partial \theta_p\\. An entry that is
-  identically zero says the kink does not move with that parameter.
+  identically zero indicates that the kink does not move with it.
 
 - coef:
 
@@ -47,9 +47,9 @@ An object of class `kink_spec` carrying the four fields.
 
 ## Details
 
-The five compositions and the order each one leaves, which is the number
-of continuous derivatives at \\v = 0\\, one less than the order of the
-first derivative that jumps there:
+The table lists the five compositions and, for each, the order that it
+leaves, which is the number of continuous derivatives at \\v = 0\\, one
+less than the order of the first derivative that jumps there:
 
 |            |                     |       |
 |------------|---------------------|-------|
@@ -73,7 +73,7 @@ than assumed.
 ## See also
 
 [`kink_decomposition()`](https://statmodels7.github.io/distributions7/reference/kink_decomposition.md)
-for the generic a family answers,
+for the generic that a family implements,
 [`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)
 for the order deduced from it, and
 [`check_kink()`](https://statmodels7.github.io/distributions7/reference/check_kink.md)
@@ -82,7 +82,7 @@ for the validator.
 ## Examples
 
 ``` r
-# the Laplace: l = -log(2 sigma) - |y - mu| / sigma
+# The Laplace log-density is l = -log(2 sigma) - |y - mu| / sigma.
 k <- kink_spec(
   phi  = "abs",
   v    = function(y, theta) y - theta$mu,

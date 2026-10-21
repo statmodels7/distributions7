@@ -1,13 +1,13 @@
 # Excess Kurtosis of the Beta-Binomial Distribution
 
-Closed form, written as one quotient by
+The method obtains the excess kurtosis from
 [`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md)
-so that it is not formed as a kurtosis near 3 minus 3. The success
-probability is what sets its sign. Near \\\mu = 1/2\\ it is negative and
-falls towards \\-2\\ as the dispersion grows, the mass splitting between
-the two endpoints and the law approaching a scaled Bernoulli; near
-either end it is positive and large, the long tail towards the middle
-dominating.
+as one quotient, so that it does not form a kurtosis near 3 and subtract
+3. The success probability sets its sign. Near \\\mu = 1/2\\ it is
+negative and falls towards \\-2\\ as the dispersion grows, because the
+mass splits between the two endpoints and the law approaches a scaled
+Bernoulli; near either end it is positive and large, because the long
+tail towards the middle dominates.
 
 ## Arguments
 
@@ -20,8 +20,8 @@ dominating.
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and
-  `sigma` (positive), each a numeric vector of length 1 or of the common
-  length of the parameter settings.
+  `sigma` (positive); each is a numeric vector of length 1 or of the
+  common length of the parameter settings.
 
 - ...:
 

@@ -1,9 +1,10 @@
 # Excess Kurtosis of the Laplace Distribution
 
-Exactly 3 at every parameter value, the excess over the Gaussian's
-fourth standardized moment of 3. A standardized moment is free of
-location and scale, and the Laplace has no shape parameter, so the
-excess kurtosis is the same for the whole family.
+The excess kurtosis is exactly 3 at every parameter value, which is the
+excess over the Gaussian's fourth standardized moment of 3. A
+standardized moment is free of location and scale, and the Laplace has
+no shape parameter, so the excess kurtosis is the same for the whole
+family.
 
 ## Arguments
 
@@ -14,8 +15,9 @@ excess kurtosis is the same for the whole family.
 
 - theta:
 
-  A named list with components `mu` and `sigma`, each a numeric vector
-  of length 1 or `n`. The values are not read, only their lengths.
+  A named list with components `mu` and `sigma`; each is a numeric
+  vector of length 1 or `n`. The values are not read, only their
+  lengths.
 
 - ...:
 
@@ -39,7 +41,7 @@ which approaches this value as its shape goes to zero;
 ``` r
 d <- laplace_distrib()
 
-# Three, whatever the location and the scale.
+# The value is three, whatever the location and the scale.
 kurtosis(d, list(mu = c(0, 5), sigma = c(1, 5)))
 #> [1] 3 3
 ```

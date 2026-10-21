@@ -1,6 +1,6 @@
 # Variance of the Skew t Distribution
 
-Closed form for \\\nu \> 2\\: \\\operatorname{Var}(Y) =
+The closed form for \\\nu \> 2\\ is \\\operatorname{Var}(Y) =
 \sigma^2\\\nu/(\nu-2) - \mu_z^2\\\\, with \\\mu_z = \delta b\_\nu\\ the
 mean of the standardized variable. At \\1 \< \nu \le 2\\ the second
 moment diverges and the value is `Inf`, as for the Student t; at \\\nu
@@ -18,9 +18,9 @@ skewing term \\\mu_z^2\\ pulls it back.
 - theta:
 
   A named list with components `mu`, `sigma` (positive), `alpha` (any
-  sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-  Settings with \\1 \< \nu \le 2\\ give `Inf` and those with \\\nu \le
-  1\\ give `NaN`.
+  sign) and `nu` (positive); each is a numeric vector of length 1 or
+  `n`. Settings with \\1 \< \nu \le 2\\ give `Inf` and those with \\\nu
+  \le 1\\ give `NaN`.
 
 - ...:
 
@@ -28,9 +28,10 @@ skewing term \\\mu_z^2\\ pulls it back.
 
 ## Value
 
-A numeric vector of variances, of the length the recycled parameters
-imply, `Inf` wherever \\1 \< \nu \le 2\\ and `NaN` wherever \\\nu \le
-1\\. The scale, `alpha` and `nu` enter the value; the location does not.
+A numeric vector of variances, of the length that the recycled
+parameters imply, `Inf` wherever \\1 \< \nu \le 2\\ and `NaN` wherever
+\\\nu \le 1\\. The scale, `alpha` and `nu` enter the value; the location
+does not.
 
 ## Notation
 

@@ -1,8 +1,8 @@
 # Default Numerical Quantile Function for Discrete Distributions
 
 The fallback for a discrete family that implements no analytical
-quantile function: the smallest support point \\k\\ with \\F(k) \ge p\\,
-read off the cumulative table that
+quantile function returns the smallest support point \\k\\ with \\F(k)
+\ge p\\, read off the cumulative table that
 [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
 builds. It is exact. The distribution function of a discrete variable is
 a step function, so inverting it is a lookup and there is nothing to
@@ -20,9 +20,9 @@ lose its digits; the quantile of an upper-tail probability far below
 machine epsilon is therefore finite and accurate.
 
 Because the distribution function is a step function, the round trip
-does not close. Asking for 0.025, 0.5 and 0.975 returns points whose
-cumulative probabilities are larger, because no support point sits
-exactly at those values.
+does not close. Evaluating the quantile function at 0.025, 0.5 and 0.975
+returns points whose cumulative probabilities are larger, because the
+cumulative probabilities of the support points differ from those values.
 
 ## Arguments
 
@@ -39,7 +39,7 @@ exactly at those values.
 
 - theta:
 
-  A named list of parameters, each of length 1 or `length(p)`.
+  A named list of parameters; each has length 1 or `length(p)`.
 
 - lower.tail:
 
@@ -67,7 +67,7 @@ which builds the table;
 [`disc_upper_table()`](https://statmodels7.github.io/distributions7/reference/disc_upper_table.md),
 the table of the upper tail;
 [`distrib_cdf.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md),
-the function it inverts;
+the function that it inverts;
 [`distrib_rng.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.discrete_distrib.md),
 which reads the same table;
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)

@@ -1,6 +1,6 @@
 # The Names of the Expected Information's Fourth Derivative
 
-One key per pair \\(a,b)\\, spelled as
+Returns one key per pair \\(a,b)\\, spelled as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 spells it, and per unordered quadruple, spelled as
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)

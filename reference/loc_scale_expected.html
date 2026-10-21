@@ -13,7 +13,7 @@ of the remaining shape parameters."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,8 +67,8 @@ scale, and which carries analytic derivatives to the order needed.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>The aligned parameter list, each component of the common
-length <code>n</code>.</p></dd>
+<dd><p>The aligned parameter list, in which each component has the
+common length <code>n</code>.</p></dd>
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
@@ -116,12 +116,12 @@ $$\partial_{cd}\,\mathbb{E}[\ell_{ab}] = \int (\ell_{abcd}
   + \ell_{ab}\ell_c\ell_d)\,f.$$</p>
 <p>The integrals are taken by an exp-sinh rule on each half-line, from
 <code><a href="loc_scale_rule.html">loc_scale_rule()</a></code>, centered at the point that <code><a href="loc_scale_center.html">loc_scale_center()</a></code> returns.
-Its nodes cluster double-exponentially at that center, which is where the
-location-scale families that use it put their one sharp feature: zero for
-the core of the pseudo-Huber at a small shape and for the skew t, and the
-step of the skewing function, \(w = -r\), for the centered skew normal, and the same transformation turns an algebraic
-tail into an exponential one, which is what the Student t's heavy tail
-needs.</p>
+Its nodes cluster double-exponentially at that center. The location-scale
+families that use the rule have their one sharp feature there: at zero for
+the core of the pseudo-Huber at a small shape and for the skew t, and at the
+step of the skewing function, \(w = -r\), for the centered skew normal.
+The same transformation turns an algebraic tail into an exponential one,
+which the heavy tail of the Student t requires.</p>
 <p>A node where the density is exactly zero contributes nothing, whatever the
 derivatives read there. Any other non-finite contribution makes the whole
 shape row <code>NA</code> rather than a sum over the finite part.</p>
@@ -130,7 +130,7 @@ shape row <code>NA</code> rather than a sum over the finite part.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="loc_scale_rule.html">loc_scale_rule()</a></code> for the quadrature,
 <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>, <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code> and
-<code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code> for the generics this serves.</p></div>
+<code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code> for the generics that this function serves.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -1,9 +1,10 @@
 # Excess Kurtosis of the Generalized Pareto Distribution
 
-Closed form: \\\gamma_2 = 3(1-2\xi)(2\xi^2+\xi+3)/\\(1-3\xi)(1-4\xi)\\ -
-3\\ for \\\xi \< 1/4\\, and `Inf` at or above one quarter. The threshold
-is the tightest of the four moments, so this is the first quantity to
-become unreportable as a fitted shape rises.
+The excess kurtosis has the closed form \\\gamma_2 =
+3(1-2\xi)(2\xi^2+\xi+3)/\\(1-3\xi)(1-4\xi)\\ - 3\\ for \\\xi \< 1/4\\,
+and is `Inf` at or above one quarter. The threshold is the tightest of
+the four moments, so this is the first quantity that can no longer be
+reported as a fitted shape rises.
 
 ## Arguments
 
@@ -15,8 +16,8 @@ become unreportable as a fitted shape rises.
 - theta:
 
   A named list with components `sigma` (positive) and `xi` (any real
-  value), each a numeric vector of length 1 or `n`. Only `xi` enters the
-  value; settings with \\\xi \ge 1/4\\ give `Inf`.
+  value); each is a numeric vector of length 1 or `n`. Only `xi` enters
+  the value; settings with \\\xi \ge 1/4\\ give `Inf`.
 
 - ...:
 
@@ -46,11 +47,11 @@ the \\\xi = 0\\ case;
 ``` r
 d <- gpd_distrib()
 
-# Six at shape zero, and infinite at or above one quarter.
+# The kurtosis is six at shape zero and infinite at or above one quarter.
 kurtosis(d, list(sigma = 1, xi = c(0, 0.2, 0.25, 0.3)))
 #> [1]  6.0 70.8  Inf  Inf
 
-# The four thresholds, from the mean's 1 down to this one's 1/4.
+# The four thresholds run from the mean's 1 down to this one's 1/4.
 th <- list(sigma = 1, xi = 0.3)
 c(mean = mean(d, th), variance = variance(d, th),
   skewness = skewness(d, th), kurtosis = kurtosis(d, th))

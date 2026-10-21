@@ -1,6 +1,6 @@
 # Skewness of the Skew t Distribution
 
-Closed form for \\\nu \> 3\\, from Azzalini and Capitanio (2003):
+The closed form for \\\nu \> 3\\, from Azzalini and Capitanio (2003), is
 \$\$\gamma_1 = \frac{\mu_z}{\sigma_z^{3}}
 \left\\\frac{\nu(3-\delta^2)}{\nu-3} - \frac{3\nu}{\nu-2} +
 2\mu_z^2\right\\,\$\$ and `NaN` at \\\nu \le 3\\. Unlike the skewness of
@@ -18,9 +18,9 @@ family cannot reach at any shape.
 - theta:
 
   A named list with components `mu`, `sigma` (positive), `alpha` (any
-  sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-  Only `alpha` and `nu` enter the value; settings with \\\nu \le 3\\
-  give `NaN`.
+  sign) and `nu` (positive); each is a numeric vector of length 1 or
+  `n`. Only `alpha` and `nu` enter the value; settings with \\\nu \le
+  3\\ give `NaN`.
 
 - ...:
 
@@ -28,8 +28,8 @@ family cannot reach at any shape.
 
 ## Value
 
-A numeric vector, of the length the recycled parameters imply, `NaN`
-wherever \\\nu \le 3\\. Only `alpha` and `nu` enter the value.
+A numeric vector, of the length that the recycled parameters imply,
+`NaN` wherever \\\nu \le 3\\. Only `alpha` and `nu` enter the value.
 
 ## Notation
 
@@ -37,7 +37,7 @@ wherever \\\nu \le 3\\. Only `alpha` and `nu` enter the value.
 \\\sigma_z^2 = \nu/(\nu-2) - \mu_z^2\\ are the standardized mean and
 variance from
 [`skewt_moment_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_moment_pieces.md).
-Neither the location nor the scale enters a standardized moment.
+The location and the scale do not enter a standardized moment.
 
 ## References
 
@@ -60,7 +60,8 @@ the bounded limit;
 ``` r
 d <- skewt_distrib()
 
-# Undefined at or below three degrees of freedom, then large and falling.
+# The skewness is undefined at or below three degrees of freedom, then large
+# and falling.
 round(skewness(d, list(mu = 0, sigma = 1, alpha = 2, nu = c(3, 4, 10))), 4)
 #> [1]    NaN 2.9938 0.8658
 

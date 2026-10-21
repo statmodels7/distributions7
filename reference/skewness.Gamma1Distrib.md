@@ -1,9 +1,9 @@
 # Skewness of the Gamma Distribution in Mean and Dispersion
 
-Closed form: \\\gamma_1 = 2\sqrt\phi\\. The mean cancels, so the
-asymmetry is carried by the dispersion alone: it is twice the
-coefficient of variation and vanishes as the dispersion goes to zero,
-where the family approaches a Gaussian.
+The skewness has the closed form \\\gamma_1 = 2\sqrt\phi\\. The mean
+cancels, so only the dispersion carries the asymmetry: the skewness is
+twice the coefficient of variation and vanishes as the dispersion goes
+to zero, where the family approaches a Gaussian.
 
 ## Arguments
 
@@ -14,9 +14,9 @@ where the family approaches a Gaussian.
 
 - theta:
 
-  A named list with components `mu` (positive) and `phi` (positive),
-  each a numeric vector of length 1 or `n`. Only `phi` enters the value,
-  and the result is recycled to the length both imply.
+  A named list with components `mu` (positive) and `phi` (positive);
+  each is a numeric vector of length 1 or `n`. Only `phi` enters the
+  value, and the result is recycled to the length that both imply.
 
 - ...:
 
@@ -45,7 +45,7 @@ the same quantity in the mean-variance parametrization;
 ``` r
 d <- gamma1_distrib()
 
-# Twice the square root of the dispersion, whatever the mean.
+# The skewness is twice the square root of the dispersion, whatever the mean.
 skewness(d, list(mu = c(1, 2, 3), phi = 0.25))
 #> [1] 1 1 1
 

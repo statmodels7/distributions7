@@ -1,6 +1,6 @@
 # Distribution Function and Its Derivatives from the Compiled Kernels
 
-Method bodies for
+Provides the method bodies for
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
 and
@@ -64,8 +64,8 @@ compiled_cdf_args(distrib, q, theta)
 
 - log, log.p:
 
-  Are derivatives of (or values of) the log probability wanted? A single
-  logical.
+  A single logical; if `TRUE`, derivatives of (or values of) the log
+  probability are returned.
 
 ## Value
 
@@ -83,19 +83,19 @@ requested tail is below \\e^{-5}\\, inside the support.
 \\\log(1 - P\_{\mathrm{other}})\\ through
 [`log1p()`](https://rdrr.io/r/base/Log.html) where `out` is above one
 half, and as \\\ell(q) + \log\int\_{\mathrm{tail}} e^{\ell(y) -
-\ell(q)}\\dy\\ where `out` is below \\e^{-5}\\, the integral taken by
+\ell(q)}\\dy\\ where `out` is below \\e^{-5}\\; there
 [`quad_log_tail_prob()`](https://statmodels7.github.io/distributions7/reference/quad_log_tail_derivs.md)
-on the scale \\1/\|\partial_y \ell(q)\|\\.
+computes the integral on the scale \\1/\|\partial_y \ell(q)\|\\.
 
 `log_tail_integral()` returns the logarithm of the probability of the
 tail beyond `q`, \\\ell(q) + \log\int_0^\infty e^{\ell(q \mp u) -
 \ell(q)}\\du\\, by
 [`stats::integrate()`](https://rdrr.io/r/stats/integrate.html) on a
 scale adjusted until one step changes \\\ell\\ by between 1/2 and 50,
-and \\\ell(q) - \log\|\ell'(q)\|\\ where no such step is resolved.
+and \\\ell(q) - \log\|\ell'(q)\|\\ where such a step cannot be resolved.
 
 `compiled_cdf_args()` returns the class name, the recycled quantiles and
-the parameter matrix the kernels read.
+the parameter matrix that the kernels read.
 
 ## Details
 
@@ -138,5 +138,5 @@ at \\q\\. The distribution function itself is
 [`pbeta()`](https://rdrr.io/r/stats/Beta.html) where the family has one,
 and the same integral of the density otherwise; with `log.p = TRUE` its
 logarithm is formed by `compiled_log_cdf()`, so that it stays finite in
-either tail. The tail and the log scale of the derivatives are applied
-as for every family, by the conversion of the lower-tail derivatives.
+either tail. The lower-tail derivatives are converted to the requested
+tail and log scale, as for every family.

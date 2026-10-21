@@ -1,11 +1,12 @@
 # Skew Normal Mixed Derivatives
 
-Closed form throughout, written in the inverse Mills ratio \\R\\ at \\t
-= \alpha z\\. The location and scale components are the location-scale
-identity with \\\ell^{(y)} = (\alpha R - z)/\sigma\\ and \\\ell^{(yy)} =
-(\alpha^2 R' - 1)/\sigma^2\\ substituted, and the shape component is
-\\(R + t R')/\sigma\\, the response entering \\\alpha\\ only through
-\\t\\. The three are assembled from a single evaluation of
+The mixed derivatives are in closed form throughout, written in the
+inverse Mills ratio \\R\\ at \\t = \alpha z\\. The location and scale
+components are the location-scale identity after the substitution of
+\\\ell^{(y)} = (\alpha R - z)/\sigma\\ and \\\ell^{(yy)} = (\alpha^2
+R' - 1)/\sigma^2\\, and the shape component is \\(R + t R')/\sigma\\,
+since the response enters \\\alpha\\ only through \\t\\. The three are
+assembled from a single evaluation of
 [`numericals7::mills_ratio()`](https://statmodels7.github.io/numericals7/reference/mills_ratio.html)
 rather than by calling
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
@@ -38,8 +39,8 @@ which would evaluate it twice more.
 
 ## Value
 
-A named list with components `mu`, `sigma` and `alpha`, each a numeric
-vector of length `length(y)`. All three are exact.
+A named list with components `mu`, `sigma` and `alpha`; each is a
+numeric vector of length `length(y)`. All three are exact.
 
 ## See also
 

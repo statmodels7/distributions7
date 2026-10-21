@@ -1,10 +1,10 @@
 # Location-Scale CDF Gradient
 
-The
+This function is the
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
-body the location-scale families share: the factors of
+body that the location-scale families share: it computes the factors of
 [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md)
-at order 1, put on the requested tail and scale by
+at order 1 and puts them on the requested tail and scale by
 [`loc_scale_cdf_route()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_route.md).
 The Gaussian, the logistic, the Laplace and the Gumbel register this
 function itself, so their pages document one piece of arithmetic.
@@ -28,7 +28,8 @@ loc_scale_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
 - theta:
 
-  A named list of parameters, the location first and the scale second.
+  A named list of parameters, in which the location comes first and the
+  scale second.
 
 - lower.tail:
 
@@ -46,8 +47,8 @@ loc_scale_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
 ## Value
 
-A named list of two numeric vectors, one per parameter, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, one per parameter, in which each
+vector has the length of `q` recycled against `theta`.
 
 ## See also
 

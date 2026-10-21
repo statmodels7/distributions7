@@ -32,7 +32,7 @@ expected_by_mc(distrib, y, theta, order, nsim)
 
 ## Value
 
-A named list of expected derivative component vectors, each of length
+A named list of expected derivative component vectors; each has length
 `length(y)`.
 
 ## Details
@@ -44,8 +44,8 @@ scalar `theta` costs one simulation however long `y` is.
 
 Estimates the same quantity as
 [`expected_by_integrate()`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md),
-with an error falling as \\1/\sqrt{n\_{sim}}\\, and is stochastic unless
-the seed is fixed. Its cost is the cost of
+has an error that falls as \\1/\sqrt{n\_{sim}}\\, and is stochastic
+unless the seed is fixed. Its cost is the cost of
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
 so it is expensive for a distribution whose generator inverts a slow
 quantile function.

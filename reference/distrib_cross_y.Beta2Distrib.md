@@ -1,7 +1,7 @@
 # Beta Mixed Derivatives in the Shapes
 
-Closed form: \\\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)\\ gives
-\\1/y\\ and \\-1/(1-y)\\.
+The mixed derivatives are in closed form: \\\ell^{(y)} = (\alpha-1)/y -
+(\beta-1)/(1-y)\\ gives \\1/y\\ and \\-1/(1-y)\\.
 
 ## Arguments
 
@@ -28,8 +28,8 @@ Closed form: \\\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)\\ gives
 
 ## Value
 
-A named list with components `alpha` and `beta`, each a numeric vector
-of length `length(y)`.
+A named list with components `alpha` and `beta`; each is a numeric
+vector of length `length(y)`.
 
 ## See also
 

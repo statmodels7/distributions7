@@ -1,10 +1,10 @@
 # Variance of the Binomial Distribution
 
-Closed form: \\\operatorname{Var}(Y) = n\mu(1-\mu)\\. The trials are
-independent, so the variance is the trial count times the Bernoulli
-variance; a sample of counts out of \\n\\ whose variance exceeds this is
-overdispersed, and a beta-binomial is the family that carries the
-excess.
+The variance has the closed form \\\operatorname{Var}(Y) =
+n\mu(1-\mu)\\. The trials are independent, so the variance is the trial
+count times the Bernoulli variance; a sample of counts out of \\n\\
+whose variance exceeds this is overdispersed, and a beta-binomial is the
+family that carries the excess.
 
 ## Arguments
 
@@ -42,7 +42,7 @@ which inflates this;
 ``` r
 d <- binomial_distrib(size = 10)
 
-# Ten times the Bernoulli variance.
+# The variance is ten times the Bernoulli variance.
 all.equal(variance(d, list(mu = 0.3)),
           10 * variance(bernoulli_distrib(), list(mu = 0.3)))
 #> [1] TRUE

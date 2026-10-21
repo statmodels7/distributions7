@@ -1,9 +1,10 @@
 # Variance of the Inverse Gaussian Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \phi\mu^3\\. The cube is what
-distinguishes this family from the gamma, whose variance function is
-\\\mu^2\\: the inverse Gaussian's spread grows faster with the mean, so
-it is the heavier-tailed of the two standard positive-response families.
+The variance has the closed form \\\operatorname{Var}(Y) = \phi\mu^3\\.
+The cubic variance function distinguishes this family from the gamma,
+whose variance function is \\\mu^2\\: the inverse Gaussian's spread
+grows faster with the mean, so it is the heavier-tailed of the two
+standard positive-response families.
 
 ## Arguments
 
@@ -15,7 +16,7 @@ it is the heavier-tailed of the two standard positive-response families.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `phi` (the
-  dispersion, positive), each a numeric vector of length 1 or `n`.
+  dispersion, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -45,7 +46,7 @@ for the other parametrization;
 ``` r
 d <- invgauss1_distrib()
 
-# The dispersion times the cube of the mean.
+# The variance is the dispersion times the cube of the mean.
 all.equal(variance(d, list(mu = 2, phi = 0.5)), 0.5 * 2^3)
 #> [1] TRUE
 

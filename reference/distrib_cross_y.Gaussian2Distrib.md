@@ -1,7 +1,7 @@
 # Gaussian Mixed Derivatives in Mean and Variance
 
-Closed form: \\\ell^{(y)} = -(y-\mu)/\sigma^2\\ gives \\1/\sigma^2\\ and
-\\(y-\mu)/\sigma^4\\.
+The mixed derivatives are in closed form: \\\ell^{(y)} =
+-(y-\mu)/\sigma^2\\ gives \\1/\sigma^2\\ and \\(y-\mu)/\sigma^4\\.
 
 ## Arguments
 
@@ -28,8 +28,8 @@ Closed form: \\\ell^{(y)} = -(y-\mu)/\sigma^2\\ gives \\1/\sigma^2\\ and
 
 ## Value
 
-A named list with components `mu` and `sigma2`, each a numeric vector of
-length `length(y)`.
+A named list with components `mu` and `sigma2`; each is a numeric vector
+of length `length(y)`.
 
 ## See also
 

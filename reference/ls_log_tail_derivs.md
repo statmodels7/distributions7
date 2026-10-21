@@ -56,8 +56,8 @@ derivatives \\g^{(k)}\\, \\k \le 4\\, are written out:
 - Laplace: \\g = \log\tfrac12 - z\\ for \\z \> 0\\ and \\\log(1 - u)\\,
   \\u = e^{z}/2\\, otherwise, whose derivatives are rational in \\u\\.
 
-- logistic: polynomials in \\p = F\\ and \\s = 1 - F\\, each taken from
-  its own tail by
+- logistic: polynomials in \\p = F\\ and \\s = 1 - F\\, where each is
+  taken from its own tail by
   [`stats::plogis()`](https://rdrr.io/r/stats/Logistic.html).
 
 - Gumbel, upper tail: with \\w = e^{-z}\\, \\g' = -\beta(w)\\,
@@ -82,7 +82,7 @@ Outside the support of a lognormal (\\q \le 0\\) the derivatives of
 
 ``` r
 d <- gaussian2_distrib()
-# log S at 400 standard deviations, where the tail underflows
+# This is log S at 400 standard deviations, where the tail underflows.
 distributions7:::ls_log_tail_derivs(d, 400, list(mu = 0, sigma2 = 1), 2L,
   list(base = "gaussian", w = "invsqrt"), lower.tail = FALSE)
 #> $mu_mu

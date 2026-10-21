@@ -1,8 +1,8 @@
 # Lognormal Mixed Derivatives
 
-Closed form. On the log scale the family is location-scale, and
-\\\ell^{(y)} = -1/y - (\log y - \mu)/(\sigma^2 y)\\ gives \\1/(\sigma^2
-y)\\ and \\(\log y - \mu)/(\sigma^4 y)\\.
+The mixed derivatives are in closed form. On the log scale the family is
+location-scale, and \\\ell^{(y)} = -1/y - (\log y - \mu)/(\sigma^2 y)\\
+gives \\1/(\sigma^2 y)\\ and \\(\log y - \mu)/(\sigma^4 y)\\.
 
 ## Arguments
 
@@ -29,8 +29,8 @@ y)\\ and \\(\log y - \mu)/(\sigma^4 y)\\.
 
 ## Value
 
-A named list with components `mu` and `sigma2`, each a numeric vector of
-length `length(y)`.
+A named list with components `mu` and `sigma2`; each is a numeric vector
+of length `length(y)`.
 
 ## See also
 

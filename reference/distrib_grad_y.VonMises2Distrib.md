@@ -1,8 +1,9 @@
 # von Mises Response and Mixed Derivatives in the Resultant Length
 
-The concentration parametrization's, at \\\kappa = A^{-1}(\rho)\\. The
-response derivatives are the parent's unchanged; the mixed block is the
-parent's carried by \\\kappa'(\rho)\\, the location passing through.
+Obtains the derivatives from those of the concentration parametrization,
+at \\\kappa = A^{-1}(\rho)\\. The response derivatives are the parent's
+unchanged; the mixed block is the parent's carried by \\\kappa'(\rho)\\,
+and the location passes through.
 
 ## Arguments
 

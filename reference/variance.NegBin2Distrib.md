@@ -1,9 +1,10 @@
 # Variance of the Negative Binomial Distribution
 
-Closed form, replacing the numerical default: \\\operatorname{Var}(Y) =
-\mu + \mu^2/\theta\\. The quadratic term is the overdispersion, so the
-variance exceeds the mean at every finite \\\theta\\ and falls back onto
-it as \\\theta\\ grows, which is the Poisson limit of the family.
+The closed form that replaces the numerical default is
+\\\operatorname{Var}(Y) = \mu + \mu^2/\theta\\. The quadratic term is
+the overdispersion, so the variance exceeds the mean at every finite
+\\\theta\\ and falls back onto it as \\\theta\\ grows, which is the
+Poisson limit of the family.
 
 ## Arguments
 
@@ -15,9 +16,9 @@ it as \\\theta\\ grows, which is the Poisson limit of the family.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `theta`
-  (the dispersion, positive), each a numeric vector of length 1 or `n`.
-  Small `theta` means heavy overdispersion; the variance diverges as it
-  approaches zero.
+  (the dispersion, positive); each is a numeric vector of length 1 or
+  `n`. Small `theta` means heavy overdispersion; the variance diverges
+  as it approaches zero.
 
 - ...:
 

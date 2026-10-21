@@ -1,8 +1,8 @@
 # Index Tuples Matching the Package's Component Naming
 
-Canonical (non-decreasing) index tuples for a derivative order, in
-exactly the output order of the corresponding name helper: parameter
-order at order 1,
+Returns the canonical (non-decreasing) index tuples for a derivative
+order, in exactly the output order of the corresponding name helper:
+parameter order at order 1,
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 at order 2,
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
@@ -31,7 +31,7 @@ A list of integer vectors, each of length `order`.
 
 ## Details
 
-The order-2 case is the one to be careful with.
+The order-2 case needs care.
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 lists the diagonal first and the off-diagonal afterwards, whereas
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)

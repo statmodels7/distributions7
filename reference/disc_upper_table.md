@@ -21,7 +21,7 @@ disc_upper_table(distrib, theta, need_p = NULL, need_k = NULL, kmax = 1e+06)
 
 - theta:
 
-  A named list of parameters, each of length 1.
+  A named list of parameters; each has length 1.
 
 - need_p:
 

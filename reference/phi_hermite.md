@@ -2,9 +2,9 @@
 
 Returns the factor \\h_m\\ in \\\Phi^{(m)}(x) = h_m(x)\\\varphi(x)\\ for
 \\m = 1, \ldots, 4\\: \\1\\, \\-x\\, \\x^2 - 1\\ and \\3x - x^3\\. These
-are the probabilists' Hermite polynomials up to a sign, and factoring
-the density out of them is what keeps the tails evaluable: \\\varphi\\
-is supplied by the caller and multiplied in once.
+are the probabilists' Hermite polynomials up to a sign. Factoring the
+density out of them keeps the tails evaluable, because \\\varphi\\ is
+supplied by the caller and multiplied in once.
 
 ## Usage
 
@@ -20,13 +20,13 @@ phi_hermite(x, m)
 
 - m:
 
-  The order, 1 to 4. Any other value returns `NULL`,
-  [`switch()`](https://rdrr.io/r/base/switch.html) falling through; no
-  caller passes one.
+  The order, 1 to 4. Any other value makes
+  [`switch()`](https://rdrr.io/r/base/switch.html) fall through and
+  return `NULL`; every caller passes a value from 1 to 4.
 
 ## Value
 
-A numeric vector the length of `x`, the polynomial factor alone.
+A numeric vector the length of `x`, holding only the polynomial factor.
 Multiply by `dnorm(x)` for the derivative itself.
 
 ## Notation

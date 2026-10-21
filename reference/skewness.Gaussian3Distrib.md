@@ -1,9 +1,9 @@
 # Skewness of the Gaussian Distribution in Location and Precision
 
-Exactly zero at every parameter value, the density being symmetric about
-\\\mu\\. A standardized moment is invariant under a change of
-parametrization, so this is the same zero that the other two Gaussian
-classes return.
+The skewness is exactly zero at every parameter value, because the
+density is symmetric about \\\mu\\. A standardized moment is invariant
+under a change of parametrization, so this is the same zero that the
+other two Gaussian classes return.
 
 ## Arguments
 
@@ -14,8 +14,8 @@ classes return.
 
 - theta:
 
-  A named list with components `mu` and `tau` (positive), each a numeric
-  vector of length 1 or `n`. The values are checked against the
+  A named list with components `mu` and `tau` (positive); each is a
+  numeric vector of length 1 or `n`. The values are checked against the
   parameter bounds, and only their lengths enter the result.
 
 - ...:
@@ -39,7 +39,8 @@ also zero;
 ``` r
 d <- gaussian3_distrib()
 
-# Zero at every location and precision, with one value per setting.
+# The skewness is zero at every location and precision, with one value per
+# setting.
 skewness(d, list(mu = c(-2, 0, 5), tau = c(1, 4, 9)))
 #> [1] 0 0 0
 ```

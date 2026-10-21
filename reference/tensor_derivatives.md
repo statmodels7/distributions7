@@ -1,11 +1,11 @@
 # Derivatives by One Stencil on the Highest Analytical Order
 
 Computes the derivative components of order `order` of the log-density
-from the highest order the family implements itself: the log-density
-(`base = 0`), the score (`base = 1`), the Hessian (`base = 2`), the
-third order (`base = 3`) or the fourth (`base = 4`). Each component is a
-single tensor-product central difference of order `order - base`, never
-a difference of a difference.
+from the highest order that the family implements itself: the
+log-density (`base = 0`), the score (`base = 1`), the Hessian
+(`base = 2`), the third order (`base = 3`) or the fourth (`base = 4`).
+Each component is a single tensor-product central difference of order
+`order - base`, never a difference of a difference.
 
 ## Usage
 
@@ -43,7 +43,7 @@ tensor_derivatives(
 
 - base:
 
-  The highest order the family implements itself, 0 to 4.
+  The highest order that the family implements itself, 0 to 4.
 
 - h_rel:
 
@@ -74,15 +74,16 @@ gives them.
 
 The computation is
 [`numericals7::fd_tensor()`](https://statmodels7.github.io/numericals7/reference/fd_tensor.html)
-over the coordinates \\\theta_1, \dots, \theta_p\\, with the log-density
-as the function and the derivatives of order `base` declared as the
-known quantity. A component is a multiset of parameters: \\(\mu, \mu,
-\phi)\\ is \\\partial^3\ell / \partial\mu^2\partial\phi\\. `base` of its
-indices select the analytical component that is differenced, taken from
-the parameters that occur most often, and the remaining multiplicities
-are the orders of the one-dimensional central stencils whose tensor
-product is applied to it. Each parameter is differentiated only once,
-however many times it occurs.
+over the coordinates \\\theta_1, \dots, \theta_p\\, where the
+log-density is the function and the derivatives of order `base` are
+declared as the known quantity. A component is a multiset of parameters:
+\\(\mu, \mu, \phi)\\ is \\\partial^3\ell / \partial\mu^2\partial\phi\\.
+`base` of its indices select the analytical component that is
+differenced, and these indices are taken from the parameters that occur
+most often. The remaining multiplicities are the orders of the
+one-dimensional central stencils whose tensor product is applied to it.
+Each parameter is differentiated only once, however many times it
+occurs.
 
 The step in \\\theta_j\\ is \\h_j = \varepsilon^{1/(r+a)}\max(1,
 \|\theta_j\|)\\, with \\r = \\ `order - base` the order of the

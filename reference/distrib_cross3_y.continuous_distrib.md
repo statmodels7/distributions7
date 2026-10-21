@@ -1,6 +1,6 @@
 # Default Mixed Third-Response Derivatives for Continuous Distributions
 
-Falls back to one tensor stencil on the highest quantity the family
+Falls back to one tensor stencil on the highest quantity that the family
 implements itself, through
 [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md):
 a central difference of an analytic

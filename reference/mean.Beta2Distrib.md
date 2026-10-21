@@ -1,8 +1,8 @@
 # Mean of the Beta Distribution in Two Shapes
 
-Closed form: \\E\[Y\] = \alpha/(\alpha+\beta)\\. This is the beta in its
-classical two-shape parametrization, so the mean is a ratio rather than
-a parameter;
+The mean has the closed form \\E\[Y\] = \alpha/(\alpha+\beta)\\. This is
+the beta in its classical two-shape parametrization, so the mean is a
+ratio rather than a parameter;
 [`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
 carries it directly, with \\\mu = \alpha/(\alpha+\beta)\\ and \\\phi =
 \alpha+\beta\\.
@@ -16,8 +16,8 @@ carries it directly, with \\\mu = \alpha/(\alpha+\beta)\\ and \\\phi =
 
 - theta:
 
-  A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`.
+  A named list with components `alpha` and `beta`, both positive; each
+  is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -45,7 +45,7 @@ for the mean-precision parametrization;
 ``` r
 d <- beta2_distrib()
 
-# The ratio of the first shape to their sum.
+# The mean is the ratio of the first shape to their sum.
 all.equal(mean(d, list(alpha = 2, beta = 3)), 0.4)
 #> [1] TRUE
 ```

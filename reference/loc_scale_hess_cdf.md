@@ -1,13 +1,13 @@
 # Location-Scale CDF Hessian
 
-The
+This function is the
 [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
-body the location-scale families share: the factors of
+body that the location-scale families share: it computes the factors of
 [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md)
-at both orders, put on the requested tail and scale by
+at both orders and puts them on the requested tail and scale by
 [`loc_scale_cdf_route()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_route.md).
-Both orders are needed even when only the Hessian was requested, the
-log-scale correction reading the first derivatives.
+Both orders are needed even when only the Hessian was requested, because
+the log-scale correction reads the first derivatives.
 
 ## Usage
 
@@ -28,7 +28,8 @@ loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
 - theta:
 
-  A named list of parameters, the location first and the scale second.
+  A named list of parameters, in which the location comes first and the
+  scale second.
 
 - lower.tail:
 
@@ -48,8 +49,8 @@ loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
 A named list of three numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`. The gradient is not
-returned alongside.
+in which each vector has the length of `q` recycled against `theta`. The
+gradient is not returned alongside.
 
 ## See also
 

@@ -1,6 +1,6 @@
 # The Generalized Ratio-of-Uniforms Sampler
 
-The sampler itself, on a bare log-density over an interval.
+Runs the sampler itself on a bare log-density over an interval.
 
 ## Usage
 
@@ -20,7 +20,7 @@ grou_core(lp, b, n, r)
 
 - n:
 
-  The number of draws wanted.
+  The number of draws.
 
 - r:
 
@@ -29,13 +29,14 @@ grou_core(lp, b, n, r)
 ## Value
 
 A numeric vector of draws. An error is signaled if the log-density at
-the mode is not finite, if no bounding rectangle can be built, or if no
-draw is accepted in 1000 rounds.
+the mode is not finite, if a bounding rectangle cannot be built, or if
+1000 rounds pass without an accepted draw.
 
 ## Details
 
-Kept separate from the `distrib` object so that it can also be run on a
-reparametrized density, which is how the divergence transforms reuse it.
+The sampler is kept separate from the `distrib` object so that it can
+also be run on a reparametrized density, and the divergence transforms
+reuse it for that purpose.
 
 Two devices make it safe. The kernel is recentered at the mode, without
 which a density located at \\\mu = 1000\\ produces a degenerate bounding

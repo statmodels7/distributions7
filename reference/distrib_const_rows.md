@@ -1,8 +1,8 @@
-# Number of Observations a Family's Constants Vary Over
+# Number of Observations Over Which a Family's Constants Vary
 
 Returns the length of the longest constant of `distrib` that varies by
-observation (a binomial's `size`), its parents' included, and 1 when
-there is none.
+observation (a binomial's `size`), including those of its parent
+families, and 1 when the family has none.
 
 ## Usage
 

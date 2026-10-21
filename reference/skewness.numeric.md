@@ -1,24 +1,24 @@
 # Sample Skewness
 
-The sample skewness of a numeric vector, \\m_3 / m_2^{3/2}\\ with \\m_k
-= n^{-1}\sum_i (y_i - \bar y)^k\\. Both central moments divide by \\n\\,
-so this is the population denominator and the estimator is biased
-towards zero in small samples.
+Computes the sample skewness of a numeric vector, \\m_3 / m_2^{3/2}\\
+with \\m_k = n^{-1}\sum_i (y_i - \bar y)^k\\. Both central moments
+divide by \\n\\, so this is the population denominator and the estimator
+is biased towards zero in small samples.
 [`variance.numeric()`](https://statmodels7.github.io/distributions7/reference/variance.numeric.md)
-uses \\n - 1\\ instead, each following the commonest convention for its
-own quantity.
+uses \\n - 1\\ instead, and each of the two follows the commonest
+convention for its own quantity.
 
 ## Arguments
 
 - x:
 
-  A numeric vector. A constant vector gives `NaN`, the standardizing
-  denominator being zero.
+  A numeric vector. A constant vector gives `NaN`, because the
+  standardizing denominator is zero.
 
 - na.rm:
 
-  Should missing values be dropped before the moments are taken? A
-  single logical, `FALSE` by default, which propagates `NA`.
+  Should missing values be dropped before the moments are taken? It is a
+  single logical, `FALSE` by default, and `FALSE` propagates `NA`.
 
 - ...:
 
@@ -43,7 +43,7 @@ whose denominator is \\n - 1\\.
 set.seed(1)
 y <- rgamma(500, shape = 2)
 
-# The n denominator, written out.
+# The denominator is n, written out.
 m <- mean(y)
 all.equal(skewness(y),
           mean((y - m)^3) / mean((y - m)^2)^1.5)

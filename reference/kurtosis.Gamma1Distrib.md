@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Gamma Distribution in Mean and Dispersion
 
-Closed form: \\\gamma_2 = 6\phi\\, the excess over the Gaussian. It is
-linear in the dispersion and free of the mean, and it is exactly
-\\3\gamma_1^2/2\\, so a gamma occupies one curve of the
-skewness-kurtosis plane whichever parametrization it is written in.
+The excess kurtosis has the closed form \\\gamma_2 = 6\phi\\, the excess
+over the Gaussian. It is linear in the dispersion and free of the mean,
+and it is exactly \\3\gamma_1^2/2\\, so a gamma occupies one curve of
+the skewness-kurtosis plane whichever parametrization it is written in.
 
 ## Arguments
 
@@ -14,8 +14,9 @@ skewness-kurtosis plane whichever parametrization it is written in.
 
 - theta:
 
-  A named list with components `mu` (positive) and `phi` (positive),
-  each a numeric vector of length 1 or `n`. Only `phi` enters the value.
+  A named list with components `mu` (positive) and `phi` (positive);
+  each is a numeric vector of length 1 or `n`. Only `phi` enters the
+  value.
 
 - ...:
 
@@ -43,7 +44,7 @@ to which this is tied;
 ``` r
 d <- gamma1_distrib()
 
-# Six times the dispersion.
+# The excess kurtosis is six times the dispersion.
 all.equal(kurtosis(d, list(mu = 2, phi = 0.25)), 1.5)
 #> [1] TRUE
 

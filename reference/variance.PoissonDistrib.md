@@ -1,10 +1,10 @@
 # Variance of the Poisson Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \mu\\, equal to the mean. This is
-equidispersion, and it is the assumption every overdispersed count
-family in the toolkit relaxes: a sample whose variance exceeds its mean
-is evidence against a Poisson and for a negative binomial or a
-Poisson-inverse Gaussian.
+The variance has the closed form \\\operatorname{Var}(Y) = \mu\\, which
+equals the mean. This is equidispersion, and it is the assumption that
+every overdispersed count family in the toolkit relaxes: a sample whose
+variance exceeds its mean is evidence against a Poisson and for a
+negative binomial or a Poisson-inverse Gaussian.
 
 ## Arguments
 
@@ -39,7 +39,7 @@ which adds \\\mu^2/\theta\\;
 ``` r
 d <- poisson_distrib()
 
-# Equal to the mean at every setting.
+# The variance equals the mean at every setting.
 variance(d, list(mu = c(0.5, 3, 100)))
 #> [1]   0.5   3.0 100.0
 

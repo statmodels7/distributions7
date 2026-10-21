@@ -1,6 +1,6 @@
 # Mixed Derivatives of a Reparametrized Distribution
 
-The parent's mixed block carried by the first-order chain rule on the
+Carries the parent's mixed block by the first-order chain rule on the
 map.
 
 ## Arguments

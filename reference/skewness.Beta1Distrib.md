@@ -1,8 +1,8 @@
 # Skewness of the Beta Distribution
 
-Closed form in the two shapes \\a = \mu\phi\\ and \\b = (1-\mu)\phi\\:
-\$\$\gamma_1 = \frac{2(b - a)\sqrt{a + b + 1}} {(a + b +
-2)\sqrt{ab}}.\$\$ It takes the sign of \\b - a\\, so a beta is
+The skewness has the closed form, in the two shapes \\a = \mu\phi\\ and
+\\b = (1-\mu)\phi\\, \$\$\gamma_1 =\frac{2(b - a)\sqrt{a + b + 1}} {(a +
+b + 2)\sqrt{ab}}.\$\$ It takes the sign of \\b - a\\, so a beta is
 right-skewed below a mean of one half, left-skewed above it, and exactly
 symmetric at \\\mu = 1/2\\ whatever the precision. The method evaluates
 the equivalent form in \\(\mu, \phi)\\ of
@@ -20,7 +20,7 @@ in which the product \\ab\\ is not formed, so the value is finite where
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and `phi`
-  (positive), each a numeric vector of length 1 or `n`.
+  (positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -47,13 +47,13 @@ written in the same two shapes;
 ``` r
 d <- beta1_distrib()
 
-# The published form in the two shapes, written out.
+# The published form in the two shapes is written out.
 a <- 0.3 * 5; b <- 0.7 * 5
 all.equal(skewness(d, list(mu = 0.3, phi = 5)),
           2 * (b - a) * sqrt(a + b + 1) / ((a + b + 2) * sqrt(a * b)))
 #> [1] TRUE
 
-# Exactly zero at a mean of one half, at any precision.
+# The skewness is exactly zero at a mean of one half, at any precision.
 skewness(d, list(mu = 0.5, phi = c(0.5, 2, 50)))
 #> [1] 0 0 0
 ```

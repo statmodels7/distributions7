@@ -1,10 +1,11 @@
 # Poisson Log-CDF Gradient
 
-Closed form, and exact: the sum defining \\F\\ telescopes, so
-\$\$\frac{\partial}{\partial\mu}\sum\_{j \le k} \frac{e^{-\mu}\mu^j}{j!}
-= \sum\_{j \le k} \\f(j-1) - f(j)\\ = -f(k).\$\$ The sensitivity of the
-distribution function to the mean is minus the mass at the last point
-retained, so one density evaluation replaces the whole sum.
+Computes the gradient in closed form, and exactly: the sum defining
+\\F\\ telescopes, so \$\$\frac{\partial}{\partial\mu}\sum\_{j \le k}
+\frac{e^{-\mu}\mu^j}{j!} = \sum\_{j \le k} \\f(j-1) - f(j)\\ =
+-f(k).\$\$ The sensitivity of the distribution function to the mean is
+minus the mass at the last point retained, so one density evaluation
+replaces the whole sum.
 
 ## Arguments
 
@@ -62,12 +63,12 @@ whose mean component tends to this one;
 d <- poisson_distrib()
 q <- c(0, 2, 5)
 
-# Minus the mass at the last point retained.
+# The component is minus the mass at the last point retained.
 all.equal(distrib_grad_cdf(d, q, list(mu = 3), log = FALSE)$mu,
           -distrib_pdf(d, q, list(mu = 3)))
 #> [1] TRUE
 
-# On the log scale, and on the upper tail.
+# The gradient is also computed on the log scale and on the upper tail.
 distrib_grad_cdf(d, q, list(mu = 3))$mu
 #> [1] -1.0000000 -0.5294118 -0.1100543
 distrib_grad_cdf(d, q, list(mu = 3), lower.tail = FALSE)$mu

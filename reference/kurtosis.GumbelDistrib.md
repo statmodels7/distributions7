@@ -1,8 +1,9 @@
 # Excess Kurtosis of the Gumbel Distribution
 
-Constant: \\\gamma_2 = 12/5 = 2.4\\, the excess over the Gaussian. Like
-the skewness it is fixed for the whole family, there being no shape
-parameter for a standardized moment to depend on.
+The excess kurtosis is the constant \\\gamma_2 = 12/5 = 2.4\\, the
+excess over the Gaussian. Like the skewness, it is fixed for the whole
+family, because the family has no shape parameter on which a
+standardized moment could depend.
 
 ## Arguments
 
@@ -13,8 +14,9 @@ parameter for a standardized moment to depend on.
 
 - theta:
 
-  A named list with components `mu` and `sigma`, each a numeric vector
-  of length 1 or `n`. The values are not read, only their lengths.
+  A named list with components `mu` and `sigma`; each is a numeric
+  vector of length 1 or `n`. The values are not read, only their
+  lengths.
 
 - ...:
 
@@ -37,7 +39,7 @@ the other constant;
 ``` r
 d <- gumbel_distrib()
 
-# 12 / 5 for every Gumbel.
+# The excess kurtosis is 12 / 5 for every Gumbel.
 kurtosis(d, list(mu = c(0, 5), sigma = c(1, 7)))
 #> [1] 2.4 2.4
 ```

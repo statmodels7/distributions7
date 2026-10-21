@@ -3,8 +3,8 @@
 Returns how the package's compiled scalar entry points address a
 distribution: the name that the C function `d7_scalar_id()` recognizes,
 and the constants of the distribution that follow its parameters in the
-parameter vector those entry points read. A consumer that resolves the
-entry points with `R_GetCCallable()` uses the name to obtain the
+parameter vector that those entry points read. A consumer that resolves
+the entry points with `R_GetCCallable()` uses the name to obtain the
 distribution's identifier once, and appends the constants to the
 parameters of every observation.
 
@@ -29,9 +29,9 @@ distrib_scalar_route(distrib, ...)
 `NULL` when the registry does not cover the distribution; otherwise a
 list with `name`, a single character string, and `constants`, a list of
 numeric vectors (named for the size, the truncation points and the
-transformer parameters, unnamed for the fixed values), each of length 1
-or of the number of observations, in the order they follow the
-parameters.
+transformer parameters, unnamed for the fixed values), each of which has
+length 1 or the number of observations, in the order in which they
+follow the parameters.
 
 ## Details
 
@@ -40,23 +40,23 @@ The entry points are `d7_scalar_id(name)`,
 k)\\ second derivative of the log-density in parameter \\k\\, and
 `d7_info_dinfo(id, k, y, th, out)`, which writes the \\(k, k)\\ expected
 second derivative and its derivative in the same parameter, all on the
-parameter scale, with `k` counted from zero over `distrib@params` and
-`th` the parameters of one observation followed by its constants.
-`d7_logpdf(id, y, th)` returns the log-density of one observation.
-`d7_scalar_thread_safe(id)` returns 1 for every distribution or wrapped
-family that the registry covers, whose entries may be called from a
-worker thread, and -1 for an identifier that the registry does not
-recognize.
+parameter scale. Here `k` is counted from zero over `distrib@params`,
+and `th` holds the parameters of one observation followed by its
+constants. `d7_logpdf(id, y, th)` returns the log-density of one
+observation. `d7_scalar_thread_safe(id)` returns 1 for every
+distribution or wrapped family that the registry covers, whose entries
+may be called from a worker thread, and -1 for an identifier that the
+registry does not recognize.
 
 The default method returns the class name when the registry covers the
 class and no constants; the binomial and the two beta-binomials carry
 their size as a constant.
 
-A wrapped family is named `"<wrapper class>[:aux]|<inner name>"`, `aux`
-being what the wrapper needs besides its constants and the inner name
-being the route's name of the wrapped family, which may itself be a
-wrapper; its constants are the inner family's followed by the wrapper's.
-For
+A wrapped family is named `"<wrapper class>[:aux]|<inner name>"`, where
+`aux` is the additional input that the wrapper needs besides its
+constants and the inner name is the route's name of the wrapped family,
+which may itself be a wrapper; its constants are the inner family's
+followed by the wrapper's. For
 [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
 `aux` is the mask of the fixed parameters (bit `j - 1` for the `j`-th
 parameter of the inner family) and the wrapper's constants are the fixed
@@ -64,8 +64,8 @@ values in the inner family's order. For
 [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
 and
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
-there is no `aux` and no constant of the wrapper's own, the probability
-being the last parameter. For
+there is no `aux` and no constant of the wrapper's own, because the
+probability is the last parameter. For
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
 there is no `aux` and no constant of the wrapper's own. For
 [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)

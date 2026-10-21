@@ -4,12 +4,14 @@ the first three moments of \(Y\), and the Cauchy has none of them. Its
 density decays like \(y^{-2}\), so \(\int |y|^p f(y)\,\mathrm{d}y\)
 diverges for every \(p \ge 1\); already the mean fails to exist, and the
 second and third moments fail worse. NaN is the value of a quantity that is
-not defined, and it is returned directly so that no quadrature is attempted."><meta property="og:description" content="Returns NaN. Skewness is the third standardized central moment, so it needs
+not defined, and it is returned directly so that the method does not attempt
+a quadrature."><meta property="og:description" content="Returns NaN. Skewness is the third standardized central moment, so it needs
 the first three moments of \(Y\), and the Cauchy has none of them. Its
 density decays like \(y^{-2}\), so \(\int |y|^p f(y)\,\mathrm{d}y\)
 diverges for every \(p \ge 1\); already the mean fails to exist, and the
 second and third moments fail worse. NaN is the value of a quantity that is
-not defined, and it is returned directly so that no quadrature is attempted."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+not defined, and it is returned directly so that the method does not attempt
+a quadrature."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +19,7 @@ not defined, and it is returned directly so that no quadrature is attempted."><m
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +57,8 @@ the first three moments of \(Y\), and the Cauchy has none of them. Its
 density decays like \(y^{-2}\), so \(\int |y|^p f(y)\,\mathrm{d}y\)
 diverges for every \(p \ge 1\); already the mean fails to exist, and the
 second and third moments fail worse. <code>NaN</code> is the value of a quantity that is
-not defined, and it is returned directly so that no quadrature is attempted.</p>
+not defined, and it is returned directly so that the method does not attempt
+a quadrature.</p>
     </div>
 
 
@@ -68,24 +71,24 @@ not defined, and it is returned directly so that no quadrature is attempted.</p>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list of parameters with components <code>mu</code> and <code>sigma</code>,
-each a numeric vector of length 1 or <code>n</code>. The values are not read, only
-their lengths, but they are still aligned and validated, so a missing or
-out-of-bounds component signals an error exactly as it would for a family
-whose moments exist.</p></dd>
+<dd><p>A named list of parameters with components <code>mu</code> and <code>sigma</code>, in
+which each component is a numeric vector of length 1 or <code>n</code>. The values are
+not read, only their lengths, but they are still aligned and validated, so
+a missing or out-of-bounds component signals an error exactly as it would
+for a family whose moments exist.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, and accepted so that the signature matches the generic's.
-Arguments meaningful to <code><a href="moment.html">moment()</a></code> have no effect here, no quadrature
-being run.</p></dd>
+Arguments that are meaningful to <code><a href="moment.html">moment()</a></code> have no effect here, because
+the method runs no quadrature.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of <code>NaN</code>, of length
-<code>max(length(theta$mu), length(theta$sigma))</code>, matching the one-value-per-
-observation shape every moment method returns.</p>
+<code>max(length(theta$mu), length(theta$sigma))</code>, which matches the
+one-value-per-observation shape that every moment method returns.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -97,7 +100,8 @@ returns <code>NaN</code> without running a quadrature.</p>
 <p>The same holds for <code><a href="mean.CauchyDistrib.html">mean.CauchyDistrib()</a></code>, <code><a href="variance.CauchyDistrib.html">variance.CauchyDistrib()</a></code> and
 <code><a href="kurtosis.CauchyDistrib.html">kurtosis.CauchyDistrib()</a></code>, and for the sample versions: a Cauchy sample mean
 does not converge as \(n\) grows, it is itself Cauchy with the same scale,
-so no amount of data settles it. The example below shows that.</p>
+so it does not settle however large the sample is. The example below shows
+that.</p>
 <p>The Cauchy has a median, equal to \(\mu\), and a half-interquartile
 range, equal to \(\sigma\). Both are finite at every parameter value and
 both are available from <code><a href="distrib_quantile.html">distrib_quantile()</a></code>. They serve as a location and a
@@ -108,22 +112,23 @@ spread where the mean and the variance do not exist.</p>
 
 
 <p>\(\mu\) is the location and \(\sigma &gt; 0\) the scale of the Cauchy, in
-the parametrization <code><a href="cauchy_distrib.html">cauchy_distrib()</a></code> uses. Neither is a moment: \(\mu\)
-is the median and \(\sigma\) the half-interquartile range.</p>
+the parametrization <code><a href="cauchy_distrib.html">cauchy_distrib()</a></code> uses. The two parameters are not
+moments: \(\mu\) is the median and \(\sigma\) the half-interquartile
+range.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="mean.CauchyDistrib.html">mean.CauchyDistrib()</a></code>, <code><a href="variance.CauchyDistrib.html">variance.CauchyDistrib()</a></code> and
 <code><a href="kurtosis.CauchyDistrib.html">kurtosis.CauchyDistrib()</a></code>, which return <code>NaN</code> for the same reason;
 <code><a href="distrib_quantile.html">distrib_quantile()</a></code> for the median and quartiles, which do exist;
-<code><a href="skewness.html">skewness()</a></code> for the generic and the families that answer it with a number.</p></div>
+<code><a href="skewness.html">skewness()</a></code> for the generic and the families that return a number.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="cauchy_distrib.html">cauchy_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># No moment of the Cauchy exists, so all four are NaN.</span></span></span>
+<span class="r-in"><span><span class="co"># The Cauchy has no moment, so all four are NaN.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NaN</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
@@ -131,7 +136,8 @@ is the median and \(\sigma\) the half-interquartile range.</p>
 <span class="r-in"><span>  <span class="fu"><a href="kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NaN NaN NaN</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># One value per observation, as for a family whose moments do exist.</span></span></span>
+<span class="r-in"><span><span class="co"># The method returns one value per observation, as for a family whose moments</span></span></span>
+<span class="r-in"><span><span class="co"># do exist.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] NaN NaN NaN</span>
 <span class="r-in"><span></span></span>

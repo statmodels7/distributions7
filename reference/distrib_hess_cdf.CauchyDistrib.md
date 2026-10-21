@@ -1,6 +1,7 @@
 # Cauchy Log-CDF Hessian
 
-Closed form, from the same location-scale structure, through
+Computes the Hessian in closed form, from the same location-scale
+structure, through
 [`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md),
 which computes each component as one term in \\Y^{-2}\\, \\Y = q - \mu +
 \mathrm{i}\sigma\\. With \\\ell_y = \partial\log f/\partial y\\, which
@@ -24,7 +25,7 @@ these are exact although the family has no moments.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
+  A named list with components `mu` and `sigma` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -41,7 +42,7 @@ these are exact although the family has no moments.
 
 A named list of three numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`.
+in which each vector has the length of `q` recycled against `theta`.
 
 ## Notation
 
@@ -64,7 +65,8 @@ d <- cauchy_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic with it.
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))

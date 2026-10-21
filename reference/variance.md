@@ -26,13 +26,14 @@ variance(x, ...)
   For a `distrib`: `theta`, a named list of parameters, followed by any
   further arguments for
   [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md).
-  For a numeric vector: `na.rm`, a single logical, `FALSE` by default.
+  For a numeric vector, the argument is `na.rm`, a single logical that
+  is `FALSE` by default.
 
 ## Value
 
 A numeric vector for a `distrib`, one value per parameter setting; a
-single number for a numeric vector. `NaN` for a family with no moments,
-`Inf` for one whose variance diverges.
+single number for a numeric vector. The value is `NaN` for a family with
+no moments and `Inf` for one whose variance diverges.
 
 ## The two routes
 
@@ -51,7 +52,7 @@ quadrature.
 On a numeric vector the value is
 [`stats::var()`](https://rdrr.io/r/stats/cor.html), which divides by
 \\n - 1\\. That is the unbiased estimator, and it differs from the
-convention
+convention that
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md)
 and
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
@@ -75,7 +76,7 @@ for the quadrature and the series.
 ## Examples
 
 ``` r
-# A closed form, one value per setting.
+# A closed form gives one value per setting.
 variance(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 #> [1]  1  4 16
 

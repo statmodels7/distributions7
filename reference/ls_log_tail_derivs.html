@@ -21,7 +21,7 @@ over the set partitions \(\pi\) of the multi-index of
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,8 +109,8 @@ order of <code><a href="hess_names.html">hess_names()</a></code> at order two.</
 derivatives \(g^{(k)}\), \(k \le 4\), are written out:</p><ul><li><p>Laplace: \(g = \log\tfrac12 - z\) for \(z &gt; 0\) and
 \(\log(1 - u)\), \(u = e^{z}/2\), otherwise, whose derivatives are
 rational in \(u\).</p></li>
-<li><p>logistic: polynomials in \(p = F\) and \(s = 1 - F\), each
-taken from its own tail by <code><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">stats::plogis()</a></code>.</p></li>
+<li><p>logistic: polynomials in \(p = F\) and \(s = 1 - F\), where
+each is taken from its own tail by <code><a href="https://rdrr.io/r/stats/Logistic.html" class="external-link">stats::plogis()</a></code>.</p></li>
 <li><p>Gumbel, upper tail: with \(w = e^{-z}\), \(g' = -\beta(w)\),
 \(\beta(w) = w/(e^{w} - 1)\), and each further order applies
 \(-w\,d/dw\); below \(w = 1/2\) by the Bernoulli series
@@ -132,7 +132,7 @@ the two out of the result.</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gaussian2_distrib.html">gaussian2_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># log S at 400 standard deviations, where the tail underflows</span></span></span>
+<span class="r-in"><span><span class="co"># This is log S at 400 standard deviations, where the tail underflows.</span></span></span>
 <span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">ls_log_tail_derivs</span><span class="op">(</span><span class="va">d</span>, <span class="fl">400</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="fl">2L</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>base <span class="op">=</span> <span class="st">"gaussian"</span>, w <span class="op">=</span> <span class="st">"invsqrt"</span><span class="op">)</span>, lower.tail <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $mu_mu</span>

@@ -16,8 +16,8 @@ phi_terms_cdf_deriv_k(distrib, q, order, terms)
 
 - distrib:
 
-  An object inheriting from `distrib`. Its `params` name and order the
-  components.
+  An object inheriting from `distrib`. Its `params` give the names and
+  the order of the components.
 
 - q:
 

@@ -1,10 +1,10 @@
 # Variance of the Student t Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \sigma^2\nu/(\nu-2)\\ for \\\nu
-\> 2\\, `Inf` for \\1 \< \nu \le 2\\, and `NaN` at or below one. The
-three answers are three different statements: a finite value, a second
-moment that diverges to infinity while the first exists, and a second
-moment that is undefined because the first is.
+The variance has the closed form \\\operatorname{Var}(Y) =
+\sigma^2\nu/(\nu-2)\\ for \\\nu \> 2\\; it is `Inf` for \\1 \< \nu \le
+2\\ and `NaN` at or below one. These are three different statements: a
+finite value, a second moment that diverges to infinity while the first
+exists, and a second moment that is undefined because the first is.
 
 ## Arguments
 
@@ -16,7 +16,8 @@ moment that is undefined because the first is.
 - theta:
 
   A named list with components `mu`, `sigma` (positive) and `nu`
-  (positive), each a numeric vector of length 1 or `n`.
+  (positive), in which each component is a numeric vector of length 1 or
+  `n`.
 
 - ...:
 
@@ -24,9 +25,9 @@ moment that is undefined because the first is.
 
 ## Value
 
-A numeric vector of variances, of length equal to the longest of the
-three components, `Inf` where \\1 \< \nu \le 2\\ and `NaN` where \\\nu
-\le 1\\.
+A numeric vector of variances, whose length is the one that the recycled
+parameters imply, with `Inf` where \\1 \< \nu \le 2\\ and `NaN` where
+\\\nu \le 1\\.
 
 ## Details
 
@@ -53,7 +54,8 @@ the \\\nu = 1\\ case;
 ``` r
 d <- student_t1_distrib()
 
-# NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+# The values are NaN, infinite and finite, in that order, as nu crosses its
+# two thresholds.
 variance(d, list(mu = 0, sigma = 1, nu = c(1, 1.5, 2, 3)))
 #> [1] NaN Inf Inf   3
 

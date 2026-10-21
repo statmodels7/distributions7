@@ -1,8 +1,8 @@
 # Logistic Mixed Derivatives
 
-Closed form from the location-scale identity: the location component is
-\\-\ell^{(yy)}\\ and the scale one \\-z\ell^{(yy)} -
-\ell^{(y)}/\sigma\\.
+The mixed derivatives are in closed form from the location-scale
+identity: the location component is \\-\ell^{(yy)}\\ and the scale one
+\\-z\ell^{(yy)} - \ell^{(y)}/\sigma\\.
 
 ## Arguments
 
@@ -29,8 +29,8 @@ Closed form from the location-scale identity: the location component is
 
 ## Value
 
-A named list with components `mu` and `sigma`, each a numeric vector of
-length `length(y)`.
+A named list with components `mu` and `sigma`; each is a numeric vector
+of length `length(y)`.
 
 ## See also
 

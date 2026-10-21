@@ -1,12 +1,12 @@
 # Default Log-CDF Hessian for Continuous Distributions
 
-The fallback for a continuous family that registers no closed second
-derivative:
+Computes the fallback Hessian for a continuous family that registers no
+closed second derivative, by
 [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
-at order 2, with the first-order part taken from
+at order 2. The first-order part is taken from
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
-so a closed gradient the family does register is used here too. The step
-is \\\varepsilon^{1/4}\\ relative, about \\1.2\times10^{-4}\\.
+so a closed gradient that the family does register is used here too. The
+step is \\\varepsilon^{1/4}\\ relative, about \\1.2\times10^{-4}\\.
 
 ## Arguments
 
@@ -40,8 +40,8 @@ is \\\varepsilon^{1/4}\\ relative, about \\1.2\times10^{-4}\\.
 
 A named list of numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`. The gradient is not
-returned alongside.
+in which each vector has the length of `q` recycled against `theta`. The
+gradient is not returned alongside.
 
 ## Details
 
@@ -51,8 +51,7 @@ different variables and is therefore a single stencil. The log-scale
 correction \\\partial^2 P/P - (\partial P/P)^2\\ is applied afterwards
 by
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md),
-which is why the gradient is fetched even when only the Hessian was
-requested.
+so the gradient is fetched even when only the Hessian was requested.
 
 ## See also
 

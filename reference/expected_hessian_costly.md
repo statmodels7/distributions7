@@ -1,9 +1,9 @@
 # Is a Family's Exact Expected Information Costly to Compute?
 
-`TRUE` when the family's expected information is exact but costs far
-more than its observed information, because it is obtained by an
-integral or a sum for each observation or each distinct shape; `FALSE`
-otherwise.
+Returns `TRUE` when the family's expected information is exact but costs
+far more than its observed information, because it is obtained by an
+integral or a sum for each observation or each distinct shape, and
+`FALSE` otherwise.
 
 ## Usage
 
@@ -29,7 +29,7 @@ A single logical.
 
 The answer is a statement about cost, and it is read beside
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
-which concerns accuracy. Three kinds of family return `TRUE`.
+which concerns accuracy.
 
 The location-scale families
 [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
@@ -38,8 +38,8 @@ The location-scale families
 [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
 and
 [`pseudohuber2_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber2_distrib.md)
-take one integral over the standardized response per distinct shape,
-from
+return `TRUE`. They take one integral over the standardized response per
+distinct shape, from
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md):
 one integral where the shape is the same for every observation, and one
 per observation where it is modeled. A fit that takes the scoring step
@@ -50,20 +50,20 @@ The Poisson-inverse Gaussians
 [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
 and
 [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
-sum over the support for each observation, over a number of terms that
-grows as \\\sigma\mu\\, whereas their observed information is a closed
-form. A fit on it costs more than one on the observed information at the
-same estimate, and far more where the fit passes through a large
-\\\sigma\mu\\.
+also return `TRUE`. They sum over the support for each observation, over
+a number of terms that grows as \\\sigma\mu\\, whereas their observed
+information is a closed form. A fit on it costs more than one on the
+observed information at the same estimate, and far more where the fit
+passes through a large \\\sigma\mu\\.
 
 A
 [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
 distribution also returns `TRUE`.
 
-statmodels7's `iwls(hessian = "auto")` therefore settles on the observed
-information for these families. The default answers for a wrapper's
-parent, read off its `parent_distrib` property, and `FALSE` for a family
-without one.
+statmodels7's `iwls(hessian = "auto")` therefore uses the observed
+information for these families. For a wrapper, the default method
+returns the answer for its parent, read off its `parent_distrib`
+property, and for a family without one it returns `FALSE`.
 
 ## See also
 

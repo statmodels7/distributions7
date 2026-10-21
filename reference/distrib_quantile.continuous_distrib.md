@@ -22,7 +22,7 @@ function means inverting the quadrature of
 
 - theta:
 
-  A named list of parameters, each of length 1 or `length(p)`.
+  A named list of parameters; each has length 1 or `length(p)`.
 
 - lower.tail:
 
@@ -55,9 +55,8 @@ the density there, so that a sharply peaked family and a diffuse one
 take a comparable number of expansions; after thirty doublings the step
 is multiplied by a thousand, so that a quantile far in a tail is
 reached. The expansion stops at a quarter of the largest double: a root
-beyond it is returned as `Inf` (or `-Inf`), the quadrature of a
-distribution function being unable to reach the mass past the largest
-double.
+beyond it is returned as `Inf` (or `-Inf`), because the quadrature of a
+distribution function cannot reach the mass past the largest double.
 
 The probability is first turned into the logarithms of both tails by
 [`quantile_log_tails()`](https://statmodels7.github.io/distributions7/reference/tail_helpers.md),
@@ -84,10 +83,10 @@ distribution function that it inverts.
 ## See also
 
 [`distrib_cdf.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md),
-the function it inverts;
+the function that it inverts;
 [`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md)
 for the bracket's starting point;
 [`has_analytic_quantile()`](https://statmodels7.github.io/distributions7/reference/has_analytic_quantile.md),
-which tests whether this method is what a caller would reach;
+which tests whether a caller reaches this method;
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)
 for the generic.

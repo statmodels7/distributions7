@@ -1,8 +1,8 @@
 # Mean of the Inverse Gaussian Distribution
 
-Closed form: \\E\[Y\] = \mu\\. This parametrization carries the mean and
-a dispersion, so the mean is a read and the higher moments are functions
-of the product \\\phi\mu\\.
+The mean has the closed form \\E\[Y\] = \mu\\. This parametrization
+carries the mean and a dispersion, so the mean is a read and the higher
+moments are functions of the product \\\phi\mu\\.
 
 ## Arguments
 
@@ -14,7 +14,7 @@ of the product \\\phi\mu\\.
 - theta:
 
   A named list with components `mu` (the mean, positive) and `phi` (the
-  dispersion, positive), each a numeric vector of length 1 or `n`.
+  dispersion, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 

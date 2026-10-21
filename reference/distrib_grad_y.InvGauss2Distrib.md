@@ -1,9 +1,9 @@
 # Inverse Gaussian Response and Mixed Derivatives in Mean and Shape
 
-The dispersion parametrization's, at \\\phi = 1/\lambda\\: a derivative
-in the response does not see the parameters, so the response derivatives
-are the parent's unchanged, and the mixed block is one first-order
-chain.
+Obtains the derivatives from those of the dispersion parametrization, at
+\\\phi = 1/\lambda\\. A derivative in the response is unaffected by the
+parametrization, so the response derivatives are the parent's unchanged,
+and the mixed block is one first-order chain.
 
 ## Arguments
 

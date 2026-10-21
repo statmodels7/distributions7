@@ -1,10 +1,10 @@
 # Excess Kurtosis of the Logistic Distribution
 
-Constant: \\\gamma_2 = 6/5 = 1.2\\, the excess over the Gaussian. The
-family is location-scale with no shape parameter, so its standardized
-moments are constants. Every logistic has the same tail weight, a little
-heavier than that of a Gaussian and lighter than that of a Laplace,
-whose excess kurtosis is 3.
+The excess kurtosis is the constant \\\gamma_2 = 6/5 = 1.2\\, the excess
+over the Gaussian. The family is location-scale with no shape parameter,
+so its standardized moments are constants. Every logistic has the same
+tail weight, a little heavier than that of a Gaussian and lighter than
+that of a Laplace, whose excess kurtosis is 3.
 
 ## Arguments
 
@@ -15,9 +15,9 @@ whose excess kurtosis is 3.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths.
+  A named list with components `mu` and `sigma` (positive), in which
+  each component is a numeric vector of length 1 or `n`. The values are
+  not read, only their lengths.
 
 - ...:
 
@@ -35,7 +35,7 @@ the other constant;
 [`kurtosis.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.Gaussian1Distrib.md)
 and
 [`kurtosis.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.md),
-the two families it sits between;
+the two families between which it lies;
 [`logistic_distrib()`](https://statmodels7.github.io/distributions7/reference/logistic_distrib.md).
 
 ## Examples
@@ -43,11 +43,11 @@ the two families it sits between;
 ``` r
 d <- logistic_distrib()
 
-# 6 / 5 for every logistic.
+# The value is 6 / 5 for every logistic.
 kurtosis(d, list(mu = c(0, 5), sigma = c(1, 3)))
 #> [1] 1.2 1.2
 
-# Between the Gaussian's 0 and the Laplace's 3.
+# The logistic value lies between the Gaussian's 0 and the Laplace's 3.
 c(gaussian = kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1)),
   logistic = kurtosis(d, list(mu = 0, sigma = 1)),
   laplace  = kurtosis(laplace_distrib(), list(mu = 0, sigma = 1)))

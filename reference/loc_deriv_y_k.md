@@ -45,7 +45,7 @@ in the response; its two methods are listed here as aliases.
 ## See also
 
 [`distrib_deriv3_y.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.continuous_distrib.md)
-for the stencil a family outside this list falls back to;
+for the stencil to which a family outside this list falls back;
 [`register_dy_k()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md),
 the companion for families whose response is not a pure location;
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)

@@ -25,7 +25,7 @@ sn_cdf_std_derivs(z, al, order)
 
 - order:
 
-  The highest total order wanted, 1 to 4.
+  The highest total order to compute, 1 to 4.
 
 ## Value
 
@@ -47,12 +47,12 @@ differentiated again.
 \\G_z = 2\varphi(z)\Phi(u)\\ and \\G\_\alpha = -2\varphi(z)\varphi(u)R\\
 with \\u = \alpha z\\ and \\R = (1+\alpha^2)^{-1}\\. The first is the
 skew normal's own density, which confirms the identity above; the second
-is checked against the gradient the family reports.
+is checked against the gradient that the family reports.
 
 Everything above the first order is one Leibniz rule over those factors,
-with \\\Phi(u)\\ and \\\varphi(u)\\ differentiated by Faa di Bruno over
-\\u\\. That map is bilinear, so it has only three non-zero partials and
-the expansion stays short.
+in which \\\Phi(u)\\ and \\\varphi(u)\\ are differentiated by Faa di
+Bruno over \\u\\. That map is bilinear, so it has only three non-zero
+partials and the expansion stays short.
 
 ## Notation
 

@@ -1,7 +1,7 @@
 # Lower-Order Parameter-Scale Derivatives for the Chain Rule
 
 Collects the parameter-scale derivatives of every order strictly below
-`order`, in the layout
+`order`, in the layout that
 [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
 expects.
 
@@ -27,16 +27,16 @@ link_scale_lower_orders(distrib, y, theta, expected, order)
 
 - expected:
 
-  Logical; whether the derivatives wanted are expected ones.
+  Logical; whether the derivatives to compute are expected ones.
 
 - order:
 
-  The order being assembled, 1 to 5.
+  The order to assemble, 1 to 5.
 
 ## Value
 
-A list of length `order - 1`, its \\m\\-th element the named list of
-order-\\m\\ parameter-scale derivatives.
+A list of length `order - 1`, in which the \\m\\-th element is the named
+list of order-\\m\\ parameter-scale derivatives.
 
 ## Details
 

@@ -1,25 +1,24 @@
 # Sample Variance
 
-The sample variance of a numeric vector, delegated to
-[`stats::var()`](https://rdrr.io/r/stats/cor.html) and so divided by
+Computes the sample variance of a numeric vector by delegating to
+[`stats::var()`](https://rdrr.io/r/stats/cor.html), which divides by
 \\n - 1\\. The method exists so that
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
-reads the same on data as on a distribution object; nothing is computed
-here that [`stats::var()`](https://rdrr.io/r/stats/cor.html) does not
-compute.
+reads the same on data as on a distribution object; the method computes
+only what [`stats::var()`](https://rdrr.io/r/stats/cor.html) computes.
 
 ## Arguments
 
 - x:
 
   A numeric vector. A vector of length 1 gives `NA`, as
-  [`stats::var()`](https://rdrr.io/r/stats/cor.html) does, there being
-  no degree of freedom left.
+  [`stats::var()`](https://rdrr.io/r/stats/cor.html) does, because zero
+  degrees of freedom remain.
 
 - na.rm:
 
-  Should missing values be dropped before the variance is taken? A
-  single logical, `FALSE` by default, which propagates `NA`.
+  Should missing values be dropped before the variance is taken? It is a
+  single logical, `FALSE` by default, and `FALSE` propagates `NA`.
 
 - ...:
 
@@ -48,7 +47,7 @@ y <- rnorm(50)
 all.equal(variance(y), var(y))
 #> [1] TRUE
 
-# The n - 1 denominator, not n.
+# The denominator is n - 1, not n.
 all.equal(variance(y), sum((y - mean(y))^2) / (length(y) - 1))
 #> [1] TRUE
 

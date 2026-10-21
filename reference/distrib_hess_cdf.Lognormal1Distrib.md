@@ -1,11 +1,12 @@
 # Lognormal Log-CDF Hessian
 
-Closed form. On the log scale the family is location-scale, so with \\z
-= (\log q - \mu)/\sigma\\ and \\\varphi\\ the standard normal density,
-\$\$\frac{\partial^2 F}{\partial\mu^2} = -\frac{z\varphi}{\sigma^2},
-\qquad \frac{\partial^2 F}{\partial\mu\\\partial\sigma^2} =
-\frac{\varphi(1-z^2)}{2\sigma^3}, \qquad \frac{\partial^2
-F}{\partial(\sigma^2)^2} = \frac{\varphi z(3-z^2)}{4\sigma^4}.\$\$
+Computes the Hessian in closed form. On the log scale the family is
+location-scale, so with \\z = (\log q - \mu)/\sigma\\ and \\\varphi\\
+the standard normal density, the components are \$\$\frac{\partial^2
+F}{\partial\mu^2} = -\frac{z\varphi}{\sigma^2}, \qquad \frac{\partial^2
+F}{\partial\mu\\\partial\sigma^2} = \frac{\varphi(1-z^2)}{2\sigma^3},
+\qquad \frac{\partial^2 F}{\partial(\sigma^2)^2} = \frac{\varphi
+z(3-z^2)}{4\sigma^4}.\$\$
 
 ## Arguments
 
@@ -17,12 +18,12 @@ F}{\partial(\sigma^2)^2} = \frac{\varphi z(3-z^2)}{4\sigma^4}.\$\$
 - q:
 
   A numeric vector of quantiles. At or below zero every component is
-  zero, the distribution function being flat there.
+  zero, because the distribution function is flat there.
 
 - theta:
 
   A named list with components `mu` (any real value) and `sigma2`
-  (positive), each a numeric vector of length 1 or `n`.
+  (positive); each is a numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -41,8 +42,8 @@ F}{\partial(\sigma^2)^2} = \frac{\varphi z(3-z^2)}{4\sigma^4}.\$\$
 ## Value
 
 A named list of three numeric vectors keyed as
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`.
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each has the length of `q` recycled against `theta`.
 
 ## Details
 
@@ -53,8 +54,8 @@ that.
 
 The three components vanish at the points where their polynomial in
 \\z\\ does, so `mu_mu` is exactly zero at the median \\q = e^{\mu}\\. A
-relative comparison against a numerical derivative is meaningless there
-and an absolute one is what to use.
+relative comparison against a numerical derivative is meaningless there,
+so an absolute comparison should be used.
 
 ## Notation
 

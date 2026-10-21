@@ -1,8 +1,8 @@
 # Default Random Generation for Continuous Distributions
 
-The fallback for a continuous family that implements no generator of its
-own. It chooses between two routes according to whether the family has a
-quantile method of its own:
+This method is the fallback for a continuous family that implements no
+generator of its own. The method uses one of two routes, according to
+whether the family has a quantile method of its own:
 
 - inverse transform where
   [`has_analytic_quantile()`](https://statmodels7.github.io/distributions7/reference/has_analytic_quantile.md)
@@ -32,7 +32,7 @@ would be impractical on a family defined by its density alone.
 
 - theta:
 
-  A named list of parameters, each of length 1 or `n`. A component of
+  A named list of parameters; each has length 1 or `n`. A component of
   length `n` gives one draw per parameter setting.
 
 - ...:
@@ -56,7 +56,7 @@ parameter setting, one bounding rectangle per group.
 [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)
 for the ratio-of-uniforms sampler and its theory;
 [`has_analytic_quantile()`](https://statmodels7.github.io/distributions7/reference/has_analytic_quantile.md),
-which chooses between the two routes;
+which determines the route that is taken;
 [`distrib_rng.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.discrete_distrib.md),
 where the question does not arise;
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)

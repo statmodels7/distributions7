@@ -1,7 +1,8 @@
 # The Quadrature Rule of the Location-Scale Expectations
 
-Nodes and weights of an exp-sinh rule on each half-line, for integrals
-over the whole real line of a density at location 0 and scale 1.
+Returns the nodes and weights of an exp-sinh rule on each half-line, for
+integrals over the whole real line of a density at location 0 and scale
+1.
 
 ## Usage
 

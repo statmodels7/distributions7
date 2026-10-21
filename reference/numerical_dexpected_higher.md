@@ -1,10 +1,10 @@
 # The Third or Fourth Derivative of the Expected Information by One Stencil
 
-The default route behind
+Computes the default route behind
 [`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md)
 and
-[`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md):
-one central stencil on the family's analytic second derivative of its
+[`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
+by one central stencil on the family's analytic second derivative of its
 expected information.
 
 ## Usage

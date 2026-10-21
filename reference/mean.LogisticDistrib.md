@@ -1,7 +1,8 @@
 # Mean of the Logistic Distribution
 
-Closed form: \\E\[Y\] = \mu\\. The density is symmetric about \\\mu\\,
-so the location is the mean, the median and the mode at once.
+The mean has the closed form \\E\[Y\] = \mu\\. The density is symmetric
+about \\\mu\\, so the location is the mean, the median and the mode at
+once.
 
 ## Arguments
 
@@ -13,7 +14,8 @@ so the location is the mean, the median and the mode at once.
 - theta:
 
   A named list with components `mu` (the location) and `sigma` (the
-  scale, positive), each a numeric vector of length 1 or `n`.
+  scale, positive), in which each component is a numeric vector of
+  length 1 or `n`.
 
 - ...:
 

@@ -15,7 +15,7 @@ location and the scale are chained on afterwards by sn_cdf_deriv_k()."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ location and the scale are chained on afterwards by <code><a href="sn_cdf_deriv_
 
 
 <dt id="arg-order">order<a class="anchor" aria-label="anchor" href="#arg-order"></a></dt>
-<dd><p>The highest total order wanted, 1 to 4.</p></dd>
+<dd><p>The highest total order to compute, 1 to 4.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -98,11 +98,11 @@ has to be differentiated again.</p>
 \(G_\alpha = -2\varphi(z)\varphi(u)R\) with \(u = \alpha z\) and
 \(R = (1+\alpha^2)^{-1}\). The first is the skew normal's own density,
 which confirms the identity above; the second is checked against the
-gradient the family reports.</p>
+gradient that the family reports.</p>
 <p>Everything above the first order is one Leibniz rule over those factors,
-with \(\Phi(u)\) and \(\varphi(u)\) differentiated by Faa di Bruno over
-\(u\). That map is bilinear, so it has only three non-zero partials and
-the expansion stays short.</p>
+in which \(\Phi(u)\) and \(\varphi(u)\) are differentiated by Faa di
+Bruno over \(u\). That map is bilinear, so it has only three non-zero
+partials and the expansion stays short.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

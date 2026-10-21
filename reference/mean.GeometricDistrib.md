@@ -1,8 +1,8 @@
 # Mean of the Geometric Distribution
 
-Closed form: \\E\[Y\] = \mu\\. The family is parametrized by its mean,
-the expected number of failures before the first success, and the
-success probability it implies is \\1/(1+\mu)\\.
+The mean has the closed form \\E\[Y\] = \mu\\. The family is
+parametrized by its mean, the expected number of failures before the
+first success, and the implied success probability is \\1/(1+\mu)\\.
 
 ## Arguments
 

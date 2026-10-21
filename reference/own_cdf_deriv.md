@@ -7,7 +7,7 @@ Calls the family's
 (`k = 2`) on the lower tail and the natural scale, and orders the result
 as
 [`deriv_names(distrib@params, k)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
-the keying
+the keying that
 [`cdf_tables()`](https://statmodels7.github.io/distributions7/reference/cdf_tables.md)
 and
 [`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md)

@@ -1,9 +1,9 @@
 # Variance of the Weibull Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)\\ with \\g_k
-= \Gamma(1 + k/\sigma)\\. The scale enters as a square and the shape
-through the two gamma factors, so the coefficient of variation
-\\\sqrt{g_2 - g_1^2}/g_1\\ is a function of the shape alone. The method
+The closed form is \\\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)\\ with
+\\g_k = \Gamma(1 + k/\sigma)\\. The scale enters as a square and the
+shape through the two gamma factors, so the coefficient of variation
+\\\sqrt{g_2 - g_1^2}/g_1\\ depends only on the shape. The method
 computes \\\mu^2 g_1^2 (g_2/g_1^2 - 1)\\ from the logarithms of the
 gamma factors
 ([`weibull_moment_terms()`](https://statmodels7.github.io/distributions7/reference/weibull_moment_terms.md)),
@@ -20,9 +20,9 @@ so that \\g_2 - g_1^2\\ is not formed as a difference; the value is
 - theta:
 
   A named list with components `mu` (the scale, positive) and `sigma`
-  (the shape, positive), each a numeric vector of length 1 or `n`. The
-  variance exists for every positive shape and grows without bound as
-  the shape tends to zero.
+  (the shape, positive); each is a numeric vector of length 1 or `n`.
+  The variance exists for every positive shape and grows without bound
+  as the shape tends to zero.
 
 - ...:
 
@@ -50,7 +50,7 @@ A numeric vector of variances, of length
 ``` r
 d <- weibull1_distrib()
 
-# The two gamma factors, written out.
+# The variance is written out with the two gamma factors.
 g1 <- gamma(1 + 1 / 3); g2 <- gamma(1 + 2 / 3)
 all.equal(variance(d, list(mu = 2, sigma = 3)), 4 * (g2 - g1^2))
 #> [1] TRUE

@@ -1,10 +1,10 @@
 # Skewness of the Generalized Gamma Distribution
 
-Assembled from the first three raw moments, \\\gamma_1 = (m_3 -
-3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}\\ with \\m_k =
+The skewness is assembled from the first three raw moments, \\\gamma_1
+=(m_3 - 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}\\ with \\m_k =
 a^k\\\Gamma\\(d+k)/p\\/\Gamma(d/p)\\. The scale cancels, so the value
-depends on the two shapes alone; unlike a gamma's it can be negative
-(for example at \\d = p\\ with \\p\\ above about 3.6, the Weibull case).
+depends only on the two shapes; unlike a gamma's it can be negative (for
+example at \\d = p\\ with \\p\\ above about 3.6, the Weibull case).
 
 ## Arguments
 
@@ -15,7 +15,7 @@ depends on the two shapes alone; unlike a gamma's it can be negative
 
 - theta:
 
-  A named list with components `a`, `d` and `p`, all positive, each a
+  A named list with components `a`, `d` and `p`, all positive; each is a
   numeric vector of length 1 or `n`. Only `d` and `p` enter the value.
 
 - ...:
@@ -24,8 +24,8 @@ depends on the two shapes alone; unlike a gamma's it can be negative
 
 ## Value
 
-A numeric vector, of length equal to the longest of the three
-components.
+A numeric vector, whose length is the one that the recycled parameters
+imply.
 
 ## Details
 

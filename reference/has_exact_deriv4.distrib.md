@@ -34,12 +34,12 @@ A wrapper must not use this reading. Its fourth derivative is registered
 on its own class, so the owner test reads it as analytic, while the
 partition sum that it evaluates is over the first four derivatives of
 the parent and is analytic only when those are. Every wrapper therefore
-overrides the generic and takes the answer from its parent, which is why
-the test is a generic at all.
+overrides the generic and takes the answer from its parent. The test is
+a generic for this reason.
 
 ## See also
 
 [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md),
 the generic;
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md),
-which answers the same shape of question about the expected information.
+which tests the same property for the expected information.

@@ -1,9 +1,9 @@
 # Does a Family Register an Analytic Second Derivative of Its Expected Information?
 
-`TRUE` where the
+Returns `TRUE` when the
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
 method that dispatches is registered on a class other than the base
-class, whose method signals an error.
+class. The method of the base class signals an error.
 
 ## Usage
 

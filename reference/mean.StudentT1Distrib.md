@@ -1,9 +1,10 @@
 # Mean of the Student t Distribution
 
-Closed form: \\E\[Y\] = \mu\\ for \\\nu \> 1\\, and `NaN` at or below
-one, where the first moment does not exist. At \\\nu = 1\\ the family is
-the Cauchy, whose divergence is the reason for the threshold; above it
-the density is symmetric about \\\mu\\ and the location is the mean.
+The mean has the closed form \\E\[Y\] = \mu\\ for \\\nu \> 1\\, and is
+`NaN` at or below one, where the first moment does not exist. At \\\nu =
+1\\ the family is the Cauchy, whose divergence is the reason for the
+threshold; above it the density is symmetric about \\\mu\\ and the
+location is the mean.
 
 ## Arguments
 
@@ -15,9 +16,10 @@ the density is symmetric about \\\mu\\ and the location is the mean.
 - theta:
 
   A named list with components `mu` (the location), `sigma` (the scale,
-  positive) and `nu` (the degrees of freedom, positive), each a numeric
-  vector of length 1 or `n`. Settings with \\\nu \le 1\\ give `NaN` in
-  their own positions and do not affect the others.
+  positive) and `nu` (the degrees of freedom, positive), in which each
+  component is a numeric vector of length 1 or `n`. Settings with \\\nu
+  \le 1\\ give `NaN` in their own positions and do not affect the
+  others.
 
 - ...:
 
@@ -25,8 +27,8 @@ the density is symmetric about \\\mu\\ and the location is the mean.
 
 ## Value
 
-A numeric vector of means, of length equal to the longest of the three
-components, `NaN` wherever \\\nu \le 1\\.
+A numeric vector of means, whose length is the one that the recycled
+parameters imply, with `NaN` wherever \\\nu \le 1\\.
 
 ## Notation
 

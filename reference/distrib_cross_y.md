@@ -1,17 +1,17 @@
 # Mixed Response-Parameter Derivatives of the Log-Density
 
 Computes the mixed second derivatives \\\partial^2 \ell / \partial y\\
-\partial \theta_i\\, one component per parameter and each a vector along
-`y`. Together with
+\partial \theta_i\\, with one component per parameter, and each
+component is a vector along `y`. Together with
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
 and
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 this completes the joint Hessian of the log-density in \\(y, \theta)\\:
 those two are the diagonal blocks and this is the off-diagonal one.
 
-Defined for continuous families only. A discrete family has no
-derivative in \\y\\ to cross, so no method is registered for it and the
-call signals an error.
+The function is defined only for continuous families. A discrete family
+has no derivative in \\y\\ to cross, so the package registers no method
+for it and the call signals an error.
 
 ## Usage
 
@@ -33,15 +33,15 @@ distrib_cross_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 
   A named list, or a named numeric vector, of parameters. Each component
   must have length 1 or `length(y)`; a component of length 1 is
-  recycled. Reordered by name and validated against `params_bounds`,
-  which are treated as open, before dispatch.
+  recycled. The generic reorders `theta` by name and validates it
+  against `params_bounds`, which are treated as open, before dispatch.
 
 - scale:
 
   Either `"parameter"` (the default) or `"link"`, matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Applied
-  by the generic after dispatch, so a method always returns the
-  parameter scale and never reads this.
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
+  generic applies it after dispatch, so a method always returns the
+  parameter scale and never reads this argument.
 
 - ...:
 
@@ -50,7 +50,7 @@ distrib_cross_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 ## Value
 
 A named list with one numeric vector per parameter, keyed and ordered by
-`distrib@params`, each of length `length(y)`.
+`distrib@params`. Each vector has length `length(y)`.
 
 ## What consumes it
 

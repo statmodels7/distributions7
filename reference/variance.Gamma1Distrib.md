@@ -1,9 +1,10 @@
 # Variance of the Gamma Distribution in Mean and Dispersion
 
-Closed form: \\\operatorname{Var}(Y) = \phi\mu^2\\. The quadratic
-variance function is why the gamma is the standard family for a positive
-response whose spread grows in proportion to its level: the coefficient
-of variation is \\\sqrt\phi\\, the same at every mean.
+The variance has the closed form \\\operatorname{Var}(Y) = \phi\mu^2\\.
+Because the variance function is quadratic, the gamma is the standard
+family for a positive response whose spread grows in proportion to its
+level: the coefficient of variation is \\\sqrt\phi\\, the same at every
+mean.
 
 ## Arguments
 
@@ -14,8 +15,8 @@ of variation is \\\sqrt\phi\\, the same at every mean.
 
 - theta:
 
-  A named list with components `mu` (positive) and `phi` (positive),
-  each a numeric vector of length 1 or `n`. Small `phi` is a large
+  A named list with components `mu` (positive) and `phi` (positive);
+  each is a numeric vector of length 1 or `n`. Small `phi` is a large
   shape, where the family approaches a Gaussian.
 
 - ...:
@@ -47,7 +48,7 @@ whose variance function is cubic;
 ``` r
 d <- gamma1_distrib()
 
-# The dispersion times the square of the mean.
+# The variance is the dispersion times the square of the mean.
 all.equal(variance(d, list(mu = 2, phi = 0.25)), 1)
 #> [1] TRUE
 

@@ -1,11 +1,11 @@
 # Skewness of the Beta-Binomial Distribution in Two Shapes
 
-The skewness of
+The skewness is that of
 [`skewness.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom1Distrib.md)
 at \\\mu = \alpha/(\alpha+\beta)\\ and \\\sigma = 1/(\alpha+\beta)\\,
 computed by
 [`betabinom_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_moments.md).
-It is zero when the two shapes are equal, the mixing beta being
+It is zero when the two shapes are equal, because the mixing beta is
 symmetric there.
 
 ## Arguments
@@ -18,9 +18,9 @@ symmetric there.
 
 - theta:
 
-  A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or of the common length of the parameter
-  settings.
+  A named list with components `alpha` and `beta`, both positive; each
+  is a numeric vector of length 1 or of the common length of the
+  parameter settings.
 
 - ...:
 
@@ -49,7 +49,7 @@ from the same moments;
 ``` r
 d <- betabinom2_distrib(size = 10)
 
-# Zero when the two shapes are equal.
+# The skewness is zero when the two shapes are equal.
 round(skewness(d, list(alpha = 3, beta = 3)), 12)
 #> [1] 0
 

@@ -1,7 +1,7 @@
 # Excess Kurtosis of a Distribution or Sample
 
 Computes the excess kurtosis, the fourth standardized central moment
-less the three a Gaussian has:
+less the three that a Gaussian has:
 
 \$\$\gamma_2 = \mathbb{E}\\\left\[\left(\frac{Y -
 \mathbb{E}\[Y\]}{\operatorname{sd}(Y)}\right)^{4}\right\] - 3.\$\$
@@ -30,13 +30,14 @@ kurtosis(x, ...)
   For a `distrib`: `theta`, a named list of parameters, followed by any
   further arguments for
   [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md).
-  For a numeric vector: `na.rm`, a single logical, `FALSE` by default.
+  For a numeric vector, the argument is `na.rm`, a single logical that
+  is `FALSE` by default.
 
 ## Value
 
 A numeric vector for a `distrib`, one value per parameter setting; a
-single number for a numeric vector. `NaN` for a family with no moments,
-`Inf` where the fourth moment diverges.
+single number for a numeric vector. The value is `NaN` for a family with
+no moments and `Inf` where the fourth moment diverges.
 
 ## Why the three is subtracted
 
@@ -48,7 +49,8 @@ kurtosis is 3 for the Laplace and \\6/(\nu-4)\\ for a Student t with
 
 ## When it fails to exist
 
-The fourth moment is needed, so the threshold is higher than for
+The excess kurtosis requires the fourth moment, so its threshold is
+higher than for
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md):
 a Student t has an excess kurtosis only above four degrees of freedom.
 Between two and four degrees of freedom it returns `Inf`, at two or
@@ -59,7 +61,7 @@ value.
 
 On a numeric vector the fourth and second central moments both divide by
 \\n\\, giving \\m_4 / m_2^{2} - 3\\. This is the population denominator,
-the same convention
+the same convention that
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md)
 uses.
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
@@ -79,11 +81,11 @@ for the numerical route.
 ## Examples
 
 ``` r
-# Zero for every Gaussian, by construction.
+# The excess kurtosis is zero for every Gaussian, by construction.
 kurtosis(gaussian1_distrib(), list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
 #> [1] 0 0 0
 
-# Three for the Laplace, which is the textbook heavy-tailed comparison.
+# The Laplace has an excess kurtosis of three, the heavy-tailed benchmark.
 all.equal(kurtosis(laplace_distrib(), list(mu = 0, sigma = 2)), 3)
 #> [1] TRUE
 

@@ -1,13 +1,13 @@
 # Default Random Generation for Discrete Distributions
 
 The fallback for a discrete family that implements no generator of its
-own: inverse transform sampling against the cumulative table
+own is inverse transform sampling against the cumulative table that
 [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
 builds.
 
 This method uses no rejection scheme. Inverting the cumulative mass
-function is exact, the distribution function of a discrete variable
-being a step function, so there is nothing to solve. With scalar
+function is exact, because the distribution function of a discrete
+variable is a step function, so there is nothing to solve. With scalar
 parameters the table is built once and the whole sample is located in it
 by one binary search.
 
@@ -24,7 +24,7 @@ by one binary search.
 
 - theta:
 
-  A named list of parameters, each of length 1 or `n`. A component of
+  A named list of parameters; each has length 1 or `n`. A component of
   length `n` gives one draw per parameter setting, taken in order, and
   the table is rebuilt whenever the setting changes from one draw to the
   next.
@@ -35,7 +35,7 @@ by one binary search.
 
 ## Value
 
-A numeric vector of `n` draws, every one a support point.
+A numeric vector of `n` draws, all of which are support points.
 
 ## See also
 

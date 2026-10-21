@@ -11,7 +11,7 @@ own method."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,12 +78,12 @@ its own class, so the owner test reads it as analytic, while the partition
 sum that it evaluates is over the first four derivatives of the parent
 and is analytic only when those are. Every wrapper therefore overrides the
 generic and takes the answer from
-its parent, which is why the test is a generic at all.</p>
+its parent. The test is a generic for this reason.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="has_exact_deriv4.html">has_exact_deriv4()</a></code>, the generic; <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code>,
-which answers the same shape of question about the expected information.</p></div>
+which tests the same property for the expected information.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

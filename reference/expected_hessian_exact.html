@@ -6,7 +6,7 @@ answer is therefore an approximation. It is a generic so that a family
 whose registered method is not what its owning class suggests can report
 this; has_exact_expected_hessian() calls it and
 expected_hessian_exact.distrib() is the default.
-The test that has_exact_expected_hessian() applies, written as a generic
+Implements the test that has_exact_expected_hessian() applies, as a generic
 so that a family whose registered method differs from what its owning class
 indicates can supply its own answer."><meta property="og:description" content="TRUE when the family computes its expected information exactly, in
 closed form or by a quadrature of its own to working precision, and FALSE
@@ -15,7 +15,7 @@ answer is therefore an approximation. It is a generic so that a family
 whose registered method is not what its owning class suggests can report
 this; has_exact_expected_hessian() calls it and
 expected_hessian_exact.distrib() is the default.
-The test that has_exact_expected_hessian() applies, written as a generic
+Implements the test that has_exact_expected_hessian() applies, as a generic
 so that a family whose registered method differs from what its owning class
 indicates can supply its own answer."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -25,7 +25,7 @@ indicates can supply its own answer."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@ answer is therefore an approximation. It is a generic so that a family
 whose registered method is not what its owning class suggests can report
 this; <code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian()</a></code> calls it and
 <code><a href="expected_hessian_exact.distrib.html">expected_hessian_exact.distrib()</a></code> is the default.</p>
-<p>The test that <code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian()</a></code> applies, written as a generic
+<p>Implements the test that <code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian()</a></code> applies, as a generic
 so that a family whose registered method differs from what its owning class
 indicates can supply its own answer.</p>
     </div>
@@ -110,15 +110,15 @@ quadrature over the standardized response per distinct shape; see
 own, which is why the generic exists: a method registered on the class of a
 family may chain onto a parent that approximates, and a family that does so
 returns the answer of its parent.</p>
-<p>The default reads the class the <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>
-method is registered on: the base classes carry the approximating method and
+<p>The default reads the class on which the <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>
+method is registered: the base classes carry the approximating method and
 every other registration is, by default, a family that wrote the expectation
 out.</p>
 <p>Reading the owner is not sufficient in general. A method registered on
 the class of a family may be a chain onto a parent that approximates, and
 then the owner reads as "written out" although the arithmetic is not. A
 family that chains onto another therefore returns the answer of its parent,
-which is what the wrappers do; <code><a href="truncated.html">truncated()</a></code> returns <code>FALSE</code>
+as the wrappers do; <code><a href="truncated.html">truncated()</a></code> returns <code>FALSE</code>
 unconditionally.</p>
     </div>
     <div class="section level2">

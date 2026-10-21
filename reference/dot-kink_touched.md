@@ -1,8 +1,8 @@
-# Which Parameters a Kink Moves With
+# The Parameters with Which a Kink Moves
 
-The set \\\\p : \partial v/\partial \theta_p \ne 0\\\\, evaluated rather
-than assumed, at probe values inside each parameter's own interval and
-at a few points of the support.
+Returns the set \\\\p : \partial v/\partial \theta_p \ne 0\\\\, which it
+evaluates at probe values inside each parameter's own interval and at a
+few points of the support rather than assuming it.
 
 ## Usage
 
@@ -28,11 +28,11 @@ A character vector of parameter names, possibly empty.
 ## Details
 
 The probe is the midpoint of a bounded interval and one unit inside a
-half-line, which is the rule
+half-line, which is the rule that
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 already uses; a component is called non-zero if it is non-zero at any
-probe, since the set is defined by the derivative not vanishing
-identically.
+probe, since the set consists of the parameters for which the derivative
+does not vanish identically.
 
 ## Examples
 

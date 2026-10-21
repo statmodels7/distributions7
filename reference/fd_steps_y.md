@@ -46,11 +46,11 @@ fd_steps_y(
 
 - order, accuracy:
 
-  The stencil the step is for, which fix its reach through
-  [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html):
-  the clamp is on the outermost node, so a rule evaluating two steps out
-  is cut to half of what a central difference is. The defaults are the
-  central difference, whose reach is one.
+  The stencil for which the step is computed. Its reach, given by
+  [`numericals7::fd_offsets()`](https://statmodels7.github.io/numericals7/reference/fd_offsets.html),
+  determines the clamp, which acts on the outermost node, so a rule that
+  evaluates two steps out is cut to half of what a central difference
+  is. The defaults are the central difference, whose reach is one.
   [`numerical_deriv_y()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md)
   and
   [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
@@ -58,9 +58,9 @@ fd_steps_y(
 
 ## Value
 
-A numeric vector of steps, as long as `y`. An observation strictly
-inside the support gets a positive step, and one on a finite bound gets
-zero.
+A numeric vector of steps, as long as `y`. The step is positive for an
+observation strictly inside the support and zero for one on a finite
+bound.
 
 ## Details
 
@@ -68,14 +68,15 @@ The scaling by \\\max(1, \|y\|)\\ makes the step relative where the
 response is large and absolute where it is small, so a value near zero
 is not differenced with a step below the resolution of a double.
 
-`to_bound = "clamp"` is what the support requires and no more. A gamma
-observation at \\y = 10^{-3}\\ differenced with the default step of \\6
-\times 10^{-6}\\ needs no help, but one at \\y = 10^{-8}\\ would be
-evaluated at a negative point, where the log-density is not defined and
-`distrib_pdf(..., log = TRUE)` returns `-Inf`. The factor 0.49 leaves
-the step under half the distance to the bound, so both evaluation points
-stay inside with room to spare: at \\y = 10^{-8}\\ the step becomes
-\\4.9\times 10^{-9}\\ and the left point \\5.1\times 10^{-9}\\.
+`to_bound = "clamp"` applies only the correction that the support
+requires. A gamma observation at \\y = 10^{-3}\\ differenced with the
+default step of \\6 \times 10^{-6}\\ needs no help, but one at \\y =
+10^{-8}\\ would be evaluated at a negative point, where the log-density
+is not defined and `distrib_pdf(..., log = TRUE)` returns `-Inf`. The
+factor 0.49 leaves the step under half the distance to the bound, so
+both evaluation points stay inside with room to spare: at \\y =
+10^{-8}\\ the step becomes \\4.9\times 10^{-9}\\ and the left point
+\\5.1\times 10^{-9}\\.
 
 `to_bound = "scale"` takes \\h = h\_{rel}\min(\max(1, \|y\|), d)\\, with
 \\d\\ the distance to the nearest finite bound, so the step shrinks in
@@ -132,7 +133,7 @@ rbind(step = h, left_point = y - h)
 distributions7:::fd_steps_y(y, c(0, Inf), h_rel, "scale")
 #> [1] 6.055454e-14 6.055454e-09 6.055454e-06
 
-# The two steps the callers use differ by a factor of twenty.
+# The two steps that the callers use differ by a factor of twenty.
 c(first_order = .Machine$double.eps^(1 / 3),
   second_order = .Machine$double.eps^(1 / 4))
 #>  first_order second_order 

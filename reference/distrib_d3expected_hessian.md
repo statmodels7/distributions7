@@ -1,8 +1,8 @@
 # The Third Derivative of the Expected Information
 
-\\\partial^3\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\\partial\theta_d\\
-\partial\theta_e\\, one component per pair \\(a,b)\\ and per unordered
-triple \\(c,d,e)\\.
+Returns \\\partial^3\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\
+\partial\theta_d\\\partial\theta_e\\, with one component per pair
+\\(a,b)\\ and per unordered triple \\(c,d,e)\\.
 
 ## Usage
 
@@ -30,7 +30,7 @@ distrib_d3expected_hessian(
 
 - theta:
 
-  A named list of parameters, each of length 1 or `length(y)`.
+  A named list of parameters; each has length 1 or `length(y)`.
 
 - scale:
 
@@ -40,7 +40,7 @@ distrib_d3expected_hessian(
 
   Accepted for symmetry with
   [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md);
-  no method reads them.
+  the methods ignore them.
 
 - ...:
 

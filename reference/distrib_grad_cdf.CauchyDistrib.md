@@ -1,7 +1,8 @@
 # Cauchy Log-CDF Gradient
 
-Closed form: \\\partial F/\partial\mu = -f(q)\\ and \\\partial
-F/\partial\sigma = -z f(q)\\ with \\z = (q-\mu)/\sigma\\, computed by
+Computes the gradient in closed form: \\\partial F/\partial\mu = -f(q)\\
+and \\\partial F/\partial\sigma = -z f(q)\\ with \\z = (q-\mu)/\sigma\\,
+computed by
 [`cauchy_cdf_method()`](https://statmodels7.github.io/distributions7/reference/cauchy_cdf_method.md)
 as \\-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi\\ with \\Y = q - \mu +
 \mathrm{i}\sigma\\, without squaring the residual.
@@ -19,7 +20,7 @@ as \\-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi\\ with \\Y = q - \mu +
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
+  A named list with components `mu` and `sigma` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -36,16 +37,16 @@ as \\-\mathrm{Im}(\mathrm{i}^k Y^{-1})/\pi\\ with \\Y = q - \mu +
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `sigma`, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `sigma`, in which each
+vector has the length of `q` recycled against `theta`.
 
 ## Details
 
-The family has no moments, and none is needed here: the distribution
-function is elementary, \\F(q) = 1/2 + \arctan(z)/\pi\\, and the
-identity \\\partial F/\partial\mu = -f\\ holds for every location-scale
-family whether or not its moments converge. The quantities this page
-returns are therefore exact where
+The family has no moments, and the result does not need them: the
+distribution function is elementary, \\F(q) = 1/2 + \arctan(z)/\pi\\,
+and the identity \\\partial F/\partial\mu = -f\\ holds for every
+location-scale family whether or not its moments converge. The
+quantities that this page returns are therefore exact where
 [`mean.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/mean.CauchyDistrib.md)
 and its siblings return `NaN`.
 
@@ -53,7 +54,7 @@ and its siblings return `NaN`.
 
 \\\mu\\ is the location, \\\sigma \> 0\\ the scale, \\z =
 (q-\mu)/\sigma\\, \\f\\ the density and \\F\\ the distribution function.
-Neither \\\mu\\ nor \\\sigma\\ is a moment: they are the median and the
+\\\mu\\ and \\\sigma\\ are not moments: they are the median and the
 half-interquartile range.
 
 ## See also
@@ -73,7 +74,7 @@ d <- cauchy_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Exact, although the family has no moments.
+# The result is exact, although the family has no moments.
 all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
           -distrib_pdf(d, q, th))
 #> [1] TRUE

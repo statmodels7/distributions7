@@ -1,9 +1,9 @@
 # Derivatives of the Expected Information, von Mises
 
-The first and second derivatives of the expected information in the
-parameters, from the derivatives of the Bessel ratio \\A(\kappa) =
-I_1(\kappa)/I_0(\kappa)\\ and of its inverse, computed by one compiled
-kernel per order from numericals7's compiled Bessel ratio.
+Computes the first and second derivatives of the expected information in
+the parameters from the derivatives of the Bessel ratio \\A(\kappa) =
+I_1(\kappa)/I_0(\kappa)\\ and of its inverse. One compiled kernel per
+order performs the computation from numericals7's compiled Bessel ratio.
 
 ## Arguments
 
@@ -50,10 +50,11 @@ the derivatives in \\\kappa\\ read \\A'\\, \\A''\\ and \\A'''\\. By the
 mean resultant length \\\rho = A(\kappa)\\,
 \\\mathbb{E}\[\ell\_{\mu\mu}\] = -\rho\\\kappa(\rho)\\ and
 \\\mathbb{E}\[\ell\_{\rho\rho}\] = -\kappa'(\rho)\\, so they read the
-inverse's derivatives \\\kappa'\\, \\\kappa''\\ and \\\kappa'''\\.
-Nothing moves with the direction \\\mu\\. The first-order kernel reads
-\\A\\ to \\A''\\ (or \\\kappa\\ to \\\kappa''\\), the second-order one
-\\A'\\ to \\A'''\\ (or \\\kappa'\\ to \\\kappa'''\\).
+inverse's derivatives \\\kappa'\\, \\\kappa''\\ and \\\kappa'''\\. The
+expected information does not depend on the direction \\\mu\\. The
+first-order kernel reads \\A\\ to \\A''\\ (or \\\kappa\\ to
+\\\kappa''\\), the second-order one \\A'\\ to \\A'''\\ (or \\\kappa'\\
+to \\\kappa'''\\).
 
 ## See also
 

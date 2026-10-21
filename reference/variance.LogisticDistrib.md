@@ -1,10 +1,10 @@
 # Variance of the Logistic Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \pi^2\sigma^2/3\\. The standard
-deviation is \\\sigma\pi/\sqrt3 \approx 1.8138\sigma\\, so the scale is
-smaller than the standard deviation by the factor \\\pi/\sqrt3\\, and a
-logistic scale is not comparable with a Gaussian standard deviation as
-it stands.
+The variance has the closed form \\\operatorname{Var}(Y) =
+\pi^2\sigma^2/3\\. The standard deviation is \\\sigma\pi/\sqrt3 \approx
+1.8138\sigma\\, so the scale is smaller than the standard deviation by
+the factor \\\pi/\sqrt3\\, and a logistic scale is not comparable with a
+Gaussian standard deviation as it stands.
 
 ## Arguments
 
@@ -16,7 +16,8 @@ it stands.
 - theta:
 
   A named list with components `mu` (the location) and `sigma` (the
-  scale, positive), each a numeric vector of length 1 or `n`.
+  scale, positive), in which each component is a numeric vector of
+  length 1 or `n`.
 
 - ...:
 
@@ -38,7 +39,7 @@ A numeric vector of variances, of length
 ``` r
 d <- logistic_distrib()
 
-# pi^2 sigma^2 / 3.
+# The variance is pi^2 sigma^2 / 3.
 all.equal(variance(d, list(mu = 0, sigma = 2)), pi^2 * 4 / 3)
 #> [1] TRUE
 

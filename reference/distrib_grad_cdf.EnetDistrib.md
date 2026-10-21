@@ -1,12 +1,12 @@
 # Elastic Net Log-CDF Derivatives
 
-Closed form at every order from one to four. Each half of the
-distribution function is a truncated Gaussian: with \\z = q - \mu\\, \\s
-= \sqrt c\\ and \\x = a/\sqrt c\\ it is \\e^{w}\Phi(X)\\ below the
-location and \\1 - e^{w}\Phi(X)\\ above it, for \\X = \pm sz - x\\ and a
-weight \\w = -\log M(x) + x^2/2 + \mathrm{const}\\ written through the
-Mills ratio that the family already carries. The four registrations are
-made together by
+Returns the derivatives in closed form at every order from one to four.
+Each half of the distribution function is a truncated Gaussian: with \\z
+= q - \mu\\, \\s = \sqrt c\\ and \\x = a/\sqrt c\\ it is
+\\e^{w}\Phi(X)\\ below the location and \\1 - e^{w}\Phi(X)\\ above it,
+for \\X = \pm sz - x\\ and a weight \\w = -\log M(x) + x^2/2 +
+\mathrm{const}\\ written through the Mills ratio that the family already
+carries. The four registrations are made together by
 [`register_phi_terms_cdf()`](https://statmodels7.github.io/distributions7/reference/register_phi_terms_cdf.md).
 
 ## Arguments
@@ -23,7 +23,7 @@ made together by
 - theta:
 
   A named list with components `mu` (any real value), `lambda`
-  (positive) and `alpha` (strictly between 0 and 1), each a numeric
+  (positive) and `alpha` (strictly between 0 and 1); each is a numeric
   vector of length 1 or `n`.
 
 - lower.tail:
@@ -89,12 +89,13 @@ d <- enet_distrib()
 q <- c(-1, 0.5, 2)
 th <- list(mu = 0, lambda = 1, alpha = 0.5)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The gradient is compared with a central difference of the cdf, which
+# shares no arithmetic.
 fd <- numerical_cdf_deriv(d, q, th, order = 1)
 max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
 #> [1] 6.65741e-10
 
-# Three, six, ten and fifteen components as the order rises.
+# The number of components is three, six, ten and fifteen as the order rises.
 lengths(list(distrib_grad_cdf(d, q, th),
              distrib_hess_cdf(d, q, th),
              distrib_deriv3_cdf(d, q, th),

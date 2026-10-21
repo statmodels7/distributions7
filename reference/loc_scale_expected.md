@@ -20,7 +20,8 @@ loc_scale_expected(distrib, theta, order, n, threads = 1L)
 
 - theta:
 
-  The aligned parameter list, each component of the common length `n`.
+  The aligned parameter list, in which each component has the common
+  length `n`.
 
 - order:
 
@@ -75,13 +76,12 @@ The integrals are taken by an exp-sinh rule on each half-line, from
 [`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md),
 centered at the point that
 [`loc_scale_center()`](https://statmodels7.github.io/distributions7/reference/loc_scale_center.md)
-returns. Its nodes cluster double-exponentially at that center, which is
-where the location-scale families that use it put their one sharp
-feature: zero for the core of the pseudo-Huber at a small shape and for
-the skew t, and the step of the skewing function, \\w = -r\\, for the
-centered skew normal, and the same transformation turns an algebraic
-tail into an exponential one, which is what the Student t's heavy tail
-needs.
+returns. Its nodes cluster double-exponentially at that center. The
+location-scale families that use the rule have their one sharp feature
+there: at zero for the core of the pseudo-Huber at a small shape and for
+the skew t, and at the step of the skewing function, \\w = -r\\, for the
+centered skew normal. The same transformation turns an algebraic tail
+into an exponential one, which the heavy tail of the Student t requires.
 
 A node where the density is exactly zero contributes nothing, whatever
 the derivatives read there. Any other non-finite contribution makes the
@@ -95,4 +95,4 @@ for the quadrature,
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
 and
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
-for the generics this serves.
+for the generics that this function serves.

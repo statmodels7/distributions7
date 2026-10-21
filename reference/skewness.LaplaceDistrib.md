@@ -1,8 +1,9 @@
 # Skewness of the Laplace Distribution
 
-Exactly zero at every parameter value. The density is symmetric about
-\\\mu\\, so every odd central moment vanishes. The constant is returned
-directly, recycled to the length the parameters imply.
+The skewness is exactly zero at every parameter value. The density is
+symmetric about \\\mu\\, so every odd central moment vanishes. The
+constant is returned directly, recycled to the length that the
+parameters imply.
 
 ## Arguments
 
@@ -13,9 +14,9 @@ directly, recycled to the length the parameters imply.
 
 - theta:
 
-  A named list with components `mu` and `sigma`, each a numeric vector
-  of length 1 or `n`. The values are not read, only their lengths, and
-  the list is still aligned and validated.
+  A named list with components `mu` and `sigma`; each is a numeric
+  vector of length 1 or `n`. The values are not read, only their
+  lengths, and the list is still aligned and validated.
 
 - ...:
 
@@ -38,7 +39,8 @@ which is 3;
 ``` r
 d <- laplace_distrib()
 
-# Zero at every location and scale, with one value per setting.
+# The skewness is zero at every location and scale, with one value per
+# setting.
 skewness(d, list(mu = c(0, 5), sigma = c(1, 2)))
 #> [1] 0 0
 ```

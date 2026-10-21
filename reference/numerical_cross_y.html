@@ -17,7 +17,7 @@ uses mixed_tensor_derivatives() instead."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,26 +94,26 @@ of the parameter.</p></dd>
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
 <dd><p>A character vector of parameter names to differentiate, or
-<code>NULL</code> (the default) for all of them. Used by a family with a closed form
-for some of its parameters, so that only the remaining ones cost a pair of
-evaluations.</p></dd>
+<code>NULL</code> (the default) for all of them. A family with a closed form for some
+of its parameters uses this argument, so that only the remaining ones cost
+a pair of evaluations.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with one numeric vector per requested parameter, each
-of length <code>length(y)</code>, in the order <code>which</code> gives or <code>distrib@params</code>
-where it is <code>NULL</code>.</p>
+    <p>A named list with one numeric vector per requested parameter, in the
+order that <code>which</code> gives, or in the order of <code>distrib@params</code> when <code>which</code>
+is <code>NULL</code>. Each vector has length <code>length(y)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="the-quantity-that-is-differenced">The quantity that is differenced<a class="anchor" aria-label="anchor" href="#the-quantity-that-is-differenced"></a></h2>
     <p>The quantity differenced is the response gradient, not the log-density,
-so a family with an analytical <code>distrib_grad_y</code> pays for exactly one
+so a family with an analytical <code>distrib_grad_y</code> requires exactly one
 finite-difference layer. Where the response gradient is itself the
-finite-difference fallback the composition is the four-point mixed stencil
+finite-difference fallback, the composition is the four-point mixed stencil
 on the log-density: the two differences act on different variables, so they
-commute into a single stencil instead of compounding the way nested
-differences in one variable do.</p>
+commute into a single stencil instead of compounding as nested differences
+in one variable do.</p>
     </div>
     <div class="section level2">
     <h2 id="the-step">The step<a class="anchor" aria-label="anchor" href="#the-step"></a></h2>
@@ -146,7 +146,7 @@ truncation of a central difference against a rounding term growing as
 <span class="r-in"><span>          tolerance <span class="op">=</span> <span class="fl">1e-8</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># 'which' costs a pair of evaluations for the named parameter alone.</span></span></span>
+<span class="r-in"><span><span class="co"># 'which' costs a pair of evaluations only for the named parameter.</span></span></span>
 <span class="r-in"><span><span class="fu">numerical_cross_y</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, which <span class="op">=</span> <span class="st">"sigma"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $sigma</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2  0  2</span>

@@ -1,10 +1,10 @@
 # Batched Quadrature with Rejection
 
 Calls
-[`numericals7::quad_vec()`](https://statmodels7.github.io/numericals7/reference/quad_vec.html)
-with its warning muffled and returns the per-row integrals, `NA` where
-the accuracy was not reached; the caller decides what a failed row means
-and names it.
+[`numericals7::quad_vec()`](https://statmodels7.github.io/numericals7/reference/quad_vec.html),
+muffles its warning and returns the per-row integrals, `NA` where the
+accuracy was not reached. The calling function handles a failed row and
+reports it.
 
 ## Usage
 

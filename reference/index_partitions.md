@@ -1,7 +1,7 @@
 # Set Partitions of a Multi-Index
 
-Every way of splitting a multi-index into blocks, with the parameter
-names carried through rather than the positions.
+Returns every way of splitting a multi-index into blocks. The blocks
+hold the parameter names and not the positions.
 
 ## Usage
 
@@ -17,7 +17,8 @@ index_partitions(idx)
 
 ## Value
 
-A list of partitions, each a list of character-vector blocks.
+A list of partitions, each of which is a list of character-vector
+blocks.
 
 ## See also
 

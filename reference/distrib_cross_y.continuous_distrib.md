@@ -1,15 +1,15 @@
 # Default Mixed Derivatives for Continuous Distributions
 
-The fallback: one tensor stencil on the highest quantity the family
-implements itself, through
+The fallback applies one tensor stencil to the highest quantity that the
+family implements itself, through
 [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md).
 A family with an analytic response gradient or score differences it
-once, in the parameter or in the response; a family with a density alone
+once, in the parameter or in the response; a family with only a density
 takes one four-point mixed stencil of the log-density.
 
 Every continuous family shipped in this package registers a closed form,
 so this method serves a family defined outside the package, which
-obtains the mixed block from its density alone.
+obtains the mixed block only from its density.
 
 ## Arguments
 
@@ -38,7 +38,7 @@ obtains the mixed block from its density alone.
 ## Value
 
 A named list with one numeric vector per parameter, keyed by
-`distrib@params`, each of length `length(y)`.
+`distrib@params`. Each vector has length `length(y)`.
 
 ## See also
 

@@ -25,7 +25,7 @@ support_dexpected(distrib, y, theta, order, N, threads = 1L)
 
 - theta:
 
-  A named list of parameters, each of length one or `length(y)`.
+  A named list of parameters; each has length one or `length(y)`.
 
 - order:
 
@@ -53,10 +53,10 @@ reads both orders from one call.
 
 ## Details
 
-The support being finite, each sum is the expectation exactly: no
-quadrature, no truncation. Every observation's parameters are crossed
-with the \\N + 1\\ support points and the derivative generics are called
-once on the whole grid.
+Because the support is finite, each sum is the expectation exactly, with
+no quadrature and no truncation. Every observation's parameters are
+crossed with the \\N + 1\\ support points and the derivative generics
+are called once on the whole grid.
 
 ## See also
 

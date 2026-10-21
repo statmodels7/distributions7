@@ -1,10 +1,9 @@
 # CDF Derivatives on the Requested Tail and Scale, at Any Order
 
-The general form of
-[`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md):
-converts derivatives of \\F\\ into derivatives of whichever tail was
+Converts derivatives of \\F\\ into derivatives of whichever tail was
 requested, on the natural or the logarithmic scale, at any order from 1
-to 4.
+to 4. It is the general form of
+[`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md).
 
 ## Usage
 
@@ -50,7 +49,7 @@ cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 
 ## Value
 
-A named list of numeric vectors of the requested order alone. The lower
+A named list of numeric vectors of the requested order only. The lower
 orders are consumed on the way and do not appear in the result.
 
 ## The two conversions
@@ -70,9 +69,9 @@ P/P)^2\\, and at third and fourth order it has 5 and 15 terms.
 ## Why every lower order is needed
 
 A partition into \\k\\ blocks reads \\k\\ ratios, so the relation at
-order 4 needs the tables of orders 1, 2 and 3 as well. That is why `dF`
-is a list of tables, and why a caller that wants only the fourth order
-still assembles the first three.
+order 4 needs the tables of orders 1, 2 and 3 as well. Therefore `dF` is
+a list of tables, and a caller that wants only the fourth order still
+assembles the first three.
 
 ## Notation
 

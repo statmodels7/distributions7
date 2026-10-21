@@ -1,8 +1,8 @@
 # Derivatives of the Expected Information, Sums Over the Support
 
-The first and second derivatives of the expected information in the
-parameters for three families whose expected information is itself a sum
-over the support.
+Computes the first and second derivatives of the expected information in
+the parameters for three families whose expected information is itself a
+sum over the support.
 
 ## Arguments
 
@@ -43,9 +43,9 @@ or
 
 ## Details
 
-NB1. The expected information is \\-A\\, \\G\\ and \\-\theta G/\mu\\,
-with \\A\\ and \\G = \mathbb{E}\[\ell\_{\theta\theta}\]\\ the two sums
-over the support of
+For NB1, the expected information is \\-A\\, \\G\\ and \\-\theta
+G/\mu\\, with \\A\\ and \\G = \mathbb{E}\[\ell\_{\theta\theta}\]\\ the
+two sums over the support of
 [`distrib_expected_hessian.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md);
 below \\\theta = 0.02\\ \\G\\ is \\-\mathbb{E}\[\sum\_{j\<Y} j^2/(\mu +
 j\theta)^2\] - \mu q'(\theta)\\, whose summands are all positive, and
@@ -53,12 +53,12 @@ above it \\W/\theta^2\\. Their derivatives are sums over the same mass
 with the score of the mass beside the summand, \\\partial_c F =
 \mathbb{E}\[f_c + f s_c\]\\ and \\\partial\_{ce} F =
 \mathbb{E}\[f\_{ce} + f_c s_e + f_e s_c + f(s_c s_e + h\_{ce})\]\\,
-taken in \\(\mu, \theta)\\ by a compiled kernel, with the scores \\s\\
-and second derivatives \\h\\ of the log-mass written so that no term of
-order \\\mu/\theta^2\\ is formed. Every component keeps its accuracy
-down to the Poisson limit \\\theta \to 0\\.
+taken in \\(\mu, \theta)\\ by a compiled kernel, in which the scores
+\\s\\ and second derivatives \\h\\ of the log-mass are written so that
+no term of order \\\mu/\theta^2\\ is formed. Every component keeps its
+accuracy down to the Poisson limit \\\theta \to 0\\.
 
-Beta-binomial. The support \\\\0, \dots, n\\\\ is finite, so the
+For the beta-binomial, the support \\\\0, \dots, n\\\\ is finite, so the
 identities \$\$\partial_c \mathbb{E}\[\ell\_{ab}\] =
 \mathbb{E}\[\ell\_{abc} + \ell\_{ab}\ell_c\]\$\$ and its second-order
 counterpart, \$\$\partial\_{cd} \mathbb{E}\[\ell\_{ab}\] =
@@ -67,7 +67,7 @@ counterpart, \$\$\partial\_{cd} \mathbb{E}\[\ell\_{ab}\] =
 sums against the mass. They are taken in the shapes by a compiled
 kernel, where every derivative of the log-mass is a polygamma difference
 at an integer shift and is therefore a sum of negative powers,
-accumulated beside the mass with no polygamma called;
+accumulated beside the mass without calling a polygamma;
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
 reads the same sums through its map to the shapes for \\\sigma \ge
 0.1\\, and below that sums the derivatives of its own direct sums over

@@ -2,17 +2,18 @@
 
 Returns the mean, the variance, the skewness or the excess kurtosis of
 the beta-binomial with \\n\\ trials, mean proportion \\\mu\\ and
-dispersion \\\sigma = 1/(\alpha + \beta)\\, each in a closed form that
-forms no difference of large raw moments. With \\g = \mu(1-\mu)\\,
+dispersion \\\sigma = 1/(\alpha + \beta)\\, in a closed form that forms
+no difference of large raw moments. We write \\g = \mu(1-\mu)\\, so that
 \$\$E\[Y\] = n\mu,\qquad \mathrm{Var}(Y) = ng\\\frac{1 + n\sigma}{1 +
 \sigma},\$\$ \$\$\gamma_1 = (1 - 2\mu)\\\frac{1 + 2n\sigma}{1 + 2\sigma}
 \sqrt{\frac{1 + \sigma}{gn(1 + n\sigma)}},\$\$ \$\$\gamma_2 =
 \frac{6n\sigma(1 + n\sigma)\\\[(1 - 6g)(1 + \sigma) + g\] + (1 +
 \sigma)(1 - 6g - \sigma)}{gn(1 + 2\sigma)(1 + 3\sigma)(1 +
-n\sigma)}.\$\$ At \\\sigma = 0\\ these are the binomial's, \\\gamma_2\\
-reducing to \\(1 - 6g)/(gn)\\. The excess kurtosis is written as one
-quotient, so that it is not formed as a kurtosis near 3 minus 3, which
-loses the digits of a value of order \\1/n\\.
+n\sigma)}.\$\$ At \\\sigma = 0\\ these are the binomial's, and
+\\\gamma_2\\ reduces to \\(1 - 6g)/(gn)\\. The excess kurtosis is
+computed as one quotient, which avoids forming a kurtosis near 3 and
+subtracting 3, a step that would lose the digits of a value of order
+\\1/n\\.
 
 ## Usage
 

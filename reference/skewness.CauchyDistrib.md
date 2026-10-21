@@ -6,7 +6,7 @@ Its density decays like \\y^{-2}\\, so \\\int \|y\|^p
 f(y)\\\mathrm{d}y\\ diverges for every \\p \ge 1\\; already the mean
 fails to exist, and the second and third moments fail worse. `NaN` is
 the value of a quantity that is not defined, and it is returned directly
-so that no quadrature is attempted.
+so that the method does not attempt a quadrature.
 
 ## Arguments
 
@@ -17,24 +17,24 @@ so that no quadrature is attempted.
 
 - theta:
 
-  A named list of parameters with components `mu` and `sigma`, each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths, but they are still aligned and validated, so a missing or
-  out-of-bounds component signals an error exactly as it would for a
-  family whose moments exist.
+  A named list of parameters with components `mu` and `sigma`, in which
+  each component is a numeric vector of length 1 or `n`. The values are
+  not read, only their lengths, but they are still aligned and
+  validated, so a missing or out-of-bounds component signals an error
+  exactly as it would for a family whose moments exist.
 
 - ...:
 
   Unused, and accepted so that the signature matches the generic's.
-  Arguments meaningful to
+  Arguments that are meaningful to
   [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
-  have no effect here, no quadrature being run.
+  have no effect here, because the method runs no quadrature.
 
 ## Value
 
 A numeric vector of `NaN`, of length
-`max(length(theta$mu), length(theta$sigma))`, matching the
-one-value-per- observation shape every moment method returns.
+`max(length(theta$mu), length(theta$sigma))`, which matches the
+one-value-per-observation shape that every moment method returns.
 
 ## Details
 
@@ -54,8 +54,8 @@ The same holds for
 and
 [`kurtosis.CauchyDistrib()`](https://statmodels7.github.io/distributions7/reference/kurtosis.CauchyDistrib.md),
 and for the sample versions: a Cauchy sample mean does not converge as
-\\n\\ grows, it is itself Cauchy with the same scale, so no amount of
-data settles it. The example below shows that.
+\\n\\ grows, it is itself Cauchy with the same scale, so it does not
+settle however large the sample is. The example below shows that.
 
 The Cauchy has a median, equal to \\\mu\\, and a half-interquartile
 range, equal to \\\sigma\\. Both are finite at every parameter value and
@@ -69,8 +69,8 @@ not exist.
 \\\mu\\ is the location and \\\sigma \> 0\\ the scale of the Cauchy, in
 the parametrization
 [`cauchy_distrib()`](https://statmodels7.github.io/distributions7/reference/cauchy_distrib.md)
-uses. Neither is a moment: \\\mu\\ is the median and \\\sigma\\ the
-half-interquartile range.
+uses. The two parameters are not moments: \\\mu\\ is the median and
+\\\sigma\\ the half-interquartile range.
 
 ## See also
 
@@ -82,14 +82,14 @@ which return `NaN` for the same reason;
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md)
 for the median and quartiles, which do exist;
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md)
-for the generic and the families that answer it with a number.
+for the generic and the families that return a number.
 
 ## Examples
 
 ``` r
 d <- cauchy_distrib()
 
-# No moment of the Cauchy exists, so all four are NaN.
+# The Cauchy has no moment, so all four are NaN.
 skewness(d, list(mu = 0, sigma = 1))
 #> [1] NaN
 c(mean(d, list(mu = 0, sigma = 1)),
@@ -97,7 +97,8 @@ c(mean(d, list(mu = 0, sigma = 1)),
   kurtosis(d, list(mu = 0, sigma = 1)))
 #> [1] NaN NaN NaN
 
-# One value per observation, as for a family whose moments do exist.
+# The method returns one value per observation, as for a family whose moments
+# do exist.
 skewness(d, list(mu = c(0, 1, 2), sigma = 1))
 #> [1] NaN NaN NaN
 

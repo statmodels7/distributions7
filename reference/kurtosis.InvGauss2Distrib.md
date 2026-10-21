@@ -1,10 +1,10 @@
 # Excess Kurtosis of the Inverse Gaussian Distribution in Mean and Shape
 
-Closed form: \\\gamma_2 = 15\mu/\lambda\\, the excess over the Gaussian.
-Like the skewness it depends on the two parameters through their ratio
-alone, and it is exactly \\5\gamma_1^2/3\\, so the family occupies one
-curve of the skewness-kurtosis plane, as it does in the other
-parametrization.
+The excess kurtosis has the closed form \\\gamma_2 = 15\mu/\lambda\\,
+the excess over the Gaussian. Like the skewness it depends on the two
+parameters only through their ratio, and it is exactly
+\\5\gamma_1^2/3\\, so the family occupies one curve of the
+skewness-kurtosis plane, as it does in the other parametrization.
 
 ## Arguments
 
@@ -15,8 +15,8 @@ parametrization.
 
 - theta:
 
-  A named list with components `mu` (positive) and `lambda` (positive),
-  each a numeric vector of length 1 or `n`.
+  A named list with components `mu` (positive) and `lambda` (positive);
+  each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -45,7 +45,7 @@ whose constant is \\3/2\\;
 ``` r
 d <- invgauss2_distrib()
 
-# Fifteen times the ratio.
+# The excess kurtosis is fifteen times the ratio.
 all.equal(kurtosis(d, list(mu = 2, lambda = 8)), 3.75)
 #> [1] TRUE
 

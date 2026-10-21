@@ -3,13 +3,13 @@
 difference
 $$\frac{\partial\ell}{\partial y} \approx
   \frac{\ell(y+h) - \ell(y-h)}{2h},$$
-evaluated on distrib_pdf(..., log = TRUE). It is what the default
-distrib_grad_y() method runs for a continuous family with no closed form."><meta property="og:description" content="Computes \(\partial \ell / \partial y\) by the two-point central
+evaluated on distrib_pdf(..., log = TRUE). The default distrib_grad_y()
+method runs it for a continuous family with no closed form."><meta property="og:description" content="Computes \(\partial \ell / \partial y\) by the two-point central
 difference
 $$\frac{\partial\ell}{\partial y} \approx
   \frac{\ell(y+h) - \ell(y-h)}{2h},$$
-evaluated on distrib_pdf(..., log = TRUE). It is what the default
-distrib_grad_y() method runs for a continuous family with no closed form."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+evaluated on distrib_pdf(..., log = TRUE). The default distrib_grad_y()
+method runs it for a continuous family with no closed form."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ distrib_grad_y() method runs for a continuous family with no closed form."><meta
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ distrib_grad_y() method runs for a continuous family with no closed form."><meta
 difference
 $$\frac{\partial\ell}{\partial y} \approx
   \frac{\ell(y+h) - \ell(y-h)}{2h},$$
-evaluated on <code>distrib_pdf(..., log = TRUE)</code>. It is what the default
-<code><a href="distrib_grad_y.html">distrib_grad_y()</a></code> method runs for a continuous family with no closed form.</p>
+evaluated on <code>distrib_pdf(..., log = TRUE)</code>. The default <code><a href="distrib_grad_y.html">distrib_grad_y()</a></code>
+method runs it for a continuous family with no closed form.</p>
     </div>
 
     <div class="section level2">
@@ -97,16 +97,17 @@ the exponent that minimizes the total error of a central first difference.</p></
 gamma's own closed form at <code>h_rel</code> from \(10^{-1}\) to \(10^{-8}\), the
 error is 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
 2.0e-08: it divides by a hundred per decade while the truncation dominates,
-turns near the default and rises again as the rounding takes over. A step
-ten times shorter than the default is therefore worse, not better.</p>
+turns near the default and rises again once the rounding error dominates.
+A step ten times shorter than the default is therefore worse, not better.</p>
 <p>The step itself comes from <code><a href="fd_steps_y.html">fd_steps_y()</a></code>, which scales it by
 \(\max(1, |y|)\) and shrinks it near a finite bound.</p>
     </div>
     <div class="section level2">
     <h2 id="the-cost">The cost<a class="anchor" aria-label="anchor" href="#the-cost"></a></h2>
-    <p>Two evaluations of the log-density, both vectorized over <code>y</code>, so one call
-costs two <code><a href="distrib_pdf.html">distrib_pdf()</a></code> calls whatever the sample size. A family with a
-closed form pays neither.</p>
+    <p>The function evaluates the log-density twice, and both evaluations are
+vectorized over <code>y</code>, so one call costs two <code><a href="distrib_pdf.html">distrib_pdf()</a></code> calls whatever
+the sample size. A family with a
+closed form makes neither call.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

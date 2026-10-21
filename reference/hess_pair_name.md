@@ -1,6 +1,6 @@
 # The Hessian Name of a Pair of Parameters
 
-`params[a]_params[b]` in whichever order
+Returns `params[a]_params[b]` in whichever order
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 lists it.
 

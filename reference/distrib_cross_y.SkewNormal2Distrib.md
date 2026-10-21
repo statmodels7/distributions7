@@ -1,8 +1,8 @@
 # Skew Normal Mixed Derivatives in the Centered Parametrization
 
-The derivatives of the log-density in the response and once in each
-parameter, from a compiled kernel written as the parameter derivatives
-are (see
+Returns the derivatives of the log-density in the response and once in
+each parameter, from a compiled kernel that is written as the parameter
+derivatives are (see
 [`distrib_gradient.SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)).
 
 ## Arguments

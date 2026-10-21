@@ -21,7 +21,7 @@ register_dy_k(cls, f)
 
 ## Value
 
-Invisibly `NULL`. Called for the two registrations it makes.
+Invisibly `NULL`. It is called for the two registrations that it makes.
 
 ## Registered on
 
@@ -38,6 +38,6 @@ this page: `Gamma1Distrib`, `Gamma2Distrib`, `ChisqDistrib`,
 [`loc_deriv_y_k()`](https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.md),
 the companion for the location families;
 [`distrib_deriv3_y.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_y.continuous_distrib.md)
-for the stencil a family outside both lists falls back to;
+for the stencil to which a family outside both lists falls back;
 [`dy_log()`](https://statmodels7.github.io/distributions7/reference/dy_log.md)
-for the elementary terms each rule is built from.
+for the elementary terms from which each rule is built.

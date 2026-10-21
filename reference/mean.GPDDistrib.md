@@ -1,9 +1,10 @@
 # Mean of the Generalized Pareto Distribution
 
-Closed form: \\E\[Y\] = \sigma/(1-\xi)\\ for \\\xi \< 1\\, and `Inf` at
-or above one, where the first moment diverges. The shape controls which
-moments exist at all: the moment of order \\k\\ is finite exactly for
-\\\xi \< 1/k\\, so a fitted object can report a mean and no variance.
+The mean has the closed form \\E\[Y\] = \sigma/(1-\xi)\\ for \\\xi \<
+1\\, and is `Inf` at or above one, where the first moment diverges. The
+shape controls which moments exist at all: the moment of order \\k\\ is
+finite exactly for \\\xi \< 1/k\\, so a fitted object can report a mean
+and no variance.
 
 ## Arguments
 
@@ -15,8 +16,8 @@ moments exist at all: the moment of order \\k\\ is finite exactly for
 - theta:
 
   A named list with components `sigma` (the scale, positive) and `xi`
-  (the shape, any real value), each a numeric vector of length 1 or `n`.
-  Settings with \\\xi \ge 1\\ give `Inf` in their own positions.
+  (the shape, any real value); each is a numeric vector of length 1 or
+  `n`. Settings with \\\xi \ge 1\\ give `Inf` in their own positions.
 
 - ...:
 
@@ -47,7 +48,7 @@ the \\\xi = 0\\ case;
 ``` r
 d <- gpd_distrib()
 
-# Finite below shape one and infinite at or above it.
+# The mean is finite below shape one and infinite at or above it.
 mean(d, list(sigma = 1, xi = c(0, 0.5, 1, 1.5)))
 #> [1]   1   2 Inf Inf
 

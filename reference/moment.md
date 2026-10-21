@@ -6,9 +6,9 @@ The expectation is taken numerically by
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md),
 which integrates over the support of a continuous family and sums the
 series of a discrete one. The order \\p\\ may be fractional where \\(y -
-c)^p\\ is real over the whole support, \\c\\ being the centering value
-(for example a raw moment of a family on the positive half-line); the
-integrand is \\(y - c)^p\\ and not \\\|y - c\|^p\\. Every setting
+c)^p\\ is real over the whole support, where \\c\\ is the centering
+value (for example a raw moment of a family on the positive half-line);
+the integrand is \\(y - c)^p\\ and not \\\|y - c\|^p\\. Every setting
 supplied in `theta` is evaluated in one batched call, and the result
 carries one value per setting.
 
@@ -48,15 +48,15 @@ moment(distrib, theta, p = 1, central = FALSE, mu = NULL, ...)
 
 - central:
 
-  Should the moment be taken about the mean? A single logical, `FALSE`
-  by default, which gives the raw moment and needs no extra pass. `TRUE`
-  costs one further evaluation unless `mu` is supplied.
+  Should the moment be taken about the mean? It is a single logical
+  whose default `FALSE` gives the raw moment and needs no extra pass.
+  `TRUE` costs one further evaluation unless `mu` is supplied.
 
 - mu:
 
-  The centering value used when `central = TRUE`. A numeric vector of
-  length 1 or of the number of settings, or `NULL` (the default), which
-  computes the mean numerically. Read only when `central = TRUE`.
+  The centering value used when `central = TRUE`. It is a numeric vector
+  of length 1 or of the number of settings, or `NULL` (the default),
+  which computes the mean numerically. Read only when `central = TRUE`.
 
 - ...:
 
@@ -119,7 +119,7 @@ E\[Y\]\\ the mean.
 ## See also
 
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
-for the quadrature and the series this rests on;
+for the quadrature and the series on which this rests;
 [`mean.distrib()`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md),
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),
 [`std_dev()`](https://statmodels7.github.io/distributions7/reference/std_dev.md),
@@ -134,7 +134,7 @@ registered.
 ``` r
 d <- gaussian1_distrib()
 
-# The first four moments of a Gaussian, raw and central.
+# These calls compute the first four moments of a Gaussian, raw and central.
 moment(d, list(mu = 2, sigma = 3), p = 1)                  # 2
 #> [1] 2
 moment(d, list(mu = 2, sigma = 3), p = 2)                  # mu^2 + sigma^2
@@ -151,7 +151,7 @@ all.equal(moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE, mu = 0),
           moment(d, list(mu = 2, sigma = 3), p = 2))
 #> [1] TRUE
 
-# One value per parameter setting.
+# The call returns one value per parameter setting.
 moment(d, list(mu = c(0, 1, 2), sigma = 1), p = 2, central = TRUE)
 #> [1] 1 1 1
 

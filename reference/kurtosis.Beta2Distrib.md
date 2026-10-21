@@ -1,13 +1,14 @@
 # Excess Kurtosis of the Beta Distribution in Two Shapes
 
-Closed form: \$\$\gamma_2 = \frac{6\\(\alpha-\beta)^2(\alpha+\beta+1) -
+The excess kurtosis has the closed form \$\$\gamma_2 =
+\frac{6\\(\alpha-\beta)^2(\alpha+\beta+1) -
 \alpha\beta(\alpha+\beta+2)\\}
 {\alpha\beta(\alpha+\beta+2)(\alpha+\beta+3)}.\$\$ It is negative over a
-wide range of shapes, the support being bounded at both ends: at
+wide range of shapes, because the support is bounded at both ends: at
 \\\alpha = \beta = 1\\ the density is uniform and the value is \\-6/5\\,
 and as both shapes go to zero it tends to \\-2\\, the smallest excess
-kurtosis any distribution can have. The method evaluates the form in the
-mean and the precision of
+kurtosis that any distribution can have. The method evaluates the form
+in the mean and the precision of
 [`beta_shape_moments()`](https://statmodels7.github.io/distributions7/reference/beta_shape_moments.md),
 in which \\\alpha\beta\\ is not formed.
 
@@ -20,8 +21,8 @@ in which \\\alpha\beta\\ is not formed.
 
 - theta:
 
-  A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`.
+  A named list with components `alpha` and `beta`, both positive; each
+  is a numeric vector of length 1 or `n`.
 
 - ...:
 

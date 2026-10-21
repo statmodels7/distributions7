@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Poisson Distribution
 
-Closed form: \\\gamma_2 = 1/\mu\\, the excess over the Gaussian. It is
-positive at every mean and decays like \\\mu^{-1}\\, whereas the
-skewness decays like \\\mu^{-1/2}\\: the excess kurtosis is the square
-of the skewness.
+The excess kurtosis has the closed form \\\gamma_2 = 1/\mu\\, the excess
+over the Gaussian. It is positive at every mean and decays like
+\\\mu^{-1}\\, whereas the skewness decays like \\\mu^{-1/2}\\: the
+excess kurtosis is the square of the skewness.
 
 ## Arguments
 
@@ -38,7 +38,7 @@ which tends to this;
 ``` r
 d <- poisson_distrib()
 
-# One over the mean, falling twice as fast as the skewness.
+# The kurtosis is one over the mean and falls twice as fast as the skewness.
 rbind(skewness = skewness(d, list(mu = c(1, 25, 10000))),
       kurtosis = kurtosis(d, list(mu = c(1, 25, 10000))))
 #>          [,1] [,2]  [,3]

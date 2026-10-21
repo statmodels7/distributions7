@@ -1,8 +1,8 @@
 # Skewness of the Exponential Distribution
 
-Constant: \\\gamma_1 = 2\\. The family is a scale family with no shape
-parameter, so a standardized moment is a number: every exponential has
-the same asymmetry, whatever its mean.
+The skewness is the constant \\\gamma_1 = 2\\. The family is a scale
+family with no shape parameter, so a standardized moment is a number:
+every exponential has the same asymmetry, whatever its mean.
 
 ## Arguments
 
@@ -37,7 +37,7 @@ which is this at shape 1;
 ``` r
 d <- exponential_distrib()
 
-# Two, whatever the mean.
+# The skewness is two, whatever the mean.
 skewness(d, list(mu = c(0.1, 3, 100)))
 #> [1] 2 2 2
 ```

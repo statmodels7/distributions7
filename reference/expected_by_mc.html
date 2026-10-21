@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,8 +74,8 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of expected derivative component vectors, each of length
-<code>length(y)</code>.</p>
+    <p>A named list of expected derivative component vectors; each has
+length <code>length(y)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -83,9 +83,9 @@
 Observations whose parameters coincide are not merged, so a <code>theta</code> that
 varies over the observations costs one simulation per observation, and a
 scalar <code>theta</code> costs one simulation however long <code>y</code> is.</p>
-<p>Estimates the same quantity as <code><a href="expected_by_integrate.html">expected_by_integrate()</a></code>, with an
-error falling as \(1/\sqrt{n_{sim}}\), and is stochastic unless the seed is
-fixed. Its cost is the cost of <code><a href="distrib_rng.html">distrib_rng()</a></code>, so it is expensive for a
+<p>Estimates the same quantity as <code><a href="expected_by_integrate.html">expected_by_integrate()</a></code>, has an
+error that falls as \(1/\sqrt{n_{sim}}\), and is stochastic unless the seed
+is fixed. Its cost is the cost of <code><a href="distrib_rng.html">distrib_rng()</a></code>, so it is expensive for a
 distribution whose generator inverts a slow quantile function.</p>
     </div>
     <div class="section level2">

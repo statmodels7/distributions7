@@ -2,11 +2,11 @@
 
 Returns `NaN`. The Cauchy density decays like \\y^{-2}\\, so \\\int
 \|y\| f(y)\\\mathrm{d}y\\ diverges and the first moment does not exist.
-`NaN` is returned directly and no quadrature is attempted; the numerical
-route of
+`NaN` is returned directly and the method attempts no quadrature; the
+numerical route of
 [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
-applied to a Cauchy signals an error, the quadrature not reaching the
-requested accuracy.
+applied to a Cauchy signals an error, because the quadrature does not
+reach the requested accuracy.
 
 ## Arguments
 
@@ -17,11 +17,11 @@ requested accuracy.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths, and the list is still aligned and validated, so a missing or
-  out-of-bounds component signals an error as it would for a family
-  whose moments exist.
+  A named list with components `mu` and `sigma` (positive), in which
+  each component is a numeric vector of length 1 or `n`. The values are
+  not read, only their lengths, and the list is still aligned and
+  validated, so a missing or out-of-bounds component signals an error as
+  it would for a family whose moments exist.
 
 - ...:
 
@@ -34,9 +34,9 @@ A numeric vector of `NaN`, of length
 
 ## Details
 
-What the family does have is a median, equal to \\\mu\\, and a
-half-interquartile range, equal to \\\sigma\\. Both are exact at every
-parameter value and both come from
+The family has a median, equal to \\\mu\\, and a half-interquartile
+range, equal to \\\sigma\\. Both are exact at every parameter value and
+both come from
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md).
 A Cauchy sample mean is itself Cauchy with the same scale, so it does
 not settle as the sample grows and cannot stand in for the missing
@@ -47,7 +47,7 @@ moment either.
 \\\mu\\ is the location and \\\sigma \> 0\\ the scale, in the
 parametrization
 [`cauchy_distrib()`](https://statmodels7.github.io/distributions7/reference/cauchy_distrib.md)
-uses. Neither is a moment.
+uses. The two parameters are not moments.
 
 ## See also
 
@@ -65,7 +65,7 @@ for the median and the quartiles.
 ``` r
 d <- cauchy_distrib()
 
-# No moment exists, so this is NaN at every parameter value.
+# The Cauchy has no moment, so the result is NaN at every parameter value.
 mean(d, list(mu = c(0, 1, 2), sigma = 1))
 #> [1] NaN NaN NaN
 

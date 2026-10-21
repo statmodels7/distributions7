@@ -1,8 +1,8 @@
 # Approximate Modes of a Continuous Family at Many Parameter Settings
 
-The grid search of
-[`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md),
-run on every parameter setting at once: each refinement evaluates the
+Runs the grid search of
+[`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md)
+on every parameter setting at once: each refinement evaluates the
 log-density on a grid of 129 points per setting in one call, and keeps
 the three grid points around the largest value of each.
 

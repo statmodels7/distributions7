@@ -1,8 +1,9 @@
 # Variance of the Gumbel Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \pi^2\sigma^2/6\\. The scale is
-not the standard deviation: it is smaller by \\\pi/\sqrt6 \approx
-1.2825\\. The location does not enter, the family being location-scale.
+The closed form is \\\operatorname{Var}(Y) = \pi^2\sigma^2/6\\. The
+scale is not the standard deviation: it is smaller by \\\pi/\sqrt6
+\approx 1.2825\\. The location does not enter the value, because the
+family is location-scale.
 
 ## Arguments
 
@@ -14,7 +15,7 @@ not the standard deviation: it is smaller by \\\pi/\sqrt6 \approx
 - theta:
 
   A named list with components `mu` (the location) and `sigma` (the
-  scale, positive), each a numeric vector of length 1 or `n`.
+  scale, positive); each is a numeric vector of length 1 or `n`.
 
 - ...:
 
@@ -24,7 +25,7 @@ not the standard deviation: it is smaller by \\\pi/\sqrt6 \approx
 
 A numeric vector of variances, of length
 `max(length(theta$mu), length(theta$sigma))`. The location does not
-enter the value, so a setting that varies `mu` alone repeats one number.
+enter the value, so a setting that varies only `mu` repeats one number.
 
 ## See also
 
@@ -37,7 +38,7 @@ enter the value, so a setting that varies `mu` alone repeats one number.
 ``` r
 d <- gumbel_distrib()
 
-# pi^2 sigma^2 / 6.
+# The variance is pi^2 sigma^2 / 6.
 all.equal(variance(d, list(mu = 0, sigma = 2)), pi^2 * 4 / 6)
 #> [1] TRUE
 

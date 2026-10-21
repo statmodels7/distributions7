@@ -3,8 +3,8 @@
 Differentiates the distribution function with respect to the parameters
 by central differences of
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md).
-This is the route a continuous family takes when it registers no closed
-form, and it is deliberately preferred there to the exact
+This is the route that a continuous family takes when it registers no
+closed form, and it is deliberately chosen there over the exact
 partial-expectation identity: for a continuous family that identity is
 an integral over a semi-infinite region, while the cdf itself is
 analytic for every family in the catalog, so differencing it is both
@@ -44,10 +44,10 @@ numerical_cdf_deriv(
 
 - h_rel:
 
-  The relative step. A single number, defaulting to
+  The relative step. It is a single number that defaults to
   \\\varepsilon^{1/(\mathrm{order}+2)}\\, which balances the stencil's
   truncation against its rounding. A step much smaller than the default
-  is worse, the rounding growing as \\h^{-\mathrm{order}}\\.
+  is worse, because the rounding grows as \\h^{-\mathrm{order}}\\.
 
 - which:
 
@@ -86,10 +86,10 @@ receives a step of the right size.
 
 ## Where it is used
 
-No shipped univariate family calls this function for its gradient or
-Hessian: the families whose derivative in a shape parameter has no
-elementary form (the gamma, chi-squared, generalized gamma, beta, von
-Mises, Student t, pseudo-Huber and skew t families) register the
+The shipped univariate families do not call this function for their
+gradient or Hessian: the families whose derivative in a shape parameter
+has no elementary form (the gamma, chi-squared, generalized gamma, beta,
+von Mises, Student t, pseudo-Huber and skew t families) register the
 compiled quadrature of
 [`compiled_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md).
 The function serves continuous families defined by the user, the
@@ -119,7 +119,7 @@ d <- gaussian1_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# One central difference per parameter.
+# The function takes one central difference per parameter.
 numerical_cdf_deriv(d, q, th, order = 1)
 #> $mu
 #> [1] -0.1848768 -0.3278664 -0.1218783
@@ -128,7 +128,8 @@ numerical_cdf_deriv(d, q, th, order = 1)
 #> [1]  0.20028320 -0.05464441 -0.17266092
 #> 
 
-# Against the closed form the Gaussian registers, on the same scale.
+# The result is compared with the closed form that the Gaussian registers,
+# on the same scale.
 exact <- distrib_grad_cdf(d, q, th, log = FALSE)
 max(abs(numerical_cdf_deriv(d, q, th, 1)$mu / exact$mu - 1))
 #> [1] 6.085332e-11

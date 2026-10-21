@@ -1,11 +1,12 @@
 # Third and Fourth Log-CDF Derivatives of a Reparametrized Distribution
 
-The chain rule on the parent's cdf derivatives at orders 3 and 4,
-through
+Applies the chain rule to the parent's cdf derivatives at orders 3 and
+4, through
 [`mapped_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv_k.md).
-It is exact when the parent's derivatives are exact at every order up to
-the one wanted and the map's partials are exact, and falls to one
-product stencil on the reparametrized cdf when the parent's are not.
+The result is exact when the parent's derivatives are exact at every
+order up to the one wanted and the map's partials are exact; when the
+parent's derivatives are not exact, one product stencil on the
+reparametrized cdf is used instead.
 
 ## Arguments
 
@@ -49,9 +50,9 @@ against `theta`.
 
 ## Details
 
-The partials of the map come from the object itself,
+The partials of the map come from the object itself:
 [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
-reading the keyed tables that the reparametrization was built with. They
+reads the keyed tables with which the reparametrization was built. They
 are exact when
 [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 was given `map_derivs`, and single stencils on the map otherwise. A

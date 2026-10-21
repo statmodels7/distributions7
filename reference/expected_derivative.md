@@ -1,7 +1,7 @@
 # Dispatch an Expected-Derivative Strategy
 
-Shared entry point for the fallback expected-derivative methods:
-validates `approx` and routes to the chosen strategy.
+Validates `approx` and routes to the chosen strategy. It is the shared
+entry point for the fallback expected-derivative methods.
 
 ## Usage
 
@@ -55,12 +55,12 @@ identity and are not the same computation. The identity equates
 expectation, which is a sum over the support or a quadrature, while
 `"opg"` reads the integrand at the observation and takes no expectation
 at all. They agree in expectation and differ by orders of magnitude in
-cost, which is why `"opg"` is the default at order 2.
+cost, so `"opg"` is the default at order 2.
 
 Above order 2 the outer product of scores is not an identity, so `"opg"`
-is routed to `"bartlett"` and no error is signaled. The argument is one
-setting for a whole call, and a method of order 4 can receive the value
-that a method of order 2 received.
+is routed to `"bartlett"` and the function does not signal an error. The
+argument is one setting for a whole call, and a method of order 4 can
+receive the value that a method of order 2 received.
 
 ## See also
 

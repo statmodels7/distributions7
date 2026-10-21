@@ -1,9 +1,10 @@
 # Skewness of the Binomial Distribution
 
-Closed form: \\\gamma_1 = (1-2\mu)/\sqrt{n\mu(1-\mu)}\\. It is the
-Bernoulli's divided by \\\sqrt n\\, so it vanishes as the trials
-accumulate, at the rate the central limit theorem gives. It is zero at
-\\\mu = 1/2\\ at every trial count.
+The skewness has the closed form \\\gamma_1 =
+(1-2\mu)/\sqrt{n\mu(1-\mu)}\\. It is the Bernoulli skewness divided by
+\\\sqrt n\\, so it vanishes as the trials accumulate, at the rate that
+the central limit theorem gives. It is zero at \\\mu = 1/2\\ at every
+trial count.
 
 ## Arguments
 
@@ -39,12 +40,13 @@ the one-trial case;
 ``` r
 d <- binomial_distrib(size = 10)
 
-# The Bernoulli's divided by the square root of the trial count.
+# The skewness is the Bernoulli's divided by the square root of the trial
+# count.
 all.equal(skewness(d, list(mu = 0.3)),
           skewness(bernoulli_distrib(), list(mu = 0.3)) / sqrt(10))
 #> [1] TRUE
 
-# Zero at one half, at any trial count.
+# The skewness is zero at one half, at any trial count.
 skewness(d, list(mu = 0.5))
 #> [1] 0
 ```

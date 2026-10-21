@@ -1,13 +1,13 @@
 # Excess Kurtosis of the Skew t Distribution
 
-Closed form for \\\nu \> 4\\, from Azzalini and Capitanio (2003):
-\$\$\gamma_2 = \frac{1}{\sigma_z^{4}}
+The excess kurtosis has the closed form, for \\\nu \> 4\\, from Azzalini
+and Capitanio (2003): \$\$\gamma_2 = \frac{1}{\sigma_z^{4}}
 \left\\\frac{3\nu^2}{(\nu-2)(\nu-4)} -
 \frac{4\mu_z^2\nu(3-\delta^2)}{\nu-3} + \frac{6\mu_z^2\nu}{\nu-2} -
-3\mu_z^4\right\\ - 3,\$\$ `Inf` at \\2 \< \nu \le 4\\, where the fourth
-moment diverges, as for the Student t, and `NaN` at \\\nu \le 2\\. As
-\\\nu\\ decreases the fourth moment is the first of the four to cease to
-exist.
+3\mu_z^4\right\\ - 3,\$\$ It is `Inf` at \\2 \< \nu \le 4\\, where the
+fourth moment diverges, as for the Student t, and `NaN` at \\\nu \le
+2\\. As \\\nu\\ decreases the fourth moment is the first of the four to
+cease to exist.
 
 ## Arguments
 
@@ -19,9 +19,10 @@ exist.
 - theta:
 
   A named list with components `mu`, `sigma` (positive), `alpha` (any
-  sign) and `nu` (positive), each a numeric vector of length 1 or `n`.
-  Only `alpha` and `nu` enter the value; settings with \\2 \< \nu \le
-  4\\ give `Inf` and those with \\\nu \le 2\\ give `NaN`.
+  sign) and `nu` (positive), in which each component is a numeric vector
+  of length 1 or `n`. Only `alpha` and `nu` enter the value; settings
+  with \\2 \< \nu \le 4\\ give `Inf` and those with \\\nu \le 2\\ give
+  `NaN`.
 
 - ...:
 
@@ -29,9 +30,9 @@ exist.
 
 ## Value
 
-A numeric vector of excess kurtoses, of the length the recycled
-parameters imply, `Inf` wherever \\2 \< \nu \le 4\\ and `NaN` wherever
-\\\nu \le 2\\. Only `alpha` and `nu` enter the value.
+A numeric vector of excess kurtoses, whose length is the one that the
+recycled parameters imply, with `Inf` wherever \\2 \< \nu \le 4\\ and
+`NaN` wherever \\\nu \le 2\\. Only `alpha` and `nu` enter the value.
 
 ## Notation
 

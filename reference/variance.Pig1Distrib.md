@@ -1,10 +1,11 @@
 # Variance of the Poisson-Inverse Gaussian Distribution
 
-Closed form, the second cumulant: \\\operatorname{Var}(Y) = \kappa_2 =
-\mu + \sigma\mu^2\\. The quadratic term is the overdispersion the
-inverse Gaussian mixing adds, and it has the same shape as a negative
-binomial's; the two families separate at the third cumulant and above,
-where this one is the heavier-tailed.
+The variance is the second cumulant and has the closed form
+\\\operatorname{Var}(Y) = \kappa_2 = \mu + \sigma\mu^2\\. The quadratic
+term is the overdispersion that the inverse Gaussian mixing adds, and it
+has the same shape as that of a negative binomial; the two families
+separate at the third cumulant and above, where this one has the heavier
+tail.
 
 ## Arguments
 
@@ -15,8 +16,8 @@ where this one is the heavier-tailed.
 
 - theta:
 
-  A named list with components `mu` (positive) and `sigma` (positive),
-  each a numeric vector of length 1 or `n`. The Poisson limit is
+  A named list with components `mu` (positive) and `sigma` (positive);
+  each is a numeric vector of length 1 or `n`. The Poisson limit is
   \\\sigma \to 0\\.
 
 - ...:
@@ -48,7 +49,7 @@ the limit;
 ``` r
 d <- pig1_distrib()
 
-# Mean plus dispersion times the square of the mean.
+# The variance is the mean plus the dispersion times the square of the mean.
 all.equal(variance(d, list(mu = 3, sigma = 1)), 12)
 #> [1] TRUE
 

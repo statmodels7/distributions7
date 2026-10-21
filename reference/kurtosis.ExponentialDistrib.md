@@ -1,8 +1,9 @@
 # Excess Kurtosis of the Exponential Distribution
 
-Constant: \\\gamma_2 = 6\\, the excess over the Gaussian. Like the
-skewness it is fixed for the whole family, there being no shape
-parameter for a standardized moment to depend on.
+The excess kurtosis is the constant \\\gamma_2 = 6\\, the excess over
+the Gaussian. Like the skewness it is fixed for the whole family,
+because the family has no shape parameter on which a standardized moment
+could depend.
 
 ## Arguments
 

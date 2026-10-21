@@ -1,5 +1,26 @@
 # Changelog
 
+## distributions7 0.80.4
+
+- Documentation, fifth part: the pages of the derivative routes (cdf,
+  mixed, response, expected-information, link-scale, log-tail and
+  numerical fallbacks) and of the moment methods rewritten without
+  relative clauses lacking their pronoun, stranded prepositions,
+  absolute constructions, sentences without a verb (example captions and
+  “Closed form:” openings included) and personified descriptions of the
+  code.
+- Corrections in the same pages: the location-scale route of the cdf
+  derivatives of order three and four serves four families, not five;
+  the number of families that write the fifth derivative out themselves,
+  which was wrong, is removed; the table of the mixed derivative grid on
+  the pages of
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md),
+  which was run into the text, is a table again.
+- The messages of the missing Hessian component and of the missing
+  parameter-scale derivative component are reworded.
+
 ## distributions7 0.80.3
 
 - Documentation, fourth part: the pages of the multivariate families

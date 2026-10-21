@@ -1,8 +1,8 @@
 # Locate a High-Density Point of a Bare Log-Density
 
-The search behind
-[`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md),
-expressed on a plain log-density over an interval.
+Runs the search behind
+[`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md)
+on a plain log-density over an interval.
 
 ## Usage
 
@@ -26,10 +26,10 @@ A single number.
 
 ## Details
 
-Kept separate from the `distrib` object so that it can also be applied
-to a reparametrized density, which is what the divergence-removing
-transforms in this file produce and which has no distribution object of
-its own.
+The function is kept separate from the `distrib` object so that it can
+also be applied to a reparametrized density. The divergence-removing
+transforms in this file produce such a density, which has no
+distribution object of its own.
 
 ## See also
 

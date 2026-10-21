@@ -1,9 +1,9 @@
 # Mean of the Generalized Gamma Distribution
 
-Closed form: \\E\[Y\] = a\\\Gamma\\(d+1)/p\\/\Gamma(d/p)\\, the first
-raw moment. The mean is a function of all three parameters: \\a\\ is a
-scale, \\d\\ and \\p\\ are shapes, and the gamma ratio carries the
-shapes into the mean.
+The mean has the closed form \\E\[Y\] =
+a\\\Gamma\\(d+1)/p\\/\Gamma(d/p)\\, the first raw moment. The mean is a
+function of all three parameters: \\a\\ is a scale, \\d\\ and \\p\\ are
+shapes, and the gamma ratio carries the shapes into the mean.
 
 ## Arguments
 
@@ -14,7 +14,7 @@ shapes into the mean.
 
 - theta:
 
-  A named list with components `a`, `d` and `p`, all positive, each a
+  A named list with components `a`, `d` and `p`, all positive; each is a
   numeric vector of length 1 or `n`.
 
 - ...:
@@ -23,8 +23,8 @@ shapes into the mean.
 
 ## Value
 
-A numeric vector of means, of length equal to the longest of the three
-components.
+A numeric vector of means, whose length is the one that the recycled
+parameters imply.
 
 ## Details
 

@@ -11,7 +11,7 @@ the index set."><meta property="og:image" content="https://statmodels7.github.io
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,17 +76,17 @@ the index set.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list of expected derivative component vectors, each of length
-<code>length(y)</code>.</p>
+    <p>A named list of expected derivative component vectors; each has
+length <code>length(y)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The identity of order \(k\) states that
 $$\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,$$
-the sum running over every partition \(\pi\) of the index set. The
+where the sum runs over every partition \(\pi\) of the index set. The
 single-block partition is the target, so it equals minus the sum of all the
-others – which is why <code><a href="https://statmodels7.github.io/numericals7/reference/set_partitions.html" class="external-link">numericals7::set_partitions()</a></code> is the whole algorithm and
-why the top-order derivative is never needed.</p>
+others, so that <code><a href="https://statmodels7.github.io/numericals7/reference/set_partitions.html" class="external-link">numericals7::set_partitions()</a></code> is the whole algorithm and
+the top-order derivative is never needed.</p>
 <p>At order 2 this reduces to
 \(\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]\), which needs only
 the score and remains the information where the log-likelihood has a kink:

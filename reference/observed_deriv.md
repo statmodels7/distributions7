@@ -40,7 +40,7 @@ observed_deriv(distrib, y, theta, order)
 
 ## Value
 
-A named list of derivative component vectors, each of length
+A named list of derivative component vectors; each has length
 `length(y)`. The keys are `distrib@params` at order 1,
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 at order 2 (diagonal first) and

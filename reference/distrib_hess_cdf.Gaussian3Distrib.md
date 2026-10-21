@@ -1,7 +1,7 @@
 # Gaussian Log-CDF Hessian in Mean and Precision
 
-Closed form, by the second-order chain rule through \\\sigma =
-\tau^{-1/2}\\. The map's second partial
+Computes the derivatives in closed form, by the second-order chain rule
+through \\\sigma = \tau^{-1/2}\\. The map's second partial
 \\\partial^2\sigma/\partial\tau^2 = \tfrac34\tau^{-5/2}\\ contributes to
 the precision-precision component.
 
@@ -18,8 +18,8 @@ the precision-precision component.
 
 - theta:
 
-  A named list with components `mu` and `tau` (positive), each a numeric
-  vector of length 1 or `n`.
+  A named list with components `mu` and `tau` (positive); each is a
+  numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -38,8 +38,8 @@ the precision-precision component.
 ## Value
 
 A named list of three numeric vectors keyed as
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`.
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each has the length of `q` recycled against `theta`.
 
 ## Notation
 
@@ -60,7 +60,8 @@ for the identity;
 q <- c(-1, 0.5, 2)
 th <- list(mu = 0.3, tau = 1 / 1.44)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic.
 exact <- distrib_hess_cdf(gaussian3_distrib(), q, th, log = FALSE)
 fd <- numerical_cdf_deriv(gaussian3_distrib(), q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))

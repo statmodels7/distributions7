@@ -1,7 +1,7 @@
 # Standardized Moments of a Weibull by Shape
 
 Returns the pieces of the variance, the skewness and the excess kurtosis
-of a Weibull with shape \\k\\, which depend on the shape alone. With \\t
+of a Weibull with shape \\k\\, which depend only on the shape. With \\t
 = 1/k\\, \\L(x) = \log\Gamma(1 + x)\\ and \\D_j = L(jt) - jL(t)\\, the
 raw moments divided by \\\Gamma(1+t)^j\\ are \\e^{D_j}\\, so
 \$\$\frac{\mathrm{Var}(Y)}{\mu^2\Gamma(1+t)^2} = e^{D_2} - 1,\qquad
@@ -31,7 +31,7 @@ weibull_moment_terms(sigma)
 ## Value
 
 A list with `L1` (\\L(t)\\), `lV` (\\\log(e^{D_2} - 1)\\), `skew` and
-`kurt`, each a numeric vector of the length of `sigma`.
+`kurt`; each is a numeric vector of the length of `sigma`.
 
 ## See also
 

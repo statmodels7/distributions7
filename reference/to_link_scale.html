@@ -11,7 +11,7 @@ to the unconstrained \(\eta\)."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,9 +82,9 @@ as it is for expected derivatives.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The mathematics is set out in <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>. Two things
-in the implementation are deliberate and are the reason it is not simply a
-transcription of the formula:</p>
+    <p>The mathematics is set out in <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>. The
+implementation is not a plain transcription of the formula, for two
+deliberate reasons.</p>
 <p>First order is special-cased. It is a diagonal rescaling,
 \(\partial \ell/\partial \eta_i = (\partial \ell/\partial \theta_i) h_i'\),
 and it is the order evaluated most often (once per scoring iteration), so it

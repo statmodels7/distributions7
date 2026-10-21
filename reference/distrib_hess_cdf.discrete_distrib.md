@@ -1,8 +1,9 @@
 # Log-CDF Hessian for Discrete Distributions
 
-Exact, by the same finite sum as the gradient: at second order the
-summand is \\\ell^{(ij)} + \ell^{(i)}\ell^{(j)}\\, the Bartlett lemma's
-expansion of \\\partial^2 f/f\\. The first-order part comes from
+Computes the Hessian exactly, by the same finite sum as the gradient: at
+second order the summand is \\\ell^{(ij)} + \ell^{(i)}\ell^{(j)}\\, the
+Bartlett lemma's expansion of \\\partial^2 f/f\\. The first-order part
+comes from
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
 so a family's own simplification is used where it has one.
 
@@ -38,8 +39,8 @@ so a family's own simplification is used where it has one.
 
 A named list of numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`. The gradient is not
-returned alongside.
+in which each vector has the length of `q` recycled against `theta`. The
+gradient is not returned alongside.
 
 ## See also
 
@@ -52,7 +53,8 @@ for the sum;
 ## Examples
 
 ``` r
-# A negative binomial: two parameters, so three Hessian components.
+# A negative binomial has two parameters, so the Hessian has three
+# components.
 d <- negbin2_distrib()
 distrib_hess_cdf(d, c(2, 5), list(mu = 3, theta = 2))
 #> $mu_mu

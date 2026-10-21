@@ -2,8 +2,8 @@
 
 Evaluates \\\partial^I F(q)\\ for a discrete family as the finite sum
 \$\$\partial^I F(q) = \sum\_{y \le q} f(y)\\ \frac{\partial^I
-f}{f}(y).\$\$ Nothing is differenced and nothing is integrated: the sum
-is exact.
+f}{f}(y).\$\$ The sum is exact, because the function neither differences
+nor integrates.
 
 ## Usage
 
@@ -19,9 +19,9 @@ discrete_cdf_deriv(distrib, q, theta, order)
 
 - q:
 
-  A numeric vector of quantiles. Each is handled separately, the support
-  being walked from the lower bound up to it, so the cost grows with the
-  largest requested quantile.
+  A numeric vector of quantiles. Each is handled separately: the
+  function walks the support from the lower bound up to it, so the cost
+  grows with the largest requested quantile.
 
 - theta:
 
@@ -66,11 +66,14 @@ A family whose constant varies by observation (a binomial's vector
 `size`, or a wrapper over one) is evaluated at each observation's own
 constant, taken by
 [`distrib_at_rows()`](https://statmodels7.github.io/distributions7/reference/distrib_at_rows.md),
-as the parameters are. A missing quantile gives a missing derivative. \#
-The upper tail The derivatives of the mass sum to zero over the support,
-so where \\P(Y \> q)\\ is below 0.01 the sum up to \\q\\ is computed as
-minus the sum above it, a short series that keeps its digits where the
-sum up to \\q\\ would cancel to a small number.
+as the parameters are. A missing quantile gives a missing derivative.
+
+## The upper tail
+
+The derivatives of the mass sum to zero over the support, so where \\P(Y
+\> q)\\ is below 0.01 the sum up to \\q\\ is computed as minus the sum
+above it, a short series that keeps its digits where the sum up to \\q\\
+would cancel to a small number.
 
 ## Notation
 

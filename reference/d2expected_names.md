@@ -1,8 +1,9 @@
 # The Names of the Expected Information's Second Derivative
 
-One key per pair \\(a,b)\\ and pair \\(c,d)\\, each pair spelled as
+Returns one key per pair \\(a,b)\\ and pair \\(c,d)\\. Each pair is
+spelled as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
-spells it, joined `ab` first.
+spells it, and `ab` comes first in the key.
 
 ## Usage
 

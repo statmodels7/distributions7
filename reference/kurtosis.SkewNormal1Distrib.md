@@ -1,12 +1,12 @@
 # Excess Kurtosis of the Skew Normal Distribution
 
-Closed form: \$\$\gamma_2 = 2(\pi - 3)\\ \frac{(b\delta)^4}{(1 -
+The closed form is \$\$\gamma_2 = 2(\pi - 3)\\ \frac{(b\delta)^4}{(1 -
 b^2\delta^2)^{2}},\$\$ with \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and
 \\b = \sqrt{2/\pi}\\. The fourth power makes it even in the shape and
 non-negative, so the excess kurtosis of a skew normal is never below the
 Gaussian's, and the bound on \\\delta\\ caps it at about 0.8692. A
-sample excess kurtosis beyond that value lies outside the range a skew
-normal can have at any shape.
+sample excess kurtosis beyond that value lies outside the range that a
+skew normal can have at any shape.
 
 ## Arguments
 
@@ -18,8 +18,8 @@ normal can have at any shape.
 - theta:
 
   A named list with components `mu`, `sigma` (positive) and `alpha` (any
-  sign), each a numeric vector of length 1 or `n`. Only `alpha` enters
-  the value.
+  sign); each is a numeric vector of length 1 or `n`. Only `alpha`
+  enters the value.
 
 - ...:
 
@@ -27,9 +27,9 @@ normal can have at any shape.
 
 ## Value
 
-A numeric vector of excess kurtoses, of the length the recycled
+A numeric vector of excess kurtoses, of the length that the recycled
 parameters imply, always in \\\[0, 0.8692)\\. Only `alpha` enters the
-value, so a setting that varies the location or the scale alone repeats
+value, so a setting that varies only the location or the scale repeats
 one number.
 
 ## Notation
@@ -51,7 +51,7 @@ which is not bounded;
 ``` r
 d <- skewnormal1_distrib()
 
-# Even in the shape, and zero only at zero.
+# The kurtosis is even in the shape, and zero only at zero.
 kurtosis(d, list(mu = 0, sigma = 1, alpha = c(-3, 0, 3)))
 #> [1] 0.5097701 0.0000000 0.5097701
 

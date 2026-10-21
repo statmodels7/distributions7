@@ -1,8 +1,8 @@
 # Sample Standard Deviation
 
-The sample standard deviation of a numeric vector, delegated to
-[`stats::sd()`](https://rdrr.io/r/stats/sd.html) and so the root of the
-\\n - 1\\ variance. The method exists so that
+Computes the sample standard deviation of a numeric vector by delegating
+to [`stats::sd()`](https://rdrr.io/r/stats/sd.html), which returns the
+root of the \\n - 1\\ variance. The method exists so that
 [`std_dev()`](https://statmodels7.github.io/distributions7/reference/std_dev.md)
 reads the same on data as on a distribution object.
 
@@ -16,7 +16,8 @@ reads the same on data as on a distribution object.
 - na.rm:
 
   Should missing values be dropped before the standard deviation is
-  taken? A single logical, `FALSE` by default, which propagates `NA`.
+  taken? It is a single logical, `FALSE` by default, and `FALSE`
+  propagates `NA`.
 
 - ...:
 

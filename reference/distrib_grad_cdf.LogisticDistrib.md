@@ -1,8 +1,8 @@
 # Logistic Log-CDF Gradient
 
-Closed form, from the location-scale structure: \\\partial F/\partial\mu
-= -f(q)\\ and \\\partial F/\partial\sigma = -z f(q)\\ with \\z =
-(q-\mu)/\sigma\\. The method is
+Computes the gradient in closed form, from the location-scale structure:
+\\\partial F/\partial\mu = -f(q)\\ and \\\partial F/\partial\sigma = -z
+f(q)\\ with \\z = (q-\mu)/\sigma\\. The method is
 [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
 itself. For this family the density is \\F(1-F)/\sigma\\, so the
 log-scale gradient in the mean is \\-(1-F)/\sigma\\. The method divides
@@ -22,7 +22,7 @@ underflowed to zero or rounded to one.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
+  A named list with components `mu` and `sigma` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -37,8 +37,8 @@ underflowed to zero or rounded to one.
 
 ## Value
 
-A named list of two numeric vectors, `mu` and `sigma`, each the length
-of `q` recycled against `theta`.
+A named list of two numeric vectors, `mu` and `sigma`, in which each
+vector has the length of `q` recycled against `theta`.
 
 ## Notation
 

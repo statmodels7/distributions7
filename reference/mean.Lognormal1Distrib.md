@@ -1,10 +1,10 @@
 # Mean of the Lognormal Distribution
 
-Closed form: \\E\[Y\] = \exp(\mu + \sigma^2/2)\\. The parameters
-describe \\\log Y\\ and not \\Y\\, so \\\mu\\ is the mean of the
-logarithm and \\\exp(\mu)\\ is the median of \\Y\\; the mean is larger
-than the median by the factor \\\exp(\sigma^2/2)\\, which grows with the
-spread.
+The mean has the closed form \\E\[Y\] = \exp(\mu + \sigma^2/2)\\. The
+parameters describe \\\log Y\\ and not \\Y\\, so \\\mu\\ is the mean of
+the logarithm and \\\exp(\mu)\\ is the median of \\Y\\; the mean is
+larger than the median by the factor \\\exp(\sigma^2/2)\\, which grows
+with the spread.
 
 ## Arguments
 
@@ -16,9 +16,9 @@ spread.
 - theta:
 
   A named list with components `mu` (the mean of the logarithm, any real
-  value) and `sigma2` (its variance, positive), each a numeric vector of
-  length 1 or `n`. The mean overflows to `Inf` for large `sigma2`, the
-  exponential of half of it being taken.
+  value) and `sigma2` (its variance, positive); each is a numeric vector
+  of length 1 or `n`. The mean overflows to `Inf` for large `sigma2`
+  because the exponential of half of it is taken.
 
 - ...:
 

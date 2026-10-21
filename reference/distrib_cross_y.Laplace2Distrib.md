@@ -1,8 +1,9 @@
 # Laplace Mixed Derivatives in Location and Rate
 
-Closed form, away from the kink at \\y = \mu\\: with \\\ell^{(y)} =
--\lambda\\\mathrm{sign}(y-\mu)\\, the location component is 0 almost
-everywhere and the rate component is \\-\mathrm{sign}(y-\mu)\\.
+The mixed derivatives are in closed form away from the kink at \\y =
+\mu\\: with \\\ell^{(y)} = -\lambda\\\mathrm{sign}(y-\mu)\\, the
+location component is 0 almost everywhere and the rate component is
+\\-\mathrm{sign}(y-\mu)\\.
 
 ## Arguments
 
@@ -29,9 +30,9 @@ everywhere and the rate component is \\-\mathrm{sign}(y-\mu)\\.
 
 ## Value
 
-A named list with components `mu` and `lambda`, each a numeric vector of
-length `length(y)`. The `mu` component is exactly zero almost everywhere
-and the `lambda` component is \\\pm 1\\.
+A named list with components `mu` and `lambda`; each is a numeric vector
+of length `length(y)`. The `mu` component is exactly zero almost
+everywhere and the `lambda` component is \\\pm 1\\.
 
 ## See also
 

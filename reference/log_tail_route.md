@@ -1,19 +1,19 @@
 # The Log-Tail Route of the CDF Derivatives
 
-Called from the bodies of
+The function is called from the bodies of
 [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md),
 [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
 [`distrib_deriv3_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
 and
 [`distrib_deriv4_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.md)
 before dispatch. On the log scale it returns the derivatives of \\\log
-P\\, \\P\\ the requested tail, from
+P\\, where \\P\\ is the requested tail, from
 [`ls_log_tail_derivs()`](https://statmodels7.github.io/distributions7/reference/ls_log_tail_derivs.md)
 for the eight location-scale families listed in `log_tail_ls`, and from
 [`quad_log_tail_derivs()`](https://statmodels7.github.io/distributions7/reference/quad_log_tail_derivs.md)
 for the families listed in `log_tail_quad` (and, for the lower tail,
 `log_tail_quad_lower`) at the quantiles where \\\log P\\ is below
-`log_tail_cut`, the other quantiles going to the family's own method.
+`log_tail_cut`; the other quantiles go to the family's own method.
 Elsewhere it returns `NULL` and the generic dispatches as usual.
 
 `log_tail_ls` maps each location-scale class to its base and to the map
@@ -25,9 +25,9 @@ off while quantiles are sent back to the family's method.
 
 The quantiles are selected on
 [`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md),
-the value the family's method computes first. While the method runs on
-the quantiles that are not far, `log_tail_stash` holds that value with
-the class, quantiles, parameters and tail it belongs to, and
+the value that the family's method computes first. While the method runs
+on the quantiles that are not far, `log_tail_stash` holds that value
+with the class, quantiles, parameters and tail to which it belongs, and
 [`tail_cdf()`](https://statmodels7.github.io/distributions7/reference/tail_probability.md)
 returns it for a call with the same arguments instead of evaluating the
 distribution function again. A parameter of length one is passed to the
@@ -87,7 +87,7 @@ at order two), or `NULL`.
 
 ``` r
 d <- gaussian1_distrib()
-# log S = log(1 - Phi(z)) at z = 40, where 1 - Phi(z) underflows
+# This is log S = log(1 - Phi(z)) at z = 40, where 1 - Phi(z) underflows.
 distributions7:::log_tail_route(d, 40, list(mu = 0, sigma = 1), 1L,
                                 FALSE, TRUE, distrib_grad_cdf)
 #> $mu

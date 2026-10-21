@@ -27,7 +27,7 @@ grou_two_sided(lp, b, div, n, r)
 
 - n:
 
-  The number of draws wanted.
+  The number of draws.
 
 - r:
 
@@ -52,7 +52,7 @@ The density of \\U\\ therefore carries the exponents \\p\alpha - 1\\ and
 1\\ and \\q\beta \> 1\\. It vanishes there, in fact, turning the
 original U-shaped density into a single-peaked one, the shape that the
 sampler requires. Both exponents come from the same probe that detected
-the divergence, so nothing has to be searched for.
+the divergence, so they are obtained without a search.
 
 ## See also
 

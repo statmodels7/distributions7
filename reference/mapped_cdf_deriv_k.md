@@ -1,13 +1,15 @@
 # Higher CDF Derivatives of a Family Written as a Map of Another
 
-The body that every mapped family registers at orders 3 and 4, at 2 as
-well where its written-out route stops at the gradient, and at every
-order for the centered skew normal. It tests whether the parent's cdf
-derivatives are exact at every order up to the one wanted, takes
-[`chain_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv_k.md)
-if they are, and falls back to
+Computes the cdf derivatives of a family written as a map of another.
+Every mapped family registers this body at orders 3 and 4, at 2 as well
+where its written-out route stops at the gradient, and at every order
+for the centered skew normal. The body tests whether the parent's cdf
+derivatives are exact at every order up to the one wanted. If they are,
+it calls
+[`chain_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv_k.md);
+if they are not, it calls
 [`cdf_tables()`](https://statmodels7.github.io/distributions7/reference/cdf_tables.md)
-on the new family's own cdf if they are not.
+on the new family's own cdf.
 
 ## Usage
 
@@ -35,7 +37,7 @@ mapped_cdf_deriv_k(
 
 - parent:
 
-  The distribution it maps onto.
+  The distribution onto which the family is mapped.
 
 - th_par:
 
@@ -69,8 +71,8 @@ mapped_cdf_deriv_k(
 
 - q_par:
 
-  The quantiles on the parent's scale. `q` by default, and `log(q)` for
-  a lognormal.
+  The quantiles on the parent's scale. The default is `q`; a lognormal
+  passes `log(q)`.
 
 - zero:
 
@@ -86,17 +88,17 @@ tail and scale.
 ## The gate
 
 The chain is exact only if everything that it carries is exact, and the
-higher orders read the lower ones, so the test is over all of them. It
-is what stops a family from adding an exact transformation to a
-differenced parent and reporting the result as closed.
+higher orders read the lower ones, so the test covers all of them. The
+test stops a family from adding an exact transformation to a differenced
+parent and reporting the result as closed.
 
 ## A transformed response
 
 A family may be the parent's law at a transformed point as well as at a
 mapped parameter. A lognormal is a Gaussian at \\\log q\\, and since the
 transformation carries no parameter, the derivatives in \\\theta\\ are
-the parent's with the point substituted. `q_par` is where that
-substitution is handed in.
+the parent's with the point substituted. The substitution is passed as
+`q_par`.
 
 ## See also
 

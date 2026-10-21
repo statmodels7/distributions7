@@ -2,10 +2,10 @@
 
 Computes \\\partial \ell / \partial y\\ by the two-point central
 difference \$\$\frac{\partial\ell}{\partial y} \approx \frac{\ell(y+h) -
-\ell(y-h)}{2h},\$\$ evaluated on `distrib_pdf(..., log = TRUE)`. It is
-what the default
+\ell(y-h)}{2h},\$\$ evaluated on `distrib_pdf(..., log = TRUE)`. The
+default
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-method runs for a continuous family with no closed form.
+method runs it for a continuous family with no closed form.
 
 ## Usage
 
@@ -45,9 +45,9 @@ The stencil's truncation error is \\O(h^2)\\ and its rounding error
 own closed form at `h_rel` from \\10^{-1}\\ to \\10^{-8}\\, the error is
 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
 2.0e-08: it divides by a hundred per decade while the truncation
-dominates, turns near the default and rises again as the rounding takes
-over. A step ten times shorter than the default is therefore worse, not
-better.
+dominates, turns near the default and rises again once the rounding
+error dominates. A step ten times shorter than the default is therefore
+worse, not better.
 
 The step itself comes from
 [`fd_steps_y()`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md),
@@ -56,11 +56,11 @@ bound.
 
 ## The cost
 
-Two evaluations of the log-density, both vectorized over `y`, so one
-call costs two
+The function evaluates the log-density twice, and both evaluations are
+vectorized over `y`, so one call costs two
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
-calls whatever the sample size. A family with a closed form pays
-neither.
+calls whatever the sample size. A family with a closed form makes
+neither call.
 
 ## Notation
 

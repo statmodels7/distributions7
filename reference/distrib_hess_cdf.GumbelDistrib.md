@@ -1,6 +1,7 @@
 # Gumbel Log-CDF Hessian
 
-Closed form from the same location-scale structure, through
+Computes the Hessian in closed form from the same location-scale
+structure, through
 [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md).
 The response derivative that it reads is \\\ell_y = (e^{-z} -
 1)/\sigma\\, which is smooth everywhere, so all three components are
@@ -19,7 +20,7 @@ continuous on the whole line.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
+  A named list with components `mu` and `sigma` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -35,8 +36,8 @@ continuous on the whole line.
 ## Value
 
 A named list of three numeric vectors keyed as
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`.
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each has the length of `q` recycled against `theta`.
 
 ## Notation
 
@@ -59,7 +60,8 @@ d <- gumbel_distrib()
 th <- list(mu = 0.3, sigma = 1.2)
 q <- c(-1, 0.5, 2)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which shares
+# no arithmetic.
 exact <- distrib_hess_cdf(d, q, th, log = FALSE)
 fd <- numerical_cdf_deriv(d, q, th, order = 2)
 max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))

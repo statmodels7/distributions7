@@ -1,9 +1,9 @@
 # Mean of the Binomial Distribution
 
-Closed form: \\E\[Y\] = n\mu\\, with \\n\\ the number of trials and
-\\\mu\\ the success probability. The trial count is a property of the
-object and not a parameter, so it is read from `x@size` and does not
-appear in `theta`.
+The mean has the closed form \\E\[Y\] = n\mu\\, with \\n\\ the number of
+trials and \\\mu\\ the success probability. The trial count is a
+property of the object and not a parameter, so it is read from `x@size`
+and does not appear in `theta`.
 
 ## Arguments
 
@@ -26,8 +26,8 @@ appear in `theta`.
 ## Value
 
 A numeric vector of means, of length
-`max(length(theta$mu), length(x@size))`, each in \\(0, n)\\ for the
-number of trials \\n\\ of that observation.
+`max(length(theta$mu), length(x@size))`; each mean lies in \\(0, n)\\
+for the number of trials \\n\\ of that observation.
 
 ## Notation
 
@@ -48,7 +48,7 @@ the overdispersed extension;
 ``` r
 d <- binomial_distrib(size = 10)
 
-# Ten trials at probability 0.3.
+# The call uses ten trials at probability 0.3.
 mean(d, list(mu = 0.3))
 #> [1] 3
 ```

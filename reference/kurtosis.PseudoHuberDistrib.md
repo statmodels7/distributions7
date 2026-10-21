@@ -1,10 +1,10 @@
 # Excess Kurtosis of the Pseudo-Huber Distribution
 
-Closed form, replacing the numerical default: \$\$\gamma_2 =
+The closed form that replaces the numerical default is \$\$\gamma_2 =
 3\\\frac{K_3(\sqrt{\nu})\\K_1(\sqrt{\nu})} {K_2(\sqrt{\nu})^2} - 3,\$\$
 with \\K_r\\ the modified Bessel function of the second kind. It depends
-on the shape alone, the location and the scale canceling in a
-standardized moment, and it interpolates between the two limits the
+only on the shape, because the location and the scale cancel in a
+standardized moment, and it interpolates between the two limits that the
 family is built to span: about 3, the Laplace's, as \\\nu \to 0\\, and
 0, the Gaussian's, as \\\nu\\ grows.
 
@@ -17,7 +17,7 @@ family is built to span: about 3, the Laplace's, as \\\nu \to 0\\, and
 
 - theta:
 
-  A named list with components `mu`, `sigma` and `nu`, each a numeric
+  A named list with components `mu`, `sigma` and `nu`; each is a numeric
   vector of length 1 or `n`. Only `nu` enters the value; the other two
   are read for their lengths and are still validated.
 
@@ -27,9 +27,9 @@ family is built to span: about 3, the Laplace's, as \\\nu \to 0\\, and
 
 ## Value
 
-A numeric vector of excess kurtoses, of the length the recycled
-parameters imply. Only `nu` enters the value, so a setting that varies
-the location or the scale alone repeats one number.
+A numeric vector of excess kurtoses, of the length that the recycled
+parameters imply. Only `nu` enters the value, so a setting that leaves
+`nu` fixed repeats one number.
 
 ## Details
 
@@ -63,7 +63,7 @@ d <- pseudohuber_distrib()
 round(kurtosis(d, list(mu = 0, sigma = 1, nu = c(1e-4, 1, 1e2, 1e4))), 4)
 #> [1] 2.9987 1.8570 0.2954 0.0300
 
-# Neither the location nor the scale enters a standardized moment.
+# The location and the scale do not enter a standardized moment.
 kurtosis(d, list(mu = c(0, 5), sigma = c(1, 9), nu = 4))
 #> [1] 1.218426 1.218426
 ```

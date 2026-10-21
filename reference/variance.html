@@ -17,7 +17,7 @@ NaN or Inf, never a truncated quadrature."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,15 +73,15 @@ passed to <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link"
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>For a <code>distrib</code>: <code>theta</code>, a named list of parameters, followed by
-any further arguments for <code><a href="moment.html">moment()</a></code>. For a numeric vector: <code>na.rm</code>, a
-single logical, <code>FALSE</code> by default.</p></dd>
+any further arguments for <code><a href="moment.html">moment()</a></code>. For a numeric vector, the argument
+is <code>na.rm</code>, a single logical that is <code>FALSE</code> by default.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector for a <code>distrib</code>, one value per parameter setting; a
-single number for a numeric vector. <code>NaN</code> for a family with no moments,
-<code>Inf</code> for one whose variance diverges.</p>
+single number for a numeric vector. The value is <code>NaN</code> for a family with
+no moments and <code>Inf</code> for one whose variance diverges.</p>
     </div>
     <div class="section level2">
     <h2 id="the-two-routes">The two routes<a class="anchor" aria-label="anchor" href="#the-two-routes"></a></h2>
@@ -95,7 +95,7 @@ The two routes agree to the accuracy of the quadrature.</p>
     <h2 id="what-the-sample-method-returns">What the sample method returns<a class="anchor" aria-label="anchor" href="#what-the-sample-method-returns"></a></h2>
     <p>On a numeric vector the value is <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">stats::var()</a></code>, which divides by
 \(n - 1\). That is the unbiased estimator, and it differs from the
-convention <code><a href="skewness.html">skewness()</a></code> and <code><a href="kurtosis.html">kurtosis()</a></code> use for their sample versions,
+convention that <code><a href="skewness.html">skewness()</a></code> and <code><a href="kurtosis.html">kurtosis()</a></code> use for their sample versions,
 which divide by \(n\). The difference is deliberate: both follow the
 commonest convention for the quantity in question.</p>
     </div>
@@ -108,7 +108,7 @@ route, <code><a href="expectation.html">expectation()</a></code> for the quadrat
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A closed form, one value per setting.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A closed form gives one value per setting.</span></span></span>
 <span class="r-in"><span><span class="fu">variance</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  1  4 16</span>
 <span class="r-in"><span></span></span>

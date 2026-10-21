@@ -1,6 +1,6 @@
 # The Key of One Component of the Expected Information's Third Derivative
 
-The name under which
+Returns the name under which
 [`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md)
 returns
 \\\partial^3\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\\partial\theta_d\\
@@ -24,8 +24,8 @@ d3expected_key(params, a, b, c, d, e)
 
 - c, d, e:
 
-  Indices of the parameters differentiated in; their order does not
-  matter either.
+  Indices of the parameters with respect to which the derivative is
+  taken; their order does not matter either.
 
 ## Value
 

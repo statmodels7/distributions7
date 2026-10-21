@@ -1,7 +1,7 @@
 # The Derivatives of the Link-Scale Expected Information
 
-Leibniz's rule on \\F\_{ab} = E\_{ab}\\h_a' h_b'\\, written once for
-every family.
+Applies Leibniz's rule to \\F\_{ab} = E\_{ab}\\h_a' h_b'\\. The rule is
+written once for every family.
 
 ## Usage
 

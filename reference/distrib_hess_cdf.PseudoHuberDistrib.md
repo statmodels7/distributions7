@@ -1,9 +1,10 @@
 # Pseudo-Huber Log-CDF Hessian
 
-Closed form in the location-scale block, and in the mixed components
-with a shape \\k\\, \\-f s_k\\ and \\-z f s_k\\ at \\q\\; the components
-in the shape parameters alone are integrals of the density's own
-derivatives, taken by the compiled rule. The method is
+Computes the Hessian in closed form in the location-scale block, and in
+the mixed components with a shape \\k\\, which are \\-f s_k\\ and \\-z f
+s_k\\ at \\q\\; the components that involve only shape parameters are
+integrals of the density's own derivatives, taken by the compiled rule.
+The method is
 [`compiled_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf.md)
 itself.
 
@@ -21,7 +22,7 @@ itself.
 - theta:
 
   A named list with components `mu`, `sigma` (positive) and `nu`
-  (positive), each a numeric vector of length 1 or `n`.
+  (positive); each is a numeric vector of length 1 or `n`.
 
 - lower.tail:
 
@@ -36,8 +37,8 @@ itself.
 ## Value
 
 A named list of six numeric vectors keyed as
-[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`.
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md);
+each has the length of `q` recycled against `theta`.
 
 ## Notation
 

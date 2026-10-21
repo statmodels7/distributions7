@@ -1,9 +1,9 @@
 # The Names of the Expected Information's Derivative
 
-One key per pair \\(a,b)\\ and differentiating parameter \\c\\, built by
-joining
+Returns one key per pair \\(a,b)\\ and differentiating parameter \\c\\,
+built by joining
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
-with the parameter differentiated in.
+with the name of the differentiating parameter.
 
 ## Usage
 
@@ -28,7 +28,7 @@ wherever a component name is a concatenation of parameter names: a
 parameter whose own name contains an underscore makes the string
 ambiguous to read back, and
 [`dexpected_key()`](https://statmodels7.github.io/distributions7/reference/dexpected_key.md)
-exists so that a consumer composes the same string this function
+exists so that a consumer composes the same string that this function
 enumerates.
 
 ## See also

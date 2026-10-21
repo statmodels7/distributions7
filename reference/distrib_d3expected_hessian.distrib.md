@@ -1,9 +1,9 @@
 # Default Third Derivative of the Expected Information
 
-One central difference of
+Takes one central difference of
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
-per parameter; an error where the family has no analytic second
-derivative.
+per parameter and signals an error where the family has no analytic
+second derivative.
 
 ## Arguments
 

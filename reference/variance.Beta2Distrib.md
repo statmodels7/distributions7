@@ -1,8 +1,8 @@
 # Variance of the Beta Distribution in Two Shapes
 
-Closed form: \$\$\operatorname{Var}(Y) = \frac{\alpha\beta}
-{(\alpha+\beta)^2(\alpha+\beta+1)}.\$\$ Writing \\\mu =
-\alpha/(\alpha+\beta)\\ and \\\phi = \alpha+\beta\\ this is the
+The variance has the closed form \$\$\operatorname{Var}(Y) =
+\frac{\alpha\beta} {(\alpha+\beta)^2(\alpha+\beta+1)}.\$\$ Writing \\\mu
+= \alpha/(\alpha+\beta)\\ and \\\phi = \alpha+\beta\\ this is the
 \\\mu(1-\mu)/(\phi+1)\\ of
 [`variance.Beta1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.Beta1Distrib.md),
 so the shapes and the mean-precision pair describe the same law. The
@@ -19,8 +19,8 @@ so that \\\alpha\beta\\ is not formed where it underflows or overflows.
 
 - theta:
 
-  A named list with components `alpha` and `beta`, both positive, each a
-  numeric vector of length 1 or `n`. If both shapes are below 1 the
+  A named list with components `alpha` and `beta`, both positive; each
+  is a numeric vector of length 1 or `n`. If both shapes are below 1 the
   density is unbounded at both endpoints and U-shaped.
 
 - ...:
@@ -48,7 +48,7 @@ A numeric vector of variances, of length
 ``` r
 d <- beta2_distrib()
 
-# The published form, written out.
+# The variance agrees with the published form, written out.
 all.equal(variance(d, list(alpha = 2, beta = 3)), 2 * 3 / (25 * 6))
 #> [1] TRUE
 

@@ -1,11 +1,11 @@
 # The Chain Rule for the Expected Information's Derivatives
 
-The arithmetic of
-[`reparam_dexpected()`](https://statmodels7.github.io/distributions7/reference/reparam_dexpected.md),
-given the parent's quantities rather than the parent: \\E\\, \\\partial
-E\\ and, at order 2, \\\partial^2 E\\ on the parent's scale, and the
-map's partials as keyed tables. It serves a reparametrized family and
-any family written as a map of another's coordinates, such as
+Computes the arithmetic of
+[`reparam_dexpected()`](https://statmodels7.github.io/distributions7/reference/reparam_dexpected.md)
+from the parent's quantities rather than from the parent: \\E\\,
+\\\partial E\\ and, at order 2, \\\partial^2 E\\ on the parent's scale,
+and the map's partials as keyed tables. It serves a reparametrized
+family and any family written as a map of another's coordinates, such as
 [`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
 over the shapes.
 

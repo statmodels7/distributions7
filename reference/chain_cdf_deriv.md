@@ -16,7 +16,7 @@ chain_cdf_deriv(parent, q, th_par, maps, new_params, order)
 
 - parent:
 
-  The distribution being reparametrized.
+  The distribution that is reparametrized.
 
 - q:
 
@@ -28,7 +28,7 @@ chain_cdf_deriv(parent, q, th_par, maps, new_params, order)
 
 - maps:
 
-  The map's keyed partial tables, in the form
+  The map's keyed partial tables, in the form that
   [`reparam_map_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   produces: a missing key is an exact zero, so a map with many vanishing
   partials costs nothing for them.
@@ -63,10 +63,9 @@ The result is exact whenever the cdf derivatives of the parent and the
 partials of the map are, and no better than they are otherwise: applied
 to a parent that differences its own cdf, the chain adds an exact
 transformation to an approximate quantity and gains nothing over
-differencing the new cdf directly. Checking that is the caller's
-business, and
+differencing the new cdf directly. The caller checks that, and
 [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md)
-is where it is done.
+performs the check.
 
 ## Notation
 

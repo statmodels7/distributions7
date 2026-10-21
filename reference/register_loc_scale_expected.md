@@ -5,11 +5,11 @@ Registers
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
 and
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
-on a location-scale class, each computed by
+on a location-scale class, each of which is computed by
 [`loc_scale_expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_expected.md),
-and
+and registers
 [`expected_hessian_costly()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_costly.md)
-answering `TRUE`.
+so that it returns `TRUE`.
 
 ## Usage
 
@@ -30,6 +30,6 @@ register_loc_scale_expected(cls)
 ## Details
 
 The `approx` and `nsim` arguments of the three generics are accepted and
-ignored, the expectation being taken by the rule of
+ignored, because the expectation is taken by the rule of
 [`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md)
-and not by one of the approximations `approx` selects between.
+and not by one of the approximations between which `approx` selects.

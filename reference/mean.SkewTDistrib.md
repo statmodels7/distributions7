@@ -1,7 +1,7 @@
 # Mean of the Skew t Distribution
 
-Closed form for \\\nu \> 1\\: \\E\[Y\] = \mu + \sigma\delta b\_\nu\\,
-with \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b\_\nu =
+The closed form for \\\nu \> 1\\ is \\E\[Y\] = \mu + \sigma\delta
+b\_\nu\\, with \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b\_\nu =
 \sqrt{\nu/\pi}\\\Gamma\\(\nu-1)/2\\/\Gamma(\nu/2)\\. At \\\nu \le 1\\
 the value is `NaN`, because the first moment does not exist for that
 density.
@@ -17,9 +17,9 @@ density.
 
   A named list with components `mu` (the location), `sigma` (the scale,
   positive), `alpha` (the shape, any sign) and `nu` (the degrees of
-  freedom, positive), each a numeric vector of length 1 or `n`. Settings
-  with \\\nu \le 1\\ give `NaN` in their own positions and do not affect
-  the others.
+  freedom, positive); each is a numeric vector of length 1 or `n`.
+  Settings with \\\nu \le 1\\ give `NaN` in their own positions and do
+  not affect the others.
 
 - ...:
 

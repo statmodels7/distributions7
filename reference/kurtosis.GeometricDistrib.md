@@ -1,9 +1,9 @@
 # Excess Kurtosis of the Geometric Distribution
 
-Closed form: \\\gamma_2 = 6 + 1/\\\mu(1+\mu)\\\\, the excess over the
-Gaussian. It stays above 6 at every mean and tends to 6 as the counts
-grow, the exponential's value. The tails are geometric at every
-parameter setting, so the family has a positive excess kurtosis
+The excess kurtosis over the Gaussian has the closed form \\\gamma_2 =
+6 + 1/\\\mu(1+\mu)\\\\. It stays above 6 at every mean and tends to 6 as
+the counts grow, the exponential's value. The tails are geometric at
+every parameter setting, so the family has a positive excess kurtosis
 everywhere and does not approach the Gaussian as a Poisson does.
 
 ## Arguments
@@ -42,7 +42,7 @@ which does vanish;
 ``` r
 d <- geometric_distrib()
 
-# The published form, written out.
+# The published form is written out.
 all.equal(kurtosis(d, list(mu = 3)), 6 + 1 / 12)
 #> [1] TRUE
 

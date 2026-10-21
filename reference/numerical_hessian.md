@@ -5,8 +5,8 @@ parameters by central finite differences of
 `distrib_pdf(..., log = TRUE)`. The default
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 method calls it for a family that has neither an analytical Hessian nor
-an analytical score; a family with an analytical score has it
-differenced instead.
+an analytical score; for a family with an analytical score, the method
+differences that score instead.
 
 ## Usage
 
@@ -26,12 +26,12 @@ numerical_hessian(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 
 - theta:
 
-  A named list of parameters (each of length 1 or `length(y)`).
+  A named list of parameters (each element has length 1 or `length(y)`).
 
 - h_rel:
 
-  Numeric. Relative step size. Defaults to `.Machine$double.eps^(1/4)`
-  (optimal for second differences).
+  Numeric, the relative step size. Defaults to
+  `.Machine$double.eps^(1/4)` (optimal for second differences).
 
 ## Value
 

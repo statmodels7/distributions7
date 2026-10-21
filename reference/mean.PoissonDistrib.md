@@ -1,8 +1,8 @@
 # Mean of the Poisson Distribution
 
-Closed form: \\E\[Y\] = \mu\\. The family carries one parameter and it
-is the mean, so this method reads it off. It is also the variance, which
-is the equidispersion the family is defined by.
+The mean has the closed form \\E\[Y\] = \mu\\. The family carries one
+parameter and it is the mean, so this method reads it off. It is also
+the variance, which gives the equidispersion that defines the family.
 
 ## Arguments
 

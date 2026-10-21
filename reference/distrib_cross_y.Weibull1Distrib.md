@@ -1,10 +1,10 @@
 # Weibull Mixed Derivatives
 
-Closed form at both parameters. The scale follows the pure-scale
-identity and reduces to \\\sigma^2 w/(\mu y)\\ with \\w =
-(y/\mu)^\sigma\\; the shape comes from differentiating \\\ell^{(y)} =
-((\sigma-1) - \sigma w)/y\\, giving \\(1 - w - \sigma w L)/y\\ with \\L
-= \log(y/\mu)\\.
+The mixed derivatives are in closed form at both parameters. The scale
+follows the pure-scale identity and reduces to \\\sigma^2 w/(\mu y)\\
+with \\w = (y/\mu)^\sigma\\; the shape comes from differentiating
+\\\ell^{(y)} = ((\sigma-1) - \sigma w)/y\\, giving \\(1 - w - \sigma w
+L)/y\\ with \\L = \log(y/\mu)\\.
 
 ## Arguments
 
@@ -31,8 +31,8 @@ identity and reduces to \\\sigma^2 w/(\mu y)\\ with \\w =
 
 ## Value
 
-A named list with components `mu` and `sigma`, each a numeric vector of
-length `length(y)`.
+A named list with components `mu` and `sigma`; each is a numeric vector
+of length `length(y)`.
 
 ## See also
 

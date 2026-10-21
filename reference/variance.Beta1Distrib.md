@@ -1,10 +1,11 @@
 # Variance of the Beta Distribution
 
-Closed form: \\\operatorname{Var}(Y) = \mu(1-\mu)/(\phi+1)\\. The
-numerator is the Bernoulli variance at the same mean, which bounds the
-variance of every distribution on \\\[0, 1\]\\ with that mean, and
-\\\phi+1\\ divides it. Larger \\\phi\\ therefore means a tighter
-distribution, which is the reason the parameter is called a precision.
+The variance has the closed form \\\operatorname{Var}(Y) =
+\mu(1-\mu)/(\phi+1)\\. The numerator is the Bernoulli variance at the
+same mean, which bounds the variance of every distribution on \\\[0,
+1\]\\ with that mean, and \\\phi+1\\ divides it. Larger \\\phi\\
+therefore means a tighter distribution, which is the reason the
+parameter is called a precision.
 
 ## Arguments
 
@@ -16,7 +17,7 @@ distribution, which is the reason the parameter is called a precision.
 - theta:
 
   A named list with components `mu` (strictly between 0 and 1) and `phi`
-  (positive), each a numeric vector of length 1 or `n`. The variance
+  (positive); each is a numeric vector of length 1 or `n`. The variance
   tends to \\\mu(1-\mu)\\ as the precision goes to zero, where the mass
   piles up at the two endpoints.
 
@@ -45,7 +46,7 @@ A numeric vector of variances, of length
 ``` r
 d <- beta1_distrib()
 
-# mu (1 - mu) / (phi + 1).
+# The variance is mu (1 - mu) / (phi + 1).
 all.equal(variance(d, list(mu = 0.3, phi = 5)), 0.3 * 0.7 / 6)
 #> [1] TRUE
 

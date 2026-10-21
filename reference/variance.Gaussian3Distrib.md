@@ -1,7 +1,8 @@
 # Variance of the Gaussian Distribution in Location and Precision
 
-Closed form: \\\operatorname{Var}(Y) = 1/\tau\\. A larger precision
-gives a smaller variance. This parametrization differs from
+The variance has the closed form \\\operatorname{Var}(Y) = 1/\tau\\. A
+larger precision gives a smaller variance. This parametrization differs
+from
 [`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
 only by the reciprocal \\\tau = 1/\sigma^2\\.
 
@@ -15,7 +16,7 @@ only by the reciprocal \\\tau = 1/\sigma^2\\.
 - theta:
 
   A named list with components `mu` (any real value) and `tau` (the
-  precision, positive), each a numeric vector of length 1 or `n`. The
+  precision, positive); each is a numeric vector of length 1 or `n`. The
   variance diverges as the precision approaches zero.
 
 - ...:
@@ -39,7 +40,7 @@ the reciprocal;
 ``` r
 d <- gaussian3_distrib()
 
-# One over the precision.
+# The variance is one over the precision.
 all.equal(variance(d, list(mu = 0, tau = 0.25)), 4)
 #> [1] TRUE
 

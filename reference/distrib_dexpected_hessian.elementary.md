@@ -1,12 +1,12 @@
 # Derivatives of the Expected Information, Elementary Families
 
-The first and second derivatives of the expected information in the
-parameters, from compiled kernels, for the families whose expected
+Computes the first and second derivatives of the expected information in
+the parameters, from compiled kernels, for the families whose expected
 information is a written-out function of the parameters. Each component
 is an ordinary derivative of the family's \\\mathbb{E}\[\ell\_{ab}\]\\;
 on the link scale the result is carried across by
 [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md).
-The elastic net has the first derivatives only.
+The elastic net has only the first derivatives.
 
 ## Arguments
 
@@ -47,7 +47,8 @@ or
 
 ## Details
 
-The expected informations differentiated, on the parameter scale:
+The expected informations that are differentiated are the following, on
+the parameter scale:
 
 - Bernoulli and binomial of size \\n\\: \\-n/(\mu(1-\mu))\\, with \\n =
   1\\ for the Bernoulli;
@@ -56,7 +57,7 @@ The expected informations differentiated, on the parameter scale:
 
 - chi-squared: \\-\psi'(\mu/2)/4\\;
 
-- Cauchy, logistic and Gumbel: every component a constant over
+- Cauchy, logistic and Gumbel: every component is a constant over
   \\\sigma^2\\, so only \\\sigma\\ moves them;
 
 - gaussian by its variance, and lognormal in \\(\mu, \sigma^2)\\:
@@ -71,8 +72,8 @@ The expected informations differentiated, on the parameter scale:
   -(1+4g)/\sigma^2\\, \\\mathbb{E}\[\ell\_{\mu\sigma^2}\] = 2\mu
   g/\sigma^4\\ and \\\mathbb{E}\[\ell\_{\sigma^2\sigma^2}\] = -a
   g/\sigma^4\\; \\g\\ and its derivatives are formed from the remainders
-  of the polygamma functions' asymptotic series, so nothing cancels at a
-  large shape, where \\g \sim 1/(2a)\\;
+  of the polygamma functions' asymptotic series, so they are evaluated
+  without cancellation at a large shape, where \\g \sim 1/(2a)\\;
 
 - beta by its two shapes: \\\psi'(\alpha+\beta) - \psi'(\alpha)\\,
   \\\psi'(\alpha+\beta)\\ and \\\psi'(\alpha+\beta) - \psi'(\beta)\\;

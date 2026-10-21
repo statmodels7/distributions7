@@ -1,10 +1,11 @@
 # Mixed Second-Response Parameter Derivatives of the Log-Density
 
-Computes \\\partial^3 \ell / \partial y^2\\ \partial \theta_i\\, one
-component per parameter, each a vector along `y`. Where
+Computes \\\partial^3 \ell / \partial y^2\\ \partial \theta_i\\, with
+one component per parameter, and each component is a vector along `y`.
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
-says how curved the log-density is in the RESPONSE, this says how that
-curvature moves with each parameter.
+gives the curvature of the log-density in the RESPONSE, and this
+quantity gives the rate at which that curvature changes with each
+parameter.
 
 ## Usage
 
@@ -41,12 +42,12 @@ distrib_cross2_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 
 ## Value
 
-A named list with one numeric vector per parameter, each as long as `y`,
-keyed by `distrib@params`.
+A named list with one numeric vector per parameter, keyed by
+`distrib@params`. Each vector is as long as `y`.
 
 ## What consumes it
 
-It completes the surface a marginal likelihood needs. A penalty is
+It completes the surface that a marginal likelihood needs. A penalty is
 \\-\log f(D\beta;\theta)\\, so its Hessian in the coefficients is
 \\-D'\mathrm{diag}(\ell^{(yy)})D\\, and the derivative of that in
 \\\theta\\ is this component placed the same way. Differentiating the
@@ -69,11 +70,12 @@ stencil to the highest quantity that the family implements itself,
 through
 [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md):
 a central difference of the analytic response Hessian in each parameter
-where the family has one, so that such a family pays for exactly one
+where the family has one, so that such a family requires exactly one
 difference.
 
-Continuous distributions only, as with every response derivative: a
-discrete family has no method and the call raises with its class named.
+The quantity exists for continuous distributions only, as with every
+response derivative: a discrete family has no method and the call raises
+an error that names its class.
 
 ## Notation
 
@@ -113,13 +115,14 @@ c(sigma = 2 / 1.3^3)
 #>     sigma 
 #> 0.9103323 
 
-# Against a numerical derivative of the response Hessian.
+# The result is compared with a numerical derivative of the response
+# Hessian.
 f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
 numDeriv::grad(f, c(0.4, 1.3))
 #> [1] 0.0000000 0.9103323
 
-# On the link scale, sigma riding a log link, the component is multiplied
-# by h' = sigma and nothing else.
+# On the link scale, where sigma rides a log link, the component is
+# multiplied by h' = sigma and nothing else.
 c(link = distrib_cross2_y(d, y, theta, scale = "link")$sigma[1],
   hand = distrib_cross2_y(d, y, theta)$sigma[1] * 1.3)
 #>     link     hand 

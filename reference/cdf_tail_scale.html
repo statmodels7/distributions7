@@ -3,11 +3,11 @@
 of whichever tail was requested, on the natural or the logarithmic scale.
 Every route to a cdf derivative in this package produces derivatives of
 \(F\) itself, so the lower.tail and log arguments are handled once,
-here, and no method has to implement four cases."><meta property="og:description" content="Converts derivatives of the distribution function \(F\) into derivatives
+here, and a method does not have to implement four cases."><meta property="og:description" content="Converts derivatives of the distribution function \(F\) into derivatives
 of whichever tail was requested, on the natural or the logarithmic scale.
 Every route to a cdf derivative in this package produces derivatives of
 \(F\) itself, so the lower.tail and log arguments are handled once,
-here, and no method has to implement four cases."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+here, and a method does not have to implement four cases."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +15,7 @@ here, and no method has to implement four cases."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.80.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ here, and no method has to implement four cases."><meta property="og:image" cont
 of whichever tail was requested, on the natural or the logarithmic scale.
 Every route to a cdf derivative in this package produces derivatives of
 \(F\) itself, so the <code>lower.tail</code> and <code>log</code> arguments are handled once,
-here, and no method has to implement four cases.</p>
+here, and a method does not have to implement four cases.</p>
     </div>
 
     <div class="section level2">
@@ -106,7 +106,7 @@ returned alongside the Hessian.</p>
     </div>
     <div class="section level2">
     <h2 id="the-two-conversions">The two conversions<a class="anchor" aria-label="anchor" href="#the-two-conversions"></a></h2>
-    <p>Switching to the upper tail flips the sign, \(S = 1 - F\) giving
+    <p>Switching to the upper tail flips the sign, because \(S = 1 - F\) gives
 \(\partial^I S = -\partial^I F\) at every order. The probability \(S\)
 by which the log scale divides is the family's own upper tail when <code>Fq</code>
 comes from <code><a href="tail_probability.html">tail_cdf()</a></code>, and \(1 - F\) otherwise (<code><a href="tail_probability.html">tail_probability()</a></code>). Switching to the log
@@ -121,7 +121,7 @@ The two commute, and both are applied to whatever was handed in.</p>
     <p><code>dF1</code> is always read, at second order as well: the correction above needs
 the first derivatives of the same tail. A caller requesting a Hessian
 therefore passes both lists, and passes them as derivatives of \(F\) on
-the natural scale, whichever tail the result is wanted on.</p>
+the natural scale, on whichever tail the result is wanted.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

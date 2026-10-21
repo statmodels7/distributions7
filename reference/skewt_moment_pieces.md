@@ -1,7 +1,7 @@
-# The Quantities a Skew t's Moments Are Built From
+# The Quantities from Which a Skew t's Moments Are Built
 
-Returns the four pieces the family's four moment methods share: \\\delta
-= \alpha/\sqrt{1+\alpha^2}\\, the constant \\b\_\nu =
+Returns the four pieces that the family's four moment methods share:
+\\\delta = \alpha/\sqrt{1+\alpha^2}\\, the constant \\b\_\nu =
 \sqrt{\nu/\pi}\\\Gamma\\(\nu-1)/2\\/\Gamma(\nu/2)\\, the mean \\\mu_z =
 \delta b\_\nu\\ of the standardized variable and its variance
 \\\sigma_z^2 = \nu/(\nu-2) - \mu_z^2\\.
@@ -26,17 +26,17 @@ skewt_moment_pieces(alpha, nu)
 
 ## Value
 
-A named list with `nu`, `delta`, `bnu`, `mz` and `vz`, each a numeric
+A named list with `nu`, `delta`, `bnu`, `mz` and `vz`; each is a numeric
 vector recycled to the longer of `alpha` and `nu`.
 
 ## Details
 
 The gamma ratio in \\b\_\nu\\ is formed from the logarithm of the beta
 function, \\\Gamma\\(\nu-1)/2\\/\Gamma(\nu/2) = B\\(\nu-1)/2,
-1/2\\/\sqrt{\pi}\\, so that neither the gamma functions nor the
-difference of two large log-gamma values is formed, and \\b\_\nu\\ keeps
-its accuracy as \\\nu\\ grows (to \\\nu = 10^{16}\\ and beyond).
-\\\delta\\ comes from
+1/2\\/\sqrt{\pi}\\, so that the gamma functions and the difference of
+two large log-gamma values are not formed, and \\b\_\nu\\ keeps its
+accuracy as \\\nu\\ grows (to \\\nu = 10^{16}\\ and beyond). \\\delta\\
+comes from
 [`skewnormal_delta()`](https://statmodels7.github.io/distributions7/reference/skewnormal_delta.md).
 
 \\b\_\nu\\ is `NaN` at \\\nu \le 1\\ and \\\sigma_z^2\\ is `NaN` at

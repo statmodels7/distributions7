@@ -1,8 +1,8 @@
 # Mean of the Bernoulli Distribution
 
-Closed form: \\E\[Y\] = \mu\\, the success probability. The response
-takes the values 0 and 1, so the mean is the probability of the second
-value, and every other moment is a function of \\\mu\\.
+The mean has the closed form \\E\[Y\] = \mu\\, the success probability.
+The response takes the values 0 and 1, so the mean is the probability of
+the second value, and every other moment is a function of \\\mu\\.
 
 ## Arguments
 

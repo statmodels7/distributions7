@@ -1,9 +1,9 @@
 # Exponential Log-CDF Derivatives
 
-Closed form at every order from one to four, from the survival function
-\\S = e^{-q/\mu}\\. Its logarithm is \\L = -q/\mu\\, whose partial
-derivatives are \\\partial^j L/\partial\mu^j = -q(-1)^j j!/\mu^{j+1}\\,
-and
+The derivatives have closed form at every order from one to four,
+obtained from the survival function \\S = e^{-q/\mu}\\. Its logarithm is
+\\L = -q/\mu\\, whose partial derivatives are \\\partial^j
+L/\partial\mu^j = -q(-1)^j j!/\mu^{j+1}\\, and
 [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md)
 turns those into the derivatives of \\F\\.
 
@@ -18,7 +18,7 @@ turns those into the derivatives of \\F\\.
 
   A numeric vector of quantiles. Values at or below zero give
   derivatives of exactly zero on the natural scale; on the log scale of
-  the lower tail they are `NaN`, \\\log F\\ being infinite there.
+  the lower tail they are `NaN`, because \\\log F\\ is infinite there.
 
 - theta:
 
@@ -42,13 +42,14 @@ turns those into the derivatives of \\F\\.
 ## Value
 
 A named list with one numeric vector per component of the requested
-order, which for a one-parameter family is one at every order.
+order; a one-parameter family has one component at every order.
 
 ## Details
 
-Below the support every derivative of \\F\\ is exactly zero, the mask in
+Below the support every derivative of \\F\\ is exactly zero, because the
+mask in
 [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md)
-suppressing the finite value that \\L\\ would otherwise give there.
+suppresses the finite value that \\L\\ would otherwise give there.
 
 ## Notation
 
@@ -71,12 +72,13 @@ the two families that contain this one;
 d <- exponential_distrib()
 q <- c(0.5, 2, 5)
 
-# Against a central difference of the cdf, which shares no arithmetic.
+# The result is compared with a central difference of the cdf, which
+# shares no arithmetic.
 fd <- numerical_cdf_deriv(d, q, list(mu = 3), order = 1)
 max(abs(distrib_grad_cdf(d, q, list(mu = 3), log = FALSE)$mu / fd$mu - 1))
 #> [1] 2.722822e-11
 
-# Exactly zero below the support.
+# The derivative is exactly zero below the support.
 distrib_grad_cdf(d, c(-1, 0.5), list(mu = 3), log = FALSE)$mu
 #> [1]  0.00000000 -0.04702676
 ```

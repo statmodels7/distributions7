@@ -1,8 +1,9 @@
 # Log-CDF Gradient for Discrete Distributions
 
-Exact, and nothing is differenced. The partial expectation of the score
-is a finite sum over the support up to \\q\\, \\\partial^I F(q) =
-\sum\_{y \le q} f(y)\\\partial^I f/f\\(y)\\, evaluated by
+Computes the gradient exactly, without differencing. The partial
+expectation of the score is a finite sum over the support up to \\q\\,
+\\\partial^I F(q) = \sum\_{y \le q} f(y)\\\partial^I f/f\\(y)\\,
+evaluated by
 [`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md)
 and put on the requested tail by
 [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md).
@@ -16,7 +17,7 @@ and put on the requested tail by
 - q:
 
   A numeric vector of quantiles. Values below the support give a
-  derivative of zero, the sum being empty.
+  derivative of zero, because the sum is empty.
 
 - theta:
 
@@ -38,8 +39,8 @@ and put on the requested tail by
 
 ## Value
 
-A named list of numeric vectors, one per parameter, each the length of
-`q` recycled against `theta`.
+A named list of numeric vectors, one per parameter, in which each vector
+has the length of `q` recycled against `theta`.
 
 ## Details
 
@@ -48,10 +49,10 @@ bound on the support. The cost therefore grows with the largest
 requested quantile and not with the number of parameters, and each
 quantile is summed separately.
 
-Six of the shipped discrete families use this method; the rest register
-a formula, several of which are exact simplifications of this same sum.
-A Poisson's, for instance, telescopes to \\\partial F(k)/\partial\mu =
--f(k)\\.
+Some of the shipped discrete families use this method; the others
+register a formula, several of which are exact simplifications of this
+same sum. A Poisson's, for instance, telescopes to \\\partial
+F(k)/\partial\mu = -f(k)\\.
 
 ## See also
 

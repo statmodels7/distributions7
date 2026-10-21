@@ -1,11 +1,11 @@
 # Standard Deviation of a Distribution
 
-The square root of
+Returns the square root of
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md),
 evaluated at the same parameters. This is the only route to a
-distribution's standard deviation: no shipped family registers a method
-of its own, so whatever a family does for its variance, closed form or
-quadrature, is what happens here and the root is taken after.
+distribution's standard deviation, because a shipped family registers no
+method of its own. The variance of the family, by closed form or by
+quadrature, is therefore computed first and the root is taken after.
 
 ## Arguments
 
@@ -28,8 +28,8 @@ quadrature, is what happens here and the root is taken after.
 ## Value
 
 A numeric vector of standard deviations, of length equal to the longest
-component of `theta`. `NaN` where the variance is `NaN`, `Inf` where it
-is `Inf`.
+component of `theta`. The value is `NaN` where the variance is `NaN` and
+`Inf` where it is `Inf`.
 
 ## See also
 

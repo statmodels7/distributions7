@@ -38,8 +38,8 @@ A named list of link-scale derivative component vectors.
 
 The mathematics is set out in
 [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
-Two things in the implementation are deliberate and are the reason it is
-not simply a transcription of the formula:
+The implementation is not a plain transcription of the formula, for two
+deliberate reasons.
 
 First order is special-cased. It is a diagonal rescaling, \\\partial
 \ell/\partial \eta_i = (\partial \ell/\partial \theta_i) h_i'\\, and it

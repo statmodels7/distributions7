@@ -1,11 +1,11 @@
 # Partial Derivatives of a Product of a Location Term and a Scale Term
 
-Builds the `wderiv` or `xderiv` callback
+Builds the `wderiv` or `xderiv` callback that
 [`phi_terms_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/phi_terms_cdf_deriv_k.md)
-wants, for a quantity that factorizes as \\u(\theta_1)\\v(\theta_2)\\. A
+calls, for a quantity that factorizes as \\u(\theta_1)\\v(\theta_2)\\. A
 mixed partial of such a product is the product of two one-variable
-derivatives, so a block of parameter names is answered by counting how
-many of each it holds.
+derivatives, so the partial for a block of parameter names is obtained
+by counting how many times each of the two names occurs in the block.
 
 ## Usage
 
@@ -17,8 +17,8 @@ separable_deriv(nm, uderiv, vderiv)
 
 - nm:
 
-  A character vector of length 2, the two parameter names, the one
-  `uderiv` differentiates first.
+  A character vector of length 2 holding the two parameter names.
+  `uderiv` differentiates the first of them.
 
 - uderiv:
 
@@ -43,7 +43,7 @@ way. The inverse Gaussian's \\a\\, \\b\\ and \\c\\ are each a function
 of the mean times a function of the dispersion; the elastic net's \\s\\
 and \\x\\ are each a function of \\\lambda\\ times a function of
 \\\alpha\\. Each mixed partial is therefore a product of two
-one-variable derivatives, which is why four orders are cheap here.
+one-variable derivatives, so four orders are cheap here.
 
 ## See also
 

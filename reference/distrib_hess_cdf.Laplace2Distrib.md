@@ -1,13 +1,14 @@
 # Laplace Log-CDF Hessian in Location and Rate
 
-Closed form. Writing \\r = q - \mu\\ and \\a = \|r\|\\,
-\$\$\frac{\partial^2 F}{\partial\mu^2} = -\lambda\\\mathrm{sign}(r)\\f,
-\qquad \frac{\partial^2 F}{\partial\lambda^2} =
--\frac{\mathrm{sign}(r)\\a^2 f}{\lambda}, \qquad \frac{\partial^2
-F}{\partial\mu\\\partial\lambda} = -\left(\frac{1}{\lambda} - a\right)
-f.\$\$ The sign function carries the kink: `mu_mu` jumps at \\q = \mu\\,
-as it does in the scale parametrization, while `lambda_lambda` and
-`mu_lambda` are continuous there.
+Computes the Hessian in closed form. Writing \\r = q - \mu\\ and \\a =
+\|r\|\\, \$\$\frac{\partial^2 F}{\partial\mu^2} =
+-\lambda\\\mathrm{sign}(r)\\f, \qquad \frac{\partial^2
+F}{\partial\lambda^2} = -\frac{\mathrm{sign}(r)\\a^2 f}{\lambda}, \qquad
+\frac{\partial^2 F}{\partial\mu\\\partial\lambda} =
+-\left(\frac{1}{\lambda} - a\right) f.\$\$ The sign function carries the
+kink: `mu_mu` jumps at \\q = \mu\\, as it does in the scale
+parametrization, while `lambda_lambda` and `mu_lambda` are continuous
+there.
 
 ## Arguments
 
@@ -23,7 +24,7 @@ as it does in the scale parametrization, while `lambda_lambda` and
 
 - theta:
 
-  A named list with components `mu` and `lambda` (positive), each a
+  A named list with components `mu` and `lambda` (positive); each is a
   numeric vector of length 1 or `n`.
 
 - lower.tail:
@@ -44,7 +45,7 @@ as it does in the scale parametrization, while `lambda_lambda` and
 
 A named list of three numeric vectors keyed as
 [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-each the length of `q` recycled against `theta`.
+in which each vector has the length of `q` recycled against `theta`.
 
 ## Notation
 

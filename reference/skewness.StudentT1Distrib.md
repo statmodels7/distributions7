@@ -1,8 +1,8 @@
 # Skewness of the Student t Distribution
 
-Zero for \\\nu \> 3\\, and `NaN` at or below three, where the third
-moment does not exist. The density is symmetric about \\\mu\\, so the
-value is zero wherever it is defined.
+The skewness is zero for \\\nu \> 3\\ and `NaN` at or below three, where
+the third moment does not exist. The density is symmetric about \\\mu\\,
+so the value is zero wherever it is defined.
 
 ## Arguments
 
@@ -14,8 +14,9 @@ value is zero wherever it is defined.
 - theta:
 
   A named list with components `mu`, `sigma` (positive) and `nu`
-  (positive), each a numeric vector of length 1 or `n`. Only `nu` enters
-  the value; settings with \\\nu \le 3\\ give `NaN`.
+  (positive), in which each component is a numeric vector of length 1 or
+  `n`. Only `nu` enters the value; settings with \\\nu \le 3\\ give
+  `NaN`.
 
 - ...:
 
@@ -23,8 +24,8 @@ value is zero wherever it is defined.
 
 ## Value
 
-A numeric vector, of length equal to the longest of the three
-components, zero where \\\nu \> 3\\ and `NaN` elsewhere.
+A numeric vector, whose length is the one that the recycled parameters
+imply, with zero where \\\nu \> 3\\ and `NaN` elsewhere.
 
 ## Notation
 
@@ -43,7 +44,8 @@ the asymmetric extension;
 ``` r
 d <- student_t1_distrib()
 
-# Undefined at or below three degrees of freedom, then zero by symmetry.
+# The skewness is undefined at or below three degrees of freedom, and zero by
+# symmetry above.
 skewness(d, list(mu = 0, sigma = 1, nu = c(2, 3, 4)))
 #> [1] NaN NaN   0
 ```

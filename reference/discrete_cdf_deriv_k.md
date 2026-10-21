@@ -1,13 +1,14 @@
 # CDF Derivatives of a Discrete Distribution at Any Order
 
-The general form of
-[`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md):
-evaluates \\\partial^I F(q) = \sum\_{y \le q} f(y)\\\partial^I
-f/f\\(y)\\ for a discrete family at any order up to four. Nothing is
-differenced; the sum is exact wherever the support has a finite lower
-bound, which the discrete class requires. Where \\P(Y \> q)\\ is below
-0.01 the sum is computed as minus the sum above \\q\\, the derivatives
-of the mass summing to zero over the support.
+Evaluates \\\partial^I F(q) = \sum\_{y \le q} f(y)\\\partial^I
+f/f\\(y)\\ for a discrete family at any order up to four, and is the
+general form of
+[`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md).
+The function does not use differences; the sum is exact wherever the
+support has a finite lower bound, which the discrete class requires.
+Where \\P(Y \> q)\\ is below 0.01 the sum is computed as minus the sum
+above \\q\\, because the derivatives of the mass sum to zero over the
+support.
 
 ## Usage
 
@@ -23,8 +24,8 @@ discrete_cdf_deriv_k(distrib, q, theta, order)
 
 - q:
 
-  A numeric vector of quantiles. Each is handled separately, the support
-  being walked up to it, so the cost grows with the largest one.
+  A numeric vector of quantiles. Each is handled separately and the
+  support is walked up to it, so the cost grows with the largest one.
 
 - theta:
 
@@ -42,8 +43,8 @@ natural scale, keyed as
 
 ## Details
 
-What changes above second order is only the summand. \\\partial^I f/f\\
-is the complete Bell polynomial in the derivatives of \\\log f\\, and
+Above second order only the summand changes. \\\partial^I f/f\\ is the
+complete Bell polynomial in the derivatives of \\\log f\\, and
 [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
 already computes it for the distribution wrappers, so this function
 reuses it and carries no second copy of the enumeration.

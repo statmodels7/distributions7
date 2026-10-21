@@ -2,7 +2,7 @@
 
 Returns the derivatives of \\F\\ of order three or four by
 [`compiled_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/compiled_cdf_deriv_k.md)
-for the families it covers, and by the stencil of
+for the families that it covers, and by the stencil of
 [`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md)
 otherwise.
 

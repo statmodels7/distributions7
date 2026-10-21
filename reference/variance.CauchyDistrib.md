@@ -4,7 +4,7 @@ Returns `NaN`. The variance is the second central moment, and it needs a
 first moment to center on; the Cauchy has neither. Its density decays
 like \\y^{-2}\\, so \\\int \|y\|^p f(y)\\\mathrm{d}y\\ diverges for
 every \\p \ge 1\\, so the second moment does not exist either. `NaN` is
-returned directly, so that no quadrature is attempted.
+returned directly, so that the method does not attempt a quadrature.
 
 ## Arguments
 
@@ -15,9 +15,10 @@ returned directly, so that no quadrature is attempted.
 
 - theta:
 
-  A named list with components `mu` and `sigma` (positive), each a
-  numeric vector of length 1 or `n`. The values are not read, only their
-  lengths, and the list is still aligned and validated.
+  A named list with components `mu` and `sigma` (positive), in which
+  each component is a numeric vector of length 1 or `n`. The values are
+  not read, only their lengths, and the list is still aligned and
+  validated.
 
 - ...:
 
@@ -28,12 +29,12 @@ returned directly, so that no quadrature is attempted.
 A numeric vector of `NaN`, of length
 `max(length(theta$mu), length(theta$sigma))`.
 [`std_dev()`](https://statmodels7.github.io/distributions7/reference/std_dev.md)
-gives `NaN` too, being the square root of this.
+gives `NaN` too, because it is the square root of this.
 
 ## Details
 
-The spread a Cauchy does have is its half-interquartile range, exactly
-\\\sigma\\, available from
+A Cauchy has a spread in its half-interquartile range, which equals
+\\\sigma\\ exactly and is available from
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md).
 The parameter \\\sigma\\ is a scale parameter, which sets the width of
 the density, but it is not a standard deviation.
