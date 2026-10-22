@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,10 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.83.1" id="distributions7-0831">distributions7 0.83.1<a class="anchor" aria-label="anchor" href="#distributions7-0831"></a></h2>
+<ul><li>The second derivative of a <code><a href="../reference/folded.html">folded()</a></code> family in the C registry, scalar and joint, is formed as w h(y) + (1 - w) h(-y) + w (1 - w) (g(y) - g(-y))^2, the same quantity as the difference of the block ratios without its cancellation: far in the tail the two terms of the difference are of order y^4 and their rounding exceeded the value. The tests of the joint entries read the folded families away from y = 1e40, where the R methods form the difference and differ between platforms by more than the value.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.83.0" id="distributions7-0830">distributions7 0.83.0<a class="anchor" aria-label="anchor" href="#distributions7-0830"></a></h2>
 <ul><li>The joint entries of the C registry cover the wrappers. A wrapper’s entries are composed from its inner family’s joint entries, through nested wrappers: <code><a href="../reference/fixed.html">fixed()</a></code> takes the free parameters’ rows and columns, <code><a href="../reference/transformation.html">transformation()</a></code> reads the inner entries at the inverse of the transform, <code><a href="../reference/zero_inflated.html">zero_inflated()</a></code> and <code><a href="../reference/zero_adjusted.html">zero_adjusted()</a></code> are written in the parent’s entries at the observation and at zero, <code><a href="../reference/truncated.html">truncated()</a></code> sums or integrates the parent’s gradient and Hessian over the retained support, and <code><a href="../reference/folded.html">folded()</a></code> integrates the folded ones by the rule of its expected information. A wrapper is covered as far as its inner family is; the expected information of a truncated family is covered for any inner family with a gradient and a Hessian, and that of a folded family where the parent is a location-scale family on the real line.</li>
