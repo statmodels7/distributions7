@@ -43,7 +43,13 @@ joint_families <- list(
   Pig1Distrib = function() pig1_distrib(),
   Pig2Distrib = function() pig2_distrib(),
   BetaBinom1Distrib = function() betabinom1_distrib(size = 9),
-  BetaBinom2Distrib = function() betabinom2_distrib(size = 9)
+  BetaBinom2Distrib = function() betabinom2_distrib(size = 9),
+  PoissonDistrib = function() poisson_distrib(),
+  BernoulliDistrib = function() bernoulli_distrib(),
+  BinomialDistrib = function() binomial_distrib(size = 9),
+  ExponentialDistrib = function() exponential_distrib(),
+  GeometricDistrib = function() geometric_distrib(),
+  ChisqDistrib = function() chisq_distrib()
 )
 
 # the classes whose expected information is approximated, covered for the
@@ -56,8 +62,10 @@ test_that("the covered classes are the ones listed here", {
   expect_setequal(d7_joint_classes_covered(), names(joint_families))
 })
 
-joint_twin <- function(cls, seed, eta_range = c(-1.5, 1.5)) {
-  d <- joint_families[[cls]]()
+joint_twin <- function(cls, seed, eta_range = c(-1.5, 1.5), d = NULL,
+                       full = !cls %in% joint_grad_hess_only) {
+  if (is.null(d)) d <- joint_families[[cls]]()
+  route <- distrib_scalar_route(d)
   P <- length(d@params)
   set.seed(seed)
   n <- 60
@@ -76,9 +84,8 @@ joint_twin <- function(cls, seed, eta_range = c(-1.5, 1.5)) {
   # (they allocate one term per count), so the far count is 1e6
   if (discrete) far <- round(far)
   y[1:2] <- far
-  consts <- lapply(distrib_scalar_route(d)$constants, rep, length.out = n)
-  pr <- d7_joint_probe(cls, y, do.call(cbind, c(th, consts)))
-  full <- !cls %in% joint_grad_hess_only
+  consts <- lapply(route$constants, rep, length.out = n)
+  pr <- d7_joint_probe(route$name, y, do.call(cbind, c(th, consts)))
   expect_identical(pr$covered, if (full) 4L else 2L)
   g <- distrib_gradient(d, y, th)
   h <- distrib_hessian(d, y, th)
@@ -118,10 +125,123 @@ test_that("every joint entry is the generic's component", {
   }
 })
 
-test_that("a family the joint registry does not cover answers 0 and NaN", {
-  pr <- d7_joint_probe("PoissonDistrib", c(1, 2), cbind(c(1, 1)))
-  expect_identical(pr$covered, 0L)
-  expect_identical(dim(pr$grad), c(2L, 0L))
+# the wrappers, whose joint entries are composed from the inner family's, with
+# their coverage: TRUE for all four entries, FALSE for the gradient and the
+# Hessian only; and, where given, the two ranges of the predictors. The
+# discrete zero-adjusted and truncated families are read at predictors in
+# +-0.5 and +-1, as test-ccallable.R reads them: where the retained mass sits
+# at the first retained point (f(L)/Z > 0.9) their R generics take
+# head_override(), and the registry, scalar and joint, does not. The
+# continuous truncations are read there too, so that the interval keeps its
+# mass.
+narrow <- list(c(-0.5, 0.5), c(-1, 1))
+joint_wrappers <- list(
+  fixed_t1_nu = list(function() fixed(student_t1_distrib(), nu = 5), TRUE),
+  fixed_t1_sigma = list(function() fixed(student_t1_distrib(), sigma = 1.3), TRUE),
+  fixed_gengamma1_a = list(function() fixed(gengamma1_distrib(), a = 1.2), TRUE),
+  fixed_skewt_nu = list(function() fixed(skewt_distrib(), nu = 6), FALSE),
+  zi_poisson = list(function() zero_inflated(poisson_distrib()), TRUE),
+  zi_binomial = list(function() zero_inflated(binomial_distrib(size = 9)), TRUE),
+  zi_negbin2 = list(function() zero_inflated(negbin2_distrib()), TRUE),
+  zi_negbin1 = list(function() zero_inflated(negbin1_distrib()), TRUE),
+  zi_betabinom1 = list(function() zero_inflated(betabinom1_distrib(size = 9)), TRUE),
+  zi_pig2 = list(function() zero_inflated(pig2_distrib()), TRUE),
+  zi_fixed_negbin2 = list(function()
+    zero_inflated(fixed(negbin2_distrib(), theta = 2)), TRUE),
+  fixed_zi_negbin2 = list(function()
+    fixed(zero_inflated(negbin2_distrib()), theta = 2), TRUE),
+  fixed_zi_negbin2_zi = list(function()
+    fixed(zero_inflated(negbin2_distrib()), zi = 0.3), TRUE),
+  za_poisson = list(function() zero_adjusted(poisson_distrib()), TRUE, narrow),
+  za_negbin2 = list(function() zero_adjusted(negbin2_distrib()), TRUE, narrow),
+  za_binomial = list(function() zero_adjusted(binomial_distrib(size = 7)), TRUE,
+                     narrow),
+  za_gamma1 = list(function() zero_adjusted(gamma1_distrib()), TRUE),
+  za_lognormal1 = list(function() zero_adjusted(lognormal1_distrib()), TRUE),
+  za_skewnormal1 = list(function() zero_adjusted(skewnormal1_distrib()), FALSE),
+  za_fixed_negbin2 = list(function()
+    zero_adjusted(fixed(negbin2_distrib(), theta = 3)), TRUE, narrow),
+  za_folded_gaussian1 = list(function()
+    zero_adjusted(folded(gaussian1_distrib())), TRUE),
+  tf_gamma1_log = list(function()
+    transformation(gamma1_distrib(), log_transform()), TRUE),
+  tf_gaussian1_exp = list(function()
+    transformation(gaussian1_distrib(), exp_transform()), TRUE),
+  tf_t1_asinh = list(function()
+    transformation(student_t1_distrib(), asinh_transform()), TRUE),
+  tf_gaussian1_yj = list(function()
+    transformation(gaussian1_distrib(), yj_transform(0.3)), TRUE),
+  tf_beta1_logit = list(function()
+    transformation(beta1_distrib(), logit_transform()), TRUE),
+  tf_skewnormal1_exp = list(function()
+    transformation(skewnormal1_distrib(), exp_transform()), FALSE),
+  tf_fixed_gaussian1 = list(function()
+    transformation(fixed(gaussian1_distrib(), mu = 0), exp_transform()), TRUE),
+  fo_gaussian1 = list(function() folded(gaussian1_distrib()), TRUE),
+  fo_t1 = list(function() folded(student_t1_distrib()), TRUE),
+  fo_laplace = list(function() folded(laplace_distrib()), TRUE),
+  fo_cauchy = list(function() folded(cauchy_distrib()), TRUE),
+  fo_skewnormal1 = list(function() folded(skewnormal1_distrib()), TRUE),
+  fo_fixed_laplace = list(function()
+    folded(fixed(laplace_distrib(), sigma = 1.2)), TRUE),
+  tr_poisson_lo1 = list(function() truncated(poisson_distrib(), lower = 1),
+                        TRUE, narrow),
+  tr_poisson_lo4 = list(function() truncated(poisson_distrib(), lower = 4),
+                        TRUE, narrow),
+  tr_poisson_up6 = list(function() truncated(poisson_distrib(), upper = 6),
+                        TRUE),
+  tr_negbin2_lo1 = list(function() truncated(negbin2_distrib(), lower = 1),
+                        TRUE, narrow),
+  tr_negbin2_up8 = list(function() truncated(negbin2_distrib(), upper = 8),
+                        TRUE),
+  tr_negbin1_both = list(function()
+    truncated(negbin1_distrib(), lower = 2, upper = 12), TRUE, narrow),
+  tr_betabinom2_both = list(function()
+    truncated(betabinom2_distrib(size = 9), lower = 1, upper = 7), TRUE, narrow),
+  tr_pig1_lo1 = list(function() truncated(pig1_distrib(), lower = 1), TRUE,
+                     narrow),
+  tr_fixed_negbin2 = list(function()
+    truncated(fixed(negbin2_distrib(), theta = 3), lower = 1), TRUE, narrow),
+  zi_tr_poisson = list(function()
+    zero_inflated(truncated(poisson_distrib(), upper = 50)), TRUE),
+  tr_gaussian1 = list(function()
+    truncated(gaussian1_distrib(), lower = -1, upper = 3), TRUE, narrow),
+  tr_gamma1_lo = list(function() truncated(gamma1_distrib(), lower = 0.5), TRUE, narrow),
+  tr_weibull1_up = list(function() truncated(weibull1_distrib(), upper = 2), TRUE, narrow),
+  tr_beta1_up = list(function() truncated(beta1_distrib(), upper = 0.7), TRUE, narrow),
+  tr_beta2_lo = list(function() truncated(beta2_distrib(), lower = 0.3), TRUE, narrow),
+  tr_t1 = list(function() truncated(student_t1_distrib(), lower = 0), TRUE, narrow),
+  tr_fixed_t1 = list(function()
+    truncated(fixed(student_t1_distrib(), nu = 5), lower = -0.5, upper = 4), TRUE,
+    narrow),
+  tr_laplace = list(function()
+    truncated(laplace_distrib(), lower = -2, upper = 1), TRUE, narrow)
+)
+
+test_that("every joint entry of a wrapper is the generic's component", {
+  for (nm in names(joint_wrappers)) {
+    d <- joint_wrappers[[nm]][[1]]()
+    full <- joint_wrappers[[nm]][[2]]
+    rg <- if (length(joint_wrappers[[nm]]) > 2L) joint_wrappers[[nm]][[3]] else
+      list(c(-1.5, 1.5), c(-4, 4))
+    joint_twin(nm, 11, rg[[1]], d = d, full = full)
+    joint_twin(nm, 12, rg[[2]], d = d, full = full)
+  }
+})
+
+test_that("a folded family without a center and a scale has no information", {
+  # folded() has no route over a transformed family; the registry's node is
+  # named directly
+  tr <- distrib_scalar_route(transformation(gaussian1_distrib(),
+                                            asinh_transform()))
+  th <- do.call(cbind, c(list(c(1, 1), c(0.5, 0.5)),
+                         lapply(tr$constants, rep, length.out = 2)))
+  pr <- d7_joint_probe(paste0("FoldedDistrib|", tr$name), c(1, 2), th)
+  expect_identical(pr$covered, 2L)
+  expect_true(all(is.nan(pr$info)) && all(is.nan(pr$dinfo)))
+})
+
+test_that("an unknown family answers -1", {
   pr <- d7_joint_probe("NoSuchDistrib", c(1, 2), cbind(c(1, 1), c(1, 1)))
   expect_identical(pr$covered, -1L)
 })

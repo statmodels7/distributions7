@@ -1872,6 +1872,601 @@ double wrap_logpdf(int id, double y, const double* th) {
     return R_NaN;
 }
 
+// ---- the joint entries of the wrappers --------------------------------------
+//
+// A wrapper's joint entries are composed from its inner family's joint
+// entries, which for a wrapped inner family are a node's in turn, with the
+// layout of d7_joint_grad() and the others; the expressions are those of the
+// wrappers' R methods, extended from the (k, k) entries above to every pair.
+// fixed() reindexes, transformation() reads the inner entries at the inverse
+// of the transform, the zero wrappers are closed forms in the parent's
+// entries at the observation and at zero, truncated() sums or integrates the
+// parent's gradient and Hessian over the retained support, and folded()
+// integrates the folded ones by fold_rule(). A node is covered to the order
+// its inner family is (wrap_joint_covered()), except that the information of
+// a truncated or folded family reads only the inner gradient and Hessian, and
+// that folded()'s information needs a center and a scale. kJointMax bounds
+// the number of parameters of the node and of its inner family, which sizes
+// the buffers of the inner family's entries.
+
+const int kJointMax = 8;
+const int kJointMax2 = kJointMax * kJointMax;
+const int kJointMax3 = kJointMax2 * kJointMax;
+
+// whether center_scale() has a center and a scale for `inner`, which folded()'s
+// quadrature needs: a location-scale family on the real line, through fixed()
+bool fold_cs_family(int inner) {
+    while (inner >= kWrapBase) {
+        if (node_of(inner).code != 1) return false;
+        inner = node_of(inner).inner;
+    }
+    switch (inner) {
+    case 0: case 10: case 11: case 12: case 13: case 23: case 24: case 27:
+    case 28: case 29: case 32: case 34: case 35: case 36: case 37: case 38:
+        return true;
+    default: return false;
+    }
+}
+
+int wrap_joint_covered(int id) {
+    const WrapNode& w = node_of(id);
+    if (w.np > kJointMax || id_np(w.inner) > kJointMax) return 0;
+    const int ci = std::max(d7_joint_covered(w.inner), 0);
+    switch (w.code) {
+    case 1: case 2: case 3: case 4: case 6: return ci;
+    case 5: return ci < 2 ? 0 : (fold_cs_family(w.inner) ? 4 : 2);
+    case 7: case 8: return ci < 2 ? 0 : 4;
+    default: return 0;
+    }
+}
+
+// fixed(): the positions of the free parameters in the inner vector, and
+// their number
+int fixed_free(int inner, int mask, int* at) {
+    const int P = id_np(inner);
+    int n = 0;
+    for (int j = 0; j < P; ++j)
+        if (!((mask >> j) & 1)) at[n++] = j;
+    return n;
+}
+
+// the zero wrappers: the parent's score and Hessian at zero
+void zero_parts0(int inner, const double* full, double* s0, double* H0) {
+    d7_joint_grad(inner, 0.0, full, s0);
+    d7_joint_hess(inner, 0.0, full, H0);
+}
+
+// folded(): the folded gradient and, where h is not null, Hessian at y, from
+// the parent's joint entries at y and -y; a preimage whose weight is zero
+// contributes zero, as in fold_ratio(). Returns the weights.
+d7::FoldW fold_joint_gh(int inner, double y, const double* th, int P,
+                        double* g, double* h) {
+    const d7::FoldW W = d7::fold_w(d7_logpdf(inner, y, th),
+                                   d7_logpdf(inner, -y, th));
+    const double w = W.w, wm = 1 - w;
+    double gp[kJointMax], gm[kJointMax];
+    d7_joint_grad(inner, y, th, gp);
+    d7_joint_grad(inner, -y, th, gm);
+    for (int a = 0; a < P; ++a)
+        g[a] = (w == 0 ? 0.0 : w * gp[a]) + (wm == 0 ? 0.0 : wm * gm[a]);
+    if (h == nullptr) return W;
+    double hp[kJointMax2], hm[kJointMax2];
+    d7_joint_hess(inner, y, th, hp);
+    d7_joint_hess(inner, -y, th, hm);
+    for (int b = 0; b < P; ++b) {
+        for (int a = 0; a < P; ++a) {
+            const double rp = (w == 0) ? 0.0 : w * (hp[a + P * b] + gp[a] * gp[b]);
+            const double rm = (wm == 0) ? 0.0 : wm * (hm[a + P * b] + gm[a] * gm[b]);
+            h[a + P * b] = (rp + rm) - g[a] * g[b];
+        }
+    }
+    return W;
+}
+
+// folded(): the expected Hessian (into e, d null) or its derivative (into d),
+// as fold_info_dinfo() takes the (k, k) ones: -E[l_a l_b] and
+// -E[l_ac l_b + l_a l_bc + l_a l_b l_c] by fold_rule(), with the boundary
+// term of a kink at the center added to the derivative in the center
+void fold_joint_info(int inner, const double* th, int P, double* e, double* d) {
+    const int PP = P * P, PPP = PP * P;
+    double c, s;
+    if (!center_scale(inner, th, &c, &s)) {
+        if (d == nullptr) for (int j = 0; j < PP; ++j) e[j] = R_NaN;
+        else for (int j = 0; j < PPP; ++j) d[j] = R_NaN;
+        return;
+    }
+    std::vector<double> ys, ws;
+    fold_rule(c, s, ys, ws);
+    long double S[kJointMax2], D[kJointMax3];
+    for (int j = 0; j < PP; ++j) S[j] = 0.0L;
+    if (d != nullptr) for (int j = 0; j < PPP; ++j) D[j] = 0.0L;
+    double g[kJointMax], h[kJointMax2];
+    for (std::size_t j = 0; j < ys.size(); ++j) {
+        const double y = ys[j];
+        const d7::FoldW Wt = d7::fold_w(d7_logpdf(inner, y, th),
+                                        d7_logpdf(inner, -y, th));
+        const double fw = Wt.L * ws[j];
+        if (fw == 0.0) continue;
+        fold_joint_gh(inner, y, th, P, g, d == nullptr ? nullptr : h);
+        if (d == nullptr) {
+            for (int b = 0; b < P; ++b)
+                for (int a = 0; a < P; ++a) S[a + P * b] += (g[a] * g[b]) * fw;
+            continue;
+        }
+        for (int k = 0; k < P; ++k)
+            for (int b = 0; b < P; ++b)
+                for (int a = 0; a < P; ++a)
+                    D[a + P * b + PP * k] += (h[a + P * k] * g[b] + g[a] * h[b + P * k] +
+                                              g[a] * g[b] * g[k]) * fw;
+    }
+    if (d == nullptr) {
+        for (int j = 0; j < PP; ++j) {
+            const double r = (double) S[j];
+            e[j] = R_FINITE(r) ? -r : NA_REAL;
+        }
+        return;
+    }
+    // the parameter at a kink of the parent's center (laplace, laplace2,
+    // enet), whose folded score jumps at y* = |c|: d_c E[l_a l_b] carries
+    // L(y*) [G(y*-) - G(y*+)] sign(c), G = l_a l_b, the one-sided scores
+    // read four units in the last place either side of y*
+    int kp = -1;
+    for (int k = 0; k < P && kp < 0; ++k)
+        if (kink_center(inner, k)) kp = k;
+    double lo[kJointMax], hi[kJointMax], L0 = 0.0;
+    const bool kink = kp >= 0 && c != 0;
+    if (kink) {
+        const double a0 = std::fabs(c);
+        L0 = d7::fold_w(d7_logpdf(inner, a0, th), d7_logpdf(inner, -a0, th)).L;
+        fold_joint_gh(inner, a0 * (1 + (-4) * DBL_EPSILON), th, P, lo, nullptr);
+        fold_joint_gh(inner, a0 * (1 + 4 * DBL_EPSILON), th, P, hi, nullptr);
+    }
+    for (int k = 0; k < P; ++k) {
+        for (int b = 0; b < P; ++b) {
+            for (int a = 0; a < P; ++a) {
+                double r = (double) D[a + P * b + PP * k];
+                if (kink && k == kp)
+                    r = r + L0 * (lo[a] * lo[b] - hi[a] * hi[b]) * (c > 0 ? 1.0 : -1.0);
+                d[a + P * b + PP * k] = R_FINITE(r) ? -r : NA_REAL;
+            }
+        }
+    }
+}
+
+// truncated(): the retained mass Z and its derivatives Z_a and Z_ab, and the
+// information's sums S_ab = sum f s_a s_b and
+// D_abc = sum f (s_a s_b s_c + l_ac s_b + s_a l_bc), over every parameter
+struct TruncJ {
+    double z, zi[kJointMax], zij[kJointMax2], s[kJointMax2], d[kJointMax3];
+};
+
+// a discrete parent: trunc_disc_sums() over every parameter, to the level
+// asked (1 the mass and its first derivatives, 2 the second, 3 S, 4 D); the
+// levels of the information run over the points that trunc_disc_rule() gives
+// the information
+bool trunc_disc_joint(int inner, const double* th, int level, TruncJ& t) {
+    const int P = id_np(inner), PP = P * P;
+    const double* tp = trunc_points(inner, th);
+    const TruncRule r = trunc_disc_rule(inner, th, tp[0], tp[1], level >= 3);
+    if (ISNAN(r.y1)) return false;
+    long double F = 0.0L, G[kJointMax], H[kJointMax2], S[kJointMax2], D[kJointMax3];
+    for (int a = 0; a < P; ++a) G[a] = 0.0L;
+    for (int j = 0; j < PP; ++j) H[j] = S[j] = 0.0L;
+    for (int j = 0; j < PP * P; ++j) D[j] = 0.0L;
+    double g[kJointMax], h[kJointMax2];
+    for (double x = r.y0; x <= r.y1; ++x) {
+        const double f = std::exp(d7_logpdf(inner, x, th));
+        d7_joint_grad(inner, x, th, g);
+        if (level >= 2) d7_joint_hess(inner, x, th, h);
+        F += f;
+        for (int a = 0; a < P; ++a) G[a] += f * g[a];
+        if (level >= 2)
+            for (int b = 0; b < P; ++b)
+                for (int a = 0; a < P; ++a)
+                    H[a + P * b] += f * (h[a + P * b] + g[a] * g[b]);
+        if (level >= 3)
+            for (int b = 0; b < P; ++b)
+                for (int a = 0; a < P; ++a) S[a + P * b] += f * (g[a] * g[b]);
+        if (level >= 4)
+            for (int c = 0; c < P; ++c)
+                for (int b = 0; b < P; ++b)
+                    for (int a = 0; a < P; ++a)
+                        D[a + P * b + PP * c] += f * (g[a] * g[b] * g[c] +
+                                                      h[a + P * c] * g[b] +
+                                                      g[a] * h[b + P * c]);
+    }
+    const double sg = (r.branch == 1) ? -1.0 : 1.0;
+    t.z = (r.branch == 1) ? 1 - (double) F : (double) F;
+    for (int a = 0; a < P; ++a) t.zi[a] = sg * (double) G[a];
+    for (int j = 0; j < PP; ++j) {
+        t.zij[j] = sg * (double) H[j];
+        t.s[j] = (double) S[j];
+    }
+    for (int j = 0; j < PP * P; ++j) t.d[j] = (double) D[j];
+    return true;
+}
+
+// a continuous parent: the mass and its derivatives from trunc_cont_ends() at
+// the level asked (as for trunc_disc_joint()), and S and D by the rule of
+// trunc_cont_nodes(), a beta reading log y and log(1 - y)
+bool trunc_cont_joint(int inner, const double* th, int level, TruncJ& t) {
+    const int P = id_np(inner), PP = P * P;
+    const double* tp = trunc_points(inner, th);
+    const TruncEnds e = trunc_cont_ends(inner, th, tp[0], tp[1], std::min(level, 2));
+    if (!e.ok) return false;
+    t.z = e.z;
+    for (int a = 0; a < P; ++a) t.zi[a] = e.g[a];
+    if (level >= 2)
+        for (int b = 0; b < P; ++b)
+            for (int a = 0; a < P; ++a) t.zij[a + P * b] = e.h[hess_pos(P, a, b)];
+    if (level < 3) return true;
+    const bool logs = logs_family(inner);
+    std::vector<double> ys, ws, lys, l1ys;
+    trunc_cont_nodes(inner, th, tp[0], tp[1], ys, ws, logs ? &lys : nullptr,
+                     logs ? &l1ys : nullptr);
+    if (ys.empty()) return false;
+    long double S[kJointMax2], D[kJointMax3];
+    for (int j = 0; j < PP; ++j) S[j] = 0.0L;
+    for (int j = 0; j < PP * P; ++j) D[j] = 0.0L;
+    double g[kJointMax], h[kJointMax2];
+    for (std::size_t j = 0; j < ys.size(); ++j) {
+        double lf;
+        if (logs) {
+            double gg[2], hh[3];
+            lf = beta_logs_parts(inner, lys[j], l1ys[j], th, gg, hh);
+            for (int a = 0; a < P; ++a) g[a] = gg[a];
+            for (int b = 0; b < P; ++b)
+                for (int a = 0; a < P; ++a) h[a + P * b] = hh[hess_pos(P, a, b)];
+        } else {
+            lf = d7_logpdf(inner, ys[j], th);
+        }
+        const double fw = std::exp(lf) * ws[j];
+        if (fw == 0.0) continue;
+        if (!logs) {
+            d7_joint_grad(inner, ys[j], th, g);
+            if (level >= 4) d7_joint_hess(inner, ys[j], th, h);
+        }
+        for (int b = 0; b < P; ++b)
+            for (int a = 0; a < P; ++a) S[a + P * b] += fw * (g[a] * g[b]);
+        if (level >= 4)
+            for (int c = 0; c < P; ++c)
+                for (int b = 0; b < P; ++b)
+                    for (int a = 0; a < P; ++a)
+                        D[a + P * b + PP * c] += fw * (g[a] * g[b] * g[c] +
+                                                       h[a + P * c] * g[b] +
+                                                       g[a] * h[b + P * c]);
+    }
+    for (int j = 0; j < PP; ++j) t.s[j] = (double) S[j];
+    for (int j = 0; j < PP * P; ++j) t.d[j] = (double) D[j];
+    return true;
+}
+
+bool trunc_joint(int code, int inner, const double* th, int level, TruncJ& t) {
+    return (code == 7) ? trunc_disc_joint(inner, th, level, t)
+                       : trunc_cont_joint(inner, th, level, t);
+}
+
+void wrap_joint_grad(int id, double y, const double* th, double* out) {
+    const WrapNode& w = node_of(id);
+    const int inner = w.inner, Pi = id_np(inner);
+    double full[kMaxVec], g[kJointMax];
+    switch (w.code) {
+    case 1: {
+        int at[kJointMax];
+        fixed_inner(inner, w.aux, 0, th, full);
+        const int n = fixed_free(inner, w.aux, at);
+        d7_joint_grad(inner, y, full, g);
+        for (int a = 0; a < n; ++a) out[a] = g[at[a]];
+        return;
+    }
+    case 2: {
+        const double z = zero_inner(inner, th, full);
+        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+        d7_joint_grad(inner, y, full, g);
+        for (int a = 0; a < Pi; ++a) out[a] = d7::zi_score_parent(y, z, f0, g[a]);
+        out[Pi] = d7::zi_score_zi(y, z, f0);
+        return;
+    }
+    case 3: case 4: {
+        const double z = zero_inner(inner, th, full);
+        if (y == 0) {
+            for (int a = 0; a < Pi; ++a) out[a] = 0.0;
+        } else {
+            d7_joint_grad(inner, y, full, g);
+            if (w.code == 3) {
+                double s0[kJointMax];
+                const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+                d7_joint_grad(inner, 0.0, full, s0);
+                for (int a = 0; a < Pi; ++a)
+                    out[a] = d7::zad_score_parent(y, f0, s0[a], g[a]);
+            } else {
+                for (int a = 0; a < Pi; ++a) out[a] = g[a];
+            }
+        }
+        out[Pi] = d7::za_score_za(y, z);
+        return;
+    }
+    case 5: {
+        fold_joint_gh(inner, y, th, Pi, out, nullptr);
+        return;
+    }
+    case 6: {
+        d7_joint_grad(inner, d7::transform_inv(w.aux, y, transform_par(inner, th)),
+                      th, out);
+        return;
+    }
+    case 7: case 8: {
+        TruncJ t;
+        if (!trunc_joint(w.code, inner, th, 1, t)) {
+            for (int a = 0; a < Pi; ++a) out[a] = R_NaN;
+            return;
+        }
+        d7_joint_grad(inner, y, th, g);
+        for (int a = 0; a < Pi; ++a) out[a] = g[a] - t.zi[a] / t.z;
+        return;
+    }
+    }
+}
+
+void wrap_joint_hess(int id, double y, const double* th, double* out) {
+    const WrapNode& w = node_of(id);
+    const int inner = w.inner, Pi = id_np(inner);
+    double full[kMaxVec], h[kJointMax2];
+    switch (w.code) {
+    case 1: {
+        int at[kJointMax];
+        fixed_inner(inner, w.aux, 0, th, full);
+        const int n = fixed_free(inner, w.aux, at);
+        d7_joint_hess(inner, y, full, h);
+        for (int b = 0; b < n; ++b)
+            for (int a = 0; a < n; ++a) out[a + n * b] = h[at[a] + Pi * at[b]];
+        return;
+    }
+    case 2: {
+        const int P = Pi + 1;
+        const double z = zero_inner(inner, th, full);
+        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+        d7_joint_hess(inner, y, full, h);
+        if (y != 0) {
+            for (int b = 0; b < Pi; ++b) {
+                for (int a = 0; a < Pi; ++a) out[a + P * b] = h[a + Pi * b];
+                out[b + P * Pi] = out[Pi + P * b] = 0.0;
+            }
+        } else {
+            double s0[kJointMax];
+            d7_joint_grad(inner, 0.0, full, s0);
+            for (int b = 0; b < Pi; ++b) {
+                for (int a = 0; a < Pi; ++a)
+                    out[a + P * b] = d7::zi_hess_pair0(z, f0, s0[a], s0[b],
+                                                       h[a + Pi * b]);
+                out[b + P * Pi] = out[Pi + P * b] = d7::zi_hess_cross0(z, f0, s0[b]);
+            }
+        }
+        out[Pi + P * Pi] = d7::zi_curv_zi(y, z, f0);
+        return;
+    }
+    case 3: case 4: {
+        const int P = Pi + 1;
+        const double z = zero_inner(inner, th, full);
+        for (int j = 0; j < P * P; ++j) out[j] = 0.0;
+        if (y != 0) {
+            d7_joint_hess(inner, y, full, h);
+            if (w.code == 3) {
+                double s0[kJointMax], H0[kJointMax2];
+                const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+                zero_parts0(inner, full, s0, H0);
+                for (int b = 0; b < Pi; ++b)
+                    for (int a = 0; a < Pi; ++a)
+                        out[a + P * b] = h[a + Pi * b] +
+                            d7::zad_hess_correction_pair(f0, s0[a], s0[b], H0[a + Pi * b]);
+            } else {
+                for (int b = 0; b < Pi; ++b)
+                    for (int a = 0; a < Pi; ++a) out[a + P * b] = h[a + Pi * b];
+            }
+        }
+        out[Pi + P * Pi] = d7::za_curv_za(y, z);
+        return;
+    }
+    case 5: {
+        double g[kJointMax];
+        fold_joint_gh(inner, y, th, Pi, g, out);
+        return;
+    }
+    case 6: {
+        d7_joint_hess(inner, d7::transform_inv(w.aux, y, transform_par(inner, th)),
+                      th, out);
+        return;
+    }
+    case 7: case 8: {
+        TruncJ t;
+        if (!trunc_joint(w.code, inner, th, 2, t)) {
+            for (int j = 0; j < Pi * Pi; ++j) out[j] = R_NaN;
+            return;
+        }
+        d7_joint_hess(inner, y, th, h);
+        for (int b = 0; b < Pi; ++b) {
+            for (int a = 0; a < Pi; ++a) {
+                const double ma = t.zi[a] / t.z, mb = t.zi[b] / t.z;
+                out[a + Pi * b] = h[a + Pi * b] - t.zij[a + Pi * b] / t.z + ma * mb;
+            }
+        }
+        return;
+    }
+    }
+}
+
+void wrap_joint_info(int id, double y, const double* th, double* out) {
+    const WrapNode& w = node_of(id);
+    const int inner = w.inner, Pi = id_np(inner);
+    double full[kMaxVec], e[kJointMax2];
+    switch (w.code) {
+    case 1: {
+        int at[kJointMax];
+        fixed_inner(inner, w.aux, 0, th, full);
+        const int n = fixed_free(inner, w.aux, at);
+        d7_joint_info(inner, y, full, e);
+        for (int b = 0; b < n; ++b)
+            for (int a = 0; a < n; ++a) out[a + n * b] = e[at[a] + Pi * at[b]];
+        return;
+    }
+    case 2: case 3: case 4: {
+        const int P = Pi + 1;
+        const double z = zero_inner(inner, th, full);
+        d7_joint_info(inner, y, full, e);
+        if (w.code == 4) {
+            for (int b = 0; b < Pi; ++b) {
+                for (int a = 0; a < Pi; ++a)
+                    out[a + P * b] = d7::zac_info_parent(z, e[a + Pi * b]);
+                out[b + P * Pi] = out[Pi + P * b] = 0.0;
+            }
+            out[Pi + P * Pi] = d7::za_info_za(z);
+            return;
+        }
+        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+        double s0[kJointMax], H0[kJointMax2];
+        zero_parts0(inner, full, s0, H0);
+        for (int b = 0; b < Pi; ++b) {
+            for (int a = 0; a < Pi; ++a) {
+                out[a + P * b] = (w.code == 2)
+                    ? d7::zi_info_pair(z, f0, s0[a], s0[b], H0[a + Pi * b], e[a + Pi * b])
+                    : d7::zad_info_pair(z, f0, s0[a], s0[b], H0[a + Pi * b], e[a + Pi * b]);
+            }
+            out[b + P * Pi] = out[Pi + P * b] =
+                (w.code == 2) ? d7::zi_info_cross(z, f0, s0[b]) : 0.0;
+        }
+        out[Pi + P * Pi] = (w.code == 2) ? d7::zi_info_zi(z, f0) : d7::za_info_za(z);
+        return;
+    }
+    case 5: {
+        fold_joint_info(inner, th, Pi, out, nullptr);
+        return;
+    }
+    case 6: {
+        d7_joint_info(inner, d7::transform_inv(w.aux, y, transform_par(inner, th)),
+                      th, out);
+        return;
+    }
+    case 7: case 8: {
+        TruncJ t;
+        if (!trunc_joint(w.code, inner, th, 3, t)) {
+            for (int j = 0; j < Pi * Pi; ++j) out[j] = R_NaN;
+            return;
+        }
+        for (int b = 0; b < Pi; ++b) {
+            for (int a = 0; a < Pi; ++a) {
+                const double ma = t.zi[a] / t.z, mb = t.zi[b] / t.z;
+                out[a + Pi * b] = -(t.s[a + Pi * b] / t.z - ma * mb);
+            }
+        }
+        return;
+    }
+    }
+}
+
+void wrap_joint_dinfo(int id, double y, const double* th, double* out) {
+    const WrapNode& w = node_of(id);
+    const int inner = w.inner, Pi = id_np(inner);
+    double full[kMaxVec], d[kJointMax3];
+    switch (w.code) {
+    case 1: {
+        int at[kJointMax];
+        fixed_inner(inner, w.aux, 0, th, full);
+        const int n = fixed_free(inner, w.aux, at);
+        d7_joint_dinfo(inner, y, full, d);
+        for (int c = 0; c < n; ++c)
+            for (int b = 0; b < n; ++b)
+                for (int a = 0; a < n; ++a)
+                    out[a + n * b + n * n * c] =
+                        d[at[a] + Pi * at[b] + Pi * Pi * at[c]];
+        return;
+    }
+    case 2: case 3: case 4: {
+        const int P = Pi + 1, m = Pi;
+        const double z = zero_inner(inner, th, full);
+        double e[kJointMax2], s0[kJointMax], H0[kJointMax2];
+        d7_joint_info(inner, y, full, e);
+        d7_joint_dinfo(inner, y, full, d);
+        const double f0 = (w.code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
+        if (w.code != 4) zero_parts0(inner, full, s0, H0);
+        for (int c = 0; c < P; ++c) {
+            for (int b = 0; b < P; ++b) {
+                for (int a = 0; a < P; ++a) {
+                    const int i = std::min(a, b), j = std::max(a, b);
+                    double v;
+                    if (w.code == 2) {
+                        if (j < m) {
+                            v = (c < m)
+                                ? d7::zi_dinfo_ppp(z, f0, s0[i], s0[j], s0[c],
+                                                   H0[i + Pi * c], H0[j + Pi * c],
+                                                   d[i + Pi * j + Pi * Pi * c])
+                                : d7::zi_dinfo_ppz(z, f0, s0[i], s0[j], e[i + Pi * j]);
+                        } else if (i < m) {
+                            v = (c < m) ? d7::zi_dinfo_pzp(z, f0, s0[i], s0[c], H0[i + Pi * c])
+                                        : d7::zi_dinfo_pzz(z, f0, s0[i]);
+                        } else {
+                            v = (c < m) ? d7::zi_dinfo_zzp(z, f0, s0[c])
+                                        : d7::zi_dinfo_zi(z, f0);
+                        }
+                    } else if (j < m) {
+                        if (c < m) {
+                            v = (w.code == 3)
+                                ? d7::zad_dinfo_ppp(z, f0, s0[i], s0[j], s0[c],
+                                                    H0[i + Pi * c], H0[j + Pi * c],
+                                                    e[i + Pi * j],
+                                                    d[i + Pi * j + Pi * Pi * c])
+                                : d7::zac_dinfo_parent(z, d[i + Pi * j + Pi * Pi * c]);
+                        } else {
+                            v = (w.code == 3) ? d7::zad_dinfo_ppz(f0, s0[i], s0[j], e[i + Pi * j])
+                                              : -e[i + Pi * j];
+                        }
+                    } else if (i < m || c < m) {
+                        v = 0.0;
+                    } else {
+                        v = d7::za_dinfo_za(z);
+                    }
+                    out[a + P * b + P * P * c] = v;
+                }
+            }
+        }
+        return;
+    }
+    case 5: {
+        fold_joint_info(inner, th, Pi, nullptr, out);
+        return;
+    }
+    case 6: {
+        d7_joint_dinfo(inner, d7::transform_inv(w.aux, y, transform_par(inner, th)),
+                       th, out);
+        return;
+    }
+    case 7: case 8: {
+        const int PP = Pi * Pi;
+        TruncJ t;
+        if (!trunc_joint(w.code, inner, th, 4, t)) {
+            for (int j = 0; j < PP * Pi; ++j) out[j] = R_NaN;
+            return;
+        }
+        // d_c of -(S_ab / Z - m_a m_b), with d_c m_a = M_ac - m_a m_c
+        double mm[kJointMax], dm[kJointMax2];
+        for (int a = 0; a < Pi; ++a) mm[a] = t.zi[a] / t.z;
+        for (int c = 0; c < Pi; ++c)
+            for (int a = 0; a < Pi; ++a)
+                dm[a + Pi * c] = t.zij[a + Pi * c] / t.z - mm[a] * mm[c];
+        for (int c = 0; c < Pi; ++c) {
+            for (int b = 0; b < Pi; ++b) {
+                for (int a = 0; a < Pi; ++a) {
+                    out[a + Pi * b + PP * c] =
+                        -(t.d[a + Pi * b + PP * c] / t.z -
+                          t.s[a + Pi * b] * t.zi[c] / (t.z * t.z) -
+                          (dm[a + Pi * c] * mm[b] + mm[a] * dm[b + Pi * c]));
+                }
+            }
+        }
+        return;
+    }
+    }
+}
+
 }  // namespace
 
 extern "C" {
@@ -2096,14 +2691,16 @@ double d7_logpdf(int id, double y, const double* th) {
 // derivative of the expected information a P x P x P array, column-major,
 // out[a + P b + P^2 c] being the derivative of E[l_ab] in parameter c, all on
 // the parameter scale. A family is covered once its components are written
-// out in its header. d7_joint_covered() answers how many of the four entries
-// the family has, in order: 4 where all four are exact, 2 where only the
-// gradient and the Hessian are (the expected information being approximated
-// for that family, which serves an unscaled filter only), 0 for the other
-// families and for the wrappers, and -1 for an unknown id. An entry beyond
-// the family's coverage fills `out` with NaN.
+// out in its header, and a family with one parameter through its scalar
+// entries. d7_joint_covered() answers how many of the four entries the family
+// has, in order: 4 where all four are exact, 2 where only the gradient and
+// the Hessian are (the expected information being approximated for that
+// family, which serves an unscaled filter only), 0 for the other families,
+// and -1 for an unknown id. A wrapper answers its inner family's coverage
+// where its composition is written (wrap_joint_covered()) and 0 elsewhere.
+// An entry beyond the family's coverage fills `out` with NaN.
 int d7_joint_covered(int id) {
-    if (id >= kWrapBase) return node_valid(id) ? 0 : -1;
+    if (id >= kWrapBase) return node_valid(id) ? wrap_joint_covered(id) : -1;
     if (id < 0 || id >= d7_n_scalar_classes) return -1;
     switch (id) {
     case 0: case 1: case 3: case 4: case 10: case 11: case 12: case 13:
@@ -2113,7 +2710,7 @@ int d7_joint_covered(int id) {
         return 4;
     case 34: case 35: case 36: case 37: case 38:
         return 2;
-    default: return 0;
+    default: return d7_n_params[id] == 1 ? 4 : 0;
     }
 }
 
@@ -2127,7 +2724,41 @@ static int joint_np(int id) {
     return d7_joint_covered(id) > 0 ? id_np(id) : 0;
 }
 
+// a family with one parameter, whose joint entries are its scalar ones
+static bool joint_scalar(int id) {
+    return id >= 0 && id < d7_n_scalar_classes && d7_n_params[id] == 1;
+}
+
+// the wrappers and the families with one parameter, ahead of the switch on
+// the family: order 0 to 3 for the gradient, the Hessian, the expected
+// Hessian and its derivative; true when `out` is written
+static bool joint_route(int id, int order, double y, const double* th,
+                        double* out) {
+    if (id >= kWrapBase) {
+        const int P = joint_np(id);
+        if (d7_joint_covered(id) < (order <= 1 ? 2 : 4)) {
+            fill_nan(out, order == 0 ? P : order == 3 ? P * P * P : P * P);
+        } else if (order == 0) {
+            wrap_joint_grad(id, y, th, out);
+        } else if (order == 1) {
+            wrap_joint_hess(id, y, th, out);
+        } else if (order == 2) {
+            wrap_joint_info(id, y, th, out);
+        } else {
+            wrap_joint_dinfo(id, y, th, out);
+        }
+        return true;
+    }
+    if (!joint_scalar(id)) return false;
+    double o[2];
+    if (order <= 1) d7_score_curv(id, 0, y, th, o);
+    else d7_info_dinfo(id, 0, y, th, o);
+    out[0] = o[order % 2];
+    return true;
+}
+
 void d7_joint_grad(int id, double y, const double* th, double* out) {
+    if (joint_route(id, 0, y, th, out)) return;
     switch (d7_joint_covered(id) >= 2 ? id : -1) {
     case 0: d7::gaussian1_joint_grad(y, th, out); break;
     case 1: d7::gamma1_joint_grad(y, th, out); break;
@@ -2171,6 +2802,7 @@ void d7_joint_grad(int id, double y, const double* th, double* out) {
 }
 
 void d7_joint_hess(int id, double y, const double* th, double* out) {
+    if (joint_route(id, 1, y, th, out)) return;
     switch (d7_joint_covered(id) >= 2 ? id : -1) {
     case 0: d7::gaussian1_joint_hess(y, th, out); break;
     case 1: d7::gamma1_joint_hess(y, th, out); break;
@@ -2214,6 +2846,7 @@ void d7_joint_hess(int id, double y, const double* th, double* out) {
 }
 
 void d7_joint_info(int id, double y, const double* th, double* out) {
+    if (joint_route(id, 2, y, th, out)) return;
     switch (d7_joint_covered(id) >= 4 ? id : -1) {
     case 0: d7::gaussian1_joint_info(y, th, out); break;
     case 1: d7::gamma1_joint_info(y, th, out); break;
@@ -2252,6 +2885,7 @@ void d7_joint_info(int id, double y, const double* th, double* out) {
 }
 
 void d7_joint_dinfo(int id, double y, const double* th, double* out) {
+    if (joint_route(id, 3, y, th, out)) return;
     const int P = joint_np(id);
     switch (d7_joint_covered(id) >= 4 ? id : -1) {
     case 0: d7::gaussian1_joint_dinfo(y, th, out); break;

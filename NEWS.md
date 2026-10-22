@@ -1,3 +1,25 @@
+# distributions7 0.83.0
+
+* The joint entries of the C registry cover the wrappers. A wrapper's entries
+  are composed from its inner family's joint entries, through nested
+  wrappers: `fixed()` takes the free parameters' rows and columns,
+  `transformation()` reads the inner entries at the inverse of the
+  transform, `zero_inflated()` and `zero_adjusted()` are written in the
+  parent's entries at the observation and at zero, `truncated()` sums or
+  integrates the parent's gradient and Hessian over the retained support,
+  and `folded()` integrates the folded ones by the rule of its expected
+  information. A wrapper is covered as far as its inner family is; the
+  expected information of a truncated family is covered for any inner family
+  with a gradient and a Hessian, and that of a folded family where the parent
+  is a location-scale family on the real line.
+* The families with one parameter (Poisson, Bernoulli, binomial, exponential,
+  geometric, chi-squared) are covered by the joint entries through their
+  scalar ones.
+* The scalar entries of `folded()` form the weight of the positive preimage
+  and the folded density from the two log-densities, as the R methods do;
+  where both densities underflowed the weight was one half, and the score
+  and the Hessian far in the tail differed from the R methods.
+
 # distributions7 0.82.0
 
 * The joint entries of the C registry cover every family with more than one
