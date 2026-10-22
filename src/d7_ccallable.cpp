@@ -1937,8 +1937,9 @@ void zero_parts0(int inner, const double* full, double* s0, double* H0) {
 }
 
 // folded(): the folded gradient and, where h is not null, Hessian at y, from
-// the parent's joint entries at y and -y; a preimage whose weight is zero
-// contributes zero, as in fold_ratio(). Returns the weights.
+// the parent's joint entries at y and -y, the Hessian in the form of
+// fold_curv(); a preimage whose weight is zero contributes zero, as in
+// fold_ratio(). Returns the weights.
 d7::FoldW fold_joint_gh(int inner, double y, const double* th, int P,
                         double* g, double* h) {
     const d7::FoldW W = d7::fold_w(d7_logpdf(inner, y, th),
@@ -1955,9 +1956,11 @@ d7::FoldW fold_joint_gh(int inner, double y, const double* th, int P,
     d7_joint_hess(inner, -y, th, hm);
     for (int b = 0; b < P; ++b) {
         for (int a = 0; a < P; ++a) {
-            const double rp = (w == 0) ? 0.0 : w * (hp[a + P * b] + gp[a] * gp[b]);
-            const double rm = (wm == 0) ? 0.0 : wm * (hm[a + P * b] + gm[a] * gm[b]);
-            h[a + P * b] = (rp + rm) - g[a] * g[b];
+            const double rp = (w == 0) ? 0.0 : w * hp[a + P * b];
+            const double rm = (wm == 0) ? 0.0 : wm * hm[a + P * b];
+            const double c = (w == 0 || wm == 0) ? 0.0
+                : w * wm * (gp[a] - gm[a]) * (gp[b] - gm[b]);
+            h[a + P * b] = rp + rm + c;
         }
     }
     return W;

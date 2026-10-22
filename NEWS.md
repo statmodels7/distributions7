@@ -1,3 +1,13 @@
+# distributions7 0.83.1
+
+* The second derivative of a `folded()` family in the C registry, scalar and
+  joint, is formed as w h(y) + (1 - w) h(-y) + w (1 - w) (g(y) - g(-y))^2, the
+  same quantity as the difference of the block ratios without its
+  cancellation: far in the tail the two terms of the difference are of order
+  y^4 and their rounding exceeded the value. The tests of the joint entries
+  read the folded families away from y = 1e40, where the R methods form the
+  difference and differ between platforms by more than the value.
+
 # distributions7 0.83.0
 
 * The joint entries of the C registry cover the wrappers. A wrapper's entries

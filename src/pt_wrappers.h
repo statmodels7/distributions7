@@ -235,7 +235,11 @@ inline double zac_logpdf(double y, double z, double lf) {
 // that neither depends on the densities being representable; where both
 // are zero the weight is one half and L is zero. The score w gp + (1 - w) gm and
 // the second derivative R2 - R1^2 of log_deriv() over the block ratios
-// R1 = w gp + (1 - w) gm, R2 = w (hp + gp^2) + (1 - w)(hm + gm^2).
+// R1 = w gp + (1 - w) gm, R2 = w (hp + gp^2) + (1 - w)(hm + gm^2), written
+// as w hp + (1 - w) hm + w (1 - w) (gp - gm)^2, which is the same quantity
+// without the cancellation of R2 against R1^2 far in the tail (at y = 1e40
+// both are of order 1e160 and the difference of order 1e80); a preimage
+// whose weight is zero contributes zero.
 
 struct FoldW { double fp, fm, L, logL, w; };
 
@@ -260,9 +264,12 @@ inline double fold_score(double w, double gp, double gm) {
     return w * gp + (1 - w) * gm;
 }
 inline double fold_curv(double w, double gp, double gm, double hp, double hm) {
-    double r1 = w * gp + (1 - w) * gm;
-    double r2 = w * (hp + gp * gp) + (1 - w) * (hm + gm * gm);
-    return r2 - r1 * r1;
+    const double wm = 1 - w;
+    const double a = (w == 0) ? 0.0 : w * hp;
+    const double b = (wm == 0) ? 0.0 : wm * hm;
+    const double dg = gp - gm;
+    const double c = (w == 0 || wm == 0) ? 0.0 : w * wm * dg * dg;
+    return a + b + c;
 }
 inline double fold_logpdf(double y, const FoldW& W) {
     if (y < 0) return R_NegInf;

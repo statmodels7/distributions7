@@ -63,7 +63,7 @@ test_that("the covered classes are the ones listed here", {
 })
 
 joint_twin <- function(cls, seed, eta_range = c(-1.5, 1.5), d = NULL,
-                       full = !cls %in% joint_grad_hess_only) {
+                       full = !cls %in% joint_grad_hess_only, far = TRUE) {
   if (is.null(d)) d <- joint_families[[cls]]()
   route <- distrib_scalar_route(d)
   P <- length(d@params)
@@ -78,12 +78,12 @@ joint_twin <- function(cls, seed, eta_range = c(-1.5, 1.5), d = NULL,
   lo <- d@bounds[1]
   hi <- d@bounds[2]
   discrete <- S7::S7_inherits(d, discrete_distrib)
-  far <- c(if (is.finite(hi)) hi * (1 - 1e-12) else if (discrete) 1e6 else 1e40,
+  far_y <- c(if (is.finite(hi)) hi * (1 - 1e-12) else if (discrete) 1e6 else 1e40,
            if (is.finite(lo)) lo + max(abs(lo), 1) * 1e-12 else -1e40)
   # a count of 1e12 or more is beyond the Poisson-inverse Gaussian's kernels
   # (they allocate one term per count), so the far count is 1e6
-  if (discrete) far <- round(far)
-  y[1:2] <- far
+  if (discrete) far_y <- round(far_y)
+  if (far) y[1:2] <- far_y
   consts <- lapply(route$constants, rep, length.out = n)
   pr <- d7_joint_probe(route$name, y, do.call(cbind, c(th, consts)))
   expect_identical(pr$covered, if (full) 4L else 2L)
@@ -224,8 +224,34 @@ test_that("every joint entry of a wrapper is the generic's component", {
     full <- joint_wrappers[[nm]][[2]]
     rg <- if (length(joint_wrappers[[nm]]) > 2L) joint_wrappers[[nm]][[3]] else
       list(c(-1.5, 1.5), c(-4, 4))
-    joint_twin(nm, 11, rg[[1]], d = d, full = full)
-    joint_twin(nm, 12, rg[[2]], d = d, full = full)
+    # a folded family is not read at y = 1e40: its R Hessian is R2 - R1^2 of
+    # log_deriv(), two terms of order 1e160 whose difference is of order
+    # 1e80, so the R value there is the rounding of the subtraction (it
+    # differs between platforms by 1e144), where the registry has the form
+    # without the cancellation
+    far <- !grepl("^fo_|folded", nm)
+    joint_twin(nm, 11, rg[[1]], d = d, full = full, far = far)
+    joint_twin(nm, 12, rg[[2]], d = d, full = full, far = far)
+  }
+})
+
+test_that("a folded family far in the tail has the parent's Hessian", {
+  # far in the tail of a family whose tails separate (a Gaussian, a skew
+  # normal), with a positive center, the weight of the positive preimage is
+  # exactly one, so the folded score and Hessian are the parent's there
+  for (mk in list(function() gaussian1_distrib(),
+                  function() skewnormal1_distrib())) {
+    par <- mk()
+    th <- list(mu = 0.5, sigma = 1.2, alpha = 2)[par@params]
+    # (at 1e40, y - mu and -y - mu round to the same magnitude and the
+    # weight is one half on any route; at 1e10 the subtraction of R2 - R1^2
+    # would still leave a rounding of order 1e4 against a Hessian of order 1)
+    y <- c(1e10, 1e6, 1e3)
+    M <- matrix(unlist(th), nrow = 3, ncol = length(th), byrow = TRUE)
+    pr <- d7_joint_probe(distrib_scalar_route(folded(par))$name, y, M)
+    pp <- d7_joint_probe(distrib_scalar_route(par)$name, y, M)
+    expect_identical(pr$grad, pp$grad)
+    expect_identical(pr$hess, pp$hess)
   }
 })
 
