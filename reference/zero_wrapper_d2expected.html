@@ -13,7 +13,7 @@ zero_wrapper_dexpected() once more."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,9 +97,9 @@ first derivatives in \(c\) and \(d\) and their second derivative.</p></dd>
 <dd><p>A list of the parent's quantities: functions <code>e0</code>, <code>e1</code>, <code>e2</code>
 of parameter indices returning the expected information and its first and
 second derivatives, the probability <code>z</code>, the index <code>m</code> of the
-probability, the length <code>n</code>, and, for a discrete parent, the mass <code>f</code> and
-functions <code>s</code>, <code>H</code>, <code>T</code> returning the score, Hessian and third
-derivatives at zero.</p></dd>
+probability, the length <code>n</code>, and, for a discrete parent, the mass <code>f</code>,
+the mass away from zero <code>q</code> and functions <code>s</code>, <code>H</code>, <code>T</code> returning the
+score, Hessian and third derivatives at zero.</p></dd>
 
 
 <dt id="arg-i-j-c-d">i, j, c, d<a class="anchor" aria-label="anchor" href="#arg-i-j-c-d"></a></dt>
@@ -134,7 +134,8 @@ ones are \((1-\pi)\) times the parent's.</p>
 <p><code>zw_disc_parts()</code> returns the quantities shared by the discrete entries,
 as functions of parameter indices: \(f s_i s_j\) and \(f s_i\) with
 their first and second derivatives, which vanish in the probability, and
-\(q = 1 - f\) with its derivatives.</p>
+\(q = 1 - f\) with its derivatives, \(q\) being <code>tm$q</code>, computed from
+the log-mass.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

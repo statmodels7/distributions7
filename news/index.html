@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,10 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.83.2" id="distributions7-0832">distributions7 0.83.2<a class="anchor" aria-label="anchor" href="#distributions7-0832"></a></h2>
+<ul><li>The entries of the C registry for a discrete <code><a href="../reference/zero_adjusted.html">zero_adjusted()</a></code> family, scalar and joint, form the parent’s mass away from zero as <code>-expm1(log f(0))</code>, as the R gradient, Hessian and expected information do, where they formed <code>1 - f(0)</code>; so does the derivative of the expected information in R (<code><a href="../reference/zero_wrapper_dexpected.html">za_disc_dexpected_entry()</a></code> and the second derivative). For a Poisson parent with mean 1e-8 the Hessian and the expected information on the link scale were 22 per cent off and are now within 4e-8 of an 80-digit reference.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.83.1" id="distributions7-0831">distributions7 0.83.1<a class="anchor" aria-label="anchor" href="#distributions7-0831"></a></h2>
 <ul><li>The second derivative of a <code><a href="../reference/folded.html">folded()</a></code> family in the C registry, scalar and joint, is formed as w h(y) + (1 - w) h(-y) + w (1 - w) (g(y) - g(-y))^2, the same quantity as the difference of the block ratios without its cancellation: far in the tail the two terms of the difference are of order y^4 and their rounding exceeded the value. The tests of the joint entries read the folded families away from y = 1e40, where the R methods form the difference and differ between platforms by more than the value.</li>

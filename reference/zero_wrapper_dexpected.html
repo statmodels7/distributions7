@@ -17,7 +17,7 @@ central difference for the others."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.83.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@ central difference for the others.</p>
 <span></span>
 <span><span class="fu">zi_dexpected_entry</span><span class="op">(</span><span class="va">i</span>, <span class="va">j</span>, <span class="va">c</span>, <span class="va">p</span>, <span class="va">zi</span>, <span class="va">f0</span>, <span class="va">s</span>, <span class="va">H</span>, <span class="va">Ep</span>, <span class="va">Dp</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">za_disc_dexpected_entry</span><span class="op">(</span><span class="va">i</span>, <span class="va">j</span>, <span class="va">c</span>, <span class="va">p</span>, <span class="va">za</span>, <span class="va">f0</span>, <span class="va">s</span>, <span class="va">H</span>, <span class="va">Ep</span>, <span class="va">Dp</span>, <span class="va">n</span><span class="op">)</span></span>
+<span><span class="fu">za_disc_dexpected_entry</span><span class="op">(</span><span class="va">i</span>, <span class="va">j</span>, <span class="va">c</span>, <span class="va">p</span>, <span class="va">za</span>, <span class="va">f0</span>, <span class="va">s</span>, <span class="va">H</span>, <span class="va">Ep</span>, <span class="va">Dp</span>, <span class="va">n</span>, q <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">f0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">za_cont_dexpected_entry</span><span class="op">(</span><span class="va">i</span>, <span class="va">j</span>, <span class="va">c</span>, <span class="va">p</span>, <span class="va">za</span>, <span class="va">Ep</span>, <span class="va">Dp</span>, <span class="va">n</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -120,6 +120,11 @@ information and its derivatives.</p></dd>
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>The number of observations.</p></dd>
+
+
+<dt id="arg-q">q<a class="anchor" aria-label="anchor" href="#arg-q"></a></dt>
+<dd><p>The parent's mass away from zero, \(1 - f_0\), which the caller
+computes as <code>-expm1(log f0)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -17,7 +17,7 @@ zero_wrapper_dexpected(distrib, y, theta, threads = 1L)
 
 zi_dexpected_entry(i, j, c, p, zi, f0, s, H, Ep, Dp)
 
-za_disc_dexpected_entry(i, j, c, p, za, f0, s, H, Ep, Dp, n)
+za_disc_dexpected_entry(i, j, c, p, za, f0, s, H, Ep, Dp, n, q = 1 - f0)
 
 za_cont_dexpected_entry(i, j, c, p, za, Ep, Dp, n)
 ```
@@ -73,6 +73,11 @@ za_cont_dexpected_entry(i, j, c, p, za, Ep, Dp, n)
 - n:
 
   The number of observations.
+
+- q:
+
+  The parent's mass away from zero, \\1 - f_0\\, which the caller
+  computes as `-expm1(log f0)`.
 
 ## Value
 

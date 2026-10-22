@@ -56,9 +56,9 @@ za_cont_d2expected_entry(i, j, c, d, tm)
   A list of the parent's quantities: functions `e0`, `e1`, `e2` of
   parameter indices returning the expected information and its first and
   second derivatives, the probability `z`, the index `m` of the
-  probability, the length `n`, and, for a discrete parent, the mass `f`
-  and functions `s`, `H`, `T` returning the score, Hessian and third
-  derivatives at zero.
+  probability, the length `n`, and, for a discrete parent, the mass `f`,
+  the mass away from zero `q` and functions `s`, `H`, `T` returning the
+  score, Hessian and third derivatives at zero.
 
 - i, j, c, d:
 
@@ -94,7 +94,8 @@ Each entry is computed by `zi_d2expected_entry()`,
 `zw_disc_parts()` returns the quantities shared by the discrete entries,
 as functions of parameter indices: \\f s_i s_j\\ and \\f s_i\\ with
 their first and second derivatives, which vanish in the probability, and
-\\q = 1 - f\\ with its derivatives.
+\\q = 1 - f\\ with its derivatives, \\q\\ being `tm$q`, computed from
+the log-mass.
 
 ## See also
 
