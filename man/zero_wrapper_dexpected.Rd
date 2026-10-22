@@ -11,7 +11,7 @@ zero_wrapper_dexpected(distrib, y, theta, threads = 1L)
 
 zi_dexpected_entry(i, j, c, p, zi, f0, s, H, Ep, Dp)
 
-za_disc_dexpected_entry(i, j, c, p, za, f0, s, H, Ep, Dp, n)
+za_disc_dexpected_entry(i, j, c, p, za, f0, s, H, Ep, Dp, n, q = 1 - f0)
 
 za_cont_dexpected_entry(i, j, c, p, za, Ep, Dp, n)
 }
@@ -42,6 +42,9 @@ Hessian at zero.}
 information and its derivatives.}
 
 \item{n}{The number of observations.}
+
+\item{q}{The parent's mass away from zero, \eqn{1 - f_0}, which the caller
+computes as \verb{-expm1(log f0)}.}
 }
 \value{
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}}, each component of

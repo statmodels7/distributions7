@@ -235,6 +235,30 @@ test_that("every joint entry of a wrapper is the generic's component", {
   }
 })
 
+test_that("a zero-adjusted family keeps its digits when the mass at zero nears one", {
+  # the parent's mass away from zero is -expm1(log f0): formed as 1 - f0 it
+  # lost its digits, and the information at mu = 1e-8 was 22 per cent off
+  for (mk in list(function() zero_adjusted(poisson_distrib()),
+                  function() zero_adjusted(negbin2_distrib()))) {
+    d <- mk()
+    for (mu in c(1e-4, 1e-6, 1e-8)) {
+      th <- list(mu = mu, theta = 5, za = 0.3)[d@params]
+      route <- distrib_scalar_route(d)
+      M <- matrix(c(unlist(th), unlist(route$constants)), nrow = 1)
+      pr <- d7_joint_probe(route$name, 1, M)
+      E <- distrib_expected_hessian(d, 1, th)
+      g <- distrib_gradient(d, 1, th)
+      expect_equal(pr$info[1, 1, 1], E$mu_mu, tolerance = 1e-6,
+                   label = paste(d@distrib_name, mu, "information"))
+      expect_equal(pr$grad[1, 1], g$mu, tolerance = 1e-6,
+                   label = paste(d@distrib_name, mu, "gradient"))
+      ip <- d7_info_probe(route$name, 1, 1, M)
+      expect_equal(ip$expected, E$mu_mu, tolerance = 1e-6,
+                   label = paste(d@distrib_name, mu, "scalar information"))
+    }
+  }
+})
+
 test_that("a folded family far in the tail has the parent's Hessian", {
   # far in the tail of a family whose tails separate (a Gaussian, a skew
   # normal), with a positive center, the weight of the positive preimage is

@@ -1,3 +1,14 @@
+# distributions7 0.83.2
+
+* The entries of the C registry for a discrete `zero_adjusted()` family,
+  scalar and joint, form the parent's mass away from zero as
+  `-expm1(log f(0))`, as the R gradient, Hessian and expected information
+  do, where they formed `1 - f(0)`; so does the derivative of the expected
+  information in R (`za_disc_dexpected_entry()` and the second derivative).
+  For a Poisson parent with mean 1e-8 the Hessian and the expected
+  information on the link scale were 22 per cent off and are now within
+  4e-8 of an 80-digit reference.
+
 # distributions7 0.83.1
 
 * The second derivative of a `folded()` family in the C registry, scalar and

@@ -58,7 +58,11 @@ zero_wrapper_dexpected <- function(distrib, y, theta, threads = 1L) {
   Ep <- function(a, b) rep_len(E[[hess_pair_name(P, a, b)]], n)
   Dp <- function(a, b, c) rep_len(D[[dexpected_key(P, a, b, c)]], n)
   if (!continuous) {
-    f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+    # the mass away from zero from the log-mass, as the expected Hessian
+    # forms it: 1 - f0 loses its digits as f0 nears one
+    lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+    f0 <- exp(lf0)
+    q0 <- -expm1(lf0)
     sg <- distrib_gradient(parent, 0, pars$orig)
     hs <- distrib_hessian(parent, 0, pars$orig)
     s <- function(a) rep_len(sg[[P[a]]], n)
@@ -76,7 +80,7 @@ zero_wrapper_dexpected <- function(distrib, y, theta, threads = 1L) {
       } else if (continuous) {
         za_cont_dexpected_entry(i, j, c, p, z, Ep, Dp, n)
       } else {
-        za_disc_dexpected_entry(i, j, c, p, z, f0, s, H, Ep, Dp, n)
+        za_disc_dexpected_entry(i, j, c, p, z, f0, s, H, Ep, Dp, n, q0)
       }
     }
   }
@@ -96,6 +100,8 @@ zero_wrapper_dexpected <- function(distrib, y, theta, threads = 1L) {
 #' @param p The number of the parent's parameters.
 #' @param zi,za The wrapper's probability, one value per observation.
 #' @param f0 The parent's mass at zero.
+#' @param q The parent's mass away from zero, \eqn{1 - f_0}, which the caller
+#'   computes as `-expm1(log f0)`.
 #' @param s,H Functions of parameter indices returning the parent's score and
 #'   Hessian at zero.
 #' @param Ep,Dp Functions of parameter indices returning the parent's expected
@@ -128,8 +134,8 @@ zi_dexpected_entry <- function(i, j, c, p, zi, f0, s, H, Ep, Dp) {
 }
 
 #' @rdname zero_wrapper_dexpected
-za_disc_dexpected_entry <- function(i, j, c, p, za, f0, s, H, Ep, Dp, n) {
-  q <- 1 - f0
+za_disc_dexpected_entry <- function(i, j, c, p, za, f0, s, H, Ep, Dp, n,
+                                    q = 1 - f0) {
   m <- p + 1L
   if (i <= p && j <= p && c <= p) {
     return((1 - za) * (Dp(i, j, c) / q + Ep(i, j) * f0 * s(c) / q^2 +
@@ -209,11 +215,13 @@ zero_wrapper_d2expected <- function(distrib, y, theta, threads = 1L) {
   z <- rep_len(pars$mix, n)
   tm <- list(e0 = e0, e1 = e1, e2 = e2, z = z, m = m, n = n)
   if (!continuous) {
-    f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+    lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+    f0 <- exp(lf0)
     sg <- distrib_gradient(parent, 0, pars$orig)
     hs <- distrib_hessian(parent, 0, pars$orig)
     d3 <- distrib_deriv3(parent, 0, pars$orig)
     tm$f <- rep_len(f0, n)
+    tm$q <- rep_len(-expm1(lf0), n)
     tm$s <- function(a) rep_len(sg[[P[a]]], n)
     tm$H <- function(a, b) rep_len(hs[[hess_pair_name(P, a, b)]], n)
     tm$T <- function(a, b, c) rep_len(d3[[paste(P[sort(c(a, b, c))], collapse = "_")]], n)
@@ -248,9 +256,9 @@ zero_wrapper_d2expected <- function(distrib, y, theta, threads = 1L) {
 #' @param tm A list of the parent's quantities: functions `e0`, `e1`, `e2`
 #'   of parameter indices returning the expected information and its first and
 #'   second derivatives, the probability `z`, the index `m` of the
-#'   probability, the length `n`, and, for a discrete parent, the mass `f` and
-#'   functions `s`, `H`, `T` returning the score, Hessian and third
-#'   derivatives at zero.
+#'   probability, the length `n`, and, for a discrete parent, the mass `f`,
+#'   the mass away from zero `q` and functions `s`, `H`, `T` returning the
+#'   score, Hessian and third derivatives at zero.
 #' @param N,Nc,Nd,Ncd,L,Lc,Ld,Lcd A numerator and a denominator with their
 #'   first derivatives in \eqn{c} and \eqn{d} and their second derivative.
 d2_quotient <- function(N, Nc, Nd, Ncd, L, Lc, Ld, Lcd) {
@@ -262,7 +270,8 @@ d2_quotient <- function(N, Nc, Nd, Ncd, L, Lc, Ld, Lcd) {
 #' `zw_disc_parts()` returns the quantities shared by the discrete entries,
 #' as functions of parameter indices: \eqn{f s_i s_j} and \eqn{f s_i} with
 #' their first and second derivatives, which vanish in the probability, and
-#' \eqn{q = 1 - f} with its derivatives.
+#' \eqn{q = 1 - f} with its derivatives, \eqn{q} being `tm$q`, computed from
+#' the log-mass.
 zw_disc_parts <- function(tm) {
   f <- tm$f; s <- tm$s; H <- tm$H; T <- tm$T; m <- tm$m
   list(
@@ -285,7 +294,7 @@ zw_disc_parts <- function(tm) {
       f * (s(d) * (s(c) * s(i) + H(i, c)) + H(c, d) * s(i) + s(c) * H(i, d) +
              T(i, c, d))
     },
-    q0 = 1 - f,
+    q0 = tm$q,
     q1 = function(c) if (c == m) 0 else -f * s(c),
     q2 = function(c, d) {
       if (c == m || d == m) return(0)

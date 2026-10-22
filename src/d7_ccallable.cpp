@@ -1753,7 +1753,8 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
     if (code >= 2 && code <= 4) {
         const int P = id_np(inner);
         const double z = zero_inner(inner, th, full);
-        const double f0 = (code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
+        const double lf0 = (code == 4) ? R_NegInf : d7_logpdf(inner, 0.0, full);
+        const double f0 = std::exp(lf0), q = -std::expm1(lf0);
         if (k == P) {
             if (code == 2) {
                 out[0] = d7::zi_score_zi(y, z, f0);
@@ -1771,8 +1772,8 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
             out[0] = d7::zi_score_parent(y, z, f0, gh[0]);
             out[1] = d7::zi_curv_parent(y, z, f0, sh0[0], sh0[1], gh[1]);
         } else if (code == 3) {
-            out[0] = d7::zad_score_parent(y, f0, sh0[0], gh[0]);
-            out[1] = d7::zad_curv_parent(y, f0, sh0[0], sh0[1], gh[1]);
+            out[0] = d7::zad_score_parent(y, f0, q, sh0[0], gh[0]);
+            out[1] = d7::zad_curv_parent(y, f0, q, sh0[0], sh0[1], gh[1]);
         } else {
             out[0] = d7::zac_score_parent(y, gh[0]);
             out[1] = d7::zac_curv_parent(y, gh[1]);
@@ -1811,7 +1812,8 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
     if (code >= 2 && code <= 4) {
         const int P = id_np(inner);
         const double z = zero_inner(inner, th, full);
-        const double f0 = (code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
+        const double lf0 = (code == 4) ? R_NegInf : d7_logpdf(inner, 0.0, full);
+        const double f0 = std::exp(lf0), q = -std::expm1(lf0);
         if (k == P) {
             if (code == 2) {
                 out[0] = d7::zi_info_zi(z, f0);
@@ -1829,8 +1831,8 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
             out[0] = d7::zi_info_parent(z, f0, sh0[0], sh0[1], ed[0]);
             out[1] = d7::zi_dinfo_parent(z, f0, sh0[0], sh0[1], ed[1]);
         } else if (code == 3) {
-            out[0] = d7::zad_info_parent(z, f0, sh0[0], sh0[1], ed[0]);
-            out[1] = d7::zad_dinfo_parent(z, f0, sh0[0], sh0[1], ed[0], ed[1]);
+            out[0] = d7::zad_info_parent(z, f0, q, sh0[0], sh0[1], ed[0]);
+            out[1] = d7::zad_dinfo_parent(z, f0, q, sh0[0], sh0[1], ed[0], ed[1]);
         } else {
             out[0] = d7::zac_info_parent(z, ed[0]);
             out[1] = d7::zac_dinfo_parent(z, ed[1]);
@@ -1866,8 +1868,7 @@ double wrap_logpdf(int id, double y, const double* th) {
         const double lf = d7_logpdf(inner, y, full);
         if (code == 2) return d7::zi_logpdf(y, z, lf);
         if (code == 4) return d7::zac_logpdf(y, z, lf);
-        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
-        return d7::zad_logpdf(y, z, f0, lf);
+        return d7::zad_logpdf(y, z, -std::expm1(d7_logpdf(inner, 0.0, full)), lf);
     }
     return R_NaN;
 }
@@ -2178,10 +2179,11 @@ void wrap_joint_grad(int id, double y, const double* th, double* out) {
             d7_joint_grad(inner, y, full, g);
             if (w.code == 3) {
                 double s0[kJointMax];
-                const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+                const double lf0 = d7_logpdf(inner, 0.0, full);
+                const double f0 = std::exp(lf0), q = -std::expm1(lf0);
                 d7_joint_grad(inner, 0.0, full, s0);
                 for (int a = 0; a < Pi; ++a)
-                    out[a] = d7::zad_score_parent(y, f0, s0[a], g[a]);
+                    out[a] = d7::zad_score_parent(y, f0, q, s0[a], g[a]);
             } else {
                 for (int a = 0; a < Pi; ++a) out[a] = g[a];
             }
@@ -2256,12 +2258,14 @@ void wrap_joint_hess(int id, double y, const double* th, double* out) {
             d7_joint_hess(inner, y, full, h);
             if (w.code == 3) {
                 double s0[kJointMax], H0[kJointMax2];
-                const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+                const double lf0 = d7_logpdf(inner, 0.0, full);
+                const double f0 = std::exp(lf0), q = -std::expm1(lf0);
                 zero_parts0(inner, full, s0, H0);
                 for (int b = 0; b < Pi; ++b)
                     for (int a = 0; a < Pi; ++a)
                         out[a + P * b] = h[a + Pi * b] +
-                            d7::zad_hess_correction_pair(f0, s0[a], s0[b], H0[a + Pi * b]);
+                            d7::zad_hess_correction_pair(f0, q, s0[a], s0[b],
+                                                         H0[a + Pi * b]);
             } else {
                 for (int b = 0; b < Pi; ++b)
                     for (int a = 0; a < Pi; ++a) out[a + P * b] = h[a + Pi * b];
@@ -2325,14 +2329,16 @@ void wrap_joint_info(int id, double y, const double* th, double* out) {
             out[Pi + P * Pi] = d7::za_info_za(z);
             return;
         }
-        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+        const double lf0 = d7_logpdf(inner, 0.0, full);
+        const double f0 = std::exp(lf0), q = -std::expm1(lf0);
         double s0[kJointMax], H0[kJointMax2];
         zero_parts0(inner, full, s0, H0);
         for (int b = 0; b < Pi; ++b) {
             for (int a = 0; a < Pi; ++a) {
                 out[a + P * b] = (w.code == 2)
                     ? d7::zi_info_pair(z, f0, s0[a], s0[b], H0[a + Pi * b], e[a + Pi * b])
-                    : d7::zad_info_pair(z, f0, s0[a], s0[b], H0[a + Pi * b], e[a + Pi * b]);
+                    : d7::zad_info_pair(z, f0, q, s0[a], s0[b], H0[a + Pi * b],
+                                        e[a + Pi * b]);
             }
             out[b + P * Pi] = out[Pi + P * b] =
                 (w.code == 2) ? d7::zi_info_cross(z, f0, s0[b]) : 0.0;
@@ -2389,7 +2395,8 @@ void wrap_joint_dinfo(int id, double y, const double* th, double* out) {
         double e[kJointMax2], s0[kJointMax], H0[kJointMax2];
         d7_joint_info(inner, y, full, e);
         d7_joint_dinfo(inner, y, full, d);
-        const double f0 = (w.code == 4) ? 0.0 : std::exp(d7_logpdf(inner, 0.0, full));
+        const double lf0 = (w.code == 4) ? R_NegInf : d7_logpdf(inner, 0.0, full);
+        const double f0 = std::exp(lf0), q = -std::expm1(lf0);
         if (w.code != 4) zero_parts0(inner, full, s0, H0);
         for (int c = 0; c < P; ++c) {
             for (int b = 0; b < P; ++b) {
@@ -2413,13 +2420,13 @@ void wrap_joint_dinfo(int id, double y, const double* th, double* out) {
                     } else if (j < m) {
                         if (c < m) {
                             v = (w.code == 3)
-                                ? d7::zad_dinfo_ppp(z, f0, s0[i], s0[j], s0[c],
+                                ? d7::zad_dinfo_ppp(z, f0, q, s0[i], s0[j], s0[c],
                                                     H0[i + Pi * c], H0[j + Pi * c],
                                                     e[i + Pi * j],
                                                     d[i + Pi * j + Pi * Pi * c])
                                 : d7::zac_dinfo_parent(z, d[i + Pi * j + Pi * Pi * c]);
                         } else {
-                            v = (w.code == 3) ? d7::zad_dinfo_ppz(f0, s0[i], s0[j], e[i + Pi * j])
+                            v = (w.code == 3) ? d7::zad_dinfo_ppz(f0, q, s0[i], s0[j], e[i + Pi * j])
                                               : -e[i + Pi * j];
                         }
                     } else if (i < m || c < m) {

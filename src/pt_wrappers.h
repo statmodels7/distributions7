@@ -136,41 +136,46 @@ inline double zi_dinfo_zzp(double z, double f0, double s0c) {
 }
 
 // ---- zero_adjusted(), discrete parent ---------------------------------------
+//
+// q is the parent's mass away from zero, 1 - f0, which the caller forms as
+// -expm1(log f0), as the R methods do: with f0 = exp(-mu) near one, 1 - f0
+// loses its digits as mu falls (2.2e-1 relative on the information at
+// mu = 1e-8 for a Poisson parent).
 
-inline double zad_score_parent(double y, double f0, double s0, double g) {
+inline double zad_score_parent(double y, double f0, double q, double s0,
+                               double g) {
     if (y == 0) return 0;
-    double correction = f0 / (1 - f0);
+    double correction = f0 / q;
     return g + correction * s0;
 }
 inline double za_score_za(double y, double z) {
     return (y == 0) ? 1 / z : -1 / (1 - z);
 }
-inline double zad_hess_correction(double f0, double s0, double H0) {
-    double denom = 1 - f0;
+inline double zad_hess_correction(double f0, double q, double s0, double H0) {
+    double denom = q;
     double f_prime = f0 * s0;
     double f_second = f0 * (H0 + s0 * s0);
     return (denom * f_second + f_prime * f_prime) / (denom * denom);
 }
-inline double zad_curv_parent(double y, double f0, double s0, double H0,
-                              double h) {
+inline double zad_curv_parent(double y, double f0, double q, double s0,
+                              double H0, double h) {
     if (y == 0) return 0;
-    return h + zad_hess_correction(f0, s0, H0);
+    return h + zad_hess_correction(f0, q, s0, H0);
 }
 inline double za_curv_za(double y, double z) {
     if (y == 0) return -1 / (z * z);
     double b = 1 - z;
     return -1 / (b * b);
 }
-inline double zad_info_parent(double z, double f0, double s0, double H0,
-                              double Ep) {
-    double denom = 1 - f0;
+inline double zad_info_parent(double z, double f0, double q, double s0,
+                              double H0, double Ep) {
+    double denom = q;
     double E_trunc = (Ep - f0 * H0) / denom;
-    return (1 - z) * (E_trunc + zad_hess_correction(f0, s0, H0));
+    return (1 - z) * (E_trunc + zad_hess_correction(f0, q, s0, H0));
 }
 inline double za_info_za(double z) { return -1 / (z * (1 - z)); }
-inline double zad_dinfo_parent(double z, double f0, double s0, double H0,
-                               double Ep, double Dp) {
-    double q = 1 - f0;
+inline double zad_dinfo_parent(double z, double f0, double q, double s0,
+                               double H0, double Ep, double Dp) {
     return (1 - z) * (Dp / q + Ep * f0 * s0 / (q * q) +
                       f0 * (s0 * s0 * s0 + H0 * s0 + s0 * H0) / (q * q) +
                       2 * (f0 * f0) * s0 * s0 * s0 / R_pow(q, 3.0));
@@ -184,35 +189,34 @@ inline double za_dinfo_za(double z) {
 // za_disc_dexpected_entry() (zero_wrapper_dexpected.R); with a = b = c they
 // are the (k, k) functions above. The blocks between the parent's parameters
 // and the probability are zero.
-inline double zad_hess_correction_pair(double f0, double s0a, double s0b,
-                                       double H0ab) {
-    double denom = 1 - f0;
+inline double zad_hess_correction_pair(double f0, double q, double s0a,
+                                       double s0b, double H0ab) {
+    double denom = q;
     double f_second = f0 * (H0ab + s0a * s0b);
     return (denom * f_second + (f0 * s0a) * (f0 * s0b)) / (denom * denom);
 }
-inline double zad_info_pair(double z, double f0, double s0a, double s0b,
-                            double H0ab, double Eab) {
-    double denom = 1 - f0;
+inline double zad_info_pair(double z, double f0, double q, double s0a,
+                            double s0b, double H0ab, double Eab) {
+    double denom = q;
     double E_trunc = (Eab - f0 * H0ab) / denom;
-    return (1 - z) * (E_trunc + zad_hess_correction_pair(f0, s0a, s0b, H0ab));
+    return (1 - z) * (E_trunc + zad_hess_correction_pair(f0, q, s0a, s0b, H0ab));
 }
 // d E_ab / d theta_c
-inline double zad_dinfo_ppp(double z, double f0, double s0a, double s0b,
-                            double s0c, double H0ac, double H0bc, double Eab,
-                            double Dabc) {
-    double q = 1 - f0;
+inline double zad_dinfo_ppp(double z, double f0, double q, double s0a,
+                            double s0b, double s0c, double H0ac, double H0bc,
+                            double Eab, double Dabc) {
     return (1 - z) * (Dabc / q + Eab * f0 * s0c / (q * q) +
                       f0 * (s0c * s0a * s0b + H0ac * s0b + s0a * H0bc) / (q * q) +
                       2 * (f0 * f0) * s0a * s0b * s0c / R_pow(q, 3.0));
 }
 // d E_ab / d z
-inline double zad_dinfo_ppz(double f0, double s0a, double s0b, double Eab) {
-    double q = 1 - f0;
+inline double zad_dinfo_ppz(double f0, double q, double s0a, double s0b,
+                            double Eab) {
     return -(Eab / q + f0 * s0a * s0b / (q * q));
 }
-inline double zad_logpdf(double y, double z, double f0, double lf) {
+inline double zad_logpdf(double y, double z, double q, double lf) {
     if (y == 0) return std::log(z);
-    return std::log(1 - z) + lf - std::log1p(-f0);
+    return std::log(1 - z) + lf - std::log(q);
 }
 
 // ---- zero_adjusted(), continuous parent -------------------------------------

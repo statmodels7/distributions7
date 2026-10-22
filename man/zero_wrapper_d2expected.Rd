@@ -37,9 +37,9 @@ first derivatives in \eqn{c} and \eqn{d} and their second derivative.}
 \item{tm}{A list of the parent's quantities: functions \code{e0}, \code{e1}, \code{e2}
 of parameter indices returning the expected information and its first and
 second derivatives, the probability \code{z}, the index \code{m} of the
-probability, the length \code{n}, and, for a discrete parent, the mass \code{f} and
-functions \code{s}, \code{H}, \code{T} returning the score, Hessian and third
-derivatives at zero.}
+probability, the length \code{n}, and, for a discrete parent, the mass \code{f},
+the mass away from zero \code{q} and functions \code{s}, \code{H}, \code{T} returning the
+score, Hessian and third derivatives at zero.}
 
 \item{i, j, c, d}{The indices of one entry: the pair \eqn{(i,j)} and the
 pair \eqn{(c,d)} differentiated. The parent's parameters come first and
@@ -77,7 +77,8 @@ Each entry is computed by \code{zi_d2expected_entry()},
 \code{zw_disc_parts()} returns the quantities shared by the discrete entries,
 as functions of parameter indices: \eqn{f s_i s_j} and \eqn{f s_i} with
 their first and second derivatives, which vanish in the probability, and
-\eqn{q = 1 - f} with its derivatives.
+\eqn{q = 1 - f} with its derivatives, \eqn{q} being \code{tm$q}, computed from
+the log-mass.
 }
 \seealso{
 \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}
