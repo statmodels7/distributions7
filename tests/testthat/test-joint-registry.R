@@ -259,6 +259,30 @@ test_that("a zero-adjusted family keeps its digits when the mass at zero nears o
   }
 })
 
+test_that("a zero-inflated family keeps its digits when the mass at zero nears one", {
+  # the score in zi at zero and its information, against their closed forms
+  # with 1 - f0 = -expm1(-mu): formed as 1 - f0 they were eps/mu off
+  d <- zero_inflated(poisson_distrib())
+  route <- distrib_scalar_route(d)
+  for (mu in c(1e-4, 1e-6, 1e-8)) {
+    zi <- 0.3
+    q <- -expm1(-mu)
+    l0 <- zi + (1 - zi) * exp(-mu)
+    score <- q / l0
+    info <- -(q^2 / l0 + q / (1 - zi))
+    M <- matrix(c(mu, zi, unlist(route$constants)), nrow = 1)
+    pr <- d7_joint_probe(route$name, 0, M)
+    th <- list(mu = mu, zi = zi)
+    expect_equal(pr$grad[1, 2], score, tolerance = 1e-13)
+    expect_equal(distrib_gradient(d, 0, th)$zi, score, tolerance = 1e-13)
+    expect_equal(pr$info[1, 2, 2], info, tolerance = 1e-13)
+    expect_equal(distrib_expected_hessian(d, 0, th)$zi_zi, info,
+                 tolerance = 1e-13)
+    expect_equal(d7_info_probe(route$name, 2, 0, M)$expected, info,
+                 tolerance = 1e-13)
+  }
+})
+
 test_that("a folded family far in the tail has the parent's Hessian", {
   # far in the tail of a family whose tails separate (a Gaussian, a skew
   # normal), with a positive center, the weight of the positive preimage is

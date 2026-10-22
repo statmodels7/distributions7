@@ -19,6 +19,9 @@
 namespace d7 {
 
 // ---- zero_inflated() --------------------------------------------------------
+//
+// q is the parent's mass away from zero, 1 - f0, which the caller forms as
+// -expm1(log f0), as for zero_adjusted() below; 1 - l0 is (1 - z) q.
 
 inline double zi_l0(double z, double f0) { return z + (1 - z) * f0; }
 
@@ -26,8 +29,8 @@ inline double zi_score_parent(double y, double z, double f0, double g) {
     double w = (y == 0) ? ((1 - z) * f0) / zi_l0(z, f0) : 1;
     return w * g;
 }
-inline double zi_score_zi(double y, double z, double f0) {
-    return (y == 0) ? (1 - f0) / zi_l0(z, f0) : -1 / (1 - z);
+inline double zi_score_zi(double y, double z, double f0, double q) {
+    return (y == 0) ? q / zi_l0(z, f0) : -1 / (1 - z);
 }
 inline double zi_curv_parent(double y, double z, double f0, double s0,
                              double H0, double h) {
@@ -35,9 +38,9 @@ inline double zi_curv_parent(double y, double z, double f0, double s0,
     double w0 = ((1 - z) * f0) / zi_l0(z, f0);
     return w0 * H0 + w0 * (1 - w0) * s0 * s0;
 }
-inline double zi_curv_zi(double y, double z, double f0) {
+inline double zi_curv_zi(double y, double z, double f0, double q) {
     if (y == 0) {
-        double l0 = zi_l0(z, f0), a = 1 - f0;
+        double l0 = zi_l0(z, f0), a = q;
         return -(a * a) / (l0 * l0);
     }
     double b = 1 - z;
@@ -51,10 +54,10 @@ inline double zi_info_parent(double z, double f0, double s0, double H0,
     double contrib_pos = Ep - H0 * f0;
     return l0 * h_zi_0 + (1 - z) * contrib_pos;
 }
-inline double zi_info_zi(double z, double f0) {
+inline double zi_info_zi(double z, double f0, double q) {
     double l0 = zi_l0(z, f0);
-    double s0z = (1 - f0) / l0, spz = -1 / (1 - z);
-    return -(l0 * (s0z * s0z) + (1 - l0) * (spz * spz));
+    double s0z = q / l0, spz = -1 / (1 - z);
+    return -(l0 * (s0z * s0z) + ((1 - z) * q) * (spz * spz));
 }
 inline double zi_dinfo_parent(double z, double f0, double s0, double H0,
                               double Dp) {
@@ -63,9 +66,9 @@ inline double zi_dinfo_parent(double z, double f0, double s0, double H0,
         z * (1 - z) * f0 * (H0 * s0 + s0 * H0) / l0 +
         (z * z) * (1 - z) * f0 * s0 * s0 * s0 / (l0 * l0);
 }
-inline double zi_dinfo_zi(double z, double f0) {
+inline double zi_dinfo_zi(double z, double f0, double q) {
     double l0 = zi_l0(z, f0), b = 1 - z;
-    return R_pow(1 - f0, 3.0) / (l0 * l0) - (1 - f0) / (b * b);
+    return R_pow(q, 3.0) / (l0 * l0) - q / (b * b);
 }
 inline double zi_logpdf(double y, double z, double lf) {
     double la = std::log1p(-z) + lf;
@@ -110,11 +113,11 @@ inline double zi_dinfo_ppp(double z, double f0, double s0a, double s0b,
         (z * z) * (1 - z) * f0 * s0a * s0b * s0c / (l0 * l0);
 }
 // d E_ab / d z
-inline double zi_dinfo_ppz(double z, double f0, double s0a, double s0b,
-                           double Eab) {
+inline double zi_dinfo_ppz(double z, double f0, double q, double s0a,
+                           double s0b, double Eab) {
     double l0 = zi_l0(z, f0);
     return -Eab + f0 * s0a * s0b *
-        ((1 - 2 * z) / l0 - z * (1 - z) * (1 - f0) / (l0 * l0));
+        ((1 - 2 * z) / l0 - z * (1 - z) * q / (l0 * l0));
 }
 // d E_az / d theta_c
 inline double zi_dinfo_pzp(double z, double f0, double s0a, double s0c,
@@ -124,13 +127,13 @@ inline double zi_dinfo_pzp(double z, double f0, double s0a, double s0c,
         (1 - z) * (f0 * f0) * s0a * s0c / (l0 * l0);
 }
 // d E_az / d z
-inline double zi_dinfo_pzz(double z, double f0, double s0a) {
+inline double zi_dinfo_pzz(double z, double f0, double q, double s0a) {
     double l0 = zi_l0(z, f0);
-    return f0 * s0a * (1 - f0) / (l0 * l0);
+    return f0 * s0a * q / (l0 * l0);
 }
 // d E_zz / d theta_c
-inline double zi_dinfo_zzp(double z, double f0, double s0c) {
-    double l0 = zi_l0(z, f0), a = 1 - f0;
+inline double zi_dinfo_zzp(double z, double f0, double q, double s0c) {
+    double l0 = zi_l0(z, f0), a = q;
     return f0 * s0c * (2 * a / l0 + (1 - z) * (a * a) / (l0 * l0) +
                        1 / (1 - z));
 }

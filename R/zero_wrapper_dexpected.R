@@ -76,7 +76,7 @@ zero_wrapper_dexpected <- function(distrib, y, theta, threads = 1L) {
     for (c in seq_len(p + 1L)) {
       key <- dexpected_key(allp, i, j, c)
       out[[key]] <- if (inflated) {
-        zi_dexpected_entry(i, j, c, p, z, f0, s, H, Ep, Dp)
+        zi_dexpected_entry(i, j, c, p, z, f0, s, H, Ep, Dp, q0)
       } else if (continuous) {
         za_cont_dexpected_entry(i, j, c, p, z, Ep, Dp, n)
       } else {
@@ -107,7 +107,7 @@ zero_wrapper_dexpected <- function(distrib, y, theta, threads = 1L) {
 #' @param Ep,Dp Functions of parameter indices returning the parent's expected
 #'   information and its derivatives.
 #' @param n The number of observations.
-zi_dexpected_entry <- function(i, j, c, p, zi, f0, s, H, Ep, Dp) {
+zi_dexpected_entry <- function(i, j, c, p, zi, f0, s, H, Ep, Dp, q = 1 - f0) {
   l0 <- zi + (1 - zi) * f0
   m <- p + 1L
   if (i <= p && j <= p && c <= p) {
@@ -117,20 +117,20 @@ zi_dexpected_entry <- function(i, j, c, p, zi, f0, s, H, Ep, Dp) {
   }
   if (i <= p && j <= p) {
     return(-Ep(i, j) + f0 * s(i) * s(j) *
-             ((1 - 2 * zi) / l0 - zi * (1 - zi) * (1 - f0) / l0^2))
+             ((1 - 2 * zi) / l0 - zi * (1 - zi) * q / l0^2))
   }
   if (i <= p && j == m) {
     if (c <= p) {
       return(-(f0 / l0) * (s(c) * s(i) + H(i, c)) +
                (1 - zi) * f0^2 * s(i) * s(c) / l0^2)
     }
-    return(f0 * s(i) * (1 - f0) / l0^2)
+    return(f0 * s(i) * q / l0^2)
   }
   if (c <= p) {
-    return(f0 * s(c) * (2 * (1 - f0) / l0 + (1 - zi) * (1 - f0)^2 / l0^2 +
+    return(f0 * s(c) * (2 * q / l0 + (1 - zi) * q^2 / l0^2 +
                           1 / (1 - zi)))
   }
-  (1 - f0)^3 / l0^2 - (1 - f0) / (1 - zi)^2
+  q^3 / l0^2 - q / (1 - zi)^2
 }
 
 #' @rdname zero_wrapper_dexpected
@@ -310,7 +310,7 @@ zi_d2expected_entry <- function(i, j, c, d, tm) {
   f <- tm$f; s <- tm$s; H <- tm$H
   # L = zeta + (1 - zeta) f
   L <- z + (1 - z) * f
-  L1 <- function(a) if (a == m) 1 - f else (1 - z) * f * s(a)
+  L1 <- function(a) if (a == m) k$q0 else (1 - z) * f * s(a)
   L2 <- if (c == m && d == m) {
     0
   } else if (c == m) {

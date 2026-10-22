@@ -383,7 +383,8 @@ zi_deriv_k <- function(order) {
     zi <- theta[[distrib@n_params]]
     n <- length(y)
 
-    f0 <- exp(distrib_pdf(parent, 0, pars, log = TRUE))
+    lf0 <- distrib_pdf(parent, 0, pars, log = TRUE)
+    f0 <- exp(lf0)
     L0 <- zi + (1 - zi) * f0
     w0 <- (1 - zi) * f0 / L0
 
@@ -393,7 +394,7 @@ zi_deriv_k <- function(order) {
       sp <- split_index(block, zi_name)
       if (sp$n_mix >= 2L) return(0)
       if (sp$n_mix == 0L) return(w0 * bell_f_ratio(sp$theta, ell_0))
-      if (length(sp$theta) == 0L) return((1 - f0) / L0)
+      if (length(sp$theta) == 0L) return(-expm1(lf0) / L0)
       -f0 * bell_f_ratio(sp$theta, ell_0) / L0
     }, params)
 

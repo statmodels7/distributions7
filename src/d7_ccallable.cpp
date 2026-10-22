@@ -1757,8 +1757,8 @@ void wrap_score_curv(int id, int k, double y, const double* th, double* out) {
         const double f0 = std::exp(lf0), q = -std::expm1(lf0);
         if (k == P) {
             if (code == 2) {
-                out[0] = d7::zi_score_zi(y, z, f0);
-                out[1] = d7::zi_curv_zi(y, z, f0);
+                out[0] = d7::zi_score_zi(y, z, f0, q);
+                out[1] = d7::zi_curv_zi(y, z, f0, q);
             } else {
                 out[0] = d7::za_score_za(y, z);
                 out[1] = d7::za_curv_za(y, z);
@@ -1816,8 +1816,8 @@ void wrap_info_dinfo(int id, int k, double y, const double* th, double* out) {
         const double f0 = std::exp(lf0), q = -std::expm1(lf0);
         if (k == P) {
             if (code == 2) {
-                out[0] = d7::zi_info_zi(z, f0);
-                out[1] = d7::zi_dinfo_zi(z, f0);
+                out[0] = d7::zi_info_zi(z, f0, q);
+                out[1] = d7::zi_dinfo_zi(z, f0, q);
             } else {
                 out[0] = d7::za_info_za(z);
                 out[1] = d7::za_dinfo_za(z);
@@ -2165,10 +2165,11 @@ void wrap_joint_grad(int id, double y, const double* th, double* out) {
     }
     case 2: {
         const double z = zero_inner(inner, th, full);
-        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+        const double lf0 = d7_logpdf(inner, 0.0, full);
+        const double f0 = std::exp(lf0);
         d7_joint_grad(inner, y, full, g);
         for (int a = 0; a < Pi; ++a) out[a] = d7::zi_score_parent(y, z, f0, g[a]);
-        out[Pi] = d7::zi_score_zi(y, z, f0);
+        out[Pi] = d7::zi_score_zi(y, z, f0, -std::expm1(lf0));
         return;
     }
     case 3: case 4: {
@@ -2230,7 +2231,8 @@ void wrap_joint_hess(int id, double y, const double* th, double* out) {
     case 2: {
         const int P = Pi + 1;
         const double z = zero_inner(inner, th, full);
-        const double f0 = std::exp(d7_logpdf(inner, 0.0, full));
+        const double lf0 = d7_logpdf(inner, 0.0, full);
+        const double f0 = std::exp(lf0);
         d7_joint_hess(inner, y, full, h);
         if (y != 0) {
             for (int b = 0; b < Pi; ++b) {
@@ -2247,7 +2249,7 @@ void wrap_joint_hess(int id, double y, const double* th, double* out) {
                 out[b + P * Pi] = out[Pi + P * b] = d7::zi_hess_cross0(z, f0, s0[b]);
             }
         }
-        out[Pi + P * Pi] = d7::zi_curv_zi(y, z, f0);
+        out[Pi + P * Pi] = d7::zi_curv_zi(y, z, f0, -std::expm1(lf0));
         return;
     }
     case 3: case 4: {
@@ -2343,7 +2345,7 @@ void wrap_joint_info(int id, double y, const double* th, double* out) {
             out[b + P * Pi] = out[Pi + P * b] =
                 (w.code == 2) ? d7::zi_info_cross(z, f0, s0[b]) : 0.0;
         }
-        out[Pi + P * Pi] = (w.code == 2) ? d7::zi_info_zi(z, f0) : d7::za_info_za(z);
+        out[Pi + P * Pi] = (w.code == 2) ? d7::zi_info_zi(z, f0, q) : d7::za_info_za(z);
         return;
     }
     case 5: {
@@ -2409,13 +2411,13 @@ void wrap_joint_dinfo(int id, double y, const double* th, double* out) {
                                 ? d7::zi_dinfo_ppp(z, f0, s0[i], s0[j], s0[c],
                                                    H0[i + Pi * c], H0[j + Pi * c],
                                                    d[i + Pi * j + Pi * Pi * c])
-                                : d7::zi_dinfo_ppz(z, f0, s0[i], s0[j], e[i + Pi * j]);
+                                : d7::zi_dinfo_ppz(z, f0, q, s0[i], s0[j], e[i + Pi * j]);
                         } else if (i < m) {
                             v = (c < m) ? d7::zi_dinfo_pzp(z, f0, s0[i], s0[c], H0[i + Pi * c])
-                                        : d7::zi_dinfo_pzz(z, f0, s0[i]);
+                                        : d7::zi_dinfo_pzz(z, f0, q, s0[i]);
                         } else {
-                            v = (c < m) ? d7::zi_dinfo_zzp(z, f0, s0[c])
-                                        : d7::zi_dinfo_zi(z, f0);
+                            v = (c < m) ? d7::zi_dinfo_zzp(z, f0, q, s0[c])
+                                        : d7::zi_dinfo_zi(z, f0, q);
                         }
                     } else if (j < m) {
                         if (c < m) {

@@ -664,15 +664,18 @@ S7::method(distrib_gradient, ZeroInflatedDistrib) <- function(distrib, y, theta,
   zi <- pars$mix
 
   # f(0) as the exponential of the log-mass, the form the scalar registry
-  # reads (d7_logpdf), here and in the methods below
-  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+  # reads (d7_logpdf), here and in the methods below, and 1 - f(0) as
+  # -expm1 of it, which keeps its digits when f(0) is near one
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+  f0 <- exp(lf0)
+  q0 <- -expm1(lf0)
   l0 <- zi + (1 - zi) * f0
 
   grad_orig <- distrib_gradient(parent, y, pars$orig)
   w <- ifelse(y == 0, ((1 - zi) * f0) / l0, 1)
 
   res <- lapply(grad_orig, function(g) w * g)
-  res[[distrib@params[distrib@n_params]]] <- ifelse(y == 0, (1 - f0) / l0, -1 / (1 - zi))
+  res[[distrib@params[distrib@n_params]]] <- ifelse(y == 0, q0 / l0, -1 / (1 - zi))
   res
 }
 
@@ -757,7 +760,9 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
   zi_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+  f0 <- exp(lf0)
+  q0 <- -expm1(lf0)
   l0 <- zi + (1 - zi) * f0
   w0 <- ((1 - zi) * f0) / l0
 
@@ -783,7 +788,7 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
   }
 
   # Block zi-zi
-  val_zi_0 <- -((1 - f0)^2) / (l0^2)
+  val_zi_0 <- -(q0^2) / (l0^2)
   val_zi_pos <- -1 / ((1 - zi)^2)
   res[[paste0(zi_name, "_", zi_name)]] <- ifelse(y == 0, val_zi_0, val_zi_pos)
 
@@ -870,7 +875,9 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
   zi_name <- distrib@params[distrib@n_params]
   n <- length(y)
 
-  f0 <- exp(distrib_pdf(parent, 0, pars$orig, log = TRUE))
+  lf0 <- distrib_pdf(parent, 0, pars$orig, log = TRUE)
+  f0 <- exp(lf0)
+  q0 <- -expm1(lf0)
   l0 <- zi + (1 - zi) * f0
   w0 <- ((1 - zi) * f0) / l0
 
@@ -898,9 +905,10 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
   }
 
   # Block zi-zi: negative Fisher information of the mixture weight
-  score_zi_0 <- (1 - f0) / l0
+  score_zi_0 <- q0 / l0
   score_zi_pos <- -1 / (1 - zi)
-  res[[paste0(zi_name, "_", zi_name)]] <- -(l0 * score_zi_0^2 + (1 - l0) * score_zi_pos^2)
+  # 1 - l0 = (1 - zi)(1 - f(0))
+  res[[paste0(zi_name, "_", zi_name)]] <- -(l0 * score_zi_0^2 + (1 - zi) * q0 * score_zi_pos^2)
 
   expand_params(res[hess_names(distrib@params)], n)
 }
