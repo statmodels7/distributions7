@@ -1,5 +1,15 @@
 # Changelog
 
+## distributions7 0.83.3
+
+- [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
+  forms the parent’s mass away from zero as `-expm1(log f(0))` and 1 -
+  L0 as (1 - zi)(1 - f(0)), in the gradient, the Hessian, the expected
+  information, its first and second derivatives and the derivatives of
+  orders three to five, and in the entries of the C registry, scalar and
+  joint. For a Poisson parent with mean 1e-8 the components in zi were
+  off by up to 7e-9 and are now at rounding.
+
 ## distributions7 0.83.2
 
 - The entries of the C registry for a discrete
