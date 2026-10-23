@@ -173,7 +173,7 @@ c(pig1 = distrib_expected_hessian(d, 0, th)$mu_sigma,
   pig2 = distrib_expected_hessian(pig2_distrib(), 0,
                                   list(mu = 3, alpha = 3.010399))$mu_alpha)
 #>          pig1          pig2 
-#>  3.677716e-02 -1.049868e-18 
+#>  3.677716e-02 -1.171063e-17 
 
 # A fit recovers both parameters.
 set.seed(63)

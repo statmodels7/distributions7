@@ -84,5 +84,5 @@ c(pig2 = distrib_expected_hessian(d, 0, th)$mu_alpha,
   pig1 = distrib_expected_hessian(pig1_distrib(), 0,
                                   list(mu = 3, sigma = 0.8))$mu_sigma)
 #>          pig2          pig1 
-#> -4.071581e-17  3.677716e-02 
+#> -1.277618e-17  3.677716e-02 
 ```

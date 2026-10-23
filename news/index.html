@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.85.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.87.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,18 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.87.0" id="distributions7-0870">distributions7 0.87.0<a class="anchor" aria-label="anchor" href="#distributions7-0870"></a></h2>
+<ul><li>
+<code><a href="../reference/distrib_deriv5.html">distrib_deriv5()</a></code> has a closed form for 22 more families: bernoulli, binomial, poisson, geometric, gamma1, gamma2, negbin1, negbin2, betabinom1, betabinom2, beta1, beta2, invgauss1, invgauss2, lognormal1, weibull1, vonmises1, skewnormal1, pseudohuber, enet, pig1 and pig2, where it was one central difference of the analytic fourth derivative. Against 60-digit references the components are within 1e-10 of the largest component at each point, where the difference was off by up to 0.43 at the extremes of the parameter space; the closed forms are 1.5 to 40 times faster. vonmises2 keeps the difference.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.86.0" id="distributions7-0860">distributions7 0.86.0<a class="anchor" aria-label="anchor" href="#distributions7-0860"></a></h2>
+<ul><li>The recurrence over the support of <code>pig2</code>’s expected information carries the factorial cumulants of S_y in place of its raw moments, as <code>pig1</code>’s does since 0.85.0: the second derivative of the expected information at mu = 1e4, alpha = 2000 was 2.5e-4 off normwise and is within 4.4e-11.</li>
+<li>The log mass of <code>pig1</code> and <code>pig2</code> at counts of 21 and more comes from a form whose terms do not cancel (<code>pt_pig_mass.h</code>: the uniform expansion of the Bessel function combined with Stirling’s series), where the sum of terms of size y log y lost the digits: at y = mu = 1e12, sigma = 0.5 it read -28.203125 for -28.2033861, and at 9e15 -64 and 0 for -37.31.</li>
+<li>
+<code>negbin1</code>’s expected information chooses between its two support sums by order and by mu (<code>nb1_cut0()</code>, <code>nb1_cut1()</code>, <code>nb1_cut2()</code>) in place of one cut at theta = 0.02: at mu = 100, theta = 0.05 the second derivatives were 2.9e-10 off relative to their largest component and are within 5.7e-13.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.85.0" id="distributions7-0850">distributions7 0.85.0<a class="anchor" aria-label="anchor" href="#distributions7-0850"></a></h2>
 <ul><li>

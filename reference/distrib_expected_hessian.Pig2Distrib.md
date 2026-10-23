@@ -109,7 +109,7 @@ distrib_expected_hessian(d, 1, th)
 #> [1] -0.1167547
 #> 
 #> $mu_alpha
-#> [1] 9.013046e-17
+#> [1] 2.320001e-16
 #> 
 
 # The kernel is compared with the outer product of the scores summed over

@@ -83,5 +83,5 @@ rbind(analytic = h$mu_alpha,
 c(observed = h$mu_alpha[1],
   expected = distrib_expected_hessian(d, 0, th)$mu_alpha)
 #>      observed      expected 
-#> -1.176464e-01 -4.071581e-17 
+#> -1.176464e-01 -1.277618e-17 
 ```
