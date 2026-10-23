@@ -1,5 +1,23 @@
 # Changelog
 
+## distributions7 0.85.0
+
+- `pig1`’s log S_y and its derivatives in w come from the sum with its
+  terms by recurrence for counts below 21 and from the uniform (Debye)
+  expansion in w above, with no lgamma and no allocation per row. The
+  fourth derivatives at y = 2000 were 1.6e-4 off and are within 5e-13 of
+  a 60-digit reference; a row at y = 2000 cost 330 us and costs 3 us,
+  and a count of 1e10 is no longer rejected.
+- The recurrence over the support of `pig1`’s expected information
+  carries the factorial cumulants of S_y in place of its raw moments,
+  which cancelled at large counts: the second derivative of the expected
+  information at mu = 1000, sigma = 0.05 was 1.2e-7 off normwise and is
+  within 1.1e-12.
+- `negbin2`’s expected information carries its scores and running sums
+  in theta as running sums with merged increments: at theta = 1e5 the
+  first derivatives were 4.4e-9 off and are within 2.6e-11, the second
+  3.4e-8 and within 9.8e-10.
+
 ## distributions7 0.84.1
 
 - The tests of the joint registry read the expected information of the
