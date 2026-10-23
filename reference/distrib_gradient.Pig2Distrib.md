@@ -76,7 +76,7 @@ rbind(analytic = vapply(g, sum, 0),
       numeric = numDeriv::grad(f, c(3, al)))
 #>                     mu     alpha
 #> analytic -6.661338e-16 0.4698132
-#> numeric   5.625652e-12 0.4698132
+#> numeric   1.148732e-14 0.4698132
 
 # The two scores are uncorrelated under the model, which is orthogonality;
 # pig1 does not have this property.

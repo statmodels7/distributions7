@@ -3058,6 +3058,7 @@ transforms that make it work on a divergent density.
   [`distrib_dexpected_hessian.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
   [`distrib_d2expected_hessian.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
   [`distrib_dexpected_hessian.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
+  [`distrib_d2expected_hessian.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.elementary.md)
   : Derivatives of the Expected Information, Elementary Families
 
 - [`distrib_expected_hessian.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md)

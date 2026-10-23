@@ -6,7 +6,6 @@ information is a written-out function of the parameters. Each component
 is an ordinary derivative of the family's \\\mathbb{E}\[\ell\_{ab}\]\\;
 on the link scale the result is carried across by
 [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md).
-The elastic net has only the first derivatives.
 
 ## Arguments
 
