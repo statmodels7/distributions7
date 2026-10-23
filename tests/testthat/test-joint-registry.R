@@ -95,6 +95,7 @@ joint_twin <- function(cls, seed, eta_range = c(-1.5, 1.5), d = NULL,
     E <- distrib_expected_hessian(d, y, th)
     dE <- distrib_dexpected_hessian(d, y, th)
     dscale <- max(1e-4, abs(unlist(lapply(dE, function(v) v[is.finite(v)]))))
+    escale <- max(1e-4, abs(unlist(lapply(E, function(v) v[is.finite(v)]))))
   } else {
     # the orders beyond the coverage are NaN
     expect_true(all(is.nan(pr$info)) && all(is.nan(pr$dinfo)))
@@ -109,9 +110,21 @@ joint_twin <- function(cls, seed, eta_range = c(-1.5, 1.5), d = NULL,
       expect_agrees_on_scale(pr$hess[, a, b], h[[key]],
                              label = paste(cls, "Hessian", a, b))
       if (!full) next
-      expect_agrees_on_scale(pr$info[, a, b],
-                             rep_len(E[[key]], n),
-                             label = paste(cls, "expected", a, b))
+      if (loc_scale) {
+        # E_mu,sigma of a symmetric location-scale family is zero
+        # analytically: it is read on the scale of the whole information,
+        # where its two roundings differ between platforms (clang's fused
+        # multiply-adds on macOS: 4e-14 against a floor of 1e-4)
+        want <- rep_len(E[[key]], n)
+        ok <- is.finite(want)
+        expect_lte(max(abs(pr$info[ok, a, b] - want[ok])) / escale, 1e-10,
+                   label = paste(cls, "expected", a, b,
+                                 "(gap on the scale of the information)"))
+      } else {
+        expect_agrees_on_scale(pr$info[, a, b],
+                               rep_len(E[[key]], n),
+                               label = paste(cls, "expected", a, b))
+      }
       for (c in seq_len(P)) {
         want <- rep_len(dE[[dexpected_key(d@params, a, b, c)]], n)
         if (loc_scale) {
