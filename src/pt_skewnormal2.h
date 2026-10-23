@@ -228,6 +228,58 @@ inline Sn2ShapeAll sn2_shape_all(double g) {
   return P;
 }
 
+// every shape-only temporary of the sets above (p0 to p37, with the same
+// expressions), for the full quadrature, which reads all the G_ak at once
+struct Sn2ShapeFull {
+  double r, Dq;
+  double p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37;
+};
+
+inline Sn2ShapeFull sn2_shape_full(double g) {
+  Sn2ShapeFull P;
+  P.r = sn2_r(g);
+  P.Dq = sn2_Dq(g);
+  P.p0 = std::pow(P.r, 2) + 1;
+  P.p1 = std::pow(P.r, 2);
+  P.p2 = P.p1 + 1;
+  P.p3 = 1.0/P.p2;
+  P.p4 = 1.0/P.Dq;
+  P.p5 = std::pow(P.p2, -1.0/2.0);
+  P.p6 = std::pow(P.Dq, -2);
+  P.p7 = P.p1*P.p6;
+  P.p8 = 1.0/P.r;
+  P.p9 = 1.0/(4 - M_PI);
+  P.p10 = 1 - 2/M_PI;
+  P.p11 = 2*P.r;
+  P.p12 = std::pow(P.p2, -2);
+  P.p13 = P.p1*P.p3;
+  P.p14 = -P.p10;
+  P.p15 = P.p14*P.p7;
+  P.p16 = std::pow(P.r, 3);
+  P.p17 = P.p14*P.p6;
+  P.p18 = P.p10*P.p7;
+  P.p19 = P.p13 + P.p15 - 1;
+  P.p20 = 4 - M_PI;
+  P.p21 = (2.0/3.0)/P.p20;
+  P.p22 = std::pow(P.Dq, -3);
+  P.p23 = 2*P.p12;
+  P.p24 = -P.p1*P.p3 + 1;
+  P.p25 = 2*P.p3;
+  P.p26 = 1.0/P.p1;
+  P.p27 = std::pow(P.p20, -2);
+  P.p28 = 2*P.p26;
+  P.p29 = P.p10*P.p6;
+  P.p30 = 3*P.p12;
+  P.p31 = P.p16*P.p17;
+  P.p32 = 3*P.p18;
+  P.p33 = std::pow(P.p2, -3);
+  P.p34 = 8*P.p33;
+  P.p35 = 2*P.p29;
+  P.p36 = std::pow(P.r, 4);
+  P.p37 = P.p3*P.r;
+  return P;
+}
+
 template <class P_t>
 inline double sn2_grad_G1_0(double w, double X, double Z1, const P_t& P) {
   // far left of the step the forms below cancel; there by composition
@@ -589,6 +641,19 @@ inline double skewnormal2_series_dinfo(int k, double s, double r) {
   return sn2_spow(s, SN2_EP[k], 0) * sn2_eser(SN2_E[k], r, 1);
 }
 
+// the entry c of the expected Hessian, in the pair order mm, ss, gg, ms, mg,
+// sg, and its derivative in parameter d (0 mu, 1 sigma, 2 gamma1), for
+// |g| < SN2_GE
+inline double skewnormal2_series_pair_info(int c, double s, double r) {
+  return sn2_spow(s, SN2_EP[c], 0) * sn2_eser(SN2_E[c], r, 0);
+}
+
+inline double skewnormal2_series_pair_dinfo(int c, int d, double s, double r) {
+  if (d == 0) return 0.0;
+  if (d == 1) return sn2_spow(s, SN2_EP[c], 1) * sn2_eser(SN2_E[c], r, 0);
+  return sn2_spow(s, SN2_EP[c], 0) * sn2_eser(SN2_E[c], r, 1);
+}
+
 // the routers of the scalar registry: th = (mu, sigma, gamma1)
 inline void skewnormal2_score_curv(int k, double y, const double* th,
                                    double* out) {
@@ -754,6 +819,184 @@ inline void skewnormal2_joint_hess(double y, const double* th, double* out) {
   out[1] = out[3] = skewnormal2_hess_mu_sigma(G1_0, G2_0, w, s);
   out[2] = out[6] = skewnormal2_hess_mu_gamma1(G1_1, s);
   out[5] = out[7] = skewnormal2_hess_sigma_gamma1(G1_1, w, s);
+}
+
+// The third derivatives with a mixed index, from skewnormal2_deriv3_cpp
+// (skewnormal2.cpp)
+inline double skewnormal2_d3_mu_mu_sigma(double G2_0, double G3_0, double w,
+                                         double s) {
+  const double u0 = std::pow(s, -3);
+  return -u0*(2*G2_0 + G3_0*w);
+}
+
+inline double skewnormal2_d3_mu_mu_gamma1(double G2_1, double s) {
+  const double u1 = std::pow(s, -2);
+  return G2_1*u1;
+}
+
+inline double skewnormal2_d3_mu_sigma_sigma(double G1_0, double G2_0,
+                                            double G3_0, double w, double s) {
+  const double u0 = std::pow(s, -3);
+  const double u2 = std::pow(w, 2);
+  return -u0*(2*G1_0 + 4*G2_0*w + G3_0*u2);
+}
+
+inline double skewnormal2_d3_mu_sigma_gamma1(double G1_1, double G2_1,
+                                             double w, double s) {
+  const double u1 = std::pow(s, -2);
+  const double u3 = G2_1*w;
+  return u1*(G1_1 + u3);
+}
+
+inline double skewnormal2_d3_mu_gamma1_gamma1(double G1_2, double s) {
+  const double u4 = G1_2/s;
+  return -u4;
+}
+
+inline double skewnormal2_d3_sigma_sigma_gamma1(double G1_1, double G2_1,
+                                                double w, double s) {
+  const double u1 = std::pow(s, -2);
+  const double u3 = G2_1*w;
+  return u1*w*(2*G1_1 + u3);
+}
+
+inline double skewnormal2_d3_sigma_gamma1_gamma1(double G1_2, double w,
+                                                 double s) {
+  const double u4 = G1_2/s;
+  return -u4*w;
+}
+
+// the ten distinct third derivatives, in the order (mmm, mms, mmg, mss, msg,
+// mgg, sss, ssg, sgg, ggg), into the P = 3 array T[a + 3 b + 9 c] with every
+// permutation of the indices filled
+inline void skewnormal2_fill_t3(const double* v, double* T) {
+  static const int idx[10][3] = {{0, 0, 0}, {0, 0, 1}, {0, 0, 2}, {0, 1, 1},
+                                 {0, 1, 2}, {0, 2, 2}, {1, 1, 1}, {1, 1, 2},
+                                 {1, 2, 2}, {2, 2, 2}};
+  static const int perm[6][3] = {{0, 1, 2}, {0, 2, 1}, {1, 0, 2},
+                                 {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
+  for (int q = 0; q < 10; ++q)
+    for (int p = 0; p < 6; ++p)
+      T[idx[q][perm[p][0]] + 3 * idx[q][perm[p][1]] +
+        9 * idx[q][perm[p][2]]] = v[q];
+}
+
+// The full standardized pair at shape = (gamma1), by the rule of
+// pt_loc_scale.h centered at the step w = -r, as skewnormal2_quad_diag()
+// loops: at each node the score g, the Hessian H and the third derivatives
+// T3 in (mu, sigma, gamma1) at location 0 and scale 1, added with the density
+// weight. I is 3 x 3 and D is 3 x 3 x 3, column-major. The score takes G_10
+// in its own form (sn2_grad_G1_0), the Hessian and the third derivatives take
+// the forms of their kernels; far left of the step, where those cancel, all
+// the G_ak come from one composition of order three.
+inline void skewnormal2_quad_full(const double* shape, double* I, double* D) {
+  const double gv = shape[0];
+  const Sn2ShapeFull P = sn2_shape_full(gv);
+  const double r = P.r, Dq = P.Dq;
+  const LocScaleRule R = loc_scale_rule();
+  LocScaleFull S(3);
+  for (int j = 0; j < R.n; ++j) {
+    const double w = R.x[j] - r;
+    const double fw = std::exp(skewnormal2_logpdf(w, 0.0, 1.0, gv)) * R.w[j];
+    if (fw == 0.0) continue;
+    const double X = r / Dq * (w + r) / d7::sqrt_cr(1.0 + r * r);
+    const double Z1 = sn2_zeta1(X);
+    const bool ser = sn2_series_region(X, r);
+    double G1_0g, G1_0, G2_0, G3_0, G0_1, G0_2, G0_3, G1_1h, G1_1, G2_1, G1_2;
+    if (X < -1.0 && !ser) {
+      double GG[6][6];
+      sn2_G_fdb(w, r, Dq, 3, GG);
+      G1_0g = G1_0 = GG[1][0];
+      G2_0 = GG[2][0];
+      G3_0 = GG[3][0];
+      G0_1 = GG[0][1];
+      G0_2 = GG[0][2];
+      G0_3 = GG[0][3];
+      G1_1h = G1_1 = GG[1][1];
+      G2_1 = GG[2][1];
+      G1_2 = GG[1][2];
+    } else {
+      G1_0g = sn2_grad_G1_0(w, X, Z1, P);
+      G1_0 = sn2_G1_0(w, X, Z1, P);
+      G2_0 = sn2_G2_0(w, X, Z1, P);
+      G3_0 = sn2_G3_0(w, X, Z1, P);
+      G0_1 = sn2_G0_1(w, X, Z1, P, ser ? sn2_G_series(0, 1, w, r) : 0.0);
+      G0_2 = sn2_G0_2(w, X, Z1, P, ser ? sn2_G_series(0, 2, w, r) : 0.0);
+      G0_3 = sn2_G0_3(w, X, Z1, P, ser ? sn2_G_series(0, 3, w, r) : 0.0);
+      G1_1h = sn2_hess_G1_1(w, X, Z1, P, ser ? sn2_G_series(1, 1, w, r) : 0.0);
+      G1_1 = sn2_G1_1(w, X, Z1, P, ser ? sn2_G_series(1, 1, w, r) : 0.0);
+      G2_1 = sn2_G2_1(w, X, Z1, P, ser ? sn2_G_series(2, 1, w, r) : 0.0);
+      G1_2 = sn2_G1_2(w, X, Z1, P, ser ? sn2_G_series(1, 2, w, r) : 0.0);
+    }
+    double g[3], H[9], T3[27];
+    g[0] = skewnormal2_score_mu(G1_0g, 1.0);
+    g[1] = skewnormal2_score_sigma(G1_0g, w, 1.0);
+    g[2] = skewnormal2_score_gamma1(G0_1);
+    H[0] = skewnormal2_hess_mu_mu(G2_0, 1.0);
+    H[4] = skewnormal2_hess_sigma_sigma(G1_0, G2_0, w, 1.0);
+    H[8] = skewnormal2_hess_gamma1_gamma1(G0_2);
+    H[1] = H[3] = skewnormal2_hess_mu_sigma(G1_0, G2_0, w, 1.0);
+    H[2] = H[6] = skewnormal2_hess_mu_gamma1(G1_1h, 1.0);
+    H[5] = H[7] = skewnormal2_hess_sigma_gamma1(G1_1h, w, 1.0);
+    double v[10];
+    v[0] = skewnormal2_d3_mu_mu_mu(G3_0, 1.0);
+    v[1] = skewnormal2_d3_mu_mu_sigma(G2_0, G3_0, w, 1.0);
+    v[2] = skewnormal2_d3_mu_mu_gamma1(G2_1, 1.0);
+    v[3] = skewnormal2_d3_mu_sigma_sigma(G1_0, G2_0, G3_0, w, 1.0);
+    v[4] = skewnormal2_d3_mu_sigma_gamma1(G1_1, G2_1, w, 1.0);
+    v[5] = skewnormal2_d3_mu_gamma1_gamma1(G1_2, 1.0);
+    v[6] = skewnormal2_d3_sigma_sigma_sigma(G1_0, G2_0, G3_0, w, 1.0);
+    v[7] = skewnormal2_d3_sigma_sigma_gamma1(G1_1, G2_1, w, 1.0);
+    v[8] = skewnormal2_d3_sigma_gamma1_gamma1(G1_2, w, 1.0);
+    v[9] = skewnormal2_d3_gamma1_gamma1_gamma1(G0_3);
+    skewnormal2_fill_t3(v, T3);
+    S.add(fw, g, H, T3);
+  }
+  S.result(I, D);
+}
+
+// The routers of the joint registry for the expected Hessian and its
+// derivative, in (mu, sigma, gamma1): P x P and P x P x P, column-major, both
+// triangles filled. For |g| < SN2_GE they are the series of
+// skewnormal2_expected_series_cpp and skewnormal2_dexpected1_series_cpp (the
+// pairs in the order mm, ss, gg, ms, mg, sg; the information does not depend
+// on mu), and above it the full quadrature, kept per thread for the last
+// shape (tag 4 of loc_scale_diag_cpp()).
+inline void skewnormal2_joint_info(double y, const double* th, double* out) {
+  (void) y;
+  const double s = th[1], gv = th[2];
+  if (std::fabs(gv) < SN2_GE) {
+    static const int ia[6] = {0, 1, 2, 0, 0, 1}, ib[6] = {0, 1, 2, 1, 2, 2};
+    const double r = sn2_r(gv);
+    for (int c = 0; c < 6; ++c)
+      out[ia[c] + 3 * ib[c]] = out[ib[c] + 3 * ia[c]] =
+        skewnormal2_series_pair_info(c, s, r);
+    return;
+  }
+  const LocScaleFullSlot& slot = loc_scale_full_cached(
+    4, th + 2, 1, [&](double* I, double* D) {
+      skewnormal2_quad_full(th + 2, I, D);
+    });
+  loc_scale_full_info(slot, 3, s, out);
+}
+
+inline void skewnormal2_joint_dinfo(double y, const double* th, double* out) {
+  (void) y;
+  const double s = th[1], gv = th[2];
+  if (std::fabs(gv) < SN2_GE) {
+    static const int ia[6] = {0, 1, 2, 0, 0, 1}, ib[6] = {0, 1, 2, 1, 2, 2};
+    const double r = sn2_r(gv);
+    for (int c = 0; c < 6; ++c)
+      for (int d = 0; d < 3; ++d)
+        out[ia[c] + 3 * ib[c] + 9 * d] = out[ib[c] + 3 * ia[c] + 9 * d] =
+          skewnormal2_series_pair_dinfo(c, d, s, r);
+    return;
+  }
+  const LocScaleFullSlot& slot = loc_scale_full_cached(
+    4, th + 2, 1, [&](double* I, double* D) {
+      skewnormal2_quad_full(th + 2, I, D);
+    });
+  loc_scale_full_dinfo(slot, 3, s, out);
 }
 
 } // namespace d7

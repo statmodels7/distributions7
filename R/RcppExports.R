@@ -421,6 +421,10 @@ enet_dexpected1_cpp <- function(y, mu, lambda, alpha, threads = 1L) {
     .Call(`_distributions7_enet_dexpected1_cpp`, y, mu, lambda, alpha, threads)
 }
 
+enet_dexpected2_cpp <- function(y, mu, lambda, alpha, threads = 1L) {
+    .Call(`_distributions7_enet_dexpected2_cpp`, y, mu, lambda, alpha, threads)
+}
+
 enet_logM_derivs_cpp <- function(x, order) {
     .Call(`_distributions7_enet_logM_derivs_cpp`, x, order)
 }

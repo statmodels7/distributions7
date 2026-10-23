@@ -41,6 +41,7 @@
 \alias{distrib_dexpected_hessian.Laplace2Distrib}
 \alias{distrib_d2expected_hessian.Laplace2Distrib}
 \alias{distrib_dexpected_hessian.EnetDistrib}
+\alias{distrib_d2expected_hessian.EnetDistrib}
 \title{Derivatives of the Expected Information, Elementary Families}
 \arguments{
 \item{distrib}{A distribution object of one of the classes above.}
@@ -65,8 +66,7 @@ Computes the first and second derivatives of the expected information in
 the parameters, from compiled kernels, for the families whose expected
 information is a written-out function of the parameters. Each component is
 an ordinary derivative of the family's \eqn{\mathbb{E}[\ell_{ab}]}; on the
-link scale the result is carried across by \code{\link[=dexpected_link]{dexpected_link()}}. The elastic
-net has only the first derivatives.
+link scale the result is carried across by \code{\link[=dexpected_link]{dexpected_link()}}.
 }
 \details{
 The expected informations that are differentiated are the following, on the

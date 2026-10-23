@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "pig_asym.h"
 #include "pt_sqrt.h"
+#include "pt_pig_debye.h"
 
 // The Poisson-inverse Gaussian in both parametrizations: what the kernels of
 // pig_hd.cpp and the scalar registry share. The special functions are
@@ -18,69 +19,195 @@
 
 namespace d7 {
 
-// psi(alpha) = -alpha + log S_y(alpha) and four derivatives in alpha.
-// The terms of S are positive, summed by the log-sum-exp anchored at the
-// largest; the derivatives are cumulants of the rising-factorial moments
-// m_r = E[k (k+1) ... (k+r-1)] under the normalized terms, with
-// S^(r)/S = (-1)^r m_r / alpha^r.
+// psi(alpha) = -alpha + log S_y(alpha) and four derivatives in alpha, where
+// S_y(alpha) = sum_{k<y} t_k, t_0 = 1, t_{k+1} = t_k w (y + k)(y - k - 1)/(k+1),
+// w = 1/(2 alpha), is the Bessel polynomial; S_y = e^alpha sqrt(2 alpha/pi)
+// K_{y-1/2}(alpha). Two routes, by the count:
+//
+//   y < PIG_Y_DEBYE: the sum itself, at most 20 terms, psi_derivs_sum().
+//   y >= PIG_Y_DEBYE: the uniform (Debye) expansion of K_nu(alpha), nu = y - 1/2,
+//     with every derivative in closed form, psi_derivs_debye(): the cost does
+//     not depend on y, which may reach 2^53.
+//
+// Both write h[0..4] whatever the order, the unread ones as zero, and
+// logS = log S_y and A1 = d log S_y / d alpha when asked for.
+
+// The sum, for 1 <= y < 21. With w <= 1 (alpha >= 1/2) the terms are formed
+// forward from t_0 = 1; with w > 1 they are formed backward from the last
+// term, t_{n-1} = 1 in the units of the anchor, whose log is carried apart,
+// so no power of w is formed. The derivatives of log S in alpha are
+// combinations with positive coefficients of the cumulants kappa_j of k
+// under the weights t_k / S (s = -log alpha):
+//   d log S   = -kappa_1 / a
+//   d^2       = (kappa_2 + kappa_1) / a^2
+//   d^3       = -(kappa_3 + 3 kappa_2 + 2 kappa_1) / a^3
+//   d^4       = (kappa_4 + 6 kappa_3 + 11 kappa_2 + 6 kappa_1) / a^4.
+// The cumulants of order two to four are taken about the mean, which is
+// found first; the rising-factorial moments of the former code cancel at
+// order four.
+const double PIG_Y_DEBYE = 21.0;
+
+inline void psi_derivs_sum(double y, double alpha, int order, double h[5],
+                           double* logS, double* A1out) {
+    const int n = (int) y;
+    double t[20];
+    double anchor = 0.0;
+    if (alpha >= 0.5) {
+        const double w = 0.5 / alpha;
+        t[0] = 1.0;
+        for (int k = 0; k < n - 1; ++k)
+            t[k + 1] = t[k] * w * (y + k) * (y - k - 1.0) / (k + 1.0);
+    } else {
+        t[n - 1] = 1.0;
+        for (int k = n - 2; k >= 0; --k)
+            t[k] = t[k + 1] * (2.0 * alpha * (k + 1.0)) /
+                ((y + k) * (y - k - 1.0));
+        anchor = R::lgammafn(y + (n - 1)) - R::lgammafn(y - (n - 1)) -
+            R::lgammafn((double) n) - (n - 1) * std::log(2.0 * alpha);
+    }
+    // S - t_0, summed from the smallest terms; forward t_0 = 1, and
+    // log S = log1p(S - 1) keeps the digits when S is close to one
+    // (a large alpha), where log(S) loses them.
+    double Sr = 0.0, s1 = 0.0;
+    for (int k = n - 1; k >= 1; --k) {
+        Sr += t[k];
+        s1 += k * t[k];
+    }
+    const double S = t[0] + Sr;
+    const double k1 = s1 / S;
+    double k2 = 0.0, k3 = 0.0, k4 = 0.0;
+    if (order >= 2) {
+        double c2 = 0.0, c3 = 0.0, c4 = 0.0;
+        for (int k = 0; k < n; ++k) {
+            const double d = k - k1, d2 = d * d;
+            c2 += t[k] * d2;
+            if (order < 3) continue;
+            c3 += t[k] * d2 * d;
+            if (order < 4) continue;
+            c4 += t[k] * d2 * d2;
+        }
+        c2 /= S; c3 /= S; c4 /= S;
+        k2 = c2; k3 = c3; k4 = c4 - 3.0 * c2 * c2;
+    }
+    const double ls = (alpha >= 0.5) ? std::log1p(Sr) : anchor + std::log(S);
+    const double ia = 1.0 / alpha;
+    if (logS) *logS = ls;
+    if (A1out) *A1out = -k1 * ia;
+    h[0] = -alpha + ls;
+    h[1] = h[2] = h[3] = h[4] = 0.0;
+    if (order < 1) return;
+    h[1] = -1.0 - k1 * ia;
+    if (order < 2) return;
+    h[2] = (k2 + k1) * ia * ia;
+    if (order < 3) return;
+    h[3] = -(k3 + 3.0 * k2 + 2.0 * k1) * ia * ia * ia;
+    if (order < 4) return;
+    h[4] = (k4 + 6.0 * k3 + 11.0 * k2 + 6.0 * k1) * ia * ia * ia * ia;
+}
+
+// The uniform expansion, for y >= 21. With nu = y - 1/2, s = sqrt(nu^2 +
+// alpha^2), c = nu / s, d = alpha / s and the Debye polynomial
+// P(c) = sum_{k<=K} (-1)^k u_k(c) nu^-k,
+//   psi = -(1/4) log(1 + nu^2/alpha^2) - nu eta + log P(c),
+//   eta = s/nu + log(alpha / (nu + s)),
+// the first two terms being elementary in alpha (the A and B pieces below
+// are the derivatives of -nu eta and of the logarithm), and the derivatives
+// of log P(c(alpha)) following from the cumulants of P in c and the
+// derivatives of c in alpha (Faa di Bruno written out). K is the smallest
+// number of terms for which the first omitted one is below 1e-17
+// (PIG_UK_NU); it falls from 15 at nu = 20.5 to 1 at nu = 1e9. log S and
+// A1 are formed without cancellation: -alpha + nu eta, of size nu, would
+// swallow log S, so log S is assembled from -nu^2/(alpha + s), a log1p and
+// log1p(P - 1), and A1 from -nu^2/(alpha (s + alpha)).
+inline void psi_derivs_debye(double y, double alpha, int order, double h[5],
+                             double* logS, double* A1out) {
+    const double nu = y - 0.5, x = alpha;
+    const double s = std::hypot(nu, x);
+    const double c = nu / s, d = x / s;
+    const double u = 1.0 / x, v = 1.0 / s;
+    const double n2 = nu * nu;
+    int K = PIG_KD;
+    for (int k = 0; k <= PIG_KD; ++k)
+        if (nu > PIG_UK_NU[k]) { K = k; break; }
+    // P(c) as a polynomial in c, then P and its derivatives at c by Horner
+    double P[3 * PIG_KD + 1];
+    for (int e = 0; e <= 3 * K; ++e) P[e] = 0.0;
+    const double inu = 1.0 / nu;
+    double f = 1.0;
+    for (int k = 0; k <= K; ++k) {
+        const double* uk = PIG_U + PIG_UOFF[k];
+        for (int e = 0; e <= 3 * k; ++e) P[e] += f * uk[e];
+        f *= -inu;
+    }
+    const int nd = (order < 1) ? 1 : order;
+    double q[5] = {0.0, 0.0, 0.0, 0.0, 0.0};   // Taylor coefficients in c
+    for (int e = 3 * K; e >= 0; --e) {
+        for (int i = nd; i >= 1; --i) q[i] = q[i] * c + q[i - 1];
+        q[0] = q[0] * c + P[e];
+    }
+    const double p0 = q[0];
+    // the same Horner without the constant term, for log1p(p0 - 1)
+    double acc = 0.0;
+    for (int e = 3 * K; e >= 1; --e) acc = acc * c + P[e];
+    const double q0 = acc * c;
+    const double r1 = q[1] / p0;
+    const double t1 = -c * d * v;
+    const double g1 = r1 * t1;
+    // log(1 + nu^2/alpha^2), without overflow of the square
+    const double qn = nu * u;
+    const double lq = (qn > 1e100) ? 2.0 * std::log(qn) : std::log1p(qn * qn);
+    if (logS) {
+        const double dd = (nu + n2 / (s + x)) * u;
+        *logS = -n2 / (x + s) + nu * std::log1p(dd) - 0.25 * lq +
+            std::log1p(q0);
+    }
+    if (A1out)
+        *A1out = -n2 * u / (s + x) + 0.5 * c * c * u + g1;
+    const double sn = s / nu;
+    const double eta = sn + std::log((x / nu) / (1.0 + sn));
+    h[0] = -0.25 * lq - nu * eta + std::log(p0);
+    h[1] = h[2] = h[3] = h[4] = 0.0;
+    if (order < 1) return;
+    const double E1 = -s * u + 0.5 * c * c * u;
+    h[1] = E1 + g1;
+    if (order < 2) return;
+    const double nc = nu * c, d2 = d * d;
+    const double r2 = 2.0 * q[2] / p0;
+    const double l2 = r2 - r1 * r1;
+    const double t2 = c * (3.0 * d2 - 1.0) * v * v;
+    const double A1e = nc * u * u;
+    const double B2 = -0.5 * c * c * (1.0 + 2.0 * d2) * u * u;
+    h[2] = A1e + B2 + (r1 * t2 + l2 * t1 * t1);
+    if (order < 3) return;
+    const double r3 = 6.0 * q[3] / p0;
+    const double l3 = r3 - 3.0 * r1 * r2 + 2.0 * r1 * r1 * r1;
+    const double t3 = -3.0 * c * d * (5.0 * d2 - 3.0) * v * v * v;
+    const double d4 = d2 * d2;
+    const double A2e = -nc * (2.0 + d2) * u * u * u;
+    const double B3 = c * c * (1.0 + d2 + 4.0 * d4) * u * u * u;
+    h[3] = A2e + B3 + (r1 * t3 + 3.0 * l2 * t1 * t2 + l3 * t1 * t1 * t1);
+    if (order < 4) return;
+    const double r4 = 24.0 * q[4] / p0;
+    const double l4 = r4 - 4.0 * r1 * r3 - 3.0 * r2 * r2 +
+        12.0 * r1 * r1 * r2 - 6.0 * r1 * r1 * r1 * r1;
+    const double t4 = 3.0 * c * (3.0 - 30.0 * d2 + 35.0 * d4) * v * v * v * v;
+    const double A3e = 3.0 * nc * (2.0 + d2 + d4) * u * u * u * u;
+    const double B4 = -3.0 * c * c * (1.0 + d2 + 8.0 * d4 * d2) *
+        u * u * u * u;
+    h[4] = A3e + B4 + (r1 * t4 + l2 * (4.0 * t1 * t3 + 3.0 * t2 * t2) +
+        6.0 * l3 * t1 * t1 * t2 + l4 * t1 * t1 * t1 * t1);
+}
+
 inline void psi_derivs(double y, double alpha, int order, double h[5],
                        double* logS = nullptr, double* A1out = nullptr) {
-    if (y < 0.5) {
+    if (y < 1.0) {
         h[0] = -alpha; h[1] = -1.0; h[2] = h[3] = h[4] = 0.0;
         if (logS) *logS = 0.0;
         if (A1out) *A1out = 0.0;
         return;
     }
-    int n = (int) y;
-    double l2a = std::log(2.0 * alpha);
-    double mx = -1e308;
-    std::vector<double> la(n);
-    for (int k = 0; k < n; ++k) {
-        la[k] = R::lgammafn(y + k) - R::lgammafn(k + 1.0) -
-            R::lgammafn(y - k) - k * l2a;
-        if (la[k] > mx) mx = la[k];
-    }
-    // Only the moments the requested order reads are accumulated: the
-    // value needs none of them, the score only the first.
-    double W = 0, m1 = 0, m2 = 0, m3 = 0, m4 = 0;
-    for (int k = 0; k < n; ++k) {
-        double u = std::exp(la[k] - mx);
-        W += u;
-        if (order < 1) continue;
-        m1 += k * u;
-        if (order < 2) continue;
-        m2 += k * (k + 1.0) * u;
-        if (order < 3) continue;
-        m3 += k * (k + 1.0) * (k + 2.0) * u;
-        if (order < 4) continue;
-        m4 += k * (k + 1.0) * (k + 2.0) * (k + 3.0) * u;
-    }
-    m1 /= W; m2 /= W; m3 /= W; m4 /= W;
-    double A1 = -m1 / alpha;
-    double A2 = m2 / (alpha * alpha);
-    double A3 = -m3 / (alpha * alpha * alpha);
-    double A4 = m4 / (alpha * alpha * alpha * alpha);
-    // log S alone is reported through logS. Recovering it from h[0] by
-    // adding alpha back is the cancellation this exists to avoid: h[0] is
-    // of size alpha and log S is of size log(y!).
-    if (logS) *logS = mx + std::log(W);
-    // A1 is d log S / d alpha, of size y^2/alpha^2. Recovering it from
-    // h[1] by adding one back is the same cancellation again.
-    if (A1out) *A1out = A1;
-    // Every entry is written whatever the order, the unread ones as zero,
-    // so a caller that declares h[5] and asks for the value alone never
-    // reads an uninitialized double.
-    h[0] = -alpha + mx + std::log(W);
-    h[1] = h[2] = h[3] = h[4] = 0.0;
-    if (order < 1) return;
-    h[1] = -1.0 + A1;
-    if (order < 2) return;
-    h[2] = A2 - A1 * A1;
-    if (order < 3) return;
-    h[3] = A3 - 3.0 * A1 * A2 + 2.0 * A1 * A1 * A1;
-    if (order < 4) return;
-    h[4] = A4 - 4.0 * A1 * A3 - 3.0 * A2 * A2 +
-        12.0 * A1 * A1 * A2 - 6.0 * A1 * A1 * A1 * A1;
+    if (y < PIG_Y_DEBYE) psi_derivs_sum(y, alpha, order, h, logS, A1out);
+    else psi_derivs_debye(y, alpha, order, h, logS, A1out);
 }
 
 // The block's column layout, which the wrappers and the guard read:

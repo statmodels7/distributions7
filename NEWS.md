@@ -1,3 +1,27 @@
+# distributions7 0.84.0
+
+* The expected information of the skew normals, the skew t and the two
+  pseudo-Huber families, and its derivative, are entries of the joint C
+  registry: the quadrature of `loc_scale_expected()` is compiled for the full
+  matrices (`LocScaleFull` in `pt_loc_scale.h`), one cached rule per shape and
+  thread. The five families are covered at all four orders.
+* `negbin1`'s expected information and its first two derivatives come from an
+  exact convergent series in mu/theta and 1/(1 + theta) wherever it meets
+  1e-13 (theta >= 2, mu/theta <= 0.3), in place of the sums over the support:
+  a row at theta = 1e8 cost 11 s. The sums are capped at 1e6 terms, as
+  negbin2's are: a row at mu = 1.8e308 cost 85 s at the cap of 2e9.
+* `negbin2`'s derivatives in theta at y = 0 and y = 1 come from closed forms
+  without cancellation; at mu = 1e-8, theta = 50 the score was 4.8e-6 off
+  and the Hessian 2.8e-5, both now within 1e-12 of a 60-digit reference.
+* The Poisson-inverse Gaussian's psi and its derivatives come, for counts of
+  21 and more, from the uniform (Debye) expansion of the Bessel function
+  with every derivative in closed form, and below from the sum with its
+  cumulants taken about the mean. The orders three and four in alpha at
+  y = 2000 were 2.9e-6 and 3.7e-3 off and are within 3.3e-13; the cost no
+  longer grows with the count, and a count of 1e12 is no longer rejected.
+* `distrib_d2expected_hessian()` has an analytic method for the elastic net
+  (`enet_dexpected2_cpp()`), so its scaled score-driven fits run.
+
 # distributions7 0.83.3
 
 * `zero_inflated()` forms the parent's mass away from zero as

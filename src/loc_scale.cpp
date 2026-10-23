@@ -50,6 +50,8 @@ thread_local d7::LocScaleSlot slots[4] = {
     {-1, 0, {0.0, 0.0}, {0.0, 0.0}}, {-1, 0, {0.0, 0.0}, {0.0, 0.0}},
     {-1, 0, {0.0, 0.0}, {0.0, 0.0}}, {-1, 0, {0.0, 0.0}, {0.0, 0.0}}};
 
+thread_local d7::LocScaleFullSlot full_slot = {-1, 0, {0.0, 0.0}, {0.0}, {0.0}};
+
 }  // namespace
 
 namespace d7 {
@@ -61,6 +63,8 @@ LocScaleRule loc_scale_rule() {
 }
 
 LocScaleSlot& loc_scale_slot(int k) { return slots[k]; }
+
+LocScaleFullSlot& loc_scale_full_slot() { return full_slot; }
 
 }  // namespace d7
 

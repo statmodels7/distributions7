@@ -247,9 +247,9 @@ List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta,
 
         grad_mu[i] = d7::negbin2_score_mu(y[i], m, th);
         // the two brackets of the rewrite, each cancellation performed
-        // symbolically: see the note at the head of this file
-        grad_theta[i] = d7::negbin2_score_theta(d7::psi_A_rest(y[i], th),
-                                                d7::negbin2_Ew(y[i], m, th));
+        // symbolically (see the note at the head of this file), and the
+        // closed forms of pt_negbin2.h at y = 0 and y = 1
+        grad_theta[i] = d7::negbin2_score_theta_y(y[i], m, th);
     });
 
     return List::create(Named("mu") = grad_mu, Named("theta") = grad_theta);

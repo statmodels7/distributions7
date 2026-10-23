@@ -38,6 +38,77 @@ inline double negbin2_Ew(double y, double m, double th) {
     return d7::psi_Ew2((y + th) / th_plus_mu, (y - m) / th_plus_mu);
 }
 
+// THE DERIVATIVES IN theta AT y = 0 AND y = 1. There the general forms above
+// lose relative accuracy as theta^2/mu: at y = 1 the score is of order
+// mu/theta^2 and is formed as A + E from two terms of order 1/theta (1.4e-9
+// at mu = 1e-6, theta = 5; 4.8e-6 at mu = 1e-8, theta = 50, and 2.8e-5 in the
+// Hessian), and at y = 0 orders three and four lose the same way. With
+// h = theta L and L = log1p(mu/theta), c = theta + mu,
+//   log f(0) = -h,   log f(1) = log mu - h - L,
+// and only h' = L - x/(1 + x), x = mu/theta, cancels: below x = 0.5 it is the
+// series sum_{n>=2} (-1)^n (n - 1)/n x^n. The higher derivatives of h and
+// every derivative of L are sums of terms of one sign,
+//   h''   = -mu^2/(theta c^2),
+//   h'''  = mu^2/(theta^2 c^2) + 2 mu^2/(theta c^3),
+//   h'''' = -2 mu^2/(theta^3 c^2) - 4 mu^2/(theta^2 c^3) - 6 mu^2/(theta c^4),
+//   L' = -mu/(theta c),  L'' = mu (2 theta + mu)/(theta^2 c^2),
+//   L''' = -2 mu (3 theta^2 + 3 theta mu + mu^2)/(theta^3 c^3),
+//   L'''' = 6 mu (4 theta^3 + 6 theta^2 mu + 4 theta mu^2 + mu^3)/(theta^4 c^4),
+// written below in 1/theta and 1/c so that nothing overflows at large theta.
+// Against mpmath (misure_gas_congiunto/c/fase1/c/nb2_y01_proto.py) at
+// 160 digits, mu 1e-8 to 1e3 and theta 1e-2 to 1e12: 1e-12 at worst (mu =
+// 1e3, theta = 2, order three), 4e-16 on the small-mu grid of item (c).
+inline double negbin2_h1(double x) {
+    if (x < 0.5) {
+        double s = 0.0, p = x * x;
+        for (int n = 2; n < 200; ++n) {
+            const double t = p * (n - 1.0) / n;
+            s += (n % 2 == 0) ? t : -t;
+            if (t < 1e-17 * x * x * 0.5) break;
+            p *= x;
+        }
+        return s;
+    }
+    return std::log1p(x) - x / (1.0 + x);
+}
+
+// d^order/dtheta^order log f(y) for y = 0 or 1, order 1 to 4
+inline double negbin2_theta_y01(double y, double m, double th, int order) {
+    // with u = 1/theta and v = 1/c the derivatives of L are, from
+    // L^(k) = (-1)^k (k - 1)! (u^k - v^k) and u - v = a v,
+    //   L' = -a v, L'' = a v (u + v), L''' = -2 a v (u^2 + u v + v^2),
+    //   L'''' = 6 a v (u^3 + u^2 v + u v^2 + v^3),
+    // and those of h are a b v times a polynomial in u and v
+    const double c = th + m, a = m / th, b = m / c;
+    const double u = 1.0 / th, v = 1.0 / c, av = a * v, abv = a * b * v;
+    double h, L;
+    switch (order) {
+    case 1:
+        h = negbin2_h1(a);
+        L = -av;
+        break;
+    case 2:
+        h = -abv;
+        L = av * (u + v);
+        break;
+    case 3:
+        h = abv * (u + 2.0 * v);
+        L = -2.0 * av * (u * u + u * v + v * v);
+        break;
+    default:
+        h = -abv * (2.0 * u * u + 4.0 * u * v + 6.0 * v * v);
+        L = 6.0 * av * (u * u * u + u * u * v + u * v * v + v * v * v);
+    }
+    return (y < 0.5) ? -h : -h - L;
+}
+
+// the score in theta at one observation, through the closed forms at y = 0
+// and y = 1 and the two remainders elsewhere
+inline double negbin2_score_theta_y(double y, double m, double th) {
+    if (y < 1.5) return negbin2_theta_y01(y, m, th, 1);
+    return negbin2_score_theta(d7::psi_A_rest(y, th), negbin2_Ew(y, m, th));
+}
+
 inline double negbin2_hess_mu_mu(double y, double m, double th) {
     // -T_2 of count_bracket() (pt_discrete_pow.h): written directly, the two
     // quotients agree to a relative theta/mu and the value, of order theta,
@@ -50,6 +121,7 @@ inline double negbin2_hess_mu_mu(double y, double m, double th) {
 // remainder T
 inline double negbin2_hess_theta_theta(double y, double m, double th,
                                        double T) {
+    if (y < 1.5) return negbin2_theta_y01(y, m, th, 2);
     double th_plus_mu = th + m;
     double th_plus_mu2 = th_plus_mu * th_plus_mu;
     double res = y - m;
@@ -273,8 +345,7 @@ inline void negbin2_score_curv(int k, double y, const double* th,
         out[0] = negbin2_score_mu(y, m, t);
         out[1] = negbin2_hess_mu_mu(y, m, t);
     } else {
-        out[0] = negbin2_score_theta(d7::psi_A_rest(y, t),
-                                     negbin2_Ew(y, m, t));
+        out[0] = negbin2_score_theta_y(y, m, t);
         out[1] = negbin2_hess_theta_theta(y, m, t, d7::psi_T_rest(y, t));
     }
 }
@@ -351,7 +422,7 @@ inline double negbin2_dexpected_theta_theta_mu(double mu, double theta) {
 inline void negbin2_joint_grad(double y, const double* th, double* out) {
     double m = th[0], t = th[1];
     out[0] = negbin2_score_mu(y, m, t);
-    out[1] = negbin2_score_theta(d7::psi_A_rest(y, t), negbin2_Ew(y, m, t));
+    out[1] = negbin2_score_theta_y(y, m, t);
 }
 
 inline void negbin2_joint_hess(double y, const double* th, double* out) {

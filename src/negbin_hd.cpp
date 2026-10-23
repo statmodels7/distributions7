@@ -64,8 +64,10 @@ using namespace Rcpp;
 
 static const double kObsCut = 100.0;   // use the sum when th > kObsCut * y
 
-// l_theta^3 and l_theta^4 at one observation, without the cancellation
+// l_theta^3 and l_theta^4 at one observation, without the cancellation;
+// at y = 0 and y = 1 the closed forms of pt_negbin2.h
 static inline double nb_d3_theta(double y, double mu, double th) {
+    if (y < 1.5) return d7::negbin2_theta_y01(y, mu, th, 3);
     const double s = th + mu, s3 = s * s * s;
     if (!(th > kObsCut * (y > 1.0 ? y : 1.0))) {
         const double s2 = s * s;
@@ -81,6 +83,7 @@ static inline double nb_d3_theta(double y, double mu, double th) {
 }
 
 static inline double nb_d4_theta(double y, double mu, double th) {
+    if (y < 1.5) return d7::negbin2_theta_y01(y, mu, th, 4);
     const double s = th + mu, s2 = s * s, s4 = s2 * s2;
     if (!(th > kObsCut * (y > 1.0 ? y : 1.0))) {
         const double s3 = s2 * s;

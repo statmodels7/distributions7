@@ -8,6 +8,7 @@
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
 #include "pt_ph_nu.h"
+#include "pt_pseudohuber2_table.h"
 
 // The pseudo-Huber family in its standard-deviation parametrization
 // (mu, sigma, nu): with R(nu) = sqrt(nu) K_2(sqrt(nu)) / K_1(sqrt(nu)),
@@ -269,9 +270,8 @@ inline void pseudohuber2_info_dinfo(int k, double y, const double* th,
 // The routers of the joint registry for the score and the Hessian: every
 // component at one observation, on the parameter scale, th = (mu, sigma,
 // nu), P = 3. The Hessian fills a full 3 x 3 matrix, column-major,
-// out[a + 3 b]. The expected information of this family is an exp-sinh
-// quadrature (the diagonal compiled in pseudohuber2_quad_diag(), the
-// sigma-nu entry only in R), so there is no joint_info and no joint_dinfo.
+// out[a + 3 b]. The expected information is an exp-sinh quadrature; its
+// routers, joint_info and joint_dinfo, follow pseudohuber2_quad_full() below.
 inline void pseudohuber2_joint_grad(double y, const double* th, double* out) {
     const double m = th[0], s = th[1], v = th[2];
     NuPart np = {{0}, {0}};
@@ -295,6 +295,92 @@ inline void pseudohuber2_joint_hess(double y, const double* th, double* out) {
     out[1] = out[3] = pseudohuber2_hess_mu_sigma(s, P, np, v);
     out[2] = out[6] = pseudohuber2_hess_mu_nu(s, P, np, v);
     out[5] = out[7] = pseudohuber2_hess_sigma_nu(z, s, P, np, v);
+}
+
+// sets T3 (3 x 3 x 3, index a + 3 b + 9 c) at the six permutations of (a, b, c)
+inline void pseudohuber2_t3_set(double* T3, int a, int b, int c, double x) {
+    T3[a + 3 * b + 9 * c] = T3[a + 3 * c + 9 * b] = T3[b + 3 * a + 9 * c] =
+        T3[b + 3 * c + 9 * a] = T3[c + 3 * a + 9 * b] =
+        T3[c + 3 * b + 9 * a] = x;
+}
+
+// The full standardized pair of the expected information at shape = (nu), by
+// the rule of pt_loc_scale.h: at each node the score g, the Hessian H and the
+// third derivative T3 of all three parameters (index 0 mu, 1 sigma, 2 nu), at
+// location 0 and scale 1, accumulated by LocScaleFull. The three pure third
+// derivatives are the functions pseudohuber2_quad_diag() calls; the other
+// seven come from ph2_hd_3() (pt_pseudohuber2_table.h) in the lexicographic
+// order of high_order() in pseudohuber2.cpp (mu_mu_sigma, mu_mu_nu,
+// mu_sigma_sigma, mu_sigma_nu, mu_nu_nu, sigma_sigma_nu, sigma_nu_nu are
+// entries 1, 2, 3, 4, 5, 7, 8), fed as that function feeds it. I is 3 x 3 and
+// D is 3 x 3 x 3, column-major, both triangles filled.
+inline void pseudohuber2_quad_full(const double* shape, double* I, double* D) {
+    const double v = shape[0];
+    NuPart np = {{0}, {0}};
+    nu_part(v, 3, np);
+    const Ph2Terms T = pseudohuber2_terms(v);
+    const LocScaleRule R = loc_scale_rule();
+    LocScaleFull S(3);
+    for (int j = 0; j < R.n; ++j) {
+        const double z = R.x[j];
+        const double fw = std::exp(pseudohuber2_logpdf(z, 0.0, 1.0, v, T)) * R.w[j];
+        if (fw == 0.0) continue;
+        const double r = z, w = r * r / 1.0;
+        const double Q = v + np.R[0] * w, Dq = d7::sqrt_cr(Q);
+        const Ph2Z P = ph2_z(z, v, np.R[0]);
+        double g[3], H[9], T3[27];
+        g[0] = pseudohuber2_score_mu(1.0, P, np);
+        g[1] = pseudohuber2_score_sigma(z, 1.0, P, np);
+        g[2] = pseudohuber2_score_nu(z, P, np);
+        H[0] = pseudohuber2_hess_mu_mu(1.0, P, np, v);
+        H[4] = pseudohuber2_hess_sigma_sigma(z, 1.0, P, np, v);
+        H[8] = pseudohuber2_hess_nu_nu(z, P, np);
+        H[1] = H[3] = pseudohuber2_hess_mu_sigma(1.0, P, np, v);
+        H[2] = H[6] = pseudohuber2_hess_mu_nu(1.0, P, np, v);
+        H[5] = H[7] = pseudohuber2_hess_sigma_nu(z, 1.0, P, np, v);
+        // the data part of order three, in u = r/A and 1/A, A as high_order()
+        // forms it at sigma = 1
+        const double A = std::hypot(d7::sqrt_cr(np.R[0]) * r, d7::sqrt_cr(v));
+        const double iA = 1.0 / A, uu = r * iA;
+        double comp[10];
+        ph2_hd_3(uu, v, iA, 1.0, np.R, comp);
+        pseudohuber2_t3_set(T3, 0, 0, 0,
+                            pseudohuber2_d3_mu_mu_mu(r, 1.0, Q, Dq, np));
+        pseudohuber2_t3_set(T3, 0, 0, 1, comp[1]);
+        pseudohuber2_t3_set(T3, 0, 0, 2, comp[2]);
+        pseudohuber2_t3_set(T3, 0, 1, 1, comp[3]);
+        pseudohuber2_t3_set(T3, 0, 1, 2, comp[4]);
+        pseudohuber2_t3_set(T3, 0, 2, 2, comp[5]);
+        pseudohuber2_t3_set(T3, 1, 1, 1,
+                            pseudohuber2_d3_sigma_sigma_sigma(1.0, 1.0, w, Q, Dq, np));
+        pseudohuber2_t3_set(T3, 1, 1, 2, comp[7]);
+        pseudohuber2_t3_set(T3, 1, 2, 2, comp[8]);
+        pseudohuber2_t3_set(T3, 2, 2, 2,
+                            pseudohuber2_d3_nu_nu_nu(w, Q, Dq, np));
+        S.add(fw, g, H, T3);
+    }
+    S.result(I, D);
+}
+
+// The routers of the joint registry for the expected Hessian E[l_ab] (3 x 3,
+// column-major, out[a + 3 b]) and its derivative in parameter c (3 x 3 x 3,
+// out[a + 3 b + 9 c]), both triangles filled, th = (mu, sigma, nu). The
+// standardized pair is computed once per distinct nu on each thread and
+// scaled by sigma.
+inline void pseudohuber2_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    const double* sh = th + 2;
+    const LocScaleFullSlot& s = loc_scale_full_cached(3, sh, 1,
+        [&](double* I, double* D) { pseudohuber2_quad_full(sh, I, D); });
+    loc_scale_full_info(s, 3, th[1], out);
+}
+
+inline void pseudohuber2_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    const double* sh = th + 2;
+    const LocScaleFullSlot& s = loc_scale_full_cached(3, sh, 1,
+        [&](double* I, double* D) { pseudohuber2_quad_full(sh, I, D); });
+    loc_scale_full_dinfo(s, 3, th[1], out);
 }
 
 } // namespace d7

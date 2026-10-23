@@ -1458,6 +1458,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// enet_dexpected2_cpp
+List enet_dexpected2_cpp(NumericVector y, NumericVector mu, NumericVector lambda, NumericVector alpha, int threads);
+RcppExport SEXP _distributions7_enet_dexpected2_cpp(SEXP ySEXP, SEXP muSEXP, SEXP lambdaSEXP, SEXP alphaSEXP, SEXP threadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type threads(threadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(enet_dexpected2_cpp(y, mu, lambda, alpha, threads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // enet_logM_derivs_cpp
 List enet_logM_derivs_cpp(NumericVector x, int order);
 RcppExport SEXP _distributions7_enet_logM_derivs_cpp(SEXP xSEXP, SEXP orderSEXP) {
@@ -6719,6 +6734,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_enet_hessian_cpp", (DL_FUNC) &_distributions7_enet_hessian_cpp, 5},
     {"_distributions7_enet_expected_hessian_cpp", (DL_FUNC) &_distributions7_enet_expected_hessian_cpp, 5},
     {"_distributions7_enet_dexpected1_cpp", (DL_FUNC) &_distributions7_enet_dexpected1_cpp, 5},
+    {"_distributions7_enet_dexpected2_cpp", (DL_FUNC) &_distributions7_enet_dexpected2_cpp, 5},
     {"_distributions7_enet_logM_derivs_cpp", (DL_FUNC) &_distributions7_enet_logM_derivs_cpp, 2},
     {"_distributions7_enet_logz_ac_cpp", (DL_FUNC) &_distributions7_enet_logz_ac_cpp, 3},
     {"_distributions7_enet_deriv3_cpp", (DL_FUNC) &_distributions7_enet_deriv3_cpp, 4},

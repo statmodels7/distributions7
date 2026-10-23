@@ -2718,10 +2718,9 @@ int d7_joint_covered(int id) {
     case 0: case 1: case 3: case 4: case 10: case 11: case 12: case 13:
     case 14: case 15: case 16: case 17: case 18: case 19: case 20: case 21:
     case 22: case 23: case 24: case 25: case 26: case 27: case 28: case 29:
-    case 30: case 31: case 32: case 33: case 39: case 40: case 41: case 42:
+    case 30: case 31: case 32: case 33: case 34: case 35: case 36: case 37:
+    case 38: case 39: case 40: case 41: case 42:
         return 4;
-    case 34: case 35: case 36: case 37: case 38:
-        return 2;
     default: return d7_n_params[id] == 1 ? 4 : 0;
     }
 }
@@ -2892,6 +2891,11 @@ void d7_joint_info(int id, double y, const double* th, double* out) {
     case 40: d7::pig2_joint_info(y, th, out); break;
     case 41: d7::betabinom1_joint_info(y, th, out); break;
     case 42: d7::betabinom2_joint_info(y, th, out); break;
+    case 34: d7::skewnormal1_joint_info(y, th, out); break;
+    case 35: d7::skewt_joint_info(y, th, out); break;
+    case 36: d7::pseudohuber_joint_info(y, th, out); break;
+    case 37: d7::pseudohuber2_joint_info(y, th, out); break;
+    case 38: d7::skewnormal2_joint_info(y, th, out); break;
     default: fill_nan(out, joint_np(id) * joint_np(id));
     }
 }
@@ -2932,6 +2936,11 @@ void d7_joint_dinfo(int id, double y, const double* th, double* out) {
     case 40: d7::pig2_joint_dinfo(y, th, out); break;
     case 41: d7::betabinom1_joint_dinfo(y, th, out); break;
     case 42: d7::betabinom2_joint_dinfo(y, th, out); break;
+    case 34: d7::skewnormal1_joint_dinfo(y, th, out); break;
+    case 35: d7::skewt_joint_dinfo(y, th, out); break;
+    case 36: d7::pseudohuber_joint_dinfo(y, th, out); break;
+    case 37: d7::pseudohuber2_joint_dinfo(y, th, out); break;
+    case 38: d7::skewnormal2_joint_dinfo(y, th, out); break;
     default: fill_nan(out, P * P * P);
     }
 }

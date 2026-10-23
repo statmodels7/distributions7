@@ -192,6 +192,127 @@ inline void skewnormal1_joint_hess(double y, const double* th, double* out) {
     out[5] = out[7] = skewnormal1_hess_sigma_alpha(z, s, a, r, dr);
 }
 
+// The third derivatives with a mixed index, from skewnormal_deriv3_cpp
+// (skewnormal_hd.cpp). With t = alpha z, h1, h2, h3 as above and g1, g2, g3
+// the derivatives of log Phi at t (g1 = r, g2 = dr).
+inline double skewnormal1_d3_mu_mu_sigma(double z, double s, double h2,
+                                         double h3) {
+    return -(z * h3 + 2.0 * h2) / (s * s * s);
+}
+
+inline double skewnormal1_d3_mu_mu_alpha(double t, double s, double a,
+                                         double g2, double g3) {
+    return a * (2.0 * g2 + t * g3) / (s * s);
+}
+
+inline double skewnormal1_d3_mu_sigma_sigma(double z, double s, double h1,
+                                            double h2, double h3) {
+    return -(z * z * h3 + 4.0 * z * h2 + 2.0 * h1) / (s * s * s);
+}
+
+inline double skewnormal1_d3_mu_sigma_alpha(double t, double s, double g1,
+                                            double g2, double g3) {
+    return (g1 + 3.0 * t * g2 + t * t * g3) / (s * s);
+}
+
+inline double skewnormal1_d3_mu_alpha_alpha(double z, double t, double s,
+                                            double g2, double g3) {
+    return -z * (2.0 * g2 + t * g3) / s;
+}
+
+inline double skewnormal1_d3_sigma_sigma_alpha(double z, double t, double s,
+                                               double g1, double g2,
+                                               double g3) {
+    return z * (2.0 * g1 + 4.0 * t * g2 + t * t * g3) / (s * s);
+}
+
+inline double skewnormal1_d3_sigma_alpha_alpha(double z, double t, double s,
+                                               double g2, double g3) {
+    return -z * z * (2.0 * g2 + t * g3) / s;
+}
+
+// the ten distinct third derivatives, in the order (mmm, mms, mma, mss, msa,
+// maa, sss, ssa, saa, aaa), into the P = 3 array T[a + 3 b + 9 c] with every
+// permutation of the indices filled
+inline void skewnormal1_fill_t3(const double* v, double* T) {
+    static const int idx[10][3] = {{0, 0, 0}, {0, 0, 1}, {0, 0, 2}, {0, 1, 1},
+                                   {0, 1, 2}, {0, 2, 2}, {1, 1, 1}, {1, 1, 2},
+                                   {1, 2, 2}, {2, 2, 2}};
+    static const int perm[6][3] = {{0, 1, 2}, {0, 2, 1}, {1, 0, 2},
+                                   {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
+    for (int q = 0; q < 10; ++q)
+        for (int p = 0; p < 6; ++p)
+            T[idx[q][perm[p][0]] + 3 * idx[q][perm[p][1]] +
+              9 * idx[q][perm[p][2]]] = v[q];
+}
+
+// The full standardized pair at shape = (alpha), by the rule of
+// pt_loc_scale.h: at each node the score g, the Hessian H and the third
+// derivatives T3 in (mu, sigma, alpha) at location 0 and scale 1, added with
+// the density weight. I is 3 x 3 and D is 3 x 3 x 3, column-major.
+inline void skewnormal1_quad_full(const double* shape, double* I, double* D) {
+    const double a = shape[0];
+    const LocScaleRule R = loc_scale_rule();
+    LocScaleFull S(3);
+    for (int j = 0; j < R.n; ++j) {
+        const double z = R.x[j], t = a * z;
+        const double fw = std::exp(skewnormal1_logpdf(z, 0.0, 1.0, a)) * R.w[j];
+        if (fw == 0.0) continue;
+        double gg[6];
+        logphi_derivs(t, 3, gg);
+        const double r = gg[1], dr = gg[2], g3 = gg[3];
+        double g[3], H[9], T3[27];
+        g[0] = skewnormal1_score_mu(z, 1.0, a, r);
+        g[1] = skewnormal1_score_sigma(z, 1.0, a, r);
+        g[2] = skewnormal1_score_alpha(z, r);
+        H[0] = skewnormal1_hess_mu_mu(1.0, a, dr);
+        H[4] = skewnormal1_hess_sigma_sigma(z, 1.0, a, r, dr);
+        H[8] = skewnormal1_hess_alpha_alpha(z, dr);
+        H[1] = H[3] = skewnormal1_hess_mu_sigma(z, 1.0, a, r, dr);
+        H[2] = H[6] = skewnormal1_hess_mu_alpha(z, 1.0, a, r, dr);
+        H[5] = H[7] = skewnormal1_hess_sigma_alpha(z, 1.0, a, r, dr);
+        const double h1 = -z + a * r;
+        const double h2 = -1.0 + a * a * dr;
+        const double h3 = a * a * a * g3;
+        double v[10];
+        v[0] = skewnormal1_d3_mu_mu_mu(1.0, a, g3);
+        v[1] = skewnormal1_d3_mu_mu_sigma(z, 1.0, h2, h3);
+        v[2] = skewnormal1_d3_mu_mu_alpha(t, 1.0, a, dr, g3);
+        v[3] = skewnormal1_d3_mu_sigma_sigma(z, 1.0, h1, h2, h3);
+        v[4] = skewnormal1_d3_mu_sigma_alpha(t, 1.0, r, dr, g3);
+        v[5] = skewnormal1_d3_mu_alpha_alpha(z, t, 1.0, dr, g3);
+        v[6] = skewnormal1_d3_sigma_sigma_sigma(z, 1.0, a, r, dr, g3);
+        v[7] = skewnormal1_d3_sigma_sigma_alpha(z, t, 1.0, r, dr, g3);
+        v[8] = skewnormal1_d3_sigma_alpha_alpha(z, t, 1.0, dr, g3);
+        v[9] = skewnormal1_d3_alpha_alpha_alpha(z, g3);
+        skewnormal1_fill_t3(v, T3);
+        S.add(fw, g, H, T3);
+    }
+    S.result(I, D);
+}
+
+// The routers of the joint registry for the expected Hessian and its
+// derivative, in (mu, sigma, alpha): P x P and P x P x P, column-major, both
+// triangles filled. The standardized pair is the full quadrature, kept per
+// thread for the last shape (tag 0 of loc_scale_diag_cpp()).
+inline void skewnormal1_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    const LocScaleFullSlot& s = loc_scale_full_cached(
+        0, th + 2, 1, [&](double* I, double* D) {
+            skewnormal1_quad_full(th + 2, I, D);
+        });
+    loc_scale_full_info(s, 3, th[1], out);
+}
+
+inline void skewnormal1_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    const LocScaleFullSlot& s = loc_scale_full_cached(
+        0, th + 2, 1, [&](double* I, double* D) {
+            skewnormal1_quad_full(th + 2, I, D);
+        });
+    loc_scale_full_dinfo(s, 3, th[1], out);
+}
+
 } // namespace d7
 
 #endif

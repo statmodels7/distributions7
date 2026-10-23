@@ -93,6 +93,104 @@ inline void loc_scale_cached(int tag, int k, const double* shape, int ns,
     std[1] = s.val[1];
 }
 
+// THE FULL MATRICES, for the joint registry entries. At location 0 and scale
+// 1, with P parameters (P <= 4),
+//   I_ab  = sum_j w_j f(x_j) l_ab(x_j),
+//   D_abc = sum_j w_j f(x_j) (l_abc(x_j) + l_ab(x_j) l_c(x_j)),
+// P x P and P x P x P column-major (I[a + P*b], D[a + P*b + P*P*c]), both
+// triangles filled. These are the sums loc_scale_expected() forms for the
+// entries off the diagonal (integrate_rows() over T3 + Hab * g), in long
+// double and node order, skipping a node with f = 0; a non-finite sum is NA.
+// Each family supplies <fam>_quad_full(shape, I, D), which loops over the
+// nodes, fills g (P), H (P x P) and T3 (P x P x P) at each and calls add().
+struct LocScaleFull {
+    int P;
+    long double s0[16], s1[64];
+    explicit LocScaleFull(int p) : P(p) {
+        for (int i = 0; i < 16; ++i) s0[i] = 0.0L;
+        for (int i = 0; i < 64; ++i) s1[i] = 0.0L;
+    }
+    void add(double fw, const double* g, const double* H, const double* T3) {
+        if (fw == 0.0) return;
+        const int PP = P * P;
+        for (int b = 0; b < P; ++b)
+            for (int a = 0; a < P; ++a) {
+                const double Hab = H[a + P * b];
+                s0[a + P * b] += Hab * fw;
+                for (int c = 0; c < P; ++c)
+                    s1[a + P * b + PP * c] +=
+                        (T3[a + P * b + PP * c] + Hab * g[c]) * fw;
+            }
+    }
+    void result(double* I, double* D) const {
+        const int PP = P * P;
+        for (int i = 0; i < PP; ++i) I[i] = LocScaleSum::finish(s0[i]);
+        for (int i = 0; i < PP * P; ++i) D[i] = LocScaleSum::finish(s1[i]);
+    }
+};
+
+struct LocScaleFullSlot {
+    int tag;
+    int ns;
+    double shape[2];
+    double I[16];
+    double D[64];
+};
+
+// the full slot of the calling thread
+LocScaleFullSlot& loc_scale_full_slot();
+
+// the standardized full pair of family `tag` at `shape`, from the thread's
+// cache when the last call was the same family at the same shape;
+// compute(I, D) fills both
+template <class F>
+inline const LocScaleFullSlot& loc_scale_full_cached(int tag,
+                                                     const double* shape,
+                                                     int ns, F compute) {
+    LocScaleFullSlot& s = loc_scale_full_slot();
+    bool hit = s.tag == tag && s.ns == ns;
+    for (int j = 0; hit && j < ns; ++j) hit = s.shape[j] == shape[j];
+    if (!hit) {
+        compute(s.I, s.D);
+        s.tag = tag;
+        s.ns = ns;
+        for (int j = 0; j < ns; ++j) s.shape[j] = shape[j];
+    }
+    return s;
+}
+
+// sigma^m, m the number of indices on the location or the scale (index 0
+// or 1), as R's sig^m evaluates it
+inline double loc_scale_sigma_pow(int m, double sigma) {
+    if (m == 0) return 1.0;
+    if (m == 1) return sigma;
+    if (m == 2) return sigma * sigma;
+    return R_pow(sigma, (double) m);
+}
+
+// the standardized full matrices to the expected Hessian at scale sigma
+// (P x P) and its derivative (P x P x P), the joint entries' layout
+inline void loc_scale_full_info(const LocScaleFullSlot& s, int P,
+                                double sigma, double* out) {
+    for (int b = 0; b < P; ++b)
+        for (int a = 0; a < P; ++a) {
+            const int m = (a < 2) + (b < 2);
+            out[a + P * b] = s.I[a + P * b] / loc_scale_sigma_pow(m, sigma);
+        }
+}
+
+inline void loc_scale_full_dinfo(const LocScaleFullSlot& s, int P,
+                                 double sigma, double* out) {
+    const int PP = P * P;
+    for (int c = 0; c < P; ++c)
+        for (int b = 0; b < P; ++b)
+            for (int a = 0; a < P; ++a) {
+                const int m = (a < 2) + (b < 2) + (c < 2);
+                out[a + P * b + PP * c] =
+                    s.D[a + P * b + PP * c] / loc_scale_sigma_pow(m, sigma);
+            }
+}
+
 } // namespace d7
 
 #endif

@@ -357,6 +357,61 @@ List enet_dexpected1_cpp(NumericVector y, NumericVector mu,
     return out;
 }
 
+// The second derivatives of the expected information, keyed as
+// d2expected_names(): the pair of the information first and the pair of the
+// derivatives second, each in the order mu_mu, lambda_lambda, alpha_alpha,
+// mu_lambda, mu_alpha, lambda_alpha. Only E_mm, E_ll, E_aa and E_la depend on
+// the parameters, and only on (lambda, alpha), so the nine derivatives of each
+// (enet_d2expected_block()) are formed once per distinct pair and the other
+// 24 keys are zero.
+// [[Rcpp::export]]
+List enet_dexpected2_cpp(NumericVector y, NumericVector mu,
+                         NumericVector lambda, NumericVector alpha,
+                         int threads = 1) {
+    const int n = y.size();
+    static const char* hn[6] = {"mu_mu", "lambda_lambda", "alpha_alpha",
+                                "mu_lambda", "mu_alpha", "lambda_alpha"};
+    // the row of the block for each pair of the information (-1: zero), and
+    // the column for each pair of the derivatives (-1: zero)
+    static const int rowOf[6] = {0, 1, 2, -1, -1, 3};
+    static const int colOf[6] = {-1, 0, 1, -1, -1, 2};
+    std::vector<double> ul, ua;
+    std::vector<int> id;
+    enet_unique_pairs(lambda, alpha, n, ul, ua, id);
+    const std::size_t nu = ul.size();
+    std::vector<double> tab(nu * 12);
+    for (std::size_t u = 0; u < nu; ++u) {
+        double blk[4][3];
+        d7::enet_d2expected_block(ul[u], ua[u], blk);
+        for (int r = 0; r < 4; ++r)
+            for (int c = 0; c < 3; ++c) tab[u * 12 + r * 3 + c] = blk[r][c];
+    }
+    std::vector<NumericVector> v(36);
+    std::vector<double*> o(36);
+    for (int k = 0; k < 36; ++k) {
+        v[k] = NumericVector(n);
+        o[k] = v[k].begin();
+    }
+    d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
+        const double* t = &tab[id[i] * 12];
+        for (int ab = 0; ab < 6; ++ab) {
+            if (rowOf[ab] < 0) continue;
+            for (int cd = 0; cd < 6; ++cd)
+                if (colOf[cd] >= 0)
+                    o[ab * 6 + cd][i] = t[rowOf[ab] * 3 + colOf[cd]];
+        }
+    });
+    List out(36);
+    CharacterVector nm(36);
+    for (int ab = 0; ab < 6; ++ab)
+        for (int cd = 0; cd < 6; ++cd) {
+            out[ab * 6 + cd] = v[ab * 6 + cd];
+            nm[ab * 6 + cd] = std::string(hn[ab]) + "_" + hn[cd];
+        }
+    out.attr("names") = nm;
+    return out;
+}
+
 // L^(k)(x), k = 1..order, of the logarithm of the Mills ratio
 // [[Rcpp::export]]
 List enet_logM_derivs_cpp(NumericVector x, int order) {

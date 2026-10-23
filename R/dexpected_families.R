@@ -48,13 +48,13 @@ NULL
 #'   distrib_dexpected_hessian.Laplace2Distrib
 #'   distrib_d2expected_hessian.Laplace2Distrib
 #'   distrib_dexpected_hessian.EnetDistrib
+#'   distrib_d2expected_hessian.EnetDistrib
 #' @description
 #' Computes the first and second derivatives of the expected information in
 #' the parameters, from compiled kernels, for the families whose expected
 #' information is a written-out function of the parameters. Each component is
 #' an ordinary derivative of the family's \eqn{\mathbb{E}[\ell_{ab}]}; on the
-#' link scale the result is carried across by [dexpected_link()]. The elastic
-#' net has only the first derivatives.
+#' link scale the result is carried across by [dexpected_link()].
 #'
 #' @details
 #' The expected informations that are differentiated are the following, on the
@@ -192,16 +192,9 @@ register_dexpected(Beta2Distrib, function(d, y, th, k, t)
 register_dexpected(Weibull1Distrib, function(d, y, th, k, t)
   (if (k == 1L) weibull1_dexpected1_cpp(y, th[[1]], th[[2]], t)
     else weibull1_dexpected2_cpp(y, th[[1]], th[[2]], t)))
-# the elastic net carries the first derivatives only: its second derivatives
-# would need the fourth of the normalizing constant
-S7::method(distrib_dexpected_hessian, EnetDistrib) <- function(
-    distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
-    threads = 1L) {
-  dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
-                     function(k) enet_dexpected1_cpp(y, theta[[1]], theta[[2]],
-                                                     theta[[3]], threads))
-}
+register_dexpected(EnetDistrib, function(d, y, th, k, t)
+  (if (k == 1L) enet_dexpected1_cpp(y, th[[1]], th[[2]], th[[3]], t)
+    else enet_dexpected2_cpp(y, th[[1]], th[[2]], th[[3]], t)))
 
 register_dexpected(LaplaceDistrib, function(d, y, th, k, t)
   (if (k == 1L) laplace_dexpected1_cpp(y, th[[1]], th[[2]], t)

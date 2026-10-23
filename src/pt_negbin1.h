@@ -6,6 +6,7 @@
 #include <cmath>
 #include "psi_diff.h"
 #include "pt_sqrt.h"
+#include "pt_negbin1_asym.h"
 
 // The negative binomial with a variance linear in the mean, in (mu, theta),
 // r = mu/theta: the parts of the log-mass (nb1_parts), the support sums that
@@ -144,7 +145,11 @@ inline NB1mass nb1_mass(double mu, double th) {
     w.lratio = std::log(th) - std::log1p(th);
     double cap = 100.0 + mu + 20.0 * d7::sqrt_cr(mu * (1.0 + th))
                  + 80.0 / (-std::log(w.ratio));
-    w.kmax = (int) std::min(cap, 2.0e9);
+    // capped at 1e6 terms, as negbin2's sums are (negbin2_series_cap()):
+    // past it the mass sits where no estimate reads the information -- a
+    // joint fit's trial point reached mu = 1.8e308 (the log link saturated)
+    // with theta = 1.9e-77, and that one row cost 85 s at the cap of 2e9
+    w.kmax = (int) std::min(cap, 1.0e6);
     w.mode = negbin1_series_mode(w.r, th);
     // The log scale is left on the SAME threshold the loop switches at, and
     // not on exp(lpk) merely being nonzero: at mu = 918.832, theta = 0.5 the
@@ -519,7 +524,17 @@ inline void nb1_dsums2(double mu, double th, double* A, double* G) {
 
 // A and G = E[l_theta,theta] at one (mu, theta), from the D sums below
 // nb1_expected_cut() and from G = W/theta^2 above it
+// LARGE THETA. At fixed mu the mass has about theta terms and a ratio
+// theta/(1 + theta) close to one. The series of pt_negbin1_asym.h replaces the
+// sums wherever it meets 1e-13 (nb1_asym_ok(): theta >= 2, mu/theta <= 0.3),
+// where it costs about 0.5 us against 18-30 us for the sums at theta = 50
+// and none of their length at large theta (11 s a row at theta = 1e8).
+inline bool nb1_use_asym(double mu, double th) {
+    return nb1_asym_ok(mu, th);
+}
+
 inline void nb1_sums0(double mu, double th, double* A, double* G) {
+    if (nb1_use_asym(mu, th)) { nb1_asym_sums0(mu, th, A, G); return; }
     if (th < nb1_expected_cut()) { nb1_dsums0(mu, th, A, G); return; }
     double W;
     nb1_wsums0(mu, th, A, &W);
@@ -527,6 +542,7 @@ inline void nb1_sums0(double mu, double th, double* A, double* G) {
 }
 
 inline void nb1_sums1(double mu, double th, double* A, double* G) {
+    if (nb1_use_asym(mu, th)) { nb1_asym_sums1(mu, th, A, G); return; }
     if (th < nb1_expected_cut()) { nb1_dsums1(mu, th, A, G); return; }
     double W[3];
     nb1_wsums1(mu, th, A, W);
@@ -537,6 +553,7 @@ inline void nb1_sums1(double mu, double th, double* A, double* G) {
 }
 
 inline void nb1_sums2(double mu, double th, double* A, double* G) {
+    if (nb1_use_asym(mu, th)) { nb1_asym_sums2(mu, th, A, G); return; }
     if (th < nb1_expected_cut()) { nb1_dsums2(mu, th, A, G); return; }
     double W[6];
     nb1_wsums2(mu, th, A, W);

@@ -241,6 +241,94 @@ inline double enet_dexpected_lambda_alpha_alpha(const EnetPar& P,
     return -lam * (Hvv + lam * Tvvw);
 }
 
+// ---- the second derivatives of the expected information ---------------------
+//
+// With w = (alpha, 1 - alpha), v = (1, -1) and Z^(k)[u_1, ..., u_k] the k-th
+// derivative of log Z along the directions u_i in (a, c), d/dlambda moves a
+// Z^(k) to Z^(k+1)[., w] and d/dalpha to lambda Z^(k+1)[., v] while taking
+// w to v. Differentiating E_ll = -Z''[w, w], E_aa = -lambda^2 Z''[v, v] and
+// E_la = -lambda Z''[w, v] once more gives the nine derivatives in
+// (lambda, alpha) written in enet_d2expected_block(). E_mm is differentiated
+// in the form E_mm = -c - 2 a u, with u = 1/Z the density at zero and
+// u_a = -Z_a u, u_c = -Z_c u, u_ab = (Z_a Z_b - Z_ab) u: it needs the
+// derivatives of log Z to order two only and is a sum of terms of one sign,
+// where -(a^2 - 2ac Z_a - 2c^2 Z_c) loses its second derivative in lambda to
+// cancellation when alpha is small. E_ml = E_ma = 0 and E does not depend on
+// mu, so every other derivative is zero.
+
+// the density at zero, u = 1/Z = (a + sqrt(c) m_1)/2 with m_1 = M_1/M_0
+inline double enet_density0(double a, double c) {
+    const double sc = std::sqrt(c);
+    double m[12];
+    enet_s_moments(a / sc, 1, m);
+    return 0.5 * (a + sc * m[1]);
+}
+
+// d[i][j] contracted along the directions u[0..order-1] (each a pair, the
+// components in a and in c)
+inline double enet_zk(int order, const double d[5][5], const double* const* u) {
+    double tot = 0.0;
+    for (int idx = 0; idx < (1 << order); ++idx) {
+        double w = 1.0;
+        int nc = 0;
+        for (int r = 0; r < order; ++r) {
+            const int bit = (idx >> r) & 1;
+            w *= u[r][bit];
+            nc += bit;
+        }
+        if (w != 0.0) tot += w * d[order - nc][nc];
+    }
+    return tot;
+}
+
+// The derivatives of E_mm, E_ll, E_aa and E_la (rows 0 to 3) in
+// (lambda, lambda), (alpha, alpha) and (lambda, alpha) (columns 0 to 2).
+inline void enet_d2expected_block(double lam, double al, double out[4][3]) {
+    const double bl = 1.0 - al, a = lam * al, c = lam * bl;
+    double d[5][5];
+    enet_logz_ac(a, c, 4, d);
+    const double w[2] = {al, bl}, v[2] = {1.0, -1.0};
+    const double* const vv[2] = {v, v};
+    const double* const wwv[3] = {w, w, v};
+    const double* const wvv[3] = {w, v, v};
+    const double* const vvv[3] = {v, v, v};
+    const double* const wwww[4] = {w, w, w, w};
+    const double* const wwwv[4] = {w, w, w, v};
+    const double* const wwvv[4] = {w, w, v, v};
+    const double* const wvvv[4] = {w, v, v, v};
+    const double* const vvvv[4] = {v, v, v, v};
+    const double Z_vv = enet_zk(2, d, vv);
+    const double Z_wwv = enet_zk(3, d, wwv), Z_wvv = enet_zk(3, d, wvv),
+                 Z_vvv = enet_zk(3, d, vvv);
+    const double Z_wwww = enet_zk(4, d, wwww), Z_wwwv = enet_zk(4, d, wwwv),
+                 Z_wwvv = enet_zk(4, d, wwvv), Z_wvvv = enet_zk(4, d, wvvv),
+                 Z_vvvv = enet_zk(4, d, vvvv);
+    // E_mm = f(a, c) = -c - 2 a u
+    const double Za = d[1][0], Zc = d[0][1], Zaa = d[2][0], Zac = d[1][1],
+                 Zcc = d[0][2];
+    const double u = enet_density0(a, c);
+    const double ua = -Za * u, uc = -Zc * u, uaa = (Za * Za - Zaa) * u,
+                 uac = (Za * Zc - Zac) * u, ucc = (Zc * Zc - Zcc) * u;
+    const double fa = -2.0 * u - 2.0 * a * ua, fc = -1.0 - 2.0 * a * uc;
+    const double faa = -4.0 * ua - 2.0 * a * uaa,
+                 fac = -2.0 * uc - 2.0 * a * uac, fcc = -2.0 * a * ucc;
+    out[0][0] = al * al * faa + 2.0 * al * bl * fac + bl * bl * fcc;
+    out[0][1] = lam * lam * (faa - 2.0 * fac + fcc);
+    out[0][2] = lam * (al * faa + (bl - al) * fac - bl * fcc) + (fa - fc);
+    // E_ll = -Z''[w, w]
+    out[1][0] = -Z_wwww;
+    out[1][1] = -(lam * lam * Z_wwvv + 4.0 * lam * Z_wvv + 2.0 * Z_vv);
+    out[1][2] = -(lam * Z_wwwv + 3.0 * Z_wwv);
+    // E_aa = -lambda^2 Z''[v, v]
+    out[2][0] = -(2.0 * Z_vv + 4.0 * lam * Z_wvv + lam * lam * Z_wwvv);
+    out[2][1] = -lam * lam * lam * lam * Z_vvvv;
+    out[2][2] = -(3.0 * lam * lam * Z_vvv + lam * lam * lam * Z_wvvv);
+    // E_la = -lambda Z''[w, v]
+    out[3][0] = -(2.0 * Z_wwv + lam * Z_wwwv);
+    out[3][1] = -(2.0 * lam * lam * Z_vvv + lam * lam * lam * Z_wvvv);
+    out[3][2] = -(Z_vv + 3.0 * lam * Z_wvv + lam * lam * Z_wwvv);
+}
+
 // ---- the routers of the joint registry --------------------------------------
 //
 // One per order: every component at one observation, on the parameter scale,

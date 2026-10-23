@@ -272,6 +272,74 @@ inline void skewt_info_dinfo(int k, double y, const double* th, double* out) {
     loc_scale_unstandardize(k, th[1], std2, out);
 }
 
+// The full standardized expected Hessian I (4 x 4) and its derivative D
+// (4 x 4 x 4), column-major with both triangles filled, at shape = (alpha, nu)
+// and location 0, scale 1, by the rule of pt_loc_scale.h: the sums of
+// LocScaleFull over the nodes, with the score g, the Hessian H and the third
+// derivative T3 of every component of (mu, sigma, alpha, nu). They are the
+// generated closed forms of pt_skewt_table.h that the vector kernels
+// skewt_gradient_cpp(), skewt_hessian_cpp() and skewt_deriv3_cpp() run, from
+// one table of B_ij per node (the components of orders one to three read the
+// same B_ij whatever the order, as skewt_quad_diag() relies on). The
+// components of each order come in the order of the multisets of
+// (mu, sigma, alpha, nu), lexicographic, and the tables below place them in
+// the symmetric arrays.
+inline void skewt_quad_full(const double* shape, double* I, double* D) {
+    const double a = shape[0], v = shape[1];
+    const LocScaleRule R = loc_scale_rule();
+    SkewtConst cc;
+    cc.at(v, 3);
+    // position of (a, b) and of (a, b, c) in the multiset order
+    static const int pos2[4][4] = {{0, 1, 2, 3}, {1, 4, 5, 6},
+                                   {2, 5, 7, 8}, {3, 6, 8, 9}};
+    static const int pos3[4][4][4] = {
+        {{0, 1, 2, 3}, {1, 4, 5, 6}, {2, 5, 7, 8}, {3, 6, 8, 9}},
+        {{1, 4, 5, 6}, {4, 10, 11, 12}, {5, 11, 13, 14}, {6, 12, 14, 15}},
+        {{2, 5, 7, 8}, {5, 11, 13, 14}, {7, 13, 16, 17}, {8, 14, 17, 18}},
+        {{3, 6, 8, 9}, {6, 12, 14, 15}, {8, 14, 17, 18}, {9, 15, 18, 19}}};
+    LocScaleFull S(4);
+    for (int j = 0; j < R.n; ++j) {
+        const double z = R.x[j];
+        const double fw = std::exp(skewt_logpdf(z, 0.0, 1.0, a, v)) * R.w[j];
+        if (fw == 0.0) continue;
+        const SkewtObs o = skewt_obs_vars(z, 0.0, 1.0, a, v);
+        double B[6][6] = {{0}};
+        double d1[4], d2[10], d3[20];
+        skewt_btab<3>(o, cc.Cm, B);
+        skewt_dd_1(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d1);
+        skewt_dd_2(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d2);
+        skewt_dd_3(o.a, o.irs, o.isg, a, v, o.rm, o.L, cc.Cnu, B, d3);
+        double H[16], T3[64];
+        for (int c = 0; c < 4; ++c)
+            for (int b = 0; b < 4; ++b) {
+                H[b + 4 * c] = d2[pos2[b][c]];
+                for (int e = 0; e < 4; ++e)
+                    T3[e + 4 * b + 16 * c] = d3[pos3[e][b][c]];
+            }
+        S.add(fw, d1, H, T3);
+    }
+    S.result(I, D);
+}
+
+// The expected Hessian E[l_ab] (4 x 4) and its derivative in parameter c
+// (4 x 4 x 4, out[a + 4 b + 16 c]) of the skew t at one observation,
+// th = (mu, sigma, alpha, nu), on the parameter scale, both triangles filled.
+// The standardized pair is computed once per distinct (alpha, nu) on each
+// thread (tag 1 of loc_scale_diag_cpp()) and scaled by sigma.
+inline void skewt_joint_info(double y, const double* th, double* out) {
+    (void) y;
+    const LocScaleFullSlot& s = loc_scale_full_cached(1, th + 2, 2,
+        [&](double* I, double* D) { skewt_quad_full(th + 2, I, D); });
+    loc_scale_full_info(s, 4, th[1], out);
+}
+
+inline void skewt_joint_dinfo(double y, const double* th, double* out) {
+    (void) y;
+    const LocScaleFullSlot& s = loc_scale_full_cached(1, th + 2, 2,
+        [&](double* I, double* D) { skewt_quad_full(th + 2, I, D); });
+    loc_scale_full_dinfo(s, 4, th[1], out);
+}
+
 // The joint entries of the C registry at one observation, th = (mu, sigma,
 // alpha, nu), P = 4, on the parameter scale. They read the generated closed
 // forms of pt_skewt_table.h through skewt_obs<K>(), which is what the vector
@@ -281,8 +349,9 @@ inline void skewt_info_dinfo(int k, double y, const double* th, double* out) {
 //   K = 1: mu, sigma, alpha, nu;
 //   K = 2: mu_mu, mu_sigma, mu_alpha, mu_nu, sigma_sigma, sigma_alpha,
 //          sigma_nu, alpha_alpha, alpha_nu, nu_nu.
-// There are no info and dinfo entries: the expected Hessian of the skew t has
-// no closed form and is taken by quadrature (loc_scale_expected()).
+// The expected Hessian of the skew t has no closed form and is taken by
+// quadrature (loc_scale_expected()); skewt_joint_info() and
+// skewt_joint_dinfo() above read the full quadrature, defined before these.
 
 // out[a]: the score in parameter a
 inline void skewt_joint_grad(double y, const double* th, double* out) {

@@ -76,11 +76,37 @@ test_that("on the parameter scale the gaussian's mean entry is -1/sigma^2", {
 })
 
 test_that("a family without an analytic second derivative signals an error", {
-  th <- list(mu = 0.3, lambda = 1.2, alpha = 0.4)
-  expect_error(distrib_d3expected_hessian(enet_distrib(), 1, th),
+  # every shipped family carries the second derivative (the elastic net since
+  # distributions7 0.84.0); a family with its density alone does not
+  th <- list(mu = 0.3, sigma = 1.2)
+  expect_error(distrib_d3expected_hessian(density_only_distrib(), 1, th),
     "no analytic second derivative")
-  expect_error(distrib_d4expected_hessian(enet_distrib(), 1, th),
+  expect_error(distrib_d4expected_hessian(density_only_distrib(), 1, th),
     "no analytic second derivative")
+})
+
+test_that("the elastic net's second derivative of its expected information is the derivative of the first", {
+  d <- enet_distrib()
+  p <- d@params
+  for (th in list(list(mu = 0.3, lambda = 1.2, alpha = 0.4),
+                  list(mu = -1, lambda = 30, alpha = 0.9),
+                  list(mu = 0, lambda = 0.05, alpha = 0.02))) {
+    d2 <- distrib_d2expected_hessian(d, 0.7, th)
+    for (c in 2:3) {
+      h <- 1e-5 * th[[c]]
+      up <- dn <- th
+      up[[c]] <- th[[c]] + h
+      dn[[c]] <- th[[c]] - h
+      d1u <- distrib_dexpected_hessian(d, 0.7, up)
+      d1d <- distrib_dexpected_hessian(d, 0.7, dn)
+      for (a in 1:3) for (b in a:3) for (e in 2:3) {
+        num <- (d1u[[dexpected_key(p, a, b, e)]] -
+                  d1d[[dexpected_key(p, a, b, e)]]) / (2 * h)
+        got <- d2[[d2expected_key(p, a, b, min(c, e), max(c, e))]]
+        expect_lte(abs(got - num) / max(1, abs(num)), 1e-6)
+      }
+    }
+  }
 })
 
 test_that("the kernel's information and its derivative match the generics", {
