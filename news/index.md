@@ -1,5 +1,13 @@
 # Changelog
 
+## distributions7 0.84.1
+
+- The tests of the joint registry read the expected information of the
+  location-scale families on the scale of the whole matrix, as they read
+  its derivative: E_mu,sigma of a symmetric family is zero analytically,
+  and the two roundings compared differed on macOS (clang’s fused
+  multiply-adds) by 4e-14 against a floor of 1e-4.
+
 ## distributions7 0.84.0
 
 - The expected information of the skew normals, the skew t and the two
