@@ -257,46 +257,215 @@ inline void pig_compose(const double h[5], const double* F, int order,
         h[2] * (3.0 * uu * uu + 4.0 * uuu * u) + h[1] * F[14];
 }
 
-// log S_y as a function of w = 1/(2 alpha), with its four derivatives in w.
-// S_y(w) = sum_k a_{y,k} w^k is a polynomial with positive coefficients, so
-// S^(r)(w)/S = sum_{k>=r} a_{y,k} (k)_r w^{k-r} / S is finite as w -> 0 and
-// is summed with the power of w already divided out; the derivatives of
-// log S are the cumulants of those ratios. In alpha the same quantities
-// carry alpha^-r and the chain onto sigma cancels at a small dispersion.
+// log S_y as a function of w = 1/(2 alpha), with its four derivatives in w,
+// L[r] = d^r log S_y / dw^r. S_y(w) = sum_k a_k w^k is a polynomial with
+// positive coefficients a_k = (y+k-1)! / ((y-k)! k!), so log S and its
+// derivatives are finite as w -> 0 (the Poisson limit). In alpha the same
+// quantities carry alpha^-r and the chain onto sigma cancels at a small
+// dispersion, which is why the derivatives are taken in w directly. Two
+// routes, by the count, as psi_derivs() has for pig2:
+//
+//   y < PIG_Y_DEBYE: the sum itself, pig_logS_w_sum();
+//   y >= PIG_Y_DEBYE: the uniform (Debye) expansion, pig_logS_w_debye(),
+//     whose cost does not depend on y, which may reach 2^53.
+//
+// Only the orders up to `order` are formed; L[0] = log S_y.
+
+// The switch of the sum between its two forms, on X = y (y - 1) w, the mean
+// of k under the terms of S_y at small w. Measured against 60 digits for
+// y <= 20: the Taylor form is better below it, the cumulants about the mean
+// above it, and their errors cross at X between 1 and 1.5.
+const double PIG_W_SWITCH = 1.25;
+
+// The sum, for 1 <= y < 21: a_0 = 1, a_{k+1} = a_k (y + k)(y - k - 1)/(k + 1)
+// for k < y - 1, held in a fixed array.
+//
+// X <= PIG_W_SWITCH: the Taylor coefficients c_r = S^(r)/r! at w by Horner's
+// scheme with its derivatives, on Q(x) = sum_{k>=1} a_k x^(k-1) and then
+// S = 1 + x Q. Every term is positive, no power of w is divided out, and
+// log S = log1p(S - 1) keeps the digits at a small w. The derivatives of
+// log S are the cumulants of the ratios n_r = r! c_r / c_0,
+//   L1 = n1, L2 = n2 - n1^2, L3 = n3 - 3 n1 n2 + 2 n1^3, ...
+// which lose about y^(r-1) of the relative accuracy as w -> 0.
+//
+// X > PIG_W_SWITCH: the cumulants kappa_j of k under the weights t_k / S,
+// t_k = a_k w^k, taken about the mean, which is found first:
+//   L1 = kappa_1 / w
+//   L2 = (kappa_2 - kappa_1) / w^2
+//   L3 = (kappa_3 - 3 kappa_2 + 2 kappa_1) / w^3
+//   L4 = (kappa_4 - 6 kappa_3 + 11 kappa_2 - 6 kappa_1) / w^4.
+// These cancel as w -> 0 and are accurate above the switch. For w > 1 the
+// weights are formed from the last term down, t_k = a_k w^-(n-1-k), and
+// log S = (n - 1) log w + log(sum t_k), so no power of w is formed.
+inline void pig_logS_w_sum(double y, double w, int order, double L[5]) {
+    const int n = (int) y;
+    double a[20];
+    a[0] = 1.0;
+    for (int k = 0; k < n - 1; ++k)
+        a[k + 1] = a[k] * (y + k) * (y - k - 1.0) / (k + 1.0);
+    if (y * (y - 1.0) * w <= PIG_W_SWITCH) {
+        double dd[5] = {0.0, 0.0, 0.0, 0.0, 0.0};
+        for (int k = n - 1; k >= 1; --k) {
+            for (int r = order; r >= 1; --r) dd[r] = dd[r] * w + dd[r - 1];
+            dd[0] = dd[0] * w + a[k];
+        }
+        const double Sr = w * dd[0];
+        for (int r = order; r >= 1; --r) dd[r] = dd[r] * w + dd[r - 1];
+        dd[0] = dd[0] * w + 1.0;
+        L[0] = std::log1p(Sr);
+        if (order < 1) return;
+        const double n1 = dd[1] / dd[0];
+        L[1] = n1;
+        if (order < 2) return;
+        const double n2 = 2.0 * dd[2] / dd[0];
+        L[2] = n2 - n1 * n1;
+        if (order < 3) return;
+        const double n3 = 6.0 * dd[3] / dd[0];
+        L[3] = n3 - 3.0 * n1 * n2 + 2.0 * n1 * n1 * n1;
+        if (order < 4) return;
+        const double n4 = 24.0 * dd[4] / dd[0];
+        L[4] = n4 - 4.0 * n1 * n3 - 3.0 * n2 * n2 + 12.0 * n1 * n1 * n2 -
+            6.0 * n1 * n1 * n1 * n1;
+        return;
+    }
+    double t[20] = {0.0};
+    if (w <= 1.0) {
+        double pw = 1.0;
+        for (int k = 0; k < n; ++k) { t[k] = a[k] * pw; pw *= w; }
+    } else {
+        const double v = 1.0 / w;
+        double u = 1.0;
+        for (int k = n - 1; k >= 0; --k) { t[k] = a[k] * u; u *= v; }
+    }
+    double Sr = 0.0, s1 = 0.0;
+    for (int k = n - 1; k >= 1; --k) {
+        Sr += t[k];
+        s1 += k * t[k];
+    }
+    const double S = t[0] + Sr;
+    const double k1 = s1 / S;
+    L[0] = (w <= 1.0) ? std::log1p(Sr) : (n - 1) * std::log(w) + std::log(S);
+    if (order < 1) return;
+    const double iw = 1.0 / w;
+    double k2 = 0.0, k3 = 0.0, k4 = 0.0;
+    if (order >= 2) {
+        double c2 = 0.0, c3 = 0.0, c4 = 0.0;
+        for (int k = 0; k < n; ++k) {
+            const double d = k - k1, d2 = d * d;
+            c2 += t[k] * d2;
+            if (order < 3) continue;
+            c3 += t[k] * d2 * d;
+            if (order < 4) continue;
+            c4 += t[k] * d2 * d2;
+        }
+        c2 /= S; c3 /= S; c4 /= S;
+        k2 = c2; k3 = c3; k4 = c4 - 3.0 * c2 * c2;
+    }
+    L[1] = k1 * iw;
+    if (order < 2) return;
+    L[2] = (k2 - k1) * iw * iw;
+    if (order < 3) return;
+    L[3] = (k3 - 3.0 * k2 + 2.0 * k1) * iw * iw * iw;
+    if (order < 4) return;
+    L[4] = (k4 - 6.0 * k3 + 11.0 * k2 - 6.0 * k1) * iw * iw * iw * iw;
+}
+
+// The uniform expansion, for y >= 21, the same as psi_derivs_debye() but
+// differentiated in w. With nu = y - 1/2, z = 2 nu w = nu / alpha, r =
+// sqrt(1 + z^2), c = z / r, d = 1 / r and P(c) the Debye polynomial of
+// psi_derivs_debye(),
+//   log S = nu f(z) - (1/4) log(1 + z^2) + log P(c),
+//   f(z) = asinh z - z / (1 + r),
+// a function of z and nu alone, so that d/dw = 2 nu d/dz and
+//   L_k = (2 nu)^k [nu f^(k)(z) + h^(k)(z) + (log P(c(z)))^(k)],
+// h = -(1/4) log(1 + z^2). The derivatives of f, h and c in z are
+// written out in c and d (f' = g = 1 / (1 + r) = d / (1 + d), every term
+// free of cancellation at a small z), those of log P follow from the
+// cumulants of P in c (Faa di Bruno written out). There is no chain from
+// alpha, whose terms cancel as w -> 0.
+inline void pig_logS_w_debye(double y, double w, int order, double L[5]) {
+    const double nu = y - 0.5;
+    const double z = 2.0 * nu * w;
+    const double r = std::hypot(1.0, z);
+    const double d = 1.0 / r;
+    const double c = (z > 1e150) ? 1.0 : z * d;
+    int K = PIG_KD;
+    for (int k = 0; k <= PIG_KD; ++k)
+        if (nu > PIG_UK_NU[k]) { K = k; break; }
+    double P[3 * PIG_KD + 1];
+    for (int e = 0; e <= 3 * K; ++e) P[e] = 0.0;
+    const double inu = 1.0 / nu;
+    double f = 1.0;
+    for (int k = 0; k <= K; ++k) {
+        const double* uk = PIG_U + PIG_UOFF[k];
+        for (int e = 0; e <= 3 * k; ++e) P[e] += f * uk[e];
+        f *= -inu;
+    }
+    const int nd = (order < 1) ? 1 : order;
+    double q[5] = {0.0, 0.0, 0.0, 0.0, 0.0};   // Taylor coefficients in c
+    for (int e = 3 * K; e >= 0; --e) {
+        for (int i = nd; i >= 1; --i) q[i] = q[i] * c + q[i - 1];
+        q[0] = q[0] * c + P[e];
+    }
+    const double p0 = q[0];
+    // the same Horner without the constant term, for log1p(p0 - 1)
+    double acc = 0.0;
+    for (int e = 3 * K; e >= 1; --e) acc = acc * c + P[e];
+    const double q0 = acc * c;
+    const double g = d / (1.0 + d);
+    // asinh z and log(1 + z^2) without overflow of the square
+    double asz, lq;
+    if (z > 1e100) {
+        const double lz = std::log(2.0 * nu) + std::log(w);
+        asz = 0.6931471805599453 + lz;
+        lq = 2.0 * lz;
+    } else {
+        asz = std::asinh(z);
+        lq = std::log1p(z * z);
+    }
+    L[0] = nu * (asz - c / (1.0 + d)) - 0.25 * lq + std::log1p(q0);
+    L[1] = L[2] = L[3] = L[4] = 0.0;
+    if (order < 1) return;
+    const double two = 2.0 * nu;
+    const double d2 = d * d, c2 = c * c;
+    const double r1 = q[1] / p0;
+    const double t1 = d2 * d;
+    const double f1 = g, h1 = -0.5 * c * d;
+    L[1] = two * (nu * f1 + h1 + r1 * t1);
+    if (order < 2) return;
+    const double r2 = 2.0 * q[2] / p0;
+    const double l2 = r2 - r1 * r1;
+    const double t2 = -3.0 * c * d2 * d2;
+    const double f2 = -c * g * g;
+    const double h2 = -0.5 * d2 * (d2 - c2);
+    L[2] = two * two * (nu * f2 + h2 + (r1 * t2 + l2 * t1 * t1));
+    if (order < 3) return;
+    const double r3 = 6.0 * q[3] / p0;
+    const double l3 = r3 - 3.0 * r1 * r2 + 2.0 * r1 * r1 * r1;
+    const double t3 = (12.0 * c2 - 3.0 * d2) * d2 * d2 * d;
+    const double f3 = g * g * (2.0 * c2 * g - d2 * d);
+    const double h3 = c * d2 * d * (3.0 * d2 - c2);
+    L[3] = two * two * two * (nu * f3 + h3 +
+        (r1 * t3 + 3.0 * l2 * t1 * t2 + l3 * t1 * t1 * t1));
+    if (order < 4) return;
+    const double r4 = 24.0 * q[4] / p0;
+    const double l4 = r4 - 4.0 * r1 * r3 - 3.0 * r2 * r2 +
+        12.0 * r1 * r1 * r2 - 6.0 * r1 * r1 * r1 * r1;
+    const double d4 = d2 * d2;
+    const double t4 = 15.0 * c * d4 * d2 * (3.0 * d2 - 4.0 * c2);
+    const double f4 = c * g * g * (3.0 * d4 + 6.0 * d2 * d * g -
+        6.0 * c2 * g * g);
+    const double h4 = 3.0 * d4 * (d4 - 6.0 * c2 * d2 + c2 * c2);
+    L[4] = two * two * two * two * (nu * f4 + h4 +
+        (r1 * t4 + l2 * (4.0 * t1 * t3 + 3.0 * t2 * t2) +
+         6.0 * l3 * t1 * t1 * t2 + l4 * t1 * t1 * t1 * t1));
+}
+
 inline void pig_logS_w(double y, double w, int order, double L[5]) {
     L[0] = L[1] = L[2] = L[3] = L[4] = 0.0;
-    if (y < 0.5) return;
-    int n = (int) y;
-    double lw = std::log(w);
-    std::vector<double> la(n);
-    double mx = -1e308;
-    for (int k = 0; k < n; ++k) {
-        la[k] = R::lgammafn(y + k) - R::lgammafn(k + 1.0) -
-            R::lgammafn(y - k) + (k == 0 ? 0.0 : k * lw);
-        if (la[k] > mx) mx = la[k];
-    }
-    double W = 0.0, nr[5] = {0, 0, 0, 0, 0};
-    for (int k = 0; k < n; ++k) {
-        W += std::exp(la[k] - mx);
-        double fall = 1.0;
-        for (int r = 1; r <= order && r <= k; ++r) {
-            fall *= (k - r + 1);
-            // a_{y,k} (k)_r w^{k-r}, the power of w taken off inside the
-            // exponent so a small w never underflows before it is divided
-            nr[r] += fall * std::exp(la[k] - mx - r * lw);
-        }
-    }
-    L[0] = mx + std::log(W);
-    for (int r = 1; r <= order; ++r) nr[r] /= W;
-    if (order < 1) return;
-    L[1] = nr[1];
-    if (order < 2) return;
-    L[2] = nr[2] - nr[1] * nr[1];
-    if (order < 3) return;
-    L[3] = nr[3] - 3.0 * nr[1] * nr[2] + 2.0 * nr[1] * nr[1] * nr[1];
-    if (order < 4) return;
-    L[4] = nr[4] - 4.0 * nr[1] * nr[3] - 3.0 * nr[2] * nr[2] +
-        12.0 * nr[1] * nr[1] * nr[2] - 6.0 * nr[1] * nr[1] * nr[1] * nr[1];
+    if (y < 1.0) return;
+    if (y < PIG_Y_DEBYE) pig_logS_w_sum(y, w, order, L);
+    else pig_logS_w_debye(y, w, order, L);
 }
 
 // ---------------------------------------------------------------------------
@@ -370,48 +539,73 @@ struct PigSeq {
 };
 
 // The same recurrence in w = 1/(2 alpha), for pig1, whose row reads the
-// derivatives of log S in w. S_{y+1} = S_{y-1} + 2(2y - 1) w S_y, and with
-// N_r = S^(r)(w), r times differentiated,
+// derivatives of log S in w. S_{y+1} = S_{y-1} + 2(2y - 1) w S_y. The
+// derivatives of log S are not formed from the moments N_r = S^(r)(w): the
+// cumulants of N_r / S cancel, by about y^r, when the law of the index k of
+// the terms of S_y is close to a Poisson law (a small w), which is the range
+// of the expected information beyond PIG_ASYM_CUT at a large mu.
 //
-//   N_{r,y+1} = N_{r,y-1} + 2(2y - 1) (w N_{r,y} + r N_{r-1,y}),
+// What is carried are the factorial cumulants of that law, f_r = w^r L_r
+// (r = 1..4), which are the derivatives at x = 1 of g_y(x) = log(S_y(w x) /
+// S_y(w)), and their steps a_r = (g_y - g_{y-1})^(r)(1). The recurrence reads
 //
-// every term positive. Divided through by S_{y+1} the weights are finite as
-// w -> 0, which is the Poisson limit, so nothing there is formed from a
-// power of 1/w.
+//   S_{y+1}(w x) / S_{y+1}(w) = p S_{y-1}(w x) / S_{y-1}(w) +
+//                               v x S_y(w x) / S_y(w),
+//
+// p = S_{y-1}/S_{y+1}, v = 2(2y - 1) w S_y/S_{y+1}, p + v = 1, so that
+//
+//   g_{y+1} - g_y = log Z,   Z(x) = p exp(-(g_y - g_{y-1})) + v x.
+//
+// The derivatives of Z at x = 1 are z_1 = v - p a_1, z_r = p E_r (r >= 2),
+// with E_r the derivatives of exp(-(g_y - g_{y-1})) (Bell polynomials in the
+// a_r), and the new steps are the derivatives of log Z (cumulants of the z_r).
+// Then f_r(y + 1) = f_r(y) + a_r(y + 1) and L_r = f_r / w^r. No raw moment
+// enters, so the digits of a near-Poisson law are kept; the steps themselves
+// cancel by about y in the same range. Every call costs O(1).
 struct PigSeqW {
     double w;
     int y;
-    double np[5], nc[5];   // N_r / S at y - 1 and at y
+    double a[4];           // steps of f_r, r = 1..4, from y - 1 to y
+    double f[4];           // f_r at y
+    double ip[4];          // w^-r
     double logS, e;
     explicit PigSeqW(double ww) : w(ww), y(0), logS(0.0), e(0.0) {
-        for (int r = 0; r < 5; ++r) np[r] = nc[r] = (r == 0) ? 1.0 : 0.0;
+        const double iw = 1.0 / ww;
+        for (int r = 0; r < 4; ++r) a[r] = f[r] = 0.0;
+        ip[0] = iw; ip[1] = iw * iw; ip[2] = ip[1] * iw; ip[3] = ip[2] * iw;
     }
     void next() {
         if (y == 0) { y = 1; e = 0.0; return; }
-        double two = 2.0 * (2.0 * y - 1.0);
-        double t = two * w;
-        double d = t - e / (1.0 + e);
-        double R = 1.0 + d;
-        double Wt = 1.0 / (R * (1.0 + e)), V = t / R, U = two / R;
-        double n1 = Wt * np[1] + V * nc[1] + U * nc[0];
-        double n2 = Wt * np[2] + V * nc[2] + 2.0 * U * nc[1];
-        double n3 = Wt * np[3] + V * nc[3] + 3.0 * U * nc[2];
-        double n4 = Wt * np[4] + V * nc[4] + 4.0 * U * nc[3];
-        for (int r = 0; r < 5; ++r) np[r] = nc[r];
-        nc[1] = n1; nc[2] = n2; nc[3] = n3; nc[4] = n4;
+        const double two = 2.0 * (2.0 * y - 1.0);
+        const double t = two * w;
+        const double d = t - e / (1.0 + e);     // S_{y+1}/S_y - 1
+        const double R = 1.0 + d;
+        const double p = 1.0 / (R * (1.0 + e)), v = t / R;
+        const double a1 = a[0], a2 = a[1], a3 = a[2], a4 = a[3];
+        const double a11 = a1 * a1;
+        const double z1 = v - p * a1;
+        const double z2 = p * (a11 - a2);
+        const double z3 = p * (a1 * (3.0 * a2 - a11) - a3);
+        const double z4 = p * (a11 * (a11 - 6.0 * a2) + 4.0 * a1 * a3 +
+                               3.0 * a2 * a2 - a4);
+        const double z11 = z1 * z1;
+        const double s2 = z2 - z11;
+        const double s3 = z3 - z1 * (3.0 * z2 - 2.0 * z11);
+        const double s4 = z4 - 4.0 * z1 * z3 - z2 * (3.0 * z2 - 12.0 * z11) -
+            6.0 * z11 * z11;
+        a[0] = z1; a[1] = s2; a[2] = s3; a[3] = s4;
+        f[0] += z1; f[1] += s2; f[2] += s3; f[3] += s4;
         logS += std::log1p(d);
         e = d;
         ++y;
     }
-    // log S and its four derivatives in w, the cumulants of N_r / S
+    // log S and its four derivatives in w
     void pre(double out[7]) const {
-        double n1 = nc[1], n2 = nc[2], n3 = nc[3], n4 = nc[4];
         out[0] = logS;
-        out[1] = n1;
-        out[2] = n2 - n1 * n1;
-        out[3] = n3 - 3.0 * n1 * n2 + 2.0 * n1 * n1 * n1;
-        out[4] = n4 - 4.0 * n1 * n3 - 3.0 * n2 * n2 +
-            12.0 * n1 * n1 * n2 - 6.0 * n1 * n1 * n1 * n1;
+        out[1] = f[0] * ip[0];
+        out[2] = f[1] * ip[1];
+        out[3] = f[2] * ip[2];
+        out[4] = f[3] * ip[3];
         out[5] = out[6] = 0.0;
     }
 };

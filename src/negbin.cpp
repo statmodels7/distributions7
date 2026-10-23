@@ -71,7 +71,11 @@ using namespace Rcpp;
 //
 // The mass comes from the recurrence and the stopping rule of
 // negbin2_expected_theta_theta(),
-// seed and log-scale switch included, for the reasons recorded there. nb_dE_ltt1() writes (d_mu S,
+// seed and log-scale switch included, for the reasons recorded there. U_theta,
+// U_thetatheta, s_theta and s_thetatheta are carried as running sums of their
+// merged increments (Negbin2ThetaRun of pt_negbin2.h), not as the
+// differences of the A_r written above, which lose digits as theta grows.
+// nb_dE_ltt1() writes (d_mu S,
 // d_theta S) to out in one pass, the d_theta summand being
 // negbin2_dexpected_theta_theta_theta_term() of pt_negbin2.h, which the
 // registry's d_theta sum also adds; nb_dE_ltt2() writes (d_mumu S,
@@ -84,9 +88,9 @@ static void nb_dE_ltt1(double mu, double theta, double *out) {
     const double c = theta + mu, c2 = c * c;
     const double den = theta * c;
     const double L = std::log1p(mu / theta);
-    const double th2 = theta * theta;
+    d7::Negbin2ThetaRun run(mu, theta, ratio, L);
 
-    double U = 0.0, A1 = 0.0, A3 = 0.0;
+    double U = 0.0;
     double r1 = 0.0, r2 = 0.0;
     double lpk = -theta * std::log1p(mu / theta);
     bool logscale = (lpk <= -640.0);
@@ -96,13 +100,11 @@ static void nb_dE_ltt1(double mu, double theta, double *out) {
         double sm = theta * (kd - mu) / (mu * c);
         double Um = -kd / (theta * c2);
         r1 += pk * (Um + U * sm);
-        r2 += d7::negbin2_dexpected_theta_theta_theta_term(kd, pk, U, A1, A3, L,
-                                                            mu, theta, c, c2, th2);
+        r2 += d7::negbin2_dexpected_theta_theta_theta_term(pk, U, run.st, run.Ut);
         bool last = d7::negbin2_series_done(kd, pk, mode);
-        double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
+        double tk = theta + kd, iv = 1.0 / tk;
         U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
-        A1 += iv;
-        A3 += iv2 * iv;
+        run.step1(kd, iv);
         if (last) break;
         if (logscale) {
             lpk += lratio + std::log((k + theta) / (k + 1.0));
@@ -124,9 +126,10 @@ static void nb_dE_ltt2(double mu, double theta, double *out) {
     const double c = theta + mu, c2 = c * c, c3 = c2 * c;
     const double den = theta * c;
     const double L = std::log1p(mu / theta);
-    const double th2 = theta * theta, th3 = th2 * theta;
+    const double th2 = theta * theta;
+    d7::Negbin2ThetaRun run(mu, theta, ratio, L);
 
-    double U = 0.0, A1 = 0.0, A2 = 0.0, A3 = 0.0, A4 = 0.0;
+    double U = 0.0;
     double r1 = 0.0, r2 = 0.0, r3 = 0.0;
     double lpk = -theta * std::log1p(mu / theta);
     bool logscale = (lpk <= -640.0);
@@ -134,26 +137,20 @@ static void nb_dE_ltt2(double mu, double theta, double *out) {
     for (int k = 0; k <= kmax; ++k) {
         double kd = (double) k;
         double sm = theta * (kd - mu) / (mu * c);
-        double st = A1 - L + (mu - kd) / c;
+        const double st = run.st, Ut = run.Ut, stt = run.stt, Utt = run.Utt;
         double Um = -kd / (theta * c2);
-        double Ut = -kd * (2.0 * theta + mu) / (th2 * c2) + 2.0 * A3;
         double smm = (kd + theta) / c2 - kd / (mu * mu);
         double smt = (kd - mu) / c2;
-        double stt = -A2 + mu / (theta * c) + (kd - mu) / c2;
         double Umm = 2.0 * kd / (theta * c3);
         double Umt = kd * (3.0 * theta + mu) / (th2 * c3);
-        double Utt = 2.0 * kd * (3.0 * th2 + 3.0 * theta * mu + mu * mu) /
-                     (th3 * c3) - 6.0 * A4;
         r1 += pk * (Umm + 2.0 * Um * sm + U * (smm + sm * sm));
         r2 += pk * (Utt + 2.0 * Ut * st + U * (stt + st * st));
         r3 += pk * (Umt + Um * st + Ut * sm + U * (smt + sm * st));
         bool last = d7::negbin2_series_done(kd, pk, mode);
-        double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
+        double tk = theta + kd, iv = 1.0 / tk;
         U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
-        A1 += iv;
-        A2 += iv2;
-        A3 += iv2 * iv;
-        A4 += iv2 * iv2;
+        run.step1(kd, iv);
+        run.step2(kd, tk, iv);
         if (last) break;
         if (logscale) {
             lpk += lratio + std::log((k + theta) / (k + 1.0));

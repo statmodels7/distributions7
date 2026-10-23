@@ -291,14 +291,83 @@ inline double negbin2_dexpected_mu_mu_mu(double m, double th) {
 // seed, its log-scale switch and its stopping rule are those of
 // negbin2_expected_theta_theta(); negbin.cpp has the derivation in full.
 //
-// The summand at k, from the running sums U, A1 and A3 at k, is its own
-// function: the vector kernel, which forms d_mu S in the same pass, adds
+// THE RUNNING FORMS OF s_theta, s_thetatheta, U_theta AND U_thetatheta.
+// Written from the closed forms above, U_theta = -k(2 theta + mu)/(theta^2 c^2)
+// + 2 A3 and U_thetatheta = 2k(3 theta^2 + 3 theta mu + mu^2)/(theta^3 c^3)
+// - 6 A4 are each a difference of two sums of the same size, and so are
+//   s_theta      = A1 - log1p(mu/theta) + (mu - k)/c,
+//   s_thetatheta = -A2 + mu/(theta c) + (k - mu)/c^2.
+// Their loss grows with theta, because the information tends to zero with
+// theta while the pieces do not. Each is
+// here the running sum of its merged increment, which is the same difference
+// taken term by term (each A_r absorbs its constant, as the merged summand of
+// U does and as nb_E_dtheta of negbin_hd.cpp does for U_theta and
+// U_thetatheta):
+//   s_theta,k+1      - s_theta,k      = (mu - k)/(t c)
+//   s_thetatheta,k+1 - s_thetatheta,k = (k - mu)(t + c)/(t^2 c^2)
+//   U_theta,k+1      - U_theta,k      = [theta^2 mu (3 theta + 2 mu)
+//                         - (2 theta + mu) k (3 theta^2 + 3 k theta + k^2)]
+//                         / (t^3 theta^2 c^2)
+//   U_thetatheta,k+1 - U_thetatheta,k = [-2 theta^3 mu (6 theta^2 + 8 theta mu
+//                         + 3 mu^2) + 2 K k (4 theta^3 + 6 k theta^2
+//                         + 4 k^2 theta + k^3)] / (t^4 theta^3 c^3),
+// t = theta + k and K = 3 theta^2 + 3 theta mu + mu^2. All four vanish at
+// k = 0 except the two s, whose values there are
+//   s_theta,0      = mu/c - log1p(mu/theta)  (the series negbin2_h1() below
+//                    mu/theta = 0.5, where the two terms cancel),
+//   s_thetatheta,0 = mu^2/(theta c^2).
+// The loop starts at k = 0, so no remainder is needed to seed U_theta and
+// U_thetatheta. Every increment is formed from iv = 1/t by multiplication, so
+// that the four sums cost no division beyond the one iv the loop already took.
+// Against nb_ref.json (misure_gas_congiunto/c/fase3/N2), over the negbin2
+// cells with mu from 1e-6 to 1e3 and theta from 0.05 to 1e5: the worst error
+// of the first derivatives falls from 4.4e-9 to 2.6e-11 and that of the
+// second derivatives from 3.4e-8 to 9.8e-10; what remains of the second is
+// d_mumu E_tt, which reads neither U_theta nor s_theta.
+struct Negbin2ThetaRun {
+    double st, stt, Ut, Utt;   // the four quantities at the current k
+    double mu, theta, c, invc, ic2, ic3, ic4, th2, th3, A3, B3, A4, K4;
+    // ratio = mu/(theta + mu) and L = log1p(mu/theta), formed by the caller
+    Negbin2ThetaRun(double mu_, double theta_, double ratio, double L)
+        : Ut(0.0), Utt(0.0), mu(mu_), theta(theta_) {
+        c = theta + mu;
+        invc = 1.0 / c;
+        const double c2 = c * c, c3 = c2 * c;
+        ic2 = invc * invc;
+        th2 = theta * theta;
+        th3 = th2 * theta;
+        ic3 = 1.0 / (th2 * c2);
+        ic4 = 1.0 / (th3 * c3);
+        A3 = th2 * mu * (3.0 * theta + 2.0 * mu);
+        B3 = 2.0 * theta + mu;
+        A4 = -2.0 * th3 * mu * (6.0 * th2 + 8.0 * theta * mu + 3.0 * mu * mu);
+        K4 = 3.0 * th2 + 3.0 * theta * mu + mu * mu;
+        const double x = mu / theta;
+        st = (x < 0.5) ? -negbin2_h1(x) : ratio - L;
+        stt = mu * mu / (theta * c2);
+    }
+    // the increments of s_theta and U_theta at k = kd, tk = theta + kd, iv = 1/tk
+    inline void step1(double kd, double iv) {
+        const double iv2 = iv * iv;
+        st += (mu - kd) * iv * invc;
+        Ut += (A3 - B3 * kd * (3.0 * th2 + 3.0 * kd * theta + kd * kd))
+              * (iv2 * iv) * ic3;
+    }
+    // the increments of s_thetatheta and U_thetatheta
+    inline void step2(double kd, double tk, double iv) {
+        const double iv2 = iv * iv;
+        stt += (kd - mu) * (tk + c) * iv2 * ic2;
+        Utt += (A4 + 2.0 * K4 * kd
+                * (4.0 * th3 + 6.0 * kd * th2 + 4.0 * kd * kd * theta
+                   + kd * kd * kd)) * (iv2 * iv2) * ic4;
+    }
+};
+
+// The summand at k, from U and the running s_theta and U_theta at k, is its
+// own function: the vector kernel, which forms d_mu S in the same pass, adds
 // it too.
-inline double negbin2_dexpected_theta_theta_theta_term(
-    double kd, double pk, double U, double A1, double A3, double L,
-    double mu, double theta, double c, double c2, double th2) {
-    double st = A1 - L + (mu - kd) / c;
-    double Ut = -kd * (2.0 * theta + mu) / (th2 * c2) + 2.0 * A3;
+inline double negbin2_dexpected_theta_theta_theta_term(double pk, double U,
+                                                       double st, double Ut) {
     return pk * (Ut + U * st);
 }
 
@@ -307,25 +376,22 @@ inline double negbin2_dexpected_theta_theta_theta(double mu, double theta) {
     double lratio = std::log(mu) - std::log(theta + mu);
     const int kmax = negbin2_series_cap(mu, theta);
     const double mode = negbin2_series_mode(mu, theta);
-    const double c = theta + mu, c2 = c * c;
-    const double den = theta * c;
+    const double den = theta * (theta + mu);
     const double L = std::log1p(mu / theta);
-    const double th2 = theta * theta;
+    Negbin2ThetaRun run(mu, theta, ratio, L);
 
-    double U = 0.0, A1 = 0.0, A3 = 0.0;
+    double U = 0.0;
     double r2 = 0.0;
     double lpk = -theta * std::log1p(mu / theta);
     bool logscale = (lpk <= -640.0);
     double pk = std::exp(lpk);
     for (int k = 0; k <= kmax; ++k) {
         double kd = (double) k;
-        r2 += negbin2_dexpected_theta_theta_theta_term(kd, pk, U, A1, A3, L,
-                                                        mu, theta, c, c2, th2);
+        r2 += negbin2_dexpected_theta_theta_theta_term(pk, U, run.st, run.Ut);
         bool last = negbin2_series_done(kd, pk, mode);
-        double tk = theta + kd, iv = 1.0 / tk, iv2 = iv * iv;
+        double tk = theta + kd, iv = 1.0 / tk;
         U += (theta * (2.0 * kd - mu) + kd * kd) / (den * tk * tk);
-        A1 += iv;
-        A3 += iv2 * iv;
+        run.step1(kd, iv);
         if (last) break;
         if (logscale) {
             lpk += lratio + std::log((k + theta) / (k + 1.0));
