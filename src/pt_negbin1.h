@@ -68,17 +68,15 @@ inline NB1parts nb1_parts(double y, double mu, double th, int order) {
 // W/theta^2 tends to -1/2, so the relative error of E[l_theta,theta] and
 // E[l_mu,theta] grew like eps/theta (1e-7 at theta = 1e-8, 1.8e-4 at 1e-12,
 // mu = 4) and d_theta E[l_theta,theta] was -8.59 against 1.125 at 1e-8.
-// Below nb1_expected_cut() the sums therefore carry
+// Below the cut (nb1_cut0, nb1_cut1, nb1_cut2: one per order of derivative,
+// each a function of mu) the sums therefore carry
 //   G = E[l_theta,theta] = -E[D_Y] - mu q'(theta),  D_k = sum_{j<k} j^2/u_j^2,
 // the expectation of h_theta,theta below (E[Y - mu] = 0), whose summands are
 // all positive; the cancellation left is between E[D] (about mu/3 + 1/2) and
 // mu q' (about -mu/3), a factor mu and not 1/theta, and the D sums carry the
 // rounding of about mu + 40 sd terms. Above the cut G = W/theta^2 from the W
-// sums. The cut is where the two meet: against 50-digit sums on a grid of mu
-// from 4 to 500 and theta from 1e-4 to 0.9 the W route reads 3e-11 and the D
-// route 1.5e-13 at mu = 500, theta = 0.01, and 2.4e-12 against 2e-11 at
-// theta = 0.05 (vg_T3_nb1ref5.py). Either way the sums return G with its
-// derivatives, and E[l_mu,theta] = -theta G/mu.
+// sums. Either way the sums return G with its derivatives, and
+// E[l_mu,theta] = -theta G/mu. The cuts are stated at nb1_cut0().
 //
 // The derivatives of A and W are sums over the same mass with the score of
 // the mass beside the summand,
@@ -240,9 +238,69 @@ inline void nb1_q23(double t, double* qpp, double* qppp) {
 // R/negbin1_higher.R. Above it the two agree to 1e-11 or better.
 inline double nb1_low_cut() { return 1.0; }
 
-// The dispersion below which the expected information and its derivatives
-// are summed in G = -E[D] - mu q' (nb1_dsums0/1/2) rather than in W.
-inline double nb1_expected_cut() { return 0.02; }
+// THE CUT BETWEEN THE W AND THE D ROUTE. The expected information (order 0),
+// its first derivatives (order 1) and its second derivatives (order 2) are
+// summed in G = -E[D] - mu q' (nb1_dsums0/1/2, the D route) for theta below
+// nb1_cut0(mu), nb1_cut1(mu), nb1_cut2(mu) respectively, and in W
+// (nb1_wsums0/1/2) above. A and the terms taken are the same on both routes
+// (the mass, the stopping rule and the cap do not depend on the route), so
+// the cut changes the accuracy and not the number of terms; per term the D
+// summand k^2/u^2 is cheaper than the W summand theta (2 mu k + theta k^2 -
+// mu^2)/((1 + theta) u^2).
+//
+// The earlier cut, theta < 0.02 at every mu and every order, was replaced
+// after a measurement against nb_ref.py's 50-digit sums (c/nb_ref.json and
+// 724 cells outside the series of misure_gas_congiunto/c/fase3/N3: mu from
+// 1e-3 to 1.1e4, theta from 1e-4 to 5, with replicates jittered by 1e-3
+// around each grid node, since the error of one cell is not smooth in (mu,
+// theta)). The two
+// routes lose accuracy in different places. The W summand cancels as theta
+// falls (its error grows like eps/theta), which the D route does not suffer;
+// the D route subtracts mu q' from a sum of about mu/3, and loses a factor
+// that grows with mu. In E the D route is the better one for mu below about
+// 300 and theta below about 0.3/(1 + mu/30)^1.5, and the W route above
+// (D reads 1e-9 against 1e-10 at mu = 1e3, theta 0.005 to 0.5, and 3e-8
+// against 4e-12 at mu = 1e4, theta 0.5). In dE and d2E the D route wins by up
+// to six orders in the largest component at small theta, and loses once
+// theta passes a value that falls with mu. The cuts are the curves
+//   order 0: max(1e-3, 0.3/(1 + mu/30)^1.5),
+//   order 1: max(5e-3, 0.25/(1 + mu/100)),
+//   order 2: max(5e-3, 0.6/sqrt(1 + mu/30)),
+// chosen to minimize, over the cells, the number of decades by which the
+// route taken exceeds the better of the two, summed over the metric of
+// nb_measure.R (largest componentwise relative error) and the error relative
+// to the largest component of the order, taking the worse of the two at each
+// cell. Each order was fitted on one half of the cells and evaluated on the
+// other with about the same total. The floors keep the D route at
+// small theta whatever mu is, where the W route cancels.
+// Against the old cut, over the 724 cells: the sum of the excess decades fell
+// from 107 to 24 (E), from 258 to 98 (dE) and from 483 to 47 (d2E), and the
+// cells more than half a decade from the better route from 80 to 20, from
+// 182 to 75 and from 237 to 34. The worst error in the largest component fell
+// from 1.5e-6 to 1.9e-7 in d2E and stays at 1.9e-7 in dE; E has 2.6e-7 at
+// mu = 1e4, theta 1e-4, where both routes fail.
+// The two metrics disagree for dE and d2E at mu of a few hundred and above.
+// In the relative metric the cell mu = 1e3, theta = 0.05 stays at 1.0e-6 in dE
+// (W) and moves from 4.2e-6 to 1.4e-5 in d2E (D), because that metric charges
+// d_mu G (2e-8 against 0.86 for the largest component of dE) and d_mu,mu G
+// (4e-11 against 2.5 in d2E) to their own sizes; in the error relative to the
+// largest component d2E there goes from 8e-9 to 1e-10, and dE, kept on the W
+// route, stays at 4e-10 (9e-11 on the D route). A cut for dE fitted to the
+// relative metric alone costs 104 excess decades in the metric relative to
+// the largest component, and one fitted to that metric alone costs 138 in the
+// relative one; the compromise costs 43 and 56.
+inline double nb1_cut0(double mu) {
+    const double x = 1.0 + mu / 30.0;
+    return std::max(1e-3, 0.3 / (x * d7::sqrt_cr(x)));
+}
+
+inline double nb1_cut1(double mu) {
+    return std::max(5e-3, 0.25 / (1.0 + mu / 100.0));
+}
+
+inline double nb1_cut2(double mu) {
+    return std::max(5e-3, 0.6 / d7::sqrt_cr(1.0 + mu / 30.0));
+}
 
 // The scores and second derivatives from the form in mu + i theta, by the
 // formulas for s_mu, s_theta, h_mu,mu, h_mu,theta and h_theta,theta above
@@ -394,7 +452,7 @@ inline void nb1_wsums2(double mu, double th, double* A, double* W) {
     for (int j = 0; j < 6; ++j) { A[j] = s[0][j]; W[j] = s[1][j]; }
 }
 
-// A and G = E[l_theta,theta] below nb1_expected_cut(), from the D sums
+// A and G = E[l_theta,theta] below the cut (nb1_cut0, nb1_cut1, nb1_cut2), from the D sums
 inline void nb1_dsums0(double mu, double th, double* A, double* G) {
     NB1mass w = nb1_mass(mu, th);
     const double r = w.r, ratio = w.ratio, lratio = w.lratio, mode = w.mode;
@@ -523,7 +581,7 @@ inline void nb1_dsums2(double mu, double th, double* A, double* G) {
 }
 
 // A and G = E[l_theta,theta] at one (mu, theta), from the D sums below
-// nb1_expected_cut() and from G = W/theta^2 above it
+// the cut (nb1_cut0, nb1_cut1, nb1_cut2) and from G = W/theta^2 above it
 // LARGE THETA. At fixed mu the mass has about theta terms and a ratio
 // theta/(1 + theta) close to one. The series of pt_negbin1_asym.h replaces the
 // sums wherever it meets 1e-13 (nb1_asym_ok(): theta >= 2, mu/theta <= 0.3),
@@ -535,7 +593,7 @@ inline bool nb1_use_asym(double mu, double th) {
 
 inline void nb1_sums0(double mu, double th, double* A, double* G) {
     if (nb1_use_asym(mu, th)) { nb1_asym_sums0(mu, th, A, G); return; }
-    if (th < nb1_expected_cut()) { nb1_dsums0(mu, th, A, G); return; }
+    if (th < nb1_cut0(mu)) { nb1_dsums0(mu, th, A, G); return; }
     double W;
     nb1_wsums0(mu, th, A, &W);
     *G = W / (th * th);
@@ -543,7 +601,7 @@ inline void nb1_sums0(double mu, double th, double* A, double* G) {
 
 inline void nb1_sums1(double mu, double th, double* A, double* G) {
     if (nb1_use_asym(mu, th)) { nb1_asym_sums1(mu, th, A, G); return; }
-    if (th < nb1_expected_cut()) { nb1_dsums1(mu, th, A, G); return; }
+    if (th < nb1_cut1(mu)) { nb1_dsums1(mu, th, A, G); return; }
     double W[3];
     nb1_wsums1(mu, th, A, W);
     const double i2 = 1.0 / (th * th), i3 = i2 / th;
@@ -554,7 +612,7 @@ inline void nb1_sums1(double mu, double th, double* A, double* G) {
 
 inline void nb1_sums2(double mu, double th, double* A, double* G) {
     if (nb1_use_asym(mu, th)) { nb1_asym_sums2(mu, th, A, G); return; }
-    if (th < nb1_expected_cut()) { nb1_dsums2(mu, th, A, G); return; }
+    if (th < nb1_cut2(mu)) { nb1_dsums2(mu, th, A, G); return; }
     double W[6];
     nb1_wsums2(mu, th, A, W);
     const double i2 = 1.0 / (th * th), i3 = i2 / th, i4 = i2 * i2;

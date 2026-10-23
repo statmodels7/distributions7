@@ -8,6 +8,7 @@
 #include "pig_asym.h"
 #include "pt_sqrt.h"
 #include "pt_pig_debye.h"
+#include "pt_pig_mass.h"
 
 // The Poisson-inverse Gaussian in both parametrizations: what the kernels of
 // pig_hd.cpp and the scalar registry share. The special functions are
@@ -482,59 +483,90 @@ inline void pig_logS_w(double y, double w, int order, double L[5]) {
 //
 //   S_{y+1} = S_{y-1} + ((2y - 1)/a) S_y,          S_0 = S_1 = 1,
 //
-// and differentiating it r times in a, with M_r = (-a)^r S^(r) = m_r S,
+// and differentiating it r times in a gives, for the moments M_r = (-a)^r
+// S^(r) = m_r S, a recurrence of positive terms. The derivatives of log S are
+// not formed from those moments: their cumulants cancel, by about y^r, when
+// the law of the index k of the terms of S_y is close to a Poisson law (a
+// large a), which is the range of the expected information beyond
+// PIG_ASYM_CUT at a large mu.
 //
-//   M_{r,y+1} = M_{r,y-1} + ((2y - 1)/a) sum_j C(r,j) j! M_{r-j,y},
+// As a function of u = 1/a, S_y is the polynomial that PigSeqW carries in w,
+// with w replaced by u/2, since S_{y+1} = S_{y-1} + (2y - 1) u S_y. What is
+// carried is therefore the same: the factorial cumulants f_r, r = 1..4, of
+// the law of k (the derivatives at x = 1 of g_y(x) = log(S_y(u x) / S_y(u)))
+// and their steps a_r = (g_y - g_{y-1})^(r)(1), with
 //
-// every term positive. Divided through by S_{y+1} it is a combination
-// with positive weights w + v = 1 of quantities already computed, so
-// nothing cancels and the recurrence is forward stable. The ratio
-// S_{y+1}/S_y - 1 is carried directly, the step to log S being a log1p:
-// formed as rho + t - 1 it cancels at a large a, where it is of size y/a.
+//   S_{y+1}(u x) / S_{y+1}(u) = p S_{y-1}(u x) / S_{y-1}(u) +
+//                               v x S_y(u x) / S_y(u),
+//
+// p = S_{y-1}/S_{y+1}, v = (2y - 1) u S_y/S_{y+1}, p + v = 1, so that
+// g_{y+1} - g_y = log Z, Z(x) = p exp(-(g_y - g_{y-1})) + v x. The derivatives
+// of Z at x = 1 are z_1 = v - p a_1 and z_r = p E_r (r >= 2), E_r being the
+// derivatives of exp(-(g_y - g_{y-1})) (Bell polynomials in the a_r); the new
+// steps are the derivatives of log Z, and f_r(y + 1) = f_r(y) + a_r(y + 1).
+//
+// The derivatives of log S in a follow from the f_r. With q_r =
+// (-1)^r d^r(log S)/da^r = u^r F_r, F_1 = f_1 and F_{r+1} = r F_r + u d F_r/du,
+// where u d f_j/du = j f_j + f_{j+1}, so that
+//
+//   F_1 = f_1,  F_2 = 2 f_1 + f_2,  F_3 = 6 f_1 + 6 f_2 + f_3,
+//   F_4 = 24 f_1 + 36 f_2 + 12 f_3 + f_4
+//
+// (Lah numbers, all positive). The derivatives of psi = -a + log S are
+// -1 - u F_1, u^2 F_2, -u^3 F_3, u^4 F_4. No raw moment enters, and every
+// call costs O(1). The steps themselves cancel by about y in the same range.
+//
+// The ratio S_{y+1}/S_y - 1 is carried directly, the step to log S being a
+// log1p: formed as rho + t - 1 it cancels at a large a, where it is of size
+// y/a.
 struct PigSeq {
-    double a;
+    double a, u;           // alpha and 1/alpha
     int y;
-    double mp[5], mc[5];   // moments at y - 1 and at y, m_0 = 1
+    double st[4];          // steps of f_r, r = 1..4, from y - 1 to y
+    double f[4];           // f_r at y
     double logS;           // log S_y
     double e;              // S_y / S_{y-1} - 1
-    explicit PigSeq(double alpha) : a(alpha), y(0), logS(0.0), e(0.0) {
-        for (int r = 0; r < 5; ++r) mp[r] = mc[r] = (r == 0) ? 1.0 : 0.0;
+    explicit PigSeq(double alpha)
+        : a(alpha), u(1.0 / alpha), y(0), logS(0.0), e(0.0) {
+        for (int r = 0; r < 4; ++r) st[r] = f[r] = 0.0;
     }
     // advance from y to y + 1
     void next() {
         if (y == 0) { y = 1; e = 0.0; return; }   // S_1 = S_0 = 1
-        double t = (2.0 * y - 1.0) / a;
-        double d = t - e / (1.0 + e);             // S_{y+1}/S_y - 1
-        double ratio = 1.0 + d;
-        double w = 1.0 / (ratio * (1.0 + e));     // S_{y-1}/S_{y+1}
-        double v = t / ratio;                     // (t S_y)/S_{y+1}
-        double s1 = mc[1] + 1.0;
-        double s2 = mc[2] + 2.0 * mc[1] + 2.0;
-        double s3 = mc[3] + 3.0 * mc[2] + 6.0 * mc[1] + 6.0;
-        double s4 = mc[4] + 4.0 * mc[3] + 12.0 * mc[2] + 24.0 * mc[1] + 24.0;
-        double n1 = w * mp[1] + v * s1, n2 = w * mp[2] + v * s2,
-            n3 = w * mp[3] + v * s3, n4 = w * mp[4] + v * s4;
-        for (int r = 0; r < 5; ++r) mp[r] = mc[r];
-        mc[1] = n1; mc[2] = n2; mc[3] = n3; mc[4] = n4;
+        const double t = (2.0 * y - 1.0) * u;
+        const double d = t - e / (1.0 + e);       // S_{y+1}/S_y - 1
+        const double R = 1.0 + d;
+        const double p = 1.0 / (R * (1.0 + e));   // S_{y-1}/S_{y+1}
+        const double v = t / R;                   // (t S_y)/S_{y+1}
+        const double a1 = st[0], a2 = st[1], a3 = st[2], a4 = st[3];
+        const double a11 = a1 * a1;
+        const double z1 = v - p * a1;
+        const double z2 = p * (a11 - a2);
+        const double z3 = p * (a1 * (3.0 * a2 - a11) - a3);
+        const double z4 = p * (a11 * (a11 - 6.0 * a2) + 4.0 * a1 * a3 +
+                               3.0 * a2 * a2 - a4);
+        const double z11 = z1 * z1;
+        const double s2 = z2 - z11;
+        const double s3 = z3 - z1 * (3.0 * z2 - 2.0 * z11);
+        const double s4 = z4 - 4.0 * z1 * z3 - z2 * (3.0 * z2 - 12.0 * z11) -
+            6.0 * z11 * z11;
+        st[0] = z1; st[1] = s2; st[2] = s3; st[3] = s4;
+        f[0] += z1; f[1] += s2; f[2] += s3; f[3] += s4;
         logS += std::log1p(d);
         e = d;
         ++y;
     }
-    // what psi_derivs() hands a row, from the same formulas:
+    // what psi_derivs() hands a row, with the same meaning:
     // h[0..4], then log S, then A1 = d log S / d a
     void pre(double out[7]) const {
-        double A1 = -mc[1] / a;
-        double A2 = mc[2] / (a * a);
-        double A3 = -mc[3] / (a * a * a);
-        double A4 = mc[4] / (a * a * a * a);
+        const double u2 = u * u;
         out[0] = -a + logS;
-        out[1] = -1.0 + A1;
-        out[2] = A2 - A1 * A1;
-        out[3] = A3 - 3.0 * A1 * A2 + 2.0 * A1 * A1 * A1;
-        out[4] = A4 - 4.0 * A1 * A3 - 3.0 * A2 * A2 +
-            12.0 * A1 * A1 * A2 - 6.0 * A1 * A1 * A1 * A1;
+        out[1] = -1.0 - u * f[0];
+        out[2] = u2 * (2.0 * f[0] + f[1]);
+        out[3] = -u2 * u * (6.0 * f[0] + 6.0 * f[1] + f[2]);
+        out[4] = u2 * u2 * (24.0 * f[0] + 36.0 * f[1] + 12.0 * f[2] + f[3]);
         out[5] = logS;
-        out[6] = A1;
+        out[6] = -u * f[0];
     }
 };
 

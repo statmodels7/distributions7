@@ -290,7 +290,14 @@ static inline void pig1_row(double yy, double m, double sg,
             if (k < lo || k >= hi) continue;
             double val = h * LC[k] + G[k] + LS[k];
             if (j == 0) val += ym[i];
-            if (k == 0) val -= R::lgammafn(yy + 1.0);
+            if (k == 0) {
+                val -= R::lgammafn(yy + 1.0);
+                // the log mass at large counts without the cancellation
+                if (!pre && d7::pig_logmass_big_ok(yy, m)) {
+                    const double vb = d7::pig1_logmass_big(yy, m, sg);
+                    if (std::isfinite(vb)) val = vb;
+                }
+            }
             v[k - lo] = val;
         }
     }
@@ -535,6 +542,11 @@ static inline void pig2_row(double yy, double m, double aa,
         int w = 0;
         v[w + 0] = yy * std::log(m) - yy * std::asinh(t) + core + logS -
             R::lgammafn(yy + 1.0);
+        // the log mass at large counts without the cancellation
+        if (!pre && d7::pig_logmass_big_ok(yy, m)) {
+            const double vb = d7::pig2_logmass_big(yy, m, aa);
+            if (std::isfinite(vb)) v[w + 0] = vb;
+        }
         if (order == 0) return;
         double r_m = m * ir, r_a = aa * ir;
         double rm2 = r_m * r_m, ra2 = r_a * r_a;

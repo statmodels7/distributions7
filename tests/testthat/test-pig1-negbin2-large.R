@@ -93,3 +93,53 @@ test_that("negbin2's expected information derivatives hold at theta = 1e5", {
     }
   }
 })
+
+test_that("the PIG log mass holds at counts past 1e10", {
+  # 80-digit references (uniform expansion of the Bessel function); the
+  # assembly in terms of size y log y read -28.203125 at 1e12 and 0 at 9e15
+  ref <- c(`1e10` = -23.598215872927656927, `1e12` = -28.203386058853873295,
+           `9e15` = -37.3083659151716048)
+  for (k in names(ref)) {
+    y <- as.numeric(k)
+    a <- sqrt(1 + 2 * 0.5 * y) / 0.5
+    l1 <- distrib_pdf(pig1_distrib(), y, list(mu = y, sigma = 0.5), log = TRUE)
+    l2 <- distrib_pdf(pig2_distrib(), y, list(mu = y, alpha = a), log = TRUE)
+    expect_lt(abs(l1 / ref[[k]] - 1), 1e-13)
+    expect_lt(abs(l2 / ref[[k]] - 1), 1e-13)
+  }
+})
+
+test_that("pig2's second derivative of the expected information holds at mu = 1e4", {
+  # the support recurrence's derivatives in alpha; 2.5e-4 off normwise when
+  # they were cumulants of raw moments
+  ref <- c(mu_mu_mu_mu = -2.230601660926372847108061e-13,
+           mu_mu_alpha_alpha = -8.340737995891702541153359e-13,
+           mu_mu_mu_alpha = 5.439611736451110352926104e-13,
+           alpha_alpha_mu_mu = 1.522623076841447683587475e-15,
+           alpha_alpha_alpha_alpha = -7.500024289386655434932021e-13,
+           alpha_alpha_mu_alpha = 5.738850416912363975907761e-16)
+  out <- distrib_d2expected_hessian(pig2_distrib(), 1, list(mu = 1e4, alpha = 2000))
+  got <- vapply(names(ref), function(k) out[[k]][1], numeric(1))
+  expect_lt(max(abs(got - ref)) / max(abs(ref)), 1e-9)
+})
+
+test_that("negbin1's second derivative of the expected information holds at theta = 0.05", {
+  # the route chosen per order: on the W sums the surface at mu = 100 was
+  # 2.9e-10 off relative to its largest component
+  d <- negbin1_distrib()
+  p <- d@params
+  ex <- list(c(-0.00000190482986831101792745884, -0.00009061665448909045520236804,
+               -0.01735068754801322028587279),
+             c(4.528782139868751923181519e-8, -0.00004095420407502477399904835,
+               -0.01610177533815273484199777),
+             c(4.241652333129850450905146e-8, -0.00003562188883104009475132075,
+               -2.492566450997503632716402))
+  pairs <- list(c(1, 1), c(1, 2), c(2, 2))
+  out <- distrib_d2expected_hessian(d, 0, stats::setNames(list(100, 0.05), p))
+  err <- 0
+  for (i in 1:3) for (j in 1:3) {
+    k <- d2expected_key(p, pairs[[i]][1], pairs[[i]][2], pairs[[j]][1], pairs[[j]][2])
+    err <- max(err, abs(out[[k]] - ex[[i]][j]))
+  }
+  expect_lt(err / max(abs(unlist(ex))), 1e-11)
+})

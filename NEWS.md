@@ -1,3 +1,20 @@
+# distributions7 0.86.0
+
+* The recurrence over the support of `pig2`'s expected information carries
+  the factorial cumulants of S_y in place of its raw moments, as `pig1`'s
+  does since 0.85.0: the second derivative of the expected information at
+  mu = 1e4, alpha = 2000 was 2.5e-4 off normwise and is within 4.4e-11.
+* The log mass of `pig1` and `pig2` at counts of 21 and more comes from a
+  form whose terms do not cancel (`pt_pig_mass.h`: the uniform expansion of
+  the Bessel function combined with Stirling's series), where the sum of
+  terms of size y log y lost the digits: at y = mu = 1e12, sigma = 0.5 it
+  read -28.203125 for -28.2033861, and at 9e15 -64 and 0 for -37.31.
+* `negbin1`'s expected information chooses between its two support sums by
+  order and by mu (`nb1_cut0()`, `nb1_cut1()`, `nb1_cut2()`) in place of
+  one cut at theta = 0.02: at mu = 100, theta = 0.05 the second derivatives
+  were 2.9e-10 off relative to their largest component and are within
+  5.7e-13.
+
 # distributions7 0.85.0
 
 * `pig1`'s log S_y and its derivatives in w come from the sum with its

@@ -217,12 +217,21 @@ inline double pseudohuber2_logpdf_th(double y, const double* th) {
 }
 inline double pig1_logpdf(double y, const double* th) {
     if (!pig_in_support(y)) return R_NegInf;
+    // at large counts the form of pt_pig_mass.h, whose terms do not cancel
+    if (pig_logmass_big_ok(y, th[0])) {
+        const double v = pig1_logmass_big(y, th[0], th[1]);
+        if (std::isfinite(v)) return v;
+    }
     double L[5] = {0, 0, 0, 0, 0};
     pig_logS_w(y, pig1_w(th[0], th[1]), 0, L);
     return pig1_value(y, th[0], th[1], L);
 }
 inline double pig2_logpdf(double y, const double* th) {
     if (!pig_in_support(y)) return R_NegInf;
+    if (pig_logmass_big_ok(y, th[0])) {
+        const double v = pig2_logmass_big(y, th[0], th[1]);
+        if (std::isfinite(v)) return v;
+    }
     double p[5] = {0, 0, 0, 0, 0}, logS = 0.0, A1 = 0.0;
     psi_derivs(y, th[1], 0, p, &logS, &A1);
     return pig2_value(y, th[0], th[1], logS);
