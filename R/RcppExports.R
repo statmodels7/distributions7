@@ -181,6 +181,94 @@ chisq_deriv5_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_chisq_deriv5_cpp`, y, mu, threads)
 }
 
+bernoulli_deriv5_cpp <- function(y, mu, threads = 1L) {
+    .Call(`_distributions7_bernoulli_deriv5_cpp`, y, mu, threads)
+}
+
+beta1_deriv5_cpp <- function(y, mu, phi, threads = 1L) {
+    .Call(`_distributions7_beta1_deriv5_cpp`, y, mu, phi, threads)
+}
+
+beta2_deriv5_cpp <- function(y, alpha, beta) {
+    .Call(`_distributions7_beta2_deriv5_cpp`, y, alpha, beta)
+}
+
+betabinom1_deriv5_cpp <- function(y, mu, sigma, size) {
+    .Call(`_distributions7_betabinom1_deriv5_cpp`, y, mu, sigma, size)
+}
+
+betabinom2_deriv5_cpp <- function(y, alpha, beta, size) {
+    .Call(`_distributions7_betabinom2_deriv5_cpp`, y, alpha, beta, size)
+}
+
+binomial_deriv5_cpp <- function(y, mu, size, threads = 1L) {
+    .Call(`_distributions7_binomial_deriv5_cpp`, y, mu, size, threads)
+}
+
+enet_deriv5_cpp <- function(y, mu, lambda, alpha) {
+    .Call(`_distributions7_enet_deriv5_cpp`, y, mu, lambda, alpha)
+}
+
+gamma1_deriv5_cpp <- function(y, mu, phi, threads = 1L) {
+    .Call(`_distributions7_gamma1_deriv5_cpp`, y, mu, phi, threads)
+}
+
+gamma2_deriv5_cpp <- function(y, mu, sigma2, threads = 1L) {
+    .Call(`_distributions7_gamma2_deriv5_cpp`, y, mu, sigma2, threads)
+}
+
+geometric_deriv5_cpp <- function(y, mu, threads = 1L) {
+    .Call(`_distributions7_geometric_deriv5_cpp`, y, mu, threads)
+}
+
+invgauss1_deriv5_cpp <- function(y, mu, phi, threads = 1L) {
+    .Call(`_distributions7_invgauss1_deriv5_cpp`, y, mu, phi, threads)
+}
+
+invgauss2_deriv5_cpp <- function(y, mu, lambda, threads = 1L) {
+    .Call(`_distributions7_invgauss2_deriv5_cpp`, y, mu, lambda, threads)
+}
+
+lognormal1_deriv5_cpp <- function(y, mu, sigma2, threads = 1L) {
+    .Call(`_distributions7_lognormal1_deriv5_cpp`, y, mu, sigma2, threads)
+}
+
+negbin1_deriv5_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin1_deriv5_cpp`, y, mu, theta)
+}
+
+negbin2_deriv5_cpp <- function(y, mu, theta, threads = 1L) {
+    .Call(`_distributions7_negbin2_deriv5_cpp`, y, mu, theta, threads)
+}
+
+pig1_deriv5_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_pig1_deriv5_cpp`, y, mu, sigma, threads)
+}
+
+pig2_deriv5_cpp <- function(y, mu, alpha, threads = 1L) {
+    .Call(`_distributions7_pig2_deriv5_cpp`, y, mu, alpha, threads)
+}
+
+poisson_deriv5_cpp <- function(y, mu, threads = 1L) {
+    .Call(`_distributions7_poisson_deriv5_cpp`, y, mu, threads)
+}
+
+pseudohuber_deriv5_cpp <- function(y, mu, sigma, nu) {
+    .Call(`_distributions7_pseudohuber_deriv5_cpp`, y, mu, sigma, nu)
+}
+
+skewnormal1_deriv5_cpp <- function(y, mu, sigma, alpha, threads = 1L) {
+    .Call(`_distributions7_skewnormal1_deriv5_cpp`, y, mu, sigma, alpha, threads)
+}
+
+vonmises1_deriv5_cpp <- function(y, mu, kappa, threads = 1L) {
+    .Call(`_distributions7_vonmises1_deriv5_cpp`, y, mu, kappa, threads)
+}
+
+weibull1_deriv5_cpp <- function(y, mu, sigma, threads = 1L) {
+    .Call(`_distributions7_weibull1_deriv5_cpp`, y, mu, sigma, threads)
+}
+
 d7_scalar_probe <- function(cls, k, y, theta) {
     .Call(`_distributions7_d7_scalar_probe`, cls, k, y, theta)
 }

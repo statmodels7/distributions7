@@ -309,12 +309,16 @@ test_that("the folded fifth derivative of an analytic parent is exact", {
   expect_lt(max(abs(got - ref) / pmax(1, abs(ref))), 1e-12)
 })
 
-test_that("a wrapper of a parent without an analytic fifth order keeps the stencil", {
-  d <- zero_inflated(poisson_distrib())
-  th <- list(mu = 2.3, zi = 0.3)
+test_that("a wrapper reads its parent's fifth order, analytic or not", {
+  # poisson has a closed fifth derivative, so the zero-inflated family has
+  # one; vonmises2 keeps the stencil, and so does a family fixing one of its
+  # parameters
+  expect_true(has_exact_deriv5(zero_inflated(poisson_distrib())))
+  d <- fixed(vonmises2_distrib(), mu = 0.3)
+  th <- list(rho = 0.4)
   expect_false(has_exact_deriv5(d))
-  expect_identical(distrib_deriv5(d, c(0, 3), th),
-                   numerical_deriv5(d, c(0, 3), th))
+  expect_identical(distrib_deriv5(d, c(0.1, 1.2), th),
+                   numerical_deriv5(d, c(0.1, 1.2), th))
 })
 
 test_that("a truncated family of an analytic parent sums its partitions at order 5", {

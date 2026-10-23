@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.86.0
+Version: 0.87.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Probability distributions as objects, built on the S7 object
@@ -123,6 +123,29 @@ Collate:
     'cross_derivatives_families.R'
     'cross_derivatives_simple.R'
     'd34expected_hessian.R'
+    'link_scale.R'
+    'd5_bernoulli.R'
+    'd5_beta1.R'
+    'd5_beta2.R'
+    'd5_betabinom1.R'
+    'd5_betabinom2.R'
+    'd5_binomial.R'
+    'd5_enet.R'
+    'd5_gamma1.R'
+    'd5_gamma2.R'
+    'd5_geometric.R'
+    'd5_invgauss1.R'
+    'd5_invgauss2.R'
+    'd5_lognormal1.R'
+    'd5_negbin1.R'
+    'd5_negbin2.R'
+    'd5_pig1.R'
+    'd5_pig2.R'
+    'd5_poisson.R'
+    'd5_pseudohuber.R'
+    'd5_skewnormal1.R'
+    'd5_vonmises1.R'
+    'd5_weibull1.R'
     'dexpected_reparam.R'
     'dexpected_support.R'
     'dexpected_vonmises.R'
@@ -131,7 +154,6 @@ Collate:
     'enet_higher.R'
     'expected_derivatives.R'
     'fisher_scoring.R'
-    'link_scale.R'
     'fit_distrib.R'
     'mvgaussian_distrib.R'
     'mv_plot.R'

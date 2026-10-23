@@ -1,3 +1,15 @@
+# distributions7 0.87.0
+
+* `distrib_deriv5()` has a closed form for 22 more families: bernoulli,
+  binomial, poisson, geometric, gamma1, gamma2, negbin1, negbin2,
+  betabinom1, betabinom2, beta1, beta2, invgauss1, invgauss2, lognormal1,
+  weibull1, vonmises1, skewnormal1, pseudohuber, enet, pig1 and pig2, where
+  it was one central difference of the analytic fourth derivative. Against
+  60-digit references the components are within 1e-10 of the largest
+  component at each point, where the difference was off by up to 0.43 at
+  the extremes of the parameter space; the closed forms are 1.5 to 40 times
+  faster. vonmises2 keeps the difference.
+
 # distributions7 0.86.0
 
 * The recurrence over the support of `pig2`'s expected information carries
