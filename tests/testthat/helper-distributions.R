@@ -148,3 +148,7 @@ density_only_distrib <- function() {
     link_params = list(mu = linkfunctions7::identity_link(),
                        sigma = linkfunctions7::log_link()))
 }
+
+# the k-th of K interleaved parts of x, so that a loop over families can be
+# split across test files that testthat's parallel workers run at once
+test_part <- function(x, k, K) x[(seq_along(x) - 1L) %% K == k - 1L]
