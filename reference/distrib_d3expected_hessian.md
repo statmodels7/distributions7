@@ -57,7 +57,10 @@ The components are symmetric in \\(a,b)\\ and in \\(c,d,e)\\ separately,
 and are keyed by
 [`d3expected_names()`](https://statmodels7.github.io/distributions7/reference/d3expected_names.md).
 
-The default method takes one central difference of
+The univariate families shipped with the package compute the components
+in closed form, in compiled code. The default method, which serves the
+wrappers and families defined by the user, takes one central difference
+of
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md)
 along each parameter, so it requires a family that registers an analytic
 second derivative of its expected information and signals an error

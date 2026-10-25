@@ -23,7 +23,14 @@ then integrates with an error falling like \\\exp(-c/h)\\; the negative
 half is its mirror image. The step is \\h = 1/32\\ and the nodes run
 from \\10^{-16}\\ to \\10^{60}\\ in \\\|z\|\\, about 580 in all. Past
 the upper end a tail decaying as \\\|z\|^{-1-\nu}\\ leaves a relative
-\\10^{-60\nu}/\nu\\, negligible for \\\nu \ge 0.3\\.
+\\10^{-60\nu}/\nu\\ times a power of \\60\log 10\\ that grows with the
+order of the derivative in \\\nu\\. For the skew t, whose tail has this
+form,
+[`loc_scale_weights()`](https://statmodels7.github.io/distributions7/reference/loc_scale_weights.md)
+adds the omitted nodes to the weights of the last nodes, by
+[`loc_scale_tail_weights()`](https://statmodels7.github.io/distributions7/reference/loc_scale_tail_weights.md).
+In the other families the tail is exponentially small and the weights
+are those of the rule.
 
 ## See also
 

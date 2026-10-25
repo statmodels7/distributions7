@@ -11,7 +11,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.87.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,9 @@
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The components are symmetric in \((a,b)\) and in \((c,d,e)\)
 separately, and are keyed by <code><a href="d3expected_names.html">d3expected_names()</a></code>.</p>
-<p>The default method takes one central difference of
+<p>The univariate families shipped with the package compute the components
+in closed form, in compiled code. The default method, which serves the
+wrappers and families defined by the user, takes one central difference of
 <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code> along each parameter, so it requires a family
 that registers an analytic second derivative of its expected information
 and signals an error otherwise. The step is the cube root of machine epsilon

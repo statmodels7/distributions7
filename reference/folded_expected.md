@@ -65,19 +65,24 @@ center and a scale of the parent, read from the scalar registry. The
 integral is taken over \\y \> 0\\ by a tanh-sinh rule on \\\[0,
 \|c\|\]\\, whose nodes cluster at both ends, and the rule of
 [`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md)
-scaled by \\s\\ on \\\[\|c\|, \infty)\\; the split at \\\|c\|\\ also
-takes in a parent with a kink at its center. The nodes are the scalar
-registry's. The expectations are formed through the second Bartlett
-identity, \$\$E\[\ell\_{ij}\] = -E\[\ell_i \ell_j\], \qquad \partial_c
-E\[\ell\_{ij}\] = -E\[\ell\_{ic}\ell_j + \ell_i\ell\_{jc} +
-\ell_i\ell_j\ell_c\],\$\$ so that only the folded score and Hessian are
-read at orders 0 and 1. The second derivatives differentiate
-\\-E\[G\]\\, \\G = \ell_i\ell_j\\, twice under the integral,
-\$\$\partial\_{cd} E\[G\] = E\[G\_{cd} + G_c\ell_d + G_d\ell_c +
-G(\ell_c\ell_d + \ell\_{cd})\],\$\$ and read the folded third
-derivatives as well. At order 2 a parent without a route signals an
-error. The sums are accumulated as the scalar registry accumulates them.
-A parent that the registry does not cover, or that is not a
+scaled by \\s\\ on \\\[\|c\|, \infty)\\, followed, for a skew t or
+`student_t1` parent with \\\nu \< 1\\, by the nine anchor nodes of
+[`loc_scale_tail_anchors()`](https://statmodels7.github.io/distributions7/reference/loc_scale_tail_anchors.md)
+with the weights of
+[`loc_scale_tail_weights()`](https://statmodels7.github.io/distributions7/reference/loc_scale_tail_weights.md)
+scaled by \\s\\, which carry the tail past the last node; the split at
+\\\|c\|\\ also takes in a parent with a kink at its center. The nodes
+are the scalar registry's. The expectations are formed through the
+second Bartlett identity, \$\$E\[\ell\_{ij}\] = -E\[\ell_i \ell_j\],
+\qquad \partial_c E\[\ell\_{ij}\] = -E\[\ell\_{ic}\ell_j +
+\ell_i\ell\_{jc} + \ell_i\ell_j\ell_c\],\$\$ so that only the folded
+score and Hessian are read at orders 0 and 1. The second derivatives
+differentiate \\-E\[G\]\\, \\G = \ell_i\ell_j\\, twice under the
+integral, \$\$\partial\_{cd} E\[G\] = E\[G\_{cd} + G_c\ell_d +
+G_d\ell_c + G(\ell_c\ell_d + \ell\_{cd})\],\$\$ and read the folded
+third derivatives as well. At order 2 a parent without a route signals
+an error. The sums are accumulated as the scalar registry accumulates
+them. A parent that the registry does not cover, or that is not a
 location-scale family on the real line, is integrated by
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
 with `approx = "integrate"` at order 0 and by

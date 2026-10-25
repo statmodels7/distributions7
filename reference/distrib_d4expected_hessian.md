@@ -57,7 +57,10 @@ The components are symmetric in \\(a,b)\\ and in \\(c,d,e,f)\\
 separately, and are keyed by
 [`d4expected_names()`](https://statmodels7.github.io/distributions7/reference/d4expected_names.md).
 
-The default method applies one second-order central stencil to
+The univariate families shipped with the package compute the components
+in closed form, in compiled code. The default method, which serves the
+wrappers and families defined by the user, applies one second-order
+central stencil to
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md):
 the three-point stencil along one parameter for a repeated pair
 \\(e,e)\\, the four-point mixed stencil for two distinct parameters

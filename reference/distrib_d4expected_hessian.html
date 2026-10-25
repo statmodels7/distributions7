@@ -11,7 +11,7 @@ per pair \((a,b)\) and per unordered quadruple \((c,d,e,f)\)."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.87.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,10 @@ per pair \((a,b)\) and per unordered quadruple \((c,d,e,f)\).</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The components are symmetric in \((a,b)\) and in \((c,d,e,f)\)
 separately, and are keyed by <code><a href="d4expected_names.html">d4expected_names()</a></code>.</p>
-<p>The default method applies one second-order central stencil to
+<p>The univariate families shipped with the package compute the components
+in closed form, in compiled code. The default method, which serves the
+wrappers and families defined by the user, applies one second-order
+central stencil to
 <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>: the three-point stencil along one parameter
 for a repeated pair \((e,e)\), the four-point mixed stencil for two
 distinct parameters \((e,f)\). It requires a family that registers an

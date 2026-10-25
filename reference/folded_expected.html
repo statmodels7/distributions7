@@ -13,7 +13,7 @@ law."><meta property="og:image" content="https://statmodels7.github.io/distribut
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.87.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,11 @@ sharply near zero, where the weight
 \(s^2/|c|\), where \(c\) and \(s\) are a center and a scale of the
 parent, read from the scalar registry. The integral is taken over \(y &gt; 0\)
 by a tanh-sinh rule on \([0, |c|]\), whose nodes cluster at both ends, and
-the rule of <code><a href="loc_scale_rule.html">loc_scale_rule()</a></code> scaled by \(s\) on \([|c|, \infty)\); the
+the rule of <code><a href="loc_scale_rule.html">loc_scale_rule()</a></code> scaled by \(s\) on \([|c|, \infty)\),
+followed, for a skew t or <code>student_t1</code> parent with \(\nu &lt; 1\), by the
+nine anchor nodes
+of <code><a href="loc_scale_tail_anchors.html">loc_scale_tail_anchors()</a></code> with the weights of <code><a href="loc_scale_tail_weights.html">loc_scale_tail_weights()</a></code>
+scaled by \(s\), which carry the tail past the last node; the
 split at \(|c|\) also takes in a parent with a kink at its center. The
 nodes are the scalar registry's. The expectations are formed through the
 second Bartlett identity,

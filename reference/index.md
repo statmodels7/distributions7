@@ -2222,6 +2222,9 @@ transforms that make it work on a divergent density.
 - [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)
   : The Partition Sum Itself
 
+- [`chain_leibniz()`](https://statmodels7.github.io/distributions7/reference/chain_leibniz.md)
+  : Assemble a Derivative of the Expected Information From the Factors
+
 - [`chain_univariate()`](https://statmodels7.github.io/distributions7/reference/chain_univariate.md)
   : One Univariate Chain Rule Over a Multivariate Map
 
@@ -2273,6 +2276,20 @@ transforms that make it work on a divergent density.
 - [`continuous_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/continuous_cdf_deriv_k.md)
   : Third and Fourth CDF Derivatives of a Continuous Family
 
+- [`d34e_eval_plan()`](https://statmodels7.github.io/distributions7/reference/d34e_eval_plan.md)
+  : Evaluate the Terms of a Derivative Plan
+
+- [`d34e_plan()`](https://statmodels7.github.io/distributions7/reference/d34e_plan.md)
+  : The Terms of a Derivative of the Expectation of a Product of Two
+  Scores
+
+- [`d34e_set_partitions()`](https://statmodels7.github.io/distributions7/reference/d34e_set_partitions.md)
+  : Set Partitions of a Vector
+
+- [`d34expected_analytic()`](https://statmodels7.github.io/distributions7/reference/d34expected_analytic.md)
+  : The Analytic Third and Fourth Derivatives of the Expected
+  Information
+
 - [`declares_atoms()`](https://statmodels7.github.io/distributions7/reference/declares_atoms.md)
   : Does a Distribution Declare Atoms
 
@@ -2295,8 +2312,19 @@ transforms that make it work on a divergent density.
 - [`dexpected_chain()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain.md)
   : The Chain Rule for the Expected Information's Derivatives
 
+- [`dexpected_chain3()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain3.md)
+  : The Third Derivative of the Expected Information Through a
+  Reparametrization
+
+- [`dexpected_chain4()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain4.md)
+  : The Fourth Derivative of the Expected Information Through a
+  Reparametrization
+
 - [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md)
   : The Derivatives of the Link-Scale Expected Information
+
+- [`dexpected_link_higher()`](https://statmodels7.github.io/distributions7/reference/dexpected_link_higher.md)
+  : The Derivatives of the Link-Scale Expected Information, Any Order
 
 - [`dir_b_index()`](https://statmodels7.github.io/distributions7/reference/dir_b_index.md)
   : The Position of a Second-Derivative Block
@@ -3067,6 +3095,10 @@ transforms that make it work on a divergent density.
 - [`fit_theta_from_eta()`](https://statmodels7.github.io/distributions7/reference/fit_theta_from_eta.md)
   : The Link Scale Carried Back to Parameters
 
+- [`fixed_d34expected()`](https://statmodels7.github.io/distributions7/reference/fixed_d34expected.md)
+  : The Third and Fourth Derivatives of a Fixed Family's Expected
+  Information
+
 - [`fixed_dexpected()`](https://statmodels7.github.io/distributions7/reference/fixed_dexpected.md)
   : The Derivatives of a Fixed Family's Expected Information
 
@@ -3087,6 +3119,10 @@ transforms that make it work on a divergent density.
 
 - [`fold_ratio()`](https://statmodels7.github.io/distributions7/reference/fold_ratio.md)
   : The Block Ratios of a Folded Density
+
+- [`folded_d34expected()`](https://statmodels7.github.io/distributions7/reference/folded_d34expected.md)
+  : The Third and Fourth Derivatives of a Folded Family's Expected
+  Information
 
 - [`folded_expected()`](https://statmodels7.github.io/distributions7/reference/folded_expected.md)
   [`fold_kink_parts()`](https://statmodels7.github.io/distributions7/reference/folded_expected.md)
@@ -3374,6 +3410,10 @@ transforms that make it work on a divergent density.
 - [`loc_scale_cross_y()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross_y.md)
   : Mixed Derivatives of a Location-Scale Family
 
+- [`loc_scale_d34expected()`](https://statmodels7.github.io/distributions7/reference/loc_scale_d34expected.md)
+  : The Third or Fourth Derivative of a Location-Scale Expected
+  Information
+
 - [`loc_scale_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/loc_scale_deriv_cdf_k.md)
   : Location-Scale Third and Fourth Log-CDF Derivatives
 
@@ -3390,11 +3430,26 @@ transforms that make it work on a divergent density.
 - [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md)
   : Location-Scale CDF Hessian
 
+- [`loc_scale_nodes()`](https://statmodels7.github.io/distributions7/reference/loc_scale_nodes.md)
+  : The Nodes of the Location-Scale Rule for a Family
+
+- [`loc_scale_pdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_pdf.md)
+  : The Density at the Nodes of the Location-Scale Rule
+
 - [`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md)
   : The Quadrature Rule of the Location-Scale Expectations
 
+- [`loc_scale_tail_anchors()`](https://statmodels7.github.io/distributions7/reference/loc_scale_tail_anchors.md)
+  : The Anchors of the Tail Correction of the Skew t
+
+- [`loc_scale_tail_weights()`](https://statmodels7.github.io/distributions7/reference/loc_scale_tail_weights.md)
+  : The Weights That Carry the Tail of the Skew t Past the Rule
+
 - [`loc_scale_theta2_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.md)
   : The Location and Scale Block of a Second-Order Mixed Derivative
+
+- [`loc_scale_weights()`](https://statmodels7.github.io/distributions7/reference/loc_scale_weights.md)
+  : The Weights of the Location-Scale Rule for Each Shape
 
 - [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
   : Derivatives of a Logarithm From the Ratios Only
@@ -3810,6 +3865,9 @@ transforms that make it work on a divergent density.
 - [`parent_ell()`](https://statmodels7.github.io/distributions7/reference/parent_ell.md)
   : Look Up the Parent's Derivative Components by Block
 
+- [`parent_expected_nested()`](https://statmodels7.github.io/distributions7/reference/parent_expected_nested.md)
+  : The Parent's Derivatives of the Expected Information as Nested Lists
+
 - [`parent_mass_at()`](https://statmodels7.github.io/distributions7/reference/parent_mass_at.md)
   : Probability that the Parent Puts on a Single Point
 
@@ -3887,6 +3945,10 @@ transforms that make it work on a divergent density.
 - [`recycle_point()`](https://statmodels7.github.io/distributions7/reference/recycle_point.md)
   : Recycle a Single Point Against Parameters That Vary by Observation
 
+- [`register_d34expected()`](https://statmodels7.github.io/distributions7/reference/register_d34expected.md)
+  : Register a Family's Third and Fourth Derivatives of the Expected
+  Information
+
 - [`register_dexpected()`](https://statmodels7.github.io/distributions7/reference/register_dexpected.md)
   : Register a Family's Derivatives of the Expected Information
 
@@ -3909,11 +3971,26 @@ transforms that make it work on a divergent density.
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : Parameter Derivatives of a Reparametrized Distribution
 
+- [`reparam_d34expected()`](https://statmodels7.github.io/distributions7/reference/reparam_d34expected.md)
+  : The Third and Fourth Derivatives of a Reparametrized Family's
+  Expected Information
+
+- [`reparam_d3expected()`](https://statmodels7.github.io/distributions7/reference/reparam_d3expected.md)
+  : The Third Derivative of the Expected Information of a Reparametrized
+  Family
+
+- [`reparam_d4expected()`](https://statmodels7.github.io/distributions7/reference/reparam_d4expected.md)
+  : The Fourth Derivative of the Expected Information of a
+  Reparametrized Family
+
 - [`reparam_dexpected()`](https://statmodels7.github.io/distributions7/reference/reparam_dexpected.md)
   : The Expected Information's Derivatives Through a Reparametrization
 
 - [`reparam_dexpected_method()`](https://statmodels7.github.io/distributions7/reference/reparam_dexpected_method.md)
   : A Method Body for the Reparametrized Families
+
+- [`reparam_has_map_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_has_map_derivs.md)
+  : Does a Reparametrization Carry the Map's Closed Derivatives?
 
 - [`md_betabinom1()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
@@ -3926,6 +4003,12 @@ transforms that make it work on a divergent density.
   [`md_gaussian2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_gaussian3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   : Explicit Map Derivatives of the Second Parametrizations
+
+- [`reparam_map_index()`](https://statmodels7.github.io/distributions7/reference/reparam_map_index.md)
+  : Index Tables for the Chain Through a Reparametrization
+
+- [`reparam_map_order5()`](https://statmodels7.github.io/distributions7/reference/reparam_map_order5.md)
+  : The Map's Partial Derivatives of the Fifth Order
 
 - [`reparam_stencil_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.md)
   : One Stencil Per Map Partial
@@ -4094,6 +4177,10 @@ transforms that make it work on a divergent density.
 - [`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md)
   : The Pieces from Which a Skew t Is Evaluated
 
+- [`sn2_d34expected()`](https://statmodels7.github.io/distributions7/reference/sn2_d34expected.md)
+  : The Third or Fourth Derivative of the Centered Skew Normal's
+  Expected Information
+
 - [`sn2_expected_parts()`](https://statmodels7.github.io/distributions7/reference/sn2_expected_parts.md)
   : The Expected Information of the Centered Skew Normal, by Region
 
@@ -4191,6 +4278,10 @@ transforms that make it work on a divergent density.
 - [`trans_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trans_deriv_k.md)
   : Derivatives of a Transformed Distribution
 
+- [`transformed_d34expected()`](https://statmodels7.github.io/distributions7/reference/transformed_d34expected.md)
+  : The Third and Fourth Derivatives of a Transformed Family's Expected
+  Information
+
 - [`transformed_dexpected()`](https://statmodels7.github.io/distributions7/reference/transformed_dexpected.md)
   : The Derivatives of a Transformed Family's Expected Information
 
@@ -4203,11 +4294,18 @@ transforms that make it work on a divergent density.
 - [`trunc_M()`](https://statmodels7.github.io/distributions7/reference/trunc_M.md)
   : Second-Order Truncated Moment of the Parent's Derivatives
 
+- [`trunc_add_atoms()`](https://statmodels7.github.io/distributions7/reference/trunc_add_atoms.md)
+  : The Atoms of a Truncated Continuous Family in an Expectation
+
 - [`trunc_cdf()`](https://statmodels7.github.io/distributions7/reference/trunc_cdf.md)
   : Distribution Function of a Truncated Distribution
 
 - [`trunc_constants()`](https://statmodels7.github.io/distributions7/reference/trunc_constants.md)
   : The Truncation Constant and Lower Tail
+
+- [`trunc_d34expected()`](https://statmodels7.github.io/distributions7/reference/trunc_d34expected.md)
+  : The Third and Fourth Derivatives of a Truncated Family's Expected
+  Information
 
 - [`trunc_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trunc_deriv_k.md)
   : Derivatives of a Truncated Distribution
@@ -4215,6 +4313,9 @@ transforms that make it work on a divergent density.
 - [`trunc_dexpected()`](https://statmodels7.github.io/distributions7/reference/trunc_dexpected.md)
   [`trunc_logz_derivs()`](https://statmodels7.github.io/distributions7/reference/trunc_dexpected.md)
   : The Derivatives of a Truncated Family's Expected Information
+
+- [`trunc_expectation()`](https://statmodels7.github.io/distributions7/reference/trunc_expectation.md)
+  : The Expectation of a Smooth Function Under a Truncated Family
 
 - [`trunc_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/trunc_expected_hessian.md)
   : Expected Hessian of a Truncated Distribution
@@ -4246,6 +4347,12 @@ transforms that make it work on a divergent density.
 - [`trunc_route_parts()`](https://statmodels7.github.io/distributions7/reference/trunc_route_parts.md)
   : The Retained Mass of a Truncated Family and the Sums of Its
   Information
+
+- [`trunc_rule_expectation()`](https://statmodels7.github.io/distributions7/reference/trunc_rule_expectation.md)
+  : The Expectation of a Truncated Family on the Compiled Rule
+
+- [`trunc_rule_wanted()`](https://statmodels7.github.io/distributions7/reference/trunc_rule_wanted.md)
+  : Does a Truncated Family Take Its Expectations on the Compiled Rule?
 
 - [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
   : Mean of the Parent's Score Under the Truncated Law
@@ -4450,6 +4557,10 @@ transforms that make it work on a divergent density.
   [`za_cont_d2expected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d2expected.md)
   : The Second Derivatives of the Zero Wrappers' Expected Information
 
+- [`zero_wrapper_d34expected()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_d34expected.md)
+  : The Third and Fourth Derivatives of the Zero Wrappers' Expected
+  Information
+
 - [`zero_wrapper_dexpected()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_dexpected.md)
   [`zi_dexpected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_dexpected.md)
   [`za_disc_dexpected_entry()`](https://statmodels7.github.io/distributions7/reference/zero_wrapper_dexpected.md)
@@ -4458,6 +4569,15 @@ transforms that make it work on a divergent density.
 
 - [`zi_deriv_k()`](https://statmodels7.github.io/distributions7/reference/zi_deriv_k.md)
   : Derivatives of a Zero-Inflated Distribution
+
+- [`zw34_memo()`](https://statmodels7.github.io/distributions7/reference/zw34_memo.md)
+  [`zw34_subsets()`](https://statmodels7.github.io/distributions7/reference/zw34_memo.md)
+  [`zw34_mul()`](https://statmodels7.github.io/distributions7/reference/zw34_memo.md)
+  [`zw34_recip()`](https://statmodels7.github.io/distributions7/reference/zw34_memo.md)
+  [`zw34_add()`](https://statmodels7.github.io/distributions7/reference/zw34_memo.md)
+  [`zw34_neg()`](https://statmodels7.github.io/distributions7/reference/zw34_memo.md)
+  [`zw34_const()`](https://statmodels7.github.io/distributions7/reference/zw34_memo.md)
+  : Derivative Algebra on Index Multisets
 
 ## Reparametrized distributions
 

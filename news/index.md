@@ -1,5 +1,110 @@
 # Changelog
 
+## distributions7 0.88.1
+
+- The expected information of pig1 and pig2 and its first and second
+  derivatives no longer sum over the support where a closed route
+  exists: they read the routes the third and fourth derivatives use
+  (pig1 from E_sigma,sigma by its series in sigma and its expansion in
+  1/mu at fixed sigma mu; pig2’s E_mu,mu and E_mu,alpha in closed form
+  and its alpha block by a series in 1/alpha). The sum cost from 0.2 to
+  1.8 s per observation at mu = 1e6, so a fit on counts of 1e5 or more
+  did not finish. pig1 also has an expansion in 1/mu at fixed sigma, S =
+  sum_p mu^-p G_p(sigma) with G_p Laurent polynomials in sigma (p \<=
+  20, adaptive truncation), used where the other two routes decline: it
+  covers mu above about max(1e3, 1e4 sigma) at any sigma, within 2e-15
+  of the largest component of each order.
+- lognormal2’s observed second derivatives
+  ([`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md),
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md))
+  are written in the partials of log(1 + v/m^2) as monomials in v/m^2
+  and 1/(1 + v/m^2), and log(y/m) is taken by
+  [`log1p()`](https://rdrr.io/r/base/Log.html) near y = m. The expanded
+  forms lost up to 3e-7 relative to the largest component at v/m^2 =
+  1e-8; the repaired ones are within 1e-15.
+- negbin1’s expected information and its derivatives to order four take
+  an expansion in powers of 1/mu wherever mu \>= 50 and mu/theta
+  \>= 100. The support sums were capped at 1e6 terms and lost digits in
+  proportion to mu: at theta below 0.3 the results were wrong by 1e-3 to
+  O(1) from mu = 1e5 (order four) and at every order from mu = 1e6. The
+  expansion is within 1e-15 of the largest component of the order, at
+  about a microsecond per observation.
+- [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+  and
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  over the skew t and over `student_t1` add the skew t’s nine anchor
+  nodes past the last node of the rule when nu \< 1, so that the tail
+  \|z\|^-(1 + nu) is integrated; the expected information was off by
+  4.6e-2 of its largest entry at nu = 0.05 and 1.7e-4 at nu = 0.1. The
+  orders two to four of a truncated skew t or `student_t1`, and the
+  derivatives of log Z beyond order four, are expectations on the same
+  rule
+  ([`trunc_rule_expectation()`](https://statmodels7.github.io/distributions7/reference/trunc_rule_expectation.md)),
+  where the adaptive quadrature missed the tail or did not converge.
+- The skew t’s location-scale quadrature forms the density at \|z\| \>
+  10 with the power of \|z\| taken directly
+  ([`loc_scale_pdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_pdf.md)),
+  where exp(log f) carried a relative error of the unit roundoff times
+  \|log f\|; the fourth derivative of the expected information at nu =
+  0.05 goes from 6.3e-8 to 4e-9 on its worst component.
+
+## distributions7 0.88.0
+
+- [`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md)
+  and
+  [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
+  have a closed form for every univariate family shipped with the
+  package, in compiled kernels registered by
+  [`register_d34expected()`](https://statmodels7.github.io/distributions7/reference/register_d34expected.md),
+  where they were one stencil on the analytic second derivative of the
+  expected information. Against references at 30 to 250 digits the
+  components are within 1e-9 of the largest component of the order at
+  each point (negbin1 within 2.2e-9 at mu = 2242, theta = 0.028), where
+  the stencil was off by up to 0.6 at order three and above 1 at order
+  four at the extremes of the parameter space. pig2’s alpha block is
+  also within 1e-12 of its own largest component, by a series in 1/alpha
+  and its rows in closed form near the Poisson limit; pig1 reads its
+  whole information from E_sigma,sigma, by an expansion in 1/mu at large
+  mu. The fourth derivative takes from about the time of the stencil
+  (pig1 at mu = 2.5, sigma = 0.05) to 15 times less. The link scale is
+  carried across once for every family by
+  [`dexpected_link_higher()`](https://statmodels7.github.io/distributions7/reference/dexpected_link_higher.md).
+- The same two derivatives are written out for the wrappers:
+  [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
+  and
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  from the parent’s derivatives and its mass at zero,
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  and
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+  as expectations under the wrapped law in the form -E\[l_a l_b\],
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  and
+  [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
+  from the parent’s,
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  by the chain rule through the map (the map’s fifth derivatives by one
+  difference of its fourth).
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+  over a parent with a kink and
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  without `map_derivs` keep the stencil.
+- Repairs of the expected information and its first two derivatives:
+  negbin2 at large theta (a series in mu and one exact in mu/theta; the
+  sum was off by up to 5e7 times the largest component at theta = 1e6),
+  negbin1 at large theta and at mu/theta above 20 (a series and an
+  integral representation; the sums were off by up to 3e3), negbin1’s
+  E_mu,theta at a small mu without a division by mu (off by up to 20 at
+  theta = 1e4, mu = 1e-5), lognormal2’s derivatives at a small
+  var/mean^2 in the S, W form (4.9e-6 to 6e-15), and the skew t at nu
+  below 0.4, where the quadrature left out the algebraic tail beyond
+  \|z\| = 1e60 (1.4e-2 at nu = 0.1 for the second derivative, now
+  1.5e-13), corrected by nine anchor nodes per tail.
+- The per-observation rows of the Poisson-inverse Gaussian’s log-mass
+  derivatives moved to `pt_pig_rows.h`, shared by `pig_hd.cpp`,
+  `d5_pig*.cpp` and the new kernels.
+
 ## distributions7 0.87.0
 
 - [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)

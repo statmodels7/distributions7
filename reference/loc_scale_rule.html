@@ -9,7 +9,7 @@ integrals over the whole real line of a density at location 0 and scale 1."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.87.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,11 @@ integrates with an error falling like \(\exp(-c/h)\); the negative half is
 its mirror image. The step is \(h = 1/32\) and the nodes run from
 \(10^{-16}\) to \(10^{60}\) in \(|z|\), about 580 in all. Past the
 upper end a tail decaying as \(|z|^{-1-\nu}\) leaves a relative
-\(10^{-60\nu}/\nu\), negligible for \(\nu \ge 0.3\).</p>
+\(10^{-60\nu}/\nu\) times a power of \(60\log 10\) that grows with the
+order of the derivative in \(\nu\). For the skew t, whose tail has this
+form, <code><a href="loc_scale_weights.html">loc_scale_weights()</a></code> adds the omitted nodes to the weights of the
+last nodes, by <code><a href="loc_scale_tail_weights.html">loc_scale_tail_weights()</a></code>. In the other families the tail is
+exponentially small and the weights are those of the rule.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
