@@ -81,6 +81,13 @@ using namespace Rcpp;
 // registry's d_theta sum also adds; nb_dE_ltt2() writes (d_mumu S,
 // d_thth S, d_mutheta S).
 static void nb_dE_ltt1(double mu, double theta, double *out) {
+    if (nb2d34::series_ok(mu, theta)) {
+        double o[2];
+        nb2d34::ett_series(1, mu, theta, o);
+        out[0] = o[0];
+        out[1] = o[1];
+        return;
+    }
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
     const int kmax = d7::negbin2_series_cap(mu, theta);
@@ -119,6 +126,14 @@ static void nb_dE_ltt1(double mu, double theta, double *out) {
 }
 
 static void nb_dE_ltt2(double mu, double theta, double *out) {
+    if (nb2d34::series_ok(mu, theta)) {
+        double o[3];
+        nb2d34::ett_series(2, mu, theta, o);
+        out[0] = o[0];
+        out[1] = o[2];
+        out[2] = o[1];
+        return;
+    }
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
     const int kmax = d7::negbin2_series_cap(mu, theta);

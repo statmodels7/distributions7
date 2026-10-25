@@ -1,0 +1,373 @@
+// The third and fourth derivatives of the expected Hessian of the generalized
+// gamma (scale a), on the parameter scale: the components of d3/d4expected_names
+// in that order. Closed forms from misure_d34e/agents/gengamma1/derive.py: E_ab =
+// s^(-j0) C_ab(d,p), the expectation over Z ~ Gamma(k, 1), k = d/p. One
+// function per order. The polygamma differences cancel for large or small k;
+// there the expressions are evaluated in double-double (pt_gengamma2.h).
+
+#include <Rcpp.h>
+#include <cmath>
+#include "d34e_run.h"
+#include "pt_gengamma2.h"
+
+using namespace Rcpp;
+
+static inline double gg1d_psi(double x, int n) { return R::psigamma(x, (double) n); }
+static inline dd gg1d_psi(const dd& x, int n) { return n == 0 ? dd_B0(x) + dd_log(x) : dd_psi_n(x, n); }
+
+template <typename T>
+static inline void gg1d_k3(T s, T d, T p, const d34e::Row& o) {
+    (void) o;
+    const T im = 1.0 / s;
+    const T k = d / p;
+    const T a0 = gg1d_psi(k, 0);
+    const T a1 = gg1d_psi(k, 1);
+    const T a2 = gg1d_psi(k, 2);
+    const T a3 = gg1d_psi(k, 3);
+    const T a4 = gg1d_psi(k, 4);
+    const T t0 = 6*pw(im, 4);
+    const T t1 = d*t0;
+    const T t2 = 2*pw(im, 3);
+    const T t3 = pw(p, -5);
+    const T t4 = a3*t3;
+    const T t5 = pw(p, -6);
+    const T t6 = d*t5;
+    const T t7 = a4*t6;
+    const T t8 = 4*t4 + t7;
+    const T t9 = a2*t3;
+    const T t10 = a3*t6;
+    const T t11 = pw(d, 2);
+    const T t12 = pw(p, -7);
+    const T t13 = t11*t12;
+    const T t14 = a4*t13;
+    const T t15 = 8*t10 + t14 + 12*t9;
+    const T t16 = -t15;
+    const T t17 = 24*t3;
+    const T t18 = a2*t6;
+    const T t19 = pw(d, 3);
+    const T t20 = t19/pw(p, 8);
+    const T t21 = a4*t20;
+    const T t22 = a3*t13;
+    const T t23 = a1*t17 + 36*t18 + t21 + 12*t22;
+    const T t24 = pw(a1, 2);
+    const T t25 = 6*a0;
+    const T t26 = 2*a0;
+    const T t27 = 6*a1;
+    const T t28 = a1*t3;
+    const T t29 = a2*t13;
+    const T t30 = pw(a0, 2);
+    const T t31 = a3*t20;
+    const T t32 = a2*t20;
+    const T t33 = a1*t6;
+    const T t34 = pw(d, 4);
+    const T t35 = t34/pw(p, 9);
+    const T t36 = a4*t35;
+    const T t37 = a0*t17 + 72*t29 + 16*t31 + 96*t33 + t36;
+    const T t38 = 120*a0;
+    const T t39 = a1*t13;
+    const T t40 = a3*t35;
+    const T t41 = 30*t20;
+    const T t42 = 1.0/p;
+    const T t43 = t1*t42;
+    const T t44 = t2*t42;
+    const T t45 = pw(p, -2);
+    const T t46 = d*t2*t45;
+    const T t47 = pw(p, -3);
+    const T t48 = pw(im, 2);
+    const T t49 = t45*t48;
+    const T t50 = a2*t48;
+    const T t51 = d*t47;
+    const T t52 = pw(p, -4);
+    const T t53 = t11*t52;
+    const T t54 = 2*t47;
+    const T t55 = d*t48*t54;
+    const T t56 = 4*a1;
+    const T t57 = im*t47;
+    const T t58 = a3*im;
+    const T t59 = d*t52;
+    const T t60 = im*t59;
+    const T t61 = im*t11;
+    const T t62 = im*t54;
+    const T t63 = t19*t5;
+    o[0] = to_dbl(24*d*pw(im, 5)*p);
+    o[1] = to_dbl(-p*t0);
+    o[2] = to_dbl(-t1);
+    o[3] = to_dbl(0);
+    o[4] = to_dbl(t2);
+    o[5] = to_dbl(0);
+    o[6] = to_dbl(0);
+    o[7] = to_dbl(0);
+    o[8] = to_dbl(0);
+    o[9] = to_dbl(0);
+    o[10] = to_dbl(0);
+    o[11] = to_dbl(0);
+    o[12] = to_dbl(0);
+    o[13] = to_dbl(0);
+    o[14] = to_dbl(0);
+    o[15] = to_dbl(0);
+    o[16] = to_dbl(-a4*t3);
+    o[17] = to_dbl(t8);
+    o[18] = to_dbl(t16);
+    o[19] = to_dbl(t23);
+    o[20] = to_dbl(0);
+    o[21] = to_dbl(0);
+    o[22] = to_dbl(0);
+    o[23] = to_dbl(0);
+    o[24] = to_dbl(0);
+    o[25] = to_dbl(0);
+    o[26] = to_dbl(-t10*t26 - t15 - t18*t27 - 6*t24*t3 - t25*t9 - 5*t4 - t7);
+    o[27] = to_dbl(14*a0*t18 + 16*a0*t28 + 9*t10 + t14 + t22*t26 + t23 + 14*t24*t6 + t27*t29 + 16*t9);
+    o[28] = to_dbl(-22*a0*t29 - 56*a0*t33 - 22*t13*t24 - 44*t18 - t21 - 13*t22 - t26*t31 - t27*t32 - 36*t28 - 12*t3*t30 - t37);
+    o[29] = to_dbl(a0*a2*t41 + 48*a0*t3 + a2*t27*t35 + a4*pw(d, 5)/pw(p, 10) + t17 + t24*t41 + t26*t40 + 84*t29 + 60*t30*t6 + 17*t31 + 120*t32 + 132*t33 + t36 + t38*t39 + t38*t6 + 240*t39 + 20*t40);
+    o[30] = to_dbl(t0);
+    o[31] = to_dbl(0);
+    o[32] = to_dbl(0);
+    o[33] = to_dbl(0);
+    o[34] = to_dbl(0);
+    o[35] = to_dbl(0);
+    o[36] = to_dbl(0);
+    o[37] = to_dbl(0);
+    o[38] = to_dbl(0);
+    o[39] = to_dbl(0);
+    o[40] = to_dbl(-a0*t43 - t0 - t43);
+    o[41] = to_dbl(a0*t44 + a1*t46 + t44);
+    o[42] = to_dbl(-a0*t46 - a1*t11*t2*t47 - t46);
+    o[43] = to_dbl(-2*a1*t49 - t50*t51);
+    o[44] = to_dbl(a0*t49 + 3*a1*t48*t51 + t49 + t50*t53);
+    o[45] = to_dbl(-a0*t55 - t19*t48*t9 - t48*t53*t56 - t55);
+    o[46] = to_dbl(3*a2*t57 + t58*t59);
+    o[47] = to_dbl(-5*a2*t60 - t4*t61 - t56*t57);
+    o[48] = to_dbl(a0*t62 + 10*a1*t60 + t58*t63 + 7*t61*t9 + t62);
+    o[49] = to_dbl(-9*a2*im*t63 - t12*t34*t58 - t25*t60 - 18*t28*t61 - 6*t60);
+    o[50] = to_dbl(0);
+    o[51] = to_dbl(0);
+    o[52] = to_dbl(0);
+    o[53] = to_dbl(0);
+    o[54] = to_dbl(0);
+    o[55] = to_dbl(0);
+    o[56] = to_dbl(t8);
+    o[57] = to_dbl(t16);
+    o[58] = to_dbl(t23);
+    o[59] = to_dbl(-t37);
+}
+
+// [[Rcpp::export]]
+List gengamma1_dexpected3_cpp(NumericVector y, NumericVector a, NumericVector d_, NumericVector p_,
+              int threads = 1) {
+    d34e::Par Mp(a), Dp(d_), Pp(p_);
+    return d34e::run(y.size(), threads, d7::kMinCostly, 60,
+                     [&](std::size_t i, d34e::Row o) {
+        const double m = Mp[i], d = Dp[i], p = Pp[i];
+        const double k = d / p;
+        if (k < 1.0 || k > 10.0) gg1d_k3<dd>(dd(m), dd(d), dd(p), o);
+        else gg1d_k3<double>(m, d, p, o);
+    });
+}
+
+template <typename T>
+static inline void gg1d_k4(T s, T d, T p, const d34e::Row& o) {
+    (void) o;
+    const T im = 1.0 / s;
+    const T k = d / p;
+    const T a0 = gg1d_psi(k, 0);
+    const T a1 = gg1d_psi(k, 1);
+    const T a2 = gg1d_psi(k, 2);
+    const T a3 = gg1d_psi(k, 3);
+    const T a4 = gg1d_psi(k, 4);
+    const T a5 = gg1d_psi(k, 5);
+    const T t0 = 24*pw(im, 5);
+    const T t1 = d*t0;
+    const T t2 = 6*pw(im, 4);
+    const T t3 = pw(p, -6);
+    const T t4 = a4*t3;
+    const T t5 = pw(p, -7);
+    const T t6 = d*t5;
+    const T t7 = a5*t6;
+    const T t8 = 5*t4 + t7;
+    const T t9 = a3*t3;
+    const T t10 = a4*t6;
+    const T t11 = pw(d, 2);
+    const T t12 = pw(p, -8);
+    const T t13 = t11*t12;
+    const T t14 = a5*t13;
+    const T t15 = 10*t10 + t14 + 20*t9;
+    const T t16 = -t15;
+    const T t17 = a2*t3;
+    const T t18 = a3*t6;
+    const T t19 = pw(d, 3);
+    const T t20 = pw(p, -9);
+    const T t21 = t19*t20;
+    const T t22 = a5*t21;
+    const T t23 = a4*t13;
+    const T t24 = 60*t17 + 60*t18 + t22 + 15*t23;
+    const T t25 = 120*t3;
+    const T t26 = a2*t6;
+    const T t27 = pw(d, 4);
+    const T t28 = t27/pw(p, 10);
+    const T t29 = a5*t28;
+    const T t30 = a3*t13;
+    const T t31 = a4*t21;
+    const T t32 = a1*t25 + 240*t26 + t29 + 120*t30 + 20*t31;
+    const T t33 = -t32;
+    const T t34 = 6*pw(a2, 2);
+    const T t35 = 2*a0;
+    const T t36 = 8*a1;
+    const T t37 = pw(a1, 2);
+    const T t38 = a1*t3;
+    const T t39 = a3*t21;
+    const T t40 = a2*t13;
+    const T t41 = pw(a0, 2);
+    const T t42 = 210*t13;
+    const T t43 = a4*t28;
+    const T t44 = a3*t28;
+    const T t45 = a2*t21;
+    const T t46 = a1*t6;
+    const T t47 = 360*a0;
+    const T t48 = pw(d, 5);
+    const T t49 = t48/pw(p, 11);
+    const T t50 = a5*t49;
+    const T t51 = a0*t25 + 200*t39 + 600*t40 + 25*t43 + 600*t46 + t50;
+    const T t52 = a1*t13;
+    const T t53 = a4*t49;
+    const T t54 = 1.0/p;
+    const T t55 = t1*t54;
+    const T t56 = t2*t54;
+    const T t57 = pw(p, -2);
+    const T t58 = d*t2*t57;
+    const T t59 = pw(p, -3);
+    const T t60 = pw(im, 3);
+    const T t61 = t57*t60;
+    const T t62 = 4*a1;
+    const T t63 = d*t59*t60;
+    const T t64 = 2*a2;
+    const T t65 = 2*t61;
+    const T t66 = t60*t64;
+    const T t67 = pw(p, -4);
+    const T t68 = t11*t67;
+    const T t69 = 4*t63;
+    const T t70 = pw(p, -5);
+    const T t71 = pw(im, 2);
+    const T t72 = t59*t71;
+    const T t73 = a3*t71;
+    const T t74 = d*t67;
+    const T t75 = t71*t74;
+    const T t76 = t11*t70;
+    const T t77 = 2*t72;
+    const T t78 = t19*t71;
+    const T t79 = t71*t76;
+    const T t80 = 6*t67;
+    const T t81 = d*t71*t80;
+    const T t82 = im*t67;
+    const T t83 = a4*im;
+    const T t84 = d*t70;
+    const T t85 = im*t84;
+    const T t86 = im*t11;
+    const T t87 = 24*t85;
+    const T t88 = t19*t5;
+    const T t89 = im*t80;
+    const T t90 = t12*t27;
+    const T t91 = a3*im;
+    o[0] = to_dbl(-120*d*pw(im, 6)*p);
+    o[1] = to_dbl(p*t0);
+    o[2] = to_dbl(t1);
+    o[3] = to_dbl(0);
+    o[4] = to_dbl(-t2);
+    o[5] = to_dbl(0);
+    o[6] = to_dbl(0);
+    o[7] = to_dbl(0);
+    o[8] = to_dbl(0);
+    o[9] = to_dbl(0);
+    o[10] = to_dbl(0);
+    o[11] = to_dbl(0);
+    o[12] = to_dbl(0);
+    o[13] = to_dbl(0);
+    o[14] = to_dbl(0);
+    o[15] = to_dbl(0);
+    o[16] = to_dbl(0);
+    o[17] = to_dbl(0);
+    o[18] = to_dbl(0);
+    o[19] = to_dbl(0);
+    o[20] = to_dbl(0);
+    o[21] = to_dbl(0);
+    o[22] = to_dbl(0);
+    o[23] = to_dbl(0);
+    o[24] = to_dbl(0);
+    o[25] = to_dbl(-a5*t3);
+    o[26] = to_dbl(t8);
+    o[27] = to_dbl(t16);
+    o[28] = to_dbl(t24);
+    o[29] = to_dbl(t33);
+    o[30] = to_dbl(0);
+    o[31] = to_dbl(0);
+    o[32] = to_dbl(0);
+    o[33] = to_dbl(0);
+    o[34] = to_dbl(0);
+    o[35] = to_dbl(0);
+    o[36] = to_dbl(0);
+    o[37] = to_dbl(0);
+    o[38] = to_dbl(0);
+    o[39] = to_dbl(0);
+    o[40] = to_dbl(-8*a0*t9 - 24*a1*t17 - t10*t35 - t15 - t18*t36 - t34*t6 - 6*t4 - t7);
+    o[41] = to_dbl(30*a0*t17 + 18*a0*t18 + 54*a1*t26 + 11*t10 + t13*t34 + t14 + t23*t35 + t24 + 30*t3*t37 + t30*t36 + 25*t9);
+    o[42] = to_dbl(-100*a0*t26 - 28*a0*t30 - 80*a0*t38 - 84*a1*t40 - 80*t17 - 70*t18 - t21*t34 - t22 - 16*t23 - t31*t35 - t32 - t36*t39 - 100*t37*t6);
+    o[43] = to_dbl(a0*a2*t42 + 38*a0*t39 + 114*a1*t45 + 300*t26 + t28*t34 + t29 + 60*t3*t41 + 135*t30 + 21*t31 + t35*t43 + t36*t44 + t37*t42 + 180*t38 + t46*t47 + t51);
+    o[44] = to_dbl(-240*a0*t3 - 48*a0*t44 - 960*a0*t52 - 720*a0*t6 - 144*a1*a2*t28 - a3*t36*t49 - a5*pw(d, 6)/pw(p, 12) - 360*t21*t37 - t25 - t34*t49 - t35*t53 - 220*t39 - 720*t40 - 360*t41*t6 - 26*t43 - 300*t44 - t45*t47 - 1200*t45 - 840*t46 - t50 - 1800*t52 - 30*t53);
+    o[45] = to_dbl(-t0);
+    o[46] = to_dbl(0);
+    o[47] = to_dbl(0);
+    o[48] = to_dbl(0);
+    o[49] = to_dbl(0);
+    o[50] = to_dbl(0);
+    o[51] = to_dbl(0);
+    o[52] = to_dbl(0);
+    o[53] = to_dbl(0);
+    o[54] = to_dbl(0);
+    o[55] = to_dbl(0);
+    o[56] = to_dbl(0);
+    o[57] = to_dbl(0);
+    o[58] = to_dbl(0);
+    o[59] = to_dbl(0);
+    o[60] = to_dbl(a0*t55 + t0 + t55);
+    o[61] = to_dbl(-a0*t56 - a1*t58 - t56);
+    o[62] = to_dbl(a0*t58 + a1*t11*t2*t59 + t58);
+    o[63] = to_dbl(t61*t62 + t63*t64);
+    o[64] = to_dbl(-a0*t65 - 6*a1*t63 - t65 - t66*t68);
+    o[65] = to_dbl(a0*t69 + t19*t66*t70 + t36*t60*t68 + t69);
+    o[66] = to_dbl(-3*a2*t72 - t73*t74);
+    o[67] = to_dbl(5*a2*t75 + t62*t72 + t73*t76);
+    o[68] = to_dbl(-a0*t77 - 10*a1*t75 - 7*a2*t79 - t77 - t78*t9);
+    o[69] = to_dbl(a0*t81 + 18*a1*t79 + 9*t17*t78 + t27*t5*t73 + t81);
+    o[70] = to_dbl(4*a3*t82 + t83*t84);
+    o[71] = to_dbl(-9*a2*t82 - 7*a3*t85 - t4*t86);
+    o[72] = to_dbl(12*a1*t82 + a2*t87 + t83*t88 + 10*t86*t9);
+    o[73] = to_dbl(-a0*t89 - 42*a1*t85 - 45*t17*t86 - t83*t90 - 13*t88*t91 - t89);
+    o[74] = to_dbl(a0*t87 + 72*a2*im*t88 + t20*t48*t83 + 96*t38*t86 + t87 + 16*t90*t91);
+    o[75] = to_dbl(0);
+    o[76] = to_dbl(0);
+    o[77] = to_dbl(0);
+    o[78] = to_dbl(0);
+    o[79] = to_dbl(0);
+    o[80] = to_dbl(0);
+    o[81] = to_dbl(0);
+    o[82] = to_dbl(0);
+    o[83] = to_dbl(0);
+    o[84] = to_dbl(0);
+    o[85] = to_dbl(t8);
+    o[86] = to_dbl(t16);
+    o[87] = to_dbl(t24);
+    o[88] = to_dbl(t33);
+    o[89] = to_dbl(t51);
+}
+
+// [[Rcpp::export]]
+List gengamma1_dexpected4_cpp(NumericVector y, NumericVector a, NumericVector d_, NumericVector p_,
+              int threads = 1) {
+    d34e::Par Mp(a), Dp(d_), Pp(p_);
+    return d34e::run(y.size(), threads, d7::kMinCostly, 90,
+                     [&](std::size_t i, d34e::Row o) {
+        const double m = Mp[i], d = Dp[i], p = Pp[i];
+        const double k = d / p;
+        if (k < 1.0 || k > 10.0) gg1d_k4<dd>(dd(m), dd(d), dd(p), o);
+        else gg1d_k4<double>(m, d, p, o);
+    });
+}

@@ -11,6 +11,9 @@
 // The quantities of the parameters alone, S = log1p(v/m^2) among them, are
 // formed once per parameter value by lognormal2_<kernel>_par(); the caller
 // passes that struct and C = log(y/m).
+// The expected Hessian and its first and second derivatives (lognormal2_expected_all,
+// lognormal2_dexpected1_all, lognormal2_dexpected2_all) take m and v and carry S and
+// W = 1/(m^2 + v) as symbols; they have no y.
 
 namespace d7 {
 
@@ -72,266 +75,6 @@ inline Lognormal2HessianPar lognormal2_hessian_par(double m, double v) {
   return P;
 }
 
-struct Lognormal2ExpectedPar { double S, t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12; };
-
-inline Lognormal2ExpectedPar lognormal2_expected_par(double m, double v) {
-  const double S = std::log1p(v / (m * m));
-  const double t0 = std::pow(m, 2);
-  const double t1 = 1.0/(t0 + v);
-  const double t2 = 1.0/t0;
-  const double t3 = 1.0/S;
-  const double t4 = 2*t3;
-  const double t5 = std::pow(v, 2);
-  const double t6 = 1.0/(std::pow(m, 4) + 2*t0*v + t5);
-  const double t7 = t6*v;
-  const double t8 = t0*t6;
-  const double t9 = t2*t5*t6;
-  const double t10 = std::pow(S, -2);
-  const double t11 = 1.0/m;
-  const double t12 = t11*t3;
-  Lognormal2ExpectedPar P;
-  P.S = S;
-  P.t0 = t0;
-  P.t1 = t1;
-  P.t2 = t2;
-  P.t3 = t3;
-  P.t4 = t4;
-  P.t5 = t5;
-  P.t6 = t6;
-  P.t7 = t7;
-  P.t8 = t8;
-  P.t9 = t9;
-  P.t10 = t10;
-  P.t11 = t11;
-  P.t12 = t12;
-  return P;
-}
-
-struct Lognormal2DexpectedPar { double S, t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20, t21, t22, t23, t24, t25, t26, t27, t28, t29, t30, t31, t32, t33, t34, t35, t36, t37, t38, t39, t40, t41, t42, t43, t44, t45, t46, t47, t48, t49, t50, t51, t52, t53, t54, t55, t56, t57, t58, t59, t60, t61, t62, t63, t64, t65, t66, t67, t68, t69, t70, t71, t72, t73, t74, t75, t76, t77, t78, t79, t80, t81, t82, t83, t84, t85, t86, t87, t88, t89, t90, t91, t92, t93, t94, t95, t96, t97, t98, t99, t100, t101, t102, t103, t104, t105, t106, t107; };
-
-inline Lognormal2DexpectedPar lognormal2_dexpected_par(double m, double v) {
-  const double S = std::log1p(v / (m * m));
-  const double t0 = 1.0/m;
-  const double t1 = std::pow(m, 2);
-  const double t2 = 1.0/(t1 + v);
-  const double t3 = t0*t2;
-  const double t4 = 1.0/S;
-  const double t5 = 2*t4;
-  const double t6 = std::pow(S, -2);
-  const double t7 = 4*v;
-  const double t8 = std::pow(m, 3);
-  const double t9 = 1.0/t8;
-  const double t10 = t2*t9;
-  const double t11 = std::pow(m, 4);
-  const double t12 = std::pow(v, 2);
-  const double t13 = 2*t1;
-  const double t14 = 1.0/(t11 + t12 + t13*v);
-  const double t15 = m*t14;
-  const double t16 = 2*t6;
-  const double t17 = t14*t4;
-  const double t18 = 2*m;
-  const double t19 = 5*v;
-  const double t20 = t0*t14;
-  const double t21 = t12*t9;
-  const double t22 = t14*t21;
-  const double t23 = t14*t6;
-  const double t24 = t0*t23;
-  const double t25 = t0*t17;
-  const double t26 = std::pow(S, -3);
-  const double t27 = 8*t26;
-  const double t28 = 4*t6;
-  const double t29 = std::pow(m, 6);
-  const double t30 = std::pow(v, 3);
-  const double t31 = t11*v;
-  const double t32 = t1*t12;
-  const double t33 = 1.0/(t29 + t30 + 3*t31 + 3*t32);
-  const double t34 = t33*t6;
-  const double t35 = m*v;
-  const double t36 = t33*t4;
-  const double t37 = t36*v;
-  const double t38 = 2*t34;
-  const double t39 = 4*t8;
-  const double t40 = t26*t33;
-  const double t41 = t0*t12;
-  const double t42 = std::pow(m, 5);
-  const double t43 = std::pow(m, 8);
-  const double t44 = std::pow(v, 4);
-  const double t45 = 4*t1;
-  const double t46 = 1.0/(6*t11*t12 + t29*t7 + t30*t45 + t43 + t44);
-  const double t47 = 3*t46;
-  const double t48 = t12*t46;
-  const double t49 = m*t48;
-  const double t50 = 10*t8;
-  const double t51 = t46*v;
-  const double t52 = t44*t46*t9;
-  const double t53 = t46*t6;
-  const double t54 = 4*t42;
-  const double t55 = t4*t46;
-  const double t56 = t30*t46;
-  const double t57 = t0*t56;
-  const double t58 = 16*t26;
-  const double t59 = t12*t53;
-  const double t60 = 4*t59;
-  const double t61 = t53*v;
-  const double t62 = t12*t55;
-  const double t63 = t55*t8;
-  const double t64 = std::pow(m, 7);
-  const double t65 = 1.0/(std::pow(m, 10) + 5*t1*t44 + 10*t11*t30 + 10*t12*t29 + t19*t43 + std::pow(v, 5));
-  const double t66 = t6*t65;
-  const double t67 = 4*t66;
-  const double t68 = t4*t65;
-  const double t69 = t26*t65;
-  const double t70 = t30*t69;
-  const double t71 = t30*t66;
-  const double t72 = t42*t66;
-  const double t73 = t30*t68;
-  const double t74 = t42*t68;
-  const double t75 = t0*t44;
-  const double t76 = 16*t69;
-  const double t77 = t12*t8;
-  const double t78 = 8*t66;
-  const double t79 = 1.0/t1;
-  const double t80 = t2*t79;
-  const double t81 = (3.0/2.0)*t14;
-  const double t82 = t79*v;
-  const double t83 = t17*t82;
-  const double t84 = t12*t79;
-  const double t85 = t11*t46;
-  const double t86 = t1*v;
-  const double t87 = t56*t79;
-  const double t88 = t55*t86;
-  const double t89 = t44*t79;
-  const double t90 = 8*t69;
-  const double t91 = m*t38;
-  const double t92 = (1.0/4.0)*m;
-  const double t93 = t36*t92;
-  const double t94 = (1.0/2.0)*t55;
-  const double t95 = t94*v;
-  const double t96 = (1.0/2.0)*t8;
-  const double t97 = 4*t0;
-  const double t98 = t0*t62;
-  const double t99 = m*t12;
-  const double t100 = (5.0/2.0)*t66;
-  const double t101 = 2*t69;
-  const double t102 = (5.0/4.0)*t66;
-  const double t103 = (1.0/8.0)*t68;
-  const double t104 = t69*t7;
-  const double t105 = 2*t59;
-  const double t106 = (1.0/2.0)*t4;
-  const double t107 = t12*t66;
-  Lognormal2DexpectedPar P;
-  P.S = S;
-  P.t0 = t0;
-  P.t1 = t1;
-  P.t2 = t2;
-  P.t3 = t3;
-  P.t4 = t4;
-  P.t5 = t5;
-  P.t6 = t6;
-  P.t7 = t7;
-  P.t8 = t8;
-  P.t9 = t9;
-  P.t10 = t10;
-  P.t11 = t11;
-  P.t12 = t12;
-  P.t13 = t13;
-  P.t14 = t14;
-  P.t15 = t15;
-  P.t16 = t16;
-  P.t17 = t17;
-  P.t18 = t18;
-  P.t19 = t19;
-  P.t20 = t20;
-  P.t21 = t21;
-  P.t22 = t22;
-  P.t23 = t23;
-  P.t24 = t24;
-  P.t25 = t25;
-  P.t26 = t26;
-  P.t27 = t27;
-  P.t28 = t28;
-  P.t29 = t29;
-  P.t30 = t30;
-  P.t31 = t31;
-  P.t32 = t32;
-  P.t33 = t33;
-  P.t34 = t34;
-  P.t35 = t35;
-  P.t36 = t36;
-  P.t37 = t37;
-  P.t38 = t38;
-  P.t39 = t39;
-  P.t40 = t40;
-  P.t41 = t41;
-  P.t42 = t42;
-  P.t43 = t43;
-  P.t44 = t44;
-  P.t45 = t45;
-  P.t46 = t46;
-  P.t47 = t47;
-  P.t48 = t48;
-  P.t49 = t49;
-  P.t50 = t50;
-  P.t51 = t51;
-  P.t52 = t52;
-  P.t53 = t53;
-  P.t54 = t54;
-  P.t55 = t55;
-  P.t56 = t56;
-  P.t57 = t57;
-  P.t58 = t58;
-  P.t59 = t59;
-  P.t60 = t60;
-  P.t61 = t61;
-  P.t62 = t62;
-  P.t63 = t63;
-  P.t64 = t64;
-  P.t65 = t65;
-  P.t66 = t66;
-  P.t67 = t67;
-  P.t68 = t68;
-  P.t69 = t69;
-  P.t70 = t70;
-  P.t71 = t71;
-  P.t72 = t72;
-  P.t73 = t73;
-  P.t74 = t74;
-  P.t75 = t75;
-  P.t76 = t76;
-  P.t77 = t77;
-  P.t78 = t78;
-  P.t79 = t79;
-  P.t80 = t80;
-  P.t81 = t81;
-  P.t82 = t82;
-  P.t83 = t83;
-  P.t84 = t84;
-  P.t85 = t85;
-  P.t86 = t86;
-  P.t87 = t87;
-  P.t88 = t88;
-  P.t89 = t89;
-  P.t90 = t90;
-  P.t91 = t91;
-  P.t92 = t92;
-  P.t93 = t93;
-  P.t94 = t94;
-  P.t95 = t95;
-  P.t96 = t96;
-  P.t97 = t97;
-  P.t98 = t98;
-  P.t99 = t99;
-  P.t100 = t100;
-  P.t101 = t101;
-  P.t102 = t102;
-  P.t103 = t103;
-  P.t104 = t104;
-  P.t105 = t105;
-  P.t106 = t106;
-  P.t107 = t107;
-  return P;
-}
-
 inline double lognormal2_score_mean(const Lognormal2GradientPar& P, double C) {
   const double t0 = P.t0;
   const double t1 = P.t1;
@@ -377,104 +120,131 @@ inline double lognormal2_hess_var_var(const Lognormal2HessianPar& P, double C) {
   return t12*(-t13*t5 + t13 + (1.0/2.0)*t3 - t7 + 1.0/8.0);
 }
 
-inline double lognormal2_expected_mean_mean(const Lognormal2ExpectedPar& P, double v) {
-  const double t1 = P.t1;
-  const double t2 = P.t2;
-  const double t3 = P.t3;
-  const double t4 = P.t4;
-  const double t7 = P.t7;
-  const double t8 = P.t8;
-  const double t9 = P.t9;
-  const double t10 = P.t10;
-  return -t1*t2*t4*v + (1.0/2.0)*t1*t2*v + (1.0/2.0)*t1 - 2*t10*t9 - t3*t8 - t4*t7 - t4*t9 - t7 - 1.0/2.0*t8 - 1.0/2.0*t9;
+// E_ab = E[l_ab] on the parameter scale, components (mean_mean, var_var, mean_var).
+// With S = log1p(v/m^2) and W = 1/(m^2 + v) carried as symbols, E = J' diag(-1/S, -1/(2 S^2)) J,
+// J being the Jacobian of (mu, S) in (m, v). The expressions are the closed forms factored by
+// sympy (misure_d34e/agents/lognormal2_low/gen.py), so that no power of m^2 + v is expanded.
+inline void lognormal2_expected_all(double m, double v, double* o) {
+  const double S = std::log1p(v / (m * m));
+  const double W = 1.0 / (m * m + v);
+  const double x0 = std::pow(S, -2);
+  const double x1 = W*v;
+  const double x2 = 2*x1;
+  const double x3 = std::pow(W, 2);
+  const double x4 = std::pow(v, 2)*x3;
+  o[0] = -x0*(S*x2 + S*x4 + S + 2*x4)/std::pow(m, 2);
+  o[1] = -1.0/4.0*x0*x3*(S + 2);
+  o[2] = (1.0/2.0)*W*x0*(S*x1 + S + x2)/m;
 }
 
-inline double lognormal2_expected_var_var(const Lognormal2ExpectedPar& P) {
-  const double t4 = P.t4;
-  const double t6 = P.t6;
-  const double t10 = P.t10;
-  return (1.0/8.0)*t6*(-4*t10 - t4);
+// First derivatives of E_ab in the same S and W form, components (mean_mean_mean, mean_mean_var,
+// var_var_mean, var_var_var, mean_var_mean, mean_var_var), the last index being the parameter
+// differentiated.
+inline void lognormal2_dexpected1_all(double m, double v, double* o) {
+  const double S = std::log1p(v / (m * m));
+  const double W = 1.0 / (m * m + v);
+  const double x0 = std::pow(S, -3);
+  const double x1 = std::pow(S, 2);
+  const double x2 = 2*x1;
+  const double x3 = W*v;
+  const double x4 = x2*x3;
+  const double x5 = std::pow(W, 3);
+  const double x6 = std::pow(v, 3);
+  const double x7 = std::pow(W, 2);
+  const double x8 = std::pow(v, 2);
+  const double x9 = x7*x8;
+  const double x10 = std::pow(m, 2);
+  const double x11 = 4*S*x10;
+  const double x12 = x5*x8;
+  const double x13 = x10*x2;
+  const double x14 = S*v;
+  const double x15 = W*x14;
+  const double x16 = 5*S;
+  const double x17 = W*x0/x10;
+  const double x18 = x0*x5;
+  const double x19 = (1.0/2.0)/m;
+  const double x20 = x10*x7;
+  const double x21 = 4*v;
+  o[0] = -2*x0*(S*W*v + S*x5*x6 - v*x13*x7 - x1*x9 - x1 - x11*x12 - x12*x13 - x4 + 4*x5*x6)/std::pow(m, 3);
+  o[1] = x17*(S - 2*x15 + x16*x9 + x2*x9 - x2 + 4*x9);
+  o[2] = -x18*x19*(S*v + 4*v - x11 - x13);
+  o[3] = (1.0/4.0)*x18*(x16 + x2 + 4);
+  o[4] = (1.0/2.0)*x17*(2*S*x7*x8 - W*x13 - x1*x20*x21 - x1*x3 - x1 - 8*x14*x20 + 8*x7*x8);
+  o[5] = -x0*x19*x7*(-S + W*x21 + 5*x15 + x4);
 }
 
-inline double lognormal2_dexpected_mean_mean_mean(const Lognormal2DexpectedPar& P, double m, double v) {
-  const double t3 = P.t3;
-  const double t4 = P.t4;
-  const double t5 = P.t5;
-  const double t6 = P.t6;
-  const double t7 = P.t7;
-  const double t8 = P.t8;
-  const double t10 = P.t10;
-  const double t15 = P.t15;
-  const double t16 = P.t16;
-  const double t17 = P.t17;
-  const double t18 = P.t18;
-  const double t19 = P.t19;
-  const double t20 = P.t20;
-  const double t21 = P.t21;
-  const double t22 = P.t22;
-  const double t24 = P.t24;
-  const double t25 = P.t25;
-  const double t26 = P.t26;
-  const double t27 = P.t27;
-  const double t28 = P.t28;
-  const double t34 = P.t34;
-  const double t35 = P.t35;
-  const double t36 = P.t36;
-  const double t37 = P.t37;
-  const double t38 = P.t38;
-  const double t39 = P.t39;
-  const double t40 = P.t40;
-  const double t41 = P.t41;
-  const double t42 = P.t42;
-  const double t47 = P.t47;
-  const double t49 = P.t49;
-  const double t50 = P.t50;
-  const double t51 = P.t51;
-  const double t52 = P.t52;
-  const double t53 = P.t53;
-  const double t54 = P.t54;
-  const double t55 = P.t55;
-  const double t57 = P.t57;
-  const double t58 = P.t58;
-  const double t60 = P.t60;
-  const double t61 = P.t61;
-  const double t62 = P.t62;
-  const double t63 = P.t63;
-  const double t64 = P.t64;
-  const double t66 = P.t66;
-  const double t67 = P.t67;
-  const double t68 = P.t68;
-  const double t70 = P.t70;
-  const double t71 = P.t71;
-  const double t72 = P.t72;
-  const double t73 = P.t73;
-  const double t74 = P.t74;
-  const double t75 = P.t75;
-  const double t76 = P.t76;
-  const double t77 = P.t77;
-  const double t78 = P.t78;
-  return -13.0/2.0*m*t37 - m*t60 + (43.0/2.0)*m*t62 + 32*m*t70 + 18*m*t71 + (11.0/2.0)*m*t73 - t10*t5*v + t10*t6*t7 + t15*t16 - 4*t15 - t16*t57 + t17*t18 + (15.0/2.0)*t17*t21 - t19*t20 + t22*t27 - t22*t28 - t22 - 14*t24*v + (25.0/2.0)*t25*v - 32*t26*t57 - t28*t52 - t3*t5 + t3 + 10*t34*t35 + 4*t34*t41 - t36*t39 - 7.0/2.0*t36*t41 - t38*t8 + (5.0/2.0)*t4*t52 + (29.0/2.0)*t4*t57 - 8*t40*t41 + t42*t47 - t49*t58 + 12*t49 + t50*t51 - t50*t61 - t52*t58 + t52 - t53*t54 + t54*t55 + 6*t57 + (27.0/2.0)*t63*v + t64*t67 + 2*t64*t68 + 16*t66*t77 + (3.0/2.0)*t68*t75 + (17.0/2.0)*t68*t77 + 10*t72*v + (13.0/2.0)*t74*v + t75*t76 + t75*t78 + t76*t77;
-}
-
-inline double lognormal2_dexpected_var_var_var(const Lognormal2DexpectedPar& P) {
-  const double t1 = P.t1;
-  const double t11 = P.t11;
-  const double t12 = P.t12;
-  const double t34 = P.t34;
-  const double t36 = P.t36;
-  const double t40 = P.t40;
-  const double t53 = P.t53;
-  const double t61 = P.t61;
-  const double t68 = P.t68;
-  const double t86 = P.t86;
-  const double t94 = P.t94;
-  const double t95 = P.t95;
-  const double t100 = P.t100;
-  const double t101 = P.t101;
-  const double t102 = P.t102;
-  const double t103 = P.t103;
-  const double t104 = P.t104;
-  return t1*t104 + t1*t53 + t1*t94 + t100*t86 + t101*t11 + t101*t12 + t102*t11 + t102*t12 + t103*t11 + t103*t12 - t34 - 1.0/8.0*t36 - t40 + t61 + (1.0/4.0)*t68*t86 + t95;
+// Second derivatives of E_ab in the same form, components (mean_mean_mean_mean, mean_mean_var_var,
+// mean_mean_mean_var, var_var_mean_mean, var_var_var_var, var_var_mean_var, mean_var_mean_mean,
+// mean_var_var_var, mean_var_mean_var), the last two indices being the parameters differentiated.
+inline void lognormal2_dexpected2_all(double m, double v, double* o) {
+  const double S = std::log1p(v / (m * m));
+  const double W = 1.0 / (m * m + v);
+  const double x0 = std::pow(m, 4);
+  const double x1 = std::pow(S, 3);
+  const double x2 = 3*x1;
+  const double x3 = std::pow(S, 2);
+  const double x4 = v*x3;
+  const double x5 = W*x4;
+  const double x6 = 5*x5;
+  const double x7 = 6*x1;
+  const double x8 = W*v;
+  const double x9 = x7*x8;
+  const double x10 = std::pow(W, 4);
+  const double x11 = std::pow(v, 4)*x10;
+  const double x12 = 4*S;
+  const double x13 = std::pow(W, 2);
+  const double x14 = std::pow(v, 2);
+  const double x15 = x13*x14;
+  const double x16 = std::pow(W, 3);
+  const double x17 = std::pow(v, 3);
+  const double x18 = x16*x17;
+  const double x19 = 4*x3;
+  const double x20 = x15*x19;
+  const double x21 = x10*x17;
+  const double x22 = std::pow(m, 2);
+  const double x23 = 40*x22;
+  const double x24 = S*x23;
+  const double x25 = 2*x3;
+  const double x26 = x13*x22;
+  const double x27 = v*x26;
+  const double x28 = -x25*x27;
+  const double x29 = x0*x1;
+  const double x30 = v*x16;
+  const double x31 = x22*x3;
+  const double x32 = 10*x31;
+  const double x33 = 24*x0;
+  const double x34 = x10*x14;
+  const double x35 = x14*x16;
+  const double x36 = x22*x35;
+  const double x37 = x36*x7;
+  const double x38 = 12*x0*x1;
+  const double x39 = std::pow(S, -4);
+  const double x40 = 2*x39;
+  const double x41 = 2*x1;
+  const double x42 = -x41;
+  const double x43 = 12*x8;
+  const double x44 = x1*x8;
+  const double x45 = 12*x15;
+  const double x46 = 22*S;
+  const double x47 = 17*x3;
+  const double x48 = x39/x22;
+  const double x49 = x13*x48;
+  const double x50 = 8*S;
+  const double x51 = W/std::pow(m, 3);
+  const double x52 = x22*x41;
+  const double x53 = S*x8;
+  const double x54 = (1.0/2.0)*x16;
+  const double x55 = W*x22;
+  const double x56 = x39*x54/m;
+  o[0] = -x40*(-12*S*x18 + x11*x12 + 24*x11 + x12*x15 + x15*x2 - 5*x18*x3 + x2 - x20 - x21*x24 - x21*x32 + x27*x7 + x28 + 8*x29*x30 + x3*x33*x34 + x34*x38 + x37 - x6 + x9)/x0;
+  o[1] = -x49*(-S*x43 + 2*S + x15*x46 + x15*x47 + x15*x7 + x3 + x42 - 4*x44 + x45 - 14*x5);
+  o[2] = x40*x51*(2*S*W*v + 14*S*x16*x17 - S*x45 + 2*W*x1*x22 + 6*v*x13*x22*x3 - x15*x41 + 3*x16*x17*x3 + 12*x16*x17 - x20 - x25 - 14*x31*x35 - x36*x50 - x37 - x42 - x5);
+  o[3] = -x48*x54*(4*S*W*x14 + 12*W*x0*x1 + 24*W*x0*x3 + 24*W*x14 - v*x12 - x19*x22 - 10*x22*x5 - x23*x53 - x4 - x52);
+  o[4] = -1.0/4.0*x10*x39*(x46 + x47 + x7 + 12);
+  o[5] = x56*(14*S*W*v + 3*W*v*x3 + 12*W*v - 14*W*x22*x3 - x12 - x3 - x50*x55 - x55*x7);
+  o[6] = x39*x51*(W*x1*x22 + v*x13*x52 + x1 + x12*x18 + 4*x13*x29 - 3*x15*x3 - x15*x50 + x16*x33*x4 + 24*x18 - x24*x35 + x28 + x30*x38 - x32*x35 + x44 - x5);
+  o[7] = x56*(-6*S - 7*x3 + x42 + x43 + x46*x8 + 17*x5 + x9);
+  o[8] = -1.0/2.0*x49*(28*S*x13*x14 - 16*S*x27 + 6*W*x22*x3 - 12*x1*x27 + 6*x13*x14*x3 + 24*x13*x14 - 28*x26*x4 - x3 - x41*x8 - 16*x53 - x6);
 }
 
 inline void lognormal2_score_curv(int k, double y, const double* th,
@@ -495,14 +265,15 @@ inline void lognormal2_score_curv(int k, double y, const double* th,
 inline void lognormal2_info_dinfo(int k, double y, const double* th,
                                   double* out) {
   const double m = th[0], v = th[1];
-  const Lognormal2ExpectedPar Pe = lognormal2_expected_par(m, v);
-  const Lognormal2DexpectedPar Pd = lognormal2_dexpected_par(m, v);
+  double e[3], d[6];
+  lognormal2_expected_all(m, v, e);
+  lognormal2_dexpected1_all(m, v, d);
   if (k == 0) {
-    out[0] = lognormal2_expected_mean_mean(Pe, v);
-    out[1] = lognormal2_dexpected_mean_mean_mean(Pd, m, v);
+    out[0] = e[0];
+    out[1] = d[0];
   } else {
-    out[0] = lognormal2_expected_var_var(Pe);
-    out[1] = lognormal2_dexpected_var_var_var(Pd);
+    out[0] = e[1];
+    out[1] = d[3];
   }
 }
 
@@ -524,171 +295,6 @@ inline double lognormal2_hess_mean_var(const Lognormal2HessianPar& P, double m, 
   const double t5 = std::pow(C, 2);
   const double t7 = t5*t6;
   return -C*t15 + m*t12*t2 + m*t12*t3 + (1.0/4.0)*m*t12 + 2*t14*t4*t5*t6 - t15 - t16*t2*t5 - 2*t16*t7;
-}
-
-// lognormal2_expected_hessian_cpp, o_mean_var
-inline double lognormal2_expected_mean_var(const Lognormal2ExpectedPar& P) {
-  const double t1 = P.t1;
-  const double t7 = P.t7;
-  const double t10 = P.t10;
-  const double t11 = P.t11;
-  const double t12 = P.t12;
-  return (1.0/2.0)*t1*t12 + t10*t11*t7 + (1.0/2.0)*t12*t7;
-}
-
-// lognormal2_dexpected1_cpp, o_mean_mean_var
-inline double lognormal2_dexpected_mean_mean_var(const Lognormal2DexpectedPar& P) {
-  const double t1 = P.t1;
-  const double t4 = P.t4;
-  const double t5 = P.t5;
-  const double t12 = P.t12;
-  const double t13 = P.t13;
-  const double t17 = P.t17;
-  const double t19 = P.t19;
-  const double t23 = P.t23;
-  const double t28 = P.t28;
-  const double t29 = P.t29;
-  const double t31 = P.t31;
-  const double t32 = P.t32;
-  const double t34 = P.t34;
-  const double t36 = P.t36;
-  const double t37 = P.t37;
-  const double t38 = P.t38;
-  const double t40 = P.t40;
-  const double t47 = P.t47;
-  const double t60 = P.t60;
-  const double t62 = P.t62;
-  const double t66 = P.t66;
-  const double t67 = P.t67;
-  const double t68 = P.t68;
-  const double t70 = P.t70;
-  const double t71 = P.t71;
-  const double t73 = P.t73;
-  const double t78 = P.t78;
-  const double t80 = P.t80;
-  const double t81 = P.t81;
-  const double t82 = P.t82;
-  const double t83 = P.t83;
-  const double t84 = P.t84;
-  const double t85 = P.t85;
-  const double t86 = P.t86;
-  const double t87 = P.t87;
-  const double t88 = P.t88;
-  const double t89 = P.t89;
-  const double t90 = P.t90;
-  return -t1*t34 + t12*t47 - t13*t36 - t17 + t19*t34 - 6*t23*t82 + t28*t87 + 2*t29*t66 + t29*t68 + 5*t31*t66 + (13.0/4.0)*t31*t68 + (17.0/4.0)*t32*t68 + t32*t78 + t32*t90 - 7.0/4.0*t36*t84 - 13.0/4.0*t37 + t38*t84 + 4*t4*t87 - 4*t40*t84 + t47*t86 - t5*t80 + t5*t85 + t60 + 8*t62 + t67*t89 + (3.0/4.0)*t68*t89 + 16*t70 + 9*t71 + (11.0/4.0)*t73 + (1.0/2.0)*t80 - t81*t82 - t81 - t83 + t85 + t87 + 6*t88 + t89*t90;
-}
-
-// lognormal2_dexpected1_cpp, o_var_var_mean
-inline double lognormal2_dexpected_var_var_mean(const Lognormal2DexpectedPar& P, double m, double v) {
-  const double t0 = P.t0;
-  const double t6 = P.t6;
-  const double t8 = P.t8;
-  const double t12 = P.t12;
-  const double t18 = P.t18;
-  const double t19 = P.t19;
-  const double t20 = P.t20;
-  const double t24 = P.t24;
-  const double t25 = P.t25;
-  const double t26 = P.t26;
-  const double t27 = P.t27;
-  const double t35 = P.t35;
-  const double t39 = P.t39;
-  const double t40 = P.t40;
-  const double t46 = P.t46;
-  const double t47 = P.t47;
-  const double t48 = P.t48;
-  const double t51 = P.t51;
-  const double t53 = P.t53;
-  const double t54 = P.t54;
-  const double t59 = P.t59;
-  const double t63 = P.t63;
-  const double t66 = P.t66;
-  const double t68 = P.t68;
-  const double t69 = P.t69;
-  const double t72 = P.t72;
-  const double t74 = P.t74;
-  const double t90 = P.t90;
-  const double t91 = P.t91;
-  const double t92 = P.t92;
-  const double t93 = P.t93;
-  const double t95 = P.t95;
-  const double t96 = P.t96;
-  const double t97 = P.t97;
-  const double t98 = P.t98;
-  const double t99 = P.t99;
-  const double t100 = P.t100;
-  return -m*t27*t51 + m*t95 - 5.0/2.0*t0*t59 + t100*t99 + t12*t68*t92 - t18*t40 + t19*t66*t8 + 2*t20*t26 + 2*t24 + (1.0/4.0)*t25 - t26*t39*t46 - t26*t48*t97 - t35*t47*t6 - t53*t96 + t54*t69 + (3.0/4.0)*t63 + t68*t96*v + 4*t69*t99 + (5.0/2.0)*t72 + (1.0/4.0)*t74 + t8*t90*v - t91 - t93 - 1.0/4.0*t98;
-}
-
-// lognormal2_dexpected1_cpp, o_mean_var_mean
-inline double lognormal2_dexpected_mean_var_mean(const Lognormal2DexpectedPar& P, double v) {
-  const double t1 = P.t1;
-  const double t4 = P.t4;
-  const double t6 = P.t6;
-  const double t7 = P.t7;
-  const double t11 = P.t11;
-  const double t12 = P.t12;
-  const double t14 = P.t14;
-  const double t16 = P.t16;
-  const double t17 = P.t17;
-  const double t26 = P.t26;
-  const double t29 = P.t29;
-  const double t30 = P.t30;
-  const double t31 = P.t31;
-  const double t32 = P.t32;
-  const double t33 = P.t33;
-  const double t34 = P.t34;
-  const double t36 = P.t36;
-  const double t45 = P.t45;
-  const double t46 = P.t46;
-  const double t61 = P.t61;
-  const double t62 = P.t62;
-  const double t65 = P.t65;
-  const double t70 = P.t70;
-  const double t71 = P.t71;
-  const double t76 = P.t76;
-  const double t79 = P.t79;
-  const double t80 = P.t80;
-  const double t83 = P.t83;
-  const double t85 = P.t85;
-  const double t87 = P.t87;
-  const double t88 = P.t88;
-  const double t90 = P.t90;
-  const double t105 = P.t105;
-  const double t106 = P.t106;
-  const double t107 = P.t107;
-  return (1.0/2.0)*t1*t12*t4*t65 + 8*t1*t26*t46*v - 1.0/2.0*t1*t36 - 6*t1*t61 - t105 - t106*t85 - t106*t87 - t107*t45 + t11*t4*t65*v + t11*t6*t65*v + 16*t12*t26*t46 - t14*t26*t7*t79 + 5*t14*t6 - t16*t85 - t17 + 8*t26*t30*t46*t79 + 4*t26*t33*v + (1.0/2.0)*t29*t4*t65 + 2*t29*t6*t65 + 2*t30*t46*t6*t79 - t31*t90 - t32*t76 - t34*t45 - t6*t80 - 7.0/2.0*t62 - 8*t70 - 3*t71 - 1.0/2.0*t83 - 7.0/2.0*t88;
-}
-
-// lognormal2_dexpected1_cpp, o_mean_var_var
-inline double lognormal2_dexpected_mean_var_var(const Lognormal2DexpectedPar& P, double m, double v) {
-  const double t0 = P.t0;
-  const double t4 = P.t4;
-  const double t6 = P.t6;
-  const double t8 = P.t8;
-  const double t12 = P.t12;
-  const double t14 = P.t14;
-  const double t18 = P.t18;
-  const double t26 = P.t26;
-  const double t33 = P.t33;
-  const double t35 = P.t35;
-  const double t42 = P.t42;
-  const double t55 = P.t55;
-  const double t61 = P.t61;
-  const double t65 = P.t65;
-  const double t70 = P.t70;
-  const double t71 = P.t71;
-  const double t90 = P.t90;
-  const double t91 = P.t91;
-  const double t93 = P.t93;
-  const double t97 = P.t97;
-  const double t98 = P.t98;
-  const double t99 = P.t99;
-  const double t104 = P.t104;
-  const double t105 = P.t105;
-  const double t107 = P.t107;
-  return (1.0/4.0)*m*t12*t4*t65 - t0*t105 + (3.0/2.0)*t0*t14*t6 + 2*t0*t26*t33*v - 3.0/2.0*t0*t71 - t104*t8 - t107*t18 - t18*t61 - t35*t55 + (1.0/4.0)*t4*t42*t65 + (1.0/2.0)*t4*t65*t8*v + t42*t6*t65 + (1.0/2.0)*t6*t65*t8*v - t70*t97 - t90*t99 - t91 - t93 - t98;
 }
 
 // The routers of the joint registry, one per order: every component at one
@@ -714,23 +320,23 @@ inline void lognormal2_joint_hess(double y, const double* th, double* out) {
 }
 
 inline void lognormal2_joint_info(double y, const double* th, double* out) {
-  const double m = th[0], v = th[1];
-  const Lognormal2ExpectedPar Pe = lognormal2_expected_par(m, v);
-  out[0] = lognormal2_expected_mean_mean(Pe, v);
-  out[3] = lognormal2_expected_var_var(Pe);
-  out[1] = out[2] = lognormal2_expected_mean_var(Pe);
+  double e[3];
+  lognormal2_expected_all(th[0], th[1], e);
+  out[0] = e[0];
+  out[3] = e[1];
+  out[1] = out[2] = e[2];
 }
 
 inline void lognormal2_joint_dinfo(double y, const double* th, double* out) {
-  const double m = th[0], v = th[1];
-  const Lognormal2DexpectedPar Pd = lognormal2_dexpected_par(m, v);
+  double d[6];
+  lognormal2_dexpected1_all(th[0], th[1], d);
   for (int j = 0; j < 8; ++j) out[j] = 0.0;
-  out[0] = lognormal2_dexpected_mean_mean_mean(Pd, m, v);
-  out[4] = lognormal2_dexpected_mean_mean_var(Pd);
-  out[3] = lognormal2_dexpected_var_var_mean(Pd, m, v);
-  out[7] = lognormal2_dexpected_var_var_var(Pd);
-  out[1] = out[2] = lognormal2_dexpected_mean_var_mean(Pd, v);
-  out[5] = out[6] = lognormal2_dexpected_mean_var_var(Pd, m, v);
+  out[0] = d[0];
+  out[4] = d[1];
+  out[3] = d[2];
+  out[7] = d[3];
+  out[1] = out[2] = d[4];
+  out[5] = out[6] = d[5];
 }
 
 } // namespace d7

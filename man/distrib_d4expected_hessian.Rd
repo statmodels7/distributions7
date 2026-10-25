@@ -42,7 +42,10 @@ per pair \eqn{(a,b)} and per unordered quadruple \eqn{(c,d,e,f)}.
 The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e,f)}
 separately, and are keyed by \code{\link[=d4expected_names]{d4expected_names()}}.
 
-The default method applies one second-order central stencil to
+The univariate families shipped with the package compute the components
+in closed form, in compiled code. The default method, which serves the
+wrappers and families defined by the user, applies one second-order
+central stencil to
 \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}: the three-point stencil along one parameter
 for a repeated pair \eqn{(e,e)}, the four-point mixed stencil for two
 distinct parameters \eqn{(e,f)}. It requires a family that registers an

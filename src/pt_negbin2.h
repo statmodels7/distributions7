@@ -7,6 +7,7 @@
 #include "psi_diff.h"
 #include "pt_sqrt.h"
 #include "pt_discrete_pow.h"
+#include "pt_negbin2_series.h"
 
 // Negative binomial in the mean and the size, Var = mu + mu^2/theta: one
 // function per component and order for the quantities the scalar registry
@@ -233,6 +234,15 @@ inline int negbin2_series_cap(double mu, double theta) {
 // creeps along theta -> 0 pays it at every iteration; that region is the edge
 // of the parameter space and its information is not read for an estimate.
 inline double negbin2_expected_theta_theta(double mu, double theta) {
+    // THE LARGE-theta SERIES (pt_negbin2_series.h) where the sum below loses digits: its terms
+    // are of order mu/theta^3 for a result of order mu^2/theta^4, which reads 1e-10 at theta = 1e4
+    // and 1e-8 at 1e5 (order 0, against 60-digit quadrature), and the cap of 1e6 terms is reached
+    // for theta >= 1e6; the series has 1e-14 or better for theta >= 100
+    if (nb2d34::series_ok(mu, theta)) {
+        double o[1];
+        nb2d34::ett_series(0, mu, theta, o);
+        return o[0];
+    }
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
     const int kmax = negbin2_series_cap(mu, theta);
@@ -372,6 +382,11 @@ inline double negbin2_dexpected_theta_theta_theta_term(double pk, double U,
 }
 
 inline double negbin2_dexpected_theta_theta_theta(double mu, double theta) {
+    if (nb2d34::series_ok(mu, theta)) {
+        double o[2];
+        nb2d34::ett_series(1, mu, theta, o);
+        return o[1];
+    }
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
     const int kmax = negbin2_series_cap(mu, theta);
@@ -449,6 +464,11 @@ inline double negbin2_dexpected_mu_mu_theta(double m, double th) {
 // negbin2_expected_theta_theta(). The summand is
 // p_k (U_mu + U s_mu) with U_mu = -k/(theta c^2), s_mu = theta (k - mu)/(mu c).
 inline double negbin2_dexpected_theta_theta_mu(double mu, double theta) {
+    if (nb2d34::series_ok(mu, theta)) {
+        double o[2];
+        nb2d34::ett_series(1, mu, theta, o);
+        return o[0];
+    }
     double ratio = mu / (theta + mu);
     double lratio = std::log(mu) - std::log(theta + mu);
     const int kmax = negbin2_series_cap(mu, theta);

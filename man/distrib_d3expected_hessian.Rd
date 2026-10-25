@@ -42,7 +42,9 @@ Returns \eqn{\partial^3\,\mathbb{E}[\ell_{ab}]/\partial\theta_c\,
 The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e)}
 separately, and are keyed by \code{\link[=d3expected_names]{d3expected_names()}}.
 
-The default method takes one central difference of
+The univariate families shipped with the package compute the components
+in closed form, in compiled code. The default method, which serves the
+wrappers and families defined by the user, takes one central difference of
 \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}} along each parameter, so it requires a family
 that registers an analytic second derivative of its expected information
 and signals an error otherwise. The step is the cube root of machine epsilon

@@ -7,6 +7,7 @@
 #include "psi_diff.h"
 #include "pt_sqrt.h"
 #include "pt_negbin1_asym.h"
+#include "pt_negbin1_mt.h"
 
 // The negative binomial with a variance linear in the mean, in (mu, theta),
 // r = mu/theta: the parts of the log-mass (nb1_parts), the support sums that
@@ -583,10 +584,11 @@ inline void nb1_dsums2(double mu, double th, double* A, double* G) {
 // A and G = E[l_theta,theta] at one (mu, theta), from the D sums below
 // the cut (nb1_cut0, nb1_cut1, nb1_cut2) and from G = W/theta^2 above it
 // LARGE THETA. At fixed mu the mass has about theta terms and a ratio
-// theta/(1 + theta) close to one. The series of pt_negbin1_asym.h replaces the
-// sums wherever it meets 1e-13 (nb1_asym_ok(): theta >= 2, mu/theta <= 0.3),
-// where it costs about 0.5 us against 18-30 us for the sums at theta = 50
-// and none of their length at large theta (11 s a row at theta = 1e8).
+// theta/(1 + theta) close to one. The routes of pt_negbin1_asym.h replace the
+// sums wherever they meet 1e-13 (nb1_asym_ok(): theta >= 1 and mu/theta <= 0.5 by the series,
+// mu/theta > 0.5 and theta >= 20 by quadrature), where they cost a few us against 18-30 us for the
+// sums at theta = 50 and none of their length at large theta (11 s a row at theta = 1e8; the sums
+// are capped at 1e6 terms, so they are wrong there).
 inline bool nb1_use_asym(double mu, double th) {
     return nb1_asym_ok(mu, th);
 }
@@ -622,6 +624,42 @@ inline void nb1_sums2(double mu, double th, double* A, double* G) {
     G[3] = W[3] * i2;
     G[4] = W[4] * i2 - 2.0 * W[1] * i3;
     G[5] = W[5] * i2 - 4.0 * W[2] * i3 + 6.0 * W[0] * i4;
+}
+
+// THE MIXED ENTRY. E_mt = -th G/mu has derivatives of order a in mu that divide by mu^(a+1), so the relative
+// error of G is multiplied by about a!/mu^a (order 2, theta = 100: 5e-11 at mu = 0.1, 7e-9 at 0.01; theta = 1e4: 1e-9
+// at mu = 1). nb1_sums0m/1m/2m return A and G as nb1_sums0/1/2 do and, in M, E_mt with its derivatives in
+// the same layout: where the large-theta series applies in the form without the division (pt_negbin1_series.h,
+// asym0/1/2), below mu = 1 elsewhere by the sums of E[l_mu,theta] = (theta q)' - E[C_Y] (pt_negbin1_mt.h), and above
+// by the division.
+inline void nb1_sums0m(double mu, double th, double* A, double* G, double* M) {
+    if (nb1d34::asym_ok(mu, th)) { nb1d34::asym0(mu, th, A, G, M, true); return; }
+    nb1_sums0(mu, th, A, G);
+    if (mu < nb1d34::mt_cut012() && !nb1d34::quad_ok(mu, th)) {
+        if (mu < nb1d34::small_mu()) { nb1d34::mtsums0_small(mu, th, M); } else { nb1d34::mtsums0(mu, th, M); }
+    } else {
+        nb1d34::mt_from_g0(mu, th, G, M);
+    }
+}
+
+inline void nb1_sums1m(double mu, double th, double* A, double* G, double* M) {
+    if (nb1d34::asym_ok(mu, th)) { nb1d34::asym1(mu, th, A, G, M, true); return; }
+    nb1_sums1(mu, th, A, G);
+    if (mu < nb1d34::mt_cut012() && !nb1d34::quad_ok(mu, th)) {
+        if (mu < nb1d34::small_mu()) { nb1d34::mtsums1_small(mu, th, M); } else { nb1d34::mtsums1(mu, th, M); }
+    } else {
+        nb1d34::mt_from_g1(mu, th, G, M);
+    }
+}
+
+inline void nb1_sums2m(double mu, double th, double* A, double* G, double* M) {
+    if (nb1d34::asym_ok(mu, th)) { nb1d34::asym2(mu, th, A, G, M, true); return; }
+    nb1_sums2(mu, th, A, G);
+    if (mu < nb1d34::mt_cut012() && !nb1d34::quad_ok(mu, th)) {
+        if (mu < nb1d34::small_mu()) { nb1d34::mtsums2_small(mu, th, M); } else { nb1d34::mtsums2(mu, th, M); }
+    } else {
+        nb1d34::mt_from_g2(mu, th, G, M);
+    }
 }
 
 namespace d7 {
@@ -755,24 +793,24 @@ inline void negbin1_joint_hess(double y, const double* th, double* out) {
 // negbin1.cpp forms it.
 inline void negbin1_joint_info(double y, const double* th, double* out) {
     double m = th[0], t = th[1];
-    double A, G;
-    nb1_sums0(m, t, &A, &G);
+    double A, G, M;
+    nb1_sums0m(m, t, &A, &G, &M);
     out[0] = negbin1_expected_mu_mu(A);
     out[3] = negbin1_expected_theta_theta(t, G);
-    out[1] = out[2] = negbin1_expected_mu_theta(m, t, G);
+    out[1] = out[2] = M;
 }
 
 // The derivatives of the expected information from nb1_sums1(), in the
 // order of negbin1_dexpected1_cpp().
 inline void negbin1_joint_dinfo(double y, const double* th, double* out) {
     double m = th[0], t = th[1];
-    double A[3], G[3];
-    nb1_sums1(m, t, A, G);
+    double A[3], G[3], M[3];
+    nb1_sums1m(m, t, A, G, M);
     for (int j = 0; j < 8; ++j) out[j] = 0.0;
     out[0] = negbin1_dexpected_mu_mu_mu(A);
     out[4] = negbin1_dexpected_mu_mu_theta(A);
-    out[2] = out[1] = negbin1_dexpected_mu_theta_mu(m, t, G);
-    out[6] = out[5] = negbin1_dexpected_mu_theta_theta(m, t, G);
+    out[2] = out[1] = M[1];
+    out[6] = out[5] = M[2];
     out[3] = negbin1_dexpected_theta_theta_mu(t, G);
     out[7] = negbin1_dexpected_theta_theta_theta(t, G);
 }

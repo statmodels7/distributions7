@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R expected_derivatives.R link_scale.R partition_sums.R
+#' @include distrib.R generics.R utility_functions.R expected_derivatives.R link_scale.R partition_sums.R zero_inflated.R zero_adjusted.R truncated.R transformations.R
 NULL
 
 # ===========================================================================

@@ -28,10 +28,10 @@ using namespace Rcpp;
 // two sums of nb1_sums0() (pt_negbin1.h, which records the derivation)
 static inline void nb1_E_parts(double m, double t,
                                double &emm, double &emt, double &ett) {
-    double A, G;
-    nb1_sums0(m, t, &A, &G);
+    double A, G, M;
+    nb1_sums0m(m, t, &A, &G, &M);
     emm = d7::negbin1_expected_mu_mu(A);
-    emt = d7::negbin1_expected_mu_theta(m, t, G);
+    emt = M;
     ett = d7::negbin1_expected_theta_theta(t, G);
 }
 
@@ -124,9 +124,11 @@ List negbin1_expected_hessian_cpp(NumericVector y, NumericVector mu,
 
 // ---- the derivatives of the expected information ------------------------
 //
-// The components are those of nb1_E_parts(), -A, G and -theta G/mu,
-// differentiated with A and G: the first order reads nb1_sums1(), the
-// second nb1_sums2() (pt_negbin1.h).
+// The components are those of nb1_E_parts(), -A, G and E_mt = -theta G/mu,
+// differentiated with A and G: the first order reads nb1_sums1m(), the
+// second nb1_sums2m() (pt_negbin1.h), which return E_mt and its derivatives
+// beside A and G, by the division where it is accurate (mu >= 1) and without
+// it elsewhere.
 
 // [[Rcpp::export]]
 List negbin1_dexpected1_cpp(NumericVector y, NumericVector mu,
@@ -140,14 +142,14 @@ List negbin1_dexpected1_cpp(NumericVector y, NumericVector mu,
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
-        double A[3], G[3];
-        nb1_sums1(m, t, A, G);
+        double A[3], G[3], M[3];
+        nb1_sums1m(m, t, A, G, M);
         p[0][i] = d7::negbin1_dexpected_mu_mu_mu(A);
         p[1][i] = d7::negbin1_dexpected_mu_mu_theta(A);
         p[2][i] = d7::negbin1_dexpected_theta_theta_mu(t, G);
         p[3][i] = d7::negbin1_dexpected_theta_theta_theta(t, G);
-        p[4][i] = d7::negbin1_dexpected_mu_theta_mu(m, t, G);
-        p[5][i] = d7::negbin1_dexpected_mu_theta_theta(m, t, G);
+        p[4][i] = M[1];
+        p[5][i] = M[2];
     });
     CharacterVector nm = CharacterVector::create(
         "mu_mu_mu", "mu_mu_theta", "theta_theta_mu",
@@ -171,9 +173,8 @@ List negbin1_dexpected2_cpp(NumericVector y, NumericVector mu,
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
         // A and G as (value, d_mu, d_theta, d_mu,mu, d_mu,theta, d_theta,theta)
-        double A[6], G[6];
-        nb1_sums2(m, t, A, G);
-        double im = 1.0 / m, im2 = im * im, im3 = im2 * im;
+        double A[6], G[6], M[6];
+        nb1_sums2m(m, t, A, G, M);
         // E_mm = -A
         p[0][i] = -A[3];
         p[1][i] = -A[5];
@@ -182,10 +183,10 @@ List negbin1_dexpected2_cpp(NumericVector y, NumericVector mu,
         p[3][i] = G[3];
         p[4][i] = G[5];
         p[5][i] = G[4];
-        // E_mt = -theta G/mu
-        p[6][i] = -t * G[3] * im + 2.0 * t * G[1] * im2 - 2.0 * t * G[0] * im3;
-        p[7][i] = -2.0 * G[2] * im - t * G[5] * im;
-        p[8][i] = -G[1] * im - t * G[4] * im + G[0] * im2 + t * G[2] * im2;
+        // E_mt (nb1_sums2m: -theta G/mu above mu = 1, without the division below it and in the series)
+        p[6][i] = M[3];
+        p[7][i] = M[5];
+        p[8][i] = M[4];
     });
     CharacterVector nm = CharacterVector::create(
         "mu_mu_mu_mu", "mu_mu_theta_theta", "mu_mu_mu_theta",

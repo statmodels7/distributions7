@@ -1,3 +1,41 @@
+# distributions7 0.88.0
+
+* `distrib_d3expected_hessian()` and `distrib_d4expected_hessian()` have a
+  closed form for every univariate family shipped with the package, in
+  compiled kernels registered by `register_d34expected()`, where they were
+  one stencil on the analytic second derivative of the expected information.
+  Against references at 30 to 250 digits the components are within 1e-9 of
+  the largest component of the order at each point (negbin1 within 2.2e-9 at
+  mu = 2242, theta = 0.028), where the stencil was off by up to 0.6 at order
+  three and above 1 at order four at the extremes of the parameter space.
+  pig2's alpha block is also within 1e-12 of its own largest component, by a
+  series in 1/alpha and its rows in closed form near the Poisson limit; pig1
+  reads its whole information from E_sigma,sigma, by an expansion in 1/mu at
+  large mu. The fourth derivative takes from about the time of the stencil
+  (pig1 at mu = 2.5, sigma = 0.05) to 15 times less. The link scale is
+  carried across once for every family by `dexpected_link_higher()`.
+* The same two derivatives are written out for the wrappers:
+  `zero_inflated()` and `zero_adjusted()` from the parent's derivatives and
+  its mass at zero, `truncated()` and `folded()` as expectations under the
+  wrapped law in the form -E[l_a l_b], `fixed()` and `transformation()` from
+  the parent's, `reparametrize()` by the chain rule through the map (the
+  map's fifth derivatives by one difference of its fourth). `folded()` over a
+  parent with a kink and `reparametrize()` without `map_derivs` keep the
+  stencil.
+* Repairs of the expected information and its first two derivatives:
+  negbin2 at large theta (a series in mu and one exact in mu/theta; the sum
+  was off by up to 5e7 times the largest component at theta = 1e6), negbin1
+  at large theta and at mu/theta above 20 (a series and an integral
+  representation; the sums were off by up to 3e3), negbin1's E_mu,theta at a
+  small mu without a division by mu (off by up to 20 at theta = 1e4,
+  mu = 1e-5), lognormal2's derivatives at a small var/mean^2 in the S, W form
+  (4.9e-6 to 6e-15), and the skew t at nu below 0.4, where the quadrature
+  left out the algebraic tail beyond |z| = 1e60 (1.4e-2 at nu = 0.1 for the
+  second derivative, now 1.5e-13), corrected by nine anchor nodes per tail.
+* The per-observation rows of the Poisson-inverse Gaussian's log-mass
+  derivatives moved to `pt_pig_rows.h`, shared by `pig_hd.cpp`,
+  `d5_pig*.cpp` and the new kernels.
+
 # distributions7 0.87.0
 
 * `distrib_deriv5()` has a closed form for 22 more families: bernoulli,

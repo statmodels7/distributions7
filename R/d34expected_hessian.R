@@ -7,18 +7,23 @@ NULL
 # The consumer is a score-driven filter whose score is scaled by a power of the
 # expected information: the k-th derivative of the scaled score asks for the
 # k-th derivative of the information, and the exact derivatives of a fit reach
-# order four (the outer criterion's Hessian). No family writes these orders
-# out. Every family that carries an analytic SECOND derivative gets them from
-# one stencil on it -- a first difference at order three, one second-order
-# stencil at order four -- which is a single difference of an analytic
-# quantity, the licence the first derivative's default already uses. A family
-# without an analytic second derivative has no third or fourth: differencing a
-# first derivative twice, or a numerical one at all, is the nested differencing
-# the package forbids.
+# order four (the outer criterion's Hessian). Every shipped univariate family
+# writes these orders out in compiled kernels (R/d34e_<family>.R,
+# src/d34e_<family>.cpp, registered by register_d34expected()). The default
+# below serves the rest -- the wrappers and a user's family that carries an
+# analytic SECOND derivative -- by one stencil on it: a first difference at
+# order three, one second-order stencil at order four, which is a single
+# difference of an analytic quantity, the licence the first derivative's
+# default already uses. A family without an analytic second derivative has no
+# third or fourth: differencing a first derivative twice, or a numerical one at
+# all, is the nested differencing the package forbids.
 #
 # Measured against symbolic derivatives (base R D()) of the link-scale
-# information of poisson, gaussian1, negbin2 and beta1: order three to
-# 1.3e-11 .. 2.5e-10 relative, order four to 3.4e-09 .. 3.3e-07.
+# information of poisson, gaussian1, negbin2 and beta1, the stencil is good to
+# 1.3e-11 .. 2.5e-10 relative at order three and 3.4e-09 .. 3.3e-07 at order
+# four, and much worse at extreme parameters (above 1 relative at order four
+# for gamma2 at mu = 0.01, sigma2 = 300); the closed kernels are within 1e-9 of
+# the largest component of the order against references at 30 to 250 digits.
 
 #' The Third Derivative of the Expected Information
 #'
@@ -31,7 +36,9 @@ NULL
 #' The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e)}
 #' separately, and are keyed by [d3expected_names()].
 #'
-#' The default method takes one central difference of
+#' The univariate families shipped with the package compute the components
+#' in closed form, in compiled code. The default method, which serves the
+#' wrappers and families defined by the user, takes one central difference of
 #' [distrib_d2expected_hessian()] along each parameter, so it requires a family
 #' that registers an analytic second derivative of its expected information
 #' and signals an error otherwise. The step is the cube root of machine epsilon
@@ -106,7 +113,10 @@ S7::method(distrib_d3expected_hessian, distrib) <- function(
 #' The components are symmetric in \eqn{(a,b)} and in \eqn{(c,d,e,f)}
 #' separately, and are keyed by [d4expected_names()].
 #'
-#' The default method applies one second-order central stencil to
+#' The univariate families shipped with the package compute the components
+#' in closed form, in compiled code. The default method, which serves the
+#' wrappers and families defined by the user, applies one second-order
+#' central stencil to
 #' [distrib_d2expected_hessian()]: the three-point stencil along one parameter
 #' for a repeated pair \eqn{(e,e)}, the four-point mixed stencil for two
 #' distinct parameters \eqn{(e,f)}. It requires a family that registers an

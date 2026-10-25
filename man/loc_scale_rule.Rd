@@ -21,7 +21,11 @@ integrates with an error falling like \eqn{\exp(-c/h)}; the negative half is
 its mirror image. The step is \eqn{h = 1/32} and the nodes run from
 \eqn{10^{-16}} to \eqn{10^{60}} in \eqn{|z|}, about 580 in all. Past the
 upper end a tail decaying as \eqn{|z|^{-1-\nu}} leaves a relative
-\eqn{10^{-60\nu}/\nu}, negligible for \eqn{\nu \ge 0.3}.
+\eqn{10^{-60\nu}/\nu} times a power of \eqn{60\log 10} that grows with the
+order of the derivative in \eqn{\nu}. For the skew t, whose tail has this
+form, \code{\link[=loc_scale_weights]{loc_scale_weights()}} adds the omitted nodes to the weights of the
+last nodes, by \code{\link[=loc_scale_tail_weights]{loc_scale_tail_weights()}}. In the other families the tail is
+exponentially small and the weights are those of the rule.
 }
 \seealso{
 \code{\link[=loc_scale_expected]{loc_scale_expected()}}

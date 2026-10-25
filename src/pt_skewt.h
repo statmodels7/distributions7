@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include <algorithm>
+#include <vector>
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
 #include "pt_skewt_exact.h"
@@ -38,8 +39,8 @@ inline SkewtPieces skewt_pieces(double y, double mu, double sigma,
     SkewtPieces P;
     double z = (y - mu) / sigma;
     double m = nu + 1.0;
-    if (std::fabs(z) > 1e100) {
-        // s = nu + z^2 overflows near |z| = 1e154, so far out the pieces are
+    if (std::fabs(z) > 1e20) {
+        // s^2 and s^2.5 overflow near |z| = 1e77 and 1e61, so far out the pieces are
         // written in rs = sqrt(s), a = z/rs and nu/s, which stay finite;
         // skewt_pieces() in R takes the same branch
         const double rs = std::fabs(z) * d7::sqrt_cr(1.0 + nu / (z * z));
@@ -74,7 +75,7 @@ inline double skewt_logpdf(double y, double mu, double sigma, double alpha,
                            double nu) {
     double z = (y - mu) / sigma;
     double w = alpha * z * d7::sqrt_cr((nu + 1.0) / (nu + z * z));
-    if (std::fabs(z) > 1e100) {
+    if (std::fabs(z) > 1e20) {
         // as skewt_pieces(), and as distrib_pdf() in R
         const double rs = std::fabs(z) * d7::sqrt_cr(1.0 + nu / (z * z));
         w = alpha * d7::sqrt_cr(nu + 1.0) * (z / rs);
@@ -106,7 +107,7 @@ inline double skewt_hess_sigma_sigma(const SkewtPieces& P, double sigma) {
     double d = P.a + P.q * P.b;
     double dd = P.da + P.dq * P.b * P.b + P.q * P.db;
     // z^2 overflows past |z| of 1e154 where z (z dd) does not
-    const double zzdd = (std::fabs(P.z) > 1e100) ? P.z * (P.z * dd) :
+    const double zzdd = (std::fabs(P.z) > 1e20) ? P.z * (P.z * dd) :
         P.z * P.z * dd;
     return (1.0 + 2.0 * P.z * d + zzdd) / (sigma * sigma);
 }
@@ -122,13 +123,49 @@ inline double skewt_hess_alpha_alpha(const SkewtPieces& P) {
 // and its w-derivatives q1, q2 by the Riccati recursion, L1 to L3 are the
 // z-derivatives of log t_nu(z) + log T_{nu+1}(alpha u(z)). The powers are
 // R_pow(), which is what R's ^ evaluates (powl() on 64-bit Windows).
-struct SkewtD3 { double z, u, q2, L1, L2, L3; };
+// Past |z| = 1e20, the threshold of skewt_pieces() here and in R (s^3
+// overflows from |z| = 1e51 and z^3 from 1e103; the anchors of the rule's
+// tail reach 1e150), the pieces are written in rs = sqrt(s),
+// a = z/rs and b2 = nu/s, as skewt_pieces() does, and zk_Lk = z^k L_k is kept
+// beside L_k, which underflows to zero there.
+struct SkewtD3 { double z, u, q2, L1, L2, L3, zL1, z2L2, z3L3; };
 
 inline SkewtD3 skewt_d3_pieces(double y, double mu, double sigma,
                                double alpha, double nu) {
     SkewtD3 D;
     double z = (y - mu) / sigma;
     double m = nu + 1.0;
+    if (std::fabs(z) > 1e20) {
+        const double rs = std::fabs(z) * d7::sqrt_cr(1.0 + nu / (z * z));
+        const double a = z / rs, irs = 1.0 / rs, b2 = nu * irs * irs;
+        const double rm = d7::sqrt_cr(m);
+        // rs^k times the z-derivatives of order k of u and of log t_nu
+        const double v1 = rm * b2, v2 = -3.0 * rm * b2 * a,
+            v3 = -3.0 * rm * b2 * (b2 - 4.0 * a * a);
+        const double h1 = -m * a, h2 = -m * (b2 - a * a),
+            h3 = 2.0 * m * a * (3.0 * b2 - a * a);
+        const double u = rm * a, w = alpha * u;
+        const double q = std::exp(R::dt(w, m, 1) - skewt_pt()(w, m, 1, 1));
+        const double mw = m + w * w;
+        const double g0 = -(m + 1.0) * w / mw;
+        const double g1 = -(m + 1.0) * (m - w * w) / (mw * mw);
+        const double q1 = q * (g0 - q);
+        const double q2 = q1 * (g0 - q) + q * (g1 - q1);
+        const double S1 = h1 + q * alpha * v1;
+        const double S2 = h2 + (q * alpha * v2 + q1 * (alpha * alpha) * (v1 * v1));
+        const double S3 = h3 + (q * alpha * v3 + q1 * (alpha * alpha) * (3.0 * v1 * v2) +
+                                q2 * R_pow(alpha, 3.0) * R_pow(v1, 3.0));
+        D.z = z;
+        D.u = u;
+        D.q2 = q2;
+        D.L1 = S1 * irs;
+        D.L2 = S2 * irs * irs;
+        D.L3 = S3 * irs * irs * irs;
+        D.zL1 = a * S1;
+        D.z2L2 = a * a * S2;
+        D.z3L3 = a * a * a * S3;
+        return D;
+    }
     double s = nu + z * z;
     double rm = d7::sqrt_cr(m);
     double u = z * rm / d7::sqrt_cr(s);
@@ -152,6 +189,9 @@ inline SkewtD3 skewt_d3_pieces(double y, double mu, double sigma,
     D.L2 = gz2 + (q * alpha * u2 + q1 * (alpha * alpha) * (u1 * u1));
     D.L3 = gz3 + (q * alpha * u3 + q1 * (alpha * alpha) * (3.0 * u1 * u2) +
                   q2 * R_pow(alpha, 3.0) * R_pow(u1, 3.0));
+    D.zL1 = z * D.L1;
+    D.z2L2 = (z * z) * D.L2;
+    D.z3L3 = R_pow(z, 3.0) * D.L3;
     return D;
 }
 
@@ -161,8 +201,9 @@ inline double skewt_d3_mu_mu_mu(const SkewtD3& D, double sigma) {
 
 inline double skewt_d3_sigma_sigma_sigma(const SkewtD3& D, double sigma) {
     double z = D.z;
-    double acc = 6.0 * z * D.L1 + 6.0 * (z * z) * D.L2 +
-        R_pow(z, 3.0) * D.L3;
+    double acc = std::fabs(z) > 1e20
+        ? 6.0 * D.zL1 + 6.0 * D.z2L2 + D.z3L3
+        : 6.0 * z * D.L1 + 6.0 * (z * z) * D.L2 + R_pow(z, 3.0) * D.L3;
     double s3 = R_pow(sigma, 3.0);
     return -acc / s3 + -2.0 / s3;
 }
@@ -205,12 +246,86 @@ inline void skewt_score_curv(int k, double y, const double* th, double* out) {
     out[1] = h2[9];
 }
 
+// THE TAIL OF THE RULE. Past the last node of the rule (|z| = 1e60) the
+// density is f(z_i) (|z| / z_i)^-(nu + 1) to a relative 1e-26 or better from
+// z_i = 1e13 on, and every derivative of the log-density is constant except
+// the one in nu, which is linear in u = log|z|. Each integrand of the expected
+// information and of its derivatives is f times a polynomial in u of degree at
+// most six, and the sum over the nodes the rule omits is carried by nine
+// anchor nodes in each tail, z_i = 10^(13 + 17.125 i), i = 0, ..., 8: with L_i
+// the Lagrange basis on their u_i = log z_i, the weight of anchor i is
+//   Omega_i = z_i sum_{k > kmax} h c0 cosh(t_k) exp(-nu (u_k - u_i)) L_i(u_k),
+// u_k = c0 sinh(t_k) the grid of the rule, the sum stopping where
+// nu (u_k - u_top) exceeds 100. At nu >= 1 the tail is below 1e-45 of the
+// integral and the weights are zero. This is loc_scale_tail_weights() of
+// expected_loc_scale.R, in the same order of operations, and the anchors are
+// loc_scale_tail_anchors(). For nu >= 0.4 the integrals change by less than
+// 1e-14.
+constexpr int kSkewtAnchors = 9;
+
+inline double skewt_anchor(int i) {
+    return std::pow(10.0, 13.0 + 17.125 * (double) i);
+}
+
+inline void skewt_tail_omega(double nu, double* om) {
+    const double c0 = M_PI / 2.0;
+    const double h = 1.0 / 32.0;
+    const int K = kSkewtAnchors;
+    for (int i = 0; i < K; ++i) om[i] = 0.0;
+    if (!(nu < 1.0)) return;
+    const int kmax = (int) std::floor(std::asinh(60.0 * std::log(10.0) / c0) / h);
+    const double utop = c0 * std::sinh((double) kmax * h);
+    double ui[kSkewtAnchors];
+    for (int i = 0; i < K; ++i) ui[i] = std::log(skewt_anchor(i));
+    for (int kk = kmax + 1; kk <= kmax + 32 * 14; ++kk) {
+        const double tk = (double) kk * h;
+        const double uk = c0 * std::sinh(tk);
+        if (nu * (uk - utop) > 100.0) break;
+        const double ck = h * c0 * std::cosh(tk);
+        for (int i = 0; i < K; ++i) {
+            double L = 1.0;
+            for (int j = 0; j < K; ++j)
+                if (j != i) L *= (uk - ui[j]) / (ui[i] - ui[j]);
+            om[i] += ck * std::exp(-nu * (uk - ui[i])) * L;
+        }
+    }
+    for (int i = 0; i < K; ++i) om[i] *= skewt_anchor(i);
+}
+
+// the nodes and weights of the rule at degrees of freedom nu: those of
+// loc_scale_rule() followed by the anchors, z_i for i = 0, ..., 8 and then
+// -z_i, with the weights of skewt_tail_omega(); the same for the diagonal and
+// the full matrices
+struct SkewtRule {
+    int n;
+    std::vector<double> x, w;
+};
+
+inline SkewtRule skewt_rule(double nu) {
+    const LocScaleRule R = loc_scale_rule();
+    SkewtRule S;
+    S.n = R.n + 2 * kSkewtAnchors;
+    S.x.assign(R.x, R.x + R.n);
+    S.w.assign(R.w, R.w + R.n);
+    double om[kSkewtAnchors];
+    skewt_tail_omega(nu, om);
+    for (int i = 0; i < kSkewtAnchors; ++i) {
+        S.x.push_back(skewt_anchor(i));
+        S.w.push_back(om[i]);
+    }
+    for (int i = 0; i < kSkewtAnchors; ++i) {
+        S.x.push_back(-skewt_anchor(i));
+        S.w.push_back(om[i]);
+    }
+    return S;
+}
+
 // the standardized diagonal pair of parameter k at shape = (alpha, nu), by
 // the rule of pt_loc_scale.h
 inline void skewt_quad_diag(int k, const double* shape, double* out,
                             bool want_d) {
     const double a = shape[0], v = shape[1];
-    const LocScaleRule R = loc_scale_rule();
+    const SkewtRule R = skewt_rule(v);
     SkewtConst cc;
     if (k == 3) cc.at(v, want_d ? 3 : 2);
     LocScaleSum S;
@@ -286,7 +401,7 @@ inline void skewt_info_dinfo(int k, double y, const double* th, double* out) {
 // the symmetric arrays.
 inline void skewt_quad_full(const double* shape, double* I, double* D) {
     const double a = shape[0], v = shape[1];
-    const LocScaleRule R = loc_scale_rule();
+    const SkewtRule R = skewt_rule(v);
     SkewtConst cc;
     cc.at(v, 3);
     // position of (a, b) and of (a, b, c) in the multiset order

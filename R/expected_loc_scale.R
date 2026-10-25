@@ -68,7 +68,7 @@ NULL
 loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
   params <- distrib@params
   p <- length(params)
-  rule <- loc_scale_rule()
+  rule <- loc_scale_nodes(distrib)
   N <- length(rule$x)
 
   # the distinct shapes, and which one each observation carries
@@ -87,7 +87,7 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
   th <- c(list(rep(0, N * m), rep(1, N * m)),
           lapply(seq_along(shp), function(j) rep(U[, j], each = N)))
   names(th) <- params
-  fw <- distrib_pdf(distrib, yy, th) * rep(rule$w, m)
+  fw <- distrib_pdf(distrib, yy, th) * loc_scale_weights(distrib, U, rule)
   live <- fw != 0
 
   H <- distrib_hessian(distrib, yy, th, threads = threads)
@@ -181,6 +181,132 @@ loc_scale_center <- function(distrib, U) {
   -sign(g) * (2 * abs(g) / (4 - pi))^(1 / 3)
 }
 
+#' The Nodes of the Location-Scale Rule for a Family
+#'
+#' @description
+#' Returns the nodes and weights of [loc_scale_rule()], extended for a skew t
+#' by the eighteen anchor nodes of its tail correction, nine in each tail,
+#' with weight zero. [loc_scale_weights()] gives the weights of the anchors
+#' for each degrees of freedom. For every other family the rule is returned
+#' unchanged.
+#'
+#' @param distrib A distribution object.
+#'
+#' @return A list with the nodes `x` and the weights `w`.
+#'
+#' @keywords internal
+loc_scale_nodes <- function(distrib) {
+  rule <- loc_scale_rule()
+  if (!S7::S7_inherits(distrib, SkewTDistrib)) return(rule)
+  z <- loc_scale_tail_anchors()$z
+  list(x = c(rule$x, z, -z), w = c(rule$w, numeric(2L * length(z))))
+}
+
+#' The Weights of the Location-Scale Rule for Each Shape
+#'
+#' @description
+#' Returns the weights of the nodes of [loc_scale_nodes()] for each row of
+#' the shapes `U`, as one vector of length `length(rule$x) * nrow(U)`. For a
+#' skew t the weights of the anchor nodes are those of
+#' [loc_scale_tail_weights()], so that the integral past the last node of the
+#' rule is included; for every other family they are the weights of the rule.
+#'
+#' @param distrib A distribution object.
+#' @param U The matrix of distinct shapes, one row per shape.
+#' @param rule The list returned by [loc_scale_nodes()].
+#'
+#' @return A numeric vector.
+#'
+#' @keywords internal
+loc_scale_weights <- function(distrib, U, rule = loc_scale_nodes(distrib)) {
+  m <- nrow(U)
+  N <- length(rule$x)
+  W <- rep(rule$w, m)
+  if (!S7::S7_inherits(distrib, SkewTDistrib)) return(W)
+  K <- length(loc_scale_tail_anchors()$z)
+  Om <- loc_scale_tail_weights(U[, 2L])
+  for (r in seq_len(m)) {
+    at <- (r - 1L) * N + N - 2L * K + seq_len(2L * K)
+    W[at] <- rep(Om[, r], 2L)
+  }
+  W
+}
+
+#' The Anchors of the Tail Correction of the Skew t
+#'
+#' @description
+#' Returns the points at which [loc_scale_tail_weights()] places the weight of
+#' the tail past the last node of [loc_scale_rule()], and the grid of the rule.
+#' There are nine anchors in each tail, equally spaced in \eqn{\log|z|} from
+#' \eqn{10^{13}} to \eqn{10^{150}}.
+#'
+#' @return A list with the anchors `z` (positive; the left tail uses their
+#'   negatives), the step `h` of the rule, the constant `c0` of its
+#'   substitution and the index `kmax` of its last node.
+#'
+#' @keywords internal
+loc_scale_tail_anchors <- function() {
+  c0 <- pi / 2
+  h <- 1 / 32
+  list(z = 10^(13 + 17.125 * (0:8)), h = h, c0 = c0,
+       kmax = floor(asinh(60 * log(10) / c0) / h))
+}
+
+#' The Weights That Carry the Tail of the Skew t Past the Rule
+#'
+#' @description
+#' Computes, for each degrees of freedom \eqn{\nu}, the weights of the nine
+#' anchor nodes of [loc_scale_tail_anchors()] in each tail, so that the sum
+#' over the nodes includes the nodes the rule does not have.
+#'
+#' @details
+#' Past \eqn{|z| = 10^{60}} the density of the skew t is
+#' \eqn{f(z) = f(z_i)(|z|/z_i)^{-(\nu+1)}} to a relative \eqn{10^{-26}} or
+#' better from \eqn{z_i = 10^{13}} on, and each derivative of the log-density
+#' is constant except the derivative in \eqn{\nu}, which is linear in
+#' \eqn{u = \log|z|}. Every integrand of the expected information and of its
+#' derivatives is therefore \eqn{f} times a polynomial \eqn{q(u)} of degree at
+#' most six. The sum of \eqn{w_k f(z_k) q(u_k)} over the nodes
+#' \eqn{k > k_{\max}} that the rule omits is then, with \eqn{q} written in the
+#' Lagrange basis \eqn{L_i} on the anchors \eqn{u_i = \log z_i},
+#' \deqn{\sum_i f(z_i)\, q(u_i)\, \Omega_i,\qquad
+#'   \Omega_i = z_i \sum_{k > k_{\max}} h c_0 \cosh(t_k)\,
+#'   e^{-\nu (u_k - u_i)} L_i(u_k),}
+#' with \eqn{u_k = c_0 \sinh t_k} the grid of the rule, so that
+#' \eqn{\Omega_i} depends on \eqn{\nu} alone. The sum over \eqn{k} stops
+#' where \eqn{\nu (u_k - u_{k_{\max}})} reaches 100. At \eqn{\nu \ge 1} the
+#' tail is below \eqn{10^{-45}} of the integral and the weights are zero.
+#'
+#' @param nu A numeric vector of degrees of freedom.
+#'
+#' @return A matrix with nine rows and one column for each element of `nu`.
+#'
+#' @keywords internal
+loc_scale_tail_weights <- function(nu) {
+  A <- loc_scale_tail_anchors()
+  K <- length(A$z)
+  u_i <- log(A$z)
+  out <- matrix(0, K, length(nu))
+  act <- which(nu < 1)
+  if (!length(act)) return(out)
+  u_top <- A$c0 * sinh(A$kmax * A$h)
+  kk <- A$kmax + seq_len(32L * 14L)
+  tk <- kk * A$h
+  uk <- A$c0 * sinh(tk)
+  # the nodes past the rule that matter for the smallest nu
+  last <- sum(min(nu[act]) * (uk - u_top) <= 100)
+  tk <- tk[seq_len(last)]; uk <- uk[seq_len(last)]
+  ck <- A$h * A$c0 * cosh(tk)
+  keep <- outer(uk - u_top, nu[act]) <= 100
+  for (i in seq_len(K)) {
+    L <- rep(1, length(uk))
+    for (j in seq_len(K)[-i]) L <- L * (uk - u_i[j]) / (u_i[i] - u_i[j])
+    E <- exp(-outer(uk - u_i[i], nu[act])) * keep
+    out[i, act] <- A$z[i] * colSums(E * (ck * L))
+  }
+  out
+}
+
 #' The Families Whose Location-Scale Diagonal Is Compiled
 #'
 #' @description
@@ -212,7 +338,11 @@ loc_scale_compiled <- function() {
 #' its mirror image. The step is \eqn{h = 1/32} and the nodes run from
 #' \eqn{10^{-16}} to \eqn{10^{60}} in \eqn{|z|}, about 580 in all. Past the
 #' upper end a tail decaying as \eqn{|z|^{-1-\nu}} leaves a relative
-#' \eqn{10^{-60\nu}/\nu}, negligible for \eqn{\nu \ge 0.3}.
+#' \eqn{10^{-60\nu}/\nu} times a power of \eqn{60\log 10} that grows with the
+#' order of the derivative in \eqn{\nu}. For the skew t, whose tail has this
+#' form, [loc_scale_weights()] adds the omitted nodes to the weights of the
+#' last nodes, by [loc_scale_tail_weights()]. In the other families the tail is
+#' exponentially small and the weights are those of the rule.
 #'
 #' @return A list with the nodes `x` and the weights `w`.
 #'
