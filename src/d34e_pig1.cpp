@@ -14,7 +14,7 @@
 // rejected: the derivatives in sigma of alpha(mu, sigma) = sqrt(1 + 2 sigma mu)/sigma grow as
 // sigma^-k, and the chain rule through them loses about log10(sigma^-4) digits where sigma is small.
 //
-// The partials of S of orders 0 to K in (mu, sigma) come from one of three sources.
+// The partials of S of orders 0 to K in (mu, sigma) come from one of four sources.
 //  - Where (1 + mu) sigma <= 0.04 (mu < 20), 0.08 (20 <= mu < 200) or 0.1 (mu >= 200), from the series
 //    of S in sigma (the entry E1[('s', 's')] of stabilita/pig_asym_series_N20.py: coefficients
 //    polynomial in mu, exact in double), differentiated term by term. Measured against 60- and
@@ -30,6 +30,11 @@
 //    that the derivatives of log S_y in w from the recurrence PigSeqW, good to 2e-14, become a relative
 //    error of 8e-9 in them (2e-10 if the derivatives in w were exact), and the polynomials that form
 //    the partials of S cancel again.
+//  - Where the first two do not apply, from the expansion of S in 1/mu at a fixed sigma
+//    (pt_pig1_fixsig.h): S = sum_p mu^-p G_p(sigma), G_p a Laurent polynomial with 2p + 1 dyadic coefficients
+//    (p <= 20), differentiated term by term. Terms are added until the last one is below 1e-14 of the largest
+//    component of each order; the route declines where the terms start to grow before that or p = 20 is
+//    reached, which happens for mu below about max(1e3, 1e4 sigma).
 //  - Elsewhere from the walk over the support: S = E[l_ss] = -E[l_s l_s] and d_c E[h] = E[d_c h +
 //    h l_c], so each partial is the expectation of a polynomial in the partials L{i}{j} of the log
 //    mass, accumulated by AccS3 or AccS4 over the row of pt_pig_d34e.h with the stopping rule of
@@ -47,12 +52,15 @@
 #include "pt_pig_d34e.h"
 #include "pt_pig1_d34e_map.h"
 #include "pt_pig1_d34e_asym.h"
+#include "pt_pig1_fixsig.h"
 using namespace Rcpp;
 
 namespace {
 
 // The partials of S of orders 0..K at one (mu, sigma), in the layout s[k (k + 1) / 2 + q] (order k,
-// q indices on sigma). Returns false where the walk could not be completed.
+// q indices on sigma). The walk over the support runs only where the series in sigma, the expansion at fixed
+// x and the expansion at fixed sigma (pt_pig1_fixsig.h) all decline. Returns false where the walk could not
+// be completed.
 template <int K>
 static bool pig1_s_partials(const double m, const double x, double* s) {
     if (pig_map::series_region(m, x)) {
@@ -63,6 +71,7 @@ static bool pig1_s_partials(const double m, const double x, double* s) {
         pig_map::asym_S(m, x, K, s);
         return true;
     }
+    if (pig_map::fixsig_S(m, x, K, s)) return true;
     const double w = 0.5 * x / d7::sqrt_cr(1.0 + 2.0 * x * m);
     const double tail = 2.0 * x * m;
     auto row4 = [&](double yy, const double* pre, double* v) {

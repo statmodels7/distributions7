@@ -73,7 +73,7 @@ trunc_dexpected <- function(d, y, th, k, t = 1L) {
   # dots under names that cannot collide with a parameter's
   lz <- trunc_logz_derivs(d, th, k + 1L)
   names(lz) <- paste0(".lz_", names(lz))
-  E <- function(f) rep_len(-do.call(expectation, c(list(d, f, th), lz)), n)
+  E <- function(f) rep_len(-do.call(trunc_expectation, c(list(d, f, th), lz)), n)
   # the truncated derivatives at the nodes, from the parent's
   parts <- function(y, theta, z, order) {
     gp <- distrib_gradient(parent, y, theta)
@@ -135,7 +135,7 @@ trunc_logz_derivs <- function(d, theta, order) {
   ratio <- memo_ratio(function(block) {
     k <- length(block)
     if (!is.null(dZ[[k]])) return(dZ[[k]][[canon_key(block, P)]] / Zval)
-    expectation(d, function(y, theta) {
+    trunc_expectation(d, function(y, theta) {
       bell_f_ratio(block, parent_ell(parent, y, theta, length(block), P))
     }, theta)
   }, P)

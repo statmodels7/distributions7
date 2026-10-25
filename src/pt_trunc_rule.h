@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include "pt_loc_scale.h"
+#include "pt_skewt.h"
 
 // The quadrature over the retained interval [a, b] of a truncated
 // continuous family, for its expected information. The rule does not look
@@ -75,9 +76,13 @@ inline void ts_doubling(double u, double v, bool from_u, double s,
 
 // a piece unbounded on one side: doubling panels over the first
 // 2^kDoublings - 1 scales, then the exp-sinh half rule
+// For a parent with the tail of the skew t at nu < 1 (`nu` finite) the nine
+// anchor nodes of pt_skewt.h are appended on the unbounded side, at
+// end +/- s z_i with the weights s Omega_i(nu), which carry the integral past
+// the last exp-sinh node (|z| = 1e60).
 inline void es_tail(double u, bool right, double s, std::vector<double>& y,
                     std::vector<double>& w, double h = kTsStep,
-                    int nd = kDoublings) {
+                    int nd = kDoublings, double nu = R_NaN) {
     const double span = s * (std::ldexp(1.0, nd) - 1.0);
     const double end = right ? u + span : u - span;
     if (nd > 0) {
@@ -89,6 +94,15 @@ inline void es_tail(double u, bool right, double s, std::vector<double>& y,
         y.push_back(right ? end + s * R.x[j] : end - s * R.x[j]);
         w.push_back(s * R.w[j]);
     }
+    if (R_FINITE(nu) && nu < 1.0) {
+        double om[kSkewtAnchors];
+        skewt_tail_omega(nu, om);
+        for (int i = 0; i < kSkewtAnchors; ++i) {
+            const double z = skewt_anchor(i);
+            y.push_back(right ? end + s * z : end - s * z);
+            w.push_back(s * om[i]);
+        }
+    }
 }
 
 // the rule over [a, b] (either end may be infinite), center c, scale s, and
@@ -96,7 +110,7 @@ inline void es_tail(double u, bool right, double s, std::vector<double>& y,
 inline void trunc_rule(double a, double b, double c, double s,
                        const double* kk, int nk, std::vector<double>& y,
                        std::vector<double>& w, double h = kTsStep,
-                       int nd = kDoublings) {
+                       int nd = kDoublings, double nu = R_NaN) {
     y.clear();
     w.clear();
     std::vector<double> cuts;
@@ -109,12 +123,12 @@ inline void trunc_rule(double a, double b, double c, double s,
     for (std::size_t i = 0; i + 1 < cuts.size(); ++i) {
         const double u = cuts[i], v = cuts[i + 1];
         if (!R_FINITE(u) && !R_FINITE(v)) {
-            es_tail(c, false, s, y, w, h, nd);
-            es_tail(c, true, s, y, w, h, nd);
+            es_tail(c, false, s, y, w, h, nd, nu);
+            es_tail(c, true, s, y, w, h, nd, nu);
         } else if (!R_FINITE(v)) {
-            es_tail(u, true, s, y, w, h, nd);
+            es_tail(u, true, s, y, w, h, nd, nu);
         } else if (!R_FINITE(u)) {
-            es_tail(v, false, s, y, w, h, nd);
+            es_tail(v, false, s, y, w, h, nd, nu);
         } else {
             // doubling away from the end nearer the center
             const bool from_u = std::fabs(u - c) <= std::fabs(v - c);

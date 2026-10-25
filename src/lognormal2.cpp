@@ -61,54 +61,16 @@ List lognormal2_hessian_cpp(NumericVector y, NumericVector mean, NumericVector v
   NumericVector o_mean_mean(n);
   NumericVector o_var_var(n);
   NumericVector o_mean_var(n);
-  double m = 0.0, v = 0.0, S = 0.0;
-  double t0 = 0.0;
-  double t1 = 0.0;
-  double t2 = 0.0;
-  double t3 = 0.0;
-  double t4 = 0.0;
-  double t6 = 0.0;
-  double t9 = 0.0;
-  double t10 = 0.0;
-  double t11 = 0.0;
-  double t12 = 0.0;
-  double t13 = 0.0;
-  double t14 = 0.0;
-  double t15 = 0.0;
-  double t16 = 0.0;
-  d7::Lognormal2HessianPar P{};
-  auto set_params = [&](int i) {
-    m = mean[i % n_mean]; v = var[i % n_var];
-    P = d7::lognormal2_hessian_par(m, v);
-    S = P.S;
-    t0 = P.t0;
-    t1 = P.t1;
-    t2 = P.t2;
-    t3 = P.t3;
-    t4 = P.t4;
-    t6 = P.t6;
-    t9 = P.t9;
-    t10 = P.t10;
-    t11 = P.t11;
-    t12 = P.t12;
-    t13 = P.t13;
-    t14 = P.t14;
-    t15 = P.t15;
-    t16 = P.t16;
-  };
+  d7::Lognormal2Base B{};
   const bool scalar = n_mean == 1 && n_var == 1;
-  if (scalar) set_params(0);
+  if (scalar) B = d7::lognormal2_base(mean[0], var[0]);
   for (int i = 0; i < n; i++) {
-    if (!scalar) set_params(i);
-    const double yy = y[i];
-    const double C = std::log(yy / m);
-    const double t5 = std::pow(C, 2);
-    const double t7 = t5*t6;
-    o_mean_mean[i] = d7::lognormal2_hess_mean_mean(P, C);
-    o_var_var[i] = d7::lognormal2_hess_var_var(P, C);
-    o_mean_var[i] = -C*t15 + m*t12*t2 + m*t12*t3 + (1.0/4.0)*m*t12 + 2*t14*t4*t5*t6 - t15 - t16*t2*t5 - 2*t16*t7;
+    if (!scalar) B = d7::lognormal2_base(mean[i % n_mean], var[i % n_var]);
+    const double C = d7::lognormal2_logratio(y[i], B.m);
+    o_mean_mean[i] = d7::lognormal2_hess_mean_mean(B, C);
+    o_var_var[i] = d7::lognormal2_hess_var_var(B, C);
+    o_mean_var[i] = d7::lognormal2_hess_mean_var(B, C);
   }
-  (void) S;
   return List::create(Named("mean_mean") = o_mean_mean, Named("var_var") = o_var_var, Named("mean_var") = o_mean_var);
 }
 
@@ -777,29 +739,15 @@ List lognormal2_cross_y_cpp(NumericVector y, NumericVector mean, NumericVector v
   const int n_mean = mean.size(), n_var = var.size();
   NumericVector o_mean(n);
   NumericVector o_var(n);
-  double m = 0.0, v = 0.0, S = 0.0;
-  double t0 = 0.0;
-  double t2 = 0.0;
-  double t4 = 0.0;
-  auto set_params = [&](int i) {
-    m = mean[i % n_mean]; v = var[i % n_var];
-    S = std::log1p(v / (m * m));
-    t0 = 1.0/S;
-    t2 = 1.0/m;
-    t4 = 1.0/(std::pow(m, 2) + v);
-  };
+  d7::Lognormal2Base B{};
   const bool scalar = n_mean == 1 && n_var == 1;
-  if (scalar) set_params(0);
+  if (scalar) B = d7::lognormal2_base(mean[0], var[0]);
   for (int i = 0; i < n; i++) {
-    if (!scalar) set_params(i);
-    const double yy = y[i];
-    const double C = std::log(yy / m);
-    const double t1 = 1.0/yy;
-    const double t3 = 2*C*t0;
-    o_mean[i] = t0*t1*(m*t3*t4 - t2*t3 + t2);
-    o_var[i] = C*t1*t4/std::pow(S, 2);
+    if (!scalar) B = d7::lognormal2_base(mean[i % n_mean], var[i % n_var]);
+    const double C = d7::lognormal2_logratio(y[i], B.m);
+    o_mean[i] = d7::lognormal2_cross_y_mean(B, y[i], C);
+    o_var[i] = d7::lognormal2_cross_y_var(B, y[i], C);
   }
-  (void) S;
   return List::create(Named("mean") = o_mean, Named("var") = o_var);
 }
 
@@ -810,30 +758,15 @@ List lognormal2_cross2_y_cpp(NumericVector y, NumericVector mean, NumericVector 
   const int n_mean = mean.size(), n_var = var.size();
   NumericVector o_mean(n);
   NumericVector o_var(n);
-  double m = 0.0, v = 0.0, S = 0.0;
-  double t0 = 0.0;
-  double t2 = 0.0;
-  double t3 = 0.0;
-  double t4 = 0.0;
-  auto set_params = [&](int i) {
-    m = mean[i % n_mean]; v = var[i % n_var];
-    S = std::log1p(v / (m * m));
-    t0 = 1.0/S;
-    t2 = 1.0/m;
-    t3 = 2*t0;
-    t4 = 1.0/(std::pow(m, 2) + v);
-  };
+  d7::Lognormal2Base B{};
   const bool scalar = n_mean == 1 && n_var == 1;
-  if (scalar) set_params(0);
+  if (scalar) B = d7::lognormal2_base(mean[0], var[0]);
   for (int i = 0; i < n; i++) {
-    if (!scalar) set_params(i);
-    const double yy = y[i];
-    const double C = std::log(yy / m);
-    const double t1 = std::pow(yy, -2);
-    o_mean[i] = t0*t1*(-C*m*t3*t4 + 2*C*t0*t2 + 2*m*t0*t4 - t2*t3 - t2);
-    o_var[i] = t1*t4*(1 - C)/std::pow(S, 2);
+    if (!scalar) B = d7::lognormal2_base(mean[i % n_mean], var[i % n_var]);
+    const double C = d7::lognormal2_logratio(y[i], B.m);
+    o_mean[i] = d7::lognormal2_cross2_y_mean(B, y[i], C);
+    o_var[i] = d7::lognormal2_cross2_y_var(B, y[i], C);
   }
-  (void) S;
   return List::create(Named("mean") = o_mean, Named("var") = o_var);
 }
 
@@ -845,45 +778,18 @@ List lognormal2_grad_y_hess_cpp(NumericVector y, NumericVector mean, NumericVect
   NumericVector o_mean_mean(n);
   NumericVector o_var_var(n);
   NumericVector o_mean_var(n);
-  double m = 0.0, v = 0.0, S = 0.0;
-  double t0 = 0.0;
-  double t1 = 0.0;
-  double t2 = 0.0;
-  double t3 = 0.0;
-  double t4 = 0.0;
-  double t5 = 0.0;
-  double t6 = 0.0;
-  double t11 = 0.0;
-  double t13 = 0.0;
-  auto set_params = [&](int i) {
-    m = mean[i % n_mean]; v = var[i % n_var];
-    S = std::log1p(v / (m * m));
-    t0 = std::pow(m, 2);
-    t1 = 1.0/t0;
-    t2 = 1.0/S;
-    t3 = std::pow(S, -2);
-    t4 = 8*t3;
-    t5 = 1.0/(t0 + v);
-    t6 = 4*t2;
-    t11 = 2*t2;
-    t13 = 1.0/m;
-  };
+  d7::Lognormal2Base B{};
   const bool scalar = n_mean == 1 && n_var == 1;
-  if (scalar) set_params(0);
+  if (scalar) B = d7::lognormal2_base(mean[0], var[0]);
+  double o[3];
   for (int i = 0; i < n; i++) {
-    if (!scalar) set_params(i);
-    const double yy = y[i];
-    const double C = std::log(yy / m);
-    const double t7 = C/(std::pow(m, 4) + 2*t0*v + std::pow(v, 2));
-    const double t8 = t0*t7;
-    const double t9 = 1.0/yy;
-    const double t10 = t2*t9;
-    const double t12 = t3*t7;
-    o_mean_mean[i] = t10*(2*C*t1*t2 - C*t1*t4 + 2*C*t2*t5 + 16*C*t3*t5 + 4*t1*t2 - t1 - t4*t8 - t5*t6 - t6*t8);
-    o_var_var[i] = -t12*t9*(t11 + 1);
-    o_mean_var[i] = t10*(4*C*t13*t3*t5 - m*t11*t7 - 4*m*t12 - t13*t2*t5);
+    if (!scalar) B = d7::lognormal2_base(mean[i % n_mean], var[i % n_var]);
+    const double C = d7::lognormal2_logratio(y[i], B.m);
+    d7::lognormal2_grad_y_hess_all(B, y[i], C, o);
+    o_mean_mean[i] = o[0];
+    o_mean_var[i] = o[1];
+    o_var_var[i] = o[2];
   }
-  (void) S;
   return List::create(Named("mean_mean") = o_mean_mean, Named("var_var") = o_var_var, Named("mean_var") = o_mean_var);
 }
 
@@ -895,57 +801,18 @@ List lognormal2_hess_y_hess_cpp(NumericVector y, NumericVector mean, NumericVect
   NumericVector o_mean_mean(n);
   NumericVector o_var_var(n);
   NumericVector o_mean_var(n);
-  double m = 0.0, v = 0.0, S = 0.0;
-  double t0 = 0.0;
-  double t1 = 0.0;
-  double t2 = 0.0;
-  double t3 = 0.0;
-  double t4 = 0.0;
-  double t5 = 0.0;
-  double t6 = 0.0;
-  double t7 = 0.0;
-  double t8 = 0.0;
-  double t10 = 0.0;
-  double t11 = 0.0;
-  double t14 = 0.0;
-  double t15 = 0.0;
-  double t16 = 0.0;
-  double t17 = 0.0;
-  double t18 = 0.0;
-  auto set_params = [&](int i) {
-    m = mean[i % n_mean]; v = var[i % n_var];
-    S = std::log1p(v / (m * m));
-    t0 = std::pow(m, 2);
-    t1 = 1.0/t0;
-    t2 = std::pow(S, -2);
-    t3 = 8*t2;
-    t4 = 1.0/S;
-    t5 = 2*t4;
-    t6 = t1*t5;
-    t7 = 1.0/(t0 + v);
-    t8 = t2*t7;
-    t10 = 1.0/(std::pow(m, 4) + 2*t0*v + std::pow(v, 2));
-    t11 = t0*t10;
-    t14 = t10*t2;
-    t15 = 1.0/m;
-    t16 = 4*t15*t8;
-    t17 = 4*m*t14;
-    t18 = m*t10;
-  };
+  d7::Lognormal2Base B{};
   const bool scalar = n_mean == 1 && n_var == 1;
-  if (scalar) set_params(0);
+  if (scalar) B = d7::lognormal2_base(mean[0], var[0]);
+  double o[3];
   for (int i = 0; i < n; i++) {
-    if (!scalar) set_params(i);
-    const double yy = y[i];
-    const double C = std::log(yy / m);
-    const double t9 = C*t5;
-    const double t12 = std::pow(yy, -2);
-    const double t13 = t12*t4;
-    o_mean_mean[i] = t13*(8*C*t0*t10*t2 + 4*C*t0*t10*t4 + 8*C*t1*t2 - C*t6 - 16*C*t8 - t1*t3 + t1 - t11*t3 - 4*t11*t4 + 16*t2*t7 + 6*t4*t7 - t6 - t7*t9);
-    o_var_var[i] = t12*t14*(C - t5 + t9 - 1);
-    o_mean_var[i] = t13*(-C*t16 + C*t17 + t15*t4*t7 + t16 - t17 - t18*t5 + t18*t9);
+    if (!scalar) B = d7::lognormal2_base(mean[i % n_mean], var[i % n_var]);
+    const double C = d7::lognormal2_logratio(y[i], B.m);
+    d7::lognormal2_hess_y_hess_all(B, y[i], C, o);
+    o_mean_mean[i] = o[0];
+    o_mean_var[i] = o[1];
+    o_var_var[i] = o[2];
   }
-  (void) S;
   return List::create(Named("mean_mean") = o_mean_mean, Named("var_var") = o_var_var, Named("mean_var") = o_mean_var);
 }
 

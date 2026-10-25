@@ -2422,7 +2422,27 @@ S7::method(distrib_atoms, TruncatedContinuousDistrib) <- function(distrib, theta
 #' c(method = expectation(tn, function(y, theta) y, theta),
 #'   integral = integrate(fy, -1, 2)$value)
 S7::method(expectation, TruncatedContinuousDistrib) <- function(distrib, f, theta, ...) {
-  cont <- S7::method(expectation, continuous_distrib)(distrib, f, theta, ...)
+  trunc_add_atoms(distrib, f, theta,
+                  S7::method(expectation, continuous_distrib)(distrib, f, theta, ...), ...)
+}
+
+#' The Atoms of a Truncated Continuous Family in an Expectation
+#'
+#' @description
+#' Adds to an expectation over the continuous part of a [truncated()] family
+#' the masses of the parent's atoms inside the retained interval, each
+#' multiplied by `f` at the atom.
+#'
+#' @param distrib A truncated continuous family.
+#' @param f The function whose expectation is taken.
+#' @param theta A named list of parameters.
+#' @param cont The expectation over the continuous part.
+#' @param ... Further arguments passed to `f`.
+#'
+#' @return A numeric vector with one value per parameter combination.
+#'
+#' @keywords internal
+trunc_add_atoms <- function(distrib, f, theta, cont, ...) {
   at <- distrib_atoms(distrib, theta)
   if (!length(at$y)) return(cont)
   Z <- trunc_constants(distrib, theta)$Z
@@ -2912,4 +2932,113 @@ truncated <- function(distrib, lower = NULL, upper = NULL) {
   } else {
     do.call(TruncatedContinuousDistrib, common)
   }
+}
+
+#' The Expectation of a Truncated Family on the Compiled Rule
+#'
+#' @description
+#' Computes \eqn{E_T[f(Y)]} for a [truncated()] continuous family whose parent
+#' has a scalar route and a power-law tail, as the sum of
+#' \eqn{f(y_k)\,f_T(y_k)\,w_k} over the nodes and weights of
+#' `trunc_cont_rule_cpp()`, the rule the compiled expected information uses,
+#' with the anchor nodes of the tail past \eqn{10^{60}} scales.
+#'
+#' @details
+#' The adaptive quadrature of [expectation()] integrates over the whole
+#' support and reaches no tail of order \eqn{|z|^{-1-\nu}} at small
+#' \eqn{\nu}: it signals that the accuracy was not reached, or returns a value
+#' that misses the tail. The rule integrates the tail through the anchors, in
+#' one pass over all parameter combinations. The rule is used for the families
+#' that [trunc_rule_wanted()] names, the skew t and the Student t of class
+#' `StudentT1Distrib`; every other family, a parent without a route, a
+#' constant that varies by observation, and a rule that returns no nodes for a
+#' combination leave the result `NULL`, and the caller takes the adaptive
+#' quadrature.
+#'
+#' The rule is fixed, so it is accurate only for a smooth `f`. It is therefore
+#' read by `trunc_expectation()`, which the derivatives of the expected
+#' information call with their smooth integrands, and not by the
+#' [expectation()] method, which takes any `f` (an indicator, an absolute
+#' value) and keeps the adaptive quadrature.
+#'
+#' @param distrib A truncated continuous family.
+#' @param f The function whose expectation is taken.
+#' @param theta A named list of parameters.
+#' @param ... Further arguments passed to `f`.
+#'
+#' @return A numeric vector with one value per parameter combination, or
+#'   `NULL`.
+#'
+#' @keywords internal
+trunc_rule_expectation <- function(distrib, f, theta, ...) {
+  if (!trunc_rule_wanted(distrib)) return(NULL)
+  route <- distrib_scalar_route(distrib)
+  if (is.null(route)) return(NULL)
+  cols <- expectation_columns(distrib, theta, list(...))
+  if (cols$rows) return(NULL)
+  P <- distrib@params
+  parent <- distrib@parent_distrib
+  n <- cols$n
+  th <- cols$th[P]
+  tm <- do.call(cbind, c(unname(th), lapply(unname(route$constants), rep_len,
+                                            length.out = n)))
+  if (!is.matrix(tm)) tm <- matrix(tm, nrow = n)
+  key_of <- function(v) if (is.numeric(v)) sprintf("%a", v) else as.character(v)
+  key <- do.call(paste, c(lapply(c(as.data.frame(tm), cols$dots), key_of), sep = "|"))
+  first <- !duplicated(key)
+  u <- which(first)
+  tmu <- tm[u, , drop = FALSE]
+  rule <- trunc_cont_rule_cpp(route$name, tmu)
+  if (!is.null(rule$ly) || !all(seq_along(u) %in% rule$idx)) return(NULL)
+  idx <- rule$idx
+  thu <- lapply(th, `[`, u)
+  thp <- lapply(thu, `[`, idx)
+  dots <- lapply(cols$dots, function(v) v[u][idx])
+  Z <- trunc_constants(distrib, thu)$Z
+  lp <- distrib_pdf(parent, rule$y, thp, log = TRUE) - log(Z)[idx]
+  fw <- exp(lp) * rule$w
+  val <- do.call(f, c(list(y = rule$y, theta = thp), dots))
+  v <- val * fw
+  v[fw == 0] <- 0
+  out <- as.numeric(rowsum(v, idx, reorder = TRUE))
+  unname(out[match(key, key[first])])
+}
+
+#' The Expectation of a Smooth Function Under a Truncated Family
+#'
+#' @description
+#' Computes \eqn{E_T[f(Y)]} for a smooth `f` by `trunc_rule_expectation()`,
+#' with the masses of the parent's atoms inside the retained interval added,
+#' and by [expectation()] where the rule is not taken. The derivatives of a
+#' truncated family's expected information call it.
+#'
+#' @inheritParams trunc_rule_expectation
+#'
+#' @return A numeric vector with one value per parameter combination.
+#'
+#' @keywords internal
+trunc_expectation <- function(distrib, f, theta, ...) {
+  if (!S7::S7_inherits(distrib, TruncatedContinuousDistrib)) {
+    return(expectation(distrib, f, theta, ...))
+  }
+  cont <- trunc_rule_expectation(distrib, f, theta, ...)
+  if (is.null(cont)) return(expectation(distrib, f, theta, ...))
+  trunc_add_atoms(distrib, f, theta, cont, ...)
+}
+
+#' Does a Truncated Family Take Its Expectations on the Compiled Rule?
+#'
+#' @description
+#' Returns `TRUE` for a [truncated()] continuous family whose parent is a skew
+#' t or a Student t of class `StudentT1Distrib`, the families whose tail is
+#' \eqn{|z|^{-1-\nu}} and for which the compiled rule carries anchor nodes.
+#'
+#' @param distrib A truncated family.
+#'
+#' @return A single logical.
+#'
+#' @keywords internal
+trunc_rule_wanted <- function(distrib) {
+  S7::S7_inherits(distrib@parent_distrib, SkewTDistrib) ||
+    S7::S7_inherits(distrib@parent_distrib, StudentT1Distrib)
 }

@@ -2058,6 +2058,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_fold_tail_probe
+Rcpp::NumericVector d7_fold_tail_probe(std::string cls, Rcpp::NumericMatrix theta);
+RcppExport SEXP _distributions7_d7_fold_tail_probe(SEXP clsSEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_fold_tail_probe(cls, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // trunc_rule_cpp
 Rcpp::List trunc_rule_cpp(std::string cls, Rcpp::NumericMatrix theta, bool info);
 RcppExport SEXP _distributions7_trunc_rule_cpp(SEXP clsSEXP, SEXP thetaSEXP, SEXP infoSEXP) {
@@ -2194,14 +2206,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // fold_rule_cpp
-Rcpp::List fold_rule_cpp(double c, double s);
-RcppExport SEXP _distributions7_fold_rule_cpp(SEXP cSEXP, SEXP sSEXP) {
+Rcpp::List fold_rule_cpp(double c, double s, double nu);
+RcppExport SEXP _distributions7_fold_rule_cpp(SEXP cSEXP, SEXP sSEXP, SEXP nuSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
     Rcpp::traits::input_parameter< double >::type s(sSEXP);
-    rcpp_result_gen = Rcpp::wrap(fold_rule_cpp(c, s));
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    rcpp_result_gen = Rcpp::wrap(fold_rule_cpp(c, s, nu));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -8120,6 +8133,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_d7_joint_classes_covered", (DL_FUNC) &_distributions7_d7_joint_classes_covered, 0},
     {"_distributions7_d7_logpdf_probe", (DL_FUNC) &_distributions7_d7_logpdf_probe, 3},
     {"_distributions7_d7_center_scale_probe", (DL_FUNC) &_distributions7_d7_center_scale_probe, 2},
+    {"_distributions7_d7_fold_tail_probe", (DL_FUNC) &_distributions7_d7_fold_tail_probe, 2},
     {"_distributions7_trunc_rule_cpp", (DL_FUNC) &_distributions7_trunc_rule_cpp, 3},
     {"_distributions7_ld_group_sum", (DL_FUNC) &_distributions7_ld_group_sum, 3},
     {"_distributions7_trunc_cont_rule_raw_cpp", (DL_FUNC) &_distributions7_trunc_cont_rule_raw_cpp, 7},
@@ -8130,7 +8144,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_d7_cdf_grad_cpp", (DL_FUNC) &_distributions7_d7_cdf_grad_cpp, 3},
     {"_distributions7_d7_cdf_hess_cpp", (DL_FUNC) &_distributions7_d7_cdf_hess_cpp, 3},
     {"_distributions7_cdf_rule_cpp", (DL_FUNC) &_distributions7_cdf_rule_cpp, 3},
-    {"_distributions7_fold_rule_cpp", (DL_FUNC) &_distributions7_fold_rule_cpp, 2},
+    {"_distributions7_fold_rule_cpp", (DL_FUNC) &_distributions7_fold_rule_cpp, 3},
     {"_distributions7_d7_scalar_thread_safe_probe", (DL_FUNC) &_distributions7_d7_scalar_thread_safe_probe, 1},
     {"_distributions7_d7_scalar_classes_covered", (DL_FUNC) &_distributions7_d7_scalar_classes_covered, 0},
     {"_distributions7_bernoulli_dexpected1_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected1_cpp, 3},

@@ -43,7 +43,11 @@ sharply near zero, where the weight
 \eqn{s^2/|c|}, where \eqn{c} and \eqn{s} are a center and a scale of the
 parent, read from the scalar registry. The integral is taken over \eqn{y > 0}
 by a tanh-sinh rule on \eqn{[0, |c|]}, whose nodes cluster at both ends, and
-the rule of \code{\link[=loc_scale_rule]{loc_scale_rule()}} scaled by \eqn{s} on \eqn{[|c|, \infty)}; the
+the rule of \code{\link[=loc_scale_rule]{loc_scale_rule()}} scaled by \eqn{s} on \eqn{[|c|, \infty)},
+followed, for a skew t or \code{student_t1} parent with \eqn{\nu < 1}, by the
+nine anchor nodes
+of \code{\link[=loc_scale_tail_anchors]{loc_scale_tail_anchors()}} with the weights of \code{\link[=loc_scale_tail_weights]{loc_scale_tail_weights()}}
+scaled by \eqn{s}, which carry the tail past the last node; the
 split at \eqn{|c|} also takes in a parent with a kink at its center. The
 nodes are the scalar registry's. The expectations are formed through the
 second Bartlett identity,

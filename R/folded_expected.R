@@ -17,7 +17,11 @@ NULL
 #' \eqn{s^2/|c|}, where \eqn{c} and \eqn{s} are a center and a scale of the
 #' parent, read from the scalar registry. The integral is taken over \eqn{y > 0}
 #' by a tanh-sinh rule on \eqn{[0, |c|]}, whose nodes cluster at both ends, and
-#' the rule of [loc_scale_rule()] scaled by \eqn{s} on \eqn{[|c|, \infty)}; the
+#' the rule of [loc_scale_rule()] scaled by \eqn{s} on \eqn{[|c|, \infty)},
+#' followed, for a skew t or `student_t1` parent with \eqn{\nu < 1}, by the
+#' nine anchor nodes
+#' of [loc_scale_tail_anchors()] with the weights of [loc_scale_tail_weights()]
+#' scaled by \eqn{s}, which carry the tail past the last node; the
 #' split at \eqn{|c|} also takes in a parent with a kink at its center. The
 #' nodes are the scalar registry's. The expectations are formed through the
 #' second Bartlett identity,
@@ -74,6 +78,7 @@ folded_expected <- function(distrib, y, theta, order) {
     idx <- match(key, key[first])
     cs <- d7_center_scale_probe(inner$name, U)
     if (anyNA(cs)) cs <- NULL
+    tn <- d7_fold_tail_probe(inner$name, U)
   }
   if (is.null(cs)) {
     if (order == 2L) {
@@ -120,7 +125,7 @@ folded_expected <- function(distrib, y, theta, order) {
       vals[u, ] <- vapply(keys, function(k) ref[[k]][1L], numeric(1))
       next
     }
-    rule <- fold_rule_cpp(cs[u, 1], cs[u, 2])
+    rule <- fold_rule_cpp(cs[u, 1], cs[u, 2], tn[u])
     yv <- rule$y
     thu <- lapply(seq_len(p), function(j) rep(U[u, j], length(yv)))
     names(thu) <- P

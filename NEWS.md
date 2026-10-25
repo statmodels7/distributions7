@@ -1,3 +1,43 @@
+# distributions7 0.88.1
+
+* The expected information of pig1 and pig2 and its first and second
+  derivatives no longer sum over the support where a closed route exists:
+  they read the routes the third and fourth derivatives use (pig1 from
+  E_sigma,sigma by its series in sigma and its expansion in 1/mu at fixed
+  sigma mu; pig2's E_mu,mu and E_mu,alpha in closed form and its alpha block
+  by a series in 1/alpha). The sum cost from 0.2 to 1.8 s per observation at
+  mu = 1e6, so a fit on counts of 1e5 or more did not finish. pig1 also has
+  an expansion in 1/mu at fixed sigma, S = sum_p mu^-p G_p(sigma) with
+  G_p Laurent polynomials in sigma (p <= 20, adaptive truncation), used where
+  the other two routes decline: it covers mu above about max(1e3, 1e4 sigma)
+  at any sigma, within 2e-15 of the largest component of each order.
+* lognormal2's observed second derivatives (`distrib_hessian()`,
+  `distrib_grad_y_hess()`, `distrib_hess_y_hess()`) are written in the
+  partials of log(1 + v/m^2) as monomials in v/m^2 and 1/(1 + v/m^2), and
+  log(y/m) is taken by `log1p()` near y = m. The expanded forms lost up to
+  3e-7 relative to the largest component at v/m^2 = 1e-8; the repaired ones
+  are within 1e-15.
+* negbin1's expected information and its derivatives to order four take an
+  expansion in powers of 1/mu wherever mu >= 50 and mu/theta >= 100. The
+  support sums were capped at 1e6 terms and lost digits in proportion to mu:
+  at theta below 0.3 the results were wrong by 1e-3 to O(1) from mu = 1e5
+  (order four) and at every order from mu = 1e6. The expansion is within
+  1e-15 of the largest component of the order, at about a microsecond per
+  observation.
+* `folded()` and `truncated()` over the skew t and over `student_t1` add the
+  skew t's nine anchor nodes past the last node of the rule when nu < 1, so
+  that the tail |z|^-(1 + nu) is integrated; the expected information was off
+  by 4.6e-2 of its largest entry at nu = 0.05 and 1.7e-4 at nu = 0.1. The
+  orders two to four of a truncated skew t or `student_t1`, and the
+  derivatives of log Z beyond order four, are expectations on the same rule
+  (`trunc_rule_expectation()`), where the adaptive quadrature missed the
+  tail or did not converge.
+* The skew t's location-scale quadrature forms the density at |z| > 10 with
+  the power of |z| taken directly (`loc_scale_pdf()`), where exp(log f)
+  carried a relative error of the unit roundoff times |log f|; the fourth
+  derivative of the expected information at nu = 0.05 goes from 6.3e-8 to
+  4e-9 on its worst component.
+
 # distributions7 0.88.0
 
 * `distrib_d3expected_hessian()` and `distrib_d4expected_hessian()` have a

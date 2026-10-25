@@ -87,7 +87,7 @@ loc_scale_expected <- function(distrib, theta, order, n, threads = 1L) {
   th <- c(list(rep(0, N * m), rep(1, N * m)),
           lapply(seq_along(shp), function(j) rep(U[, j], each = N)))
   names(th) <- params
-  fw <- distrib_pdf(distrib, yy, th) * loc_scale_weights(distrib, U, rule)
+  fw <- loc_scale_pdf(distrib, yy, th) * loc_scale_weights(distrib, U, rule)
   live <- fw != 0
 
   H <- distrib_hessian(distrib, yy, th, threads = threads)
@@ -179,6 +179,52 @@ loc_scale_center <- function(distrib, U) {
   if (!S7::S7_inherits(distrib, SkewNormal2Distrib)) return(rep(0, nrow(U)))
   g <- U[, 1L]
   -sign(g) * (2 * abs(g) / (4 - pi))^(1 / 3)
+}
+
+#' The Density at the Nodes of the Location-Scale Rule
+#'
+#' @description
+#' Returns the density at the nodes of the rule. For every family but the skew
+#' t this is [distrib_pdf()]. For a skew t with \eqn{\nu \le 10} at
+#' \eqn{|z| > 10} the density is formed as a product,
+#' \deqn{f(z) = \frac{2}{\sigma}\, C\, \nu^{(\nu+1)/2}\, |z|^{-\nu}\, |z|^{-1}\,
+#'   (1 + \nu/z^2)^{-(\nu+1)/2}\, T_{\nu+1}(w),}
+#' with \eqn{C = \Gamma((\nu+1)/2) / (\sqrt{\nu\pi}\,\Gamma(\nu/2))} and
+#' \eqn{w} as in [distrib_pdf()]. The power of \eqn{|z|} is taken directly,
+#' so that the relative error of the density does not grow with
+#' \eqn{|\log f|}, which the exponential of the logarithm does at about the
+#' unit roundoff times \eqn{|\log f|}.
+#'
+#' @param distrib A distribution object of a location-scale family.
+#' @param y The nodes, shifted by the center of the rule.
+#' @param th The parameters at each node, a named list.
+#'
+#' @return A numeric vector.
+#'
+#' @keywords internal
+loc_scale_pdf <- function(distrib, y, th) {
+  f <- distrib_pdf(distrib, y, th)
+  if (!S7::S7_inherits(distrib, SkewTDistrib)) return(f)
+  n <- length(y)
+  sigma <- rep_len(th[[2L]], n)
+  nu <- rep_len(th[[4L]], n)
+  z <- (y - rep_len(th[[1L]], n)) / sigma
+  far <- abs(z) > 10 & nu <= 10
+  if (!any(far)) return(f)
+  zf <- z[far]
+  nf <- nu[far]
+  w <- rep_len(th[[3L]], n)[far] * zf * sqrt((nf + 1) / (nf + zf^2))
+  big <- abs(zf) > 1e20
+  if (any(big)) {
+    rs <- abs(zf[big]) * sqrt(1 + nf[big] / (zf[big] * zf[big]))
+    w[big] <- rep_len(th[[3L]], n)[far][big] * sqrt(nf[big] + 1) * (zf[big] / rs)
+  }
+  lk <- log(2) + lgamma((nf + 1) / 2) - lgamma(nf / 2) - 0.5 * log(pi * nf) +
+    (nf + 1) / 2 * log(nf)
+  e <- lk - (nf + 1) / 2 * log1p(nf / (zf * zf)) +
+    stats::pt(w, df = nf + 1, log.p = TRUE)
+  f[far] <- exp(e) * abs(zf)^(-nf) / abs(zf) / sigma[far]
+  f
 }
 
 #' The Nodes of the Location-Scale Rule for a Family

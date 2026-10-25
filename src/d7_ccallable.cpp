@@ -359,6 +359,23 @@ void fold_score_curv(int inner, int k, double y, const double* full,
     out[1] = d7::fold_curv(W.w, ghp[0], ghm[0], ghp[1], ghm[1]);
 }
 
+// the degrees of freedom of a parent whose density has the polynomial tail
+// |z|^-(1+nu) log^k|z| (the skew t and student_t1, through fixed()), or NaN
+// for any other parent: fold_rule() adds the anchor nodes of the skew t's
+// tail correction for it
+double fold_tail_nu(int inner, const double* th) {
+    if (inner >= kWrapBase) {
+        const WrapNode& w = node_of(inner);
+        if (w.code != 1) return R_NaN;
+        double full[kMaxVec];
+        fixed_inner(w.inner, w.aux, 0, th, full);
+        return fold_tail_nu(w.inner, full);
+    }
+    if (inner == 35) return th[3];
+    if (inner == 23) return th[2];
+    return R_NaN;
+}
+
 // The nodes and weights of folded()'s quadrature over y in (0, Inf), for a
 // parent centered at c with scale s: a tanh-sinh rule on [0, |c|], whose
 // nodes cluster at both ends -- at zero, where the weight f(y)/(f(y) +
@@ -366,8 +383,12 @@ void fold_score_curv(int inner, int k, double y, const double* full,
 // where the mass is and where a parent with a kink at its center puts it --
 // and the exp-sinh rule of pt_loc_scale.h scaled by s on [|c|, Inf). Both
 // have step 1/32; the tanh-sinh nodes run until their distance to an end
-// falls below 1e-17 of the interval.
-void fold_rule(double c, double s, std::vector<double>& y,
+// falls below 1e-17 of the interval. For a parent with the tail of the skew t
+// at nu < 1 (`nu` finite) the nine anchor nodes of pt_skewt.h are appended on
+// the positive side, at a + s z_i with the weights s Omega_i(nu), which carry
+// the integral past the last exp-sinh node (|z| = 1e60), where the tail
+// |z|^-(1+nu) is not negligible.
+void fold_rule(double c, double s, double nu, std::vector<double>& y,
                std::vector<double>& w) {
     y.clear();
     w.clear();
@@ -392,6 +413,14 @@ void fold_rule(double c, double s, std::vector<double>& y,
     for (int j = R.n / 2; j < R.n; ++j) {
         y.push_back(a + s * R.x[j]);
         w.push_back(s * R.w[j]);
+    }
+    if (R_FINITE(nu) && nu < 1.0) {
+        double om[d7::kSkewtAnchors];
+        d7::skewt_tail_omega(nu, om);
+        for (int i = 0; i < d7::kSkewtAnchors; ++i) {
+            y.push_back(a + s * d7::skewt_anchor(i));
+            w.push_back(s * om[i]);
+        }
     }
 }
 
@@ -424,7 +453,7 @@ void fold_info_dinfo(int inner, int k, const double* full, double* out) {
         return;
     }
     std::vector<double> ys, ws;
-    fold_rule(c, s, ys, ws);
+    fold_rule(c, s, fold_tail_nu(inner, full), ys, ws);
     long double a0 = 0.0L, a1 = 0.0L;
     for (std::size_t j = 0; j < ys.size(); ++j) {
         const double y = ys[j];
@@ -1380,7 +1409,8 @@ void mapped_rule(int id, const double* th, double a, double b,
     cont_center_scale(id, th, &c, &s);
     const int mp = cont_map(id, th);
     if (mp == 0) {
-        d7::trunc_rule(a, b, c, s, kk, nk, y, w);
+        d7::trunc_rule(a, b, c, s, kk, nk, y, w, d7::kTsStep, d7::kDoublings,
+                       fold_tail_nu(id, th));
         return;
     }
     auto fwd = [mp](double x) {
@@ -1980,7 +2010,7 @@ void fold_joint_info(int inner, const double* th, int P, double* e, double* d) {
         return;
     }
     std::vector<double> ys, ws;
-    fold_rule(c, s, ys, ws);
+    fold_rule(c, s, fold_tail_nu(inner, th), ys, ws);
     long double S[kJointMax2], D[kJointMax3];
     for (int j = 0; j < PP; ++j) S[j] = 0.0L;
     if (d != nullptr) for (int j = 0; j < PPP; ++j) D[j] = 0.0L;
@@ -3067,6 +3097,24 @@ Rcpp::NumericMatrix d7_center_scale_probe(std::string cls,
     return out;
 }
 
+// the tail degrees of freedom fold_rule() reads, one row per observation, NA
+// where the parent has no such tail
+// [[Rcpp::export]]
+Rcpp::NumericVector d7_fold_tail_probe(std::string cls,
+                                       Rcpp::NumericMatrix theta) {
+    int id = d7_scalar_id(cls.c_str());
+    int n = theta.nrow(), np = theta.ncol();
+    Rcpp::NumericVector out(n, NA_REAL);
+    std::vector<double> th(np);
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        if (id < 0 || (id >= kWrapBase && !node_valid(id))) continue;
+        const double v = fold_tail_nu(id, th.data());
+        if (R_FINITE(v)) out[i] = v;
+    }
+    return out;
+}
+
 // trunc_disc_rule() for trunc_route_parts() in R, one row of theta per
 // observation (the truncated family's parameters, the parent's constants,
 // lower and upper), as the route of the truncated family names them; `info`
@@ -3319,11 +3367,14 @@ Rcpp::List cdf_rule_cpp(std::string cls, Rcpp::NumericVector q,
                               Rcpp::_["head_logE"] = Rcpp::wrap(hle));
 }
 
-// fold_rule() for folded_expected() in R, which reads the same nodes
+// fold_rule() for folded_expected() in R, which reads the same nodes; `nu` is
+// the degrees of freedom of a skew t or student_t1 parent
+// (d7_fold_tail_probe()), NA for any
+// other parent
 // [[Rcpp::export]]
-Rcpp::List fold_rule_cpp(double c, double s) {
+Rcpp::List fold_rule_cpp(double c, double s, double nu) {
     std::vector<double> y, w;
-    fold_rule(c, s, y, w);
+    fold_rule(c, s, nu, y, w);
     return Rcpp::List::create(Rcpp::_["y"] = Rcpp::wrap(y),
                               Rcpp::_["w"] = Rcpp::wrap(w));
 }

@@ -589,6 +589,10 @@ d7_center_scale_probe <- function(cls, theta) {
     .Call(`_distributions7_d7_center_scale_probe`, cls, theta)
 }
 
+d7_fold_tail_probe <- function(cls, theta) {
+    .Call(`_distributions7_d7_fold_tail_probe`, cls, theta)
+}
+
 trunc_rule_cpp <- function(cls, theta, info) {
     .Call(`_distributions7_trunc_rule_cpp`, cls, theta, info)
 }
@@ -629,8 +633,8 @@ cdf_rule_cpp <- function(cls, q, theta) {
     .Call(`_distributions7_cdf_rule_cpp`, cls, q, theta)
 }
 
-fold_rule_cpp <- function(c, s) {
-    .Call(`_distributions7_fold_rule_cpp`, c, s)
+fold_rule_cpp <- function(c, s, nu) {
+    .Call(`_distributions7_fold_rule_cpp`, c, s, nu)
 }
 
 d7_scalar_thread_safe_probe <- function(cls) {

@@ -7,6 +7,8 @@
 #include <vector>
 #include "pt_sqrt.h"
 #include "pt_pig_rows.h"
+#include "pt_pig1_expected_fast.h"
+#include "pt_pig2_aa.h"
 using namespace Rcpp;
 using d7pigrow::pig1_row;
 using d7pigrow::pig2_row;
@@ -624,6 +626,30 @@ static bool pig_expected_obs(double m, double p2, double arg, double tail,
 }
 
 
+// pig2 away from the Poisson limit, without a sum over the support: E_mu_mu = -1/mu + 1/sqrt(mu^2 +
+// alpha^2) and E_mu_alpha = 0 in closed form, and E_alpha_alpha and its derivatives from the series in
+// 1/alpha or its rows at fixed mu/alpha (pt_pig2_aa.h, the routes of src/d34e_pig2.cpp). Fills the
+// arrays in the layouts of pig_expected_run (E[3], D1[6] or D2[9] by ORDER) and returns false where the
+// series is not accepted.
+template <int ORDER>
+static bool pig2_expected_fast(double m, double al, double* E, double* D1, double* D2) {
+    double a[ORDER + 1], g[ORDER + 1];
+    if (!(pig2_aa::aa_series<ORDER>(m, al, a) || pig2_aa::aa_rows<ORDER>(m, al, a))) return false;
+    pig2_aa::pig2_mm_orders(ORDER, m, al, g);
+    if constexpr (ORDER == 0) {
+        E[0] = g[0]; E[1] = a[0]; E[2] = 0.0;
+    } else if constexpr (ORDER == 1) {
+        D1[0] = g[0]; D1[1] = g[1]; D1[2] = a[0]; D1[3] = a[1]; D1[4] = 0.0; D1[5] = 0.0;
+    } else {
+        // g[j] and a[j] carry j derivatives in alpha; the layout is o[3 p + t] with p = (mu_mu,
+        // alpha_alpha, mu_alpha) and t = (mu,mu), (alpha,alpha), (mu,alpha)
+        D2[0] = g[0]; D2[1] = g[2]; D2[2] = g[1];
+        D2[3] = a[0]; D2[4] = a[2]; D2[5] = a[1];
+        D2[6] = 0.0; D2[7] = 0.0; D2[8] = 0.0;
+    }
+    return true;
+}
+
 template <int ORDER, class Row>
 static List pig_expected_run(NumericVector y, NumericVector mu,
                              NumericVector p2, int threads,
@@ -659,15 +685,31 @@ static List pig_expected_run(NumericVector y, NumericVector mu,
                 else pig2_asym2(m, xs, D2);
             }
         } else if (ok) {
+            // away from the Poisson limit the closed forms and series that the third and fourth
+            // derivatives use come first (pt_pig1_expected_fast.h, pt_pig2_aa.h); the sum over the
+            // support, whose cost grows with mu, runs where they do not apply
+            bool fast = false;
             if (pig1) {
-                double w = 0.5 * x / d7::sqrt_cr(1.0 + 2.0 * x * m);
-                ok = pig_expected_obs<ORDER, PigSeqW>(m, x, w, 2.0 * x * m,
-                                                      row, E, D1, D2);
+                double o[9];
+                fast = pig_map::pig1_expected_fast<ORDER>(m, x, o);
+                if (fast) {
+                    double* dst = (ORDER == 0) ? E : ((ORDER == 1) ? D1 : D2);
+                    for (int j = 0; j < no; ++j) dst[j] = o[j];
+                }
             } else {
-                double t = m / x;
-                double b = x / (t + std::hypot(1.0, t));   // 1/sigma
-                ok = pig_expected_obs<ORDER, PigSeq>(m, x, x, 2.0 * m / b,
-                                                     row, E, D1, D2);
+                fast = pig2_expected_fast<ORDER>(m, x, E, D1, D2);
+            }
+            if (!fast) {
+                if (pig1) {
+                    double w = 0.5 * x / d7::sqrt_cr(1.0 + 2.0 * x * m);
+                    ok = pig_expected_obs<ORDER, PigSeqW>(m, x, w, 2.0 * x * m,
+                                                          row, E, D1, D2);
+                } else {
+                    double t = m / x;
+                    double b = x / (t + std::hypot(1.0, t));   // 1/sigma
+                    ok = pig_expected_obs<ORDER, PigSeq>(m, x, x, 2.0 * m / b,
+                                                         row, E, D1, D2);
+                }
             }
         }
         double* src = (order == 0) ? E : ((order == 1) ? D1 : D2);

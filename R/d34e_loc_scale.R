@@ -81,7 +81,7 @@ loc_scale_d34expected <- function(distrib, theta, order, n, threads = 1L) {
   th <- c(list(rep(0, N * m), rep(1, N * m)),
           lapply(seq_along(shp), function(j) rep(U[, j], each = N)))
   names(th) <- params
-  fw <- distrib_pdf(distrib, yy, th) * loc_scale_weights(distrib, U, rule)
+  fw <- loc_scale_pdf(distrib, yy, th) * loc_scale_weights(distrib, U, rule)
   live <- fw != 0
 
   # the derivatives of the log-density at the nodes, parameter scale; the

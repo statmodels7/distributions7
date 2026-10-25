@@ -66,6 +66,7 @@ folded_d34expected <- function(d, y, th, k, t = 1L) {
     idx <- match(key, key[first])
     cs <- d7_center_scale_probe(inner$name, U)
     if (anyNA(cs)) cs <- NULL
+    tn <- d7_fold_tail_probe(inner$name, U)
   }
   if (is.null(cs) || !all(param_smoothness(d)[P])) {
     return(unclass(numerical_dexpected_higher(d, y, th, "parameter", k)))
@@ -91,7 +92,7 @@ folded_d34expected <- function(d, y, th, k, t = 1L) {
       vals[u, ] <- vapply(keys, function(key) ref[[key]][1L], numeric(1))
       next
     }
-    rule <- fold_rule_cpp(cs[u, 1], cs[u, 2])
+    rule <- fold_rule_cpp(cs[u, 1], cs[u, 2], tn[u])
     yv <- rule$y
     thu <- lapply(seq_len(p), function(j) rep(U[u, j], length(yv)))
     names(thu) <- P

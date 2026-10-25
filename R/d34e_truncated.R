@@ -180,7 +180,7 @@ trunc_d34expected <- function(d, y, th, k, t = 1L) {
         names(L) <- names(bl)
         d34e_eval_plan(plan, L)
       }
-      val <- -do.call(expectation, c(list(d, f, th), zs))
+      val <- -do.call(trunc_expectation, c(list(d, f, th), zs))
       out[[do.call(keyfun, as.list(c(list(P, a, b), S)))]] <- rep_len(val, n)
     }
   }

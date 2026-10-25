@@ -38,43 +38,6 @@ inline Lognormal2GradientPar lognormal2_gradient_par(double m, double v) {
   return P;
 }
 
-struct Lognormal2HessianPar { double S, t0, t1, t2, t3, t4, t6, t9, t10, t11, t12, t13, t14, t15, t16; };
-
-inline Lognormal2HessianPar lognormal2_hessian_par(double m, double v) {
-  const double S = std::log1p(v / (m * m));
-  const double t0 = std::pow(m, 2);
-  const double t1 = 1.0/t0;
-  const double t2 = std::pow(S, -2);
-  const double t3 = 1.0/S;
-  const double t4 = 1.0/(t0 + v);
-  const double t6 = std::pow(S, -3);
-  const double t9 = t2*t4;
-  const double t10 = 4*t9;
-  const double t11 = 2*t0;
-  const double t12 = 1.0/(std::pow(m, 4) + t11*v + std::pow(v, 2));
-  const double t13 = (1.0/2.0)*t2;
-  const double t14 = 1.0/m;
-  const double t15 = t14*t9;
-  const double t16 = m*t12;
-  Lognormal2HessianPar P;
-  P.S = S;
-  P.t0 = t0;
-  P.t1 = t1;
-  P.t2 = t2;
-  P.t3 = t3;
-  P.t4 = t4;
-  P.t6 = t6;
-  P.t9 = t9;
-  P.t10 = t10;
-  P.t11 = t11;
-  P.t12 = t12;
-  P.t13 = t13;
-  P.t14 = t14;
-  P.t15 = t15;
-  P.t16 = t16;
-  return P;
-}
-
 inline double lognormal2_score_mean(const Lognormal2GradientPar& P, double C) {
   const double t0 = P.t0;
   const double t1 = P.t1;
@@ -94,30 +57,100 @@ inline double lognormal2_score_var(const Lognormal2GradientPar& P, double C) {
   return (1.0/8.0)*t3*(-4*t1 + 4*t5*t6 - 1);
 }
 
-inline double lognormal2_hess_mean_mean(const Lognormal2HessianPar& P, double C) {
-  const double t0 = P.t0;
-  const double t1 = P.t1;
-  const double t2 = P.t2;
-  const double t3 = P.t3;
-  const double t4 = P.t4;
-  const double t6 = P.t6;
-  const double t10 = P.t10;
-  const double t11 = P.t11;
-  const double t12 = P.t12;
-  const double t5 = std::pow(C, 2);
-  const double t7 = t5*t6;
-  const double t8 = 4*t7;
-  return 4*C*t1*t2 - C*t1*t3 - C*t10 + 2*t0*t12*t2 + 2*t0*t12*t3 - t0*t12*t8 + (1.0/2.0)*t0*t12 + t1*t2*t5 + 2*t1*t2 - 2*t1*t3 - t1*t8 - 3.0/4.0*t1 - t10 - t11*t12*t2*t5 + t2*t4*t5 - t3*t4 + 8*t4*t5*t6 - 1.0/4.0*t4;
+// The observed second derivatives, and the response derivatives that involve the
+// second parameter derivatives, in the variables r = v/m^2 and u = 1/(1 + r).
+// With l = F(S, C) - log y + const, F_S = (C^2 - S - S^2/4)/(2 S^2), F_C = -C/S - 1/2,
+// the partials of S are monomials in r and u,
+//   S_m = -2 r u/m,  S_v = u/m^2,  S_mm = 2 r (3 + r) u^2/m^2,
+//   S_mv = -2 u^2/m^3,  S_vv = -u^2/m^4,
+// so that no difference of nearly equal terms is formed when r is small (the
+// expanded closed forms lose a factor 1/r in S_m and S_mm, since m W - 1/m is
+// -v/(m (m^2 + v))). C = log(y/m) is taken by log1p((y - m)/m) near y = m.
+struct Lognormal2Base { double m, S, Sm, Sv, Smm, Smv, Svv, Cm, Cmm; };
+
+inline Lognormal2Base lognormal2_base(double m, double v) {
+  const double im = 1.0 / m, im2 = im * im;
+  const double r = v * im2, u = 1.0 / (1.0 + r);
+  Lognormal2Base B;
+  B.m = m;
+  B.S = std::log1p(r);
+  B.Sm = -2.0 * r * u * im;
+  B.Sv = u * im2;
+  B.Smm = 2.0 * r * (3.0 + r) * u * u * im2;
+  B.Smv = -2.0 * u * u * im2 * im;
+  B.Svv = -u * u * im2 * im2;
+  B.Cm = -im;
+  B.Cmm = im2;
+  return B;
 }
 
-inline double lognormal2_hess_var_var(const Lognormal2HessianPar& P, double C) {
-  const double t3 = P.t3;
-  const double t6 = P.t6;
-  const double t12 = P.t12;
-  const double t13 = P.t13;
-  const double t5 = std::pow(C, 2);
-  const double t7 = t5*t6;
-  return t12*(-t13*t5 + t13 + (1.0/2.0)*t3 - t7 + 1.0/8.0);
+// C = log(y/m): log1p near y = m, the difference of logarithms elsewhere
+// (as in lognormal2_obs.cpp).
+inline double lognormal2_logratio(double y, double m) {
+  return std::fabs(y - m) < 0.5 * m ? std::log1p((y - m) / m)
+                                    : std::log(y) - std::log(m);
+}
+
+inline double lognormal2_hess_mean_mean(const Lognormal2Base& B, double C) {
+  const double S = B.S, iS = 1.0 / S;
+  const double FS = 0.5 * (C * C - S - 0.25 * S * S) * iS * iS;
+  const double FSS = 0.5 * (S - 2.0 * C * C) * iS * iS * iS;
+  const double FC = -C * iS - 0.5;
+  return FSS * B.Sm * B.Sm + FS * B.Smm + 2.0 * (C * iS * iS) * B.Sm * B.Cm
+         - iS * B.Cm * B.Cm + FC * B.Cmm;
+}
+
+inline double lognormal2_hess_mean_var(const Lognormal2Base& B, double C) {
+  const double S = B.S, iS = 1.0 / S;
+  const double FS = 0.5 * (C * C - S - 0.25 * S * S) * iS * iS;
+  const double FSS = 0.5 * (S - 2.0 * C * C) * iS * iS * iS;
+  return FSS * B.Sm * B.Sv + FS * B.Smv + (C * iS * iS) * B.Cm * B.Sv;
+}
+
+inline double lognormal2_hess_var_var(const Lognormal2Base& B, double C) {
+  const double S = B.S, iS = 1.0 / S;
+  const double FS = 0.5 * (C * C - S - 0.25 * S * S) * iS * iS;
+  const double FSS = 0.5 * (S - 2.0 * C * C) * iS * iS * iS;
+  return FSS * B.Sv * B.Sv + FS * B.Svv;
+}
+
+// d^2/dy d theta l = (1/y) d_theta F_C, and d^2/dy^2 d theta l = (d_theta F_CC - d_theta F_C)/y^2
+inline double lognormal2_cross_y_mean(const Lognormal2Base& B, double y, double C) {
+  const double iS = 1.0 / B.S;
+  return (C * iS * iS * B.Sm - iS * B.Cm) / y;
+}
+inline double lognormal2_cross_y_var(const Lognormal2Base& B, double y, double C) {
+  const double iS = 1.0 / B.S;
+  return C * iS * iS * B.Sv / y;
+}
+inline double lognormal2_cross2_y_mean(const Lognormal2Base& B, double y, double C) {
+  const double iS = 1.0 / B.S;
+  return (iS * iS * B.Sm - (C * iS * iS * B.Sm - iS * B.Cm)) / (y * y);
+}
+inline double lognormal2_cross2_y_var(const Lognormal2Base& B, double y, double C) {
+  const double iS = 1.0 / B.S;
+  return (iS * iS * B.Sv - C * iS * iS * B.Sv) / (y * y);
+}
+
+// (1/y) d_a d_b F_C, with G = F_C: G_S = C/S^2, G_C = -1/S, G_SS = -2C/S^3, G_SC = 1/S^2.
+inline void lognormal2_grad_y_hess_all(const Lognormal2Base& B, double y, double C, double* o) {
+  const double iS = 1.0 / B.S, iS2 = iS * iS;
+  const double GS = C * iS2, GC = -iS, GSS = -2.0 * C * iS2 * iS, GSC = iS2;
+  o[0] = (GSS * B.Sm * B.Sm + GS * B.Smm + 2.0 * GSC * B.Sm * B.Cm + GC * B.Cmm) / y;
+  o[1] = (GSS * B.Sm * B.Sv + GS * B.Smv + GSC * B.Cm * B.Sv) / y;
+  o[2] = (GSS * B.Sv * B.Sv + GS * B.Svv) / y;
+}
+
+// (d_a d_b F_CC - d_a d_b F_C)/y^2, with F_CC = -1/S: H_S = 1/S^2, H_SS = -2/S^3.
+inline void lognormal2_hess_y_hess_all(const Lognormal2Base& B, double y, double C, double* o) {
+  const double iS = 1.0 / B.S, iS2 = iS * iS;
+  const double GS = C * iS2, GC = -iS, GSS = -2.0 * C * iS2 * iS, GSC = iS2;
+  const double HS = iS2, HSS = -2.0 * iS2 * iS;
+  const double y2 = y * y;
+  o[0] = (HSS * B.Sm * B.Sm + HS * B.Smm
+          - (GSS * B.Sm * B.Sm + GS * B.Smm + 2.0 * GSC * B.Sm * B.Cm + GC * B.Cmm)) / y2;
+  o[1] = (HSS * B.Sm * B.Sv + HS * B.Smv - (GSS * B.Sm * B.Sv + GS * B.Smv + GSC * B.Cm * B.Sv)) / y2;
+  o[2] = (HSS * B.Sv * B.Sv + HS * B.Svv - (GSS * B.Sv * B.Sv + GS * B.Svv)) / y2;
 }
 
 // E_ab = E[l_ab] on the parameter scale, components (mean_mean, var_var, mean_var).
@@ -252,13 +285,14 @@ inline void lognormal2_score_curv(int k, double y, const double* th,
   const double m = th[0], v = th[1];
   const double C = std::log(y / m);
   const Lognormal2GradientPar Pg = lognormal2_gradient_par(m, v);
-  const Lognormal2HessianPar Ph = lognormal2_hessian_par(m, v);
+  const Lognormal2Base B = lognormal2_base(m, v);
+  const double C1 = lognormal2_logratio(y, m);
   if (k == 0) {
     out[0] = lognormal2_score_mean(Pg, C);
-    out[1] = lognormal2_hess_mean_mean(Ph, C);
+    out[1] = lognormal2_hess_mean_mean(B, C1);
   } else {
     out[0] = lognormal2_score_var(Pg, C);
-    out[1] = lognormal2_hess_var_var(Ph, C);
+    out[1] = lognormal2_hess_var_var(B, C1);
   }
 }
 
@@ -277,26 +311,6 @@ inline void lognormal2_info_dinfo(int k, double y, const double* th,
   }
 }
 
-// Mixed components of the observed and the expected Hessian, and of the
-// derivatives of the expected Hessian, each copied from the kernel of
-// lognormal2.cpp that writes it (the line of the kernel in the comment).
-// The parameter-only quantities are read from the struct, as above.
-
-// lognormal2_hessian_cpp, o_mean_var
-inline double lognormal2_hess_mean_var(const Lognormal2HessianPar& P, double m, double C) {
-  const double t2 = P.t2;
-  const double t3 = P.t3;
-  const double t4 = P.t4;
-  const double t6 = P.t6;
-  const double t12 = P.t12;
-  const double t14 = P.t14;
-  const double t15 = P.t15;
-  const double t16 = P.t16;
-  const double t5 = std::pow(C, 2);
-  const double t7 = t5*t6;
-  return -C*t15 + m*t12*t2 + m*t12*t3 + (1.0/4.0)*m*t12 + 2*t14*t4*t5*t6 - t15 - t16*t2*t5 - 2*t16*t7;
-}
-
 // The routers of the joint registry, one per order: every component at one
 // observation, on the parameter scale. The Hessian and the expected
 // information fill a full 2 x 2 matrix and the derivative of the expected
@@ -312,11 +326,11 @@ inline void lognormal2_joint_grad(double y, const double* th, double* out) {
 
 inline void lognormal2_joint_hess(double y, const double* th, double* out) {
   const double m = th[0], v = th[1];
-  const double C = std::log(y / m);
-  const Lognormal2HessianPar Ph = lognormal2_hessian_par(m, v);
-  out[0] = lognormal2_hess_mean_mean(Ph, C);
-  out[3] = lognormal2_hess_var_var(Ph, C);
-  out[1] = out[2] = lognormal2_hess_mean_var(Ph, m, C);
+  const double C = lognormal2_logratio(y, m);
+  const Lognormal2Base B = lognormal2_base(m, v);
+  out[0] = lognormal2_hess_mean_mean(B, C);
+  out[3] = lognormal2_hess_var_var(B, C);
+  out[1] = out[2] = lognormal2_hess_mean_var(B, C);
 }
 
 inline void lognormal2_joint_info(double y, const double* th, double* out) {
