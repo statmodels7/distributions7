@@ -36,8 +36,8 @@ The method computes the logarithm of the tail beyond \eqn{|z|},
 tail from it as \eqn{\log(1 - e^{\cdot})} with \code{expm1()} or \code{log1p()}; the
 requested tail is returned on the log scale or exponentiated, so the method
 does not subtract from one for \code{lower.tail = FALSE} or for \code{log.p = TRUE}.
-The denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and
-zero beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches
+The denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \method 37.5} and
+zero beyond \eqn{x \method 38.5} in double precision, and \eqn{x} reaches
 that at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
 \eqn{\alpha = 0.995} it is 63.
 }

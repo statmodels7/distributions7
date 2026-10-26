@@ -550,10 +550,9 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' [distrib_hessian.BetaBinom1Distrib()], which comes from the direct sums for
 #' \eqn{\sigma < 0.1} and from the shapes above.
 #'
-#' `approx` and `nsim` are therefore ignored; every strategy returns the same
-#' three numbers. The compiled kernel is sequential: it evaluates the sum once
-#' for each run of consecutive observations that share their parameters, and
-#' `threads` is ignored.
+#'  The compiled kernel is sequential: it evaluates the sum once for each run
+#' of consecutive observations that share their parameters, and `threads` is
+#' ignored.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
 #' @param y A numeric vector of counts. Only its length is read, because the
@@ -563,10 +562,10 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #'   recycled. `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, because the expectation is an exact sum. It is
-#'   accepted so that the signature matches the generic's, where it selects
-#'   between `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-#' @param nsim Ignored here, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer. It is accepted so that the
 #'   signature matches the other derivative methods; this kernel is
@@ -594,14 +593,12 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' # entry does not vanish, so their estimates are asymptotically correlated.
 #' eh$mu_sigma[1]
 #'
-#' # The strategy argument has no effect, because the expectation is an exact
+#' # The method argument has no effect, because the expectation is an exact
 #' # sum.
-#' identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
-#'                                        nsim = 50))
+#' identical(eh, distrib_expected_hessian(d, 0:10, th, method = expect_mc(nsim = 50)))
 S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                    nsim = 10000, ...,
+                                                                    method = NULL, ...,
                                        threads = 1L) {
   betabinom_expected_hessian_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }

@@ -559,11 +559,9 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the expectation of the observed Hessian under the model,
 #' \eqn{\sum_{k=0}^{n} P(Y=k)\,\partial^2\ell/\partial\theta_i\partial\theta_j}
-#' evaluated at \eqn{y = k}. Because the family is discrete on
-#' \eqn{\{0, \dots, n\}}, this is an exact finite sum of at most \eqn{n+1}
-#' terms, so the answer is the expectation to machine precision. `approx` and
-#' `nsim` are therefore ignored: every strategy returns the same three
-#' numbers.
+#' evaluated at \eqn{y = k}. Because the family is discrete on \eqn{\{0, \dots,
+#' n\}}, this is an exact finite sum of at most \eqn{n+1} terms, so the answer
+#' is the expectation to machine precision.
 #'
 #' The mixed entry does not vanish, so the two shapes are not orthogonal and
 #' their estimates are asymptotically correlated.
@@ -576,10 +574,10 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, because the expectation is an exact sum. It is
-#'   accepted so that the signature matches the generic's, where it selects
-#'   between `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-#' @param nsim Ignored here, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, the number of threads that the
 #'   compiled kernel may use. Defaults to `1L`.
@@ -602,13 +600,11 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' w <- distrib_pdf(d, 0:10, th)
 #' vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 #'
-#' # The strategy argument is inert because the expectation is an exact sum.
-#' identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
-#'                                        nsim = 50))
+#' # The method argument is inert because the expectation is an exact sum.
+#' identical(eh, distrib_expected_hessian(d, 0:10, th, method = expect_mc(nsim = 50)))
 S7::method(distrib_expected_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
                                                                      scale = c("parameter", "link"),
-                                                                     approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                     nsim = 10000, ...,
+                                                                     method = NULL, ...,
                                                                      threads = 1L) {
   betabinom2_expected_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }
@@ -694,7 +690,7 @@ betabinom2_expected <- function(distrib, y, theta, order,
 #' ([betabinom_direct()]).
 #'
 #' With `expected = TRUE` the expectation is an exact finite sum over the
-#' support, so `approx` and `nsim` are ignored on both branches.
+#' support.
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
 #' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
@@ -707,9 +703,10 @@ betabinom2_expected <- function(distrib, y, theta, order,
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, because both branches are exact. It is accepted
-#'   so that the signature matches the generic's.
-#' @param nsim Ignored here, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `alpha_alpha_alpha`,
@@ -740,8 +737,7 @@ betabinom2_expected <- function(distrib, y, theta, order,
 #'       summed = vapply(d3, function(v) sum(w * v), numeric(1)))
 S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
+                                                           method = NULL, ...) {
   if (expected) {
     betabinom2_expected(distrib, y, theta, 3L)
   } else {
@@ -760,7 +756,7 @@ S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' \eqn{\log\Gamma}, and the direct sums where \eqn{\alpha+\beta > 10}.
 #'
 #' With `expected = TRUE` the expectation is an exact finite sum over the
-#' support, so `approx` and `nsim` are ignored on both branches.
+#' support.
 #'
 #' @param distrib A `BetaBinom2Distrib` object, from [betabinom2_distrib()].
 #' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
@@ -773,9 +769,10 @@ S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, because both branches are exact. It is accepted
-#'   so that the signature matches the generic's.
-#' @param nsim Ignored here, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors, `alpha_alpha_alpha_alpha`,
@@ -806,8 +803,7 @@ S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #'       summed = vapply(d4, function(v) sum(w * v), numeric(1)))
 S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
+                                                           method = NULL, ...) {
   if (expected) {
     betabinom2_expected(distrib, y, theta, 4L)
   } else {

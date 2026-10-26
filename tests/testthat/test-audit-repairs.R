@@ -94,9 +94,7 @@ test_that("a negative variance gives a NaN standard error, not zero", {
   Bad <- S7::new_class("Gaussian1BadInfo", parent = Gaussian1Distrib)
   S7::method(distrib_expected_hessian, Bad) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"),
-                                                      approx = c("opg", "bartlett",
-                                                                 "integrate", "mc"),
-                                                      nsim = 10000,
+                                                      method = NULL,
                                                       ...) {
     s <- theta[[2]]
     n <- length(y)
@@ -111,10 +109,14 @@ test_that("a negative variance gives a NaN standard error, not zero", {
              link_params = g@link_params, params_smooth = g@params_smooth)
   set.seed(3)
   f <- suppressWarnings(fit_distrib(bad, rnorm(40), method = optimizers7::bfgs()))
-  expect_true(f@vcov["sigma", "sigma"] < 0)
-  expect_true(is.nan(f@se[["sigma"]]))
-  expect_true(is.nan(f@se_eta[["sigma"]]))
-  expect_true(is.finite(f@se[["mu"]]) && f@se[["mu"]] > 0)
+  # the fit reports the observed information, which the subclass leaves alone;
+  # the wrong expected information is reached through the selection after the fit
+  r <- distributions7:::fit_report(f, expected_info())
+  expect_true(r$vcov["sigma", "sigma"] < 0)
+  expect_true(is.nan(r$se[["sigma"]]))
+  expect_true(is.nan(r$se_eta[["sigma"]]))
+  expect_true(is.finite(r$se[["mu"]]) && r$se[["mu"]] > 0)
+  expect_true(all(is.finite(f@se)) && all(f@se > 0))
 })
 
 test_that("log-cdf orders 3 and 4 build on the exact orders 1 and 2", {
@@ -652,7 +654,7 @@ test_that("the logistic expected third and fourth derivatives are closed form", 
                tolerance = 1e-14)
   # and the numerical route agrees
   num <- distributions7:::expected_derivative(d, 0, list(mu = 0.5, sigma = 0.7),
-                                              order = 4L, approx = "integrate")
+                                              order = 4L, method = expect_integrate())
   expect_equal(unlist(lapply(e4, `[`, 1)), unlist(num)[names(e4)], tolerance = 1e-8)
 })
 
@@ -825,7 +827,7 @@ test_that("the betabinom1 expected higher derivatives are exact sums", {
   th <- list(mu = 0.3, sigma = 0.2)
   w <- distrib_pdf(d, 0:10, th)
   o3 <- distrib_deriv3(d, 0:10, th)
-  e3 <- distrib_deriv3(d, 0, th, expected = TRUE, approx = "mc", nsim = 10)
+  e3 <- distrib_deriv3(d, 0, th, expected = TRUE)
   for (k in names(o3)) expect_rel(e3[[k]], sum(w * o3[[k]]), tolerance = 1e-13)
 })
 

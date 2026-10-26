@@ -152,19 +152,17 @@ gengamma_components <- function(y, theta, order) {
 #' them is computed by its own compiled kernel.
 #'
 #' @details
-#' With \eqn{k = d/p} and \eqn{U = p\log(y/a)}, the log-density is
-#' \deqn{\ell = \log p - \log y + kU - e^{U} - \log\Gamma(k),}
-#' and \eqn{e^{U} = (y/a)^p} is a gamma variable with shape \eqn{k} and unit
-#' rate. Every component is a closed form derived offline and written out: a
-#' polynomial in \eqn{U} and \eqn{e^{U}} whose coefficients depend
-#' only on \eqn{(d, p)}, multiplied by \eqn{a^{-r}} for \eqn{r} derivatives
-#' in \eqn{a}. The coefficients contain the polygamma functions at
-#' \eqn{k + 1}, through
-#' \eqn{\psi^{(n)}(k) = \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}}, so that the
-#' poles in \eqn{1/k} which the derivatives combine cancel in the closed form
-#' and not in floating point. The expected derivatives are polynomials in the
-#' central moments of \eqn{U}, whose cumulants are the polygamma functions at
-#' \eqn{k}; `approx` and `nsim` are not read.
+#' With \eqn{k = d/p} and \eqn{U = p\log(y/a)}, the log-density is \deqn{\ell =
+#' \log p - \log y + kU - e^{U} - \log\Gamma(k),} and \eqn{e^{U} = (y/a)^p} is
+#' a gamma variable with shape \eqn{k} and unit rate. Every component is a
+#' closed form derived offline and written out: a polynomial in \eqn{U} and
+#' \eqn{e^{U}} whose coefficients depend only on \eqn{(d, p)}, multiplied by
+#' \eqn{a^{-r}} for \eqn{r} derivatives in \eqn{a}. The coefficients contain
+#' the polygamma functions at \eqn{k + 1}, through \eqn{\psi^{(n)}(k) =
+#' \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}}, so that the poles in \eqn{1/k}
+#' which the derivatives combine cancel in the closed form and not in floating
+#' point. The expected derivatives are polynomials in the central moments of
+#' \eqn{U}, whose cumulants are the polygamma functions at \eqn{k};
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -175,8 +173,10 @@ gengamma_components <- function(y, theta, order) {
 #'   expectation under the model is returned. Defaults to `FALSE`.
 #' @param scale `"parameter"` or `"link"`; the link scale is applied by the
 #'   generic for orders three and four and by [deriv5_scale()] for order five.
-#' @param approx,nsim Accepted for the generic's signature; the expectations
-#'   are closed forms.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`. The result does not depend on the count.
@@ -210,8 +210,7 @@ gengamma_components <- function(y, theta, order) {
 S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          method = NULL, ..., threads = 1L) {
   if (expected) {
     gengamma1_deriv3_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   } else {
@@ -222,8 +221,7 @@ S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          method = NULL, ..., threads = 1L) {
   if (expected) {
     gengamma1_deriv4_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   } else {

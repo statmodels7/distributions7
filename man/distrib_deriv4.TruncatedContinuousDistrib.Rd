@@ -14,7 +14,7 @@ none.}
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
 truncated law.}
 
-\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
+\item{...}{Passed on, \code{method} among them.}
 }
 \value{
 A named list of fourth-derivative components, keyed

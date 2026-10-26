@@ -261,8 +261,8 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #' `pig1_deriv3_cpp`, which computes the third order alone.
 #'
 #' With `expected = TRUE` the value is an expectation instead, and there it is
-#' not closed form: the call routes to `expected_derivative()`, so `approx`
-#' and `nsim` are read.
+#' not closed form: the call routes to `expected_derivative()`, which takes the
+#' expectation by `method`, [expect_integrate()] when `method` is `NULL`.
 #'
 #' @param distrib A `Pig1Distrib` object, from [pig1_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -273,12 +273,12 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #'   derivatives at `y` are returned from the compiled kernel.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, the
-#'   strategy for the expectation. It is read only when `expected = TRUE`; for a
-#'   discrete family `"integrate"` is an exact sum over the support, not a
-#'   quadrature.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`.
@@ -305,16 +305,15 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #'                  distrib_hessian(d, y, list(mu = 3, sigma = 0.8 - eps))$mu_mu) /
 #'                 (2 * eps))
 #'
-#' # The expected version is not closed form and reads the strategy.
+#' # The expected version is not closed form and uses the default method.
 #' distrib_deriv3(d, 0:200, th, expected = TRUE)$mu_mu_mu[1]
 S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ..., threads = 1L) {
+                                                    method = NULL, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = match.arg(approx), nsim = nsim))
+                               method = method))
   }
   pig1_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -348,10 +347,12 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #'   derivatives at `y` are returned from the compiled kernel.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, read
-#'   only when `expected = TRUE`.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`.
@@ -388,11 +389,10 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ..., threads = 1L) {
+                                                    method = NULL, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = match.arg(approx), nsim = nsim))
+                               method = method))
   }
   pig1_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

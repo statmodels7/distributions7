@@ -443,8 +443,8 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #' \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0} by symmetry, and the rate entry
 #' equals its observed counterpart because that one carries no data.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
-#' ignored. `y` is read only for its length.
+#' Because the values do not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -453,12 +453,9 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #'   recycled. `lambda` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's. As for [laplace_distrib()], the
-#'   strategy `"mc"` of the generic, which averages the observed second
-#'   derivative over simulated draws, would give 0 in the location, while
-#'   `"opg"`, `"bartlett"` and `"integrate"` read the product of scores.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -497,7 +494,7 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #' # I(mu) is the same number, because the location is shared.
 #' -distrib_expected_hessian(laplace_distrib(), 0,
 #'                           list(mu = 0.4, sigma = 1 / 2))$mu_mu
-S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   laplace2_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -514,8 +511,7 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' where `mu_mu_mu`, `mu_mu_lambda` and `mu_lambda_lambda` are all zero.
 #'
 #' These derivatives do not depend on the data, so the observed and expected
-#' values coincide: `expected`, `approx` and `nsim` are accepted and have no
-#' effect.
+#' values coincide: `expected` is accepted and has no effect.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -526,8 +522,9 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #'   they are already their own expectations. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, for the same reason as `expected`.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_lambda`,
@@ -555,7 +552,7 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #'
 #' # expected = TRUE changes nothing, because the values carry no data.
 #' identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
-S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   lam <- theta[[2]]
   n <- length(y)
   zero <- rep(0, n)
@@ -577,8 +574,7 @@ S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expec
 #' \deqn{\dfrac{\partial^4 \ell}{\partial \lambda^4} = -\dfrac{6}{\lambda^4}.}
 #'
 #' These derivatives do not depend on the data, so the observed and expected
-#' values coincide: `expected`, `approx` and `nsim` are accepted and have no
-#' effect.
+#' values coincide: `expected` is accepted and has no effect.
 #'
 #' @param distrib A `Laplace2Distrib` object, from [laplace2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -588,8 +584,9 @@ S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expec
 #'   they are already their own expectations. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, for the same reason as `expected`.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
@@ -622,7 +619,7 @@ S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expec
 #' all.equal((up$lambda_lambda_lambda - dn$lambda_lambda_lambda) / (2 * eps),
 #'           distrib_deriv4(d, y, th)$lambda_lambda_lambda_lambda,
 #'           tolerance = 1e-6)
-S7::method(distrib_deriv4, Laplace2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, Laplace2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   lam <- theta[[2]]
   n <- length(y)
   zero <- rep(0, n)

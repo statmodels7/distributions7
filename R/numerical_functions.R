@@ -3,20 +3,66 @@
 # the handling of the support's endpoints, and the contract expectation()
 # offers its integrand.
 
+# The settings of the quadrature and of the series that the expectations use.
+# They are held in an environment because the engines below are reached through
+# the methods of expectation(), whose `...` belongs to the integrand; the
+# environment holds the ExpectIntegrate object of the call in progress, and
+# the defaults of that class apply when there is none.
+.integration_state <- new.env(parent = emptyenv())
+
+#' Set the Integration Settings of an Approximation
+#'
+#' @description
+#' Makes [quad_rows()] and [series_rows()] read their tolerances and limits
+#' from `method`, and returns the settings that were in force so that the
+#' caller can restore them with `on.exit()`.
+#'
+#' @param method An [ExpectIntegrate] object, or `NULL` for the defaults.
+#'
+#' @return The previous settings, invisibly: an [ExpectIntegrate] object or
+#'   `NULL`.
+#'
+#' @seealso [expect_integrate()], [integration_settings()]
+#' @keywords internal
+set_integration_settings <- function(method) {
+  old <- .integration_state$method
+  .integration_state$method <- method
+  invisible(old)
+}
+
+#' The Integration Settings in Force
+#'
+#' @description
+#' Returns the [ExpectIntegrate] object set by [set_integration_settings()],
+#' or an object with the default settings when none is set.
+#'
+#' @return An [ExpectIntegrate] object.
+#'
+#' @seealso [set_integration_settings()]
+#' @keywords internal
+integration_settings <- function() {
+  a <- .integration_state$method
+  if (is.null(a)) ExpectIntegrate() else a
+}
+
 #' Batched Quadrature with Rejection
 #'
 #' @description
 #' Calls [numericals7::quad_vec()], muffles its warning and
 #' returns the per-row integrals, `NA` where the accuracy was not
-#' reached. The calling function handles a failed row and reports it.
+#' reached. The calling function handles a failed row and reports it. The
+#' tolerance and the panel limit are those of the [ExpectIntegrate] object in
+#' force (see [expect_integrate()]).
 #'
 #' @param integrand The integrand, in the matrix convention of `quad_vec`.
 #' @param lower,upper Numeric vectors of panel endpoints.
 #' @return A numeric vector of integrals, `NA` for failed rows.
 #' @keywords internal
 quad_rows <- function(integrand, lower, upper) {
+  st <- integration_settings()
   withCallingHandlers(
-    numericals7::quad_vec(integrand, lower, upper),
+    numericals7::quad_vec(integrand, lower, upper, atol = st@quad_atol,
+                          rtol = st@quad_rtol, max_panels = st@max_panels),
     warning = function(w) {
       if (grepl("quad_vec", conditionMessage(w), fixed = TRUE)) {
         invokeRestart("muffleWarning")
@@ -62,7 +108,9 @@ discrete_support_sum <- function(term, from, to, n_rows) {
 #'
 #' @description
 #' Calls [numericals7::series_vec()], muffles its warning and
-#' promotes a row that did not converge to an error that names the row.
+#' promotes a row that did not converge to an error that names the row. The
+#' tolerances and the term limit are those of the [ExpectIntegrate] object in
+#' force (see [expect_integrate()]).
 #'
 #' @param term A function `term(k, i)` in the convention of `series_vec`.
 #' @param from The first summation index.
@@ -70,8 +118,11 @@ discrete_support_sum <- function(term, from, to, n_rows) {
 #' @return A numeric vector of sums, one per row.
 #' @keywords internal
 series_rows <- function(term, from, n_rows) {
+  st <- integration_settings()
   s <- withCallingHandlers(
-    numericals7::series_vec(term, n = n_rows, from = from),
+    numericals7::series_vec(term, n = n_rows, from = from,
+                            atol = st@series_atol, rtol = st@series_rtol,
+                            max_terms = st@max_terms),
     warning = function(w) {
       if (grepl("series_vec", conditionMessage(w), fixed = TRUE)) {
         invokeRestart("muffleWarning")

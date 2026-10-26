@@ -62,7 +62,16 @@ NULL
 #' @param scale `"parameter"` for \eqn{\partial/\partial\theta_c},
 #'   `"link"` for \eqn{\partial/\partial\eta_c} of the link-scale expected
 #'   information.
-#' @param approx,nsim Passed to [distrib_expected_hessian()].
+#' @param method `NULL` (the default) or an object inheriting from
+#'   [ExpectMethod]. With `NULL`, the closed form of the family is returned,
+#'   and a family without one signals an error. An object is always used, also
+#'   for a family that has the closed form, and returns the derivative of the
+#'   matrix that the method defines: for [expect_integrate()] and [expect_mc()]
+#'   the derivative of the expectation, which moves the density as well as the
+#'   integrand, and for [expect_opg()] the exact derivative of the outer
+#'   product of the scores at the data, which is minus
+#'   \eqn{\ell_{ac}\ell_b + \ell_a\ell_{bc}} per observation. See
+#'   [expected_derivative_methods].
 #' @param ... Passed to methods.
 #'
 #' @return A named list of numeric vectors, keyed as
@@ -79,11 +88,16 @@ NULL
 distrib_dexpected_hessian <- S7::new_generic(
   "distrib_dexpected_hessian", "distrib",
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000,
+           method = NULL,
            ...) {
     args <- check_derivative_args(distrib, y, theta)
+    check_method(method)
     y <- args$y
     theta <- args$theta
+    if (!is.null(method)) {
+      return(dexpected_by_method(distrib, y, theta, match.arg(scale), 1L,
+                                 method))
+    }
     S7::S7_dispatch()
   })
 
@@ -97,15 +111,15 @@ distrib_dexpected_hessian <- S7::new_generic(
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Either `"parameter"` or `"link"`.
-#' @param approx,nsim Passed through.
+#' @param method `NULL`: the generic handles an object before dispatching on
+#'   the family. See [expected_derivative_methods].
 #' @param ... Unused.
 #' @return A named list keyed as [dexpected_names()].
 #' @keywords internal
 S7::method(distrib_dexpected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
-  numerical_dexpected_hessian(distrib, y, theta, match.arg(scale),
-                              match.arg(approx), nsim)
+    method = NULL, ...) {
+  numerical_dexpected_hessian(distrib, y, theta, match.arg(scale), method)
 }
 
 
@@ -185,7 +199,7 @@ dexpected_key <- function(params, a, b, k) {
 #' On the parameter scale the step is chosen by [fd_stable_step()] from the
 #' candidates of [fd_steps()], which shrink near a finite boundary so that
 #' both evaluation points stay strictly inside the parameter's open domain;
-#' with `approx = "mc"` the step of [fd_steps()] is used directly. On the link
+#' with an [expect_mc()] method the step of [fd_steps()] is used directly. On the link
 #' scale the domain is the whole line, so the step needs no clamp and is the
 #' plain relative one.
 #'
@@ -199,7 +213,8 @@ dexpected_key <- function(params, a, b, k) {
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Either `"parameter"` or `"link"`.
-#' @param approx,nsim Passed to [distrib_expected_hessian()].
+#' @param method `NULL`, passed to [distrib_expected_hessian()]. See
+#'   [expected_derivative_methods].
 #' @param h_rel The relative step, a cube root of machine epsilon by default,
 #'   the value at which a central difference balances truncation against
 #'   rounding.
@@ -211,7 +226,7 @@ dexpected_key <- function(params, a, b, k) {
 #' @keywords internal
 numerical_dexpected_hessian <- function(distrib, y, theta,
                                         scale = c("parameter", "link"),
-                                        approx = "bartlett", nsim = 10000,
+                                        method = NULL,
                                         h_rel = numericals7::fd_step(1, 1L)) {
   scale <- match.arg(scale)
   if (!has_exact_expected_hessian(distrib)) {
@@ -235,12 +250,12 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
   # relative between two evaluations at one step, against 17.3 between the step
   # and its half. The step is therefore chosen only where the quantity being
   # differenced is deterministic.
-  choose_step <- !identical(approx, "mc")
+  choose_step <- !S7::S7_inherits(method, ExpectMC)
 
   for (k in seq_along(params)) {
     p <- params[k]
     E <- function(th) distrib_expected_hessian(distrib, y, th, scale = scale,
-                                               approx = approx, nsim = nsim)
+                                               method = method)
     # the point the difference is taken at, and the two points it is taken
     # between, on whichever scale the derivative was asked for
     if (link) {
@@ -319,8 +334,13 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
 #' @param theta A named list of parameters; each has length 1 or
 #'   `length(y)`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Accepted for symmetry with
-#'   [distrib_dexpected_hessian()]; the methods ignore them.
+#' @param method `NULL` (the default) or an object inheriting from
+#'   [ExpectMethod], as for [distrib_dexpected_hessian()]. An object returns
+#'   the second derivative of the matrix that the method defines; with
+#'   [expect_integrate()] or [expect_mc()] and `identity = "hessian"` it needs
+#'   observed derivatives of order 4, and [expect_opg()] returns the exact
+#'   second derivative of the outer product of the scores at the data. See
+#'   [expected_derivative_methods].
 #' @param ... Passed to methods.
 #'
 #' @return A named list of numeric vectors, keyed as
@@ -336,11 +356,16 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
 distrib_d2expected_hessian <- S7::new_generic(
   "distrib_d2expected_hessian", "distrib",
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000,
+           method = NULL,
            ...) {
     args <- check_derivative_args(distrib, y, theta)
+    check_method(method)
     y <- args$y
     theta <- args$theta
+    if (!is.null(method)) {
+      return(dexpected_by_method(distrib, y, theta, match.arg(scale), 2L,
+                                 method))
+    }
     S7::S7_dispatch()
   })
 
@@ -355,13 +380,14 @@ distrib_d2expected_hessian <- S7::new_generic(
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Either `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param method `NULL`: the generic handles an object before dispatching on
+#'   the family. See [expected_derivative_methods].
 #' @param ... Unused.
 #' @return Does not return.
 #' @keywords internal
 S7::method(distrib_d2expected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+    method = NULL, ...) {
   stop(sprintf(paste0(
     "'%s' has no analytic second derivative of its expected information,\n",
     "  and differencing the first would be a difference of a difference."),

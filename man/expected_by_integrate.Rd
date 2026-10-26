@@ -4,7 +4,7 @@
 \alias{expected_by_integrate}
 \title{Expected Derivatives by Numerical Integration}
 \usage{
-expected_by_integrate(distrib, y, theta, order)
+expected_by_integrate(distrib, y, theta, order, method = expect_integrate())
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
@@ -15,6 +15,10 @@ recycle the result: an expectation does not depend on the sample.}
 \item{theta}{A named list of parameters, aligned to \code{distrib@params}.}
 
 \item{order}{The derivative order, a single integer from 2 to 4.}
+
+\item{method}{An \link{ExpectIntegrate} object, whose tolerances and limits
+govern the quadrature and the series summation. The default is
+\code{\link[=expect_integrate]{expect_integrate()}}.}
 }
 \value{
 A named list of expected derivative component vectors; each has
@@ -23,18 +27,18 @@ uses at that order.
 }
 \description{
 Integrates each observed derivative component directly against the density
-through \code{\link[=expectation]{expectation()}}, component by component. It is deterministic and is
-normally the most accurate route where the observed derivative is available
-in closed form.
+through \code{\link[=expectation]{expectation()}}, component by component: the Hessian identity of
+\link{expected_derivative_methods}. It is deterministic and is normally the most
+accurate route where the observed derivative is available in closed form.
 }
 \details{
 The function estimates \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
 regular model that is the required quantity. For a family with a non-smooth
-parameter it is not: the observed \eqn{\ell_{ij}} has a point mass at the
-kink, which an integral of its pointwise values does not contain (on a
-Laplace the location component would be 0 instead of
-\eqn{-1/\sigma^2}). At order 2 such a family is therefore passed to
-\code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, which needs only the score.
+parameter it is not at order 2: the observed \eqn{\ell_{ij}} has a point
+mass at the kink, which an integral of its pointwise values does not contain
+(on a Laplace the location component would be 0 instead of
+\eqn{-1/\sigma^2}). The function signals an error there, and the score
+identity of \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} is the route that applies.
 
 Quadrature is also unreliable where the observed derivative is itself a
 finite difference, since it then integrates numerical noise. The function
@@ -43,7 +47,7 @@ at the alternatives, so that the caller receives a statement about the route
 rather than an opaque failure from the integrator.
 }
 \seealso{
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for the three strategies;
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for the methods;
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, the route that survives a kink;
 \code{\link[=expected_by_mc]{expected_by_mc()}} where quadrature performs poorly;
 \code{\link[=expectation]{expectation()}}, which does the integration.

@@ -18,10 +18,10 @@ model is returned in place of the observed value. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected value.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -34,11 +34,10 @@ A named list of one numeric vector, \code{mu_mu_mu_mu}, of length
 }
 \description{
 Computes the fourth derivative of the Bernoulli log-mass with respect to the
-probability, in closed form:
-\deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = -\dfrac{6y}{\mu^4} - \dfrac{6(1-y)}{(1-\mu)^4}.}
-With \code{expected = TRUE} the expectation is returned, obtained by substituting
-\eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-6/\mu^3 - 6/(1-\mu)^3}. Both
-routes are closed form, so \code{approx} and \code{nsim} are ignored.
+probability, in closed form: \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} =
+-\dfrac{6y}{\mu^4} - \dfrac{6(1-y)}{(1-\mu)^4}.} With \code{expected = TRUE} the
+expectation is returned, obtained by substituting \eqn{\mathbb{E}[Y] = \mu},
+which gives \eqn{-6/\mu^3 - 6/(1-\mu)^3}. Both routes are closed form.
 }
 \section{Notation}{
 

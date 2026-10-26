@@ -556,7 +556,6 @@ S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, s
 #' \eqn{4.4\times10^{-10}} at \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at
 #' \eqn{\alpha = 0.5}. See [distrib_hessian.SkewNormal1Distrib()] for why.
 #'
-#' `approx` and `nsim` are accepted for the generic's sake and ignored.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y A numeric vector of observations. Its length sets the length of
@@ -565,7 +564,10 @@ S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, s
 #'   numeric vector of length 1 or of the length of `y`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()].
-#' @param approx,nsim Ignored.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads The thread count passed to the family's kernels.
 #'
@@ -614,7 +616,7 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #'
 #' With `expected = TRUE` the value is an expectation, computed numerically by
 #' [expected_derivative()] from the same kind of integrals as the expected
-#' information. The arguments `approx` and `nsim` are used only in this case.
+#' information.
 #'
 #' @param distrib A `SkewNormal1Distrib` object, from [skewnormal1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` its values
@@ -624,17 +626,16 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #'   numeric vector of length 1 or of the length of `y`.
 #' @param expected Logical of length 1. When `FALSE`, the default, the observed
 #'   derivatives at `y` are returned from the compiled kernel. When `TRUE` the
-#'   expectation is approximated by the strategy in `approx`.
+#'   expectation is approximated as `method` states.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body, so this method always
 #'   returns the parameter scale.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, the
-#'   strategy for the expectation. It is read only when `expected = TRUE`; the first
-#'   is the default and integrates the observed kernel against the density by
-#'   quadrature.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. The other strategies do not read it. Defaults to
-#'   `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`. The result does not depend on the count.
@@ -671,15 +672,14 @@ register_loc_scale_expected(SkewNormal1Distrib)
 #' # which is exactly zero.
 #' distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 0))$mu_mu_mu
 #'
-#' # The expectation is numerical here, and the strategy is read.
+#' # The expectation is numerical here, and the method is read.
 #' set.seed(4)
 #' c(integrate = distrib_deriv3(d, 0, th, expected = TRUE)$alpha_alpha_alpha,
-#'   mc = distrib_deriv3(d, 0, th, expected = TRUE, approx = "mc",
-#'                       nsim = 2000)$alpha_alpha_alpha)
-S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+#'   mc = distrib_deriv3(d, 0, th, expected = TRUE, method = expect_mc(nsim = 2000))$alpha_alpha_alpha)
+S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     skewnormal_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
@@ -709,10 +709,12 @@ S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #'   derivatives at `y` are returned from the compiled kernel.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, read
-#'   only when `expected = TRUE`.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`. The result does not depend on the count.
@@ -746,10 +748,10 @@ S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' # The result is bit for bit independent of the thread count.
 #' identical(distrib_deriv4(d, y, th, threads = 1L),
 #'           distrib_deriv4(d, y, th, threads = 2L))
-S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     skewnormal_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }

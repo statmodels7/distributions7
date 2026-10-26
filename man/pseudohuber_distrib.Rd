@@ -51,7 +51,7 @@ The density on \eqn{y \in (-\infty, \infty)} is
       \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),}
 with \eqn{K_1} the modified Bessel function of the second kind. The exponent
 is quadratic in the residual near the location, where
-\eqn{\sqrt{\nu + z^2} \approx \sqrt{\nu} + z^2/(2\sqrt{\nu})}, and linear
+\eqn{\sqrt{\nu + z^2} \method \sqrt{\nu} + z^2/(2\sqrt{\nu})}, and linear
 far from it, where it is \eqn{|z|}. That is the pseudo-Huber loss, and this
 family is its exponential.
 

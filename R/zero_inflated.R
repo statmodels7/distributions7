@@ -812,10 +812,10 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
 #' The blocks of the wrapper are exact combinations of the parent's mass, score
 #' and observed Hessian at zero and of the parent's expected Hessian, an
 #' expectation over the whole support from which the single point at zero is
-#' subtracted in closed form. `approx` and `nsim` are forwarded to the parent's
-#' [distrib_expected_hessian()] and take effect only where the parent has no
-#' closed form, so the result is exact exactly when the parent's is, as
-#' [expected_hessian_exact()] reports.
+#' subtracted in closed form. `method` is `NULL` in this method and is
+#' forwarded as such to the parent's [distrib_expected_hessian()], which
+#' returns its closed form where it has one, so the result is exact exactly
+#' when the parent's is, as [expected_hessian_exact()] reports.
 #'
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param y A numeric vector of observations. Only its length is used when the
@@ -825,12 +825,10 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
 #' @param theta A named list with the parent's parameters followed by `zi`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Forwarded to the parent's `distrib_expected_hessian()`, and
-#'   read only where the parent has no closed form for it; every other block
-#'   is an exact combination of the parent's density, score and observed Hessian
-#'   at zero. [expected_hessian_exact()] returns, for this class, the value that
-#'   it returns for the parent.
-#' @param nsim Forwarded for the same reason and under the same condition.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, keyed as
@@ -868,7 +866,7 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
 #' Hs <- distrib_hessian(d, sup, theta)
 #' rbind(summed = vapply(Hs, function(z) sum(z * m), numeric(1)),
 #'       closed = vapply(EH, function(z) z[1], numeric(1)))
-S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
   zi <- pars$mix
@@ -884,7 +882,7 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig,
-                                         approx = approx, nsim = nsim)
+                                         method = method)
   pairs <- hess_pairs(names(pars$orig))
 
   res <- list()

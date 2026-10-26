@@ -56,14 +56,21 @@ test_that("laplace fit works despite the degenerate observed Hessian in mu", {
   expect_equal(unname(coef(f)["sigma"]), mean(abs(y - coef(f)[["mu"]])), tolerance = 1e-4)
   # the location is at (essentially) the sample median
   expect_equal(unname(coef(f)["mu"]), median(y), tolerance = 0.05)
-  expect_true(all(f@se > 0))
+  # the observed Hessian in mu is zero, and the location has a kink, so the
+  # default information is the expected one and the standard errors are finite
+  expect_true(all(is.finite(f@se)) && all(f@se > 0))
+  V <- vcov(f)
+  expect_true(all(is.finite(V)) && all(diag(V) > 0))
+  expect_identical(V, vcov(f, information = expected_info()))
+  # the observed information, asked for by name, is singular in mu
+  expect_true(all(is.na(vcov(f, information = observed_info()))))
 })
 
 test_that("all optimization methods agree", {
   set.seed(3)
   d <- gaussian1_distrib()
   y <- distrib_rng(d, 800, list(mu = 1, sigma = 2))
-  fits <- lapply(c("fisher", "newton", "bfgs"), function(m) {
+  fits <- lapply(named_methods(), function(m) {
     fit_distrib(d, y, start = list(mu = 0, sigma = 1), method = m)
   })
   for (f in fits) expect_true(f@converged)
@@ -183,7 +190,7 @@ test_that("the three named strategies agree with each other and the closed form"
   y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
   st <- list(mu = 0, sigma = 1)
 
-  fits <- lapply(c("fisher", "newton", "bfgs"),
+  fits <- lapply(named_methods(),
                  function(m) fit_distrib(d, y, start = st, method = m))
   for (f in fits) expect_true(f@converged, info = fit_report(f, d, y))
 

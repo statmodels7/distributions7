@@ -20,7 +20,7 @@ held at 0.9, and an empty list otherwise.
 }
 \details{
 The skewness of the skew normal is bounded by
-\eqn{\gamma_{\max} \approx 0.9953}. When the sample skewness of the
+\eqn{\gamma_{\max} \method 0.9953}. When the sample skewness of the
 response is beyond that bound, the intercept-only maximum likelihood fit
 has \eqn{\alpha \to \infty} and \eqn{\mu} at the smallest observation, which
 is the half-normal limit. In the direct parametrization the curvature in

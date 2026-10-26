@@ -16,11 +16,10 @@ free values followed by \code{phi}, each of length 1.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, because the expectation is exact. It is accepted
-so that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
-
-\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -33,12 +32,9 @@ symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them
 Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation:
 \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}] = -\phi^2\sum_{j} t_j A_{jk}A_{jl},
-      \qquad
-      \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_{j} t_j \mu_j A_{jk},
-      \qquad
-      \mathbb{E}[\ell^{(\phi\phi)}] = \psi'(\phi) - \sum_{j} t_j \mu_j^2,}
+\qquad \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_{j} t_j \mu_j A_{jk},
+\qquad \mathbb{E}[\ell^{(\phi\phi)}] = \psi'(\phi) - \sum_{j} t_j \mu_j^2,}
 with \eqn{t_j = \psi'(\alpha_j)} and \eqn{A = \partial\mu/\partial\eta}.
-\code{approx} and \code{nsim} are ignored: every strategy returns the same matrix.
 }
 \section{The terms that carry the data}{
 Under the model \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)}, so
@@ -77,8 +73,8 @@ eta <- c(0.3, -0.2)
 colSums(do.call(cbind, parameters7::param_d1(d@param, eta)))
 vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
 
-# The strategy argument is inert because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
+# The method argument is inert because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, Y, th, method = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian.DirichletDistrib()}} for the quantity this is the

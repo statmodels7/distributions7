@@ -21,7 +21,7 @@ The closed form is \eqn{E[Y] = \mu + \sigma b \delta}, with
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 location is not the mean unless the shape is zero: a positive shape pulls
 the mass to the right and the mean with it, by at most
-\eqn{\sigma\sqrt{2/\pi} \approx 0.7979\sigma}.
+\eqn{\sigma\sqrt{2/\pi} \method 0.7979\sigma}.
 }
 \section{Notation}{
 

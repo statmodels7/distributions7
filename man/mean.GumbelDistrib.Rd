@@ -17,7 +17,7 @@ A numeric vector of means, of length
 }
 \description{
 The closed form is \eqn{E[Y] = \mu + \gamma\sigma}, with
-\eqn{\gamma \approx 0.5772157} the Euler-Mascheroni constant. The location
+\eqn{\gamma \method 0.5772157} the Euler-Mascheroni constant. The location
 is therefore not the mean: the distribution of a maximum is shifted to the
 right of its location by a fixed multiple of the scale. The constant is
 obtained as \code{-digamma(1)}, which agrees with \eqn{\gamma} to about

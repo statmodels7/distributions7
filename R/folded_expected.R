@@ -37,8 +37,9 @@ NULL
 #' without a route signals an error. The sums are
 #' accumulated as the scalar registry accumulates them. A parent that the
 #' registry does not cover, or that is not a location-scale family on the real
-#' line, is integrated by [expected_derivative()] with `approx = "integrate"` at
-#' order 0 and by [numerical_dexpected_hessian()] at order 1; at order 2 the
+#' line, is integrated by [expected_derivative()] with `method = expect_integrate()`
+#' at order 0 (with `identity = "score"` when the family has a non-smooth
+#' parameter) and by [numerical_dexpected_hessian()] at order 1; at order 2 the
 #' call signals an error. Where the parent's mass beyond the fold is below the
 #' square of the machine epsilon, the folded variable is the parent or its
 #' mirror image, and the expectations are the parent's own expected Hessian and
@@ -87,12 +88,12 @@ folded_expected <- function(distrib, y, theta, order) {
         "  its parent has no scalar route with a center and a scale."),
         distrib@distrib_name), call. = FALSE)
     }
+    mth <- if (all(param_smoothness(distrib))) expect_integrate() else
+      expect_integrate(identity = "score")
     if (order == 0L) {
-      return(expected_derivative(distrib, y, theta, order = 2L,
-                                 approx = "integrate"))
+      return(expected_derivative(distrib, y, theta, order = 2L, method = mth))
     }
-    return(numerical_dexpected_hessian(distrib, y, theta, "parameter",
-                                       "integrate", 10000))
+    return(numerical_dexpected_hessian(distrib, y, theta, "parameter", mth))
   }
   m <- nrow(U)
   # A kink center at exactly zero sits on the edge of the half line, where the
@@ -241,13 +242,13 @@ fold_kink_parts <- function(distrib, th, center, order) {
 
 S7::method(distrib_expected_hessian, FoldedDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+    method = NULL, ...) {
   folded_expected(distrib, y, theta, 0L)
 }
 
 S7::method(distrib_dexpected_hessian, FoldedDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                      function(k) folded_expected(distrib, y, theta, 1L))
@@ -255,7 +256,7 @@ S7::method(distrib_dexpected_hessian, FoldedDistrib) <- function(
 
 S7::method(distrib_d2expected_hessian, FoldedDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                      function(k) folded_expected(distrib, y, theta, k))

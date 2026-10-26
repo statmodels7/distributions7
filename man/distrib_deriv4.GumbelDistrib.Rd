@@ -19,10 +19,10 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected values.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -45,8 +45,7 @@ respect to \eqn{\mu} and \eqn{\sigma}, in closed form, in the notation of
 
 With \code{expected = TRUE} the expectations are returned, also closed form,
 resting on the same fact: \eqn{w} is standard exponential under the model,
-so \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)}. \code{approx} and \code{nsim} are
-ignored either way.
+so \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)}.
 }
 \section{Notation}{
 

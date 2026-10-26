@@ -19,9 +19,9 @@ component is returned. Defaults to \code{FALSE}.}
 returns the parameter scale and the generic applies the link scale to its
 result. Every link of this family is the identity, so the two coincide.}
 
-\item{approx}{Not read: the expectation is exact.}
-
-\item{nsim}{Not read, for the same reason.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -40,7 +40,7 @@ derivative of the log-determinant.
 }
 \details{
 With \code{expected = TRUE} the expectation is exact, for the reason given at
-order three. \code{approx} and \code{nsim} are not read.
+order three.
 }
 \section{Notation}{
 

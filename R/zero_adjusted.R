@@ -698,10 +698,10 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
 #' @details
 #' Because the information matrix is block diagonal, a hurdle model is cheap to
 #' fit: the two halves can be estimated independently, and the matrix inverts
-#' blockwise.
-#' `approx` and `nsim` are forwarded to the expected Hessian of the parent and
-#' are used only where the parent has no closed form. The remaining blocks are
-#' exact, and the whole expectation is exact when the parent's is.
+#' blockwise. `method` is `NULL` in this method and is forwarded as such to the
+#' expected Hessian of the parent, which returns its closed form where it has
+#' one. The remaining blocks are exact, and the whole expectation is exact when
+#' the parent's is.
 #'
 #' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
 #'   [zero_adjusted()].
@@ -709,22 +709,20 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
 #' @param theta A named list with the parent's parameters followed by `za`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Forwarded to the parent's `distrib_expected_hessian()`, and
-#'   read only where the parent has no closed form for it; every other block
-#'   is an exact combination of the parent's density, score and observed Hessian
-#'   at zero. [expected_hessian_exact()] returns, for this class, the value that
-#'   it returns for the parent.
-#' @param nsim Forwarded for the same reason and under the same condition.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   The generic applies an object before dispatching on the class, so this
+#'   method receives `NULL` and forwards `NULL` to the parent, which returns
+#'   its closed form where it has one. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, keyed as
-#'   [`hess_names(distrib@params)`][hess_names]. The vectors are constant across
-#'   observations when the parent's own expected information is constant, which
-#'   is always true for a family that reaches this method with the default
-#'   `approx = "opg"` and a closed-form parent. If the parent's expected
-#'   information is evaluated by an approximation, the vectors can vary by
-#'   observation, because `h_orig_exp` is read at the actual `y` rather than at
-#'   zero.
+#' [`hess_names(distrib@params)`][hess_names]. The vectors are constant across
+#' observations when the parent's own expected information is constant, which
+#' is always true for a family that reaches this method with the default
+#' `method = NULL` and a closed-form parent. If the parent's expected
+#' information is evaluated by an approximation, the vectors can vary by
+#' observation, because `h_orig_exp` is read at the actual `y` rather than at
+#' zero.
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's mass function, \eqn{\pi} the probability of a zero,
@@ -754,7 +752,7 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
 #' Hs <- distrib_hessian(d, sup, theta)
 #' rbind(summed = vapply(Hs, function(z) sum(z * m), numeric(1)),
 #'       closed = vapply(EH, function(z) z[1], numeric(1)))
-S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
   za <- pars$mix
@@ -766,7 +764,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig,
-                                         approx = approx, nsim = nsim)
+                                         method = method)
   denom <- -expm1(lf0)
   pairs <- hess_pairs(names(pars$orig))
 
@@ -1241,9 +1239,9 @@ S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, 
 #' weighted by the probability \eqn{1-\pi} that an observation reaches it.
 #'
 #' @details
-#' `approx` and `nsim` are forwarded to the expected Hessian of the parent and
-#' are used only where the parent has no closed form. The hurdle block does not
-#' read them.
+#' `method` is `NULL` in this method and is forwarded as such to the expected
+#' Hessian of the parent, which returns its closed form where it has one. The
+#' hurdle block does not read them.
 #'
 #' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
 #'   [zero_adjusted()].
@@ -1252,12 +1250,10 @@ S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, 
 #' @param theta A named list with the parent's parameters followed by `za`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Forwarded to the parent's expected Hessian and used only where
-#'   the parent has no closed form for it. The hurdle block is exact whatever
-#'   the parent is. [expected_hessian_exact()] returns, for this class, the
-#'   value that it returns for the parent, because the parent block is the only
-#'   block that can fail to be exact.
-#' @param nsim Read for the same reason and under the same condition.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   The generic applies an object before dispatching on the class, so this
+#'   method receives `NULL` and forwards `NULL` to the parent, which returns
+#'   its closed form where it has one. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, keyed as
@@ -1287,7 +1283,7 @@ S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, 
 #'
 #' # The parent block is the parent's own, weighted by 1 - pi.
 #' c(reported = EH$mu_mu[1], weighted_parent = 0.7 * (-1 / 2^2))
-S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
   za_name <- distrib@params[distrib@n_params]
@@ -1301,7 +1297,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(
   }
 
   h_exp_orig <- distrib_expected_hessian(distrib@parent_distrib, y, pars$orig,
-                                         approx = approx, nsim = nsim)
+                                         method = method)
   for (nm in names(h_exp_orig)) {
     res[[nm]] <- (1 - za) * h_exp_orig[[nm]]
   }

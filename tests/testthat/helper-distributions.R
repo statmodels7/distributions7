@@ -106,7 +106,7 @@ fit_report <- function(fit, distrib, y) {
 # score, the Hessian and the draws of pig1_distrib(), and no expected method of
 # its own, so the base class's strategies apply. Every shipped family now
 # computes its expected information exactly, and the approximation machinery
-# (approx =, the refusals that read expected_hessian_exact(), the outer
+# (method =, the refusals that read expected_hessian_exact(), the outer
 # product) is tested on this one.
 PigBare <- S7::new_class("PigBare", parent = discrete_distrib, package = NULL)
 S7::method(distrib_pdf, PigBare) <- function(distrib, y, theta, log = FALSE, ...) {

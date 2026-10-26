@@ -18,11 +18,9 @@ number.}
 returns the parameter scale and the generic applies the link scale to its
 result. The two differ here, because \code{nu} carries a log link by default.}
 
-\item{approx}{Ignored: the expectation is exact, so the method does not
-consult an approximation strategy. \code{\link[=fit_distrib]{fit_distrib()}} rejects a
-\code{fisher_scoring(approx =)} for this family for that reason.}
-
-\item{nsim}{Ignored, for the same reason.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

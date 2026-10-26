@@ -438,8 +438,8 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #' mean and the variance are orthogonal and their estimates are
 #' asymptotically independent.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
-#' ignored. `y` is read only for its length.
+#' Because the values do not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -448,10 +448,10 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #'   recycled. `sigma2` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -496,8 +496,7 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #'                          list(mu = 1, sigma = 2))$sigma_sigma
 S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                    nsim = 10000, ..., threads = 1L) {
+                                                                    method = NULL, ..., threads = 1L) {
   gaussian2_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -506,15 +505,13 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #' @description
 #' Computes the four distinct third derivatives of the Gaussian log-density
 #' with respect to \eqn{\mu} and \eqn{v = \sigma^2}, in closed form. Writing
-#' \eqn{r = y - \mu},
-#' \deqn{\ell^{(\mu\mu\mu)} = 0, \qquad
-#'       \ell^{(\mu\mu v)} = \dfrac{1}{v^2}, \qquad
-#'       \ell^{(\mu v v)} = \dfrac{2r}{v^3}, \qquad
-#'       \ell^{(vvv)} = \dfrac{3r^2}{v^4} - \dfrac{1}{v^3}.}
-#' With `expected = TRUE` the expectations are returned, obtained by replacing
-#' \eqn{r} with 0 and \eqn{r^2} with \eqn{v}: the component odd in \eqn{r}
-#' vanishes and \eqn{\ell^{(vvv)}} becomes \eqn{2/v^3}. Both routes are closed
-#' form, so the method uses no quadrature and ignores `approx` and `nsim`.
+#' \eqn{r = y - \mu}, \deqn{\ell^{(\mu\mu\mu)} = 0, \qquad \ell^{(\mu\mu v)} =
+#' \dfrac{1}{v^2}, \qquad \ell^{(\mu v v)} = \dfrac{2r}{v^3}, \qquad
+#' \ell^{(vvv)} = \dfrac{3r^2}{v^4} - \dfrac{1}{v^3}.} With `expected = TRUE`
+#' the expectations are returned, obtained by replacing \eqn{r} with 0 and
+#' \eqn{r^2} with \eqn{v}: the component odd in \eqn{r} vanishes and
+#' \eqn{\ell^{(vvv)}} becomes \eqn{2/v^3}. Both routes are closed form and the
+#' method runs no quadrature.
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -526,9 +523,10 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -576,8 +574,7 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_sigma2, tolerance = 1e-6)
 S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          method = NULL, ..., threads = 1L) {
   if (expected) {
     gaussian2_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {
@@ -590,16 +587,14 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' @description
 #' Computes the five distinct fourth derivatives of the Gaussian log-density
 #' with respect to \eqn{\mu} and \eqn{v = \sigma^2}, in closed form. Writing
-#' \eqn{r = y - \mu},
-#' \deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu v)} = 0, \qquad
-#'       \ell^{(\mu\mu vv)} = -\dfrac{2}{v^3}, \qquad
-#'       \ell^{(\mu vvv)} = -\dfrac{6r}{v^4}, \qquad
-#'       \ell^{(vvvv)} = \dfrac{3}{v^4} - \dfrac{12 r^2}{v^5}.}
-#' With `expected = TRUE` the expectations are returned, obtained by replacing
-#' \eqn{r} with 0 and \eqn{r^2} with \eqn{v}, which leaves \eqn{-2/v^3} in
-#' \eqn{\ell^{(\mu\mu vv)}}, \eqn{-9/v^4} in \eqn{\ell^{(vvvv)}} and zero in the
-#' other three. Both routes are closed form, so
-#' `approx` and `nsim` are ignored.
+#' \eqn{r = y - \mu}, \deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu v)} = 0,
+#' \qquad \ell^{(\mu\mu vv)} = -\dfrac{2}{v^3}, \qquad \ell^{(\mu vvv)} =
+#' -\dfrac{6r}{v^4}, \qquad \ell^{(vvvv)} = \dfrac{3}{v^4} - \dfrac{12
+#' r^2}{v^5}.} With `expected = TRUE` the expectations are returned, obtained
+#' by replacing \eqn{r} with 0 and \eqn{r^2} with \eqn{v}, which leaves
+#' \eqn{-2/v^3} in \eqn{\ell^{(\mu\mu vv)}}, \eqn{-9/v^4} in
+#' \eqn{\ell^{(vvvv)}} and zero in the other three. Both routes are closed
+#' form.
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -611,9 +606,10 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -653,8 +649,7 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' -9 / 4^4
 S7::method(distrib_deriv4, Gaussian2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          method = NULL, ..., threads = 1L) {
   if (expected) {
     gaussian2_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {

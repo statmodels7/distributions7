@@ -327,7 +327,7 @@ test_that("the three fitting methods reach the same optimum", {
   set.seed(28)
   y <- distrib_rng(d, 800, list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.4))
-  lls <- vapply(c("fisher", "newton", "bfgs"), function(m) {
+  lls <- vapply(named_methods(), function(m) {
     as.numeric(logLik(fit_distrib(d, y, method = m)))
   }, numeric(1))
   expect_equal(diff(range(lls)), 0, tolerance = 1e-6)

@@ -17,12 +17,12 @@ Hessian twice; \code{TRUE} takes the expectation of the observed derivatives.}
 \item{scale}{Handled by the generic after dispatch; this method always
 returns the parameter scale.}
 
-\item{approx}{Which strategy takes the expectation, read only when
-\code{expected} is \code{TRUE}: \code{"integrate"} (the default at this order),
-\code{"bartlett"}, \code{"opg"} or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
-
-\item{nsim}{Monte Carlo sample size, a single positive number, read only
-under \code{approx = "mc"}. Defaults to 10000.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }
@@ -33,14 +33,13 @@ A named list of fourth-derivative component vectors, each of length
 }
 \description{
 Provides the fallback for a family that registers no fourth-order method.
-Observed
-derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}: a second difference of the
-family's own \code{\link[=distrib_hessian]{distrib_hessian()}} rather than a difference of the third
+Observed derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}: a second difference of
+the family's own \code{\link[=distrib_hessian]{distrib_hessian()}} rather than a difference of the third
 order, or, for a family without its own Hessian, one tensor-product stencil
 on its score or its log-density. On both routes each component is a single
-stencil, so the package's rule against nesting one difference inside
-another holds. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
-strategy that \code{approx} names.
+stencil, so the package's rule against nesting one difference inside another
+holds. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} by the method that
+\code{method} names.
 
 As at the order below, the families shipped in this package write the
 fourth order out themselves. A second difference of the Hessian is less
@@ -50,6 +49,6 @@ chosen accordingly.
 \seealso{
 \code{\link[=numerical_deriv4]{numerical_deriv4()}}, which does the differencing;
 \code{\link[=distrib_deriv3.distrib]{distrib_deriv3.distrib()}} for the order below;
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what \code{approx} selects.
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what \code{method} selects.
 }
 \keyword{internal}

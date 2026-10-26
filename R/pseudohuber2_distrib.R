@@ -280,8 +280,12 @@ S7::method(distrib_rng, PseudoHuber2Distrib) <- function(distrib, n, theta,
 #'   method, through [deriv5_scale()].
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
-#' @param approx,nsim The approximation and Monte Carlo size of
-#'   [expected_derivative()].
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #'
 #' @return A named list with one numeric vector per component, named by the
@@ -314,10 +318,10 @@ S7::method(distrib_hessian, PseudoHuber2Distrib) <- function(
 
 S7::method(distrib_deriv3, PseudoHuber2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+    method = NULL, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     pseudohuber2_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }
@@ -325,10 +329,10 @@ S7::method(distrib_deriv3, PseudoHuber2Distrib) <- function(
 
 S7::method(distrib_deriv4, PseudoHuber2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+    method = NULL, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     pseudohuber2_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }

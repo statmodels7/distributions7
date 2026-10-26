@@ -19,8 +19,10 @@ model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx, nsim}{Accepted for the generic's signature; the expectations
-are closed forms.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -39,12 +41,11 @@ log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}. The observed values
 are closed form and run in a compiled kernel decomposed over the elements of
 the output, so they do not depend on the thread count.
 
-The expected values are closed forms too: under the model
-\eqn{1/(1 + z^2/\nu)} follows a beta distribution with parameters
-\eqn{\nu/2} and \eqn{1/2}, so the expectation of every component is a
-rational function of \eqn{\nu} plus the derivatives of
-\eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)}. \code{approx} and \code{nsim}
-are accepted for the generic's signature and ignored.
+The expected values are closed forms too: under the model \eqn{1/(1 +
+z^2/\nu)} follows a beta distribution with parameters \eqn{\nu/2} and
+\eqn{1/2}, so the expectation of every component is a rational function of
+\eqn{\nu} plus the derivatives of \eqn{\log\Gamma((\nu+1)/2) -
+\log\Gamma(\nu/2)}.
 }
 \section{Large degrees of freedom}{
 

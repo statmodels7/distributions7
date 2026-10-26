@@ -17,7 +17,10 @@ numeric vector of length 1 or of the length of \code{y}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}.}
 
-\item{approx, nsim}{Ignored.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -58,8 +61,6 @@ At \eqn{\alpha = 0} the information has rank 2 and not 3: its eigenvalues at
 and the smallest grows like \eqn{\alpha^4}, reading
 \eqn{4.4\times10^{-10}} at \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at
 \eqn{\alpha = 0.5}. See \code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for why.
-
-\code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
 }
 \examples{
 d <- skewnormal1_distrib()

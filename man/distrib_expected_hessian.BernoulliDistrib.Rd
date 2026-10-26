@@ -14,10 +14,10 @@ of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available. It is accepted so
-that the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -48,8 +48,8 @@ the derivatives on the parameter scale and loses relative accuracy where
 \eqn{|\eta|} is large (see \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}}); this
 value does not.
 
-Because the value does not depend on the data, \code{approx} and \code{nsim} are
-ignored. \code{y} is read only for its length.
+Because the value does not depend on the data, \code{y} is read only for its
+length.
 }
 \section{Notation}{
 

@@ -245,10 +245,8 @@ MvStudentT2Distrib <- S7::new_class("MvStudentT2Distrib",
 #'
 #' The expected information has a closed form, obtained from the family's own
 #' scale mixture; see [distrib_expected_hessian.MvStudentTDistrib()] for the
-#' four blocks.
-#' [fit_distrib()] therefore rejects an `approx` argument on
-#' [fisher_scoring()] for this family, as it does for any family that computes
-#' its expected information exactly.
+#' four blocks. [fisher_scoring()] with `method = NULL` uses it, and a method
+#' given there replaces it.
 #'
 #' # Reading a fit
 #'
@@ -1722,10 +1720,9 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. The two differ here, because `nu` carries a log link by default.
-#' @param approx Ignored: the expectation is exact, so the method does not
-#'   consult an approximation strategy. [fit_distrib()] rejects a
-#'   `fisher_scoring(approx =)` for this family for that reason.
-#' @param nsim Ignored, for the same reason.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length \eqn{n}, keyed as
@@ -1777,7 +1774,7 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
 #' @keywords internal
 S7::method(distrib_expected_hessian, MvStudentTDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+    method = NULL, ...) {
   y <- as_mv_matrix(distrib, y)
   pc <- mvt_pieces(distrib, theta, derivs = TRUE)
   n <- nrow(y)

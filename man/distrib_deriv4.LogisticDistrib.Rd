@@ -18,11 +18,10 @@ model are returned, in closed form. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
-\code{"opg"}. Ignored, because a closed form is available for the expected
-values; accepted so that the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -49,9 +48,8 @@ form, as polynomials in \eqn{z = (y-\mu)/\sigma} with the \eqn{g_j} of
 With \code{expected = TRUE} the expectations under the model are returned in
 closed form, as at third order: \eqn{1/(15\sigma^4)} for \code{mu_mu_mu_mu},
 \eqn{(\pi^2-60)/(45\sigma^4)} for \code{mu_mu_sigma_sigma},
-\eqn{(7\pi^4-600\pi^2-810)/(225\sigma^4)} for \code{sigma_sigma_sigma_sigma},
-and zero for the two components odd in \eqn{z}. \code{approx} and \code{nsim} are
-ignored.
+\eqn{(7\pi^4-600\pi^2-810)/(225\sigma^4)} for \code{sigma_sigma_sigma_sigma}, and
+zero for the two components odd in \eqn{z}.
 }
 \section{Notation}{
 

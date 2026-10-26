@@ -484,8 +484,8 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' The kernel evaluates them through the decomposition described on
 #' [distrib_deriv3.Gamma2Distrib()], which keeps the digits at a large shape.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
-#' ignored. `y` is read only for its length.
+#' Because the values do not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -494,10 +494,10 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -550,7 +550,7 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
-S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...,
                                        threads = 1L) {
   gamma_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -576,8 +576,7 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{Y} with \eqn{\mu} and \eqn{\log Y} with \eqn{\psi(\alpha) -
-#' \log\lambda}. Both routes are closed form, so the method uses no quadrature
-#' and ignores `approx` and `nsim`.
+#' \log\lambda}. Both routes are closed form and the method runs no quadrature.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -589,9 +588,10 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -630,7 +630,7 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #' up <- distrib_hessian(d, y, list(mu = 3 + eps, sigma2 = 2))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 3 - eps, sigma2 = 2))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
-S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...,
                                        threads = 1L) {
   if (expected) gamma_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else gamma_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
@@ -647,8 +647,7 @@ S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{Y} with \eqn{\mu} and \eqn{\log Y} with \eqn{\psi(\alpha) -
-#' \log\lambda}. Both routes are closed form, so `approx` and `nsim` are
-#' ignored.
+#' \log\lambda}. Both routes are closed form.
 #'
 #' @param distrib A `Gamma2Distrib` object, from [gamma2_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -660,9 +659,10 @@ S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -698,7 +698,7 @@ S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' up <- distrib_deriv3(d, y, list(mu = 3 + eps, sigma2 = 2))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 3 - eps, sigma2 = 2))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-3)
-S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...,
                                        threads = 1L) {
   if (expected) gamma_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else gamma_deriv4_cpp(y, theta[[1]], theta[[2]], threads)

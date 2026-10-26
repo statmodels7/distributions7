@@ -21,12 +21,12 @@ Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. It is read only when \code{expected = TRUE}.}
-
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
-\code{10000}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -52,10 +52,10 @@ series of \eqn{K_1}, differentiated term by term in powers of
 \eqn{\nu^{-1/2}}. The same routes serve the score, the Hessian and the
 fourth order.
 
-The expected third derivatives have no closed form. With
-\code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates
-the observed derivatives against the density by the strategy specified in
-\code{approx}. The arguments \code{approx} and \code{nsim} are read only in this case.
+The expected third derivatives have no closed form. With \code{expected = TRUE}
+the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates the observed
+derivatives against the density by the method specified in \code{method},
+\code{\link[=expect_integrate]{expect_integrate()}} when \code{method} is \code{NULL}.
 }
 \examples{
 d <- pseudohuber_distrib()
@@ -71,7 +71,7 @@ up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu
 dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu
 all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 
-# The expected branch is a quadrature and takes a strategy; the components
+# The expected branch is a quadrature and takes a method; the components
 # odd in the residual come back at zero.
 vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
        function(v) v[1], numeric(1))

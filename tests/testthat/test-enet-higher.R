@@ -106,7 +106,7 @@ test_that("a derivative in mu alone vanishes past the second", {
 test_that("the expected derivatives go through the approximation", {
   d <- enet_distrib()
   th <- list(mu = 0, lambda = 1.5, alpha = 0.6)
-  e <- distrib_deriv3(d, 0.5, th, expected = TRUE, approx = "bartlett")
+  e <- distrib_deriv3(d, 0.5, th, expected = TRUE, method = expect_integrate(identity = "score"))
   expect_type(e, "list")
   expect_named(e, deriv_names(c("mu", "lambda", "alpha"), 3L))
 })

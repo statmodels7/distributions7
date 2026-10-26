@@ -20,9 +20,10 @@ observed and expected third derivatives are the same numbers. Defaults to
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -45,14 +46,13 @@ digamma function, at
 \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi} and \eqn{\phi}.
 
 Every component of this order is free of the response. The data enter the
-log-density only through \eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)},
-which is linear in the shapes and so at most quadratic in \eqn{(\mu, \phi)}
-through the bilinear map \eqn{\alpha = \mu\phi}, and its third
-derivatives are zero. On the parameter scale the observed and expected
-values therefore coincide, and the method runs the same kernel for either
-value of \code{expected}. On the link scale the generic adds terms in the score
-and the Hessian, which depend on the response, so the two differ there.
-\code{approx} and \code{nsim} are ignored.
+log-density only through \eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)}, which
+is linear in the shapes and so at most quadratic in \eqn{(\mu, \phi)}
+through the bilinear map \eqn{\alpha = \mu\phi}, and its third derivatives
+are zero. On the parameter scale the observed and expected values therefore
+coincide, and the method runs the same kernel for either value of
+\code{expected}. On the link scale the generic adds terms in the score and the
+Hessian, which depend on the response, so the two differ there.
 }
 \section{Notation}{
 

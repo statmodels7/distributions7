@@ -301,9 +301,10 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
 #' @param expected Should the expected derivatives be carried? It is a single
 #'   logical, with default `FALSE`. `TRUE` is meaningful from order 2 up,
 #'   because the score has mean zero.
-#' @param approx,nsim Forwarded to the parent's expected derivatives: `approx`
-#'   is one of `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`, and
-#'   `nsim` is the number of draws for `"mc"`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   The generic applies an object before dispatching on the class, so this
+#'   method receives `NULL` and forwards `NULL` to the parent, which returns
+#'   its closed form where it has one. See [expected_derivative_methods].
 #'
 #' @return A named list of numeric vectors, keyed as
 #'   [`deriv_names(distrib@params, order)`][deriv_names].
@@ -314,7 +315,7 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
 #'
 #' @keywords internal
 reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
-                          approx = "opg", nsim = 10000) {
+                          method = NULL) {
   theta <- align_theta(distrib, theta)
   n <- max(n_obs(distrib@parent_distrib, y), 1L)
   chain_derivatives(
@@ -325,7 +326,7 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
     new_params = distrib@params,
     order = order,
     expected = expected,
-    approx = approx, nsim = nsim
+    method = method
   )
 }
 
@@ -371,9 +372,10 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
 #' @param order The derivative order, 1 to 4.
 #' @param expected Should the expected derivatives be carried? It is a single
 #'   logical, with default `FALSE`.
-#' @param approx,nsim Forwarded to the parent's expected derivatives: `approx`
-#'   is one of `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`, and
-#'   `nsim` is the number of draws for `"mc"`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   The generic applies an object before dispatching on the class, so this
+#'   method receives `NULL` and forwards `NULL` to the parent, which returns
+#'   its closed form where it has one. See [expected_derivative_methods].
 #'
 #' @return A named list of numeric vectors, keyed as
 #'   [`deriv_names(new_params, order)`][deriv_names].
@@ -384,13 +386,13 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
 #'
 #' @keywords internal
 chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
-                              expected = FALSE, approx = "opg", nsim = 10000) {
+                              expected = FALSE, method = NULL) {
   n <- max(n_obs(parent, y), 1L)
 
   # The parent's derivatives of every order up to the one asked for. Under
   # expectation the score contributes nothing, by the first Bartlett identity.
   #
-  # approx/nsim ARE FORWARDED, which they were not until 0.44.0: a caller of
+  # method/nsim ARE FORWARDED, which they were not until 0.44.0: a caller of
   # the WRAPPER'S own generic (check_distrib() among them) asking for a named
   # strategy was silently getting the PARENT's default instead, because this
   # assembly took neither argument. That was invisible while both defaults
@@ -402,9 +404,9 @@ chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
     D[[k]] <- if (expected) {
       switch(k,
         NULL,
-        distrib_expected_hessian(parent, y, th_par, approx = approx, nsim = nsim),
-        distrib_deriv3(parent, y, th_par, expected = TRUE, approx = approx, nsim = nsim),
-        distrib_deriv4(parent, y, th_par, expected = TRUE, approx = approx, nsim = nsim)
+        distrib_expected_hessian(parent, y, th_par, method = method),
+        distrib_deriv3(parent, y, th_par, expected = TRUE, method = method),
+        distrib_deriv4(parent, y, th_par, expected = TRUE, method = method)
       )
     } else {
       switch(k,
@@ -841,10 +843,10 @@ S7::method(distrib_hessian, ReparamDiscreteDistrib) <- reparam_hessian
 #' @param theta A named list of the new parameters, on the new parameter scale.
 #' @param scale Either `"parameter"` (the default) or `"link"`, handled by the
 #'   generic after this method has returned.
-#' @param approx,nsim Forwarded to the parent's `distrib_expected_hessian()`,
-#'   and read only where the parent has no closed form for it; a parent that
-#'   writes its expected information out ignores both, as every such family
-#'   does.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   The generic applies an object before dispatching on the class, so this
+#'   method receives `NULL` and forwards `NULL` to the parent, which returns
+#'   its closed form where it has one. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as [hess_names()], in that
@@ -876,10 +878,9 @@ S7::method(distrib_hessian, ReparamDiscreteDistrib) <- reparam_hessian
 #' @keywords internal
 reparam_expected_hessian <- function(distrib, y, theta,
                                      scale = c("parameter", "link"),
-                                     approx = c("opg", "bartlett", "integrate", "mc"),
-                                     nsim = 10000, ...) {
+                                     method = NULL, ...) {
   reparam_chain(distrib, y, theta, 2L, expected = TRUE,
-                approx = approx, nsim = nsim)[hess_names(distrib@params)]
+                method = method)[hess_names(distrib@params)]
 }
 S7::method(distrib_expected_hessian, ReparamContinuousDistrib) <- reparam_expected_hessian
 S7::method(distrib_expected_hessian, ReparamDiscreteDistrib) <- reparam_expected_hessian
@@ -941,12 +942,10 @@ S7::method(expected_hessian_exact, ReparamDiscreteDistrib) <- function(x, ...) {
 #'   score drops, because the score has mean zero.
 #' @param scale Either `"parameter"` (the default) or `"link"`, handled by the
 #'   generic after this method has returned.
-#' @param approx The strategy that the parent uses for an expected derivative
-#'   for which it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"`
-#'   or `"opg"`. The value is passed straight through, and it is read only when
-#'   `expected` is `TRUE` and only by a parent that approximates.
-#' @param nsim The number of draws for `approx = "mc"`, 10000 by default.
-#'   The value is passed through.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   The generic applies an object before dispatching on the class, so this
+#'   method receives `NULL` and forwards `NULL` to the parent, which returns
+#'   its closed form where it has one. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as
@@ -974,10 +973,9 @@ S7::method(expected_hessian_exact, ReparamDiscreteDistrib) <- function(x, ...) {
 #' @keywords internal
 reparam_deriv3 <- function(distrib, y, theta, expected = FALSE,
                            scale = c("parameter", "link"),
-                           approx = c("integrate", "bartlett", "mc", "opg"),
-                           nsim = 10000, ...) {
+                           method = NULL, ...) {
   reparam_chain(distrib, y, theta, 3L, expected = expected,
-                approx = approx, nsim = nsim)
+                method = method)
 }
 S7::method(distrib_deriv3, ReparamContinuousDistrib) <- reparam_deriv3
 S7::method(distrib_deriv3, ReparamDiscreteDistrib) <- reparam_deriv3
@@ -1001,11 +999,10 @@ S7::method(distrib_deriv3, ReparamDiscreteDistrib) <- reparam_deriv3
 #'   logical, `FALSE` by default.
 #' @param scale Either `"parameter"` (the default) or `"link"`, handled by the
 #'   generic after this method has returned.
-#' @param approx The strategy that the parent uses for an expected derivative
-#'   for which it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"`
-#'   or `"opg"`. The value is passed straight through.
-#' @param nsim The number of draws for `approx = "mc"`, 10000 by default.
-#'   The value is passed through.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   The generic applies an object before dispatching on the class, so this
+#'   method receives `NULL` and forwards `NULL` to the parent, which returns
+#'   its closed form where it has one. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as
@@ -1033,10 +1030,9 @@ S7::method(distrib_deriv3, ReparamDiscreteDistrib) <- reparam_deriv3
 #' @keywords internal
 reparam_deriv4 <- function(distrib, y, theta, expected = FALSE,
                            scale = c("parameter", "link"),
-                           approx = c("integrate", "bartlett", "mc", "opg"),
-                           nsim = 10000, ...) {
+                           method = NULL, ...) {
   reparam_chain(distrib, y, theta, 4L, expected = expected,
-                approx = approx, nsim = nsim)
+                method = method)
 }
 S7::method(distrib_deriv4, ReparamContinuousDistrib) <- reparam_deriv4
 S7::method(distrib_deriv4, ReparamDiscreteDistrib) <- reparam_deriv4

@@ -4,15 +4,7 @@
 \alias{reparam_chain}
 \title{Parameter Derivatives of a Reparametrized Distribution}
 \usage{
-reparam_chain(
-  distrib,
-  y,
-  theta,
-  order,
-  expected = FALSE,
-  approx = "opg",
-  nsim = 10000
-)
+reparam_chain(distrib, y, theta, order, expected = FALSE, method = NULL)
 }
 \arguments{
 \item{distrib}{A reparametrized distribution.}
@@ -27,9 +19,10 @@ reparam_chain(
 logical, with default \code{FALSE}. \code{TRUE} is meaningful from order 2 up,
 because the score has mean zero.}
 
-\item{approx, nsim}{Forwarded to the parent's expected derivatives: \code{approx}
-is one of \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, and
-\code{nsim} is the number of draws for \code{"mc"}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+The generic applies an object before dispatching on the class, so this
+method receives \code{NULL} and forwards \code{NULL} to the parent, which returns
+its closed form where it has one. See \link{expected_derivative_methods}.}
 }
 \value{
 A named list of numeric vectors, keyed as

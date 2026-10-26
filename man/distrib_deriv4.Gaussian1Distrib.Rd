@@ -19,10 +19,10 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected values.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -38,17 +38,16 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 }
 \description{
 Computes the five distinct fourth derivatives of the Gaussian log-density
-with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Writing
-\eqn{r = y - \mu},
-\deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu\sigma)} = 0, \qquad
-      \ell^{(\mu\mu\sigma\sigma)} = -\dfrac{6}{\sigma^4}, \qquad
-      \ell^{(\mu\sigma\sigma\sigma)} = -\dfrac{24 r}{\sigma^5}, \qquad
-      \ell^{(\sigma\sigma\sigma\sigma)} = \dfrac{6}{\sigma^4} - \dfrac{60 r^2}{\sigma^6}.}
-With \code{expected = TRUE} the expectations are returned, obtained by replacing
-\eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}, which leaves
-\eqn{-6/\sigma^4} in \eqn{\ell^{(\mu\mu\sigma\sigma)}}, \eqn{-54/\sigma^4} in
-\eqn{\ell^{(\sigma\sigma\sigma\sigma)}} and zero in the other three. Both
-routes are closed form, so \code{approx} and \code{nsim} are ignored.
+with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Writing \eqn{r =
+y - \mu}, \deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu\sigma)} = 0, \qquad
+\ell^{(\mu\mu\sigma\sigma)} = -\dfrac{6}{\sigma^4}, \qquad
+\ell^{(\mu\sigma\sigma\sigma)} = -\dfrac{24 r}{\sigma^5}, \qquad
+\ell^{(\sigma\sigma\sigma\sigma)} = \dfrac{6}{\sigma^4} - \dfrac{60
+r^2}{\sigma^6}.} With \code{expected = TRUE} the expectations are returned,
+obtained by replacing \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2},
+which leaves \eqn{-6/\sigma^4} in \eqn{\ell^{(\mu\mu\sigma\sigma)}},
+\eqn{-54/\sigma^4} in \eqn{\ell^{(\sigma\sigma\sigma\sigma)}} and zero in
+the other three. Both routes are closed form.
 }
 \section{Notation}{
 

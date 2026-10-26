@@ -15,10 +15,10 @@ recycled. Both must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored. The surviving expectation is a truncated exact sum. It
-is accepted so that the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -35,16 +35,14 @@ when the parameters are.
 \description{
 Returns the expectation of the observed Hessian under the model. Every term
 carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, because
-its expectation vanishes by the first Bartlett identity. With
-\eqn{u_j = \mu + \theta j}, the entries are \eqn{-A},
-\eqn{W/\theta^2} and \eqn{-W/(\mu\theta)}, where
-\deqn{A = \mathbb{E}\Big[\sum_{j<Y} u_j^{-2}\Big], \qquad
-  W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta} -
-  \frac{\mu^2}{u_j^2}\Big)\Big].}
-\eqn{A} and \eqn{W} are not available in closed form. Each is summed
-against the exact mass until the terms fall below a tolerance, so this is a
-truncated exact sum and not a quadrature or a simulation. \code{approx} and \code{nsim} are ignored, and \code{y} is
-read only for its length.
+its expectation vanishes by the first Bartlett identity. With \eqn{u_j = \mu
++ \theta j}, the entries are \eqn{-A}, \eqn{W/\theta^2} and
+\eqn{-W/(\mu\theta)}, where \deqn{A = \mathbb{E}\Big[\sum_{j<Y}
+u_j^{-2}\Big], \qquad W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta}
+- \frac{\mu^2}{u_j^2}\Big)\Big].} \eqn{A} and \eqn{W} are not available in
+closed form. Each is summed against the exact mass until the terms fall
+below a tolerance, so this is a truncated exact sum and not a quadrature or
+a simulation. \code{y} is read only for its length.
 
 The mixed entry does not vanish, so the mean and the dispersion are not
 orthogonal in this family; in \code{\link[=negbin2_distrib]{negbin2_distrib()}} the same entry is exactly

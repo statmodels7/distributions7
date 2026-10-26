@@ -254,8 +254,8 @@ S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
 #' tail from it as \eqn{\log(1 - e^{\cdot})} with `expm1()` or `log1p()`; the
 #' requested tail is returned on the log scale or exponentiated, so the method
 #' does not subtract from one for `lower.tail = FALSE` or for `log.p = TRUE`.
-#' The denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \approx 37.5} and
-#' zero beyond \eqn{x \approx 38.5} in double precision, and \eqn{x} reaches
+#' The denominator \eqn{\Phi(-x)} is subnormal from \eqn{x \method 37.5} and
+#' zero beyond \eqn{x \method 38.5} in double precision, and \eqn{x} reaches
 #' that at ordinary values of \eqn{\alpha}: at \eqn{\lambda = 20},
 #' \eqn{\alpha = 0.995} it is 63.
 #'
@@ -332,7 +332,7 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #' forming \eqn{1 - p} or exponentiating a logarithm, and each half is
 #' inverted from the logarithm of its own tail. The inversion calls `qnorm` on
 #' the log scale, where its argument is \eqn{\log P + \log 2 + \log\Phi(-x)},
-#' because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}. A
+#' because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \method 38.5}. A
 #' probability outside \eqn{[0, 1]} gives `NaN`.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
@@ -594,7 +594,6 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' an exponential family, so the information in those rates is the Hessian of
 #' the log normalizing constant, which the observed Hessian also uses.
 #'
-#' `approx` and `nsim` are accepted and ignored because the answer is exact.
 #'
 #' @details
 #' # The rate block
@@ -638,9 +637,10 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx Ignored: the answer is exact. It is accepted so that the
-#'   signature matches the generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -682,11 +682,11 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #'       information = vapply(c(1 - 1e-8, 0.5, 1e-8), inf_mu, 0),
 #'       limit = c(2^2, NA, 2 * (1 - 1e-8)))
 #'
-#' # The strategy arguments are ignored because the answer is exact.
-#' identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
+#' # The method argument is ignored because the answer is exact.
+#' identical(e, distrib_expected_hessian(d, 0, th, method = expect_mc(nsim = 5)))
 S7::method(distrib_expected_hessian, EnetDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   enet_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
@@ -1098,7 +1098,7 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #'   \eqn{e^{-xs - s^2/2}} on \eqn{s > 0}, computed from its moment ratios in
 #'   a compiled kernel; the form \eqn{G = x - 1/M} would cancel for large
 #'   \eqn{x}, and each derivative built on it would lose more.
-#' - \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}, and the
+#' - \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \method 38.5}, and the
 #'   distribution function and the quantile divide by it. At
 #'   \eqn{\lambda = 20}, \eqn{\alpha = 0.995} the argument is 63, so both work
 #'   on the log scale, through `log.p` and `qnorm(..., log.p = TRUE)`.

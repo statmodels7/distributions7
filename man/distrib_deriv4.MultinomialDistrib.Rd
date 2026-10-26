@@ -20,11 +20,9 @@ in closed form (see Details). Defaults to \code{FALSE}.}
 returns the parameter scale and the generic applies the link scale to its
 result.}
 
-\item{approx}{Not read: the expectation is in closed form. It is present so
-that the signature matches the generic's.}
-
-\item{nsim}{Not read. It is present so that the signature matches the
-generic's.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

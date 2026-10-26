@@ -2,16 +2,9 @@
 % Please edit documentation in R/expected_derivatives.R
 \name{expected_derivative}
 \alias{expected_derivative}
-\title{Dispatch an Expected-Derivative Strategy}
+\title{Compute an Expected Derivative by a Method}
 \usage{
-expected_derivative(
-  distrib,
-  y,
-  theta,
-  order,
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000
-)
+expected_derivative(distrib, y, theta, order, method = NULL)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -22,33 +15,25 @@ expected_derivative(
 
 \item{order}{The derivative order, 2 to 4.}
 
-\item{approx}{One of \code{"bartlett"}, \code{"integrate"}, \code{"mc"} or
-\code{"opg"}.}
-
-\item{nsim}{Number of draws, used only by \code{"mc"}.}
+\item{method}{An object inheriting from \link{ExpectMethod}, or \code{NULL} (the
+default). Any other value, a character string included, signals an error.}
 }
 \value{
 A named list of expected derivative component vectors.
 }
 \description{
-Validates \code{approx} and routes to the chosen strategy. It is the shared entry
-point for the fallback expected-derivative methods.
+Validates \code{method} and routes to the computation that the object selects. It
+is the shared entry point for the expected derivatives that a family does not
+write out, and for those that a caller requests with an explicit method. A
+\code{NULL} method is resolved to the default of the order: \code{\link[=expect_opg]{expect_opg()}} at
+order 2 and \code{\link[=expect_integrate]{expect_integrate()}} above it.
 }
 \details{
-\code{"opg"} and \code{"bartlett"} are two readings of the second Bartlett identity
-and are not the same computation. The identity equates
-\eqn{\mathbb{E}[\ell^{(ij)}]} with \eqn{-\mathbb{E}[\ell^{(i)}\ell^{(j)}]};
-\code{"bartlett"} evaluates the expectation, which is a sum over the support or a
-quadrature, while \code{"opg"} reads the integrand at the observation and takes
-no expectation at all. They agree in expectation and differ by orders of
-magnitude in cost, so \code{"opg"} is the default at order 2.
-
-Above order 2 the outer product of scores is not an identity, so \code{"opg"} is
-routed to \code{"bartlett"} and the function does not signal an error. The
-argument is one setting for a whole call, and a method of order 4 can receive
-the value that a method of order 2 received.
+The computation of each class is the method of the internal generic
+\code{expected_by_method()}; see \link{expected_derivative_methods} for what the three
+classes compute, their costs and their defaults.
 }
 \seealso{
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
+\link{expected_derivative_methods}
 }
 \keyword{internal}

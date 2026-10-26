@@ -78,6 +78,15 @@ and standard errors without refitting:
 confint(fit, level = 0.99)
 ```
 
+The standard errors are the square roots of the diagonal of the inverse of the
+observed information at the estimates, whatever method computed them. The
+expected information is selected after the fit, with the `information`
+argument of `vcov()`, `confint()` and `print()`; see `?information_objects`.
+
+```{r}
+vcov(fit, information = expected_info())
+```
+
 The object also carries the information criteria, the number of iterations and
 the method that was actually used, and the print above shows all of them.
 
@@ -106,12 +115,19 @@ scale would have spilled past it.
 ## Choosing how it is optimized
 
 The default is Fisher scoring, which uses the *expected* information. Two other
-methods are available, and Fisher scoring and Newton fall back to BFGS if they
-fail to converge:
+methods are available as optimizer objects from
+[optimizers7](https://statmodels7.github.io/optimizers7/), Newton's method with
+the observed Hessian and BFGS, each with the stopping rule on the gradient that
+Fisher scoring uses. Fisher scoring falls back to BFGS if it fails to
+converge:
 
 ```{r}
-fit_newton <- fit_distrib(d, y, method = "newton")
-fit_bfgs   <- fit_distrib(d, y, method = "bfgs")
+fit_newton <- fit_distrib(
+  d, y, method = optimizers7::newton(criterion = optimizers7::crit_grad())
+)
+fit_bfgs <- fit_distrib(
+  d, y, method = optimizers7::bfgs(criterion = optimizers7::crit_grad())
+)
 
 c(scoring = as.numeric(logLik(fit)),
   newton  = as.numeric(logLik(fit_newton)),
@@ -140,10 +156,15 @@ c(lbfgs = as.numeric(logLik(fit_lbfgs)),
 c(fit_lbfgs@method, fit_nm@method)
 ```
 
-The two second-order strategies, `"fisher"` and `"newton"`, fall back to BFGS
-when they fail to converge; `"bfgs"` and an optimizer supplied explicitly are
-never replaced, so the method reported is always the method that produced the
-estimates.
+Fisher scoring falls back to BFGS when it fails to converge; an optimizer
+object supplied explicitly is never replaced, so the method reported is always
+the method that produced the estimates.
+
+Where the family has no closed-form expected information, Fisher scoring needs
+a method that obtains it. The method is an object passed to `fisher_scoring()`,
+among `expect_opg()` (the default for such a family), `expect_integrate()` and
+`expect_mc(nsim = 10000)`; an object is used also by a family that has the
+closed form. `?expected_derivative_methods` compares them.
 
 ## Checking the fit against the data
 

@@ -14,7 +14,7 @@ adds none.}
 \item{expected}{Logical of length 1. The value is passed to the parent,
 which computes the expectation in closed form or approximates it.}
 
-\item{...}{Passed to the parent's method, \code{approx} and \code{nsim} among them.}
+\item{...}{Passed to the parent's method, \code{method} among them.}
 }
 \value{
 A named list of third-derivative components, keyed

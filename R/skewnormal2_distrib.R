@@ -16,7 +16,7 @@ NULL
 #' @title The Constant Behind the Centered Parametrization
 #'
 #' @description
-#' Returns \eqn{b = \sqrt{2/\pi} \approx 0.7978846}, which is
+#' Returns \eqn{b = \sqrt{2/\pi} \method 0.7978846}, which is
 #' \eqn{E[|Z|]} for a standard Gaussian \eqn{Z}. It is the one constant that
 #' the skew normal's first moment introduces, and it appears in every quantity of
 #' the centered parametrization: the mean is \eqn{\xi + \omega b\delta}, the
@@ -43,7 +43,7 @@ sn_b <- function() sqrt(2 / pi)
 #' @description
 #' Returns \eqn{\sup|\gamma_1|} over the skew normal family,
 #' \deqn{\dfrac{4-\pi}{2}\left(\dfrac{b}{\sqrt{1-b^2}}\right)^3
-#'       \approx 0.9952717,}
+#'       \method 0.9952717,}
 #' with \eqn{b = \sqrt{2/\pi}}. The bound is attained only in the limit
 #' \eqn{\alpha \to \pm\infty}, where the family degenerates to a half-normal.
 #'
@@ -695,8 +695,12 @@ sn2_reject_zero <- function(theta, what) {
 #'   itself, through [deriv5_scale()].
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned, by [expected_derivative()].
-#' @param approx,nsim Passed to [expected_derivative()] when `expected` is
-#'   `TRUE`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -728,12 +732,12 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 
 S7::method(distrib_deriv3, SkewNormal2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   sn2_reject_zero(theta, "third derivative")
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     skewnormal2_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
@@ -741,12 +745,12 @@ S7::method(distrib_deriv3, SkewNormal2Distrib) <- function(
 
 S7::method(distrib_deriv4, SkewNormal2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   sn2_reject_zero(theta, "fourth derivative")
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     skewnormal2_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
@@ -794,7 +798,10 @@ S7::method(distrib_deriv5, SkewNormal2Distrib) <- function(
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list with components `mu`, `sigma` and `gamma1`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Accepted for the generics' signatures and unused.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, passed to the kernels behind the
 #'   quadrature.
@@ -811,14 +818,14 @@ S7::method(distrib_deriv5, SkewNormal2Distrib) <- function(
 #' distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = 0))
 S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   sn2_expected_parts(distrib, theta, 0L, length(y), threads)
 }
 
 S7::method(distrib_dexpected_hessian, SkewNormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   sn2_reject_zero(theta, "derivative of the expected information")
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
@@ -828,7 +835,7 @@ S7::method(distrib_dexpected_hessian, SkewNormal2Distrib) <- function(
 
 S7::method(distrib_d2expected_hessian, SkewNormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    method = NULL, ...,
     threads = 1L) {
   sn2_reject_zero(theta, "second derivative of the expected information")
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,

@@ -79,19 +79,13 @@ test_that("the exactness predicate follows the arithmetic, not the owner", {
   expect_true(has_exact_expected_hessian(gaussian1_distrib()))
   expect_true(has_exact_expected_hessian(negbin2_distrib()))
   expect_true(has_exact_expected_hessian(weibull3_distrib()))
-  # a strategy for the approximation is accepted where there is one to make,
-  # and refused where the family computes its information exactly
+  # a method is accepted where there is an approximation to make, and is
+  # used also where the family computes its information exactly
   set.seed(1)
   y <- distrib_rng(pig_bare_distrib(), 30L, list(mu = 3, sigma = 0.5))
   expect_no_error(fit_distrib(pig_bare_distrib(), y,
-                              method = fisher_scoring(approx = "mc", nsim = 20L),
+                              method = fisher_scoring(method = expect_mc(nsim = 20L)),
                               n_start = 1L))
-  expect_error(fit_distrib(pseudohuber_distrib(),
-                           distrib_rng(pseudohuber_distrib(), 5L,
-                                       list(mu = 0, sigma = 1, nu = 1)),
-                           method = fisher_scoring(approx = "mc", nsim = 20L),
-                           n_start = 1L),
-               "computes its expected information exactly")
 })
 
 test_that("the keys are built and enumerated by the same rule", {

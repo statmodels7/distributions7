@@ -497,13 +497,17 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
     n_bound <- sum(on_bound)
     if (n_bound) ys <- ys[!on_bound]
     g <- distrib_gradient(distrib, ys, theta)
-    # approx = "bartlett" IS THE POINT HERE, and must be asked for rather than
-    # left to the default. This check wants the actual EXPECTATION, to compare
-    # against an independent Monte Carlo estimate of that same expectation;
-    # "opg" (the default since 0.44.0) reads the per-observation outer product
-    # of the score at the single point y = 0 instead of averaging it, which is
-    # a different quantity and disagrees with a Monte Carlo mean almost always.
-    a <- distrib_expected_hessian(distrib, 0, theta, approx = "bartlett")
+    # This check wants the actual EXPECTATION, to compare against an
+    # independent Monte Carlo estimate of that same expectation. A family that
+    # writes its expected information out is read through its own closed form
+    # (method = NULL), which is the quantity under test. A family without one
+    # needs the expectation of the score identity by quadrature: the default
+    # "opg" reads the per-observation outer product of the score at the single
+    # point y = 0 instead of averaging it, which is a different quantity and
+    # disagrees with a Monte Carlo mean almost always.
+    meth <- if (has_exact_expected_hessian(distrib)) NULL else
+      expect_integrate(identity = "score")
+    a <- distrib_expected_hessian(distrib, 0, theta, method = meth)
     params <- distrib@params
     worst <- 0
     for (i in seq_along(params)) {

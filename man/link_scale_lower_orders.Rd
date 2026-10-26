@@ -4,7 +4,7 @@
 \alias{link_scale_lower_orders}
 \title{Lower-Order Parameter-Scale Derivatives for the Chain Rule}
 \usage{
-link_scale_lower_orders(distrib, y, theta, expected, order)
+link_scale_lower_orders(distrib, y, theta, expected, order, method = NULL)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -17,6 +17,10 @@ link_scale_lower_orders(distrib, y, theta, expected, order)
 ones.}
 
 \item{order}{The order to assemble, 1 to 5.}
+
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}, passed to
+the expected derivatives of the lower orders so that every order of a call
+is obtained by the same method. It is read only when \code{expected} is \code{TRUE}.}
 }
 \value{
 A list of length \code{order - 1}, in which the \eqn{m}-th element is the

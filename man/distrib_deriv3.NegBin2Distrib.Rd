@@ -19,10 +19,10 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because the expected values are closed form or exact
-sums.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -57,9 +57,8 @@ accuracy, and a term with a zero coefficient contributes zero.
 With \code{expected = TRUE} the expectations are returned. The three components
 involving the mean need only \eqn{\mathbb{E}[Y] = \mu}; the pure dispersion
 one needs \eqn{\mathbb{E}[\psi_2(Y+\theta)]}, which has no closed form and
-is summed over the support with the mass recurrence and the stopping rule
-of \code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}}. \code{approx} and \code{nsim} are
-ignored either way.
+is summed over the support with the mass recurrence and the stopping rule of
+\code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}}.
 
 The kernel performs the cancellation of \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}}
 symbolically at this order too: the observed pure dispersion component is

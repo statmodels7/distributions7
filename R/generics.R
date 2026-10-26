@@ -11,8 +11,8 @@
 #' summation (discrete), the quantile by root finding or by a lookup in the
 #' cumulative table, random draws by inverse transform or by the
 #' ratio-of-uniforms method, the derivatives of the log-density by finite
-#' differences, and the expected derivatives by the strategies of
-#' [expected_derivative_methods()]. A family defined by its density alone
+#' differences, and the expected derivatives by the methods of
+#' [expected_derivative_methods]. A family defined by its density alone
 #' therefore has every quantity, and a family that writes a quantity out
 #' overrides the fallback by ordinary S7 dispatch.
 #'
@@ -83,7 +83,7 @@
 #'
 #' @seealso [distrib()] for the base class and its properties;
 #'   [link_scale_derivatives()] for the `scale` argument;
-#'   [expected_derivative_methods()] for the `approx` argument;
+#'   [expected_derivative_methods()] for the `method` argument;
 #'   [check_distrib()], which exercises the whole surface;
 #'   the `defining-a-distribution` vignette.
 #' @import S7
@@ -467,15 +467,18 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #' @param theta A named list (or named numeric vector) of distribution parameters.
 #'   Each parameter must have length 1 or `length(y)`.
 #' @inheritParams distrib_gradient
-#' @param approx How the expectation is approximated when the distribution
-#'   has no closed-form expected Hessian; ignored otherwise. The value is one of
-#'   `"opg"` (the default: the outer product of the score, read at each
-#'   observation without taking an expectation), `"bartlett"` (the second
-#'   Bartlett identity, with the expectation taken by summation or
-#'   quadrature), `"integrate"` (quadrature or summation of the observed
-#'   Hessian) or `"mc"` (Monte Carlo). See [expected_derivative_methods()] for
-#'   the accuracy and speed of each.
-#' @param nsim Monte Carlo sample size used when `approx = "mc"`. Defaults to 10000.
+#' @param method `NULL` (the default) or an object that selects how the
+#'   expectation is obtained. With `NULL`, the closed form of the family is
+#'   returned where the family has one, and [expect_opg()] (the outer product
+#'   of the scores, read at each observation without taking an expectation) is
+#'   used otherwise. An object is always used, also for a family that has a
+#'   closed form: [expect_opg()], [expect_integrate()] (quadrature or summation
+#'   over the support) or [expect_mc()] (Monte Carlo, with its own sample size
+#'   `nsim`); the last two take `identity = "hessian"` for the expectation of
+#'   the observed Hessian or `identity = "score"` for the expectation of
+#'   minus the outer product of the scores. Any other value, a character string
+#'   included, signals an error. [expected_derivative_methods] compares the
+#'   methods.
 #' @param ... Additional arguments passed to the specific method.
 #' @details
 #' On the link scale the first-order term of the chain rule drops out because the
@@ -489,21 +492,25 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #' d <- gaussian1_distrib()
 #' distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 #'
-#' # the pseudo-Huber computes its expected information itself, so 'approx'
-#' # has no effect here; it applies to a family without a closed form, such as
-#' # one defined by its density alone
-#' distrib_expected_hessian(
-#'   pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
-#'   approx = "integrate"
-#' )
+#' # an object is used also by a family with a closed form: the pseudo-Huber
+#' # computes its expected information itself, and the quadrature agrees with it
+#' ph <- pseudohuber_distrib()
+#' th <- list(mu = 0, sigma = 1, nu = 1)
+#' distrib_expected_hessian(ph, 0, th)$mu_mu
+#' distrib_expected_hessian(ph, 0, th, method = expect_integrate())$mu_mu
 #' @seealso [distrib_gradient()], [distrib_hessian()], [distrib_deriv3()], [distrib_deriv4()]
 #' @export
-distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...) {
   args <- check_derivative_args(distrib, y, theta)
+  check_method(method)
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)
-  res <- S7::S7_dispatch()
+  res <- if (explicit_method(distrib, method)) {
+    route_expected(distrib, y, theta, order = 2L, method = method)
+  } else {
+    S7::S7_dispatch()
+  }
   if (scale == "link") {
     zero1 <- stats::setNames(
       # n_obs(), not length(y): for a matrix response length(y) counts entries,
@@ -535,11 +542,16 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' @param expected Logical; if `TRUE`, returns the expected third derivatives
 #'   (\eqn{\mathbb{E}[\partial^3 \ell]}) instead of the observed ones. Defaults to `FALSE`.
 #' @inheritParams distrib_gradient
-#' @param approx How the expectation is approximated when `expected = TRUE`
-#'   and the distribution has no closed-form expected third derivatives; ignored
-#'   otherwise. The value is one of `"integrate"` (default), `"bartlett"`
-#'   (equivalently `"opg"`) or `"mc"`. See [expected_derivative_methods()].
-#' @param nsim Monte Carlo sample size used when `approx = "mc"`. Defaults to 10000.
+#' @param method `NULL` (the default) or an object that selects how the
+#'   expectation is obtained; it is read only when `expected = TRUE`. With
+#'   `NULL`, the closed form of the family is returned where the family has
+#'   one, and [expect_integrate()] (with `identity = "hessian"`) is used
+#'   otherwise. An object is always used, also for a family that has a closed
+#'   form: [expect_opg()] (the empirical sum of products of the score
+#'   identity, with no expectation), [expect_integrate()] or [expect_mc()],
+#'   the last two with `identity = "hessian"` or `identity = "score"`. Any
+#'   other value, a character string included, signals an error.
+#'   [expected_derivative_methods] compares the methods.
 #' @param ... Additional arguments passed to the specific method.
 #' @return A named list of derivative-component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 3)`][deriv_names] (e.g. `"mu_mu_sigma"`).
@@ -547,14 +559,19 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' distrib_deriv3(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @seealso [distrib_gradient()], [distrib_hessian()], [distrib_expected_hessian()], [distrib_deriv4()]
 #' @export
-distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   args <- check_derivative_args(distrib, y, theta)
+  check_method(method)
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)
-  res <- S7::S7_dispatch()
+  res <- if (isTRUE(expected) && explicit_method(distrib, method)) {
+    route_expected(distrib, y, theta, order = 3L, method = method)
+  } else {
+    S7::S7_dispatch()
+  }
   if (scale == "link") {
-    nat <- link_scale_lower_orders(distrib, y, theta, expected, 3L)
+    nat <- link_scale_lower_orders(distrib, y, theta, expected, 3L, method)
     to_link_scale(distrib, theta, c(nat, list(res)), 3L)
   } else {
     res
@@ -576,11 +593,16 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' @param expected Logical; if `TRUE`, returns the expected fourth derivatives
 #'   (\eqn{\mathbb{E}[\partial^4 \ell]}) instead of the observed ones. Defaults to `FALSE`.
 #' @inheritParams distrib_gradient
-#' @param approx How the expectation is approximated when `expected = TRUE`
-#'   and the distribution has no closed-form expected fourth derivatives; ignored
-#'   otherwise. The value is one of `"integrate"` (default), `"bartlett"`
-#'   (equivalently `"opg"`) or `"mc"`. See [expected_derivative_methods()].
-#' @param nsim Monte Carlo sample size used when `approx = "mc"`. Defaults to 10000.
+#' @param method `NULL` (the default) or an object that selects how the
+#'   expectation is obtained; it is read only when `expected = TRUE`. With
+#'   `NULL`, the closed form of the family is returned where the family has
+#'   one, and [expect_integrate()] (with `identity = "hessian"`) is used
+#'   otherwise. An object is always used, also for a family that has a closed
+#'   form: [expect_opg()] (the empirical sum of products of the score
+#'   identity, with no expectation), [expect_integrate()] or [expect_mc()],
+#'   the last two with `identity = "hessian"` or `identity = "score"`. Any
+#'   other value, a character string included, signals an error.
+#'   [expected_derivative_methods] compares the methods.
 #' @param ... Additional arguments passed to the specific method.
 #' @return A named list of derivative-component vectors, keyed as in
 #'   [`deriv_names(distrib@params, 4)`][deriv_names] (e.g. `"mu_mu_sigma_sigma"`).
@@ -588,14 +610,19 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' distrib_deriv4(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @seealso [distrib_gradient()], [distrib_hessian()], [distrib_expected_hessian()], [distrib_deriv3()]
 #' @export
-distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   args <- check_derivative_args(distrib, y, theta)
+  check_method(method)
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)
-  res <- S7::S7_dispatch()
+  res <- if (isTRUE(expected) && explicit_method(distrib, method)) {
+    route_expected(distrib, y, theta, order = 4L, method = method)
+  } else {
+    S7::S7_dispatch()
+  }
   if (scale == "link") {
-    nat <- link_scale_lower_orders(distrib, y, theta, expected, 4L)
+    nat <- link_scale_lower_orders(distrib, y, theta, expected, 4L, method)
     to_link_scale(distrib, theta, c(nat, list(res)), 4L)
   } else {
     res

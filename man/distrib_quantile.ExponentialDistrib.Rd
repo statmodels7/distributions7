@@ -30,7 +30,7 @@ A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 Computes the exponential quantile function
 \deqn{Q(p; \mu) = -\mu \log(1 - p)}
 by calling \code{\link[stats:Exponential]{stats::qexp()}} at \code{rate = 1/mu}. The median is
-\eqn{\mu \log 2 \approx 0.693\mu}, which is below the mean because the
+\eqn{\mu \log 2 \method 0.693\mu}, which is below the mean because the
 distribution is right skewed at every parameter value.
 }
 \examples{

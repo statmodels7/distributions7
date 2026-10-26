@@ -14,18 +14,18 @@ length \eqn{p} is read as a single observation.}
 number.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the method returns the
-expectation, which it takes by sampling: it makes \code{nsim} draws and
-averages the observed components. Defaults to \code{FALSE}.}
+expectation, which it takes by sampling: it makes the number of draws
+that \code{method} carries and averages the observed components. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
 result. The two differ here, because \code{nu} carries a log link by default.}
 
-\item{approx}{Not read: \code{expected = TRUE} always takes the expectation by
-sampling. It is present so that the signature matches the generic's.}
-
-\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
-\code{10000}. It is not read when \code{expected = FALSE}.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on the
+family, so this method receives \code{NULL}. With \code{expected = TRUE} the
+method takes the expectation by sampling 10000 draws; an object such as
+\code{\link[=expect_mc]{expect_mc()}} with another \code{nsim} is applied by the generic. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -57,7 +57,8 @@ depends on \eqn{q}, and \eqn{\ell^{(\mu_1\mu_1\mu_1)}} is an ordinary
 non-zero number.
 
 With \code{expected = TRUE} the expectation is taken by sampling and carries
-Monte Carlo error of order \code{nsim^(-1/2)}.
+Monte Carlo error that falls as the inverse square root of the number of
+draws.
 }
 \section{Notation}{
 

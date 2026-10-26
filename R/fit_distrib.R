@@ -167,13 +167,11 @@ fit_score <- function(distrib, y, theta, threads = 1L) {
 #'   `distrib@params`.
 #' @param expected Logical of length 1, with no default. `TRUE` assembles the
 #'   expected Hessian and `FALSE` the observed one.
-#' @param approx How the expectation is approximated for a family with no
-#'   closed form for it: `"opg"` (the default), `"bartlett"`, `"integrate"` or
-#'   `"mc"`.
-#'   It is read only when `expected` is `TRUE` and the family has no exact
-#'   expression; ignored otherwise.
-#' @param nsim Monte Carlo sample size, a single positive integer, read only
-#'   when `approx = "mc"` is in force. Defaults to 10000.
+#' @param method `NULL` (the default) or an object inheriting from
+#'   [ExpectMethod] that selects how the expected information is obtained:
+#'   `NULL` takes the closed form of the family where it has one and
+#'   [expect_opg()] otherwise, and an object is used for every family; see
+#'   [expected_derivative_methods]. It is read only when `expected` is `TRUE`.
 #' @param threads How many threads the family's compiled kernels may use, as an
 #'   integer count. Defaults to `1L`. The matrix does not depend on the count.
 #'
@@ -182,15 +180,15 @@ fit_score <- function(distrib, y, theta, threads = 1L) {
 #'
 #' @seealso [fit_score()] for the first-order counterpart;
 #'   [distrib_hessian()] and [distrib_expected_hessian()], which supply the
-#'   components; [fisher_scoring()], where `approx` and `nsim` are set.
+#'   components; [fisher_scoring()], where `method` is set.
 #' @keywords internal
 fit_hess_matrix <- function(distrib, y, theta, expected,
-                            approx = "opg", nsim = 10000, threads = 1L) {
+                            method = NULL, threads = 1L) {
   params <- distrib@params
   p <- length(params)
   h <- if (expected) {
     distrib_expected_hessian(distrib, y, theta,
-      scale = "link", approx = approx, nsim = nsim, threads = threads
+      scale = "link", method = method, threads = threads
     )
   } else {
     distrib_hessian(distrib, y, theta, scale = "link", threads = threads)
@@ -204,6 +202,25 @@ fit_hess_matrix <- function(distrib, y, theta, expected,
     }
   }
   M
+}
+
+#' Error Message for a Method That Is Not an Object
+#'
+#' @description
+#' Builds the message of [fit_distrib()] for a `method` that is neither a
+#' [FisherScoring] object nor an optimizer object.
+#'
+#' @param method The rejected value.
+#'
+#' @return A single character string.
+#'
+#' @seealso [fit_distrib()], [fisher_scoring()]
+#' @keywords internal
+method_error <- function(method) {
+  sprintf(paste0(
+    "'method' must be fisher_scoring() or an optimizers7 optimizer object ",
+    "such as optimizers7::newton() or optimizers7::bfgs(), and it is '%s'."),
+    paste(class(method), collapse = "/"))
 }
 
 #' @title Total Log-Likelihood
@@ -244,7 +261,7 @@ fit_loglik <- function(distrib, y, theta) {
 #' information criteria built on it, and a record of what the optimizer did.
 #'
 #' Both scales are kept because the fit is computed on one and read on the
-#' other. The variance matrix is the inverse information at
+#' other. The variance matrix is the inverse of the observed information at
 #' \eqn{\hat\eta}; `vcov` is its image under the delta method and `ci` is
 #' `ci_eta` mapped through \eqn{g^{-1}}, so a limit on the parameter scale
 #' respects the parameter's domain by construction.
@@ -263,15 +280,15 @@ fit_loglik <- function(distrib, y, theta) {
 #' @param coefficients Named numeric estimates on the parameter scale, one per
 #'   parameter, in the order given by `distrib@params`.
 #' @param se Named standard errors on the parameter scale, from the delta
-#'   method. An entry is `NaN` where the corresponding variance came back
+#'   method applied to the inverse of the observed information. An entry is `NaN` where the corresponding variance came back
 #'   negative and `NA` where it is missing.
 #' @param ci A two-column numeric matrix of confidence limits on the parameter
 #'   scale, one row per parameter, columns `lower` and `upper`.
 #' @param eta Named estimates on the link scale, \eqn{\hat\eta = g(\hat\theta)}.
 #' @param se_eta Named standard errors on the link scale, the square roots of
 #'   the diagonal of `vcov_eta`. These are the standard errors that the fit
-#'   computes; `se` is
-#'   derived from them.
+#'   computes; `se` is derived from them. Another information matrix is
+#'   selected after the fit through [vcov.distrib_fit()].
 #' @param ci_eta A two-column numeric matrix of confidence limits on the link
 #'   scale, symmetric about `eta`.
 #' @param vcov The variance-covariance matrix on the parameter scale, with both
@@ -405,28 +422,31 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   neither `NULL` nor a list signals an error naming the argument, because
 #'   `start` sits before `method` in the signature and an optimizer passed
 #'   positionally lands here.
-#' @param method How to optimize. The argument takes one of three things:
+#' @param method An object that selects how to optimize. The argument takes one
+#'   of two kinds of object:
 #'
 #'   - [fisher_scoring()], the default: Newton's method with the expected
-#'     information in place of the observed Hessian, the object carrying how
-#'     that information is to be obtained when the family has no closed form
-#'     for it. Passing an `approx` where the family does have one signals an
-#'     error rather than ignoring it;
+#'     information in place of the observed Hessian, the object carrying the
+#'     method ([ExpectMethod]) that obtains that information. With
+#'     `method = NULL` the closed form of the family is used where there is
+#'     one, and [expect_opg()] otherwise; a method given there is used for
+#'     every family. Fisher scoring falls back to BFGS if it fails to
+#'     converge;
 #'   - an optimizer object from \pkg{optimizers7}, used as given and receiving
 #'     the analytical gradient and the observed Hessian, so that
-#'     `method = lbfgs(criterion = crit_grad(1e-12))` selects the algorithm and
-#'     the stopping rule together. A stopping rule that the optimizer cannot
-#'     evaluate is rejected here, where the message can name it;
-#'   - one of the strings `"fisher"`, `"newton"` or `"bfgs"`, short names for
-#'     the three ready-made strategies. The first two fall back to BFGS if they
-#'     fail to converge; an optimizer that the caller chose is never replaced.
+#'     `method = optimizers7::lbfgs(criterion = optimizers7::crit_grad(1e-12))`
+#'     selects the algorithm and the stopping rule together. A stopping rule
+#'     that the optimizer cannot evaluate is rejected here, where the message
+#'     can name it. An optimizer that the caller chose is never replaced.
+#'
+#'   Any other value, a character string included, signals an error.
 #'
 #'   The iteration limit and the stopping rule belong to the method and are set
 #'   there, on an optimizer through its own `maxit` and `criterion` and on
 #'   [fisher_scoring()] through the same two arguments. For
-#'   [fisher_scoring()] and the three strings the rule is
-#'   [optimizers7::crit_grad()] at its default tolerance when the method does
-#'   not set a rule; an optimizer object keeps its own default.
+#'   [fisher_scoring()] the rule is [optimizers7::crit_grad()] at its default
+#'   tolerance when the method does not set a rule; an optimizer object keeps
+#'   its own default.
 #' @param level Confidence level for `ci` and `ci_eta`, a single number in
 #'   \eqn{(0, 1)}; any other value signals an error. Defaults to 0.95. Any
 #'   other level is available afterwards from [confint.distrib_fit()] without
@@ -476,10 +496,13 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' information and every standard error are recomputed unscaled at the optimum.
 #'
 #' # Standard errors and intervals
-#' The variance matrix on the link scale is the inverse information at
-#' \eqn{\hat\eta}. The expected information is used when the family writes it
-#' out, unless `method = "newton"` is requested; otherwise the observed
-#' Hessian, which every family has, is used. The delta method carries it to the parameter scale,
+#' The variance matrix on the link scale is the inverse of the observed
+#' information at \eqn{\hat\eta}, the negative Hessian of the log-likelihood,
+#' for every family and every `method`. The matrix with which the optimizer
+#' ended is not used, and another matrix is selected after the fit with the
+#' `information` argument of [vcov.distrib_fit()], [print.distrib_fit()] and
+#' [confint.distrib_fit()] (see [information_objects]). The
+#' delta method carries the matrix to the parameter scale,
 #' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
 #'       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).}
 #' Intervals are built symmetrically on the link scale, \eqn{\hat\eta \pm
@@ -495,9 +518,8 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' negative log-likelihood. A single converged run is not taken as the answer
 #' because it may be a degenerate stationary point.
 #' Where fewer than two runs converge every start is tried and the best is
-#' kept. Fisher scoring and Newton's method fall back to BFGS from
-#' the same starting value when they fail; an optimizer that the caller named
-#' does not. Among the runs that finish, a run that converged beats one that
+#' kept. Fisher scoring falls back to BFGS from the same starting value when
+#' it fails; an optimizer object that the caller supplied does not. Among the runs that finish, a run that converged beats one that
 #' did not converge and the objective breaks ties, so the fit reports the best
 #' run and not the last. A run of a discrete family whose log-likelihood came
 #' back positive is discarded before any comparison.
@@ -586,25 +608,22 @@ fit_distrib <- function(distrib, y, start = NULL,
     ), paste(class(start), collapse = "/"), hint), call. = FALSE)
   }
 
-  # One argument says how to optimize, and it takes one of three things: a
-  # fisher_scoring() specification, an optimizers7 optimizer, or the name of
-  # one of the three ready-made strategies. How the expected information is to
-  # be approximated is a property of Fisher scoring and lives on that object,
-  # not among fit_distrib()'s own arguments, where it would sit next to
-  # optimizers that never look at it.
+  # One argument says how to optimize, and it takes one of two objects: a
+  # fisher_scoring() specification or an optimizers7 optimizer. How the
+  # expected information is to be approximated is a property of Fisher scoring
+  # and lives on that object, not among fit_distrib()'s own arguments, where it
+  # would sit next to optimizers that never look at it. The code below tells
+  # the two apart by class: `fs` is the specification, or NULL for an
+  # optimizer.
   optimizer <- NULL
-  approx <- "bartlett"
-  nsim <- 10000
+  info_method <- NULL
   fs <- NULL
 
   if (S7::S7_inherits(method, FisherScoring)) {
     fs <- method
-    method <- "fisher"
-    approx <- fs@approx
-    nsim <- fs@nsim
+    info_method <- fs@method
   } else if (S7::S7_inherits(method, optimizers7::optimizer)) {
     optimizer <- method
-    method <- "custom"
     # A stopping rule the optimizer cannot evaluate is a mistake in the call,
     # not a numerical failure, and it is raised here so that it reaches the
     # caller with its own explanation rather than being caught by the restart
@@ -622,29 +641,7 @@ fit_distrib <- function(distrib, y, start = NULL,
         "<class>) before fitting."), class(optimizer)[[1L]]), call. = FALSE)
     }
   } else {
-    method <- match.arg(method, c("fisher", "newton", "bfgs"))
-  }
-
-  # A strategy chosen where it will be ignored is a mistake in the call rather
-  # than a harmless redundancy: silently accepting it is how a caller comes to
-  # believe a fit used a method it did not.
-  #
-  # THE DEFAULT IS READ FROM fisher_scoring() RATHER THAN COPIED. This line
-  # used to compare against the literal "bartlett", which was the default when
-  # it was written; the day that default moved to "opg" the condition became
-  # true for a plain `fisher_scoring()`, and every fit of every family with a
-  # closed form would have stopped with a message about an argument the caller
-  # had not passed. The rule is the one `crit_grad`'s tolerance already
-  # follows: a threshold that mirrors a default belongs to that default.
-  fs_default_approx <- eval(formals(fisher_scoring)$approx)[[1L]]
-  if (!is.null(fs) && !identical(fs@approx, fs_default_approx) &&
-      has_exact_expected_hessian(distrib)) {
-    stop(sprintf(paste0(
-      "'%s' computes its expected information exactly, in closed form or by\n",
-      "  a quadrature of its own, so the 'approx' of fisher_scoring()\n",
-      "  would be ignored. Use fisher_scoring() with no arguments: the fit\n",
-      "  will take the exact expression."
-    ), distrib@distrib_name), call. = FALSE)
+    stop(method_error(method), call. = FALSE)
   }
 
   params <- distrib@params
@@ -721,7 +718,7 @@ fit_distrib <- function(distrib, y, start = NULL,
     function(eta) {
       th <- fit_theta_from_eta(distrib, eta)
       -fit_hess_matrix(distrib, y, th,
-        expected = expected, approx = approx, nsim = nsim, threads = tc
+        expected = expected, method = info_method, threads = tc
       ) / scale_n
     }
   }
@@ -778,14 +775,12 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
 
   run_chosen <- function(eta0) {
-    switch(method,
-      fisher = run(do.call(optimizers7::newton, opt_args),
-                   eta0, nll_he(TRUE), "Fisher scoring"),
-      newton = run(do.call(optimizers7::newton, opt_args),
-                   eta0, nll_he(FALSE), "Newton-Raphson"),
-      bfgs   = run_bfgs(eta0),
-      custom = run(optimizer, eta0, nll_he(FALSE), optimizer@name)
-    )
+    if (!is.null(fs)) {
+      run(do.call(optimizers7::newton, opt_args),
+          eta0, nll_he(TRUE), "Fisher scoring")
+    } else {
+      run(optimizer, eta0, nll_he(FALSE), optimizer@name)
+    }
   }
 
   # A discrete family's likelihood is a product of probabilities, so its
@@ -813,9 +808,9 @@ fit_distrib <- function(distrib, y, start = NULL,
     # restarts and the BFGS fallback promised below never get their turn.
     this <- tryCatch(run_chosen(eta0), error = function(e) NULL)
     # An explicitly chosen optimizer is not silently replaced; the fallback
-    # belongs to the two named second-order strategies, which can fail on a
-    # Hessian the distribution cannot supply at that point.
-    if (method %in% c("fisher", "newton") &&
+    # belongs to Fisher scoring, which can fail on a Hessian the distribution
+    # cannot supply at that point.
+    if (!is.null(fs) &&
         (is.null(this) || !isTRUE(this$converged))) {
       alt <- tryCatch(run_bfgs(eta0), error = function(e) NULL)
       # The fallback is preferred when it converges, and kept as a last resort
@@ -878,69 +873,30 @@ fit_distrib <- function(distrib, y, start = NULL,
   eta_hat <- res$eta
   theta_hat <- fit_theta_from_eta(distrib, eta_hat)
 
-  # Which information the standard errors are read off. THE EXPECTED ONE ONLY
-  # WHERE THE FAMILY WRITES IT OUT, where it costs one evaluation and has the
-  # smaller variance; otherwise the observed one, which every family has and
-  # which is exact.
+  # The reported variance matrix is the inverse of the default information at
+  # the optimum (default_information()): the observed information when the
+  # log-likelihood is twice differentiable in every parameter, and the
+  # expected information of the family otherwise, for every method. The matrix
+  # that the optimizer ended with is not used: a scoring step may be driven by
+  # any positive definite matrix, the score being exact, so Fisher scoring on a
+  # family with no closed form runs on the outer product of the observed scores
+  # (see expected_by_opg()), which has the same fixed point and is a noisier
+  # estimate of the information. Another matrix is selected after the fit, by
+  # the `information` argument of vcov().
   #
-  # The condition is about the FAMILY and not about the optimizer that ran.
-  # A scoring step may be driven by any positive definite matrix, the score
-  # being exact, so Fisher scoring on a family with no closed form is driven
-  # by the outer product of the observed scores (see expected_by_opg()) --
-  # cheap, positive semidefinite, and the same fixed point. A standard error
-  # is a different question: measured on a PIG regression at n = 500, the
-  # outer product reports standard errors 5.7 per cent from the truth where
-  # the observed information reports 0.6 per cent, for the same coefficients
-  # to 1e-06. So the step takes the cheap matrix and the report takes the
-  # accurate one.
-  #
-  # The condition used to be `!identical(method, "newton")`, a test against a
-  # STRING, and `method` has accepted an optimizer OBJECT since the
-  # delegation to optimizers7. An object is normalized to "custom" above, so
-  # `newton()` failed that test and the expected information was assembled
-  # anyway -- by quadrature, for a family that has no closed form. Measured on
-  # a user-defined Gompertz: `method = "newton"` fits in 0.15 s and
-  # `method = newton()`, the same algorithm on the same data, had not
-  # returned after five minutes. The `tryCatch` below does not help, a
-  # quadrature that fails to converge raising nothing.
-  use_expected <- !identical(method, "newton") &&
-    has_exact_expected_hessian(distrib)
-
   # The estimates stand on their own; if the information cannot be evaluated at
   # the optimum the fit is still returned, with a missing variance matrix rather
   # than an error that throws the estimates away too.
+  info0 <- default_information(distrib)
   I_eta <- tryCatch(
-    -fit_hess_matrix(distrib, y, theta_hat, expected = use_expected),
+    -fit_hess_matrix(distrib, y, theta_hat,
+                     expected = S7::S7_inherits(info0, ExpectedInfo),
+                     method = if (S7::S7_inherits(info0, ExpectedInfo)) info0@method),
     error = function(e) matrix(NA_real_, p, p, dimnames = list(params, params))
   )
   V_eta <- tryCatch(solve(I_eta), error = function(e) matrix(NA_real_, p, p))
   dimnames(V_eta) <- list(params, params)
-
-  J <- fit_dtheta_deta(distrib, eta_hat)
-  V_theta <- diag(J, p, p) %*% V_eta %*% diag(J, p, p)
-  dimnames(V_theta) <- list(params, params)
-
-  # a negative variance gives NaN, not a standard error of zero
-  var_eta <- diag(V_eta)
-  var_theta <- diag(V_theta)
-  var_eta[!is.na(var_eta) & var_eta < 0] <- NaN
-  var_theta[!is.na(var_theta) & var_theta < 0] <- NaN
-  se_eta <- sqrt(var_eta)
-  se_theta <- sqrt(var_theta)
-
-  z <- stats::qnorm(1 - (1 - level) / 2)
-  ci_eta <- cbind(lower = eta_hat - z * se_eta, upper = eta_hat + z * se_eta)
-  rownames(ci_eta) <- params
-
-  # map the link-scale interval through g^{-1}; sort in case the link decreases
-  ci_theta <- t(vapply(seq_len(p), function(i) {
-    lk <- distrib@link_params[[params[i]]]
-    # na.last keeps the pair at length two: sort() drops NAs by default, and an
-    # information matrix that could not be evaluated makes both ends missing.
-    sort(c(linkfunctions7::linkinv(lk, ci_eta[i, 1]),
-           linkfunctions7::linkinv(lk, ci_eta[i, 2])), na.last = TRUE)
-  }, numeric(2)))
-  dimnames(ci_theta) <- list(params, c("lower", "upper"))
+  inf <- fit_inference(distrib, eta_hat, V_eta, level)
 
   ll_hat <- fit_loglik(distrib, y, theta_hat)
   coefs <- stats::setNames(vapply(theta_hat, function(v) v[1], numeric(1)), params)
@@ -948,12 +904,12 @@ fit_distrib <- function(distrib, y, start = NULL,
   distrib_fit(
     distrib = distrib, y = y, n = n,
     coefficients = coefs,
-    se = stats::setNames(se_theta, params),
-    ci = ci_theta,
+    se = inf$se,
+    ci = inf$ci,
     eta = stats::setNames(eta_hat, params),
-    se_eta = stats::setNames(se_eta, params),
-    ci_eta = ci_eta,
-    vcov = V_theta, vcov_eta = V_eta,
+    se_eta = inf$se_eta,
+    ci_eta = inf$ci_eta,
+    vcov = inf$vcov, vcov_eta = inf$vcov_eta,
     loglik = ll_hat,
     aic = -2 * ll_hat + 2 * p,
     bic = -2 * ll_hat + log(n) * p,
@@ -967,6 +923,93 @@ fit_distrib <- function(distrib, y, start = NULL,
     elapsed = spent,
     level = level
   )
+}
+
+#' Standard Errors and Intervals From a Link-Scale Variance Matrix
+#'
+#' @description
+#' Carries a variance matrix of the estimates on the link scale to the
+#' quantities that a fit stores and reports: the variance matrix on the
+#' parameter scale by the delta method, the standard errors on both scales and
+#' the Wald intervals, which are symmetric on the link scale and mapped through
+#' the inverse links.
+#'
+#' @param distrib The fitted `distrib` object.
+#' @param eta The estimates on the link scale.
+#' @param V_eta The variance matrix on the link scale, named by the
+#'   parameters; entries are `NA` where it could not be computed.
+#' @param level The confidence level of the intervals.
+#'
+#' @return A list with the components `vcov`, `vcov_eta`, `se`, `se_eta`, `ci`
+#'   and `ci_eta`, laid out as the properties of the same names in
+#'   [distrib_fit()].
+#'
+#' @seealso [fit_distrib()], which stores the result for the observed
+#'   information; [vcov.distrib_fit()], which recomputes it for another matrix.
+#' @keywords internal
+fit_inference <- function(distrib, eta, V_eta, level) {
+  params <- distrib@params
+  p <- length(params)
+  J <- fit_dtheta_deta(distrib, eta)
+  V_theta <- diag(J, p, p) %*% V_eta %*% diag(J, p, p)
+  dimnames(V_theta) <- list(params, params)
+
+  # a negative variance gives NaN, not a standard error of zero
+  var_eta <- diag(V_eta)
+  var_theta <- diag(V_theta)
+  var_eta[!is.na(var_eta) & var_eta < 0] <- NaN
+  var_theta[!is.na(var_theta) & var_theta < 0] <- NaN
+  se_eta <- sqrt(var_eta)
+  se_theta <- sqrt(var_theta)
+
+  z <- stats::qnorm(1 - (1 - level) / 2)
+  ci_eta <- cbind(lower = eta - z * se_eta, upper = eta + z * se_eta)
+  rownames(ci_eta) <- params
+
+  # map the link-scale interval through g^{-1}; sort in case the link decreases
+  ci_theta <- t(vapply(seq_len(p), function(i) {
+    lk <- distrib@link_params[[params[i]]]
+    # na.last keeps the pair at length two: sort() drops NAs by default, and an
+    # information matrix that could not be evaluated makes both ends missing.
+    sort(c(linkfunctions7::linkinv(lk, ci_eta[i, 1]),
+           linkfunctions7::linkinv(lk, ci_eta[i, 2])), na.last = TRUE)
+  }, numeric(2)))
+  dimnames(ci_theta) <- list(params, c("lower", "upper"))
+
+  list(vcov = V_theta, vcov_eta = V_eta,
+       se = stats::setNames(se_theta, params),
+       se_eta = stats::setNames(se_eta, params),
+       ci = ci_theta, ci_eta = ci_eta)
+}
+
+#' Standard Errors and Intervals of a Fit for a Chosen Information
+#'
+#' @description
+#' Returns the quantities of [fit_inference()] for the information selected by
+#' an [Information] object, or by the default of the family when `information`
+#' is `NULL`. The fit stores the quantities of the default information
+#' ([default_information()]), and they are returned when the selected
+#' information is the default; otherwise the link-scale variance matrix is
+#' recomputed by [vcov.distrib_fit()] and carried through [fit_inference()].
+#'
+#' @param object A [distrib_fit()] object.
+#' @param information `NULL`, an [observed_info()] or an [expected_info()]
+#'   object.
+#'
+#' @return A list as returned by [fit_inference()].
+#'
+#' @seealso [vcov.distrib_fit()], [print.distrib_fit()],
+#'   [confint.distrib_fit()], [mv_summary()]
+#' @keywords internal
+fit_report <- function(object, information = NULL) {
+  information <- resolve_information(object@distrib, information)
+  if (same_information(information, default_information(object@distrib))) {
+    return(list(vcov = object@vcov, vcov_eta = object@vcov_eta,
+                se = object@se, se_eta = object@se_eta,
+                ci = object@ci, ci_eta = object@ci_eta))
+  }
+  V_eta <- vcov(object, scale = "link", information = information)
+  fit_inference(object@distrib, object@eta, V_eta, object@level)
 }
 
 #' @title A Duration Rendered With a Unit Matched to Its Size
@@ -1032,6 +1075,12 @@ fit_format_elapsed <- function(sec) {
 #'   (log-likelihood, AIC, BIC) are formatted to this many significant digits,
 #'   and the tables are rounded to this many decimal places by
 #'   [base::round()].
+#' @param information `NULL` (the default), an [observed_info()] object or an
+#'   [expected_info()] object, which selects the information matrix whose
+#'   inverse gives the standard errors and the intervals shown; see
+#'   [vcov.distrib_fit()]. `NULL` selects the default of the family (see
+#'   [information_objects]). A line under the header names the matrix whenever
+#'   it is not the observed information.
 #' @param ... Unused, accepted for compatibility with [base::print()].
 #'
 #' @return `x`, invisibly. The function is called for the output that it writes.
@@ -1041,6 +1090,9 @@ fit_format_elapsed <- function(sec) {
 #' d <- gaussian1_distrib()
 #' y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 #' print(fit_distrib(d, y))
+#'
+#' # Standard errors from the expected information instead.
+#' print(fit_distrib(d, y), information = expected_info())
 #'
 #' # The interval is built in the link-scale block. On a Gamma written
 #' # in the mean and the variance both parameters carry a log link, so both
@@ -1052,7 +1104,10 @@ fit_format_elapsed <- function(sec) {
 #'   [confint.distrib_fit()] to recompute the intervals at another level;
 #'   [plot.distrib_fit()] to compare the fit with the data;
 #'   [mv_summary()] for the multivariate table.
-S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
+S7::method(print, distrib_fit) <- function(x, digits = 4,
+                                           information = NULL, ...) {
+  information <- resolve_information(x@distrib, information)
+  rep_x <- fit_report(x, information)
   lo <- paste0(format((1 - x@level) / 2 * 100, trim = TRUE), "%")
   hi <- paste0(format((1 + x@level) / 2 * 100, trim = TRUE), "%")
   mv <- S7::S7_inherits(x@distrib, multivariate_distrib)
@@ -1088,6 +1143,12 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
         format(x@score, digits = 3), "\n", sep = "")
   }
   if (length(x@note) && nzchar(x@note)) cat("Note: ", x@note, "\n", sep = "")
+  if (S7::S7_inherits(information, ExpectedInfo)) {
+    cat("Standard errors from the expected information",
+        if (is.null(information@method)) "" else
+          paste0(" (", sub("^Expectation by ", "", method_label(information@method)), ")"),
+        ".\n", sep = "")
+  }
   cat("\n")
 
   # --- the estimates -------------------------------------------------------
@@ -1098,7 +1159,8 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   # with fewer free values produces fewer quantities, so the block is as small
   # as the model is.
   if (mv) {
-    tab_mv <- tryCatch(mv_summary(x), error = function(e) NULL)
+    tab_mv <- tryCatch(mv_summary(x, information = information),
+                       error = function(e) NULL)
   } else {
     tab_mv <- NULL
   }
@@ -1110,8 +1172,8 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
         v <- mv_location(x@distrib, th)
         p <- x@distrib@n_dim
         m <- cbind(
-          Estimate = unname(v), `Std. Error` = unname(x@se[seq_len(p)]),
-          unname(x@ci[seq_len(p), , drop = FALSE])
+          Estimate = unname(v), `Std. Error` = unname(rep_x$se[seq_len(p)]),
+          unname(rep_x$ci[seq_len(p), , drop = FALSE])
         )
         rownames(m) <- names(v)
         colnames(m) <- c("Estimate", "Std. Error", lo, hi)
@@ -1140,14 +1202,15 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
     )
     if (length(extra)) {
       tab_x <- cbind(Estimate = x@coefficients[extra],
-                     `Std. Error` = x@se[extra], x@ci[extra, , drop = FALSE])
+                     `Std. Error` = rep_x$se[extra],
+                     rep_x$ci[extra, , drop = FALSE])
       colnames(tab_x) <- c("Estimate", "Std. Error", lo, hi)
       cat("Other parameters:\n")
       print(round(tab_x, digits))
       cat("\n")
     }
   } else {
-    tab <- cbind(Estimate = x@coefficients, `Std. Error` = x@se, x@ci)
+    tab <- cbind(Estimate = x@coefficients, `Std. Error` = rep_x$se, rep_x$ci)
     colnames(tab) <- c("Estimate", "Std. Error", lo, hi)
     cat("Parameter scale:\n")
     print(round(tab, digits))
@@ -1165,7 +1228,7 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   if (all(links == "identity")) {
     cat("The link scale is the parameter scale: every link is the identity.\n")
   } else {
-    tab_eta <- cbind(Estimate = x@eta, `Std. Error` = x@se_eta, x@ci_eta)
+    tab_eta <- cbind(Estimate = x@eta, `Std. Error` = rep_x$se_eta, rep_x$ci_eta)
     colnames(tab_eta) <- c("Estimate", "Std. Error", lo, hi)
     cat("Link scale:\n")
     print(round(tab_eta, digits))
@@ -1223,9 +1286,9 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'
 #' @description
 #' Returns the estimated variance matrix of the estimates, on either scale.
-#' The matrix that the fit computes is on the link scale and is the inverse of
-#' the information at \eqn{\hat\eta}. The parameter-scale matrix is its image
-#' under the delta method,
+#' The matrix is computed on the link scale as the inverse of an information
+#' matrix at \eqn{\hat\eta}. The parameter-scale matrix is its image under the
+#' delta method,
 #' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
 #'       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right),}
 #' and the Jacobian is diagonal because each parameter carries its own scalar
@@ -1238,46 +1301,51 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #' @details
 #' # Which information
 #'
-#' `information` selects the matrix that is inverted, and the one that the fit
-#' stored is the default. That one is the expected information where the family
-#' writes it out, where it costs one evaluation and has the smaller variance,
-#' and the observed Hessian otherwise.
+#' The `information` argument selects the matrix that is inverted, after the
+#' fit and independently of the `method` that computed the estimates. It is
+#' `NULL`, [observed_info()] or [expected_info()] (see [information_objects]):
 #'
-#' The alternative is available because the two are different estimators and
-#' the choice is the reader's. They agree asymptotically but not in a sample.
-#' The expected information is averaged over the model, and the observed
-#' information is the curvature of the likelihood at the data in hand.
+#' - `NULL`, the default: [observed_info()] when every parameter of the family
+#'   has [params_order()] of at least 2, and [expected_info()] with
+#'   `method = NULL` otherwise, for the whole matrix. A family with a kink in a
+#'   parameter (the Laplace, the elastic net) has a singular or undefined
+#'   observed information in that parameter, and the closed-form expected
+#'   information gives finite standard errors.
+#' - [observed_info()]: the negative Hessian of the log-likelihood at the
+#'   data. It exists for every family, and it describes the curvature of the
+#'   likelihood in the sample at hand.
+#' - [expected_info()]: the Fisher information. With `method = NULL` the
+#'   closed form of the family is used where there is one, and [expect_opg()]
+#'   otherwise. An object in `method` is used for every family, one of
+#'   [expect_opg()], [expect_integrate()] and [expect_mc()] (see
+#'   [expected_derivative_methods]).
 #'
-#' Where a family does not write its expected information out,
-#' `information = "expected"` reaches a fallback, and `approx` selects it. The
-#' default `"opg"` is the outer product of the observed scores, which costs
-#' one gradient; `"bartlett"` evaluates the expectation itself, a sum over the
-#' support for a discrete family and a quadrature for a continuous one, and is
-#' orders of magnitude dearer. A fit does not report standard errors from the
-#' expected information for such a family, because the outer product of the
-#' scores is a noisier estimate of the information than the observed Hessian.
-#' The expensive route is available through `approx`, and it is not the
-#' default.
+#' The two matrices agree asymptotically and differ in a sample. The expected
+#' information is averaged over the model, and the observed information is the
+#' curvature of the likelihood in the sample at hand. For a family with no
+#' closed-form expected information, [expect_opg()] is the outer product of the
+#' observed scores, which costs one gradient and is a noisier estimate of the
+#' information than the observed Hessian; `expect_integrate(identity = "score")`
+#' evaluates the expectation itself, a sum over the support for a discrete
+#' family and a quadrature for a continuous one, and is dearer.
 #'
-#' A matrix requested through `information` is recomputed at the optimum, so it
-#' costs one evaluation of that information and is not read from the fit.
+#' The fit stores the matrix of the default information and returns it as
+#' stored. Any other information is recomputed at the optimum, so it costs one
+#' evaluation of that matrix and no refit.
 #'
 #' @param object A [distrib_fit()] object.
 #' @param scale Either `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]; anything else signals an error.
-#' @param information Which information to invert: `"fit"` (the default) is
-#'   the matrix that the fit stored, `"observed"` the Hessian at the estimates,
-#'   and `"expected"` the expected information there. The last two are
-#'   recomputed.
-#' @param approx One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, read
-#'   only when `information = "expected"` and the family has no closed form.
-#'   Defaults to `"opg"`.
-#' @param nsim Number of draws, read only by `approx = "mc"`.
+#' @param information `NULL` (the default), [observed_info()] or
+#'   [expected_info()], the information matrix to invert; `NULL` selects the
+#'   default of the family described above. [expected_info()] carries the
+#'   `method` that obtains the expectation. Any other value signals an error.
+#'   See [information_objects].
 #' @param ... Unused, accepted for compatibility with [stats::vcov()].
 #'
 #' @return A symmetric numeric matrix of dimension
 #'   `length(object@distrib@params)`, with both dimnames set to the parameter
-#'   names. With `information = "fit"` its diagonal is the square of
+#'   names. With the default `information` its diagonal is the square of
 #'   `object@se` on the parameter scale and of `object@se_eta` on the link
 #'   scale.
 #'
@@ -1300,34 +1368,34 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'
 #' # The two informations are different estimators of one quantity: close on
 #' # a well-specified fit of this size, and not identical.
-#' sqrt(diag(vcov(fit, information = "observed")))
-#' sqrt(diag(vcov(fit, information = "expected")))
+#' sqrt(diag(vcov(fit, information = observed_info())))
+#' sqrt(diag(vcov(fit, information = expected_info())))
 #'
 #' @seealso [coef.distrib_fit()] and [confint.distrib_fit()], which take the
-#'   same `scale`; [distrib_expected_hessian()] for the information itself,
-#'   and [expected_by_opg()] for what `approx = "opg"` computes.
+#'   same `scale`; [information_objects] for the two information objects;
+#'   [distrib_expected_hessian()] for the information itself, and
+#'   [expected_by_opg()] for what `method = expect_opg()` computes.
 #' @importFrom stats vcov
 S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link"),
-                                          information = c("fit", "observed", "expected"),
-                                          approx = c("opg", "bartlett", "integrate", "mc"),
-                                          nsim = 10000, ...) {
+                                          information = NULL, ...) {
   scale <- match.arg(scale)
-  information <- match.arg(information)
-  if (information == "fit") {
+  information <- resolve_information(object@distrib, information)
+  if (same_information(information, default_information(object@distrib))) {
     return(if (scale == "link") object@vcov_eta else object@vcov)
   }
 
   # Recomputed at the optimum. Everything needed is on the fit -- the family,
   # the sample and the estimates -- so no refit is involved and the cost is
-  # one evaluation of the information asked for.
+  # one evaluation of the information.
   distrib <- object@distrib
   params <- distrib@params
   p <- length(params)
   theta_hat <- object@coefficients
   V_eta <- tryCatch({
+    exp_info <- S7::S7_inherits(information, ExpectedInfo)
     I_eta <- -fit_hess_matrix(distrib, object@y, as.list(theta_hat),
-                              expected = identical(information, "expected"),
-                              approx = match.arg(approx), nsim = nsim)
+                              expected = exp_info,
+                              method = if (exp_info) information@method)
     solve(I_eta)
   }, error = function(e) matrix(NA_real_, p, p))
   dimnames(V_eta) <- list(params, params)
@@ -1366,6 +1434,10 @@ S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'   [base::match.arg()]; anything else signals an error. It is the fourth
 #'   argument, so name it: `confint(fit, "sigma", "link")` passes `"link"`
 #'   as `level`, which then signals an error.
+#' @param information `NULL` (the default), an [observed_info()] object or an
+#'   [expected_info()] object, which selects the information matrix whose
+#'   inverse gives the standard errors that the interval is built on; see
+#'   [vcov.distrib_fit()].
 #' @param ... Unused, accepted for compatibility with [stats::confint()].
 #'
 #' @return A numeric matrix with one row per requested parameter and two
@@ -1396,8 +1468,10 @@ S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'   `scale`; [fit_distrib()], whose `level` sets the default here.
 #' @importFrom stats confint qnorm
 S7::method(confint, distrib_fit) <- function(object, parm, level = object@level,
-                                             scale = c("parameter", "link"), ...) {
+                                             scale = c("parameter", "link"),
+                                             information = NULL, ...) {
   scale <- match.arg(scale)
+  se_eta <- fit_report(object, information)$se_eta
   params <- object@distrib@params
   if (!is.numeric(level) || length(level) != 1L || is.na(level) ||
       level <= 0 || level >= 1) {
@@ -1405,8 +1479,8 @@ S7::method(confint, distrib_fit) <- function(object, parm, level = object@level,
   }
 
   z <- stats::qnorm(1 - (1 - level) / 2)
-  ci_eta <- cbind(lower = object@eta - z * object@se_eta,
-                  upper = object@eta + z * object@se_eta)
+  ci_eta <- cbind(lower = object@eta - z * se_eta,
+                  upper = object@eta + z * se_eta)
   rownames(ci_eta) <- params
 
   out <- if (scale == "link") {

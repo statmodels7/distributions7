@@ -442,8 +442,8 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' \eqn{\sigma}. Compared at equal variance the two are much closer, and the
 #' logistic variance is \eqn{\pi^2\sigma^2/3}.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
-#' ignored. `y` is read only for its length.
+#' Because the values do not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -452,9 +452,10 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -488,7 +489,7 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
-S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   logistic_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -512,8 +513,8 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' closed form: \eqn{1/(2\sigma^3)} for `mu_mu_sigma`,
 #' \eqn{(2+\pi^2)/(2\sigma^3)} for `sigma_sigma_sigma`, and zero for the two
 #' components odd in \eqn{z}. They are integrals of the polynomials above
-#' against the logistic density, which reduce to values of the zeta function
-#' at even arguments. `approx` and `nsim` are ignored.
+#' against the logistic density, which reduce to values of the zeta function at
+#' even arguments.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations.
@@ -524,10 +525,10 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #'   model are returned, in closed form. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`. Ignored, because a closed form is available for the expected
-#'   values; accepted so that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use for the observed values. Defaults to `1L`.
@@ -561,7 +562,7 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' # The expected values are in closed form; the components odd in z are zero.
 #' lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 #' c(1 / (2 * 1.5^3), (2 + pi^2) / (2 * 1.5^3))
-S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) {
     # E over the standard logistic: 1/2 and (2 + pi^2)/2 at sigma = 1, the
     # components odd in z zero
@@ -590,9 +591,8 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' With `expected = TRUE` the expectations under the model are returned in
 #' closed form, as at third order: \eqn{1/(15\sigma^4)} for `mu_mu_mu_mu`,
 #' \eqn{(\pi^2-60)/(45\sigma^4)} for `mu_mu_sigma_sigma`,
-#' \eqn{(7\pi^4-600\pi^2-810)/(225\sigma^4)} for `sigma_sigma_sigma_sigma`,
-#' and zero for the two components odd in \eqn{z}. `approx` and `nsim` are
-#' ignored.
+#' \eqn{(7\pi^4-600\pi^2-810)/(225\sigma^4)} for `sigma_sigma_sigma_sigma`, and
+#' zero for the two components odd in \eqn{z}.
 #'
 #' @param distrib A `LogisticDistrib` object, from [logistic_distrib()].
 #' @param y A numeric vector of observations.
@@ -603,10 +603,10 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #'   model are returned, in closed form. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx One of `"integrate"` (the default), `"bartlett"`, `"mc"` or
-#'   `"opg"`. Ignored, because a closed form is available for the expected
-#'   values; accepted so that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use for the observed values. Defaults to `1L`.
@@ -637,7 +637,7 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 #'           tolerance = 1e-5)
-S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) {
     # E over the standard logistic at sigma = 1: 1/15, (pi^2 - 60)/45 and
     # (7 pi^4 - 600 pi^2 - 810)/225, the components odd in z zero

@@ -16,11 +16,10 @@ scale, and each value has length 1.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, because the expectation is exact. It is accepted
-so that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
-
-\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -32,11 +31,10 @@ has length \code{n_obs(distrib, y)} and is constant along it.
 \description{
 Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature, simulation or summation over the support:
-\deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}]
-      = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},}
-with \eqn{A = \partial p/\partial\eta}; on the additive log-ratio chart it is
-computed as \eqn{-n(\delta_{kl}p_k - p_kp_l)}, as shown below. \code{approx} and
-\code{nsim} are not read.
+\deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}] = -n\sum_{j=1}^{p}
+\dfrac{A_{jk}A_{jl}}{p_j},} with \eqn{A = \partial p/\partial\eta}; on the
+additive log-ratio chart it is computed as \eqn{-n(\delta_{kl}p_k -
+p_kp_l)}, as shown below.
 }
 \section{The second-derivative term}{
 Under the model \eqn{\mathbb{E}[y_j] = n p_j}, so the term of the observed
@@ -83,9 +81,9 @@ S <- mv_sigma(d, th)
 rbind(information = -vapply(eh, function(v) v[1], numeric(1)),
       covariance = c(S[1, 1], S[2, 2], S[1, 2]))
 
-# The strategy argument is inert, because the expectation is exact.
+# The method argument is inert, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, matrix(0, 1, 3), th,
-                                       approx = "mc", nsim = 50))
+                                       method = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian.MultinomialDistrib()}} for the quantity whose

@@ -12,15 +12,15 @@
 \code{x}, invisibly. The function is called for the output that it writes.
 }
 \description{
-Writes the strategy for the expected information, with the Monte Carlo
-sample size when that is the strategy, and then any setting that overrides
-the fit's: a stopping rule set here is reported as set, and an iteration
-limit by its value. The line about the strategy carries the reminder that a
-family with a closed-form expectation ignores it.
+Writes the method that obtains the expected information, with the Monte
+Carlo sample size when that is the method, and then any setting that
+overrides the fit's: a stopping rule set here is reported as set, and an
+iteration limit by its value. For \code{method = NULL} the line states that the
+closed form of the family is used where there is one.
 }
 \examples{
 fisher_scoring()
-fisher_scoring(approx = "mc", nsim = 2000)
+fisher_scoring(method = expect_mc(nsim = 2000))
 fisher_scoring(criterion = optimizers7::crit_grad(1e-9), maxit = 50)
 
 }

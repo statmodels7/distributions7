@@ -238,8 +238,8 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' Observed derivatives come from [numerical_deriv3()]: one central difference
 #' of the family's own [distrib_hessian()] along each parameter, or, for a
 #' family without its own Hessian, one tensor-product stencil on its score or
-#' its log-density. Expected ones come from [expected_derivative()] at the
-#' strategy selected by `approx`.
+#' its log-density. Expected ones come from [expected_derivative()] by the
+#' method that `method` selects.
 #'
 #' Every family shipped in this package writes the observed third order out,
 #' so this method serves a family defined outside the package, and five orders
@@ -256,11 +256,12 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'   [expected_derivative()].
 #' @param scale Handled by the generic after dispatch; this method always
 #'   returns the parameter scale.
-#' @param approx Which strategy takes the expectation, read only when
-#'   `expected` is `TRUE`: `"integrate"` (the default at this order),
-#'   `"bartlett"`, `"opg"` or `"mc"`. See [expected_derivative_methods()].
-#' @param nsim Monte Carlo sample size, a single positive number, read only
-#'   under `approx = "mc"`. Defaults to 10000.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #'
 #' @return A named list of third-derivative component vectors, each of length
@@ -269,12 +270,12 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' @seealso [numerical_deriv3()], which does the differencing;
 #'   [distrib_deriv4.distrib()] for the order above;
-#'   [expected_derivative_methods()] for what `approx` selects.
+#'   [expected_derivative_methods()] for what `method` selects.
 #' @keywords internal
-S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     numerical_deriv3(distrib, y, theta)
   }
@@ -285,14 +286,13 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #'
 #' @description
 #' Provides the fallback for a family that registers no fourth-order method.
-#' Observed
-#' derivatives come from [numerical_deriv4()]: a second difference of the
-#' family's own [distrib_hessian()] rather than a difference of the third
+#' Observed derivatives come from [numerical_deriv4()]: a second difference of
+#' the family's own [distrib_hessian()] rather than a difference of the third
 #' order, or, for a family without its own Hessian, one tensor-product stencil
 #' on its score or its log-density. On both routes each component is a single
-#' stencil, so the package's rule against nesting one difference inside
-#' another holds. Expected ones come from [expected_derivative()] at the
-#' strategy that `approx` names.
+#' stencil, so the package's rule against nesting one difference inside another
+#' holds. Expected ones come from [expected_derivative()] by the method that
+#' `method` names.
 #'
 #' As at the order below, the families shipped in this package write the
 #' fourth order out themselves. A second difference of the Hessian is less
@@ -307,11 +307,12 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #'   Hessian twice; `TRUE` takes the expectation of the observed derivatives.
 #' @param scale Handled by the generic after dispatch; this method always
 #'   returns the parameter scale.
-#' @param approx Which strategy takes the expectation, read only when
-#'   `expected` is `TRUE`: `"integrate"` (the default at this order),
-#'   `"bartlett"`, `"opg"` or `"mc"`. See [expected_derivative_methods()].
-#' @param nsim Monte Carlo sample size, a single positive number, read only
-#'   under `approx = "mc"`. Defaults to 10000.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #'
 #' @return A named list of fourth-derivative component vectors, each of length
@@ -320,12 +321,12 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #'
 #' @seealso [numerical_deriv4()], which does the differencing;
 #'   [distrib_deriv3.distrib()] for the order below;
-#'   [expected_derivative_methods()] for what `approx` selects.
+#'   [expected_derivative_methods()] for what `method` selects.
 #' @keywords internal
-S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     numerical_deriv4(distrib, y, theta)
   }

@@ -949,6 +949,9 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #'   quantities and [confint.distrib_fit()] is the function to call.
 #' @param level The confidence level, a single number strictly inside
 #'   \eqn{(0, 1)}. Defaults to the fit's own `level`. Anything else is an error.
+#' @param information `NULL` (the default), an [observed_info()] object or an
+#'   [expected_info()] object, which selects the information matrix whose
+#'   inverse gives the standard errors; see [vcov.distrib_fit()].
 #'
 #' @return A data frame with one row per quantity and four columns:
 #'   `Estimate`, `Std. Error`, and the two confidence limits, named after the
@@ -993,7 +996,8 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #' try(mv_summary(fit_distrib(gaussian1_distrib(), rnorm(50))))
 #'
 #' @export
-mv_summary <- function(object, level = object@level) {
+mv_summary <- function(object, level = object@level,
+                       information = NULL) {
   if (!S7::S7_inherits(object, distrib_fit)) {
     stop("'object' must be a distrib_fit.", call. = FALSE)
   }
@@ -1009,7 +1013,7 @@ mv_summary <- function(object, level = object@level) {
   }
 
   der <- mv_derived(d, as.list(object@coefficients))
-  v <- object@vcov
+  v <- fit_report(object, information)$vcov
   # a negative variance gives NaN, not a standard error of zero
   var_d <- diag(der$jacobian %*% v %*% t(der$jacobian))
   var_d[!is.na(var_d) & var_d < 0] <- NaN

@@ -427,11 +427,9 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}[\ell^{(\kappa\kappa)}] = -A'(\kappa),}
 #' with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 #'
-#' The zero off-diagonal makes the direction and the concentration
-#' orthogonal: the expected information is diagonal, their estimates are
-#' asymptotically independent, and Fisher scoring updates the two
-#' independently. `approx` and `nsim` are ignored because the expectation is
-#' exact.
+#' The zero off-diagonal makes the direction and the concentration orthogonal:
+#' the expected information is diagonal, their estimates are asymptotically
+#' independent, and Fisher scoring updates the two independently.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles. Only its length is read, because the
@@ -440,10 +438,10 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1. `kappa` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, because the expectation is exact. It is accepted
-#'   so that the signature matches the generic's, where it selects between
-#'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-#' @param nsim Ignored here, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -480,13 +478,12 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #' z <- distrib_rng(d, 3e5, th)
 #' vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #'
-#' # The strategy argument is inert because the expectation is exact.
+#' # The method argument is inert because the expectation is exact.
 #' identical(eh, distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th,
-#'                                        approx = "mc", nsim = 50))
+#'                                        method = expect_mc(nsim = 50)))
 S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
-                                                                   approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                   nsim = 10000, ...,
+                                                                   method = NULL, ...,
                                                                    threads = 1L) {
   n <- max(length(y), length(theta[[1]]), length(theta[[2]]))
   vonmises1_expected_hessian_cpp(n, theta[[2]], threads)
@@ -782,7 +779,7 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' by a compiled kernel.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()], and only in
-#' this case are `approx` and `nsim` read.
+#' this case are `method` read.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}. With
@@ -795,11 +792,12 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -839,12 +837,11 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
-                                                         approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...,
+                                                         method = NULL, ...,
                                                          threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = match.arg(approx), nsim = nsim))
+                               method = method))
   }
   vonmises1_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -863,7 +860,7 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #' and the pure-concentration one \eqn{-A^{(3)}(\kappa)}.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()], and only in
-#' this case are `approx` and `nsim` read.
+#' this case are `method` read.
 #'
 #' @param distrib A `VonMises1Distrib` object, from [vonmises1_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}. With
@@ -876,11 +873,12 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -919,12 +917,11 @@ S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
-                                                         approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...,
+                                                         method = NULL, ...,
                                                          threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = match.arg(approx), nsim = nsim))
+                               method = method))
   }
   vonmises1_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

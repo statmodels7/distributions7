@@ -47,7 +47,7 @@ read it.}
 parameter, in the order given by \code{distrib@params}.}
 
 \item{se}{Named standard errors on the parameter scale, from the delta
-method. An entry is \code{NaN} where the corresponding variance came back
+method applied to the inverse of the observed information. An entry is \code{NaN} where the corresponding variance came back
 negative and \code{NA} where it is missing.}
 
 \item{ci}{A two-column numeric matrix of confidence limits on the parameter
@@ -57,8 +57,8 @@ scale, one row per parameter, columns \code{lower} and \code{upper}.}
 
 \item{se_eta}{Named standard errors on the link scale, the square roots of
 the diagonal of \code{vcov_eta}. These are the standard errors that the fit
-computes; \code{se} is
-derived from them.}
+computes; \code{se} is derived from them. Another information matrix is
+selected after the fit through \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}.}
 
 \item{ci_eta}{A two-column numeric matrix of confidence limits on the link
 scale, symmetric about \code{eta}.}
@@ -120,7 +120,7 @@ errors and confidence limits, the maximized log-likelihood with the two
 information criteria built on it, and a record of what the optimizer did.
 
 Both scales are kept because the fit is computed on one and read on the
-other. The variance matrix is the inverse information at
+other. The variance matrix is the inverse of the observed information at
 \eqn{\hat\eta}; \code{vcov} is its image under the delta method and \code{ci} is
 \code{ci_eta} mapped through \eqn{g^{-1}}, so a limit on the parameter scale
 respects the parameter's domain by construction.

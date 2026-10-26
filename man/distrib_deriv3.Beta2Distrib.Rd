@@ -19,9 +19,10 @@ observed and expected third derivatives are the same numbers. Defaults to
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -46,7 +47,6 @@ B(\alpha,\beta)} of a given order is the same polygamma of the sum.
 
 The values are free of the response, so \code{expected} selects nothing: the same
 computation runs either way and the two results are identical to the bit.
-\code{approx} and \code{nsim} are ignored for the same reason.
 }
 \section{Notation}{
 

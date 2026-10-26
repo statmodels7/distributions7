@@ -10,7 +10,7 @@ sn_b()
 A single number.
 }
 \description{
-Returns \eqn{b = \sqrt{2/\pi} \approx 0.7978846}, which is
+Returns \eqn{b = \sqrt{2/\pi} \method 0.7978846}, which is
 \eqn{E[|Z|]} for a standard Gaussian \eqn{Z}. It is the one constant that
 the skew normal's first moment introduces, and it appears in every quantity of
 the centered parametrization: the mean is \eqn{\xi + \omega b\delta}, the

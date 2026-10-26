@@ -455,8 +455,8 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #' the family has no moments, because the second derivatives of the
 #' log-density are bounded functions of \eqn{y}.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
-#' ignored. `y` is read only for its length.
+#' Because the values do not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -465,9 +465,10 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -505,7 +506,7 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #' set.seed(3)
 #' z <- distrib_rng(d, 2e5, th)
 #' vapply(distrib_hessian(d, z, th), mean, numeric(1))
-S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   cauchy_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -521,11 +522,10 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #' \eqn{2/\sigma^3}. The kernel evaluates them as described in
 #' [distrib_deriv5.CauchyDistrib()], without forming \eqn{r^2}.
 #'
-#' With `expected = TRUE` the expectations under the model are returned, also in
-#' closed form: the two components odd in \eqn{r} vanish by symmetry, and the
-#' other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes are
-#' closed form, so the method runs no quadrature and ignores `approx` and
-#' `nsim`.
+#' With `expected = TRUE` the expectations under the model are returned, also
+#' in closed form: the two components odd in \eqn{r} vanish by symmetry, and
+#' the other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes
+#' are closed form and the method runs no quadrature.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -537,9 +537,10 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -574,7 +575,7 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #' up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
-S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) cauchy_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else cauchy_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -592,7 +593,7 @@ S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expecte
 #'
 #' With `expected = TRUE` the expectations under the model are returned, also
 #' in closed form; the two components odd in \eqn{r} vanish by symmetry. Both
-#' routes are closed form, so `approx` and `nsim` are ignored.
+#' routes are closed form.
 #'
 #' @param distrib A `CauchyDistrib` object, from [cauchy_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -604,9 +605,10 @@ S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expecte
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -640,7 +642,7 @@ S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 #'           tolerance = 1e-5)
-S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) cauchy_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else cauchy_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

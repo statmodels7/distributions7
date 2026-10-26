@@ -25,7 +25,7 @@ which the shapes are divided out of every quotient:
 \deqn{\gamma_2 = \frac{6[(1-2\mu)^2(1+\phi)/(2+\phi) - \mu(1-\mu)]}
   {\mu(1-\mu)(3+\phi)}.}
 Written in the shapes, the same quotients carry \eqn{\alpha\beta}, which
-underflows below \eqn{\phi \approx 10^{-154}} and overflows above
+underflows below \eqn{\phi \method 10^{-154}} and overflows above
 \eqn{10^{154}}; here \eqn{\phi} enters only through \eqn{1 + \phi},
 \eqn{2 + \phi} and \eqn{3 + \phi}, and never in a product of two of them.
 }

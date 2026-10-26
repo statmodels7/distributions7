@@ -371,10 +371,9 @@ tuple_indices_upto <- function(d, order) {
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. It is present so
-#'   that the signature matches the generic's.
-#' @param nsim Not read. It is present so that the signature matches the
-#'   generic's.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 3} there are ten
@@ -419,8 +418,7 @@ tuple_indices_upto <- function(d, order) {
 S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
                                                          expected = FALSE,
                                                          scale = c("parameter", "link"),
-                                                         approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
+                                                         method = NULL, ...) {
   dirichlet_higher(distrib, y, theta, 3L, expected = expected)
 }
 
@@ -457,10 +455,9 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. It is present so
-#'   that the signature matches the generic's.
-#' @param nsim Not read. It is present so that the signature matches the
-#'   generic's.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 3} there are fifteen
@@ -496,8 +493,7 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, DirichletDistrib) <- function(distrib, y, theta,
                                                          expected = FALSE,
                                                          scale = c("parameter", "link"),
-                                                         approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
+                                                         method = NULL, ...) {
   dirichlet_higher(distrib, y, theta, 4L, expected = expected)
 }
 
@@ -631,10 +627,9 @@ dirichlet_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. It is present so
-#'   that the signature matches the generic's.
-#' @param nsim Not read. It is present so that the signature matches the
-#'   generic's.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 3} there are four
@@ -676,8 +671,7 @@ dirichlet_higher <- function(distrib, y, theta, order, expected = FALSE) {
 S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
                                                             expected = FALSE,
                                                             scale = c("parameter", "link"),
-                                                            approx = c("integrate", "bartlett", "mc", "opg"),
-                                                            nsim = 10000, ...) {
+                                                            method = NULL, ...) {
   multinomial_higher(distrib, y, theta, 3L, expected = expected)
 }
 
@@ -711,10 +705,9 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result.
-#' @param approx Not read: the expectation is in closed form. It is present so
-#'   that the signature matches the generic's.
-#' @param nsim Not read. It is present so that the signature matches the
-#'   generic's.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 3} there are five
@@ -749,8 +742,7 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, MultinomialDistrib) <- function(distrib, y, theta,
                                                             expected = FALSE,
                                                             scale = c("parameter", "link"),
-                                                            approx = c("integrate", "bartlett", "mc", "opg"),
-                                                            nsim = 10000, ...) {
+                                                            method = NULL, ...) {
   multinomial_higher(distrib, y, theta, 4L, expected = expected)
 }
 
@@ -1055,7 +1047,8 @@ mvt_higher <- function(distrib, y, theta, order) {
 #' non-zero number.
 #'
 #' With `expected = TRUE` the expectation is taken by sampling and carries
-#' Monte Carlo error of order `nsim^(-1/2)`.
+#' Monte Carlo error that falls as the inverse square root of the number of
+#' draws.
 #'
 #' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()]
 #'   or [mvstudent_t2_distrib()].
@@ -1064,15 +1057,16 @@ mvt_higher <- function(distrib, y, theta, order) {
 #' @param theta A named list of parameters, where each component is a single
 #'   number.
 #' @param expected Logical of length 1. When `TRUE` the method returns the
-#'   expectation, which it takes by sampling: it makes `nsim` draws and
-#'   averages the observed components. Defaults to `FALSE`.
+#'   expectation, which it takes by sampling: it makes the number of draws
+#'   that `method` carries and averages the observed components. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. The two differ here, because `nu` carries a log link by default.
-#' @param approx Not read: `expected = TRUE` always takes the expectation by
-#'   sampling. It is present so that the signature matches the generic's.
-#' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. It is not read when `expected = FALSE`.
+#' @param method `NULL`: the generic applies an object before dispatching on the
+#'   family, so this method receives `NULL`. With `expected = TRUE` the
+#'   method takes the expectation by sampling 10000 draws; an object such as
+#'   [expect_mc()] with another `nsim` is applied by the generic. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 3)`. At \eqn{p = 2} on an unstructured
@@ -1114,10 +1108,9 @@ mvt_higher <- function(distrib, y, theta, order) {
 S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
+                                                           method = NULL, ...) {
   if (expected) {
-    big <- distrib_rng(distrib, nsim, theta)
+    big <- distrib_rng(distrib, method_nsim(method), theta)
     ob <- mvt_higher(distrib, big, theta, 3L)
     n <- n_obs(distrib, y)
     return(lapply(ob, function(v) rep(mean(v), n)))
@@ -1143,7 +1136,8 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #' and for its inverse.
 #'
 #' With `expected = TRUE` the expectation is taken by sampling and carries
-#' Monte Carlo error of order `nsim^(-1/2)`.
+#' Monte Carlo error that falls as the inverse square root of the number of
+#' draws.
 #'
 #' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()]
 #'   or [mvstudent_t2_distrib()].
@@ -1152,15 +1146,16 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #' @param theta A named list of parameters, where each component is a single
 #'   number.
 #' @param expected Logical of length 1. When `TRUE` the method returns the
-#'   expectation, which it takes by sampling: it makes `nsim` draws and
-#'   averages the observed components. Defaults to `FALSE`.
+#'   expectation, which it takes by sampling: it makes the number of draws
+#'   that `method` carries and averages the observed components. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. The two differ here, because `nu` carries a log link by default.
-#' @param approx Not read: `expected = TRUE` always takes the expectation by
-#'   sampling. It is present so that the signature matches the generic's.
-#' @param nsim The number of draws used when `expected = TRUE`. Defaults to
-#'   `10000`. It is not read when `expected = FALSE`.
+#' @param method `NULL`: the generic applies an object before dispatching on the
+#'   family, so this method receives `NULL`. With `expected = TRUE` the
+#'   method takes the expectation by sampling 10000 draws; an object such as
+#'   [expect_mc()] with another `nsim` is applied by the generic. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
 #'   as `deriv_names(distrib@params, 4)`. At \eqn{p = 2} on an unstructured
@@ -1197,10 +1192,9 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, MvStudentTDistrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
+                                                           method = NULL, ...) {
   if (expected) {
-    big <- distrib_rng(distrib, nsim, theta)
+    big <- distrib_rng(distrib, method_nsim(method), theta)
     ob <- mvt_higher(distrib, big, theta, 4L)
     n <- n_obs(distrib, y)
     return(lapply(ob, function(v) rep(mean(v), n)))

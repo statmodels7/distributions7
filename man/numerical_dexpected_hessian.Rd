@@ -9,8 +9,7 @@ numerical_dexpected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = "bartlett",
-  nsim = 10000,
+  method = NULL,
   h_rel = numericals7::fd_step(1, 1L)
 )
 }
@@ -23,7 +22,8 @@ numerical_dexpected_hessian(
 
 \item{scale}{Either \code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Passed to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}.}
+\item{method}{\code{NULL}, passed to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}. See
+\link{expected_derivative_methods}.}
 
 \item{h_rel}{The relative step, a cube root of machine epsilon by default,
 the value at which a central difference balances truncation against
@@ -41,7 +41,7 @@ information.
 On the parameter scale the step is chosen by \code{\link[=fd_stable_step]{fd_stable_step()}} from the
 candidates of \code{\link[=fd_steps]{fd_steps()}}, which shrink near a finite boundary so that
 both evaluation points stay strictly inside the parameter's open domain;
-with \code{approx = "mc"} the step of \code{\link[=fd_steps]{fd_steps()}} is used directly. On the link
+with an \code{\link[=expect_mc]{expect_mc()}} method the step of \code{\link[=fd_steps]{fd_steps()}} is used directly. On the link
 scale the domain is the whole line, so the step needs no clamp and is the
 plain relative one.
 

@@ -265,13 +265,17 @@ inverse_link_derivs <- function(distrib, theta, order) {
 #' @param expected Logical; whether the derivatives to compute are expected
 #'   ones.
 #' @param order The order to assemble, 1 to 5.
+#' @param method `NULL` or an object inheriting from [ExpectMethod], passed to
+#'   the expected derivatives of the lower orders so that every order of a call
+#'   is obtained by the same method. It is read only when `expected` is `TRUE`.
 #'
 #' @return A list of length `order - 1`, in which the \eqn{m}-th element is the
 #'   named list of order-\eqn{m} parameter-scale derivatives.
 #'
 #' @seealso [to_link_scale()]
 #' @keywords internal
-link_scale_lower_orders <- function(distrib, y, theta, expected, order) {
+link_scale_lower_orders <- function(distrib, y, theta, expected, order,
+                                    method = NULL) {
   params <- distrib@params
   nat <- vector("list", order - 1L)
 
@@ -283,16 +287,18 @@ link_scale_lower_orders <- function(distrib, y, theta, expected, order) {
 
   if (order >= 3L) {
     nat[[2]] <- if (isTRUE(expected)) {
-      distrib_expected_hessian(distrib, y, theta)
+      distrib_expected_hessian(distrib, y, theta, method = method)
     } else {
       distrib_hessian(distrib, y, theta)
     }
   }
   if (order >= 4L) {
-    nat[[3]] <- distrib_deriv3(distrib, y, theta, expected = expected)
+    nat[[3]] <- distrib_deriv3(distrib, y, theta, expected = expected,
+                             method = method)
   }
   if (order >= 5L) {
-    nat[[4]] <- distrib_deriv4(distrib, y, theta, expected = expected)
+    nat[[4]] <- distrib_deriv4(distrib, y, theta, expected = expected,
+                             method = method)
   }
 
   nat

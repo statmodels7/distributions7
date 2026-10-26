@@ -12,7 +12,8 @@
 
 \item{scale}{Either \code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Unused.}
+\item{method}{\code{NULL}: the generic handles an object before dispatching on
+the family. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }

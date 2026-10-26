@@ -4,15 +4,7 @@
 \alias{fit_hess_matrix}
 \title{Summed Hessian on the Link Scale, as a Matrix}
 \usage{
-fit_hess_matrix(
-  distrib,
-  y,
-  theta,
-  expected,
-  approx = "opg",
-  nsim = 10000,
-  threads = 1L
-)
+fit_hess_matrix(distrib, y, theta, expected, method = NULL, threads = 1L)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
@@ -26,14 +18,11 @@ multivariate family.}
 \item{expected}{Logical of length 1, with no default. \code{TRUE} assembles the
 expected Hessian and \code{FALSE} the observed one.}
 
-\item{approx}{How the expectation is approximated for a family with no
-closed form for it: \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or
-\code{"mc"}.
-It is read only when \code{expected} is \code{TRUE} and the family has no exact
-expression; ignored otherwise.}
-
-\item{nsim}{Monte Carlo sample size, a single positive integer, read only
-when \code{approx = "mc"} is in force. Defaults to 10000.}
+\item{method}{\code{NULL} (the default) or an object inheriting from
+\link{ExpectMethod} that selects how the expected information is obtained:
+\code{NULL} takes the closed form of the family where it has one and
+\code{\link[=expect_opg]{expect_opg()}} otherwise, and an object is used for every family; see
+\link{expected_derivative_methods}. It is read only when \code{expected} is \code{TRUE}.}
 
 \item{threads}{How many threads the family's compiled kernels may use, as an
 integer count. Defaults to \code{1L}. The matrix does not depend on the count.}
@@ -61,6 +50,6 @@ The expected information at the same point is \eqn{-400 I}.
 \seealso{
 \code{\link[=fit_score]{fit_score()}} for the first-order counterpart;
 \code{\link[=distrib_hessian]{distrib_hessian()}} and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, which supply the
-components; \code{\link[=fisher_scoring]{fisher_scoring()}}, where \code{approx} and \code{nsim} are set.
+components; \code{\link[=fisher_scoring]{fisher_scoring()}}, where \code{method} is set.
 }
 \keyword{internal}

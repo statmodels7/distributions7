@@ -20,8 +20,10 @@ expectation under the model is returned. Defaults to \code{FALSE}.}
 \item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
 generic for orders three and four and by \code{\link[=deriv5_scale]{deriv5_scale()}} for order five.}
 
-\item{approx, nsim}{Accepted for the generic's signature; the expectations
-are closed forms.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 
@@ -39,19 +41,17 @@ Return the third, fourth and fifth derivatives of the log-density in
 them is computed by its own compiled kernel.
 }
 \details{
-With \eqn{k = d/p} and \eqn{U = p\log(y/a)}, the log-density is
-\deqn{\ell = \log p - \log y + kU - e^{U} - \log\Gamma(k),}
-and \eqn{e^{U} = (y/a)^p} is a gamma variable with shape \eqn{k} and unit
-rate. Every component is a closed form derived offline and written out: a
-polynomial in \eqn{U} and \eqn{e^{U}} whose coefficients depend
-only on \eqn{(d, p)}, multiplied by \eqn{a^{-r}} for \eqn{r} derivatives
-in \eqn{a}. The coefficients contain the polygamma functions at
-\eqn{k + 1}, through
-\eqn{\psi^{(n)}(k) = \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}}, so that the
-poles in \eqn{1/k} which the derivatives combine cancel in the closed form
-and not in floating point. The expected derivatives are polynomials in the
-central moments of \eqn{U}, whose cumulants are the polygamma functions at
-\eqn{k}; \code{approx} and \code{nsim} are not read.
+With \eqn{k = d/p} and \eqn{U = p\log(y/a)}, the log-density is \deqn{\ell =
+\log p - \log y + kU - e^{U} - \log\Gamma(k),} and \eqn{e^{U} = (y/a)^p} is
+a gamma variable with shape \eqn{k} and unit rate. Every component is a
+closed form derived offline and written out: a polynomial in \eqn{U} and
+\eqn{e^{U}} whose coefficients depend only on \eqn{(d, p)}, multiplied by
+\eqn{a^{-r}} for \eqn{r} derivatives in \eqn{a}. The coefficients contain
+the polygamma functions at \eqn{k + 1}, through \eqn{\psi^{(n)}(k) =
+\psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}}, so that the poles in \eqn{1/k}
+which the derivatives combine cancel in the closed form and not in floating
+point. The expected derivatives are polynomials in the central moments of
+\eqn{U}, whose cumulants are the polygamma functions at \eqn{k};
 }
 \examples{
 d <- gengamma1_distrib()

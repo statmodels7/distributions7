@@ -9,8 +9,7 @@ distrib_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 }
@@ -28,16 +27,18 @@ the parameters \eqn{\theta} on their natural (constrained) scale, or
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
-\item{approx}{How the expectation is approximated when the distribution
-has no closed-form expected Hessian; ignored otherwise. The value is one of
-\code{"opg"} (the default: the outer product of the score, read at each
-observation without taking an expectation), \code{"bartlett"} (the second
-Bartlett identity, with the expectation taken by summation or
-quadrature), \code{"integrate"} (quadrature or summation of the observed
-Hessian) or \code{"mc"} (Monte Carlo). See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for
-the accuracy and speed of each.}
-
-\item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
+\item{method}{\code{NULL} (the default) or an object that selects how the
+expectation is obtained. With \code{NULL}, the closed form of the family is
+returned where the family has one, and \code{\link[=expect_opg]{expect_opg()}} (the outer product
+of the scores, read at each observation without taking an expectation) is
+used otherwise. An object is always used, also for a family that has a
+closed form: \code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_integrate]{expect_integrate()}} (quadrature or summation
+over the support) or \code{\link[=expect_mc]{expect_mc()}} (Monte Carlo, with its own sample size
+\code{nsim}); the last two take \code{identity = "hessian"} for the expectation of
+the observed Hessian or \code{identity = "score"} for the expectation of
+minus the outer product of the scores. Any other value, a character string
+included, signals an error. \link{expected_derivative_methods} compares the
+methods.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -59,13 +60,12 @@ congruence \eqn{\mathrm{diag}(h')\, \mathbb{E}[H]\, \mathrm{diag}(h')} with
 d <- gaussian1_distrib()
 distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 
-# the pseudo-Huber computes its expected information itself, so 'approx'
-# has no effect here; it applies to a family without a closed form, such as
-# one defined by its density alone
-distrib_expected_hessian(
-  pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
-  approx = "integrate"
-)
+# an object is used also by a family with a closed form: the pseudo-Huber
+# computes its expected information itself, and the quadrature agrees with it
+ph <- pseudohuber_distrib()
+th <- list(mu = 0, sigma = 1, nu = 1)
+distrib_expected_hessian(ph, 0, th)$mu_mu
+distrib_expected_hessian(ph, 0, th, method = expect_integrate())$mu_mu
 }
 \seealso{
 \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}

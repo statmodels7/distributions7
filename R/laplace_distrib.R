@@ -503,8 +503,8 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' \eqn{\mathrm{Var} = 1/\sigma^2}. The mixed entry vanishes because the family
 #' is symmetric about \eqn{\mu}, so \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
-#' ignored. `y` is read only for its length.
+#' Because the values do not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -513,13 +513,9 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #'   recycled. `sigma` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's. Of the strategies of the generic,
-#'   `"mc"` averages the observed second derivative over simulated draws and
-#'   would give 0 for the location; `"opg"`, `"bartlett"` and `"integrate"`
-#'   (which uses the Bartlett identity for a family with a non-smooth parameter)
-#'   read the product of scores and give \eqn{-1/\sigma^2}.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -539,11 +535,10 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' the score, which this method returns.
 #'
 #' @seealso [distrib_hessian.LaplaceDistrib()], whose `mu_mu` is zero;
-#'   [distrib_gradient.LaplaceDistrib()], whose variance this is;
-#'   [fisher_scoring()], which inverts this matrix and so fits this family
-#'   where a Newton step could not; and [distrib_expected_hessian()] for the
-#'   generic and the strategies that it offers for a family with no closed
-#'   form.
+#' [distrib_gradient.LaplaceDistrib()], whose variance this is;
+#' [fisher_scoring()], which inverts this matrix and so fits this family where
+#' a Newton step could not; and [distrib_expected_hessian()] for the generic
+#' and the methods that it offers for a family with no closed form.
 #'
 #' @examples
 #' d <- laplace_distrib()
@@ -565,7 +560,7 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' # Fisher scoring fits the family because this matrix is nonsingular; the
 #' # observed Hessian has a zero mu_mu entry.
 #' coef(fit_distrib(d, z))
-S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   laplace_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -579,10 +574,10 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #' differentiates twice or more in \eqn{\mu} is zero. The remaining components
 #' come from \eqn{-\log\sigma} and from \eqn{|r|/\sigma}.
 #'
-#' With `expected = TRUE` the expectations under the model are returned, also in
-#' closed form, using \eqn{\mathbb{E}|r| = \sigma} and
-#' \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form, so the
-#' method runs no quadrature and ignores `approx` and `nsim`.
+#' With `expected = TRUE` the expectations under the model are returned, also
+#' in closed form, using \eqn{\mathbb{E}|r| = \sigma} and
+#' \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form and the
+#' method runs no quadrature.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -594,9 +589,9 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
@@ -633,7 +628,7 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #' up <- distrib_hessian(d, y, list(mu = 0.4, sigma = 1.5 + eps))$sigma_sigma
 #' dn <- distrib_hessian(d, y, list(mu = 0.4, sigma = 1.5 - eps))$sigma_sigma
 #' all.equal((up - dn) / (2 * eps), d3$sigma_sigma_sigma, tolerance = 1e-6)
-S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   if (expected) laplace_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
   else laplace_deriv3_cpp(y, theta[[1]], theta[[2]])
 }
@@ -648,8 +643,8 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 #' remaining components come from the \eqn{-\log\sigma} term and from
 #' \eqn{|r|/\sigma}.
 #'
-#' With `expected = TRUE` the expectations under the model are returned, also in
-#' closed form. Both routes are closed form, so `approx` and `nsim` are ignored.
+#' With `expected = TRUE` the expectations under the model are returned, also
+#' in closed form. Both routes are closed form.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -661,9 +656,9 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
@@ -698,7 +693,7 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4, sigma = 1.5 - eps))$sigma_sigma_sigma
 #' all.equal((up - dn) / (2 * eps),
 #'           distrib_deriv4(d, y, th)$sigma_sigma_sigma_sigma, tolerance = 1e-5)
-S7::method(distrib_deriv4, LaplaceDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, LaplaceDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   if (expected) laplace_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
   else laplace_deriv4_cpp(y, theta[[1]], theta[[2]])
 }

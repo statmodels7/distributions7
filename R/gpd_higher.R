@@ -223,9 +223,8 @@ gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
 #'
 #' The expected derivatives follow from \eqn{V = (1 + \xi Y/\sigma)^{-1/\xi}},
 #' uniform on \eqn{(0, 1)}: each is a rational function of \eqn{\xi} over
-#' \eqn{\sigma^r}. They exist for \eqn{\xi > -1/3} at order three and
-#' \eqn{\xi > -1/4} at order four, and are `NA` below; `approx` and `nsim` are
-#' not read.
+#' \eqn{\sigma^r}. They exist for \eqn{\xi > -1/3} at order three and \eqn{\xi
+#' > -1/4} at order four, and are `NA` below;
 #'
 #' Outside the support, \eqn{y < 0} or \eqn{1 + \xi y/\sigma \le 0}, every
 #' component is `NaN`.
@@ -239,8 +238,10 @@ gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
 #'   expectation under the model is returned. Defaults to `FALSE`.
 #' @param scale `"parameter"` or `"link"`; the link scale is applied by the
 #'   generic for orders three and four and by [deriv5_scale()] for order five.
-#' @param approx,nsim Accepted for the generic's signature; the expectations
-#'   are closed forms.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`. The result does not depend on the count.
@@ -275,8 +276,7 @@ gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
 S7::method(distrib_deriv3, GPDDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ..., threads = 1L) {
+                                                    method = NULL, ..., threads = 1L) {
   if (expected) {
     gpd_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {
@@ -287,8 +287,7 @@ S7::method(distrib_deriv3, GPDDistrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, GPDDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ..., threads = 1L) {
+                                                    method = NULL, ..., threads = 1L) {
   if (expected) {
     gpd_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {

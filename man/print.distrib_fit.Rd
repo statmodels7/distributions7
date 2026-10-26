@@ -11,6 +11,13 @@
 and the tables are rounded to this many decimal places by
 \code{\link[base:Round]{base::round()}}.}
 
+\item{information}{\code{NULL} (the default), an \code{\link[=observed_info]{observed_info()}} object or an
+\code{\link[=expected_info]{expected_info()}} object, which selects the information matrix whose
+inverse gives the standard errors and the intervals shown; see
+\code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}. \code{NULL} selects the default of the family (see
+\link{information_objects}). A line under the header names the matrix whenever
+it is not the observed information.}
+
 \item{...}{Unused, accepted for compatibility with \code{\link[base:print]{base::print()}}.}
 }
 \value{
@@ -43,6 +50,9 @@ set.seed(1)
 d <- gaussian1_distrib()
 y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 print(fit_distrib(d, y))
+
+# Standard errors from the expected information instead.
+print(fit_distrib(d, y), information = expected_info())
 
 # The interval is built in the link-scale block. On a Gamma written
 # in the mean and the variance both parameters carry a log link, so both

@@ -111,7 +111,7 @@ PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_di
 #' exponentially scaled Bessel function,
 #' \eqn{\log K_1(x) = \log\{e^x K_1(x)\} - x}. The identity is exact, and the
 #' scaled function stays finite where \eqn{K_1(\sqrt{\nu})} itself
-#' underflows, which happens beyond \eqn{\sqrt{\nu} \approx 700}.
+#' underflows, which happens beyond \eqn{\sqrt{\nu} \method 700}.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -561,7 +561,6 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #' so the two halves of such an integral cancel up to rounding, and the entry
 #' comes back as zero to about \eqn{10^{-20}}.
 #'
-#' `approx` and `nsim` are accepted for the generic's sake and ignored.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -572,7 +571,10 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #'   be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()].
-#' @param approx,nsim Ignored.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads The thread count passed to the family's kernels.
 #'
@@ -622,10 +624,10 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' \eqn{\nu^{-1/2}}. The same routes serve the score, the Hessian and the
 #' fourth order.
 #'
-#' The expected third derivatives have no closed form. With
-#' `expected = TRUE` the method calls [expected_derivative()], which integrates
-#' the observed derivatives against the density by the strategy specified in
-#' `approx`. The arguments `approx` and `nsim` are read only in this case.
+#' The expected third derivatives have no closed form. With `expected = TRUE`
+#' the method calls [expected_derivative()], which integrates the observed
+#' derivatives against the density by the method specified in `method`,
+#' [expect_integrate()] when `method` is `NULL`.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -639,11 +641,12 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of ten numeric vectors, `mu_mu_mu` through
@@ -669,14 +672,14 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #'
-#' # The expected branch is a quadrature and takes a strategy; the components
+#' # The expected branch is a quadrature and takes a method; the components
 #' # odd in the residual come back at zero.
 #' vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
 #'        function(v) v[1], numeric(1))
-S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     pseudohuber_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }
@@ -691,9 +694,8 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' their derivatives come from the three routes described in
 #' [distrib_deriv3.PseudoHuberDistrib()].
 #'
-#' The expected fourth derivatives have no closed form. With
-#' `expected = TRUE` the method calls [expected_derivative()]. The arguments
-#' `approx` and `nsim` are read only in this case.
+#' The expected fourth derivatives have no closed form. With `expected = TRUE`
+#' the method calls [expected_derivative()].
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -707,11 +709,12 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of fifteen numeric vectors named for the multi-index
@@ -737,10 +740,10 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' up <- distrib_deriv3(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
-S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        method = method)
   } else {
     pseudohuber_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }
@@ -896,7 +899,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ..
 #'       \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),}
 #' with \eqn{K_1} the modified Bessel function of the second kind. The exponent
 #' is quadratic in the residual near the location, where
-#' \eqn{\sqrt{\nu + z^2} \approx \sqrt{\nu} + z^2/(2\sqrt{\nu})}, and linear
+#' \eqn{\sqrt{\nu + z^2} \method \sqrt{\nu} + z^2/(2\sqrt{\nu})}, and linear
 #' far from it, where it is \eqn{|z|}. That is the pseudo-Huber loss, and this
 #' family is its exponential.
 #'

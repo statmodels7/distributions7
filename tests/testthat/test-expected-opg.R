@@ -27,8 +27,8 @@ test_that("opg is no longer an alias of bartlett, and is the default", {
   y <- c(1, 3, 6, 10)
   th <- list(mu = 4, sigma = 0.7)
 
-  opg <- distrib_expected_hessian(d, y, th, approx = "opg")
-  bar <- distrib_expected_hessian(d, y, th, approx = "bartlett")
+  opg <- distrib_expected_hessian(d, y, th, method = expect_opg())
+  bar <- distrib_expected_hessian(d, y, th, method = expect_integrate(identity = "score"))
   def <- distrib_expected_hessian(d, y, th)
 
   expect_equal(def, opg)
@@ -57,30 +57,47 @@ test_that("the outer product estimates what the identity computes", {
   }
 })
 
-test_that("a family with a closed form is untouched by approx", {
+test_that("a family with a closed form uses an explicit method, and NULL its closed form", {
   for (fn in c("gaussian1_distrib", "gamma1_distrib", "poisson_distrib",
                "negbin2_distrib")) {
     d <- do.call(fn, list())
     th <- stats::setNames(as.list(rep(1, length(d@params))), d@params)
     y <- distrib_rng(d, 40L, th)
-    a <- distrib_expected_hessian(d, y, th, approx = "opg")
-    b <- distrib_expected_hessian(d, y, th, approx = "bartlett")
-    expect_equal(a, b, info = fn)
+    exact <- distrib_expected_hessian(d, y, th)
+    expect_identical(exact, distrib_expected_hessian(d, y, th, method = NULL))
+    a <- distrib_expected_hessian(d, y, th, method = expect_opg())
+    expect_identical(a, distributions7:::expected_by_opg(d, y, th), info = fn)
+    expect_false(isTRUE(all.equal(a, exact)), info = fn)
+    b <- distrib_expected_hessian(d, y, th, method = expect_integrate(identity = "score"))
+    expect_equal(b, exact, tolerance = 1e-6, info = fn)
   }
 })
 
-test_that("orders 3 and 4 route opg to bartlett", {
-  # the outer product of scores is the SECOND-order identity and has no
-  # counterpart above it
+test_that("orders 3 and 4 with opg are the empirical sums, not the quadrature", {
+  # the outer product of scores at order k is the score identity read at the
+  # observations; it is never routed to the integration of the same identity
   d <- gaussian1_distrib()
   th <- list(mu = 0, sigma = 1)
   y <- distrib_rng(d, 30L, th)
   for (k in 3:4) {
-    expect_equal(
-      distributions7:::expected_derivative(d, y, th, order = k, approx = "opg"),
-      distributions7:::expected_derivative(d, y, th, order = k,
-                                           approx = "bartlett")
-    )
+    o <- distributions7:::expected_derivative(d, y, th, order = k, method = expect_opg())
+    b <- distributions7:::expected_derivative(d, y, th, order = k,
+                                              method = expect_integrate(identity = "score"))
+    expect_identical(o, distributions7:::expected_by_opg(d, y, th, k))
+    expect_false(isTRUE(all.equal(o, b)))
+    # the integrated identity is constant over the observations, the sums are not
+    expect_equal(length(unique(round(b$mu_mu_sigma, 12))), 1L)
+    expect_gt(length(unique(round(o$mu_mu_sigma, 12))), 1L)
+  }
+  # and the sum over a large sample estimates the expectation
+  set.seed(6)
+  yy <- distrib_rng(d, 30000L, th)
+  for (k in 3:4) {
+    o <- distributions7:::expected_derivative(d, yy, th, order = k, method = expect_opg())
+    b <- distributions7:::expected_derivative(d, yy[1], th, order = k,
+                                              method = expect_integrate(identity = "score"))
+    nz <- names(b)[abs(unlist(b)) > 1e-6]
+    for (nm in nz) expect_equal(mean(o[[nm]]), b[[nm]], tolerance = 0.1)
   }
 })
 
@@ -101,27 +118,33 @@ test_that("expected_hessian_exact is exported and names the families that approx
   }
 })
 
-test_that("a fit reads its standard errors off the observed information where the expected one is not exact", {
+test_that("a fit reports the observed information, and the expected one is selected after the fit", {
   skip_on_cran()
   set.seed(3)
   d <- pig_bare_distrib()
   y <- distrib_rng(d, 300L, list(mu = 4, sigma = 0.6))
   fit <- fit_distrib(d, y)
 
-  # the stored matrix IS the observed one, not the outer product
-  V_obs <- vcov(fit, information = "observed")
+  # the default is the observed information, not the outer product
+  V_obs <- vcov(fit, information = observed_info())
   expect_equal(vcov(fit), V_obs)
 
   # and the expected route is reachable, different, and recomputed
-  V_exp <- vcov(fit, information = "expected")
+  V_exp <- vcov(fit, information = expected_info())
   expect_false(isTRUE(all.equal(V_obs, V_exp)))
   expect_identical(dimnames(V_exp), dimnames(V_obs))
 
-  # a family WITH a closed form keeps the expected information
+  # the same holds whatever method computed the estimates, and for a family
+  # with a closed-form expected information
   set.seed(4)
   dg <- gaussian1_distrib()
-  fg <- fit_distrib(dg, distrib_rng(dg, 300L, list(mu = 0, sigma = 1)))
-  expect_equal(vcov(fg), vcov(fg, information = "expected"))
+  yg <- distrib_rng(dg, 300L, list(mu = 0, sigma = 1))
+  fg <- fit_distrib(dg, yg)
+  fn <- fit_distrib(dg, yg, method = optimizers7::newton())
+  expect_equal(vcov(fg), vcov(fg, information = expected_info()), tolerance = 1e-6)
+  expect_equal(vcov(fg), vcov(fn), tolerance = 1e-6)
+  H <- -distributions7:::fit_hess_matrix(dg, yg, as.list(fg@coefficients), expected = FALSE)
+  expect_equal(unname(vcov(fg, scale = "link")), unname(solve(H)), tolerance = 1e-12)
 })
 
 test_that("vcov's link scale is the parameter scale under the delta method", {
@@ -129,10 +152,10 @@ test_that("vcov's link scale is the parameter scale under the delta method", {
   set.seed(5)
   d <- gaussian1_distrib()
   fit <- fit_distrib(d, distrib_rng(d, 200L, list(mu = 1, sigma = 2)))
-  for (info in c("observed", "expected")) {
+  for (info in list(observed_info(), expected_info())) {
     Ve <- vcov(fit, "link", information = info)
     Vt <- vcov(fit, "parameter", information = info)
     J <- diag(c(1, coef(fit)[["sigma"]]))
-    expect_equal(unname(Vt), J %*% Ve %*% J, info = info)
+    expect_equal(unname(Vt), J %*% Ve %*% J)
   }
 })

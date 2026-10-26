@@ -9,8 +9,7 @@ distrib_d4expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 }
@@ -24,8 +23,13 @@ distrib_d4expected_hessian(
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Accepted for symmetry with
-\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; the methods ignore them.}
+\item{method}{\code{NULL} (the default) or an object inheriting from
+\link{ExpectMethod}, as for \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}. An object returns the
+derivative of the matrix that the method defines, by Leibniz's formula for
+\code{\link[=expect_opg]{expect_opg()}} and with the moved density for \code{\link[=expect_integrate]{expect_integrate()}} and
+\code{\link[=expect_mc]{expect_mc()}}; with \code{identity = "hessian"} the fourth derivative needs
+observed derivatives of order 6 and signals an error that names
+\code{identity = "score"}. See \link{expected_derivative_methods}.}
 
 \item{...}{Passed to methods.}
 }

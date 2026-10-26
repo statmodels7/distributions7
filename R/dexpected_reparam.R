@@ -32,7 +32,9 @@ NULL
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list of parameters.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, the kernel's thread count.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
@@ -215,7 +217,7 @@ dexpected_chain <- function(Pp, Pn, E, d1, d2, maps, order, n) {
 #' @keywords internal
 reparam_dexpected_method <- function(order) {
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+           method = NULL, ...,
            threads = 1L) {
     scale <- match.arg(scale)
     dexpected_analytic(distrib, y, theta, scale, order, threads,
@@ -237,7 +239,9 @@ reparam_dexpected_method <- function(order) {
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the new parameters.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads Passed to the parent.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].

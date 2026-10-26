@@ -24,14 +24,14 @@ NULL
 register_d34expected <- function(cls, kernel) {
   S7::method(distrib_d3expected_hessian, cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"),
-      approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+      method = NULL, ...,
       threads = 1L) {
     d34expected_analytic(distrib, y, theta, match.arg(scale), 3L, threads,
                          function(k) kernel(distrib, y, theta, k, threads))
   }
   S7::method(distrib_d4expected_hessian, cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"),
-      approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+      method = NULL, ...,
       threads = 1L) {
     d34expected_analytic(distrib, y, theta, match.arg(scale), 4L, threads,
                          function(k) kernel(distrib, y, theta, k, threads))

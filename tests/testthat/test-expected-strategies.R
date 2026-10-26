@@ -30,16 +30,16 @@ test_that("all strategies recover the analytical expected Hessian", {
   # "opg" is deliberately not in this loop: it estimates this quantity rather
   # than evaluating it, so per observation it is a rank-one matrix read at the
   # data point. Its own claim is the test below.
-  for (a in c("bartlett", "integrate")) {
-    e <- distrib_expected_hessian(bg, 0, th, approx = a)
+  for (a in list(bartlett = expect_integrate(identity = "score"), integrate = expect_integrate())) {
+    e <- distrib_expected_hessian(bg, 0, th, method = a)
     for (k in names(truth)) {
       expect_equal(e[[k]][1], truth[[k]][1], tolerance = 1e-5,
-                   label = paste("expected hessian", a, k))
+                   label = paste("expected hessian", method_label(a), k))
     }
   }
 
   set.seed(11)
-  e <- distrib_expected_hessian(bg, 0, th, approx = "mc", nsim = 1e5)
+  e <- distrib_expected_hessian(bg, 0, th, method = expect_mc(nsim = 1e5))
   for (k in names(truth)) {
     expect_equal(e[[k]][1], truth[[k]][1], tolerance = 0.02,
                  label = paste("expected hessian mc", k))
@@ -54,8 +54,8 @@ test_that("'opg' is NOT an alias for 'bartlett', and estimates what it computes"
   # observation -- so the two differ per observation and agree in the mean.
   bg <- bare_gauss_rng()
   th <- list(mu = 1, sigma = 2)
-  opg <- distrib_expected_hessian(bg, 0, th, approx = "opg")
-  bar <- distrib_expected_hessian(bg, 0, th, approx = "bartlett")
+  opg <- distrib_expected_hessian(bg, 0, th, method = expect_opg())
+  bar <- distrib_expected_hessian(bg, 0, th, method = expect_integrate(identity = "score"))
   expect_false(isTRUE(all.equal(opg, bar)))
 
   # what opg returns, written out: -s_i s_j at the observation
@@ -66,19 +66,30 @@ test_that("'opg' is NOT an alias for 'bartlett', and estimates what it computes"
   # and its mean over a sample is the quantity bartlett evaluates
   set.seed(9)
   y <- distrib_rng(bg, 30000L, th)
-  opg_n <- distrib_expected_hessian(bg, y, th, approx = "opg")
+  opg_n <- distrib_expected_hessian(bg, y, th, method = expect_opg())
   for (k in names(bar)) {
     expect_equal(mean(opg_n[[k]]), bar[[k]][1], tolerance = 0.05, label = k)
   }
 })
 
-test_that("approx is ignored when the distribution has a closed form", {
+test_that("an explicit method is used when the distribution has a closed form", {
   g <- gaussian1_distrib()
   th <- list(mu = 1.5, sigma = 2)
   base <- distrib_expected_hessian(g, 0, th)
-  for (a in c("opg", "bartlett", "integrate", "mc")) {
-    expect_equal(distrib_expected_hessian(g, 0, th, approx = a), base)
+  expect_identical(distrib_expected_hessian(g, 0, th, method = NULL), base)
+  # the quadratures reproduce the closed form, but are not the closed form
+  for (a in list(expect_integrate(identity = "score"), expect_integrate())) {
+    e <- distrib_expected_hessian(g, 0, th, method = a)
+    expect_equal(e, base, tolerance = 1e-6)
+    expect_false(identical(e, base))
   }
+  # the outer product of the scores at one point and a small sample are not
+  expect_false(isTRUE(all.equal(distrib_expected_hessian(g, 0, th, method = expect_opg()),
+                                base)))
+  set.seed(3)
+  expect_false(isTRUE(all.equal(
+    distrib_expected_hessian(g, 0, th, method = expect_mc(nsim = 50)), base,
+    tolerance = 1e-6)))
 })
 
 BareLap <- S7::new_class("BareLap", parent = continuous_distrib, package = NULL)
@@ -104,36 +115,37 @@ test_that("only the score-based forms give the information for a non-regular mod
   th <- list(mu = 1, b = 2)
 
   # Bartlett = -E[score^2] = -1/b^2, the true Fisher information
-  bart <- distrib_expected_hessian(bl, 0, th, approx = "bartlett")
+  bart <- distrib_expected_hessian(bl, 0, th, method = expect_integrate(identity = "score"))
   expect_equal(bart$mu_mu[1], -1 / th$b^2, tolerance = 1e-6)
   expect_equal(bart$b_b[1], -1 / th$b^2, tolerance = 1e-6)
 
   # the observed l_mumu is 0 almost everywhere and its integral misses the
-  # point mass at the kink, so for a non-smooth parameter "integrate" takes
-  # the Bartlett form at order 2
-  integ <- distrib_expected_hessian(bl, 0, th, approx = "integrate")
-  expect_equal(integ$mu_mu[1], -1 / th$b^2, tolerance = 1e-6)
-  expect_equal(integ$b_b[1], -1 / th$b^2, tolerance = 1e-6)
+  # point mass at the kink, so for a non-smooth parameter the Hessian
+  # identity at order 2 signals an error that names the score identity
+  expect_error(distrib_expected_hessian(bl, 0, th, method = expect_integrate()),
+               'identity = "score"')
+  expect_error(distrib_expected_hessian(bl, 0, th, method = expect_mc(nsim = 100)),
+               'identity = "score"')
 
   # opg, the default, is EXACT here and needs no expectation at all: the
   # squared score of a Laplace is 1/b^2 almost surely rather than in
   # expectation, so the integrand is constant. y = 0 is not the kink, mu is 1.
-  opg <- distrib_expected_hessian(bl, 0, th, approx = "opg")
+  opg <- distrib_expected_hessian(bl, 0, th, method = expect_opg())
   expect_equal(opg$mu_mu[1], -1 / th$b^2)
 
   # AT the kink it is zero instead, sign(0) being 0, and that is the one place
   # the per-observation reading parts company with the expectation. The set has
   # probability zero, so nothing a fit aggregates is affected -- but the claim
   # above must not be written without this one beside it.
-  at_kink <- distrib_expected_hessian(bl, th$mu, th, approx = "opg")
+  at_kink <- distrib_expected_hessian(bl, th$mu, th, method = expect_opg())
   expect_equal(at_kink$mu_mu[1], 0)
 })
 
 test_that("higher-order strategies agree for a distribution with analytic derivatives", {
   st <- student_t1_distrib()
   th <- list(mu = 0, sigma = 1, nu = 8)
-  r_int <- distrib_deriv3(st, 0, th, expected = TRUE, approx = "integrate")
-  r_bar <- distrib_deriv3(st, 0, th, expected = TRUE, approx = "bartlett")
+  r_int <- distrib_deriv3(st, 0, th, expected = TRUE, method = expect_integrate())
+  r_bar <- distrib_deriv3(st, 0, th, expected = TRUE, method = expect_integrate(identity = "score"))
   for (k in names(r_int)) {
     expect_equal(r_bar[[k]][1], r_int[[k]][1], tolerance = 1e-6, label = paste("d3", k))
   }
@@ -143,7 +155,7 @@ test_that("the order-3 Bartlett identity is exact for the Poisson", {
   p <- poisson_distrib()
   th <- list(mu = 4)
   analytic <- distrib_deriv3(p, 0, th, expected = TRUE)$mu_mu_mu
-  bart <- distrib_deriv3(p, 0, th, expected = TRUE, approx = "bartlett")$mu_mu_mu
+  bart <- distrib_deriv3(p, 0, th, expected = TRUE, method = expect_integrate(identity = "score"))$mu_mu_mu
   expect_equal(bart, analytic, tolerance = 1e-8)
 })
 
@@ -155,8 +167,8 @@ test_that("integrate and bartlett agree on a purely numerical high-order derivat
   bg <- bare_gauss_rng()
   th <- list(mu = 1.5, sigma = 2)
   ref <- distrib_deriv3(gaussian1_distrib(), 0, th, expected = TRUE)
-  int <- distrib_deriv3(bg, 0, th, expected = TRUE, approx = "integrate")
-  alt <- distrib_deriv3(bg, 0, th, expected = TRUE, approx = "bartlett")
+  int <- distrib_deriv3(bg, 0, th, expected = TRUE, method = expect_integrate())
+  alt <- distrib_deriv3(bg, 0, th, expected = TRUE, method = expect_integrate(identity = "score"))
   for (k in names(ref)) {
     expect_equal(int[[k]][1], ref[[k]][1], tolerance = 1e-5, label = paste("d3 integrate", k))
     expect_equal(alt[[k]][1], ref[[k]][1], tolerance = 1e-5, label = paste("d3 bartlett", k))

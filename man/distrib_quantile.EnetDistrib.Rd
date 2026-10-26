@@ -35,7 +35,7 @@ The probability is first turned into the logarithms of both tails, without
 forming \eqn{1 - p} or exponentiating a logarithm, and each half is
 inverted from the logarithm of its own tail. The inversion calls \code{qnorm} on
 the log scale, where its argument is \eqn{\log P + \log 2 + \log\Phi(-x)},
-because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}. A
+because \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \method 38.5}. A
 probability outside \eqn{[0, 1]} gives \code{NaN}.
 }
 \examples{

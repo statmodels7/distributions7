@@ -127,10 +127,33 @@ reference:
   - link_scale_derivatives
   - distrib_kernel
   - distrib_scalar_route
-  - expected_derivative_methods
   - expected_hessian_exact
   - expected_hessian_costly
   - has_exact_deriv4
+
+- title: Methods for an expectation
+  desc: >
+    The objects that select how an expected derivative is obtained (computed
+    by quadrature, simulated or estimated from the sample), and the page that
+    compares them.
+  contents:
+  - expected_derivative_methods
+  - expect_opg
+  - expect_integrate
+  - expect_mc
+  - ExpectMethod
+
+- title: Information matrices
+  desc: >
+    The objects that select the observed or the expected information as the
+    matrix whose inverse gives the standard errors of a fit, and the page that
+    compares them.
+  contents:
+  - information_objects
+  - observed_info
+  - expected_info
+  - default_information
+  - Information
 
 - title: Estimation
   contents:

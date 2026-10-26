@@ -292,10 +292,10 @@ fold_ratio <- function(parent, x, theta, order, params, w) {
 #' @keywords internal
 fold_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-           approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+           method = NULL, ...) {
     if (expected) {
       return(expected_derivative(distrib, y, theta, order = order,
-                                 approx = match.arg(approx), nsim = nsim))
+                                 method = method))
     }
     parent <- distrib@parent_distrib
     params <- distrib@params
@@ -649,7 +649,7 @@ S7::method(distrib_hessian, FoldedDistrib) <- function(distrib, y, theta,
 #'
 #' @details
 #' With `expected = TRUE` the expectation goes to [expected_derivative()],
-#' which reads `approx` and `nsim`; there is no closed-form expectation for a
+#' which reads `method`; there is no closed-form expectation for a
 #' fold in general.
 #'
 #' @param distrib A `FoldedDistrib` object, from [folded()].
@@ -659,11 +659,12 @@ S7::method(distrib_hessian, FoldedDistrib) <- function(distrib, y, theta,
 #'   approximated by [expected_derivative()]. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx The strategy that [expected_derivative()] uses when
-#'   `expected = TRUE`: one of `"integrate"` (the default), `"bartlett"`,
-#'   `"mc"` or `"opg"`. It is ignored otherwise.
-#' @param nsim The Monte Carlo sample size when `approx = "mc"`. Defaults to
-#'   `10000`. It is ignored otherwise.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, keyed and ordered as
@@ -707,7 +708,7 @@ S7::method(distrib_deriv3, FoldedDistrib) <- fold_deriv_k(3L)
 #'
 #' @details
 #' With `expected = TRUE` the expectation goes to [expected_derivative()],
-#' which reads `approx` and `nsim`.
+#' which reads `method`.
 #'
 #' @param distrib A `FoldedDistrib` object, from [folded()].
 #' @param y A numeric vector of observations, non-negative.
@@ -716,10 +717,12 @@ S7::method(distrib_deriv3, FoldedDistrib) <- fold_deriv_k(3L)
 #'   approximated by [expected_derivative()]. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx The strategy that [expected_derivative()] uses when
-#'   `expected = TRUE`. It is ignored otherwise.
-#' @param nsim The Monte Carlo sample size when `approx = "mc"`. Defaults to
-#'   `10000`. It is ignored otherwise.
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, keyed and ordered as

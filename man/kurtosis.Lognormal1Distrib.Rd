@@ -9,7 +9,7 @@
 \item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
 (positive); each is a numeric vector of length 1 or \code{n}. Only \code{sigma2}
 enters the value; the leading exponential overflows to \code{Inf} past
-\eqn{\sigma^2 \approx 177}.}
+\eqn{\sigma^2 \method 177}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

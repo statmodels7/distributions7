@@ -22,7 +22,8 @@ length \code{length(y)}.
 \description{
 Obtains the expected derivative of a given order from expectations of
 \emph{products of lower-order} derivatives, by summing over set partitions of
-the index set.
+the index set: the score identity of \link{expected_derivative_methods}, computed
+by quadrature or by summation over the support.
 }
 \details{
 The identity of order \eqn{k} states that
@@ -36,8 +37,7 @@ At order 2 this reduces to
 \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]}, which needs only
 the score and remains the information where the log-likelihood has a kink:
 there the pointwise average of \eqn{\partial^2 \ell} is not the information,
-while the score variance still is. \code{\link[=expected_by_integrate]{expected_by_integrate()}} calls this
-function at order 2 for such a family.
+while the score variance still is.
 }
 \seealso{
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}, \code{\link[numericals7:set_partitions]{numericals7::set_partitions()}}

@@ -1491,19 +1491,18 @@ trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...
 #'
 #' The components do not depend on the data, so for a single parameter vector
 #' every returned vector is constant; if a parameter varies by observation, the
-#' components vary with it. The arguments `approx` and `nsim` are accepted so
-#' that the signature matches the generic's, and the method does not read them:
-#' the identity above is exact, and the quantities on which it rests are
-#' computed by quadrature for every value of `approx`.
+#' components vary with it. The identity above is exact, and the quantities on
+#' which it rests are computed by quadrature.
 #'
 #' @param distrib A truncated distribution object, of either class.
 #' @param y A numeric vector of observations. Only its length is used.
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored. It is present so that the signature matches the
-#'   generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, one component
@@ -1547,8 +1546,7 @@ trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...
 #' round(vapply(distrib_hessian(tn, ys, theta), mean, numeric(1)), 3)
 #' round(vapply(EH, function(z) z[1], numeric(1)), 3)
 trunc_expected_hessian <- function(distrib, y, theta, scale = c("parameter", "link"),
-                                   approx = c("opg", "bartlett", "integrate", "mc"),
-                                   nsim = 10000, ...) {
+                                   method = NULL, ...) {
   n <- length(y)
   parts <- trunc_route_parts(distrib, y, theta, "info")
   if (is.null(parts)) {
@@ -2181,9 +2179,10 @@ S7::method(distrib_hessian, TruncatedDiscreteDistrib) <- trunc_hessian
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored. It is present so that the signature matches the
-#'   generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, one component
@@ -2258,9 +2257,10 @@ S7::method(expected_hessian_exact, TruncatedContinuousDistrib) <- function(x, ..
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored. It is present so that the signature matches the
-#'   generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, one component

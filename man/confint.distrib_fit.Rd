@@ -19,6 +19,11 @@ the level at which the fit was computed, \code{object@level}.}
 argument, so name it: \code{confint(fit, "sigma", "link")} passes \code{"link"}
 as \code{level}, which then signals an error.}
 
+\item{information}{\code{NULL} (the default), an \code{\link[=observed_info]{observed_info()}} object or an
+\code{\link[=expected_info]{expected_info()}} object, which selects the information matrix whose
+inverse gives the standard errors that the interval is built on; see
+\code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}.}
+
 \item{...}{Unused, accepted for compatibility with \code{\link[stats:confint]{stats::confint()}}.}
 }
 \value{

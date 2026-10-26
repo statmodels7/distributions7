@@ -19,10 +19,10 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected values.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -39,15 +39,13 @@ distinct multi-indices of order three in two parameters.
 \description{
 Computes the four distinct third derivatives of the Gaussian log-density
 with respect to \eqn{\mu} and \eqn{v = \sigma^2}, in closed form. Writing
-\eqn{r = y - \mu},
-\deqn{\ell^{(\mu\mu\mu)} = 0, \qquad
-      \ell^{(\mu\mu v)} = \dfrac{1}{v^2}, \qquad
-      \ell^{(\mu v v)} = \dfrac{2r}{v^3}, \qquad
-      \ell^{(vvv)} = \dfrac{3r^2}{v^4} - \dfrac{1}{v^3}.}
-With \code{expected = TRUE} the expectations are returned, obtained by replacing
-\eqn{r} with 0 and \eqn{r^2} with \eqn{v}: the component odd in \eqn{r}
-vanishes and \eqn{\ell^{(vvv)}} becomes \eqn{2/v^3}. Both routes are closed
-form, so the method uses no quadrature and ignores \code{approx} and \code{nsim}.
+\eqn{r = y - \mu}, \deqn{\ell^{(\mu\mu\mu)} = 0, \qquad \ell^{(\mu\mu v)} =
+\dfrac{1}{v^2}, \qquad \ell^{(\mu v v)} = \dfrac{2r}{v^3}, \qquad
+\ell^{(vvv)} = \dfrac{3r^2}{v^4} - \dfrac{1}{v^3}.} With \code{expected = TRUE}
+the expectations are returned, obtained by replacing \eqn{r} with 0 and
+\eqn{r^2} with \eqn{v}: the component odd in \eqn{r} vanishes and
+\eqn{\ell^{(vvv)}} becomes \eqn{2/v^3}. Both routes are closed form and the
+method runs no quadrature.
 }
 \section{Notation}{
 

@@ -20,12 +20,12 @@ Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. It is read only when \code{expected = TRUE}.}
-
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
-\code{10000}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -44,8 +44,7 @@ in the powers of \eqn{r} and the order of \eqn{G} that is run rather than
 solved.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead: the
-expected third derivatives have no closed form. The method reads \code{approx}
-and \code{nsim} only in this case.
+expected third derivatives have no closed form. The method reads \code{method} only in this case.
 }
 \section{Notation}{
 

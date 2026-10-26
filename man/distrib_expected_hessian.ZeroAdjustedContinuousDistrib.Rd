@@ -15,13 +15,10 @@ its length.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{Forwarded to the parent's expected Hessian and used only where
-the parent has no closed form for it. The hurdle block is exact whatever
-the parent is. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns, for this class, the
-value that it returns for the parent, because the parent block is the only
-block that can fail to be exact.}
-
-\item{nsim}{Read for the same reason and under the same condition.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+The generic applies an object before dispatching on the class, so this
+method receives \code{NULL} and forwards \code{NULL} to the parent, which returns
+its closed form where it has one. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -39,9 +36,9 @@ blocks are exactly zero, and the parent block is the parent's own expectation
 weighted by the probability \eqn{1-\pi} that an observation reaches it.
 }
 \details{
-\code{approx} and \code{nsim} are forwarded to the expected Hessian of the parent and
-are used only where the parent has no closed form. The hurdle block does not
-read them.
+\code{method} is \code{NULL} in this method and is forwarded as such to the expected
+Hessian of the parent, which returns its closed form where it has one. The
+hurdle block does not read them.
 }
 \section{Notation}{
 

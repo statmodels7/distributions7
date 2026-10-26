@@ -17,7 +17,10 @@
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Unused.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 
@@ -74,7 +77,7 @@ expectation is a combination of Poisson moments and its coefficients are
 polynomials in \eqn{\mu} and \eqn{1/\mu}. The mixed entry of pig2 is zero at
 every order of that series, because the parametrization is orthogonal.
 
-The \code{approx} and \code{nsim} arguments are accepted and ignored.
+The \code{method} arguments are accepted and ignored.
 }
 \examples{
 d <- pig2_distrib()

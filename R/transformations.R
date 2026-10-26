@@ -1134,7 +1134,7 @@ S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, s
 #' and the Jacobian does not depend on \eqn{\theta}, the expectation of the
 #' transformed model's second derivative is the parent's expectation
 #' reparametrized by the change of variables, which is the same number. The
-#' wrapper does not add an approximation, and `approx` and `nsim` are not
+#' wrapper does not add an approximation, and `method` is not
 #' forwarded. The result is exact when the parent's expected Hessian is exact
 #' and otherwise is the value that the parent's own default route returns.
 #'
@@ -1151,10 +1151,9 @@ S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, s
 #' @param theta A named list of the parent's parameters.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the value that the method returns.
-#' @param approx Ignored: the delegation is exact. It is present so that the
-#'   signature matches the generic's. Note that it is not forwarded, so a parent
-#'   whose OWN expected Hessian is approximate takes its own default.
-#' @param nsim Ignored, for the same reason.
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, keyed as
@@ -1183,7 +1182,7 @@ S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, s
 #' # So a lognormal built this way inherits the gaussian's closed form, whose
 #' # mean block is -1 / sigma^2.
 #' c(reported = EH$mu_mu[1], theory = -1 / 0.8^2)
-S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...) {
   distrib_expected_hessian(distrib@parent_distrib, distrib@transformer@trans_inv(y), theta)
 }
 

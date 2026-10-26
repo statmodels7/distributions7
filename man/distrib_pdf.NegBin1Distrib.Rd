@@ -33,7 +33,7 @@ and this pairing gives the variance \eqn{\mu(1+\theta)}. A
 compiled kernel forms the log-mass by R's negative binomial in its mean
 parametrization (size \eqn{r} and mean \eqn{\mu}), which never forms the
 success probability \eqn{1/(1+\theta)}; that probability rounds to 1 below
-\eqn{\theta \approx 10^{-16}} and loses digits long before, so the mass
+\eqn{\theta \method 10^{-16}} and loses digits long before, so the mass
 stays accurate down to the Poisson limit. The log-mass is exponentiated
 when \code{log} is \code{FALSE}, and \code{log = TRUE} is the accurate route far into the
 tail.

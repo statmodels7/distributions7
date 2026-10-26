@@ -30,29 +30,32 @@ neither \code{NULL} nor a list signals an error naming the argument, because
 \code{start} sits before \code{method} in the signature and an optimizer passed
 positionally lands here.}
 
-\item{method}{How to optimize. The argument takes one of three things:
+\item{method}{An object that selects how to optimize. The argument takes one
+of two kinds of object:
 \itemize{
 \item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default: Newton's method with the expected
-information in place of the observed Hessian, the object carrying how
-that information is to be obtained when the family has no closed form
-for it. Passing an \code{approx} where the family does have one signals an
-error rather than ignoring it;
+information in place of the observed Hessian, the object carrying the
+method (\link{ExpectMethod}) that obtains that information. With
+\code{method = NULL} the closed form of the family is used where there is
+one, and \code{\link[=expect_opg]{expect_opg()}} otherwise; a method given there is used for
+every family. Fisher scoring falls back to BFGS if it fails to
+converge;
 \item an optimizer object from \pkg{optimizers7}, used as given and receiving
 the analytical gradient and the observed Hessian, so that
-\code{method = lbfgs(criterion = crit_grad(1e-12))} selects the algorithm and
-the stopping rule together. A stopping rule that the optimizer cannot
-evaluate is rejected here, where the message can name it;
-\item one of the strings \code{"fisher"}, \code{"newton"} or \code{"bfgs"}, short names for
-the three ready-made strategies. The first two fall back to BFGS if they
-fail to converge; an optimizer that the caller chose is never replaced.
+\code{method = optimizers7::lbfgs(criterion = optimizers7::crit_grad(1e-12))}
+selects the algorithm and the stopping rule together. A stopping rule
+that the optimizer cannot evaluate is rejected here, where the message
+can name it. An optimizer that the caller chose is never replaced.
 }
+
+Any other value, a character string included, signals an error.
 
 The iteration limit and the stopping rule belong to the method and are set
 there, on an optimizer through its own \code{maxit} and \code{criterion} and on
 \code{\link[=fisher_scoring]{fisher_scoring()}} through the same two arguments. For
-\code{\link[=fisher_scoring]{fisher_scoring()}} and the three strings the rule is
-\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its default tolerance when the method does
-not set a rule; an optimizer object keeps its own default.}
+\code{\link[=fisher_scoring]{fisher_scoring()}} the rule is \code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its default
+tolerance when the method does not set a rule; an optimizer object keeps
+its own default.}
 
 \item{level}{Confidence level for \code{ci} and \code{ci_eta}, a single number in
 \eqn{(0, 1)}; any other value signals an error. Defaults to 0.95. Any
@@ -121,10 +124,13 @@ information and every standard error are recomputed unscaled at the optimum.
 }
 
 \section{Standard errors and intervals}{
-The variance matrix on the link scale is the inverse information at
-\eqn{\hat\eta}. The expected information is used when the family writes it
-out, unless \code{method = "newton"} is requested; otherwise the observed
-Hessian, which every family has, is used. The delta method carries it to the parameter scale,
+The variance matrix on the link scale is the inverse of the observed
+information at \eqn{\hat\eta}, the negative Hessian of the log-likelihood,
+for every family and every \code{method}. The matrix with which the optimizer
+ended is not used, and another matrix is selected after the fit with the
+\code{information} argument of \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}, \code{\link[=print.distrib_fit]{print.distrib_fit()}} and
+\code{\link[=confint.distrib_fit]{confint.distrib_fit()}} (see \link{information_objects}). The
+delta method carries the matrix to the parameter scale,
 \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).}
 Intervals are built symmetrically on the link scale, \eqn{\hat\eta \pm
@@ -141,9 +147,8 @@ that converged have reached the best objective found so far, to within
 negative log-likelihood. A single converged run is not taken as the answer
 because it may be a degenerate stationary point.
 Where fewer than two runs converge every start is tried and the best is
-kept. Fisher scoring and Newton's method fall back to BFGS from
-the same starting value when they fail; an optimizer that the caller named
-does not. Among the runs that finish, a run that converged beats one that
+kept. Fisher scoring falls back to BFGS from the same starting value when
+it fails; an optimizer object that the caller supplied does not. Among the runs that finish, a run that converged beats one that
 did not converge and the objective breaks ties, so the fit reports the best
 run and not the last. A run of a discrete family whose log-likelihood came
 back positive is discarded before any comparison.

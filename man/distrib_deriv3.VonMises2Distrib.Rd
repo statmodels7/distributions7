@@ -20,12 +20,12 @@ vector of length 1 or of the length of \code{y}. \code{rho} must lie in
 model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. It is read only when \code{expected = TRUE}.}
-
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
-\code{10000}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -52,8 +52,8 @@ components are computed by a compiled kernel, which reads
 \eqn{\kappa'}, \eqn{\kappa''} and \eqn{\kappa'''} from
 \eqn{A'}, \eqn{A''} and \eqn{A'''} by the inverse function rule.
 
-With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
-the one place on this page where \code{approx} and \code{nsim} are read.
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which takes
+the expectation by \code{method}.
 }
 \section{Notation}{
 
