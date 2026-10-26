@@ -148,10 +148,11 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
   k <- theta[[2]]
   # log I_0 from numericals7: the scaled besselI underflows to an exact zero
   # between kappa = 1e5 and 1e6, where log() returns -Inf; log_bessel_i is
-  # finite wherever the logarithm itself is representable. It is also where
-  # this family spends its time -- profiled at 80.8 per cent of a fit whose
-  # concentration is modelled, so the concentration is a vector -- which is
-  # why the count is carried down to it.
+  # finite wherever the logarithm itself is representable. In a fit whose
+  # concentration is modelled the concentration is a vector, and the count
+  # is carried down to it: with numericals7 0.24.0 it is 11.5 per cent of
+  # such a fit (85 calls of 3 ms in 2.2 s at n = 20000), where it was 80.8
+  # per cent before that version summed its series by the term ratio.
   log_i0 <- numericals7::log_bessel_i(k, 0, threads)
   out <- k * cos(y - theta[[1]]) - log(2 * pi) - log_i0
   out[y < -pi | y >= pi] <- -Inf
