@@ -48,11 +48,7 @@ that the optimizer cannot evaluate is rejected here, where the message
 can name it. An optimizer that the caller chose is never replaced.
 }
 
-A character string signals an error. The strings \code{"fisher"}, \code{"newton"}
-and \code{"bfgs"} of earlier versions correspond to
-\code{fisher_scoring(approx = expect_bartlett())},
-\code{optimizers7::newton(criterion = optimizers7::crit_grad())} and
-\code{optimizers7::bfgs(criterion = optimizers7::crit_grad())}.
+Any other value, a character string included, signals an error.
 
 The iteration limit and the stopping rule belong to the method and are set
 there, on an optimizer through its own \code{maxit} and \code{criterion} and on
@@ -128,10 +124,13 @@ information and every standard error are recomputed unscaled at the optimum.
 }
 
 \section{Standard errors and intervals}{
-The variance matrix on the link scale is the inverse information at
-\eqn{\hat\eta}. The expected information is used when the family writes it
-out; otherwise the observed Hessian, which every family has, is used. The
-delta method carries it to the parameter scale,
+The variance matrix on the link scale is the inverse of the observed
+information at \eqn{\hat\eta}, the negative Hessian of the log-likelihood,
+for every family and every \code{method}. The matrix with which the optimizer
+ended is not used, and another matrix is selected after the fit with the
+\code{information} argument of \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}, \code{\link[=print.distrib_fit]{print.distrib_fit()}} and
+\code{\link[=confint.distrib_fit]{confint.distrib_fit()}} (see \link{information_objects}). The
+delta method carries the matrix to the parameter scale,
 \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).}
 Intervals are built symmetrically on the link scale, \eqn{\hat\eta \pm

@@ -76,7 +76,7 @@ distrib_d3expected_hessian <- S7::new_generic(
            approx = expect_opg(),
            ...) {
     args <- check_derivative_args(distrib, y, theta)
-    check_approx_args(missing(approx), approx, ...names())
+    if (!missing(approx)) check_approx(approx)
     y <- args$y
     theta <- args$theta
     S7::S7_dispatch()
@@ -148,7 +148,7 @@ distrib_d4expected_hessian <- S7::new_generic(
            approx = expect_opg(),
            ...) {
     args <- check_derivative_args(distrib, y, theta)
-    check_approx_args(missing(approx), approx, ...names())
+    if (!missing(approx)) check_approx(approx)
     y <- args$y
     theta <- args$theta
     S7::S7_dispatch()

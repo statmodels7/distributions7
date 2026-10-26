@@ -500,7 +500,7 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #' @export
 distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...) {
   args <- check_derivative_args(distrib, y, theta)
-  check_approx_args(missing(approx), approx, ...names())
+  if (!missing(approx)) check_approx(approx)
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)
@@ -552,7 +552,7 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' @export
 distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...) {
   args <- check_derivative_args(distrib, y, theta)
-  check_approx_args(missing(approx), approx, ...names())
+  if (!missing(approx)) check_approx(approx)
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)
@@ -596,7 +596,7 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' @export
 distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...) {
   args <- check_derivative_args(distrib, y, theta)
-  check_approx_args(missing(approx), approx, ...names())
+  if (!missing(approx)) check_approx(approx)
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)

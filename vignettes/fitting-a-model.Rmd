@@ -78,6 +78,15 @@ and standard errors without refitting:
 confint(fit, level = 0.99)
 ```
 
+The standard errors are the square roots of the diagonal of the inverse of the
+observed information at the estimates, whatever method computed them. The
+expected information is selected after the fit, with the `information`
+argument of `vcov()`, `confint()` and `print()`; see `?information_objects`.
+
+```{r}
+vcov(fit, information = expected_info())
+```
+
 The object also carries the information criteria, the number of iterations and
 the method that was actually used, and the print above shows all of them.
 

@@ -4,7 +4,7 @@
 \alias{expected_by_integrate}
 \title{Expected Derivatives by Numerical Integration}
 \usage{
-expected_by_integrate(distrib, y, theta, order)
+expected_by_integrate(distrib, y, theta, order, approx = expect_integrate())
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
@@ -15,6 +15,10 @@ recycle the result: an expectation does not depend on the sample.}
 \item{theta}{A named list of parameters, aligned to \code{distrib@params}.}
 
 \item{order}{The derivative order, a single integer from 2 to 4.}
+
+\item{approx}{An \link{ExpectIntegrate} object, whose tolerances and limits
+govern the quadrature and the series summation. The default is
+\code{\link[=expect_integrate]{expect_integrate()}}.}
 }
 \value{
 A named list of expected derivative component vectors; each has

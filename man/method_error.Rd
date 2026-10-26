@@ -14,9 +14,7 @@ A single character string.
 }
 \description{
 Builds the message of \code{\link[=fit_distrib]{fit_distrib()}} for a \code{method} that is neither a
-\link{FisherScoring} object nor an optimizer object. A character string of the
-former interface (\code{"fisher"}, \code{"newton"} or \code{"bfgs"}) produces a message
-that names the object that replaces it.
+\link{FisherScoring} object nor an optimizer object.
 }
 \seealso{
 \code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=fisher_scoring]{fisher_scoring()}}

@@ -4,11 +4,38 @@
 \alias{expect_integrate}
 \title{Integration Against the Density as the Expected Derivative}
 \usage{
-expect_integrate()
+expect_integrate(
+  quad_atol = 1e-10,
+  quad_rtol = 1e-08,
+  max_panels = 4096L,
+  series_atol = 1e-12,
+  series_rtol = 1e-10,
+  max_terms = 100000L
+)
+}
+\arguments{
+\item{quad_atol, quad_rtol}{The absolute and the relative tolerance of the
+quadrature of a continuous family, single positive finite numbers. A
+panel of the integration is accepted when its error estimate is below
+\code{quad_atol + quad_rtol * abs(integral)}. The defaults are 1e-10 and 1e-8.}
+
+\item{max_panels}{The largest number of panels that the quadrature of one
+parameter configuration may reach, a single positive finite number. A row
+that needs more panels is not accepted by the batched quadrature and is
+integrated by the scalar integrator of \pkg{stats}. The default is 4096.}
+
+\item{series_atol, series_rtol}{The absolute and the relative tolerance of
+the series summation of a discrete family, single positive finite
+numbers. The defaults are 1e-12 and 1e-10.}
+
+\item{max_terms}{The largest number of terms of a series, a single positive
+finite number. A series that has not met its tolerance after that many
+terms signals an error. The default is 100000.}
 }
 \value{
 An S7 object of class \code{ExpectIntegrate}, which inherits from
-\link{ExpectApprox}, with no properties.
+\link{ExpectApprox}, with the properties \code{quad_atol}, \code{quad_rtol},
+\code{max_panels}, \code{series_atol}, \code{series_rtol} and \code{max_terms}.
 }
 \description{
 Selects numerical integration over the response as the approximation of an
@@ -17,11 +44,11 @@ integrated against the density,
 \deqn{\mathbb{E}[\partial^k \ell] = \int \partial^k \ell(y;\theta)\,
 f(y;\theta)\,dy,}
 by batched adaptive quadrature for a continuous family and by series
-summation for a discrete one. The tolerances of the quadrature and of the
-series are those of \code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} and \code{\link[numericals7:series_vec]{numericals7::series_vec()}}
-and cannot be set through this object. The computation is deterministic and
-is normally the most accurate of the approximations when the observed
-derivative is available in closed form.
+summation for a discrete one. The computation is deterministic and is
+normally the most accurate of the approximations when the observed
+derivative is available in closed form. The accuracy of the quadrature and
+of the series is set by the arguments of the constructor, whose defaults are
+those of \code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} and \code{\link[numericals7:series_vec]{numericals7::series_vec()}}.
 
 At order 2, for a family that has a non-smooth parameter (see
 \code{\link[=param_smoothness]{param_smoothness()}}), the observed second derivative lacks the point mass
@@ -45,6 +72,11 @@ d <- Dens(distrib_name = "dens", dimension = "univariate",
 th <- list(mu = 0, sigma = 2)
 # The expected information of sigma is 2 / sigma^2 = 0.5 in absolute value.
 distrib_expected_hessian(d, 0, th, approx = expect_integrate())$sigma_sigma
+
+# Tighter tolerances for the quadrature are set in the object.
+a <- expect_integrate(quad_atol = 1e-12, quad_rtol = 1e-10)
+a
+distrib_expected_hessian(d, 0, th, approx = a)$sigma_sigma
 
 }
 \seealso{

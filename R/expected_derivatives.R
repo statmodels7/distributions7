@@ -18,6 +18,12 @@ NULL
 #' [expect_integrate()] and [expect_mc()], and they inherit from the class
 #' [ExpectApprox].
 #'
+#' The expected information of a fit, the matrix whose inverse gives the
+#' standard errors when [expected_info()] is selected, is built from the
+#' expected Hessian. An [expected_info()] object carries one of the four
+#' approximations in its `approx` property, and the object [observed_info()]
+#' takes none; [information_objects] compares the two information objects.
+#'
 #' @details
 #' Let \eqn{\ell} be the log-density and \eqn{\ell_{i}, \ell_{ij}, \dots} its
 #' derivatives with respect to the parameters.
@@ -61,9 +67,9 @@ NULL
 #'     parameter (see [param_smoothness()]), it evaluates
 #'     \eqn{-\mathbb{E}[\ell_i \ell_j]} as [expect_bartlett()] does, because the
 #'     observed \eqn{\ell_{ij}} then lacks the point mass at the kink. The
-#'     tolerances of the quadrature and of the series are those of
-#'     [numericals7::quad_vec()] and [numericals7::series_vec()] and are not
-#'     arguments of the constructor.}
+#'     tolerances and limits of the quadrature and of the series are
+#'     arguments of the constructor, and their defaults are those of
+#'     [numericals7::quad_vec()] and [numericals7::series_vec()].}
 #'
 #'   \item{[expect_mc()]}{Simulates `nsim` observations from the distribution
 #'     and averages the observed derivative over them. The simplest and most
@@ -90,8 +96,9 @@ NULL
 #' direct integration of the available derivative is usually cheaper and more
 #' accurate. [fisher_scoring()] defaults to [expect_opg()], and
 #' [fit_distrib()] rejects an approximation other than that default for a
-#' family with a closed-form expected information. The `vcov()` method of a
-#' fit defaults to [expect_opg()]. Passing [expect_opg()] to [distrib_deriv3()]
+#' family with a closed-form expected information. [expected_info()]
+#' defaults to [expect_opg()], and the `vcov()` method of a fit defaults to
+#' [observed_info()], which takes no approximation. Passing [expect_opg()] to [distrib_deriv3()]
 #' or [distrib_deriv4()] gives the computation of [expect_bartlett()], because
 #' the outer product of the scores has no counterpart above order 2.
 #'
@@ -153,6 +160,8 @@ NULL
 #'   [distrib_expected_hessian()], [distrib_deriv3()] and
 #'   [distrib_deriv4()], the generics that take `approx`;
 #'   [fisher_scoring()], where it is set for a fit;
+#'   [expected_info()] and [observed_info()], the objects that select the
+#'   information of a fit, and [information_objects] for their comparison;
 #'   [expected_by_bartlett()], [expected_by_integrate()] and
 #'   [expected_by_mc()] for the implementations.
 NULL
@@ -221,6 +230,9 @@ observed_deriv <- function(distrib, y, theta, order) {
 #'   recycle the result: an expectation does not depend on the sample.
 #' @param theta A named list of parameters, aligned to `distrib@params`.
 #' @param order The derivative order, a single integer from 2 to 4.
+#' @param approx An [ExpectIntegrate] object, whose tolerances and limits
+#'   govern the quadrature and the series summation. The default is
+#'   [expect_integrate()].
 #'
 #' @return A named list of expected derivative component vectors; each has
 #'   length `length(y)`, and the names are the keys that [observed_deriv()]
@@ -231,7 +243,10 @@ observed_deriv <- function(distrib, y, theta, order) {
 #'   [expected_by_mc()] where quadrature performs poorly;
 #'   [expectation()], which does the integration.
 #' @keywords internal
-expected_by_integrate <- function(distrib, y, theta, order) {
+expected_by_integrate <- function(distrib, y, theta, order,
+                                  approx = expect_integrate()) {
+  old <- set_integration_settings(approx)
+  on.exit(set_integration_settings(old))
   if (order == 2L && !all(param_smoothness(distrib))) {
     return(expected_by_bartlett(distrib, y, theta, 2L))
   }

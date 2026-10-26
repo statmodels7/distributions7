@@ -101,8 +101,8 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
                               n_start = 1L))
 
   # the object validates its own arguments
-  expect_error(fisher_scoring(approx = "nonsense"), "expectation object")
-  expect_error(fisher_scoring(approx = "mc"), "expect_mc")
+  expect_error(fisher_scoring(approx = "nonsense"), "ExpectApprox object")
+  expect_error(fisher_scoring(approx = "mc"), "ExpectApprox object")
   expect_error(expect_mc(nsim = -1), "positive")
   expect_error(fisher_scoring(nsim = 5), "unused argument")
   expect_error(fisher_scoring(criterion = "grad"), "stopping rule")

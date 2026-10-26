@@ -18,6 +18,8 @@ A numeric vector of sums, one per row.
 }
 \description{
 Calls \code{\link[numericals7:series_vec]{numericals7::series_vec()}}, muffles its warning and
-promotes a row that did not converge to an error that names the row.
+promotes a row that did not converge to an error that names the row. The
+tolerances and the term limit are those of the \link{ExpectIntegrate} object in
+force (see \code{\link[=expect_integrate]{expect_integrate()}}).
 }
 \keyword{internal}

@@ -222,6 +222,7 @@ Collate:
     'fit_distrib.R'
     'gengamma1_higher.R'
     'gpd_higher.R'
+    'information.R'
     'kink_decomposition.R'
     'log_tail.R'
     'methods.R'

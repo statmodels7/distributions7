@@ -101,27 +101,33 @@ test_that("expected_hessian_exact is exported and names the families that approx
   }
 })
 
-test_that("a fit reads its standard errors off the observed information where the expected one is not exact", {
+test_that("a fit reports the observed information, and the expected one is selected after the fit", {
   skip_on_cran()
   set.seed(3)
   d <- pig_bare_distrib()
   y <- distrib_rng(d, 300L, list(mu = 4, sigma = 0.6))
   fit <- fit_distrib(d, y)
 
-  # the stored matrix IS the observed one, not the outer product
-  V_obs <- vcov(fit, information = "observed")
+  # the default is the observed information, not the outer product
+  V_obs <- vcov(fit, information = observed_info())
   expect_equal(vcov(fit), V_obs)
 
   # and the expected route is reachable, different, and recomputed
-  V_exp <- vcov(fit, information = "expected")
+  V_exp <- vcov(fit, information = expected_info())
   expect_false(isTRUE(all.equal(V_obs, V_exp)))
   expect_identical(dimnames(V_exp), dimnames(V_obs))
 
-  # a family WITH a closed form keeps the expected information
+  # the same holds whatever method computed the estimates, and for a family
+  # with a closed-form expected information
   set.seed(4)
   dg <- gaussian1_distrib()
-  fg <- fit_distrib(dg, distrib_rng(dg, 300L, list(mu = 0, sigma = 1)))
-  expect_equal(vcov(fg), vcov(fg, information = "expected"))
+  yg <- distrib_rng(dg, 300L, list(mu = 0, sigma = 1))
+  fg <- fit_distrib(dg, yg)
+  fn <- fit_distrib(dg, yg, method = optimizers7::newton())
+  expect_equal(vcov(fg), vcov(fg, information = expected_info()), tolerance = 1e-6)
+  expect_equal(vcov(fg), vcov(fn), tolerance = 1e-6)
+  H <- -distributions7:::fit_hess_matrix(dg, yg, as.list(fg@coefficients), expected = FALSE)
+  expect_equal(unname(vcov(fg, scale = "link")), unname(solve(H)), tolerance = 1e-12)
 })
 
 test_that("vcov's link scale is the parameter scale under the delta method", {
@@ -129,10 +135,10 @@ test_that("vcov's link scale is the parameter scale under the delta method", {
   set.seed(5)
   d <- gaussian1_distrib()
   fit <- fit_distrib(d, distrib_rng(d, 200L, list(mu = 1, sigma = 2)))
-  for (info in c("observed", "expected")) {
+  for (info in list(observed_info(), expected_info())) {
     Ve <- vcov(fit, "link", information = info)
     Vt <- vcov(fit, "parameter", information = info)
     J <- diag(c(1, coef(fit)[["sigma"]]))
-    expect_equal(unname(Vt), J %*% Ve %*% J, info = info)
+    expect_equal(unname(Vt), J %*% Ve %*% J)
   }
 })

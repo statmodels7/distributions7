@@ -14,11 +14,20 @@ ExpectOPG()
 
 ExpectBartlett()
 
-ExpectIntegrate()
+ExpectIntegrate(
+  quad_atol = 1e-10,
+  quad_rtol = 1e-08,
+  max_panels = 4096L,
+  series_atol = 1e-12,
+  series_rtol = 1e-10,
+  max_terms = 100000L
+)
 
 ExpectMC(nsim = integer(0))
 }
 \arguments{
+\item{quad_atol, quad_rtol, max_panels, series_atol, series_rtol, max_terms}{The properties of \code{ExpectIntegrate}, documented in \code{\link[=expect_integrate]{expect_integrate()}}.}
+
 \item{nsim}{The number of Monte Carlo draws, a single positive number, for
 \code{ExpectMC}.}
 }
@@ -34,9 +43,12 @@ and \code{ExpectMC}. They are built by \code{\link[=expect_opg]{expect_opg()}}, 
 the classes are exported so that \code{S7::S7_inherits()} can test an object.
 \link{expected_derivative_methods} compares the four.
 
-\code{ExpectOPG}, \code{ExpectBartlett} and \code{ExpectIntegrate} have no properties.
-\code{ExpectMC} has one, \code{nsim}, the number of draws; the raw constructor
-\code{ExpectMC()} does not validate it, whereas \code{\link[=expect_mc]{expect_mc()}} does.
+\code{ExpectOPG} and \code{ExpectBartlett} have no properties. \code{ExpectMC} has one,
+\code{nsim}, the number of draws. \code{ExpectIntegrate} has six, the tolerances and
+limits of the quadrature and of the series summation (see
+\code{\link[=expect_integrate]{expect_integrate()}}). The raw constructors \code{ExpectMC()} and
+\code{ExpectIntegrate()} do not validate their properties, whereas \code{\link[=expect_mc]{expect_mc()}}
+and \code{\link[=expect_integrate]{expect_integrate()}} do.
 }
 \examples{
 a <- expect_mc(nsim = 500)

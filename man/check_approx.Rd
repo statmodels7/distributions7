@@ -16,11 +16,9 @@ check_approx(approx, arg = "approx")
 }
 \description{
 Returns \code{approx} invisibly when it inherits from \link{ExpectApprox} and
-signals an error otherwise. A character string of the former interface
-(\code{"opg"}, \code{"bartlett"}, \code{"integrate"} or \code{"mc"}) produces a message that
-names the constructor that replaces it.
+signals an error otherwise.
 }
 \seealso{
-\link{expected_derivative_methods}, \code{\link[=check_approx_args]{check_approx_args()}}
+\link{expected_derivative_methods}
 }
 \keyword{internal}

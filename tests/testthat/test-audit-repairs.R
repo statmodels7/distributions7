@@ -109,10 +109,14 @@ test_that("a negative variance gives a NaN standard error, not zero", {
              link_params = g@link_params, params_smooth = g@params_smooth)
   set.seed(3)
   f <- suppressWarnings(fit_distrib(bad, rnorm(40), method = optimizers7::bfgs()))
-  expect_true(f@vcov["sigma", "sigma"] < 0)
-  expect_true(is.nan(f@se[["sigma"]]))
-  expect_true(is.nan(f@se_eta[["sigma"]]))
-  expect_true(is.finite(f@se[["mu"]]) && f@se[["mu"]] > 0)
+  # the fit reports the observed information, which the subclass leaves alone;
+  # the wrong expected information is reached through the selection after the fit
+  r <- distributions7:::fit_report(f, expected_info())
+  expect_true(r$vcov["sigma", "sigma"] < 0)
+  expect_true(is.nan(r$se[["sigma"]]))
+  expect_true(is.nan(r$se_eta[["sigma"]]))
+  expect_true(is.finite(r$se[["mu"]]) && r$se[["mu"]] > 0)
+  expect_true(all(is.finite(f@se)) && all(f@se > 0))
 })
 
 test_that("log-cdf orders 3 and 4 build on the exact orders 1 and 2", {

@@ -143,6 +143,17 @@ reference:
   - expect_mc
   - ExpectApprox
 
+- title: Information matrices
+  desc: >
+    The objects that select the observed or the expected information as the
+    matrix whose inverse gives the standard errors of a fit, and the page that
+    compares them.
+  contents:
+  - information_objects
+  - observed_info
+  - expected_info
+  - Information
+
 - title: Estimation
   contents:
   - fit_distrib

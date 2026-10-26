@@ -14,12 +14,17 @@ NULL
 #' the classes are exported so that `S7::S7_inherits()` can test an object.
 #' [expected_derivative_methods] compares the four.
 #'
-#' `ExpectOPG`, `ExpectBartlett` and `ExpectIntegrate` have no properties.
-#' `ExpectMC` has one, `nsim`, the number of draws; the raw constructor
-#' `ExpectMC()` does not validate it, whereas [expect_mc()] does.
+#' `ExpectOPG` and `ExpectBartlett` have no properties. `ExpectMC` has one,
+#' `nsim`, the number of draws. `ExpectIntegrate` has six, the tolerances and
+#' limits of the quadrature and of the series summation (see
+#' [expect_integrate()]). The raw constructors `ExpectMC()` and
+#' `ExpectIntegrate()` do not validate their properties, whereas [expect_mc()]
+#' and [expect_integrate()] do.
 #'
 #' @param nsim The number of Monte Carlo draws, a single positive number, for
 #'   `ExpectMC`.
+#' @param quad_atol,quad_rtol,max_panels,series_atol,series_rtol,max_terms
+#'   The properties of `ExpectIntegrate`, documented in [expect_integrate()].
 #'
 #' @return An S7 object of the class named, which inherits from `ExpectApprox`.
 #'
@@ -45,7 +50,16 @@ ExpectBartlett <- S7::new_class("ExpectBartlett", parent = ExpectApprox)
 
 #' @rdname ExpectApprox
 #' @export
-ExpectIntegrate <- S7::new_class("ExpectIntegrate", parent = ExpectApprox)
+ExpectIntegrate <- S7::new_class("ExpectIntegrate", parent = ExpectApprox,
+  properties = list(
+    quad_atol = S7::new_property(S7::class_numeric, default = 1e-10),
+    quad_rtol = S7::new_property(S7::class_numeric, default = 1e-8),
+    max_panels = S7::new_property(S7::class_numeric, default = 4096L),
+    series_atol = S7::new_property(S7::class_numeric, default = 1e-12),
+    series_rtol = S7::new_property(S7::class_numeric, default = 1e-10),
+    max_terms = S7::new_property(S7::class_numeric, default = 100000L)
+  )
+)
 
 #' @rdname ExpectApprox
 #' @export
@@ -175,11 +189,11 @@ expect_bartlett <- function() ExpectBartlett()
 #' \deqn{\mathbb{E}[\partial^k \ell] = \int \partial^k \ell(y;\theta)\,
 #' f(y;\theta)\,dy,}
 #' by batched adaptive quadrature for a continuous family and by series
-#' summation for a discrete one. The tolerances of the quadrature and of the
-#' series are those of [numericals7::quad_vec()] and [numericals7::series_vec()]
-#' and cannot be set through this object. The computation is deterministic and
-#' is normally the most accurate of the approximations when the observed
-#' derivative is available in closed form.
+#' summation for a discrete one. The computation is deterministic and is
+#' normally the most accurate of the approximations when the observed
+#' derivative is available in closed form. The accuracy of the quadrature and
+#' of the series is set by the arguments of the constructor, whose defaults are
+#' those of [numericals7::quad_vec()] and [numericals7::series_vec()].
 #'
 #' At order 2, for a family that has a non-smooth parameter (see
 #' [param_smoothness()]), the observed second derivative lacks the point mass
@@ -187,8 +201,24 @@ expect_bartlett <- function() ExpectBartlett()
 #'
 #' This is the default of [distrib_deriv3()] and [distrib_deriv4()].
 #'
+#' @param quad_atol,quad_rtol The absolute and the relative tolerance of the
+#'   quadrature of a continuous family, single positive finite numbers. A
+#'   panel of the integration is accepted when its error estimate is below
+#'   `quad_atol + quad_rtol * abs(integral)`. The defaults are 1e-10 and 1e-8.
+#' @param max_panels The largest number of panels that the quadrature of one
+#'   parameter configuration may reach, a single positive finite number. A row
+#'   that needs more panels is not accepted by the batched quadrature and is
+#'   integrated by the scalar integrator of \pkg{stats}. The default is 4096.
+#' @param series_atol,series_rtol The absolute and the relative tolerance of
+#'   the series summation of a discrete family, single positive finite
+#'   numbers. The defaults are 1e-12 and 1e-10.
+#' @param max_terms The largest number of terms of a series, a single positive
+#'   finite number. A series that has not met its tolerance after that many
+#'   terms signals an error. The default is 100000.
+#'
 #' @return An S7 object of class `ExpectIntegrate`, which inherits from
-#'   [ExpectApprox], with no properties.
+#'   [ExpectApprox], with the properties `quad_atol`, `quad_rtol`,
+#'   `max_panels`, `series_atol`, `series_rtol` and `max_terms`.
 #'
 #' @examples
 #' Dens <- S7::new_class("DensIntegrate", parent = continuous_distrib)
@@ -207,12 +237,32 @@ expect_bartlett <- function() ExpectBartlett()
 #' # The expected information of sigma is 2 / sigma^2 = 0.5 in absolute value.
 #' distrib_expected_hessian(d, 0, th, approx = expect_integrate())$sigma_sigma
 #'
+#' # Tighter tolerances for the quadrature are set in the object.
+#' a <- expect_integrate(quad_atol = 1e-12, quad_rtol = 1e-10)
+#' a
+#' distrib_expected_hessian(d, 0, th, approx = a)$sigma_sigma
+#'
 #' @seealso [expect_opg()], [expect_bartlett()] and [expect_mc()] for the other
 #'   approximations; [expected_derivative_methods] for the comparison;
 #'   [distrib_deriv3()], [distrib_deriv4()] and [distrib_expected_hessian()]
 #'   for the functions that take the object.
 #' @export
-expect_integrate <- function() ExpectIntegrate()
+expect_integrate <- function(quad_atol = 1e-10, quad_rtol = 1e-8,
+                             max_panels = 4096L,
+                             series_atol = 1e-12, series_rtol = 1e-10,
+                             max_terms = 100000L) {
+  args <- list(quad_atol = quad_atol, quad_rtol = quad_rtol,
+               max_panels = max_panels, series_atol = series_atol,
+               series_rtol = series_rtol, max_terms = max_terms)
+  for (nm in names(args)) {
+    v <- args[[nm]]
+    if (!is.numeric(v) || length(v) != 1L || !is.finite(v) || v <= 0) {
+      stop(sprintf("'%s' must be a single positive finite number.", nm),
+           call. = FALSE)
+    }
+  }
+  do.call(ExpectIntegrate, args)
+}
 
 #' @title Monte Carlo as the Expected Derivative
 #' @name expect_mc
@@ -288,58 +338,21 @@ approx_nsim <- function(approx) {
 #'
 #' @description
 #' Returns `approx` invisibly when it inherits from [ExpectApprox] and
-#' signals an error otherwise. A character string of the former interface
-#' (`"opg"`, `"bartlett"`, `"integrate"` or `"mc"`) produces a message that
-#' names the constructor that replaces it.
+#' signals an error otherwise.
 #'
 #' @param approx The value to check.
 #' @param arg The argument name used in the message.
 #'
 #' @return `approx`, invisibly.
 #'
-#' @seealso [expected_derivative_methods], [check_approx_args()]
+#' @seealso [expected_derivative_methods]
 #' @keywords internal
 check_approx <- function(approx, arg = "approx") {
   if (S7::S7_inherits(approx, ExpectApprox)) return(invisible(approx))
-  repl <- c(opg = "expect_opg()", bartlett = "expect_bartlett()",
-            integrate = "expect_integrate()", mc = "expect_mc(nsim = ...)")
-  if (is.character(approx) && length(approx) == 1L && !is.na(approx) &&
-      approx %in% names(repl)) {
-    stop(sprintf(paste0(
-      "'%s' must be an expectation object such as expect_opg(); the string ",
-      "\"%s\" is no longer accepted. Use %s."),
-      arg, approx, repl[[approx]]), call. = FALSE)
-  }
   stop(sprintf(paste0(
-    "'%s' must be an expectation object: expect_opg(), expect_bartlett(), ",
-    "expect_integrate() or expect_mc(nsim = ...)."), arg), call. = FALSE)
-}
-
-#' Argument Checks of the Generics That Take an Approximation
-#'
-#' @description
-#' Applies [check_approx()] to `approx` when the caller supplied it, and
-#' signals an error when `nsim` appears among the arguments in `...`. The
-#' sample size belongs to [expect_mc()], so that a call which still names it
-#' would otherwise disappear into `...` without effect.
-#'
-#' @param approx_missing Whether `approx` was left to its default.
-#' @param approx The value of `approx`; evaluated only when it was supplied.
-#' @param dots_names The names of the arguments in `...`.
-#'
-#' @return `NULL`, invisibly.
-#'
-#' @seealso [check_approx()], [expected_derivative_methods]
-#' @keywords internal
-check_approx_args <- function(approx_missing, approx, dots_names) {
-  if (!approx_missing) check_approx(approx)
-  if ("nsim" %in% dots_names) {
-    stop(paste0(
-      "'nsim' is no longer an argument of this function. Pass the number of ",
-      "draws to the approximation: approx = expect_mc(nsim = ...)."),
-      call. = FALSE)
-  }
-  invisible(NULL)
+    "'%s' must be an ExpectApprox object such as expect_opg(), ",
+    "expect_bartlett(), expect_integrate() or expect_mc()."), arg),
+    call. = FALSE)
 }
 
 #' @title Print an Expectation Approximation
@@ -385,7 +398,21 @@ approx_label <- function(x) {
   } else if (S7::S7_inherits(x, ExpectBartlett)) {
     "Expectation by the Bartlett identity"
   } else if (S7::S7_inherits(x, ExpectIntegrate)) {
-    "Expectation by integration against the density"
+    base <- "Expectation by integration against the density"
+    ref <- ExpectIntegrate()
+    set <- c("quad_atol", "quad_rtol", "max_panels", "series_atol",
+             "series_rtol", "max_terms")
+    set <- set[!vapply(set, function(nm) {
+      isTRUE(S7::prop(x, nm) == S7::prop(ref, nm))
+    }, logical(1))]
+    if (length(set)) {
+      val <- vapply(set, function(nm) {
+        format(S7::prop(x, nm), scientific = FALSE, digits = 15)
+      }, character(1))
+      sprintf("%s (%s)", base, paste(set, val, sep = " = ", collapse = ", "))
+    } else {
+      base
+    }
   } else {
     paste("Expectation approximation of class", class(x)[[1L]])
   }
@@ -427,7 +454,7 @@ S7::method(expected_by_approx, ExpectBartlett) <- function(approx, distrib, y, t
 }
 
 S7::method(expected_by_approx, ExpectIntegrate) <- function(approx, distrib, y, theta, order) {
-  expected_by_integrate(distrib, y, theta, order)
+  expected_by_integrate(distrib, y, theta, order, approx = approx)
 }
 
 S7::method(expected_by_approx, ExpectMC) <- function(approx, distrib, y, theta, order) {

@@ -19,6 +19,12 @@ method, which is always preferred. A character string is not accepted.
 The four approximations are built by \code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_bartlett]{expect_bartlett()}},
 \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}}, and they inherit from the class
 \link{ExpectApprox}.
+
+The expected information of a fit, the matrix whose inverse gives the
+standard errors when \code{\link[=expected_info]{expected_info()}} is selected, is built from the
+expected Hessian. An \code{\link[=expected_info]{expected_info()}} object carries one of the four
+approximations in its \code{approx} property, and the object \code{\link[=observed_info]{observed_info()}}
+takes none; \link{information_objects} compares the two information objects.
 }
 \details{
 Let \eqn{\ell} be the log-density and \eqn{\ell_{i}, \ell_{ij}, \dots} its
@@ -63,9 +69,9 @@ with one exception: at order 2, for a family with a non-smooth
 parameter (see \code{\link[=param_smoothness]{param_smoothness()}}), it evaluates
 \eqn{-\mathbb{E}[\ell_i \ell_j]} as \code{\link[=expect_bartlett]{expect_bartlett()}} does, because the
 observed \eqn{\ell_{ij}} then lacks the point mass at the kink. The
-tolerances of the quadrature and of the series are those of
-\code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} and \code{\link[numericals7:series_vec]{numericals7::series_vec()}} and are not
-arguments of the constructor.}
+tolerances and limits of the quadrature and of the series are
+arguments of the constructor, and their defaults are those of
+\code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} and \code{\link[numericals7:series_vec]{numericals7::series_vec()}}.}
 
 \item{\code{\link[=expect_mc]{expect_mc()}}}{Simulates \code{nsim} observations from the distribution
 and averages the observed derivative over them. The simplest and most
@@ -92,8 +98,9 @@ evaluation per observation and no expectation. \code{\link[=distrib_deriv3]{dist
 direct integration of the available derivative is usually cheaper and more
 accurate. \code{\link[=fisher_scoring]{fisher_scoring()}} defaults to \code{\link[=expect_opg]{expect_opg()}}, and
 \code{\link[=fit_distrib]{fit_distrib()}} rejects an approximation other than that default for a
-family with a closed-form expected information. The \code{vcov()} method of a
-fit defaults to \code{\link[=expect_opg]{expect_opg()}}. Passing \code{\link[=expect_opg]{expect_opg()}} to \code{\link[=distrib_deriv3]{distrib_deriv3()}}
+family with a closed-form expected information. \code{\link[=expected_info]{expected_info()}}
+defaults to \code{\link[=expect_opg]{expect_opg()}}, and the \code{vcov()} method of a fit defaults to
+\code{\link[=observed_info]{observed_info()}}, which takes no approximation. Passing \code{\link[=expect_opg]{expect_opg()}} to \code{\link[=distrib_deriv3]{distrib_deriv3()}}
 or \code{\link[=distrib_deriv4]{distrib_deriv4()}} gives the computation of \code{\link[=expect_bartlett]{expect_bartlett()}}, because
 the outer product of the scores has no counterpart above order 2.
 }
@@ -156,6 +163,8 @@ identical(distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1)),
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
 \code{\link[=distrib_deriv4]{distrib_deriv4()}}, the generics that take \code{approx};
 \code{\link[=fisher_scoring]{fisher_scoring()}}, where it is set for a fit;
+\code{\link[=expected_info]{expected_info()}} and \code{\link[=observed_info]{observed_info()}}, the objects that select the
+information of a fit, and \link{information_objects} for their comparison;
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, \code{\link[=expected_by_integrate]{expected_by_integrate()}} and
 \code{\link[=expected_by_mc]{expected_by_mc()}} for the implementations.
 }

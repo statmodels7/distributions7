@@ -17,6 +17,8 @@ A numeric vector of integrals, \code{NA} for failed rows.
 \description{
 Calls \code{\link[numericals7:quad_vec]{numericals7::quad_vec()}}, muffles its warning and
 returns the per-row integrals, \code{NA} where the accuracy was not
-reached. The calling function handles a failed row and reports it.
+reached. The calling function handles a failed row and reports it. The
+tolerance and the panel limit are those of the \link{ExpectIntegrate} object in
+force (see \code{\link[=expect_integrate]{expect_integrate()}}).
 }
 \keyword{internal}
