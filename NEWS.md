@@ -1,3 +1,37 @@
+# distributions7 0.90.0
+
+* How an expectation is obtained is an object of class `ExpectMethod`, passed
+  as `method` (the argument was `approx`): `expect_opg()` (the outer product
+  of the scores at the data), `expect_integrate(identity = )` (the
+  expectation computed by quadrature or summation, with its tolerances as
+  arguments) and `expect_mc(nsim = , identity = )` (the expectation
+  simulated). `identity = "hessian"` takes the expectation of the derivative
+  itself and `identity = "score"` that of the products of lower derivatives
+  given by the Bartlett identity; `expect_bartlett()` is removed. The
+  default `method = NULL` is the family's closed form where it has one and
+  `expect_opg()` (order 2) or `expect_integrate()` (orders 3 and 4)
+  otherwise. An explicit method is always used, also by a family with a
+  closed form. `identity = "hessian"` at order 2 on a non-smooth parameter
+  signals an error.
+
+* `expect_opg()` at orders 3 and 4 is the sum over the observations of the
+  products of the score identity, with no integration. In the derivatives of
+  the expected information it returns the exact derivative of the matrix of
+  outer products at the data; `expect_integrate()` and `expect_mc()` return
+  the derivative of the expectation.
+
+* `Information`, `observed_info()`, `expected_info(method = NULL)` and
+  `default_information()` select the matrix behind the standard errors of a
+  fit, after the fit and independently of the method that computed it.
+  `vcov()`, `confint()`, `print()` and `mv_summary()` of a fit take
+  `information = NULL`: the observed information where every parameter is
+  twice differentiable (`params_order()`), the expected information
+  otherwise, so that a Laplace or elastic-net fit has finite standard
+  errors.
+
+* `fit_distrib(method = )` takes `fisher_scoring()` or an optimizers7
+  optimizer object; `nsim` is an argument of `expect_mc()` only.
+
 # distributions7 0.89.0
 
 * The derivatives on the link scale read the inverse link's derivatives
