@@ -125,6 +125,10 @@ binomial_deriv4_expected_cpp <- function(y, mu, size, threads = 1L) {
     .Call(`_distributions7_binomial_deriv4_expected_cpp`, y, mu, size, threads)
 }
 
+bounds_ok_cpp <- function(v, lo, hi) {
+    .Call(`_distributions7_bounds_ok_cpp`, v, lo, hi)
+}
+
 cauchy_gradient_cpp <- function(y, mu, sigma, threads = 1L) {
     .Call(`_distributions7_cauchy_gradient_cpp`, y, mu, sigma, threads)
 }

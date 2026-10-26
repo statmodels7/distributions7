@@ -215,10 +215,9 @@ deriv_index_list <- function(p, order) {
 #' inverse link, evaluated at \eqn{\eta = g(\theta)}, up to `order`.
 #'
 #' @details
-#' This is the hot path of the link scale, so it is written against the
-#' order-specific generics of \pkg{linkfunctions7} rather than the convenience
-#' router; see the comment in the body for why, and [link_scale_derivatives()]
-#' for what the derivatives are then used for.
+#' Each link is evaluated by one call to [linkfunctions7::linkinv_derivs()],
+#' which returns its derivatives of orders one to `order` together. See
+#' [link_scale_derivatives()] for what the derivatives are then used for.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters, on the natural scale.
@@ -234,33 +233,15 @@ inverse_link_derivs <- function(distrib, theta, order) {
   params <- distrib@params
   links <- distrib@link_params   # one property read, not one per parameter
 
-  # The order-specific generics are called directly. linkinvderiv() is a
-  # convenience router: it dispatches on the link, then calls dlinkinv() and
-  # friends, which dispatch again. That second dispatch is a third of the cost of
-  # the call, and this function makes one call per parameter per order -- twelve
-  # of them for a three-parameter distribution at fourth order. Every link in
-  # linkfunctions7 implements the order-specific generics; they are what
-  # linkinvderiv() itself reaches for.
+  # One call per parameter to linkinv_derivs(), which returns orders 1 to
+  # `order` together. Its method for the base class calls dlinkinv() and the
+  # higher generics, as this function used to do; the log link's method
+  # computes exp(eta) once where the generics computed it at every order, the
+  # same values at a fifth of the cost (2026-10-26, note/prestazioni.md).
   lapply(seq_along(params), function(i) {
     lk <- links[[params[i]]]
-    e <- linkfunctions7::linkfun(lk, theta[[i]])
-    switch(as.integer(order),
-      list(linkfunctions7::dlinkinv(lk, e)),
-      list(linkfunctions7::dlinkinv(lk, e),
-           linkfunctions7::d2linkinv(lk, e)),
-      list(linkfunctions7::dlinkinv(lk, e),
-           linkfunctions7::d2linkinv(lk, e),
-           linkfunctions7::d3linkinv(lk, e)),
-      list(linkfunctions7::dlinkinv(lk, e),
-           linkfunctions7::d2linkinv(lk, e),
-           linkfunctions7::d3linkinv(lk, e),
-           linkfunctions7::d4linkinv(lk, e)),
-      list(linkfunctions7::dlinkinv(lk, e),
-           linkfunctions7::d2linkinv(lk, e),
-           linkfunctions7::d3linkinv(lk, e),
-           linkfunctions7::d4linkinv(lk, e),
-           linkfunctions7::d5linkinv(lk, e))
-    )
+    linkfunctions7::linkinv_derivs(lk, linkfunctions7::linkfun(lk, theta[[i]]),
+                                   order)
   })
 }
 

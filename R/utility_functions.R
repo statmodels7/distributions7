@@ -131,6 +131,14 @@ check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
     if (is.null(b) || i > length(theta)) next
     v <- theta[[i]]
 
+    # a double vector inside its domain, the case of nearly every call, is
+    # settled by one compiled pass; the R test below, which makes four passes
+    # and allocates four logical vectors, runs only to build the message
+    # (270 against 20 us at n = 20000, 2026-10-26, note/prestazioni.md)
+    # (a classed double, a Date for one, is left to the R test, which rejects
+    # it as not numeric)
+    if (is.double(v) && !is.object(v) && bounds_ok_cpp(v, b[1], b[2])) next
+
     if (!is.numeric(v)) {
       problems <- c(problems, sprintf("  '%s' must be numeric (got %s)", p, class(v)[1]))
       next

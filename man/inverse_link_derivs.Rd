@@ -23,10 +23,9 @@ Returns the derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's
 inverse link, evaluated at \eqn{\eta = g(\theta)}, up to \code{order}.
 }
 \details{
-This is the hot path of the link scale, so it is written against the
-order-specific generics of \pkg{linkfunctions7} rather than the convenience
-router; see the comment in the body for why, and \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}
-for what the derivatives are then used for.
+Each link is evaluated by one call to \code{\link[linkfunctions7:linkinv_derivs]{linkfunctions7::linkinv_derivs()}},
+which returns its derivatives of orders one to \code{order} together. See
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}} for what the derivatives are then used for.
 }
 \seealso{
 \code{\link[=to_link_scale]{to_link_scale()}}

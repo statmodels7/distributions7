@@ -446,6 +446,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// bounds_ok_cpp
+bool bounds_ok_cpp(NumericVector v, double lo, double hi);
+RcppExport SEXP _distributions7_bounds_ok_cpp(SEXP vSEXP, SEXP loSEXP, SEXP hiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< double >::type lo(loSEXP);
+    Rcpp::traits::input_parameter< double >::type hi(hiSEXP);
+    rcpp_result_gen = Rcpp::wrap(bounds_ok_cpp(v, lo, hi));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cauchy_gradient_cpp
 List cauchy_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, int threads);
 RcppExport SEXP _distributions7_cauchy_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP threadsSEXP) {
@@ -8017,6 +8030,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_binomial_deriv3_expected_cpp", (DL_FUNC) &_distributions7_binomial_deriv3_expected_cpp, 4},
     {"_distributions7_binomial_deriv4_cpp", (DL_FUNC) &_distributions7_binomial_deriv4_cpp, 4},
     {"_distributions7_binomial_deriv4_expected_cpp", (DL_FUNC) &_distributions7_binomial_deriv4_expected_cpp, 4},
+    {"_distributions7_bounds_ok_cpp", (DL_FUNC) &_distributions7_bounds_ok_cpp, 3},
     {"_distributions7_cauchy_gradient_cpp", (DL_FUNC) &_distributions7_cauchy_gradient_cpp, 4},
     {"_distributions7_cauchy_hessian_cpp", (DL_FUNC) &_distributions7_cauchy_hessian_cpp, 4},
     {"_distributions7_cauchy_expected_hessian_cpp", (DL_FUNC) &_distributions7_cauchy_expected_hessian_cpp, 4},

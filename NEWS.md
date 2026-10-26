@@ -1,3 +1,16 @@
+# distributions7 0.89.0
+
+* The derivatives on the link scale read the inverse link's derivatives
+  through `linkfunctions7::linkinv_derivs()`, one call per parameter. For
+  the log link `exp(eta)` is computed once instead of once per order; the
+  values are unchanged. Requires linkfunctions7 0.6.0.
+
+* The bound test that every generic applies to the parameters runs as one
+  compiled pass over each double vector; the R expression, which made four
+  passes and allocated four logical vectors per parameter, runs only to
+  build the message when a value is outside its domain. At n = 20000 the
+  test costs 20 microseconds where it cost 270. The messages are unchanged.
+
 # distributions7 0.88.1
 
 * The expected information of pig1 and pig2 and its first and second
