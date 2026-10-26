@@ -69,10 +69,10 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   # fisher_scoring() specification. How the expectation is approximated is a
   # property of Fisher scoring, so it cannot be handed to an optimizer that
   # would never look at it.
-  fs <- fisher_scoring(approx = "mc", nsim = 2000)
+  fs <- fisher_scoring(approx = expect_mc(nsim = 2000))
   expect_s3_class(fs, "distributions7::FisherScoring")
-  expect_identical(fs@approx, "mc")
-  expect_identical(fs@nsim, 2000)
+  expect_s3_class(fs@approx, "distributions7::ExpectMC")
+  expect_identical(fs@approx@nsim, 2000)
   expect_false("approx" %in% names(formals(fit_distrib)))
   expect_false("nsim" %in% names(formals(fit_distrib)))
 
@@ -82,11 +82,11 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   g <- mvgaussian1_distrib(2)
   yg <- distrib_rng(g, 200, th[1:5])
   expect_error(
-    fit_distrib(g, yg, method = fisher_scoring(approx = "mc")), "closed form"
+    fit_distrib(g, yg, method = fisher_scoring(approx = expect_mc())), "closed form"
   )
   expect_error(
     fit_distrib(gaussian1_distrib(), rnorm(50),
-                method = fisher_scoring(approx = "mc")),
+                method = fisher_scoring(approx = expect_mc())),
     "closed form"
   )
   # the default carries no claim and is accepted everywhere
@@ -97,12 +97,14 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   set.seed(53)
   ypg <- distrib_rng(pig_bare_distrib(), 40, list(mu = 3, sigma = 0.5))
   expect_no_error(fit_distrib(pig_bare_distrib(), ypg,
-                              method = fisher_scoring(approx = "mc", nsim = 20L),
+                              method = fisher_scoring(approx = expect_mc(nsim = 20L)),
                               n_start = 1L))
 
   # the object validates its own arguments
-  expect_error(fisher_scoring(approx = "nonsense"), "should be one of")
-  expect_error(fisher_scoring(nsim = -1), "positive")
+  expect_error(fisher_scoring(approx = "nonsense"), "expectation object")
+  expect_error(fisher_scoring(approx = "mc"), "expect_mc")
+  expect_error(expect_mc(nsim = -1), "positive")
+  expect_error(fisher_scoring(nsim = 5), "unused argument")
   expect_error(fisher_scoring(criterion = "grad"), "stopping rule")
 
   # and it can carry its own stopping rule and budget
@@ -118,7 +120,7 @@ test_that("a family without a closed form still fits by Fisher scoring", {
   d <- mvstudent_t1_distrib(2)
   y <- distrib_rng(d, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.3, nu = 5))
-  fit <- fit_distrib(d, y, method = "fisher")
+  fit <- fit_distrib(d, y, method = fisher_scoring())
   expect_true(fit@converged, info = fit_report(fit, d, y))
 })
 
@@ -159,7 +161,7 @@ test_that("a family is asked correctly whether its expected information is exact
   set.seed(71)
   ys <- distrib_rng(pig_bare_distrib(), 40, list(mu = 3, sigma = 0.5))
   expect_no_error(
-    fit_distrib(pig_bare_distrib(), ys, method = fisher_scoring(approx = "mc", nsim = 20L),
+    fit_distrib(pig_bare_distrib(), ys, method = fisher_scoring(approx = expect_mc(nsim = 20L)),
                 n_start = 1L)
   )
   # A strategy the family would ignore is refused -- and it has to be a
@@ -168,7 +170,7 @@ test_that("a family is asked correctly whether its expected information is exact
   # default off the constructor rather than copying it.
   expect_error(
     fit_distrib(gaussian1_distrib(), stats::rnorm(100),
-                method = fisher_scoring(approx = "mc")),
+                method = fisher_scoring(approx = expect_mc())),
     "closed form"
   )
   # and the default itself is accepted on the same family

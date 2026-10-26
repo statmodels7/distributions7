@@ -19,10 +19,9 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected values.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for both the observed and the expected values. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -49,7 +48,7 @@ which makes
 \eqn{\mathbb{E}[z] = \gamma}: every expectation of the family is a
 derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma
 functions there.
-Since both routes are closed form, \code{approx} and \code{nsim} are ignored.
+Since both routes are closed form, \code{approx} is ignored.
 }
 \section{Notation}{
 

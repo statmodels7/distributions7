@@ -695,8 +695,9 @@ sn2_reject_zero <- function(theta, what) {
 #'   itself, through [deriv5_scale()].
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned, by [expected_derivative()].
-#' @param approx,nsim Passed to [expected_derivative()] when `expected` is
-#'   `TRUE`.
+#' @param approx An object inheriting from [ExpectApprox], passed to
+#'   [expected_derivative()] when `expected` is `TRUE`. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -728,12 +729,12 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 
 S7::method(distrib_deriv3, SkewNormal2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+    approx = expect_integrate(), ...,
     threads = 1L) {
   sn2_reject_zero(theta, "third derivative")
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        approx = approx)
   } else {
     skewnormal2_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
@@ -741,12 +742,12 @@ S7::method(distrib_deriv3, SkewNormal2Distrib) <- function(
 
 S7::method(distrib_deriv4, SkewNormal2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+    approx = expect_integrate(), ...,
     threads = 1L) {
   sn2_reject_zero(theta, "fourth derivative")
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        approx = approx)
   } else {
     skewnormal2_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
@@ -794,7 +795,9 @@ S7::method(distrib_deriv5, SkewNormal2Distrib) <- function(
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list with components `mu`, `sigma` and `gamma1`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Accepted for the generics' signatures and unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, passed to the kernels behind the
 #'   quadrature.
@@ -811,14 +814,14 @@ S7::method(distrib_deriv5, SkewNormal2Distrib) <- function(
 #' distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = 0))
 S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   sn2_expected_parts(distrib, theta, 0L, length(y), threads)
 }
 
 S7::method(distrib_dexpected_hessian, SkewNormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   sn2_reject_zero(theta, "derivative of the expected information")
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
@@ -828,7 +831,7 @@ S7::method(distrib_dexpected_hessian, SkewNormal2Distrib) <- function(
 
 S7::method(distrib_d2expected_hessian, SkewNormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   sn2_reject_zero(theta, "second derivative of the expected information")
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,

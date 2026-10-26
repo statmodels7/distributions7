@@ -840,7 +840,7 @@ skewt_msa_derivs <- function(distrib, y, theta, order) {
 #' The tail is integrated to \eqn{|z| = 10^{60}}, which leaves a relative
 #' \eqn{10^{-60\nu}/\nu} and is negligible for \eqn{\nu \ge 0.3}.
 #'
-#' `approx` and `nsim` are accepted for the generic's sake and ignored.
+#' `approx` is accepted for the generic's sake and ignored.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations. Its length sets the length of
@@ -849,7 +849,9 @@ skewt_msa_derivs <- function(distrib, y, theta, order) {
 #'   each a numeric vector of length 1 or of the length of `y`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()].
-#' @param approx,nsim Ignored.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads The thread count passed to the family's kernels.
 #'
@@ -886,7 +888,7 @@ register_loc_scale_expected(SkewTDistrib)
 #' @details
 #' With `expected = TRUE` the whole order is an expectation and comes from
 #' `expected_derivative()`; the family has no closed-form expected
-#' information, so `approx` and `nsim` are read.
+#' information, so `approx` is read.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -896,10 +898,9 @@ register_loc_scale_expected(SkewTDistrib)
 #'   derivatives at `y` are returned.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, read
-#'   only when `expected = TRUE`.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use.
@@ -932,11 +933,11 @@ register_loc_scale_expected(SkewTDistrib)
 #'                                              alpha = 3, nu = v), log = TRUE))
 #' c(ours = sum(d3$nu_nu_nu),
 #'   stencil = numericals7::fd_derivative(ld, 6, 3L, h = 0.05))
-S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                                   threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = match.arg(approx), nsim = nsim))
+                               approx = approx))
   }
   skewt_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]], threads)
 }
@@ -950,7 +951,7 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'
 #' @details
 #' With `expected = TRUE` the whole order is an expectation and comes from
-#' `expected_derivative()`; `approx` and `nsim` are then read.
+#' `expected_derivative()`; `approx` is then read.
 #'
 #' @param distrib A `SkewTDistrib` object, from [skewt_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -960,10 +961,9 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'   derivatives at `y` are returned.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, read
-#'   only when `expected = TRUE`.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use.
@@ -996,11 +996,11 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'                  distrib_deriv3(d, y, list(mu = 0, sigma = 1,
 #'                                            alpha = 3 - eps, nu = 6))$mu_mu_alpha) /
 #'                 (2 * eps))
-S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                                   threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = match.arg(approx), nsim = nsim))
+                               approx = approx))
   }
   skewt_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]], threads)
 }

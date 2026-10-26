@@ -18,9 +18,9 @@ model is returned in place of the observed value. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both routes.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for both routes. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -40,7 +40,7 @@ is computed as at third order (see \code{\link[=distrib_deriv3.GeometricDistrib]
 
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-6(1 - q^3)/\mu^3}. Both routes
-are closed form, so \code{approx} and \code{nsim} are ignored.
+are closed form, so \code{approx} is ignored.
 }
 \section{Notation}{
 

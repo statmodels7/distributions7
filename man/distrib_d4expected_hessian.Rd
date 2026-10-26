@@ -9,8 +9,7 @@ distrib_d4expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  approx = expect_opg(),
   ...
 )
 }
@@ -24,8 +23,9 @@ distrib_d4expected_hessian(
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Accepted for symmetry with
-\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; the methods ignore them.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Accepted for symmetry
+with \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}; the methods ignore it. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Passed to methods.}
 }

@@ -18,11 +18,10 @@ returns the parameter scale and the generic applies the link scale to its
 result. Every link of this family is the identity, so the two scales
 coincide.}
 
-\item{approx}{Ignored: the expectation is exact, so the method does not use
-an approximation strategy. It is present so that the signature matches
-the generic's.}
-
-\item{nsim}{Ignored, for the same reason.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored: the
+expectation is exact, so the method does not use an approximation.
+It is present so that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

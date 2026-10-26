@@ -25,10 +25,11 @@ a caller pairing two orders must match by name.
 \description{
 Routes to \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} or
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} according to \code{order}, so that code working at an order
-fixed only at run time does not have to branch. The strategies of
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} other than \code{"opg"} read it: \code{"integrate"}
-and \code{"mc"} for the quantity that they average, and \code{"bartlett"} for the
-lower orders that its identity multiplies together.
+fixed only at run time does not have to branch. The approximations of
+\link{expected_derivative_methods} other than \code{\link[=expect_opg]{expect_opg()}} read it:
+\code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}} for the quantity that they average,
+and \code{\link[=expect_bartlett]{expect_bartlett()}} for the lower orders that its identity multiplies
+together.
 }
 \seealso{
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}, which reads it;

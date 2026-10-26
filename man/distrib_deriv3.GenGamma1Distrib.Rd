@@ -20,8 +20,9 @@ expectation under the model is returned. Defaults to \code{FALSE}.}
 \item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
 generic for orders three and four and by \code{\link[=deriv5_scale]{deriv5_scale()}} for order five.}
 
-\item{approx, nsim}{Accepted for the generic's signature; the expectations
-are closed forms.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Accepted for the
+generic's signature; the expectations are closed forms. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 
@@ -51,7 +52,7 @@ in \eqn{a}. The coefficients contain the polygamma functions at
 poles in \eqn{1/k} which the derivatives combine cancel in the closed form
 and not in floating point. The expected derivatives are polynomials in the
 central moments of \eqn{U}, whose cumulants are the polygamma functions at
-\eqn{k}; \code{approx} and \code{nsim} are not read.
+\eqn{k}; \code{approx} is not read.
 }
 \examples{
 d <- gengamma1_distrib()

@@ -2,29 +2,37 @@
 % Please edit documentation in R/expected_derivatives.R
 \name{expected_derivative_methods}
 \alias{expected_derivative_methods}
-\title{Strategies for Expected Derivatives}
+\title{Approximations of an Expected Derivative}
 \value{
 Nothing. This page documents the \code{approx} argument shared by the
-three generics named above; the value returned is theirs.
+generics named above; the value returned is theirs.
 }
 \description{
 When a distribution does not supply a closed-form expected derivative, the
 expectation has to be approximated. The generics
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
-\code{\link[=distrib_deriv4]{distrib_deriv4()}} therefore accept an \code{approx} argument
-selecting \emph{how} the expectation is taken. The argument is ignored
-when the distribution provides an analytical method (which is always preferred).
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and \code{\link[=distrib_deriv4]{distrib_deriv4()}}, the
+derivatives of the expected information, and \code{\link[=fisher_scoring]{fisher_scoring()}} therefore
+take an \code{approx} argument, an object that selects how the expectation is
+taken. The argument is ignored when the distribution provides an analytical
+method, which is always preferred. A character string is not accepted.
+
+The four approximations are built by \code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_bartlett]{expect_bartlett()}},
+\code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}}, and they inherit from the class
+\link{ExpectApprox}.
 }
 \details{
 Let \eqn{\ell} be the log-density and \eqn{\ell_{i}, \ell_{ij}, \dots} its
-derivatives with respect to the parameters. The strategies are:
+derivatives with respect to the parameters.
 
 \describe{
-\item{\code{"opg"}}{At order 2, reads \eqn{-\ell_i \ell_j} at each observation
-and takes no expectation, at the cost of one score evaluation; see
-\code{\link[=expected_by_opg]{expected_by_opg()}}. Above order 2 it is routed to \code{"bartlett"}.}
+\item{\code{\link[=expect_opg]{expect_opg()}}}{At order 2, reads \eqn{-\ell_i \ell_j} at each
+observation and takes no expectation, at the cost of one score
+evaluation; see \code{\link[=expected_by_opg]{expected_by_opg()}}. Above order 2 it is routed to the
+computation of \code{\link[=expect_bartlett]{expect_bartlett()}}. The matrix is positive semidefinite,
+and it is the least accurate of the four as an estimate of the
+information at one observation.}
 
-\item{\code{"bartlett"}}{Uses the Bartlett
+\item{\code{\link[=expect_bartlett]{expect_bartlett()}}}{Uses the Bartlett
 identity of the corresponding order, which expresses the expected
 derivative through expectations of \emph{products of lower-order}
 derivatives. Writing the identity as a sum over set partitions of the
@@ -37,63 +45,79 @@ at order 3, \eqn{\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
     \mathbb{E}[\ell_{ik}\ell_j] + \mathbb{E}[\ell_{jk}\ell_i] +
     \mathbb{E}[\ell_i\ell_j\ell_k]\right)}, and so on.
 At order 2 it needs only the score, whose product it integrates or
-sums, so it is slower than \code{"opg"}. It stays valid when the
+sums, so it is slower than \code{\link[=expect_opg]{expect_opg()}}. It stays valid when the
 log-likelihood is not differentiable in a parameter, where
 \eqn{\mathbb{E}[H]} degenerates but the score variance still gives the
 information (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
 It is deterministic. At higher orders it needs several integrals, so it
-is usually slower than \code{"integrate"}. It never requires the top-order
-derivative itself, which is useful where only the lower orders are
-available in closed form.}
+is usually slower than \code{\link[=expect_integrate]{expect_integrate()}}. It never requires the
+top-order derivative itself, which is useful where only the lower orders
+are available in closed form.}
 
-\item{\code{"integrate"}}{Integrates the observed derivative of that order
-directly against the density (numerical quadrature for continuous
+\item{\code{\link[=expect_integrate]{expect_integrate()}}}{Integrates the observed derivative of that
+order directly against the density (numerical quadrature for continuous
 distributions, series summation for discrete ones). It is deterministic
 and normally the most accurate when the observed derivative is available
 in closed form. It estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
 with one exception: at order 2, for a family with a non-smooth
 parameter (see \code{\link[=param_smoothness]{param_smoothness()}}), it evaluates
-\eqn{-\mathbb{E}[\ell_i \ell_j]} as \code{"bartlett"} does, because the
-observed \eqn{\ell_{ij}} then lacks the point mass at the kink.}
+\eqn{-\mathbb{E}[\ell_i \ell_j]} as \code{\link[=expect_bartlett]{expect_bartlett()}} does, because the
+observed \eqn{\ell_{ij}} then lacks the point mass at the kink. The
+tolerances of the quadrature and of the series are those of
+\code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} and \code{\link[numericals7:series_vec]{numericals7::series_vec()}} and are not
+arguments of the constructor.}
 
-\item{\code{"mc"}}{Simulates \code{nsim} observations from the distribution
+\item{\code{\link[=expect_mc]{expect_mc()}}}{Simulates \code{nsim} observations from the distribution
 and averages the observed derivative over them. The simplest and most
 robust option when quadrature performs poorly (heavy tails, awkward
 supports), but it is stochastic: the error decreases only as
 \eqn{1/\sqrt{n_{sim}}}, so results are not exactly reproducible unless
 the seed is fixed. Estimates
-the same quantity as \code{"integrate"}.
+the same quantity as \code{\link[=expect_integrate]{expect_integrate()}}.
 The cost of this option is the cost of simulating from the
 distribution. A native \code{\link[=distrib_rng]{distrib_rng()}} is best; failing that, the
 default generator uses inverse transform when the family has a quantile
 method of its own and \code{\link[=rng_grou]{rng_grou()}}, which only needs the density,
 otherwise. It becomes expensive only for a distribution that supplies a
 quantile function slow enough to make inverse transform sampling the
-bottleneck; prefer \code{"bartlett"} or \code{"integrate"} in that case.}
+bottleneck; prefer \code{\link[=expect_bartlett]{expect_bartlett()}} or \code{\link[=expect_integrate]{expect_integrate()}} in that
+case.}
+}
+}
+\section{Defaults}{
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} and the generics for the derivatives of the
+expected information default to \code{\link[=expect_opg]{expect_opg()}}, which needs one score
+evaluation per observation and no expectation. \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} default to \code{\link[=expect_integrate]{expect_integrate()}}, since at those orders
+direct integration of the available derivative is usually cheaper and more
+accurate. \code{\link[=fisher_scoring]{fisher_scoring()}} defaults to \code{\link[=expect_opg]{expect_opg()}}, and
+\code{\link[=fit_distrib]{fit_distrib()}} rejects an approximation other than that default for a
+family with a closed-form expected information. The \code{vcov()} method of a
+fit defaults to \code{\link[=expect_opg]{expect_opg()}}. Passing \code{\link[=expect_opg]{expect_opg()}} to \code{\link[=distrib_deriv3]{distrib_deriv3()}}
+or \code{\link[=distrib_deriv4]{distrib_deriv4()}} gives the computation of \code{\link[=expect_bartlett]{expect_bartlett()}}, because
+the outer product of the scores has no counterpart above order 2.
 }
 
-The generic \code{distrib_expected_hessian} defaults to \code{"opg"}, which needs
-one score evaluation per observation and no expectation. \code{distrib_deriv3} and
-\code{distrib_deriv4} default to \code{"integrate"}, since at those orders
-direct integration of the available derivative is usually cheaper and more
-accurate.
-
+\section{A kink in the log-density}{
 Where the log-density has a kink in a
 parameter, the observed second derivative has a point mass at the kink, and
 an average of its pointwise values does not contain that mass. For the
 Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its
 pointwise average is zero, while the information is \eqn{1/\sigma^2}. The
 information of such a family is the variance of the score, and the second
-Bartlett identity evaluates that variance. \code{"bartlett"}, \code{"opg"} and, at
-order 2, \code{"integrate"} therefore return \eqn{-1/\sigma^2} per observation;
-\code{"mc"} averages the observed \eqn{\ell_{\mu\mu}} and returns 0. When the
-family declares where its kink is, through \code{\link[=kink_decomposition]{kink_decomposition()}}, the
-quadrature of \code{\link[=expectation]{expectation()}} places a knot there.
+Bartlett identity evaluates that variance. \code{\link[=expect_bartlett]{expect_bartlett()}},
+\code{\link[=expect_opg]{expect_opg()}} and, at order 2, \code{\link[=expect_integrate]{expect_integrate()}} therefore return
+\eqn{-1/\sigma^2} per observation; \code{\link[=expect_mc]{expect_mc()}} averages the observed
+\eqn{\ell_{\mu\mu}} and returns 0. When the family declares where its kink
+is, through \code{\link[=kink_decomposition]{kink_decomposition()}}, the quadrature of \code{\link[=expectation]{expectation()}} places
+a knot there.
 }
+
 \examples{
 # A family defined by its density alone reads 'approx'. The two
-# deterministic strategies agree on the exact -2 / sigma^2; "opg" reads one
-# observation's score product, and Monte Carlo carries sampling error.
+# deterministic approximations agree on the exact -2 / sigma^2; the outer
+# product of the scores reads one observation's score product, and Monte
+# Carlo carries sampling error.
 Dens <- S7::new_class("Dens", parent = continuous_distrib)
 S7::method(distrib_pdf, Dens) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dnorm(y, theta[[1]], theta[[2]], log = log)
@@ -109,25 +133,29 @@ d <- Dens(distrib_name = "dens", dimension = "univariate",
 th <- list(mu = 0, sigma = 2)
 y <- c(-1, 0.5, 2)
 
-vapply(c("opg", "bartlett", "integrate"), function(a) {
+approximations <- list(opg = expect_opg(), bartlett = expect_bartlett(),
+                       integrate = expect_integrate())
+vapply(approximations, function(a) {
   distrib_expected_hessian(d, y, th, approx = a)$sigma_sigma[1]
 }, numeric(1))
 
 set.seed(3)
-distrib_expected_hessian(d, y, th, approx = "mc", nsim = 2000)$sigma_sigma[1]
+distrib_expected_hessian(d, y, th, approx = expect_mc(nsim = 2000))$sigma_sigma[1]
 
 # A family that writes its expected information out ignores the argument,
 # and fit_distrib() rejects one given there rather than dropping it.
 g <- gaussian1_distrib()
 identical(distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1)),
           distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1),
-                                   approx = "mc"))
+                                   approx = expect_mc()))
 
 }
 \seealso{
+\code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_bartlett]{expect_bartlett()}}, \code{\link[=expect_integrate]{expect_integrate()}} and
+\code{\link[=expect_mc]{expect_mc()}} for the constructors; \link{ExpectApprox} for the classes;
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}, the three generics that take \code{approx};
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, the generics that take \code{approx};
 \code{\link[=fisher_scoring]{fisher_scoring()}}, where it is set for a fit;
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, \code{\link[=expected_by_integrate]{expected_by_integrate()}} and
-\code{\link[=expected_by_mc]{expected_by_mc()}} for the three implementations.
+\code{\link[=expected_by_mc]{expected_by_mc()}} for the implementations.
 }

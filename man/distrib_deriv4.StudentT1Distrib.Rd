@@ -19,8 +19,9 @@ model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx, nsim}{Accepted for the generic's signature; the expectations
-are closed forms.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Accepted for the
+generic's signature; the expectations are closed forms. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -39,7 +40,7 @@ values are closed form and run in a compiled kernel decomposed over the
 elements of the output, so they do not depend on the thread count.
 
 The expected values are closed forms, as for the third order (see
-\code{\link[=distrib_deriv3.StudentT1Distrib]{distrib_deriv3.StudentT1Distrib()}}). \code{approx} and \code{nsim} are accepted for
+\code{\link[=distrib_deriv3.StudentT1Distrib]{distrib_deriv3.StudentT1Distrib()}}). \code{approx} is accepted for
 the generic's signature and ignored.
 }
 \section{Large degrees of freedom}{

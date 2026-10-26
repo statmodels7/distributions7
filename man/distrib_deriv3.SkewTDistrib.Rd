@@ -17,11 +17,8 @@ derivatives at \code{y} are returned.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
-only when \code{expected = TRUE}.}
-
-\item{nsim}{A single positive integer, the Monte Carlo sample size used when
-\code{approx = "mc"}. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
+by default: the approximation of the expectation, read only when \code{expected = TRUE}. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -39,7 +36,7 @@ kernel described on \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient
 \details{
 With \code{expected = TRUE} the whole order is an expectation and comes from
 \code{expected_derivative()}; the family has no closed-form expected
-information, so \code{approx} and \code{nsim} are read.
+information, so \code{approx} is read.
 }
 \examples{
 d <- skewt_distrib()

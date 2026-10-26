@@ -15,11 +15,10 @@ vector of length 1. \code{kappa} must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, because the expectation is exact. It is accepted
-so that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
-
-\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
+the expectation is exact. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -46,7 +45,7 @@ with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
 The zero off-diagonal makes the direction and the concentration
 orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
-independently. \code{approx} and \code{nsim} are ignored because the expectation is
+independently. \code{approx} is ignored because the expectation is
 exact.
 }
 \section{Notation}{
@@ -73,9 +72,9 @@ set.seed(1)
 z <- distrib_rng(d, 3e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The strategy argument is inert because the expectation is exact.
+# The approx argument is inert because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th,
-                                       approx = "mc", nsim = 50))
+                                       approx = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the quantity of which this

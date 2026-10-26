@@ -553,7 +553,7 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'         = \dfrac{-1}{(1+2\xi)\sigma(1+\xi)}, \qquad
 #'       E\!\left[\dfrac{\partial^2\ell}{\partial\xi^2}\right]
 #'         = \dfrac{-2}{(1+2\xi)(1+\xi)}.}
-#' Every entry is free of the data, so `approx` and `nsim` are ignored and
+#' Every entry is free of the data, so `approx` is ignored and
 #' [expected_hessian_exact()] returns `TRUE`.
 #'
 #' @details
@@ -587,9 +587,9 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of the length of `y`.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx Ignored: the expectation is closed form. It is accepted so that
-#'   the signature matches the generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored: the
+#'   expectation is closed form. It is accepted so that the signature matches
+#'   the generic's. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`.
@@ -623,13 +623,12 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'            c(xi = x, sigma_sigma = u$sigma_sigma, xi_xi = u$xi_xi)
 #'          }, numeric(3)))
 #'
-#' # The strategy arguments are ignored because the expectation is closed form.
+#' # The approx argument is ignored because the expectation is closed form.
 #' identical(distrib_expected_hessian(d, 0, th),
-#'           distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 10))
+#'           distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 10)))
 S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
                                                               scale = c("parameter", "link"),
-                                                              approx = c("opg", "bartlett", "integrate", "mc"),
-                                                              nsim = 10000, ..., threads = 1L) {
+                                                              approx = expect_opg(), ..., threads = 1L) {
   gpd_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 

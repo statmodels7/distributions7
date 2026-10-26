@@ -102,7 +102,9 @@ NULL
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list of parameters.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, the kernel's thread count.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
@@ -128,14 +130,14 @@ NULL
 register_dexpected <- function(cls, kernel) {
   S7::method(distrib_dexpected_hessian, cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"),
-      approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+      approx = expect_opg(), ...,
       threads = 1L) {
     dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                        function(k) kernel(distrib, y, theta, k, threads))
   }
   S7::method(distrib_d2expected_hessian, cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"),
-      approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+      approx = expect_opg(), ...,
       threads = 1L) {
     dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                        function(k) kernel(distrib, y, theta, k, threads))

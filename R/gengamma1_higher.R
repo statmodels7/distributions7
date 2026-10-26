@@ -164,7 +164,7 @@ gengamma_components <- function(y, theta, order) {
 #' poles in \eqn{1/k} which the derivatives combine cancel in the closed form
 #' and not in floating point. The expected derivatives are polynomials in the
 #' central moments of \eqn{U}, whose cumulants are the polygamma functions at
-#' \eqn{k}; `approx` and `nsim` are not read.
+#' \eqn{k}; `approx` is not read.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -175,8 +175,9 @@ gengamma_components <- function(y, theta, order) {
 #'   expectation under the model is returned. Defaults to `FALSE`.
 #' @param scale `"parameter"` or `"link"`; the link scale is applied by the
 #'   generic for orders three and four and by [deriv5_scale()] for order five.
-#' @param approx,nsim Accepted for the generic's signature; the expectations
-#'   are closed forms.
+#' @param approx An object inheriting from [ExpectApprox]. Accepted for the
+#'   generic's signature; the expectations are closed forms. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`. The result does not depend on the count.
@@ -210,8 +211,7 @@ gengamma_components <- function(y, theta, order) {
 S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          approx = expect_integrate(), ..., threads = 1L) {
   if (expected) {
     gengamma1_deriv3_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   } else {
@@ -222,8 +222,7 @@ S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          approx = expect_integrate(), ..., threads = 1L) {
   if (expected) {
     gengamma1_deriv4_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   } else {

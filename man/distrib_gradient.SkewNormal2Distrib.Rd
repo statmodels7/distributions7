@@ -21,8 +21,9 @@ itself, through \code{\link[=deriv5_scale]{deriv5_scale()}}.}
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned, by \code{\link[=expected_derivative]{expected_derivative()}}.}
 
-\item{approx, nsim}{Passed to \code{\link[=expected_derivative]{expected_derivative()}} when \code{expected} is
-\code{TRUE}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, passed to
+\code{\link[=expected_derivative]{expected_derivative()}} when \code{expected} is \code{TRUE}. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 

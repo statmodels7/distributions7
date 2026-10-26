@@ -10,8 +10,7 @@ distrib_deriv3(
   theta,
   expected = FALSE,
   scale = c("parameter", "link"),
-  approx = c("integrate", "bartlett", "mc", "opg"),
-  nsim = 10000,
+  approx = expect_integrate(),
   ...
 )
 }
@@ -32,12 +31,13 @@ the parameters \eqn{\theta} on their natural (constrained) scale, or
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
-\item{approx}{How the expectation is approximated when \code{expected = TRUE}
-and the distribution has no closed-form expected third derivatives; ignored
-otherwise. The value is one of \code{"integrate"} (default), \code{"bartlett"}
-(equivalently \code{"opg"}) or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
-
-\item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
+\item{approx}{An object that gives the approximation of the expectation when
+\code{expected = TRUE} and the distribution has no closed-form expected third
+derivatives; ignored otherwise. It is one of \code{\link[=expect_integrate]{expect_integrate()}} (the
+default), \code{\link[=expect_bartlett]{expect_bartlett()}} (equivalent to \code{\link[=expect_opg]{expect_opg()}} at this order),
+or \code{\link[=expect_mc]{expect_mc()}} (Monte Carlo, with its own sample size \code{nsim}). Any other
+value, a character string included, signals an error.
+\link{expected_derivative_methods} compares the approximations.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }

@@ -19,10 +19,9 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected values.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for both the observed and the expected values. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -47,8 +46,7 @@ The log-density is linear in \eqn{\lambda} apart from
 \eqn{\tfrac12\log\lambda}, so any component naming the shape twice and the
 mean once is exactly zero and the pure shape component carries only the
 logarithm. \code{expected} is passed straight to the kernel, which substitutes
-\eqn{\mathbb{E}[Y] = \mu}; both routes are closed form, so \code{approx} and
-\code{nsim} are ignored.
+\eqn{\mathbb{E}[Y] = \mu}; both routes are closed form, so \code{approx} is ignored.
 }
 \section{Notation}{
 

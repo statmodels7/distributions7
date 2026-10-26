@@ -57,13 +57,15 @@ NULL
 #' polynomials in \eqn{\mu} and \eqn{1/\mu}. The mixed entry of pig2 is zero at
 #' every order of that series, because the parametrization is orthogonal.
 #'
-#' The `approx` and `nsim` arguments are accepted and ignored.
+#' The `approx` arguments are accepted and ignored.
 #'
 #' @param distrib A `Pig1Distrib` or `Pig2Distrib` object.
 #' @param y A numeric vector, read for its length.
 #' @param theta A named list with `mu` and `sigma` (pig1) or `alpha` (pig2).
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, the kernel's thread count.
 #'
@@ -89,14 +91,14 @@ NULL
 #' @keywords internal
 S7::method(distrib_expected_hessian, Pig2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   pig2_expected_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 S7::method(distrib_dexpected_hessian, Pig2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                      function(k) {
@@ -107,7 +109,7 @@ S7::method(distrib_dexpected_hessian, Pig2Distrib) <- function(
 
 S7::method(distrib_d2expected_hessian, Pig2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                      function(k) {
@@ -118,14 +120,14 @@ S7::method(distrib_d2expected_hessian, Pig2Distrib) <- function(
 
 S7::method(distrib_expected_hessian, Pig1Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   pig1_expected_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 S7::method(distrib_dexpected_hessian, Pig1Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                      function(k) {
@@ -136,7 +138,7 @@ S7::method(distrib_dexpected_hessian, Pig1Distrib) <- function(
 
 S7::method(distrib_d2expected_hessian, Pig1Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                      function(k) {

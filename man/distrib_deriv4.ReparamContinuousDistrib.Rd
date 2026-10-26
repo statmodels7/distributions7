@@ -12,8 +12,7 @@ reparam_deriv4(
   theta,
   expected = FALSE,
   scale = c("parameter", "link"),
-  approx = c("integrate", "bartlett", "mc", "opg"),
-  nsim = 10000,
+  approx = expect_integrate(),
   ...
 )
 }
@@ -30,12 +29,9 @@ logical, \code{FALSE} by default.}
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic after this method has returned.}
 
-\item{approx}{The strategy that the parent uses for an expected derivative
-for which it has no closed form, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. The value is passed straight through.}
-
-\item{nsim}{The number of draws for \code{approx = "mc"}, 10000 by default.
-The value is passed through.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, the approximation
+that the parent uses for an expected derivative for which it has no closed
+form. It is passed straight through. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

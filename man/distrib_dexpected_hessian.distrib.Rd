@@ -12,7 +12,8 @@
 
 \item{scale}{Either \code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Passed through.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, passed through. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }

@@ -19,9 +19,9 @@ model is returned in place of the observed value. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both routes.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for both routes. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -41,7 +41,7 @@ probability, in closed form:
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = n\mu}, which gives \eqn{2n/\mu^2 - 2n/(1-\mu)^2}. Both
 routes are closed form, so the method runs no quadrature and ignores
-\code{approx} and \code{nsim}.
+\code{approx}.
 }
 \section{Notation}{
 

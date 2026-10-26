@@ -20,12 +20,8 @@ vector of length 1 or of the length of \code{y}. \code{rho} must lie in
 model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
-\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
-or \code{"opg"}. It is read only when \code{expected = TRUE}.}
-
-\item{nsim}{A single positive integer, the sample size when
-\code{approx = "mc"}. It is read only when \code{expected = TRUE}. Defaults to
-\code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
+by default: the approximation of the expectation, read only when \code{expected = TRUE}. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -48,7 +44,7 @@ single term \eqn{D_a \kappa^{(b)}(\rho)} for every component carrying a
 the pure-\eqn{\rho} one.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
-the one place on this page where \code{approx} and \code{nsim} are read.
+the one place on this page where \code{approx} is read.
 }
 \section{Notation}{
 

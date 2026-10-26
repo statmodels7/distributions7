@@ -19,10 +19,9 @@ model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because the expectation is an exact finite sum. It is
-accepted so that the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because the
+expectation is an exact finite sum. It is accepted so that the signature
+matches the generic's. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -46,8 +45,7 @@ sums over the integer shifts given on \code{\link[=betabinom1_distrib]{betabinom
 their accuracy as \eqn{\sigma} goes to zero (\code{\link[=betabinom1_components]{betabinom1_components()}}).
 
 With \code{expected = TRUE} the method returns the expectation as an exact
-finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_expected()}}. \code{approx} and
-\code{nsim} are ignored on both branches.
+finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_expected()}}. \code{approx} is ignored on both branches.
 }
 \section{Notation}{
 

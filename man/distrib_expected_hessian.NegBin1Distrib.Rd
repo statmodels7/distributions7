@@ -15,10 +15,9 @@ recycled. Both must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored. The surviving expectation is a truncated exact sum. It
-is accepted so that the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored. The
+surviving expectation is a truncated exact sum. It is accepted so that the
+signature matches the generic's. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -43,7 +42,7 @@ its expectation vanishes by the first Bartlett identity. With
   \frac{\mu^2}{u_j^2}\Big)\Big].}
 \eqn{A} and \eqn{W} are not available in closed form. Each is summed
 against the exact mass until the terms fall below a tolerance, so this is a
-truncated exact sum and not a quadrature or a simulation. \code{approx} and \code{nsim} are ignored, and \code{y} is
+truncated exact sum and not a quadrature or a simulation. \code{approx} is ignored, and \code{y} is
 read only for its length.
 
 The mixed entry does not vanish, so the mean and the dispersion are not

@@ -15,11 +15,10 @@ recycled. Both must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available. It is accepted so
-that the signature matches the generic's, where it selects between the
-Bartlett, quadrature, Monte Carlo and outer-product routes.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -53,7 +52,7 @@ The off-diagonal entry is zero, so the mean and the dispersion are
 orthogonal. The score in \eqn{\mu} has the dispersion as a common factor,
 so the mean equation can be solved at any fixed value of the dispersion.
 
-Because the values do not depend on the data, \code{approx} and \code{nsim} are
+Because the values do not depend on the data, \code{approx} is
 ignored. \code{y} is read only for its length.
 }
 \section{Notation}{

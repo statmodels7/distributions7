@@ -445,7 +445,7 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #'       = -\dfrac{\psi'(\mu/2)}{4},}
 #' because the observed second derivative is free of the response and so equals
 #' its own expectation. The method does not average, integrate or simulate, so
-#' `approx` and `nsim` are ignored and `y` is read only for its length. The
+#' `approx` is ignored and `y` is read only for its length. The
 #' value is negative at every \eqn{\mu} because the trigamma function is
 #' positive, so the information is positive throughout.
 #'
@@ -464,10 +464,10 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored because the expectation is exact. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored because the
+#'   expectation is exact. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -506,12 +506,11 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #' # The two fitting methods differ on the link scale and land together.
 #' set.seed(7)
 #' z <- distrib_rng(d, 2000, th)
-#' c(newton = coef(fit_distrib(d, z, method = "newton")),
-#'   fisher = coef(fit_distrib(d, z, method = "fisher")))
+#' c(newton = coef(fit_distrib(d, z, method = optimizers7::newton())),
+#'   fisher = coef(fit_distrib(d, z, method = fisher_scoring())))
 S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta,
                                                                scale = c("parameter", "link"),
-                                                               approx = c("opg", "bartlett", "integrate", "mc"),
-                                                               nsim = 10000, ..., threads = 1L) {
+                                                               approx = expect_opg(), ..., threads = 1L) {
   chisq_hessian_cpp(y, theta[[1]], threads)
 }
 
@@ -531,7 +530,7 @@ S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta
 #' selects nothing: the same kernel runs either way and the two results are
 #' identical to the bit. With `scale = "link"` the generic composes the
 #' observed and the expected derivative differently, and the two results
-#' differ. `approx` and `nsim` are ignored.
+#' differ. `approx` is ignored.
 #'
 #' @param distrib A `ChisqDistrib` object, from [chisq_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -544,8 +543,8 @@ S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta
 #'   to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -586,8 +585,7 @@ S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta
 #'           tolerance = 1e-6)
 S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                      scale = c("parameter", "link"),
-                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                     nsim = 10000, ..., threads = 1L) {
+                                                     approx = expect_integrate(), ..., threads = 1L) {
   chisq_deriv3_cpp(y, theta[[1]], threads)
 }
 
@@ -601,7 +599,7 @@ S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected
 #' \eqn{\ell^{(k)} = -\psi^{(k-2)}(\mu/2)/2^{k}}.
 #'
 #' On the parameter scale the value is free of the response, so `expected`,
-#' `approx` and `nsim` have no effect and the result is identical to the bit
+#' `approx` has no effect and the result is identical to the bit
 #' in either case. With `scale = "link"` the observed and the expected
 #' results differ.
 #'
@@ -616,8 +614,8 @@ S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected
 #'   to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -658,8 +656,7 @@ S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected
 #'           tolerance = 1e-5)
 S7::method(distrib_deriv4, ChisqDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                      scale = c("parameter", "link"),
-                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                     nsim = 10000, ..., threads = 1L) {
+                                                     approx = expect_integrate(), ..., threads = 1L) {
   chisq_deriv4_cpp(y, theta[[1]], threads)
 }
 

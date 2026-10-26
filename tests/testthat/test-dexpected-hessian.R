@@ -84,12 +84,12 @@ test_that("the exactness predicate follows the arithmetic, not the owner", {
   set.seed(1)
   y <- distrib_rng(pig_bare_distrib(), 30L, list(mu = 3, sigma = 0.5))
   expect_no_error(fit_distrib(pig_bare_distrib(), y,
-                              method = fisher_scoring(approx = "mc", nsim = 20L),
+                              method = fisher_scoring(approx = expect_mc(nsim = 20L)),
                               n_start = 1L))
   expect_error(fit_distrib(pseudohuber_distrib(),
                            distrib_rng(pseudohuber_distrib(), 5L,
                                        list(mu = 0, sigma = 1, nu = 1)),
-                           method = fisher_scoring(approx = "mc", nsim = 20L),
+                           method = fisher_scoring(approx = expect_mc(nsim = 20L)),
                            n_start = 1L),
                "computes its expected information exactly")
 })

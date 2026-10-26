@@ -9,8 +9,7 @@ trunc_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  approx = expect_opg(),
   ...
 )
 }
@@ -24,10 +23,9 @@ trunc_expected_hessian(
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{Ignored. It is present so that the signature matches the
-generic's.}
-
-\item{nsim}{Ignored, for the same reason.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored; accepted so
+that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -56,7 +54,7 @@ the sums come from \code{\link[=trunc_route_parts]{trunc_route_parts()}}.
 
 The components do not depend on the data, so for a single parameter vector
 every returned vector is constant; if a parameter varies by observation, the
-components vary with it. The arguments \code{approx} and \code{nsim} are accepted so
+components vary with it. The argument \code{approx} is accepted so
 that the signature matches the generic's, and the method does not read them:
 the identity above is exact, and the quantities on which it rests are
 computed by quadrature for every value of \code{approx}.

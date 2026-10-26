@@ -427,7 +427,7 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' than the mean (see [distrib_hessian.PoissonDistrib()]); this value does
 #' not.
 #'
-#' Because the value does not depend on the data, `approx` and `nsim` are
+#' Because the value does not depend on the data, `approx` is
 #' ignored. `y` is read only for its length.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
@@ -436,9 +436,9 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. It is accepted so that the signature matches the
+#'   generic's. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -476,7 +476,7 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' z <- distrib_rng(d, 2e5, th)
 #' c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
 #'   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
-S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...,
                                        threads = 1L) {
   poisson_expected_hessian_cpp(y, theta[[1]], threads)
 }
@@ -493,19 +493,21 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list with `mu`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, the kernel's thread count.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
 #' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
 #' @keywords internal
-S7::method(distrib_dexpected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_dexpected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                      function(k) (if (k == 1L) poisson_dexpected1_cpp(y, theta[[1]], threads)
                        else poisson_dexpected2_cpp(y, theta[[1]], threads)))
 }
 
-S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                      function(k) (if (k == 1L) poisson_dexpected1_cpp(y, theta[[1]], threads)
                        else poisson_dexpected2_cpp(y, theta[[1]], threads)))
@@ -519,7 +521,7 @@ S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, t
 #' \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}.}
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2/\mu^2}. Both routes are closed
-#' form, so the method runs no quadrature and ignores `approx` and `nsim`.
+#' form, so the method runs no quadrature and ignores `approx`.
 #'
 #' The family has one parameter, so there is one component, where a
 #' two-parameter family carries four at this order.
@@ -533,9 +535,9 @@ S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, t
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected value.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected value. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -571,7 +573,7 @@ S7::method(distrib_d2expected_hessian, PoissonDistrib) <- function(distrib, y, t
 #' dn <- distrib_hessian(d, y, list(mu = 3 - eps))$mu_mu
 #' all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
 #'           tolerance = 1e-5)
-S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   if (expected) poisson_deriv3_expected_cpp(y, theta[[1]], threads)
   else poisson_deriv3_cpp(y, theta[[1]], threads)
@@ -585,7 +587,7 @@ S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expect
 #' \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = -\dfrac{6y}{\mu^4}.}
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-6/\mu^3}. Both routes are
-#' closed form, so `approx` and `nsim` are ignored.
+#' closed form, so `approx` is ignored.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -596,9 +598,9 @@ S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expect
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected value.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected value. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -631,7 +633,7 @@ S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expect
 #' dn <- distrib_deriv3(d, y, list(mu = 3 - eps))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 #'           tolerance = 1e-5)
-S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   if (expected) poisson_deriv4_expected_cpp(y, theta[[1]], threads)
   else poisson_deriv4_cpp(y, theta[[1]], threads)

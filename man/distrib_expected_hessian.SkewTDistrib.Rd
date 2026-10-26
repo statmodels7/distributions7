@@ -17,7 +17,9 @@ each a numeric vector of length 1 or of the length of \code{y}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}.}
 
-\item{approx, nsim}{Ignored.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored; accepted so
+that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -50,7 +52,7 @@ which are exact in every parameter.
 The tail is integrated to \eqn{|z| = 10^{60}}, which leaves a relative
 \eqn{10^{-60\nu}/\nu} and is negligible for \eqn{\nu \ge 0.3}.
 
-\code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
+\code{approx} is accepted for the generic's sake and ignored.
 }
 \examples{
 d <- skewt_distrib()

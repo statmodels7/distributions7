@@ -16,11 +16,10 @@ single number.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the result of the method.}
 
-\item{approx}{One of \code{"opg"} (the default), \code{"bartlett"} or \code{"mc"}; the
-first two are the same computation here. \code{"integrate"} signals an error.}
-
-\item{nsim}{The Monte Carlo sample size. Defaults to \code{10000}. The error
-falls as its square root.}
+\item{approx}{An object inheriting from \link{ExpectApprox}: \code{\link[=expect_opg]{expect_opg()}} (the
+default), \code{\link[=expect_bartlett]{expect_bartlett()}} or \code{\link[=expect_mc]{expect_mc()}}. The first two are the same
+computation here, and \code{\link[=expect_integrate]{expect_integrate()}} signals an error. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -39,9 +38,10 @@ elsewhere.
 \section{The routes}{
 The \code{"integrate"} route of \code{\link[=continuous_distrib]{continuous_distrib()}} splits a one-dimensional
 integral at quantiles, and a multivariate family has no quantiles, so
-\code{approx = "integrate"} signals an error. The other values sample: \code{"opg"}
-and \code{"bartlett"} are the same computation here, the average of the negative
-outer product of the score, and \code{"mc"} averages the observed Hessian. The
+\code{approx = expect_integrate()} signals an error. The other values sample:
+\code{\link[=expect_opg]{expect_opg()}} and \code{\link[=expect_bartlett]{expect_bartlett()}} are the same computation here, the
+average of the negative outer product of the score, and \code{\link[=expect_mc]{expect_mc()}}
+averages the observed Hessian. The
 two averages agree in expectation by the second Bartlett identity and differ
 by sampling error at any finite \code{nsim}.
 }
@@ -63,7 +63,7 @@ base <- S7::method(distrib_expected_hessian, multivariate_distrib)
 
 set.seed(1)
 sampled <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-                approx = "mc", nsim = 4000)
+                approx = expect_mc(nsim = 4000))
 exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
 round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
             closed = vapply(exact, function(z) z[1], numeric(1))), 3)
@@ -71,7 +71,7 @@ round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
 # Two seeds give two values, because the result is a sample.
 set.seed(2)
 again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-              approx = "mc", nsim = 4000)
+              approx = expect_mc(nsim = 4000))
 c(first = sampled$mu1_mu1[1], second = again$mu1_mu1[1])
 
 }

@@ -438,7 +438,7 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #' mean and the variance are orthogonal and their estimates are
 #' asymptotically independent.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
+#' Because the values do not depend on the data, `approx` is
 #' ignored. `y` is read only for its length.
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
@@ -448,10 +448,10 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #'   recycled. `sigma2` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -496,8 +496,7 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #'                          list(mu = 1, sigma = 2))$sigma_sigma
 S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                    nsim = 10000, ..., threads = 1L) {
+                                                                    approx = expect_opg(), ..., threads = 1L) {
   gaussian2_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -514,7 +513,7 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{r} with 0 and \eqn{r^2} with \eqn{v}: the component odd in \eqn{r}
 #' vanishes and \eqn{\ell^{(vvv)}} becomes \eqn{2/v^3}. Both routes are closed
-#' form, so the method uses no quadrature and ignores `approx` and `nsim`.
+#' form, so the method uses no quadrature and ignores `approx`.
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -526,9 +525,9 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -576,8 +575,7 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_sigma2, tolerance = 1e-6)
 S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          approx = expect_integrate(), ..., threads = 1L) {
   if (expected) {
     gaussian2_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {
@@ -599,7 +597,7 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' \eqn{r} with 0 and \eqn{r^2} with \eqn{v}, which leaves \eqn{-2/v^3} in
 #' \eqn{\ell^{(\mu\mu vv)}}, \eqn{-9/v^4} in \eqn{\ell^{(vvvv)}} and zero in the
 #' other three. Both routes are closed form, so
-#' `approx` and `nsim` are ignored.
+#' `approx` is ignored.
 #'
 #' @param distrib A `Gaussian2Distrib` object, from [gaussian2_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -611,9 +609,9 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -653,8 +651,7 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' -9 / 4^4
 S7::method(distrib_deriv4, Gaussian2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          approx = expect_integrate(), ..., threads = 1L) {
   if (expected) {
     gaussian2_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {

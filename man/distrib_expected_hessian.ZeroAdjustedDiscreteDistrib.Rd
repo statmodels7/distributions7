@@ -14,13 +14,12 @@
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{Forwarded to the parent's \code{distrib_expected_hessian()}, and
-read only where the parent has no closed form for it; every other block
-is an exact combination of the parent's density, score and observed Hessian
-at zero. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns, for this class, the value that
-it returns for the parent.}
-
-\item{nsim}{Forwarded for the same reason and under the same condition.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, forwarded to the
+parent's \code{distrib_expected_hessian()}, and read only where the parent has
+no closed form for it; every other block is an exact combination of the
+parent's density, score and observed Hessian at zero.
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns, for this class, the value that it
+returns for the parent. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -29,7 +28,7 @@ A named list of numeric vectors of length \code{length(y)}, keyed as
 \code{\link[=hess_names]{hess_names(distrib@params)}}. The vectors are constant across
 observations when the parent's own expected information is constant, which
 is always true for a family that reaches this method with the default
-\code{approx = "opg"} and a closed-form parent. If the parent's expected
+\code{approx = expect_opg()} and a closed-form parent. If the parent's expected
 information is evaluated by an approximation, the vectors can vary by
 observation, because \code{h_orig_exp} is read at the actual \code{y} rather than at
 zero.
@@ -48,7 +47,7 @@ Hessian is.
 Because the information matrix is block diagonal, a hurdle model is cheap to
 fit: the two halves can be estimated independently, and the matrix inverts
 blockwise.
-\code{approx} and \code{nsim} are forwarded to the expected Hessian of the parent and
+\code{approx} is forwarded to the expected Hessian of the parent and
 are used only where the parent has no closed form. The remaining blocks are
 exact, and the whole expectation is exact when the parent's is.
 }

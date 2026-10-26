@@ -280,8 +280,9 @@ S7::method(distrib_rng, PseudoHuber2Distrib) <- function(distrib, n, theta,
 #'   method, through [deriv5_scale()].
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
-#' @param approx,nsim The approximation and Monte Carlo size of
-#'   [expected_derivative()].
+#' @param approx An object inheriting from [ExpectApprox], the approximation of
+#'   [expected_derivative()], with the Monte Carlo size of [expect_mc()] when
+#'   that class is used. See [expected_derivative_methods].
 #' @param ... Unused.
 #'
 #' @return A named list with one numeric vector per component, named by the
@@ -314,10 +315,10 @@ S7::method(distrib_hessian, PseudoHuber2Distrib) <- function(
 
 S7::method(distrib_deriv3, PseudoHuber2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+    approx = expect_integrate(), ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        approx = approx)
   } else {
     pseudohuber2_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }
@@ -325,10 +326,10 @@ S7::method(distrib_deriv3, PseudoHuber2Distrib) <- function(
 
 S7::method(distrib_deriv4, PseudoHuber2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+    approx = expect_integrate(), ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        approx = approx)
   } else {
     pseudohuber2_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }

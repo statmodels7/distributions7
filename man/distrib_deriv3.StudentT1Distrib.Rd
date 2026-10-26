@@ -19,8 +19,9 @@ model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx, nsim}{Accepted for the generic's signature; the expectations
-are closed forms.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Accepted for the
+generic's signature; the expectations are closed forms. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -43,8 +44,7 @@ The expected values are closed forms too: under the model
 \eqn{1/(1 + z^2/\nu)} follows a beta distribution with parameters
 \eqn{\nu/2} and \eqn{1/2}, so the expectation of every component is a
 rational function of \eqn{\nu} plus the derivatives of
-\eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)}. \code{approx} and \code{nsim}
-are accepted for the generic's signature and ignored.
+\eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)}. \code{approx} is accepted for the generic's signature and ignored.
 }
 \section{Large degrees of freedom}{
 

@@ -10,8 +10,7 @@ reparam_chain(
   theta,
   order,
   expected = FALSE,
-  approx = "opg",
-  nsim = 10000
+  approx = expect_opg()
 )
 }
 \arguments{
@@ -27,9 +26,10 @@ reparam_chain(
 logical, with default \code{FALSE}. \code{TRUE} is meaningful from order 2 up,
 because the score has mean zero.}
 
-\item{approx, nsim}{Forwarded to the parent's expected derivatives: \code{approx}
-is one of \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, and
-\code{nsim} is the number of draws for \code{"mc"}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, forwarded to the
+parent's expected derivatives. It is \code{\link[=expect_opg]{expect_opg()}} by default;
+\code{\link[=expect_mc]{expect_mc()}} carries the number of draws. See
+\link{expected_derivative_methods}.}
 }
 \value{
 A named list of numeric vectors, keyed as

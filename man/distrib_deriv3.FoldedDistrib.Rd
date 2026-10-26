@@ -16,12 +16,10 @@ approximated by \code{\link[=expected_derivative]{expected_derivative()}}. Defau
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{The strategy that \code{\link[=expected_derivative]{expected_derivative()}} uses when
-\code{expected = TRUE}: one of \code{"integrate"} (the default), \code{"bartlett"},
-\code{"mc"} or \code{"opg"}. It is ignored otherwise.}
-
-\item{nsim}{The Monte Carlo sample size when \code{approx = "mc"}. Defaults to
-\code{10000}. It is ignored otherwise.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
+by default: the approximation that \code{\link[=expected_derivative]{expected_derivative()}} uses when
+\code{expected = TRUE}. It is ignored otherwise. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -41,7 +39,7 @@ order gives the folded family closed forms to third order.
 }
 \details{
 With \code{expected = TRUE} the expectation goes to \code{\link[=expected_derivative]{expected_derivative()}},
-which reads \code{approx} and \code{nsim}; there is no closed-form expectation for a
+which reads \code{approx}; there is no closed-form expectation for a
 fold in general.
 }
 \section{Notation}{

@@ -446,7 +446,7 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #' and the precision are orthogonal, so their estimates are asymptotically
 #' independent.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
+#' Because the values do not depend on the data, `approx` is
 #' ignored. `y` is read only for its length.
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
@@ -456,10 +456,10 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #'   recycled. `tau` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -503,8 +503,7 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #'                          list(mu = 1, sigma = 2))$sigma_sigma
 S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                    nsim = 10000, ..., threads = 1L) {
+                                                                    approx = expect_opg(), ..., threads = 1L) {
   gaussian3_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -519,7 +518,7 @@ S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, t
 #'       \ell^{(\tau\tau\tau)} = \dfrac{1}{\tau^3}.}
 #' Every one of them is free of the response, so the observed and the expected
 #' values coincide and `expected` selects nothing: the same kernel runs either
-#' way and the two results are identical to the bit. `approx` and `nsim` are
+#' way and the two results are identical to the bit. `approx` is
 #' ignored for the same reason.
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
@@ -532,8 +531,8 @@ S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, t
 #'   be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -575,8 +574,7 @@ S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, t
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_tau, tolerance = 1e-6)
 S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          approx = expect_integrate(), ..., threads = 1L) {
   gaussian3_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -591,7 +589,7 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #' order; the log-density is quadratic in \eqn{\mu} and its \eqn{\tau} part is
 #' \eqn{\tfrac{1}{2}\log\tau} plus a term linear in \eqn{\tau}, so every mixed
 #' component past \eqn{\ell^{(\mu\mu\tau)}} vanishes. Like the third order,
-#' the values are free of the response, so `expected`, `approx` and `nsim` are
+#' the values are free of the response, so `expected` and `approx` are
 #' all without effect.
 #'
 #' @param distrib A `Gaussian3Distrib` object, from [gaussian3_distrib()].
@@ -604,8 +602,8 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #'   be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -646,8 +644,7 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 #' all.equal((up - dn) / (2 * eps), d4$tau_tau_tau_tau, tolerance = 1e-4)
 S7::method(distrib_deriv4, Gaussian3Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
-                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ..., threads = 1L) {
+                                                          approx = expect_integrate(), ..., threads = 1L) {
   gaussian3_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 

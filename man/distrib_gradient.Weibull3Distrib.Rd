@@ -24,8 +24,9 @@ generic applies the link scale after dispatch; the method for
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned.}
 
-\item{approx, nsim}{Accepted for the generic's signature; the expectations
-are closed.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Accepted for the
+generic's signature; the expectations are closed. See
+\link{expected_derivative_methods}.}
 
 \item{..., threads}{Unused.}
 }

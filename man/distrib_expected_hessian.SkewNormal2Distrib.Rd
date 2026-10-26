@@ -14,7 +14,9 @@
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Accepted for the generics' signatures and unused.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored; accepted so
+that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 

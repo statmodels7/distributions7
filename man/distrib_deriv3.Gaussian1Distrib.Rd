@@ -19,10 +19,9 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected values.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for both the observed and the expected values. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -50,7 +49,7 @@ With \code{expected = TRUE} the expectations are returned, obtained by replacing
 the one component odd in \eqn{r}, has expectation 0, the two constant
 components keep their values and \eqn{\ell^{(\sigma\sigma\sigma)}} becomes
 \eqn{10/\sigma^3}. Both routes are closed form, so the method uses no
-quadrature and ignores \code{approx} and \code{nsim}.
+quadrature and ignores \code{approx}.
 }
 \section{Notation}{
 

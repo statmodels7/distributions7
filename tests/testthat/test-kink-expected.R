@@ -84,15 +84,18 @@ test_that("the generic routes place a knot at a kink near a quantile", {
   th <- list(mu = -1.5, lambda = 2.3)
   r <- c(mu_mu = -5.279348364723493958, lambda_lambda = -0.16917083628598816907,
          mu_lambda = -0.0069467186585908969318)
-  for (a in c("bartlett", "integrate")) {
-    e <- expected_derivative(d, 1, th, 2L, a)
-    for (k in names(r)) expect_equal(e[[k]], r[[k]], tolerance = 1e-12, label = paste(a, k))
+  for (a in list(bartlett = expect_bartlett(), integrate = expect_integrate())) {
+    e <- expected_derivative(d, 1, th, 2L, approx = a)
+    for (k in names(r)) {
+      expect_equal(e[[k]], r[[k]], tolerance = 1e-12,
+                   label = paste(approx_label(a), k))
+    }
   }
   d <- folded(enet_distrib())
   th <- list(mu = -1.4, lambda = 2.3, alpha = 0.55)
   r <- c(mu_mu = -3.2381019848271992738, lambda_lambda = -0.11935186185505059692,
          alpha_alpha = -0.13021920914801414025, mu_lambda = -0.015020058765778763658,
          mu_alpha = 0.0124581790951593554, lambda_alpha = -0.080067545752604242056)
-  e <- expected_derivative(d, 1, th, 2L, "integrate")
+  e <- expected_derivative(d, 1, th, 2L, approx = expect_integrate())
   for (k in names(r)) expect_equal(e[[k]], r[[k]], tolerance = 1e-12, label = k)
 })

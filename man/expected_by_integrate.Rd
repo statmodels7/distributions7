@@ -43,7 +43,7 @@ at the alternatives, so that the caller receives a statement about the route
 rather than an opaque failure from the integrator.
 }
 \seealso{
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for the three strategies;
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for the four approximations;
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, the route that survives a kink;
 \code{\link[=expected_by_mc]{expected_by_mc()}} where quadrature performs poorly;
 \code{\link[=expectation]{expectation()}}, which does the integration.

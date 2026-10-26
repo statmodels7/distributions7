@@ -167,13 +167,12 @@ fit_score <- function(distrib, y, theta, threads = 1L) {
 #'   `distrib@params`.
 #' @param expected Logical of length 1, with no default. `TRUE` assembles the
 #'   expected Hessian and `FALSE` the observed one.
-#' @param approx How the expectation is approximated for a family with no
-#'   closed form for it: `"opg"` (the default), `"bartlett"`, `"integrate"` or
-#'   `"mc"`.
-#'   It is read only when `expected` is `TRUE` and the family has no exact
-#'   expression; ignored otherwise.
-#' @param nsim Monte Carlo sample size, a single positive integer, read only
-#'   when `approx = "mc"` is in force. Defaults to 10000.
+#' @param approx An object inheriting from [ExpectApprox] that gives the
+#'   approximation of the expectation for a family with no closed form for it:
+#'   [expect_opg()] (the default), [expect_bartlett()], [expect_integrate()] or
+#'   [expect_mc()]; see [expected_derivative_methods]. It is read only when
+#'   `expected` is `TRUE` and the family has no exact expression; ignored
+#'   otherwise.
 #' @param threads How many threads the family's compiled kernels may use, as an
 #'   integer count. Defaults to `1L`. The matrix does not depend on the count.
 #'
@@ -182,15 +181,15 @@ fit_score <- function(distrib, y, theta, threads = 1L) {
 #'
 #' @seealso [fit_score()] for the first-order counterpart;
 #'   [distrib_hessian()] and [distrib_expected_hessian()], which supply the
-#'   components; [fisher_scoring()], where `approx` and `nsim` are set.
+#'   components; [fisher_scoring()], where `approx` is set.
 #' @keywords internal
 fit_hess_matrix <- function(distrib, y, theta, expected,
-                            approx = "opg", nsim = 10000, threads = 1L) {
+                            approx = expect_opg(), threads = 1L) {
   params <- distrib@params
   p <- length(params)
   h <- if (expected) {
     distrib_expected_hessian(distrib, y, theta,
-      scale = "link", approx = approx, nsim = nsim, threads = threads
+      scale = "link", approx = approx, threads = threads
     )
   } else {
     distrib_hessian(distrib, y, theta, scale = "link", threads = threads)
@@ -204,6 +203,40 @@ fit_hess_matrix <- function(distrib, y, theta, expected,
     }
   }
   M
+}
+
+#' Error Message for a Method That Is Not an Object
+#'
+#' @description
+#' Builds the message of [fit_distrib()] for a `method` that is neither a
+#' [FisherScoring] object nor an optimizer object. A character string of the
+#' former interface (`"fisher"`, `"newton"` or `"bfgs"`) produces a message
+#' that names the object that replaces it.
+#'
+#' @param method The rejected value.
+#'
+#' @return A single character string.
+#'
+#' @seealso [fit_distrib()], [fisher_scoring()]
+#' @keywords internal
+method_error <- function(method) {
+  repl <- c(
+    fisher = paste0("fisher_scoring(); the string used the Bartlett route for ",
+                    "the expected information, which ",
+                    "fisher_scoring(approx = expect_bartlett()) reproduces"),
+    newton = "optimizers7::newton(criterion = optimizers7::crit_grad())",
+    bfgs = "optimizers7::bfgs(criterion = optimizers7::crit_grad())"
+  )
+  if (is.character(method) && length(method) == 1L && !is.na(method) &&
+      method %in% names(repl)) {
+    return(sprintf(paste0(
+      "'method' must be an object such as fisher_scoring(); the string \"%s\" ",
+      "is no longer accepted. Use %s."), method, repl[[method]]))
+  }
+  sprintf(paste0(
+    "'method' must be fisher_scoring() or an optimizers7 optimizer object ",
+    "such as optimizers7::newton() or optimizers7::bfgs(), and it is '%s'."),
+    paste(class(method), collapse = "/"))
 }
 
 #' @title Total Log-Likelihood
@@ -405,28 +438,35 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   neither `NULL` nor a list signals an error naming the argument, because
 #'   `start` sits before `method` in the signature and an optimizer passed
 #'   positionally lands here.
-#' @param method How to optimize. The argument takes one of three things:
+#' @param method An object that selects how to optimize. The argument takes one
+#'   of two kinds of object:
 #'
 #'   - [fisher_scoring()], the default: Newton's method with the expected
-#'     information in place of the observed Hessian, the object carrying how
-#'     that information is to be obtained when the family has no closed form
-#'     for it. Passing an `approx` where the family does have one signals an
-#'     error rather than ignoring it;
+#'     information in place of the observed Hessian, the object carrying the
+#'     approximation ([ExpectApprox]) used to obtain that information when the
+#'     family has no closed form for it. Passing an `approx` other than
+#'     [expect_opg()] where the family does have one signals an error rather
+#'     than ignoring it. Fisher scoring falls back to BFGS if it fails to
+#'     converge;
 #'   - an optimizer object from \pkg{optimizers7}, used as given and receiving
 #'     the analytical gradient and the observed Hessian, so that
-#'     `method = lbfgs(criterion = crit_grad(1e-12))` selects the algorithm and
-#'     the stopping rule together. A stopping rule that the optimizer cannot
-#'     evaluate is rejected here, where the message can name it;
-#'   - one of the strings `"fisher"`, `"newton"` or `"bfgs"`, short names for
-#'     the three ready-made strategies. The first two fall back to BFGS if they
-#'     fail to converge; an optimizer that the caller chose is never replaced.
+#'     `method = optimizers7::lbfgs(criterion = optimizers7::crit_grad(1e-12))`
+#'     selects the algorithm and the stopping rule together. A stopping rule
+#'     that the optimizer cannot evaluate is rejected here, where the message
+#'     can name it. An optimizer that the caller chose is never replaced.
+#'
+#'   A character string signals an error. The strings `"fisher"`, `"newton"`
+#'   and `"bfgs"` of earlier versions correspond to
+#'   `fisher_scoring(approx = expect_bartlett())`,
+#'   `optimizers7::newton(criterion = optimizers7::crit_grad())` and
+#'   `optimizers7::bfgs(criterion = optimizers7::crit_grad())`.
 #'
 #'   The iteration limit and the stopping rule belong to the method and are set
 #'   there, on an optimizer through its own `maxit` and `criterion` and on
 #'   [fisher_scoring()] through the same two arguments. For
-#'   [fisher_scoring()] and the three strings the rule is
-#'   [optimizers7::crit_grad()] at its default tolerance when the method does
-#'   not set a rule; an optimizer object keeps its own default.
+#'   [fisher_scoring()] the rule is [optimizers7::crit_grad()] at its default
+#'   tolerance when the method does not set a rule; an optimizer object keeps
+#'   its own default.
 #' @param level Confidence level for `ci` and `ci_eta`, a single number in
 #'   \eqn{(0, 1)}; any other value signals an error. Defaults to 0.95. Any
 #'   other level is available afterwards from [confint.distrib_fit()] without
@@ -478,8 +518,8 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' # Standard errors and intervals
 #' The variance matrix on the link scale is the inverse information at
 #' \eqn{\hat\eta}. The expected information is used when the family writes it
-#' out, unless `method = "newton"` is requested; otherwise the observed
-#' Hessian, which every family has, is used. The delta method carries it to the parameter scale,
+#' out; otherwise the observed Hessian, which every family has, is used. The
+#' delta method carries it to the parameter scale,
 #' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
 #'       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).}
 #' Intervals are built symmetrically on the link scale, \eqn{\hat\eta \pm
@@ -495,9 +535,8 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' negative log-likelihood. A single converged run is not taken as the answer
 #' because it may be a degenerate stationary point.
 #' Where fewer than two runs converge every start is tried and the best is
-#' kept. Fisher scoring and Newton's method fall back to BFGS from
-#' the same starting value when they fail; an optimizer that the caller named
-#' does not. Among the runs that finish, a run that converged beats one that
+#' kept. Fisher scoring falls back to BFGS from the same starting value when
+#' it fails; an optimizer object that the caller supplied does not. Among the runs that finish, a run that converged beats one that
 #' did not converge and the objective breaks ties, so the fit reports the best
 #' run and not the last. A run of a discrete family whose log-likelihood came
 #' back positive is discarded before any comparison.
@@ -586,25 +625,22 @@ fit_distrib <- function(distrib, y, start = NULL,
     ), paste(class(start), collapse = "/"), hint), call. = FALSE)
   }
 
-  # One argument says how to optimize, and it takes one of three things: a
-  # fisher_scoring() specification, an optimizers7 optimizer, or the name of
-  # one of the three ready-made strategies. How the expected information is to
-  # be approximated is a property of Fisher scoring and lives on that object,
-  # not among fit_distrib()'s own arguments, where it would sit next to
-  # optimizers that never look at it.
+  # One argument says how to optimize, and it takes one of two objects: a
+  # fisher_scoring() specification or an optimizers7 optimizer. How the
+  # expected information is to be approximated is a property of Fisher scoring
+  # and lives on that object, not among fit_distrib()'s own arguments, where it
+  # would sit next to optimizers that never look at it. The code below tells
+  # the two apart by class: `fs` is the specification, or NULL for an
+  # optimizer.
   optimizer <- NULL
-  approx <- "bartlett"
-  nsim <- 10000
+  approx <- expect_opg()
   fs <- NULL
 
   if (S7::S7_inherits(method, FisherScoring)) {
     fs <- method
-    method <- "fisher"
     approx <- fs@approx
-    nsim <- fs@nsim
   } else if (S7::S7_inherits(method, optimizers7::optimizer)) {
     optimizer <- method
-    method <- "custom"
     # A stopping rule the optimizer cannot evaluate is a mistake in the call,
     # not a numerical failure, and it is raised here so that it reaches the
     # caller with its own explanation rather than being caught by the restart
@@ -622,7 +658,7 @@ fit_distrib <- function(distrib, y, start = NULL,
         "<class>) before fitting."), class(optimizer)[[1L]]), call. = FALSE)
     }
   } else {
-    method <- match.arg(method, c("fisher", "newton", "bfgs"))
+    stop(method_error(method), call. = FALSE)
   }
 
   # A strategy chosen where it will be ignored is a mistake in the call rather
@@ -636,8 +672,9 @@ fit_distrib <- function(distrib, y, start = NULL,
   # closed form would have stopped with a message about an argument the caller
   # had not passed. The rule is the one `crit_grad`'s tolerance already
   # follows: a threshold that mirrors a default belongs to that default.
-  fs_default_approx <- eval(formals(fisher_scoring)$approx)[[1L]]
-  if (!is.null(fs) && !identical(fs@approx, fs_default_approx) &&
+  fs_default_approx <- eval(formals(fisher_scoring)$approx)
+  if (!is.null(fs) &&
+      !identical(S7::S7_class(fs@approx), S7::S7_class(fs_default_approx)) &&
       has_exact_expected_hessian(distrib)) {
     stop(sprintf(paste0(
       "'%s' computes its expected information exactly, in closed form or by\n",
@@ -721,7 +758,7 @@ fit_distrib <- function(distrib, y, start = NULL,
     function(eta) {
       th <- fit_theta_from_eta(distrib, eta)
       -fit_hess_matrix(distrib, y, th,
-        expected = expected, approx = approx, nsim = nsim, threads = tc
+        expected = expected, approx = approx, threads = tc
       ) / scale_n
     }
   }
@@ -778,14 +815,12 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
 
   run_chosen <- function(eta0) {
-    switch(method,
-      fisher = run(do.call(optimizers7::newton, opt_args),
-                   eta0, nll_he(TRUE), "Fisher scoring"),
-      newton = run(do.call(optimizers7::newton, opt_args),
-                   eta0, nll_he(FALSE), "Newton-Raphson"),
-      bfgs   = run_bfgs(eta0),
-      custom = run(optimizer, eta0, nll_he(FALSE), optimizer@name)
-    )
+    if (!is.null(fs)) {
+      run(do.call(optimizers7::newton, opt_args),
+          eta0, nll_he(TRUE), "Fisher scoring")
+    } else {
+      run(optimizer, eta0, nll_he(FALSE), optimizer@name)
+    }
   }
 
   # A discrete family's likelihood is a product of probabilities, so its
@@ -813,9 +848,9 @@ fit_distrib <- function(distrib, y, start = NULL,
     # restarts and the BFGS fallback promised below never get their turn.
     this <- tryCatch(run_chosen(eta0), error = function(e) NULL)
     # An explicitly chosen optimizer is not silently replaced; the fallback
-    # belongs to the two named second-order strategies, which can fail on a
-    # Hessian the distribution cannot supply at that point.
-    if (method %in% c("fisher", "newton") &&
+    # belongs to Fisher scoring, which can fail on a Hessian the distribution
+    # cannot supply at that point.
+    if (!is.null(fs) &&
         (is.null(this) || !isTRUE(this$converged))) {
       alt <- tryCatch(run_bfgs(eta0), error = function(e) NULL)
       # The fallback is preferred when it converges, and kept as a last resort
@@ -894,17 +929,15 @@ fit_distrib <- function(distrib, y, start = NULL,
   # to 1e-06. So the step takes the cheap matrix and the report takes the
   # accurate one.
   #
-  # The condition used to be `!identical(method, "newton")`, a test against a
-  # STRING, and `method` has accepted an optimizer OBJECT since the
-  # delegation to optimizers7. An object is normalized to "custom" above, so
-  # `newton()` failed that test and the expected information was assembled
-  # anyway -- by quadrature, for a family that has no closed form. Measured on
-  # a user-defined Gompertz: `method = "newton"` fits in 0.15 s and
-  # `method = newton()`, the same algorithm on the same data, had not
-  # returned after five minutes. The `tryCatch` below does not help, a
-  # quadrature that fails to converge raising nothing.
-  use_expected <- !identical(method, "newton") &&
-    has_exact_expected_hessian(distrib)
+  # The condition has_exact_expected_hessian() is the whole test. An earlier
+  # version also compared the method against the string "newton", and an
+  # optimizer OBJECT failed that comparison, so the expected information was
+  # assembled by quadrature for a family that has no closed form. Measured on
+  # a user-defined Gompertz: the string fitted in 0.15 s and `newton()`, the
+  # same algorithm on the same data, had not returned after five minutes. The
+  # `tryCatch` below does not help, a quadrature that fails to converge raising
+  # nothing.
+  use_expected <- has_exact_expected_hessian(distrib)
 
   # The estimates stand on their own; if the information cannot be evaluated at
   # the optimum the fit is still returned, with a missing variance matrix rather
@@ -1250,10 +1283,10 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'
 #' Where a family does not write its expected information out,
 #' `information = "expected"` reaches a fallback, and `approx` selects it. The
-#' default `"opg"` is the outer product of the observed scores, which costs
-#' one gradient; `"bartlett"` evaluates the expectation itself, a sum over the
-#' support for a discrete family and a quadrature for a continuous one, and is
-#' orders of magnitude dearer. A fit does not report standard errors from the
+#' default [expect_opg()] is the outer product of the observed scores, which
+#' costs one gradient; [expect_bartlett()] evaluates the expectation itself, a
+#' sum over the support for a discrete family and a quadrature for a
+#' continuous one, and is orders of magnitude dearer. A fit does not report standard errors from the
 #' expected information for such a family, because the outer product of the
 #' scores is a noisier estimate of the information than the observed Hessian.
 #' The expensive route is available through `approx`, and it is not the
@@ -1269,10 +1302,10 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'   the matrix that the fit stored, `"observed"` the Hessian at the estimates,
 #'   and `"expected"` the expected information there. The last two are
 #'   recomputed.
-#' @param approx One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, read
-#'   only when `information = "expected"` and the family has no closed form.
-#'   Defaults to `"opg"`.
-#' @param nsim Number of draws, read only by `approx = "mc"`.
+#' @param approx An object inheriting from [ExpectApprox]: [expect_opg()] (the
+#'   default), [expect_bartlett()], [expect_integrate()] or [expect_mc()]. It
+#'   is read only when `information = "expected"` and the family has no closed
+#'   form; see [expected_derivative_methods].
 #' @param ... Unused, accepted for compatibility with [stats::vcov()].
 #'
 #' @return A symmetric numeric matrix of dimension
@@ -1305,14 +1338,14 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'
 #' @seealso [coef.distrib_fit()] and [confint.distrib_fit()], which take the
 #'   same `scale`; [distrib_expected_hessian()] for the information itself,
-#'   and [expected_by_opg()] for what `approx = "opg"` computes.
+#'   and [expected_by_opg()] for what `approx = expect_opg()` computes.
 #' @importFrom stats vcov
 S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link"),
                                           information = c("fit", "observed", "expected"),
-                                          approx = c("opg", "bartlett", "integrate", "mc"),
-                                          nsim = 10000, ...) {
+                                          approx = expect_opg(), ...) {
   scale <- match.arg(scale)
   information <- match.arg(information)
+  check_approx(approx)
   if (information == "fit") {
     return(if (scale == "link") object@vcov_eta else object@vcov)
   }
@@ -1327,7 +1360,7 @@ S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link")
   V_eta <- tryCatch({
     I_eta <- -fit_hess_matrix(distrib, object@y, as.list(theta_hat),
                               expected = identical(information, "expected"),
-                              approx = match.arg(approx), nsim = nsim)
+                              approx = approx)
     solve(I_eta)
   }, error = function(e) matrix(NA_real_, p, p))
   dimnames(V_eta) <- list(params, params)

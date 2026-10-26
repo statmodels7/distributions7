@@ -309,7 +309,7 @@ test_that("both families are fitted by maximum likelihood", {
     expect_lt(max(abs(sc)) / length(y), 1e-6)
 
     # and the three methods agree on the maximized log-likelihood
-    lls <- vapply(c("fisher", "newton", "bfgs"), function(m) {
+    lls <- vapply(named_methods(), function(m) {
       as.numeric(logLik(fit_distrib(cfg$d, y, method = m)))
     }, numeric(1))
     expect_equal(diff(range(lls)), 0, tolerance = 1e-6)

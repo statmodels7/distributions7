@@ -22,8 +22,9 @@ method, through \code{\link[=deriv5_scale]{deriv5_scale()}}.}
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned.}
 
-\item{approx, nsim}{The approximation and Monte Carlo size of
-\code{\link[=expected_derivative]{expected_derivative()}}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, the approximation of
+\code{\link[=expected_derivative]{expected_derivative()}}, with the Monte Carlo size of \code{\link[=expect_mc]{expect_mc()}} when
+that class is used. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }

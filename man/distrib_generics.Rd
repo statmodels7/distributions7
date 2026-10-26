@@ -17,8 +17,8 @@ fallback: the distribution function by quadrature (continuous) or by
 summation (discrete), the quantile by root finding or by a lookup in the
 cumulative table, random draws by inverse transform or by the
 ratio-of-uniforms method, the derivatives of the log-density by finite
-differences, and the expected derivatives by the strategies of
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}. A family defined by its density alone
+differences, and the expected derivatives by the approximations of
+\link{expected_derivative_methods}. A family defined by its density alone
 therefore has every quantity, and a family that writes a quantity out
 overrides the fallback by ordinary S7 dispatch.
 }

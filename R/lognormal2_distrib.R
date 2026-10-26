@@ -190,8 +190,9 @@ S7::method(distrib_rng, Lognormal2Distrib) <- function(distrib, n, theta, ...) {
 #'   [distrib_deriv5()] applies it itself.
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
-#' @param approx,nsim Accepted for the generic's signature; the expectations
-#'   are closed.
+#' @param approx An object inheriting from [ExpectApprox]. Accepted for the
+#'   generic's signature; the expectations are closed. See
+#'   [expected_derivative_methods].
 #' @param ...,threads Unused.
 #'
 #' @return A named list with one numeric vector per component: 2, 3, 4, 5 and
@@ -221,14 +222,14 @@ S7::method(distrib_hessian, Lognormal2Distrib) <- function(
 
 S7::method(distrib_deriv3, Lognormal2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+    approx = expect_integrate(), ...) {
   if (expected) lognormal2_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
   else lognormal2_deriv3_cpp(y, theta[[1]], theta[[2]])
 }
 
 S7::method(distrib_deriv4, Lognormal2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+    approx = expect_integrate(), ...) {
   if (expected) lognormal2_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
   else lognormal2_deriv4_cpp(y, theta[[1]], theta[[2]])
 }
@@ -241,7 +242,7 @@ S7::method(distrib_deriv5, Lognormal2Distrib) <- function(
 
 S7::method(distrib_expected_hessian, Lognormal2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   lognormal2_expected_hessian_cpp(y, theta[[1]], theta[[2]])
 }

@@ -15,11 +15,10 @@ strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored because the expectation is exact. It is accepted so
-that the signature matches the generic's, where it selects between the
-Bartlett, quadrature, Monte Carlo and outer-product routes.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored because the
+expectation is exact. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -38,7 +37,7 @@ Returns the same number as \code{\link[=distrib_hessian.ChisqDistrib]{distrib_he
       = -\dfrac{\psi'(\mu/2)}{4},}
 because the observed second derivative is free of the response and so equals
 its own expectation. The method does not average, integrate or simulate, so
-\code{approx} and \code{nsim} are ignored and \code{y} is read only for its length. The
+\code{approx} is ignored and \code{y} is read only for its length. The
 value is negative at every \eqn{\mu} because the trigamma function is
 positive, so the information is positive throughout.
 
@@ -77,8 +76,8 @@ vapply(c(0.5, 4, 40),
 # The two fitting methods differ on the link scale and land together.
 set.seed(7)
 z <- distrib_rng(d, 2000, th)
-c(newton = coef(fit_distrib(d, z, method = "newton")),
-  fisher = coef(fit_distrib(d, z, method = "fisher")))
+c(newton = coef(fit_distrib(d, z, method = optimizers7::newton())),
+  fisher = coef(fit_distrib(d, z, method = fisher_scoring())))
 }
 \seealso{
 \code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}}, which returns the same number;

@@ -4,22 +4,14 @@
 \alias{FisherScoring}
 \title{S7 Class for Fisher Scoring Specifications}
 \usage{
-FisherScoring(
-  approx = character(0),
-  nsim = integer(0),
-  criterion = NULL,
-  maxit = NULL
-)
+FisherScoring(approx = ExpectApprox(), criterion = NULL, maxit = NULL)
 }
 \arguments{
-\item{approx}{How the expectation is approximated when the family has no
-closed-form expected information: one of \code{"opg"}, \code{"bartlett"},
-\code{"integrate"} or \code{"mc"}. Ignored by a family that has one, and
-\code{\link[=fit_distrib]{fit_distrib()}} rejects any value other than the default \code{"opg"} in that
-case.}
-
-\item{nsim}{Monte Carlo sample size, a single positive number, read only
-when \code{approx = "mc"} is in force.}
+\item{approx}{An object inheriting from \link{ExpectApprox} that gives the
+approximation of the expected information when the family has no
+closed-form expected information. It is ignored by a family that has one,
+and \code{\link[=fit_distrib]{fit_distrib()}} rejects any approximation other than \code{\link[=expect_opg]{expect_opg()}}
+in that case.}
 
 \item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} to take
 \code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its default tolerance.}
@@ -28,23 +20,24 @@ when \code{approx = "mc"} is in force.}
 default of \code{\link[optimizers7:newton]{optimizers7::newton()}}.}
 }
 \value{
-An S7 object of class \code{FisherScoring} with those four properties.
+An S7 object of class \code{FisherScoring} with the properties \code{approx},
+\code{criterion} and \code{maxit}.
 }
 \description{
 This class is the one that \code{\link[=fisher_scoring]{fisher_scoring()}} returns and that
 \code{\link[=fit_distrib]{fit_distrib()}} accepts through its \code{method} argument. It holds the two
 things that a Fisher scoring run needs and that an ordinary optimizer cannot
-carry: how the expected information is obtained when the family has no
-closed form for it, and the stopping rule and iteration budget that the run
-uses.
+carry: the approximation of the expected information, an object of class
+\link{ExpectApprox}, used when the family has no closed form for it, and the
+stopping rule and iteration budget that the run uses.
 
 This page documents the raw S7 constructor, which validates nothing. Build
 one with \code{\link[=fisher_scoring]{fisher_scoring()}}, which checks all four arguments.
 }
 \examples{
-fs <- fisher_scoring(approx = "mc", nsim = 2000)
+fs <- fisher_scoring(approx = expect_mc(nsim = 2000))
 fs
-c(approx = fs@approx, nsim = fs@nsim)
+fs@approx@nsim
 
 # The defaults leave the stopping rule and the budget to the fit.
 d <- fisher_scoring()
@@ -53,5 +46,6 @@ c(criterion = is.null(d@criterion), maxit = is.null(d@maxit))
 }
 \seealso{
 \code{\link[=fisher_scoring]{fisher_scoring()}}, which builds and validates one;
-\code{\link[=fit_distrib]{fit_distrib()}}, which consumes it.
+\code{\link[=fit_distrib]{fit_distrib()}}, which consumes it; \link{ExpectApprox} for the class of the
+\code{approx} property.
 }

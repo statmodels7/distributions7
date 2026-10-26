@@ -14,10 +14,9 @@ expectation; only its length does, through recycling.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{Ignored: the answer is exact. It is accepted so that the
-signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored: the answer
+is exact. It is accepted so that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -35,7 +34,7 @@ Returns the expected Hessian in closed form. In the two rates the density is
 an exponential family, so the information in those rates is the Hessian of
 the log normalizing constant, which the observed Hessian also uses.
 
-\code{approx} and \code{nsim} are accepted and ignored because the answer is exact.
+\code{approx} is accepted and ignored because the answer is exact.
 }
 \section{The rate block}{
 With sufficient statistics \eqn{-|z|} and \eqn{-z^2/2}, \eqn{\log Z} is the
@@ -100,8 +99,8 @@ rbind(alpha = c(1 - 1e-8, 0.5, 1e-8),
       information = vapply(c(1 - 1e-8, 0.5, 1e-8), inf_mu, 0),
       limit = c(2^2, NA, 2 * (1 - 1e-8)))
 
-# The strategy arguments are ignored because the answer is exact.
-identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
+# The approx argument is ignored because the answer is exact.
+identical(e, distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 5)))
 }
 \seealso{
 \code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the observed curvature, which

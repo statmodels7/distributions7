@@ -17,7 +17,9 @@ numeric vector of length 1 or of the length of \code{y}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}.}
 
-\item{approx, nsim}{Ignored.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored; accepted so
+that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -59,7 +61,7 @@ and the smallest grows like \eqn{\alpha^4}, reading
 \eqn{4.4\times10^{-10}} at \eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at
 \eqn{\alpha = 0.5}. See \code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for why.
 
-\code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
+\code{approx} is accepted for the generic's sake and ignored.
 }
 \examples{
 d <- skewnormal1_distrib()

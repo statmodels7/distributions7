@@ -561,7 +561,7 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #' so the two halves of such an integral cancel up to rounding, and the entry
 #' comes back as zero to about \eqn{10^{-20}}.
 #'
-#' `approx` and `nsim` are accepted for the generic's sake and ignored.
+#' `approx` is accepted for the generic's sake and ignored.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -572,7 +572,9 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #'   be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()].
-#' @param approx,nsim Ignored.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads The thread count passed to the family's kernels.
 #'
@@ -624,8 +626,8 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #'
 #' The expected third derivatives have no closed form. With
 #' `expected = TRUE` the method calls [expected_derivative()], which integrates
-#' the observed derivatives against the density by the strategy specified in
-#' `approx`. The arguments `approx` and `nsim` are read only in this case.
+#' the observed derivatives against the density by the approximation specified in
+#' `approx`. The argument `approx` is read only in this case.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -639,11 +641,9 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of ten numeric vectors, `mu_mu_mu` through
@@ -669,14 +669,14 @@ register_loc_scale_expected(PseudoHuberDistrib)
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #'
-#' # The expected branch is a quadrature and takes a strategy; the components
+#' # The expected branch is a quadrature and takes an approximation; the components
 #' # odd in the residual come back at zero.
 #' vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
 #'        function(v) v[1], numeric(1))
-S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
-                        approx = match.arg(approx), nsim = nsim)
+                        approx = approx)
   } else {
     pseudohuber_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }
@@ -693,7 +693,7 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #'
 #' The expected fourth derivatives have no closed form. With
 #' `expected = TRUE` the method calls [expected_derivative()]. The arguments
-#' `approx` and `nsim` are read only in this case.
+#' `approx` is read only in this case.
 #'
 #' @param distrib A `PseudoHuberDistrib` object, from
 #'   [pseudohuber_distrib()].
@@ -707,11 +707,9 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of fifteen numeric vectors named for the multi-index
@@ -737,10 +735,10 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' up <- distrib_deriv3(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
-S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
-                        approx = match.arg(approx), nsim = nsim)
+                        approx = approx)
   } else {
     pseudohuber_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
   }

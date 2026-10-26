@@ -63,7 +63,7 @@ test_that("all optimization methods agree", {
   set.seed(3)
   d <- gaussian1_distrib()
   y <- distrib_rng(d, 800, list(mu = 1, sigma = 2))
-  fits <- lapply(c("fisher", "newton", "bfgs"), function(m) {
+  fits <- lapply(named_methods(), function(m) {
     fit_distrib(d, y, start = list(mu = 0, sigma = 1), method = m)
   })
   for (f in fits) expect_true(f@converged)
@@ -183,7 +183,7 @@ test_that("the three named strategies agree with each other and the closed form"
   y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
   st <- list(mu = 0, sigma = 1)
 
-  fits <- lapply(c("fisher", "newton", "bfgs"),
+  fits <- lapply(named_methods(),
                  function(m) fit_distrib(d, y, start = st, method = m))
   for (f in fits) expect_true(f@converged, info = fit_report(f, d, y))
 

@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R expect_approx.R
 NULL
 
 #' @title S7 Class for Fisher Scoring Specifications
@@ -8,43 +8,42 @@ NULL
 #' This class is the one that [fisher_scoring()] returns and that
 #' [fit_distrib()] accepts through its `method` argument. It holds the two
 #' things that a Fisher scoring run needs and that an ordinary optimizer cannot
-#' carry: how the expected information is obtained when the family has no
-#' closed form for it, and the stopping rule and iteration budget that the run
-#' uses.
+#' carry: the approximation of the expected information, an object of class
+#' [ExpectApprox], used when the family has no closed form for it, and the
+#' stopping rule and iteration budget that the run uses.
 #'
 #' This page documents the raw S7 constructor, which validates nothing. Build
 #' one with [fisher_scoring()], which checks all four arguments.
 #'
-#' @param approx How the expectation is approximated when the family has no
-#'   closed-form expected information: one of `"opg"`, `"bartlett"`,
-#'   `"integrate"` or `"mc"`. Ignored by a family that has one, and
-#'   [fit_distrib()] rejects any value other than the default `"opg"` in that
-#'   case.
-#' @param nsim Monte Carlo sample size, a single positive number, read only
-#'   when `approx = "mc"` is in force.
+#' @param approx An object inheriting from [ExpectApprox] that gives the
+#'   approximation of the expected information when the family has no
+#'   closed-form expected information. It is ignored by a family that has one,
+#'   and [fit_distrib()] rejects any approximation other than [expect_opg()]
+#'   in that case.
 #' @param criterion A stopping rule from \pkg{optimizers7}, or `NULL` to take
 #'   [optimizers7::crit_grad()] at its default tolerance.
 #' @param maxit An iteration limit, a single positive number, or `NULL` for the
 #'   default of [optimizers7::newton()].
 #'
-#' @return An S7 object of class `FisherScoring` with those four properties.
+#' @return An S7 object of class `FisherScoring` with the properties `approx`,
+#'   `criterion` and `maxit`.
 #'
 #' @examples
-#' fs <- fisher_scoring(approx = "mc", nsim = 2000)
+#' fs <- fisher_scoring(approx = expect_mc(nsim = 2000))
 #' fs
-#' c(approx = fs@approx, nsim = fs@nsim)
+#' fs@approx@nsim
 #'
 #' # The defaults leave the stopping rule and the budget to the fit.
 #' d <- fisher_scoring()
 #' c(criterion = is.null(d@criterion), maxit = is.null(d@maxit))
 #'
 #' @seealso [fisher_scoring()], which builds and validates one;
-#'   [fit_distrib()], which consumes it.
+#'   [fit_distrib()], which consumes it; [ExpectApprox] for the class of the
+#'   `approx` property.
 #' @export
 FisherScoring <- S7::new_class("FisherScoring",
   properties = list(
-    approx = S7::class_character,
-    nsim = S7::class_numeric,
+    approx = ExpectApprox,
     criterion = S7::class_any,
     maxit = S7::class_any
   )
@@ -98,28 +97,29 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' # Strategies for the expected information
 #' `approx` is read only where the family has no closed-form expected
 #' information, as for a family defined by its density alone or a truncated
-#' family. The strategies differ in cost and in variance: `"opg"` costs one
-#' gradient, `"bartlett"` and `"integrate"` are deterministic and dearer, and
-#' `"mc"` adds simulation noise that decreases with `nsim`.
+#' family. The approximations differ in cost and in variance:
+#' [expect_opg()] costs one gradient, [expect_bartlett()] and
+#' [expect_integrate()] are deterministic and dearer, and [expect_mc()] adds
+#' simulation noise that decreases with its `nsim`.
 #'
 #' A family that supplies the expectation in closed form ignores `approx`, and
 #' [fit_distrib()] signals an error when `approx` differs from the default
-#' `"opg"` for such a family, so that a fit never reports a strategy that was
-#' not used.
+#' [expect_opg()] for such a family, so that a fit never reports an
+#' approximation that was not used.
 #'
-#' @param approx How the expectation is approximated when the family has no
-#'   closed-form expected information. `"opg"` (the default) is the outer
-#'   product of the observed scores, which costs one gradient; `"bartlett"`
-#'   evaluates the right-hand side of the second Bartlett identity, a sum over
-#'   the support for a discrete family and a quadrature for a continuous one;
-#'   `"integrate"` is quadrature of the observed information; `"mc"` is Monte
-#'   Carlo. The value is matched by
-#'   [base::match.arg()], so any other value signals an error that lists the
-#'   four. See
-#'   [expected_derivative_methods()].
-#' @param nsim Monte Carlo sample size, a single positive finite number. It is
-#'   read only when `approx = "mc"`. It defaults to 10000. A vector, a
-#'   non-finite value or a number below 1 signals an error.
+#' @param approx An object that gives the approximation of the expected
+#'   information when the family has no closed form for it, one of:
+#'   - [expect_opg()], the default: the outer product of the observed scores,
+#'     which costs one gradient;
+#'   - [expect_bartlett()]: the right-hand side of the second Bartlett
+#'     identity, a sum over the support for a discrete family and a quadrature
+#'     for a continuous one;
+#'   - [expect_integrate()]: quadrature of the observed information;
+#'   - [expect_mc()]: Monte Carlo, with the sample size `nsim` set in that
+#'     constructor.
+#'
+#'   Any other value, a character string included, signals an error.
+#'   [expected_derivative_methods] compares the four.
 #' @param criterion A stopping rule from \pkg{optimizers7}, or `NULL` (the
 #'   default), in which case [fit_distrib()] stops on
 #'   [optimizers7::crit_grad()] at its default tolerance. An object that is not
@@ -128,8 +128,8 @@ FisherScoring <- S7::new_class("FisherScoring",
 #'   default) for the limit of [optimizers7::newton()]. When the limit is reached the fit reports
 #'   `converged = FALSE` and keeps the point.
 #'
-#' @return An S7 object of class [FisherScoring()], with properties `approx`,
-#'   `nsim`, `criterion` and `maxit`.
+#' @return An S7 object of class [FisherScoring()], with properties `approx`
+#'   (an object inheriting from [ExpectApprox]), `criterion` and `maxit`.
 #'
 #' @examples
 #' set.seed(1)
@@ -150,7 +150,7 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' # 'approx' is read only where the family has no closed form (see the
 #' # examples of expected_derivative_methods). On a family that has one, a
 #' # value other than the default is rejected.
-#' try(fit_distrib(d, y, method = fisher_scoring(approx = "mc")))
+#' try(fit_distrib(d, y, method = fisher_scoring(approx = expect_mc())))
 #'
 #' # The stopping rule and the budget belong to the method.
 #' fit <- fit_distrib(d, y, method = fisher_scoring(maxit = 1))
@@ -158,17 +158,14 @@ FisherScoring <- S7::new_class("FisherScoring",
 #'
 #' @seealso [fit_distrib()], which consumes this;
 #'   [FisherScoring()] for the class;
-#'   [expected_derivative_methods()] for what each `approx` computes;
+#'   [expected_derivative_methods] for what each `approx` computes;
 #'   [distrib_expected_hessian()] for the matrix itself;
 #'   [optimizers7::newton()], whose iteration limit stands where this sets
 #'   none.
 #' @export
-fisher_scoring <- function(approx = c("opg", "bartlett", "integrate", "mc"),
-                           nsim = 10000, criterion = NULL, maxit = NULL) {
-  approx <- match.arg(approx)
-  if (!is.numeric(nsim) || length(nsim) != 1L || !is.finite(nsim) || nsim < 1) {
-    stop("'nsim' must be a single positive number.", call. = FALSE)
-  }
+fisher_scoring <- function(approx = expect_opg(), criterion = NULL,
+                           maxit = NULL) {
+  check_approx(approx)
   if (!is.null(criterion) &&
       !S7::S7_inherits(criterion, optimizers7::criterion)) {
     stop("'criterion' must be an optimizers7 stopping rule, or NULL.",
@@ -179,7 +176,7 @@ fisher_scoring <- function(approx = c("opg", "bartlett", "integrate", "mc"),
     stop("'maxit' must be a single positive number, or NULL.", call. = FALSE)
   }
   FisherScoring(
-    approx = approx, nsim = nsim,
+    approx = approx,
     criterion = criterion, maxit = maxit
   )
 }
@@ -188,10 +185,10 @@ fisher_scoring <- function(approx = c("opg", "bartlett", "integrate", "mc"),
 #' @name print.FisherScoring
 #'
 #' @description
-#' Writes the strategy for the expected information, with the Monte Carlo
-#' sample size when that is the strategy, and then any setting that overrides
+#' Writes the approximation of the expected information, with the Monte Carlo
+#' sample size when that is the approximation, and then any setting that overrides
 #' the fit's: a stopping rule set here is reported as set, and an iteration
-#' limit by its value. The line about the strategy carries the reminder that a
+#' limit by its value. The line about the approximation carries the reminder that a
 #' family with a closed-form expectation ignores it.
 #'
 #' @param x A [FisherScoring()] object.
@@ -201,15 +198,14 @@ fisher_scoring <- function(approx = c("opg", "bartlett", "integrate", "mc"),
 #'
 #' @examples
 #' fisher_scoring()
-#' fisher_scoring(approx = "mc", nsim = 2000)
+#' fisher_scoring(approx = expect_mc(nsim = 2000))
 #' fisher_scoring(criterion = optimizers7::crit_grad(1e-9), maxit = 50)
 #'
 #' @seealso [fisher_scoring()] for what each line reports.
 #' @keywords internal
 S7::method(print, FisherScoring) <- function(x, ...) {
   cat("Fisher scoring\n")
-  cat("  expected information: ", x@approx,
-      if (identical(x@approx, "mc")) paste0(" (nsim = ", x@nsim, ")") else "",
+  cat("  expected information: ", sub("^Expectation ", "", approx_label(x@approx)),
       "  [ignored when the family has a closed form]\n", sep = "")
   if (!is.null(x@criterion)) cat("  criterion: set here\n")
   if (!is.null(x@maxit)) cat("  maxit: ", x@maxit, "\n", sep = "")

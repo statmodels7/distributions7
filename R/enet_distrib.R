@@ -594,7 +594,7 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' an exponential family, so the information in those rates is the Hessian of
 #' the log normalizing constant, which the observed Hessian also uses.
 #'
-#' `approx` and `nsim` are accepted and ignored because the answer is exact.
+#' `approx` is accepted and ignored because the answer is exact.
 #'
 #' @details
 #' # The rate block
@@ -638,9 +638,9 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx Ignored: the answer is exact. It is accepted so that the
-#'   signature matches the generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored: the answer
+#'   is exact. It is accepted so that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -682,11 +682,11 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #'       information = vapply(c(1 - 1e-8, 0.5, 1e-8), inf_mu, 0),
 #'       limit = c(2^2, NA, 2 * (1 - 1e-8)))
 #'
-#' # The strategy arguments are ignored because the answer is exact.
-#' identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
+#' # The approx argument is ignored because the answer is exact.
+#' identical(e, distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 5)))
 S7::method(distrib_expected_hessian, EnetDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+    approx = expect_opg(), ...,
     threads = 1L) {
   enet_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }

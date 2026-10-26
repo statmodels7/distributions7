@@ -1722,10 +1722,10 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. The two differ here, because `nu` carries a log link by default.
-#' @param approx Ignored: the expectation is exact, so the method does not
-#'   consult an approximation strategy. [fit_distrib()] rejects a
-#'   `fisher_scoring(approx =)` for this family for that reason.
-#' @param nsim Ignored, for the same reason.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored: the
+#'   expectation is exact, so the method does not consult an approximation.
+#'   [fit_distrib()] rejects a `fisher_scoring(approx =)` for this
+#'   family for that reason. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length \eqn{n}, keyed as
@@ -1777,7 +1777,7 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
 #' @keywords internal
 S7::method(distrib_expected_hessian, MvStudentTDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+    approx = expect_opg(), ...) {
   y <- as_mv_matrix(distrib, y)
   pc <- mvt_pieces(distrib, theta, derivs = TRUE)
   n <- nrow(y)

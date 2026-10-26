@@ -545,7 +545,7 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #'   \frac{\mu^2}{u_j^2}\Big)\Big].}
 #' \eqn{A} and \eqn{W} are not available in closed form. Each is summed
 #' against the exact mass until the terms fall below a tolerance, so this is a
-#' truncated exact sum and not a quadrature or a simulation. `approx` and `nsim` are ignored, and `y` is
+#' truncated exact sum and not a quadrature or a simulation. `approx` is ignored, and `y` is
 #' read only for its length.
 #'
 #' The mixed entry does not vanish, so the mean and the dispersion are not
@@ -581,9 +581,9 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored. The surviving expectation is a truncated exact sum. It
-#'   is accepted so that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored. The
+#'   surviving expectation is a truncated exact sum. It is accepted so that the
+#'   signature matches the generic's. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -629,8 +629,7 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #'        numeric(1))
 S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, theta,
                                                                   scale = c("parameter", "link"),
-                                                                  approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                  nsim = 10000, ...,
+                                                                  approx = expect_opg(), ...,
                                        threads = 1L) {
   negbin1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }

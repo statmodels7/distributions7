@@ -127,10 +127,21 @@ reference:
   - link_scale_derivatives
   - distrib_kernel
   - distrib_scalar_route
-  - expected_derivative_methods
   - expected_hessian_exact
   - expected_hessian_costly
   - has_exact_deriv4
+
+- title: Approximations of an expectation
+  desc: >
+    The objects that select how an expected derivative is computed when a
+    family has no closed form for it, and the page that compares them.
+  contents:
+  - expected_derivative_methods
+  - expect_opg
+  - expect_bartlett
+  - expect_integrate
+  - expect_mc
+  - ExpectApprox
 
 - title: Estimation
   contents:

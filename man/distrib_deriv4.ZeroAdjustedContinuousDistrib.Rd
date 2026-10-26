@@ -15,7 +15,7 @@ probability of the atom, in \eqn{(0, 1)}.}
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation over the
 mixed law.}
 
-\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
+\item{...}{Passed on, \code{approx} among them.}
 }
 \value{
 A named list of fourth-derivative components, keyed

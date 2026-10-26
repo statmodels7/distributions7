@@ -14,7 +14,7 @@ none, because the endpoints are constants.}
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
 truncated law.}
 
-\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
+\item{...}{Passed on, \code{approx} among them.}
 }
 \value{
 A named list of third-derivative components, keyed

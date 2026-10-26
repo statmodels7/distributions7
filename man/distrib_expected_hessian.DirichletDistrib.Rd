@@ -16,11 +16,10 @@ free values followed by \code{phi}, each of length 1.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, because the expectation is exact. It is accepted
-so that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
-
-\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
+the expectation is exact. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -38,7 +37,7 @@ form and with no quadrature or simulation:
       \qquad
       \mathbb{E}[\ell^{(\phi\phi)}] = \psi'(\phi) - \sum_{j} t_j \mu_j^2,}
 with \eqn{t_j = \psi'(\alpha_j)} and \eqn{A = \partial\mu/\partial\eta}.
-\code{approx} and \code{nsim} are ignored: every strategy returns the same matrix.
+\code{approx} is ignored: every approximation returns the same matrix.
 }
 \section{The terms that carry the data}{
 Under the model \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)}, so
@@ -77,8 +76,8 @@ eta <- c(0.3, -0.2)
 colSums(do.call(cbind, parameters7::param_d1(d@param, eta)))
 vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
 
-# The strategy argument is inert because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
+# The approx argument is inert because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, Y, th, approx = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian.DirichletDistrib()}} for the quantity this is the

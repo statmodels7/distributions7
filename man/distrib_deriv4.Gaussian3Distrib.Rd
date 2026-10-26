@@ -19,9 +19,8 @@ be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -44,7 +43,7 @@ This is the flattest of the three parametrizations of the Gaussian at fourth
 order; the log-density is quadratic in \eqn{\mu} and its \eqn{\tau} part is
 \eqn{\tfrac{1}{2}\log\tau} plus a term linear in \eqn{\tau}, so every mixed
 component past \eqn{\ell^{(\mu\mu\tau)}} vanishes. Like the third order,
-the values are free of the response, so \code{expected}, \code{approx} and \code{nsim} are
+the values are free of the response, so \code{expected} and \code{approx} are
 all without effect.
 }
 \section{Notation}{

@@ -12,8 +12,7 @@ chain_derivatives(
   new_params,
   order,
   expected = FALSE,
-  approx = "opg",
-  nsim = 10000
+  approx = expect_opg()
 )
 }
 \arguments{
@@ -35,9 +34,10 @@ and orders the result.}
 \item{expected}{Should the expected derivatives be carried? It is a single
 logical, with default \code{FALSE}.}
 
-\item{approx, nsim}{Forwarded to the parent's expected derivatives: \code{approx}
-is one of \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, and
-\code{nsim} is the number of draws for \code{"mc"}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, forwarded to the
+parent's expected derivatives. It is \code{\link[=expect_opg]{expect_opg()}} by default;
+\code{\link[=expect_mc]{expect_mc()}} carries the number of draws. See
+\link{expected_derivative_methods}.}
 }
 \value{
 A named list of numeric vectors, keyed as

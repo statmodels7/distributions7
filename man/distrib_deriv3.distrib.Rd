@@ -18,12 +18,10 @@ Hessian; \code{TRUE} takes the expectation of the observed derivatives through
 \item{scale}{Handled by the generic after dispatch; this method always
 returns the parameter scale.}
 
-\item{approx}{Which strategy takes the expectation, read only when
-\code{expected} is \code{TRUE}: \code{"integrate"} (the default at this order),
-\code{"bartlett"}, \code{"opg"} or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
-
-\item{nsim}{Monte Carlo sample size, a single positive number, read only
-under \code{approx = "mc"}. Defaults to 10000.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
+by default, that gives the approximation of the expectation. It is read
+only when \code{expected} is \code{TRUE}. The Monte Carlo sample size is the \code{nsim}
+of \code{\link[=expect_mc]{expect_mc()}}. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }
@@ -38,7 +36,7 @@ Observed derivatives come from \code{\link[=numerical_deriv3]{numerical_deriv3()
 of the family's own \code{\link[=distrib_hessian]{distrib_hessian()}} along each parameter, or, for a
 family without its own Hessian, one tensor-product stencil on its score or
 its log-density. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
-strategy selected by \code{approx}.
+approximation selected by \code{approx}.
 
 Every family shipped in this package writes the observed third order out,
 so this method serves a family defined outside the package, and five orders

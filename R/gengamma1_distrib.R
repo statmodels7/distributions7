@@ -474,7 +474,7 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' Gamma with shape \eqn{k = d/p} and unit rate:
 #' \deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
 #'       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
-#' So `approx` and `nsim` are ignored and [expected_hessian_exact()] returns
+#' So `approx` is ignored and [expected_hessian_exact()] returns
 #' `TRUE`. The Weibull and the Gumbel use the same device, with a standard
 #' exponential variable as the corresponding variable and the expectations as
 #' derivatives of \eqn{\Gamma} at 2.
@@ -487,9 +487,9 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #'   positive.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx Ignored: the expectation is closed form. It is accepted so that
-#'   the signature matches the generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored: the
+#'   expectation is closed form. It is accepted so that the signature matches
+#'   the generic's. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`.
@@ -528,8 +528,8 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' # bilinear.
 #' c(expected = e$a_d, observed = -1 / 2)
 #'
-#' # The strategy argument is ignored, because the expectation is closed form.
-#' identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
+#' # The approx argument is ignored, because the expectation is closed form.
+#' identical(e, distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 5)))
 #' distributions7:::expected_hessian_exact(d)
 #'
 #' # The information is ill conditioned: d and p act largely through d/p.
@@ -541,8 +541,7 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' round(ev$vectors[, 3], 3)   # this is the flat direction
 S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
-                                                                   approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                   nsim = 10000, ..., threads = 1L) {
+                                                                   approx = expect_opg(), ..., threads = 1L) {
   gengamma1_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 

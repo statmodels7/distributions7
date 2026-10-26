@@ -15,10 +15,9 @@ recycled. \code{sigma} must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available. It is accepted so
-that the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available. It is accepted so that the signature matches the
+generic's. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -45,7 +44,7 @@ asymptotically independent. The information in the location is
 \eqn{\sigma}. Compared at equal variance the two are much closer, and the
 logistic variance is \eqn{\pi^2\sigma^2/3}.
 
-Because the values do not depend on the data, \code{approx} and \code{nsim} are
+Because the values do not depend on the data, \code{approx} is
 ignored. \code{y} is read only for its length.
 }
 \section{Notation}{

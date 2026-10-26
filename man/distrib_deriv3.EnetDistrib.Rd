@@ -18,11 +18,8 @@ derivatives at \code{y} are returned.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
-only when \code{expected = TRUE}.}
-
-\item{nsim}{A single positive integer, the Monte Carlo sample size used when
-\code{approx = "mc"}. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
+by default: the approximation of the expectation, read only when \code{expected = TRUE}. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -48,8 +45,7 @@ The kernel forms the components free of the data once per distinct pair
 assembly written in R.
 
 With \code{expected = TRUE} the value is an expectation, and there it is not
-closed form: the call routes to \code{\link[=expected_derivative]{expected_derivative()}}, so \code{approx} and
-\code{nsim} are read.
+closed form: the call routes to \code{\link[=expected_derivative]{expected_derivative()}}, so \code{approx} is read.
 }
 \section{Notation}{
 

@@ -202,7 +202,9 @@ The optimization itself is delegated to
 package, which brings its own stopping rule; `fisher_scoring()`, which
 is Newton’s method with the expected information and which records how
 that information is approximated when the family has no closed form for
-it; or one of the names `"fisher"`, `"newton"` and `"bfgs"`.
+it. The approximation is an object (`expect_opg()`, `expect_bartlett()`,
+`expect_integrate()` or `expect_mc()`) passed as the `approx` argument
+of `fisher_scoring()`.
 
 ``` r
 fit2 <- fit_distrib(gamma2_distrib(), y,

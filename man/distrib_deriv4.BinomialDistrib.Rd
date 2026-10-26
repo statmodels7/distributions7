@@ -19,9 +19,9 @@ model is returned in place of the observed value. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both routes.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for both routes. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -40,7 +40,7 @@ probability, in closed form:
 \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = -\dfrac{6y}{\mu^4} - \dfrac{6(n-y)}{(1-\mu)^4}.}
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = n\mu}, which gives \eqn{-6n/\mu^3 - 6n/(1-\mu)^3}. Both
-routes are closed form, so \code{approx} and \code{nsim} are ignored.
+routes are closed form, so \code{approx} is ignored.
 }
 \section{Notation}{
 

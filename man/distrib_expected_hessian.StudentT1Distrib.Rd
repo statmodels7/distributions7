@@ -16,11 +16,10 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, because the expectation is exact. It is accepted
-so that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
-
-\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
+the expectation is exact. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -49,8 +48,8 @@ about \eqn{\mu} while the other two components are even in \eqn{r}. So
 \eqn{\hat\nu}, whereas \eqn{\hat\sigma} and \eqn{\hat\nu} are not
 asymptotically independent of each other.
 
-Because a closed form exists, \code{approx} and \code{nsim} are ignored: every
-strategy returns the same six numbers. The arithmetic runs in a compiled
+Because a closed form exists, \code{approx} is ignored: every
+approximation returns the same six numbers. The arithmetic runs in a compiled
 kernel, so the result does not depend on the thread count.
 }
 \section{Notation}{
@@ -90,8 +89,8 @@ set.seed(1)
 z <- distrib_rng(d, 4e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The strategy argument has no effect, because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
+# The approx argument has no effect, because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, y, th, approx = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the observed Hessian, of

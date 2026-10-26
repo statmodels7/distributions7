@@ -562,9 +562,10 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'
 #' The `"integrate"` route of [continuous_distrib()] splits a one-dimensional
 #' integral at quantiles, and a multivariate family has no quantiles, so
-#' `approx = "integrate"` signals an error. The other values sample: `"opg"`
-#' and `"bartlett"` are the same computation here, the average of the negative
-#' outer product of the score, and `"mc"` averages the observed Hessian. The
+#' `approx = expect_integrate()` signals an error. The other values sample:
+#' [expect_opg()] and [expect_bartlett()] are the same computation here, the
+#' average of the negative outer product of the score, and [expect_mc()]
+#' averages the observed Hessian. The
 #' two averages agree in expectation by the second Bartlett identity and differ
 #' by sampling error at any finite `nsim`.
 #'
@@ -583,10 +584,10 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'   single number.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the result of the method.
-#' @param approx One of `"opg"` (the default), `"bartlett"` or `"mc"`; the
-#'   first two are the same computation here. `"integrate"` signals an error.
-#' @param nsim The Monte Carlo sample size. Defaults to `10000`. The error
-#'   falls as its square root.
+#' @param approx An object inheriting from [ExpectApprox]: [expect_opg()] (the
+#'   default), [expect_bartlett()] or [expect_mc()]. The first two are the same
+#'   computation here, and [expect_integrate()] signals an error. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length \eqn{n}, keyed as
@@ -608,7 +609,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'
 #' set.seed(1)
 #' sampled <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-#'                 approx = "mc", nsim = 4000)
+#'                 approx = expect_mc(nsim = 4000))
 #' exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
 #' round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
 #'             closed = vapply(exact, function(z) z[1], numeric(1))), 3)
@@ -616,27 +617,27 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #' # Two seeds give two values, because the result is a sample.
 #' set.seed(2)
 #' again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-#'               approx = "mc", nsim = 4000)
+#'               approx = expect_mc(nsim = 4000))
 #' c(first = sampled$mu1_mu1[1], second = again$mu1_mu1[1])
 #'
 #' @keywords internal
 S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
-  approx <- match.arg(approx)
-  if (identical(approx, "integrate")) {
+    approx = expect_opg(), ...) {
+  check_approx(approx)
+  if (S7::S7_inherits(approx, ExpectIntegrate)) {
     mv_refuse(
       distrib, "distrib_expected_hessian",
-      'approx = "integrate" builds a quadrature over an interval, which has no counterpart in several dimensions. Use "mc" or "bartlett".'
+      "expect_integrate() builds a quadrature over an interval, which has no counterpart in several dimensions. Use expect_mc() or expect_bartlett()."
     )
   }
 
   n <- n_obs(distrib, y)
   params <- distrib@params
   nm <- hess_names(params)
-  big <- distrib_rng(distrib, nsim, theta)
+  big <- distrib_rng(distrib, approx_nsim(approx), theta)
 
-  vals <- if (identical(approx, "mc")) {
+  vals <- if (S7::S7_inherits(approx, ExpectMC)) {
     h <- distrib_hessian(distrib, big, theta)
     vapply(nm, function(k) mean(h[[k]]), numeric(1))
   } else {

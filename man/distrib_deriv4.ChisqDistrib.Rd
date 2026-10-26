@@ -20,9 +20,8 @@ to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -43,7 +42,7 @@ with \eqn{\psi'''} the third derivative of the digamma function, one case of
 \eqn{\ell^{(k)} = -\psi^{(k-2)}(\mu/2)/2^{k}}.
 
 On the parameter scale the value is free of the response, so \code{expected},
-\code{approx} and \code{nsim} have no effect and the result is identical to the bit
+\code{approx} has no effect and the result is identical to the bit
 in either case. With \code{scale = "link"} the observed and the expected
 results differ.
 }

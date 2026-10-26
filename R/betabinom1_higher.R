@@ -155,8 +155,7 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #' their accuracy as \eqn{\sigma} goes to zero ([betabinom1_components()]).
 #'
 #' With `expected = TRUE` the method returns the expectation as an exact
-#' finite sum over the support, from [betabinom1_expected()]. `approx` and
-#' `nsim` are ignored on both branches.
+#' finite sum over the support, from [betabinom1_expected()]. `approx` is ignored on both branches.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
 #' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
@@ -168,9 +167,9 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because the expectation is an exact finite sum. It is
-#'   accepted so that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because the
+#'   expectation is an exact finite sum. It is accepted so that the signature
+#'   matches the generic's. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_sigma`,
@@ -211,8 +210,7 @@ betabinom1_expected <- function(distrib, y, theta, order) {
 S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
+                                                           approx = expect_integrate(), ...) {
   if (expected) return(betabinom1_expected(distrib, y, theta, 3L))
   betabinom1_components(distrib, y, theta, 3L)
 }
@@ -230,8 +228,7 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' [chain_derivatives()], and the direct sums below are used otherwise.
 #'
 #' With `expected = TRUE` the method returns the expectation as an exact
-#' finite sum over the support, from [betabinom1_expected()]. `approx` and
-#' `nsim` are ignored on both branches.
+#' finite sum over the support, from [betabinom1_expected()]. `approx` is ignored on both branches.
 #'
 #' @param distrib A `BetaBinom1Distrib` object, from [betabinom1_distrib()].
 #' @param y A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
@@ -243,9 +240,9 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because the expectation is an exact finite sum. It is
-#'   accepted so that the signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because the
+#'   expectation is an exact finite sum. It is accepted so that the signature
+#'   matches the generic's. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
@@ -285,8 +282,7 @@ S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, BetaBinom1Distrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
+                                                           approx = expect_integrate(), ...) {
   if (expected) return(betabinom1_expected(distrib, y, theta, 4L))
   betabinom1_components(distrib, y, theta, 4L)
 }

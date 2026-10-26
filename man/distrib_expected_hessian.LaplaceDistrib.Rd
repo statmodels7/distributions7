@@ -15,14 +15,14 @@ recycled. \code{sigma} must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available. It is accepted so
-that the signature matches the generic's. Of the strategies of the generic,
-\code{"mc"} averages the observed second derivative over simulated draws and
-would give 0 for the location; \code{"opg"}, \code{"bartlett"} and \code{"integrate"}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available; accepted so that the signature matches the
+generic's. Of the approximations of the generic, \code{\link[=expect_mc]{expect_mc()}} averages the
+observed second derivative over simulated draws and would give 0 for the
+location; \code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_bartlett]{expect_bartlett()}} and \code{\link[=expect_integrate]{expect_integrate()}}
 (which uses the Bartlett identity for a family with a non-smooth parameter)
-read the product of scores and give \eqn{-1/\sigma^2}.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+read the product of scores and give \eqn{-1/\sigma^2}. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -49,7 +49,7 @@ has mean 0 and square \eqn{1/\sigma^2} almost surely, so
 \eqn{\mathrm{Var} = 1/\sigma^2}. The mixed entry vanishes because the family
 is symmetric about \eqn{\mu}, so \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}.
 
-Because the values do not depend on the data, \code{approx} and \code{nsim} are
+Because the values do not depend on the data, \code{approx} is
 ignored. \code{y} is read only for its length.
 }
 \section{Notation}{
@@ -89,6 +89,6 @@ coef(fit_distrib(d, z))
 \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient.LaplaceDistrib()}}, whose variance this is;
 \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts this matrix and so fits this family
 where a Newton step could not; and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
-generic and the strategies that it offers for a family with no closed
+generic and the approximations that it offers for a family with no closed
 form.
 }

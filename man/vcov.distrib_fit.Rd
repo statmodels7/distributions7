@@ -14,11 +14,10 @@ the matrix that the fit stored, \code{"observed"} the Hessian at the estimates,
 and \code{"expected"} the expected information there. The last two are
 recomputed.}
 
-\item{approx}{One of \code{"opg"}, \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, read
-only when \code{information = "expected"} and the family has no closed form.
-Defaults to \code{"opg"}.}
-
-\item{nsim}{Number of draws, read only by \code{approx = "mc"}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}: \code{\link[=expect_opg]{expect_opg()}} (the
+default), \code{\link[=expect_bartlett]{expect_bartlett()}}, \code{\link[=expect_integrate]{expect_integrate()}} or \code{\link[=expect_mc]{expect_mc()}}. It
+is read only when \code{information = "expected"} and the family has no closed
+form; see \link{expected_derivative_methods}.}
 
 \item{...}{Unused, accepted for compatibility with \code{\link[stats:vcov]{stats::vcov()}}.}
 }
@@ -56,10 +55,10 @@ information is the curvature of the likelihood at the data in hand.
 
 Where a family does not write its expected information out,
 \code{information = "expected"} reaches a fallback, and \code{approx} selects it. The
-default \code{"opg"} is the outer product of the observed scores, which costs
-one gradient; \code{"bartlett"} evaluates the expectation itself, a sum over the
-support for a discrete family and a quadrature for a continuous one, and is
-orders of magnitude dearer. A fit does not report standard errors from the
+default \code{\link[=expect_opg]{expect_opg()}} is the outer product of the observed scores, which
+costs one gradient; \code{\link[=expect_bartlett]{expect_bartlett()}} evaluates the expectation itself, a
+sum over the support for a discrete family and a quadrature for a
+continuous one, and is orders of magnitude dearer. A fit does not report standard errors from the
 expected information for such a family, because the outer product of the
 scores is a noisier estimate of the information than the observed Hessian.
 The expensive route is available through \code{approx}, and it is not the
@@ -95,5 +94,5 @@ sqrt(diag(vcov(fit, information = "expected")))
 \seealso{
 \code{\link[=coef.distrib_fit]{coef.distrib_fit()}} and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}, which take the
 same \code{scale}; \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the information itself,
-and \code{\link[=expected_by_opg]{expected_by_opg()}} for what \code{approx = "opg"} computes.
+and \code{\link[=expected_by_opg]{expected_by_opg()}} for what \code{approx = expect_opg()} computes.
 }

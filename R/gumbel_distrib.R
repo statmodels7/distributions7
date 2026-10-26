@@ -509,7 +509,7 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' location-scale family such as the Gaussian they are orthogonal. Their
 #' maximum likelihood estimates are asymptotically correlated.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
+#' Because the values do not depend on the data, `approx` is
 #' ignored. `y` is read only for its length.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
@@ -519,10 +519,10 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #'   must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -568,7 +568,7 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
-S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   gumbel_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -587,7 +587,7 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' \eqn{\mathbb{E}[z] = \gamma}: every expectation of the family is a
 #' derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma
 #' functions there.
-#' Since both routes are closed form, `approx` and `nsim` are ignored.
+#' Since both routes are closed form, `approx` is ignored.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -599,9 +599,9 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -642,7 +642,7 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' up <- distrib_hessian(d, y, list(mu = 0 + eps, sigma = 1))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 0 - eps, sigma = 1))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-5)
-S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
   if (expected) gumbel_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else gumbel_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -658,7 +658,7 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #'
 #' With `expected = TRUE` the expectations are returned, also closed form,
 #' resting on the same fact: \eqn{w} is standard exponential under the model,
-#' so \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)}. `approx` and `nsim` are
+#' so \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)}. `approx` is
 #' ignored either way.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
@@ -671,9 +671,9 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -709,7 +709,7 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' up <- distrib_deriv3(d, y, list(mu = 0 + eps, sigma = 1))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 0 - eps, sigma = 1))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-4)
-S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
   if (expected) gumbel_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else gumbel_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

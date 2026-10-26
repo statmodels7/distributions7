@@ -18,10 +18,9 @@ model is returned in place of the observed value. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available for both the
-observed and the expected value.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for both the observed and the expected value. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -38,7 +37,7 @@ the mean, in closed form:
 \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.}
 With \code{expected = TRUE} the expectation is returned, obtained by substituting
 \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{4/\mu^3}. Both routes are closed
-form, so quadrature is not run and \code{approx} and \code{nsim} are ignored.
+form, so quadrature is not run and \code{approx} is ignored.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.

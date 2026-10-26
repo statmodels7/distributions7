@@ -20,7 +20,7 @@ computed by \code{\link[=loc_scale_expected]{loc_scale_expected()}}, and registe
 so that it returns \code{TRUE}.
 }
 \details{
-The \code{approx} and \code{nsim} arguments of the three generics are accepted and
+The \code{approx} arguments of the three generics are accepted and
 ignored, because the expectation is taken by the rule of \code{\link[=loc_scale_rule]{loc_scale_rule()}}
 and not by one of the approximations between which \code{approx} selects.
 }

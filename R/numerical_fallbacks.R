@@ -960,7 +960,7 @@ grou_core <- function(lp, b, n, r) {
 #'
 #' The choice keeps simulation-based tools usable. Inverting a purely
 #' numerical distribution function costs several root-finding iterations per
-#' draw, and each of those is itself a quadrature, so `approx = "mc"` and
+#' draw, and each of those is itself a quadrature, so `approx = expect_mc()` and
 #' [check_distrib()] would be impractical on a family defined by its density
 #' alone.
 #'

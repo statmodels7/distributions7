@@ -9,8 +9,7 @@ distrib_dexpected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  approx = expect_opg(),
   ...
 )
 }
@@ -26,7 +25,8 @@ distrib_dexpected_hessian(
 \code{"link"} for \eqn{\partial/\partial\eta_c} of the link-scale expected
 information.}
 
-\item{approx, nsim}{Passed to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, passed to
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}. See \link{expected_derivative_methods}.}
 
 \item{...}{Passed to methods.}
 }

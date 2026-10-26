@@ -15,11 +15,10 @@ positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because the expectation is exact. It is accepted so that
-the signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because the
+expectation is exact. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -43,7 +42,7 @@ expectation:
       \mathbb{E}\left[\ell^{(\beta\beta)}\right] = \psi'(\alpha+\beta)
         - \psi'(\beta).}
 The expectation is exact, so the method does not average, integrate or
-simulate; it ignores \code{approx} and \code{nsim} and reads \code{y} only for its length.
+simulate; it ignores \code{approx} and reads \code{y} only for its length.
 
 The consequence for fitting is that Fisher scoring and Newton's method take
 the same step on the parameter scale, because both invert the same matrix.
@@ -73,8 +72,8 @@ identical(distrib_expected_hessian(d, y, th), distrib_hessian(d, y, th))
 
 set.seed(8)
 z <- distrib_rng(d, 2000, th)
-rbind(newton = coef(fit_distrib(d, z, method = "newton")),
-      fisher = coef(fit_distrib(d, z, method = "fisher")))
+rbind(newton = coef(fit_distrib(d, z, method = optimizers7::newton())),
+      fisher = coef(fit_distrib(d, z, method = fisher_scoring())))
 
 # The mixed entry is psi'(alpha + beta), positive at every setting, so the
 # two shapes are never orthogonal.

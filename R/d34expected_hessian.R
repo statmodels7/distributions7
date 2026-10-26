@@ -54,8 +54,9 @@ NULL
 #' @param theta A named list of parameters; each has length 1 or
 #'   `length(y)`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Accepted for symmetry with
-#'   [distrib_dexpected_hessian()]; the methods ignore them.
+#' @param approx An object inheriting from [ExpectApprox]. Accepted for symmetry
+#'   with [distrib_dexpected_hessian()]; the methods ignore it. See
+#'   [expected_derivative_methods].
 #' @param ... Passed to methods.
 #'
 #' @return A named list of numeric vectors, keyed as
@@ -72,9 +73,10 @@ NULL
 distrib_d3expected_hessian <- S7::new_generic(
   "distrib_d3expected_hessian", "distrib",
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000,
+           approx = expect_opg(),
            ...) {
     args <- check_derivative_args(distrib, y, theta)
+    check_approx_args(missing(approx), approx, ...names())
     y <- args$y
     theta <- args$theta
     S7::S7_dispatch()
@@ -91,13 +93,15 @@ distrib_d3expected_hessian <- S7::new_generic(
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Either `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @return A named list keyed as [d3expected_names()].
 #' @keywords internal
 S7::method(distrib_d3expected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+    approx = expect_opg(), ...) {
   numerical_dexpected_higher(distrib, y, theta, match.arg(scale), 3L)
 }
 
@@ -141,9 +145,10 @@ S7::method(distrib_d3expected_hessian, distrib) <- function(
 distrib_d4expected_hessian <- S7::new_generic(
   "distrib_d4expected_hessian", "distrib",
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000,
+           approx = expect_opg(),
            ...) {
     args <- check_derivative_args(distrib, y, theta)
+    check_approx_args(missing(approx), approx, ...names())
     y <- args$y
     theta <- args$theta
     S7::S7_dispatch()
@@ -159,13 +164,15 @@ distrib_d4expected_hessian <- S7::new_generic(
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Either `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @return A named list keyed as [d4expected_names()].
 #' @keywords internal
 S7::method(distrib_d4expected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+    approx = expect_opg(), ...) {
   numerical_dexpected_higher(distrib, y, theta, match.arg(scale), 4L)
 }
 

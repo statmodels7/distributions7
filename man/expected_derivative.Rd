@@ -2,16 +2,9 @@
 % Please edit documentation in R/expected_derivatives.R
 \name{expected_derivative}
 \alias{expected_derivative}
-\title{Dispatch an Expected-Derivative Strategy}
+\title{Dispatch an Expected-Derivative Approximation}
 \usage{
-expected_derivative(
-  distrib,
-  y,
-  theta,
-  order,
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000
-)
+expected_derivative(distrib, y, theta, order, approx = expect_opg())
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -22,33 +15,35 @@ expected_derivative(
 
 \item{order}{The derivative order, 2 to 4.}
 
-\item{approx}{One of \code{"bartlett"}, \code{"integrate"}, \code{"mc"} or
-\code{"opg"}.}
-
-\item{nsim}{Number of draws, used only by \code{"mc"}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}: \code{\link[=expect_opg]{expect_opg()}} (the
+default), \code{\link[=expect_bartlett]{expect_bartlett()}}, \code{\link[=expect_integrate]{expect_integrate()}} or \code{\link[=expect_mc]{expect_mc()}}. Any
+other value, a character string included, signals an error.}
 }
 \value{
 A named list of expected derivative component vectors.
 }
 \description{
-Validates \code{approx} and routes to the chosen strategy. It is the shared entry
-point for the fallback expected-derivative methods.
+Validates \code{approx} and routes to the computation that the object selects. It
+is the shared entry point for the fallback expected-derivative methods.
 }
 \details{
-\code{"opg"} and \code{"bartlett"} are two readings of the second Bartlett identity
-and are not the same computation. The identity equates
+\code{\link[=expect_opg]{expect_opg()}} and \code{\link[=expect_bartlett]{expect_bartlett()}} are two readings of the second
+Bartlett identity and are not the same computation. The identity equates
 \eqn{\mathbb{E}[\ell^{(ij)}]} with \eqn{-\mathbb{E}[\ell^{(i)}\ell^{(j)}]};
-\code{"bartlett"} evaluates the expectation, which is a sum over the support or a
-quadrature, while \code{"opg"} reads the integrand at the observation and takes
-no expectation at all. They agree in expectation and differ by orders of
-magnitude in cost, so \code{"opg"} is the default at order 2.
+the Bartlett route evaluates the expectation, which is a sum over the
+support or a quadrature, while the outer product of the scores reads the
+integrand at the observation and takes no expectation at all. They agree in
+expectation and differ by orders of magnitude in cost, so \code{\link[=expect_opg]{expect_opg()}} is
+the default at order 2.
 
-Above order 2 the outer product of scores is not an identity, so \code{"opg"} is
-routed to \code{"bartlett"} and the function does not signal an error. The
-argument is one setting for a whole call, and a method of order 4 can receive
-the value that a method of order 2 received.
+Above order 2 the outer product of scores is not an identity, so
+\code{\link[=expect_opg]{expect_opg()}} is routed to the Bartlett computation and the function does
+not signal an error. The argument is one setting for a whole call, and a
+method of order 4 can receive the value that a method of order 2 received.
+The computation for each class is the method of the internal generic
+\code{expected_by_approx()}.
 }
 \seealso{
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
+\link{expected_derivative_methods}
 }
 \keyword{internal}

@@ -17,12 +17,10 @@ Hessian twice; \code{TRUE} takes the expectation of the observed derivatives.}
 \item{scale}{Handled by the generic after dispatch; this method always
 returns the parameter scale.}
 
-\item{approx}{Which strategy takes the expectation, read only when
-\code{expected} is \code{TRUE}: \code{"integrate"} (the default at this order),
-\code{"bartlett"}, \code{"opg"} or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
-
-\item{nsim}{Monte Carlo sample size, a single positive number, read only
-under \code{approx = "mc"}. Defaults to 10000.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
+by default, that gives the approximation of the expectation. It is read
+only when \code{expected} is \code{TRUE}. The Monte Carlo sample size is the \code{nsim}
+of \code{\link[=expect_mc]{expect_mc()}}. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }
@@ -40,7 +38,7 @@ order, or, for a family without its own Hessian, one tensor-product stencil
 on its score or its log-density. On both routes each component is a single
 stencil, so the package's rule against nesting one difference inside
 another holds. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
-strategy that \code{approx} names.
+approximation that \code{approx} names.
 
 As at the order below, the families shipped in this package write the
 fourth order out themselves. A second difference of the Hessian is less

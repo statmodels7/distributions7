@@ -9,8 +9,7 @@ fit_hess_matrix(
   y,
   theta,
   expected,
-  approx = "opg",
-  nsim = 10000,
+  approx = expect_opg(),
   threads = 1L
 )
 }
@@ -26,14 +25,12 @@ multivariate family.}
 \item{expected}{Logical of length 1, with no default. \code{TRUE} assembles the
 expected Hessian and \code{FALSE} the observed one.}
 
-\item{approx}{How the expectation is approximated for a family with no
-closed form for it: \code{"opg"} (the default), \code{"bartlett"}, \code{"integrate"} or
-\code{"mc"}.
-It is read only when \code{expected} is \code{TRUE} and the family has no exact
-expression; ignored otherwise.}
-
-\item{nsim}{Monte Carlo sample size, a single positive integer, read only
-when \code{approx = "mc"} is in force. Defaults to 10000.}
+\item{approx}{An object inheriting from \link{ExpectApprox} that gives the
+approximation of the expectation for a family with no closed form for it:
+\code{\link[=expect_opg]{expect_opg()}} (the default), \code{\link[=expect_bartlett]{expect_bartlett()}}, \code{\link[=expect_integrate]{expect_integrate()}} or
+\code{\link[=expect_mc]{expect_mc()}}; see \link{expected_derivative_methods}. It is read only when
+\code{expected} is \code{TRUE} and the family has no exact expression; ignored
+otherwise.}
 
 \item{threads}{How many threads the family's compiled kernels may use, as an
 integer count. Defaults to \code{1L}. The matrix does not depend on the count.}
@@ -61,6 +58,6 @@ The expected information at the same point is \eqn{-400 I}.
 \seealso{
 \code{\link[=fit_score]{fit_score()}} for the first-order counterpart;
 \code{\link[=distrib_hessian]{distrib_hessian()}} and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, which supply the
-components; \code{\link[=fisher_scoring]{fisher_scoring()}}, where \code{approx} and \code{nsim} are set.
+components; \code{\link[=fisher_scoring]{fisher_scoring()}}, where \code{approx} is set.
 }
 \keyword{internal}

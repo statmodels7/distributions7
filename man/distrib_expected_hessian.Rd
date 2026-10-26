@@ -9,8 +9,7 @@ distrib_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  approx = expect_opg(),
   ...
 )
 }
@@ -28,16 +27,15 @@ the parameters \eqn{\theta} on their natural (constrained) scale, or
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
-\item{approx}{How the expectation is approximated when the distribution
-has no closed-form expected Hessian; ignored otherwise. The value is one of
-\code{"opg"} (the default: the outer product of the score, read at each
-observation without taking an expectation), \code{"bartlett"} (the second
-Bartlett identity, with the expectation taken by summation or
-quadrature), \code{"integrate"} (quadrature or summation of the observed
-Hessian) or \code{"mc"} (Monte Carlo). See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for
-the accuracy and speed of each.}
-
-\item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
+\item{approx}{An object that gives the approximation of the expectation when
+the distribution has no closed-form expected Hessian; ignored otherwise. It
+is one of \code{\link[=expect_opg]{expect_opg()}} (the default: the outer product of the score, read
+at each observation without taking an expectation), \code{\link[=expect_bartlett]{expect_bartlett()}}
+(the second Bartlett identity, with the expectation taken by summation or
+quadrature), \code{\link[=expect_integrate]{expect_integrate()}} (quadrature or summation of the observed
+Hessian) or \code{\link[=expect_mc]{expect_mc()}} (Monte Carlo, with its own sample size \code{nsim}).
+Any other value, a character string included, signals an error.
+\link{expected_derivative_methods} compares the four.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -64,7 +62,7 @@ distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 # one defined by its density alone
 distrib_expected_hessian(
   pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
-  approx = "integrate"
+  approx = expect_integrate()
 )
 }
 \seealso{

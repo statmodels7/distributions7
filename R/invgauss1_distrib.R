@@ -525,7 +525,7 @@ S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, sca
 #' this is the generalized linear model parametrization, with variance function
 #' \eqn{V(\mu) = \mu^3}.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
+#' Because the values do not depend on the data, `approx` is
 #' ignored. `y` is read only for its length.
 #'
 #' @param distrib An `InvGauss1Distrib` object, from [invgauss1_distrib()].
@@ -535,10 +535,10 @@ S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, sca
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -580,7 +580,7 @@ S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, sca
 #' rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
-S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...,
                                        threads = 1L) {
   invgauss_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -598,8 +598,7 @@ S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, t
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{Y} with \eqn{\mu} and \eqn{1/Y} with \eqn{1/\mu + \phi}. Both routes
-#' are closed form, so the method uses no quadrature and ignores `approx` and
-#' `nsim`.
+#' are closed form, so the method uses no quadrature and ignores `approx`.
 #'
 #' @param distrib An `InvGauss1Distrib` object, from [invgauss1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -611,9 +610,9 @@ S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, t
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -650,7 +649,7 @@ S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, t
 #' up <- distrib_hessian(d, y, list(mu = 1 + eps, phi = 2))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 1 - eps, phi = 2))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
-S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   if (expected) invgauss_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else invgauss_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
@@ -667,7 +666,7 @@ S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expe
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{Y} with \eqn{\mu} and \eqn{1/Y} with \eqn{1/\mu + \phi}. Both routes
-#' are closed form, so `approx` and `nsim` are ignored.
+#' are closed form, so `approx` is ignored.
 #'
 #' @param distrib An `InvGauss1Distrib` object, from [invgauss1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -679,9 +678,9 @@ S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expe
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -716,7 +715,7 @@ S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expe
 #' up <- distrib_deriv3(d, y, list(mu = 1 + eps, phi = 2))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 1 - eps, phi = 2))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-3)
-S7::method(distrib_deriv4, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv4, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   if (expected) invgauss_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else invgauss_deriv4_cpp(y, theta[[1]], theta[[2]], threads)

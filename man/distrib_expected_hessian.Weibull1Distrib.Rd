@@ -16,11 +16,10 @@ recycled. Both must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored here, because the expectation is exact. It is accepted
-so that the signature matches the generic's, where it selects between
-\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
-
-\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
+the expectation is exact. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -48,8 +47,8 @@ with \eqn{\gamma \approx 0.5772} the Euler-Mascheroni constant. The mixed
 entry does not vanish, so the scale and the shape are not orthogonal and
 their estimates are asymptotically correlated.
 
-Because a closed form exists, \code{approx} and \code{nsim} are ignored: every
-strategy returns the same three numbers.
+Because a closed form exists, \code{approx} is ignored: every
+approximation returns the same three numbers.
 }
 \section{Why the expectations are gamma derivatives}{
 Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
@@ -90,8 +89,8 @@ set.seed(4)
 z <- distrib_rng(d, 2e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The strategy argument has no effect, because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
+# The approx argument has no effect, because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, y, th, approx = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the observed Hessian, of

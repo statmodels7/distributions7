@@ -521,7 +521,7 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #' scale until the terms are representable. Past the mode and after 100 terms
 #' the sum stops once \eqn{p_k (1+k)^2 \le 10^{-17}}, with \eqn{p_k} the mass
 #' at \eqn{k}. The entry is a truncated exact sum and not a quadrature or a
-#' simulation; `approx` and `nsim` are ignored, and `y` is read only for its
+#' simulation; `approx` is ignored, and `y` is read only for its
 #' length.
 #'
 #' # The dispersion entry at large theta
@@ -539,10 +539,10 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored. The mean and mixed entries are closed form and the
-#'   dispersion entry is a truncated exact sum. It is accepted so that the
-#'   signature matches the generic's.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored. The mean and
+#'   mixed entries are closed form and the dispersion entry is a truncated exact
+#'   sum. It is accepted so that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -588,7 +588,7 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'        function(t) distrib_expected_hessian(d, 0,
 #'                      list(mu = 4, theta = t))$theta_theta,
 #'        numeric(1))
-S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...,
                                        threads = 1L) {
   negbin_expected_hessian_cpp(y, constant_to_scalar(theta[[1]]),
                               constant_to_scalar(theta[[2]]), threads)
@@ -636,19 +636,21 @@ constant_to_scalar <- function(x) {
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list with `mu` and `theta`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, the kernel's thread count.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
 #' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
 #' @keywords internal
-S7::method(distrib_dexpected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_dexpected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                      function(k) (if (k == 1L) negbin_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
                        else negbin_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
-S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                      function(k) (if (k == 1L) negbin_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
                        else negbin_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
@@ -678,7 +680,7 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #' involving the mean need only \eqn{\mathbb{E}[Y] = \mu}; the pure dispersion
 #' one needs \eqn{\mathbb{E}[\psi_2(Y+\theta)]}, which has no closed form and
 #' is summed over the support with the mass recurrence and the stopping rule
-#' of [distrib_expected_hessian.NegBin2Distrib()]. `approx` and `nsim` are
+#' of [distrib_expected_hessian.NegBin2Distrib()]. `approx` is
 #' ignored either way.
 #'
 #' The kernel performs the cancellation of [distrib_gradient.NegBin2Distrib()]
@@ -697,9 +699,9 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because the expected values are closed form or exact
-#'   sums.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because the
+#'   expected values are closed form or exact sums. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -735,7 +737,7 @@ S7::method(distrib_d2expected_hessian, NegBin2Distrib) <- function(distrib, y, t
 #' up <- distrib_hessian(d, y, list(mu = 4 + eps, theta = 2))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 4 - eps, theta = 2))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
-S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   if (expected) negbin_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else negbin_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
@@ -755,8 +757,7 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #'
 #' With `expected = TRUE` the expectations are returned. The pure dispersion
 #' one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support as at
-#' third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. `approx` and
-#' `nsim` are ignored either way. As at third order, the kernel performs the
+#' third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. `approx` is ignored either way. As at third order, the kernel performs the
 #' cancellation at large \eqn{\theta} symbolically
 #' ([distrib_deriv3.NegBin2Distrib()]).
 #'
@@ -770,9 +771,9 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because the expected values are closed form or exact
-#'   sums.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because the
+#'   expected values are closed form or exact sums. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -808,7 +809,7 @@ S7::method(distrib_deriv3, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' up <- distrib_deriv3(d, y, list(mu = 4 + eps, theta = 2))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 4 - eps, theta = 2))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-3)
-S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   if (expected) negbin_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else negbin_deriv4_cpp(y, theta[[1]], theta[[2]], threads)

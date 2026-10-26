@@ -498,7 +498,7 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #' orthogonal. The score in \eqn{\mu} has the dispersion as a common factor,
 #' so the mean equation can be solved at any fixed value of the dispersion.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
+#' Because the values do not depend on the data, `approx` is
 #' ignored. `y` is read only for its length.
 #'
 #' @param distrib A `Gamma1Distrib` object, from [gamma1_distrib()].
@@ -508,10 +508,10 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -559,8 +559,7 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #' }, numeric(1))
 S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, theta,
                                                                  scale = c("parameter", "link"),
-                                                                 approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                 nsim = 10000, ...,
+                                                                 approx = expect_opg(), ...,
                                                                  threads = 1L) {
   gamma1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -585,19 +584,21 @@ S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, thet
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list with `mu` and `phi`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, the kernel's thread count.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
 #' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
 #' @keywords internal
-S7::method(distrib_dexpected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_dexpected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                      function(k) (if (k == 1L) gamma1_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
                        else gamma1_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
-S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                      function(k) (if (k == 1L) gamma1_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
                        else gamma1_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
@@ -622,7 +623,7 @@ S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, th
 #' \eqn{z} with 1 and \eqn{\log z} with \eqn{\psi(s) - \log s}: \eqn{f_1} and
 #' \eqn{\ell^{(\mu\phi\phi)}}, the component odd in \eqn{z - 1}, vanish. Both
 #' routes are closed form,
-#' so the method uses no quadrature and ignores `approx` and `nsim`.
+#' so the method uses no quadrature and ignores `approx`.
 #'
 #' @param distrib A `Gamma1Distrib` object, from [gamma1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -634,9 +635,9 @@ S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, th
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -679,8 +680,7 @@ S7::method(distrib_d2expected_hessian, Gamma1Distrib) <- function(distrib, y, th
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_phi, tolerance = 1e-5)
 S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                        scale = c("parameter", "link"),
-                                                       approx = c("integrate", "bartlett", "mc", "opg"),
-                                                       nsim = 10000, ...,
+                                                       approx = expect_integrate(), ...,
                                                        threads = 1L) {
   if (expected) {
     gamma1_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
@@ -712,7 +712,7 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #'
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{z} with 1 and \eqn{\log z} with \eqn{\psi(s) - \log s}. Both routes are
-#' closed form, so `approx` and `nsim` are ignored.
+#' closed form, so `approx` is ignored.
 #'
 #' @param distrib A `Gamma1Distrib` object, from [gamma1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -724,9 +724,9 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available for both the
-#'   observed and the expected values.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available for both the observed and the expected values. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -769,8 +769,7 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_phi_phi, tolerance = 1e-4)
 S7::method(distrib_deriv4, Gamma1Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                        scale = c("parameter", "link"),
-                                                       approx = c("integrate", "bartlett", "mc", "opg"),
-                                                       nsim = 10000, ...,
+                                                       approx = expect_integrate(), ...,
                                                        threads = 1L) {
   if (expected) {
     gamma1_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)

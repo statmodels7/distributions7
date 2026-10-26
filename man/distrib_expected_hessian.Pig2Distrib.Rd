@@ -17,7 +17,9 @@
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Unused.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored; accepted so
+that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 
@@ -74,7 +76,7 @@ expectation is a combination of Poisson moments and its coefficients are
 polynomials in \eqn{\mu} and \eqn{1/\mu}. The mixed entry of pig2 is zero at
 every order of that series, because the parametrization is orthogonal.
 
-The \code{approx} and \code{nsim} arguments are accepted and ignored.
+The \code{approx} arguments are accepted and ignored.
 }
 \examples{
 d <- pig2_distrib()

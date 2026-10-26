@@ -18,13 +18,10 @@ derivatives at \code{y} are returned from the compiled kernel.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, the
-strategy for the expectation. It is read only when \code{expected = TRUE}; for a
-discrete family \code{"integrate"} is an exact sum over the support, not a
-quadrature.}
-
-\item{nsim}{A single positive integer, the Monte Carlo sample size used when
-\code{approx = "mc"}. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
+by default: the approximation of the expectation. It is read only when
+\code{expected = TRUE}; for a discrete family \code{\link[=expect_integrate]{expect_integrate()}} is an exact
+sum over the support, not a quadrature. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -41,8 +38,7 @@ read off columns \code{d30}, \code{d21}, \code{d12} and \code{d03} of the compil
 \code{pig1_deriv3_cpp}, which computes the third order alone.
 
 With \code{expected = TRUE} the value is an expectation instead, and there it is
-not closed form: the call routes to \code{expected_derivative()}, so \code{approx}
-and \code{nsim} are read.
+not closed form: the call routes to \code{expected_derivative()}, so \code{approx} is read.
 }
 \examples{
 d <- pig1_distrib()
@@ -59,7 +55,7 @@ rbind(analytic = d3$mu_mu_sigma,
                  distrib_hessian(d, y, list(mu = 3, sigma = 0.8 - eps))$mu_mu) /
                 (2 * eps))
 
-# The expected version is not closed form and reads the strategy.
+# The expected version is not closed form and reads the approximation.
 distrib_deriv3(d, 0:200, th, expected = TRUE)$mu_mu_mu[1]
 }
 \seealso{

@@ -152,14 +152,14 @@ test_that("the fit keeps the data it was estimated from", {
   expect_equal(f@n, 50)
 })
 
-test_that("the information at the optimum does not depend on the SPELLING", {
-  # `method` takes a string or an optimizer object, and the choice between
-  # the observed and the expected information was made by comparing it with
-  # the string "newton". An object is normalized to "custom", so newton()
-  # took the expected branch -- which for a family that does not write the
-  # expectation out is a quadrature, and on a family whose score grows
+test_that("the information at the optimum does not depend on the optimizer's defaults", {
+  # The choice between the observed and the expected information used to be
+  # made by comparing `method` with the string "newton", so that an optimizer
+  # object took the expected branch -- which for a family that does not write
+  # the expectation out is a quadrature, and on a family whose score grows
   # exponentially that quadrature does not converge. The fit took 0.15 s and
-  # the standard errors never returned.
+  # the standard errors never returned. The choice now rests on the family
+  # alone.
   skip_on_cran()
   Gomp <- S7::new_class("Gomp", parent = continuous_distrib)
   S7::method(distrib_pdf, Gomp) <- function(distrib, y, theta, log = FALSE) {
@@ -183,7 +183,7 @@ test_that("the information at the optimum does not depend on the SPELLING", {
   t0 <- proc.time()[["elapsed"]]
   f_obj <- fit_distrib(gz, yg, method = optimizers7::newton())
   el <- proc.time()[["elapsed"]] - t0
-  f_str <- fit_distrib(gz, yg, method = "newton")
+  f_str <- fit_distrib(gz, yg, method = named_methods()$newton)
 
   # the estimate is the same algorithm's, and so is the variance matrix
   expect_equal(unlist(coef(f_obj)), unlist(coef(f_str)), tolerance = 1e-6)

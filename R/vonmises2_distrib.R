@@ -347,7 +347,7 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' \eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}, the reciprocal of the
 #' information in \eqn{\kappa}. The two parameters remain orthogonal.
 #'
-#' `approx` and `nsim` are ignored because the expectation is exact.
+#' `approx` is ignored because the expectation is exact.
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param y A numeric vector of angles. Only its length is read, because
@@ -356,10 +356,10 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1. `rho` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, because the expectation is exact. It is accepted
-#'   so that the signature matches the generic's, where it selects between
-#'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-#' @param nsim Ignored here, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored here, because
+#'   the expectation is exact. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -397,8 +397,7 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' vapply(distrib_hessian(d2, z, th), mean, numeric(1))
 S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                    nsim = 10000, ...,
+                                                                    approx = expect_opg(), ...,
                                                                     threads = 1L) {
   n <- max(length(y), length(theta[[1]]), length(theta[[2]]))
   vonmises2_expected_hessian_cpp(n, theta[[2]], threads)
@@ -605,7 +604,7 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' \eqn{A'}, \eqn{A''} and \eqn{A'''} by the inverse function rule.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()], which is
-#' the one place on this page where `approx` and `nsim` are read.
+#' the one place on this page where `approx` is read.
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}. With
@@ -618,11 +617,9 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -661,12 +658,11 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
-                                                         approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...,
+                                                         approx = expect_integrate(), ...,
                                                          threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = match.arg(approx), nsim = nsim))
+                               approx = approx))
   }
   vonmises2_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -683,7 +679,7 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #' the pure-\eqn{\rho} one.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()], which is
-#' the one place on this page where `approx` and `nsim` are read.
+#' the one place on this page where `approx` is read.
 #'
 #' @param distrib A `VonMises2Distrib` object, from [vonmises2_distrib()].
 #' @param y A numeric vector of angles in \eqn{[-\pi, \pi)}. With
@@ -696,11 +692,9 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param expected Logical of length 1. When `TRUE` the expectation under the
 #'   model is returned in place of the value at the data, computed numerically.
 #'   Defaults to `FALSE`.
-#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
-#'   or `"opg"`. It is read only when `expected = TRUE`.
-#' @param nsim A single positive integer, the sample size when
-#'   `approx = "mc"`. It is read only when `expected = TRUE`. Defaults to
-#'   `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below the measured internal threshold the kernel stays sequential
@@ -735,12 +729,11 @@ S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
-                                                         approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...,
+                                                         approx = expect_integrate(), ...,
                                                          threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = match.arg(approx), nsim = nsim))
+                               approx = approx))
   }
   vonmises2_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

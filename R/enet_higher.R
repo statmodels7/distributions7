@@ -275,8 +275,7 @@ NULL
 #' assembly written in R.
 #'
 #' With `expected = TRUE` the value is an expectation, and there it is not
-#' closed form: the call routes to [expected_derivative()], so `approx` and
-#' `nsim` are read.
+#' closed form: the call routes to [expected_derivative()], so `approx` is read.
 #'
 #' @param distrib An `EnetDistrib` object, from [enet_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -287,10 +286,9 @@ NULL
 #'   derivatives at `y` are returned.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, read
-#'   only when `expected = TRUE`.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of ten numeric vectors, from `mu_mu_mu` to
@@ -333,11 +331,10 @@ NULL
 S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    approx = expect_integrate(), ...) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = match.arg(approx), nsim = nsim))
+                               approx = approx))
   }
   enet_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
@@ -368,10 +365,9 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 #'   derivatives at `y` are returned.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, read
-#'   only when `expected = TRUE`.
-#' @param nsim A single positive integer, the Monte Carlo sample size used when
-#'   `approx = "mc"`. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
+#'   by default: the approximation of the expectation, read only when `expected
+#'   = TRUE`. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of fifteen numeric vectors, from `mu_mu_mu_mu` to
@@ -411,11 +407,10 @@ S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, EnetDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    approx = expect_integrate(), ...) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = match.arg(approx), nsim = nsim))
+                               approx = approx))
   }
   enet_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }

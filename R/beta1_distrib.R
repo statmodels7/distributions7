@@ -484,7 +484,7 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 #' precision are not orthogonal, and their maximum likelihood estimates are
 #' asymptotically correlated.
 #'
-#' Because the values do not depend on the data, `approx` and `nsim` are
+#' Because the values do not depend on the data, `approx` is
 #' ignored. `y` is read only for its length.
 #'
 #' @param distrib A `Beta1Distrib` object, from [beta1_distrib()].
@@ -495,10 +495,10 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 #'   strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available. It is accepted so
-#'   that the signature matches the generic's, where it selects between the
-#'   Bartlett, quadrature, Monte Carlo and outer-product routes.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -542,7 +542,7 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 #'
 #' # The mixed entry vanishes at mu = 1/2, where the density is symmetric.
 #' distrib_expected_hessian(d, 0.5, list(mu = 0.5, phi = 5))$mu_phi
-S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
+S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...,
                                        threads = 1L) {
   beta_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -568,19 +568,21 @@ S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list with `mu` and `phi`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, the kernel's thread count.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].
 #' @seealso [distrib_dexpected_hessian()], [distrib_d2expected_hessian()]
 #' @keywords internal
-S7::method(distrib_dexpected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_dexpected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                      function(k) (if (k == 1L) beta_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
                        else beta_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
 }
 
-S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
   dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                      function(k) (if (k == 1L) beta_dexpected1_cpp(y, theta[[1]], theta[[2]], threads)
                        else beta_dexpected2_cpp(y, theta[[1]], theta[[2]], threads)))
@@ -603,7 +605,7 @@ S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, the
 #' values therefore coincide, and the method runs the same kernel for either
 #' value of `expected`. On the link scale the generic adds terms in the score
 #' and the Hessian, which depend on the response, so the two differ there.
-#' `approx` and `nsim` are ignored.
+#' `approx` is ignored.
 #'
 #' @param distrib A `Beta1Distrib` object, from [beta1_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -616,8 +618,8 @@ S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, the
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -656,7 +658,7 @@ S7::method(distrib_d2expected_hessian, Beta1Distrib) <- function(distrib, y, the
 #' up <- distrib_hessian(d, y, list(mu = 0.4 + eps, phi = 5))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, phi = 5))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
-S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   beta_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -671,7 +673,7 @@ S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected
 #' \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi} and \eqn{\phi}.
 #'
 #' As at third order, every component is free of the response, so the observed
-#' and expected values coincide exactly and `expected`, `approx` and `nsim` are
+#' and expected values coincide exactly and `expected` and `approx` are
 #' all without effect.
 #'
 #' @param distrib A `Beta1Distrib` object, from [beta1_distrib()].
@@ -685,8 +687,8 @@ S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored, because a closed form is available.
-#' @param nsim Ignored, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
+#'   closed form is available. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Below a fixed number of observations, set per kernel, the kernel
@@ -724,7 +726,7 @@ S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected
 #' up <- distrib_deriv3(d, y, list(mu = 0.4 + eps, phi = 5))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, phi = 5))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-3)
-S7::method(distrib_deriv4, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_deriv4, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
                                        threads = 1L) {
   beta_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

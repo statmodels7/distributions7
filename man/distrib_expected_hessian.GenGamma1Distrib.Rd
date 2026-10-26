@@ -16,10 +16,9 @@ positive.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{Ignored: the expectation is closed form. It is accepted so that
-the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored: the
+expectation is closed form. It is accepted so that the signature matches
+the generic's. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -39,7 +38,7 @@ is
 Gamma with shape \eqn{k = d/p} and unit rate:
 \deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
-So \code{approx} and \code{nsim} are ignored and \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns
+So \code{approx} is ignored and \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns
 \code{TRUE}. The Weibull and the Gumbel use the same device, with a standard
 exponential variable as the corresponding variable and the expectations as
 derivatives of \eqn{\Gamma} at 2.
@@ -73,8 +72,8 @@ names(e)
 # bilinear.
 c(expected = e$a_d, observed = -1 / 2)
 
-# The strategy argument is ignored, because the expectation is closed form.
-identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
+# The approx argument is ignored, because the expectation is closed form.
+identical(e, distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 5)))
 distributions7:::expected_hessian_exact(d)
 
 # The information is ill conditioned: d and p act largely through d/p.

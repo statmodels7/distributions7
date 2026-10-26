@@ -27,8 +27,8 @@ test_that("opg is no longer an alias of bartlett, and is the default", {
   y <- c(1, 3, 6, 10)
   th <- list(mu = 4, sigma = 0.7)
 
-  opg <- distrib_expected_hessian(d, y, th, approx = "opg")
-  bar <- distrib_expected_hessian(d, y, th, approx = "bartlett")
+  opg <- distrib_expected_hessian(d, y, th, approx = expect_opg())
+  bar <- distrib_expected_hessian(d, y, th, approx = expect_bartlett())
   def <- distrib_expected_hessian(d, y, th)
 
   expect_equal(def, opg)
@@ -63,8 +63,8 @@ test_that("a family with a closed form is untouched by approx", {
     d <- do.call(fn, list())
     th <- stats::setNames(as.list(rep(1, length(d@params))), d@params)
     y <- distrib_rng(d, 40L, th)
-    a <- distrib_expected_hessian(d, y, th, approx = "opg")
-    b <- distrib_expected_hessian(d, y, th, approx = "bartlett")
+    a <- distrib_expected_hessian(d, y, th, approx = expect_opg())
+    b <- distrib_expected_hessian(d, y, th, approx = expect_bartlett())
     expect_equal(a, b, info = fn)
   }
 })
@@ -77,9 +77,9 @@ test_that("orders 3 and 4 route opg to bartlett", {
   y <- distrib_rng(d, 30L, th)
   for (k in 3:4) {
     expect_equal(
-      distributions7:::expected_derivative(d, y, th, order = k, approx = "opg"),
+      distributions7:::expected_derivative(d, y, th, order = k, approx = expect_opg()),
       distributions7:::expected_derivative(d, y, th, order = k,
-                                           approx = "bartlett")
+                                           approx = expect_bartlett())
     )
   }
 })

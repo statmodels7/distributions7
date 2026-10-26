@@ -19,7 +19,9 @@ be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}.}
 
-\item{approx, nsim}{Ignored.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored; accepted so
+that the signature matches the generic's. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -52,7 +54,7 @@ an odd number of times vanishes. The rule's nodes are symmetric about zero,
 so the two halves of such an integral cancel up to rounding, and the entry
 comes back as zero to about \eqn{10^{-20}}.
 
-\code{approx} and \code{nsim} are accepted for the generic's sake and ignored.
+\code{approx} is accepted for the generic's sake and ignored.
 }
 \examples{
 d <- pseudohuber_distrib()

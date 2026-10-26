@@ -19,7 +19,7 @@
 #' The methods are registered on the base class, so every distribution inherits
 #' them unless it registers something more specific. The derivatives of the
 #' log-density in the parameters are computed by finite differences and the
-#' expected derivatives by the strategy named in `approx`, so a
+#' expected derivatives by the approximation in `approx`, so a
 #' subclass that implements nothing but [distrib_pdf()] has every parameter
 #' derivative. [distrib_pdf()] itself has no default: the density is the one
 #' quantity that a distribution must supply. The list below is partial; the base

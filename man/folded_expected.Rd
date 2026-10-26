@@ -63,7 +63,7 @@ and read the folded third derivatives as well. At order 2 a parent
 without a route signals an error. The sums are
 accumulated as the scalar registry accumulates them. A parent that the
 registry does not cover, or that is not a location-scale family on the real
-line, is integrated by \code{\link[=expected_derivative]{expected_derivative()}} with \code{approx = "integrate"} at
+line, is integrated by \code{\link[=expected_derivative]{expected_derivative()}} with \code{approx = expect_integrate()} at
 order 0 and by \code{\link[=numerical_dexpected_hessian]{numerical_dexpected_hessian()}} at order 1; at order 2 the
 call signals an error. Where the parent's mass beyond the fold is below the
 square of the machine epsilon, the folded variable is the parent or its

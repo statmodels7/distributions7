@@ -493,7 +493,7 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #'       \qquad
 #'       \mathbb{E}[\ell^{(\phi\phi)}] = \psi'(\phi) - \sum_{j} t_j \mu_j^2,}
 #' with \eqn{t_j = \psi'(\alpha_j)} and \eqn{A = \partial\mu/\partial\eta}.
-#' `approx` and `nsim` are ignored: every strategy returns the same matrix.
+#' `approx` is ignored: every approximation returns the same matrix.
 #'
 #' @details
 #' # The terms that carry the data
@@ -514,10 +514,10 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #'   free values followed by `phi`, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx Ignored here, because the expectation is exact. It is accepted
-#'   so that the signature matches the generic's, where it selects between
-#'   `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-#' @param nsim Ignored here, for the same reason. Defaults to `10000`.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored here, because
+#'   the expectation is exact. It is accepted so that the signature matches the
+#'   generic's, where it selects the approximation of the expectation. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per distinct entry of the
@@ -553,12 +553,11 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #' colSums(do.call(cbind, parameters7::param_d1(d@param, eta)))
 #' vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
 #'
-#' # The strategy argument is inert because the expectation is exact.
-#' identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
+#' # The approx argument is inert because the expectation is exact.
+#' identical(eh, distrib_expected_hessian(d, Y, th, approx = expect_mc(nsim = 50)))
 S7::method(distrib_expected_hessian, DirichletDistrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
-                                                                    nsim = 10000, ...) {
+                                                                    approx = expect_opg(), ...) {
   p <- dir_parts(distrib, theta)
   n <- n_obs(distrib, y)
   tt <- trigamma(p$alpha)

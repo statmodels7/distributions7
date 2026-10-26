@@ -144,21 +144,23 @@ c(parameter = eh_par$sigma_sigma[1],
 
 `distrib_deriv3()` and `distrib_deriv4()` also take `expected = TRUE`. Some
 distributions have closed-form expected derivatives; where they do not, the
-value is approximated by the strategy that the `approx` argument selects:
+value is approximated by the approximation that the `approx` argument selects:
 
 ```{r}
 distrib_deriv3(gamma2_distrib(), 0, list(mu = 3, sigma2 = 2), expected = TRUE)
 ```
 
-The strategies are `"opg"`, `"bartlett"`, `"integrate"` and `"mc"`, trading
-speed against robustness. `"bartlett"` rests on the Bartlett identities: the
+The approximations are objects: `expect_opg()`, `expect_bartlett()`,
+`expect_integrate()` and `expect_mc(nsim = 10000)`, trading speed against
+robustness. `expect_bartlett()` rests on the Bartlett identities: the
 outer product of gradients is their order-two case, and the general identity
 expresses an expected derivative of any order through products of lower-order
-ones. `"opg"` reads that outer product at each observation without taking an
-expectation, and `"integrate"` and `"mc"` average the observed derivative
-itself, by quadrature or by simulation. The default is `"opg"` for
-`distrib_expected_hessian()` and `"integrate"` for `distrib_deriv3()` and
-`distrib_deriv4()`; `?expected_derivative_methods` has the details.
+ones. `expect_opg()` reads that outer product at each observation without
+taking an expectation, and `expect_integrate()` and `expect_mc()` average the
+observed derivative itself, by quadrature or by simulation. The default is
+`expect_opg()` for `distrib_expected_hessian()` and `expect_integrate()` for
+`distrib_deriv3()` and `distrib_deriv4()`; `?expected_derivative_methods` has
+the details.
 
 ## A note for authors of derivative methods
 

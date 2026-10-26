@@ -49,7 +49,9 @@ NULL
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list of parameters.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx,nsim Unused.
+#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
+#'   that the signature matches the generic's. See
+#'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, passed to the kernels.
 #' @return A named list keyed as [dexpected_names()] or [d2expected_names()].

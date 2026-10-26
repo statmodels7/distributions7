@@ -262,7 +262,7 @@ test_that("the expected information is exact and needs no strategy", {
   # and `approx` is now read by nothing here, so naming one is harmless
   # rather than an error: what refuses it is fisher_scoring(), where the
   # argument would silently do nothing
-  expect_no_error(distrib_expected_hessian(d, y1, th, approx = "integrate"))
+  expect_no_error(distrib_expected_hessian(d, y1, th, approx = expect_integrate()))
 })
 
 test_that("check_distrib runs the multivariate battery on the t", {
@@ -279,7 +279,7 @@ test_that("fit_distrib recovers the degrees of freedom", {
   set.seed(47)
   y <- distrib_rng(d, 3000, true)
 
-  fit <- fit_distrib(d, y, method = "newton")
+  fit <- fit_distrib(d, y, method = named_methods()$newton)
   expect_true(fit@converged)
   est <- coef(fit)
 
@@ -311,7 +311,7 @@ test_that("Fisher scoring inverts the exact information here", {
   y <- distrib_rng(d, 800, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.3, nu = 5))
   ff <- fit_distrib(d, y, method = fisher_scoring())
-  fn <- fit_distrib(d, y, method = "newton")
+  fn <- fit_distrib(d, y, method = named_methods()$newton)
 
   expect_true(ff@converged)
   # the two now agree far more closely than they could when one of them
@@ -321,7 +321,7 @@ test_that("Fisher scoring inverts the exact information here", {
 
   # naming an approximation is refused, since the family has a closed form
   # and the argument would be ignored
-  expect_error(fit_distrib(d, y, method = fisher_scoring(approx = "mc")),
+  expect_error(fit_distrib(d, y, method = fisher_scoring(approx = expect_mc())),
                "would be ignored")
 })
 

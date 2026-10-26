@@ -62,7 +62,7 @@ test_that("zero_inflated() derivatives are right with parameters by observation"
     g <- distrib_gradient(d, y, th)
     h <- distrib_hessian(d, y, th)
     d3 <- distrib_deriv3(d, y, th)
-    eh <- distrib_expected_hessian(d, y, th, approx = "bartlett")
+    eh <- distrib_expected_hessian(d, y, th, approx = expect_bartlett())
     idx3 <- deriv_indices(P, 3L)
     for (i in seq_along(y)) {
       f <- function(u) stats::setNames(as.list(u), P)

@@ -146,13 +146,13 @@ test_that("the derivative of an expected information does not choose its step un
   set.seed(4)
   th <- list(mu = 1.5, sigma = 0.8)
   y <- distrib_rng(d, 20, th)
-  a <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = "mc"))
-  b <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = "mc"))
+  a <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = expect_mc()))
+  b <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = expect_mc()))
   expect_false(identical(a, b))
   ## the deterministic route is the same number twice, which is what licenses
   ## the choice being made there
-  p <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = "bartlett"))
-  q <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = "bartlett"))
+  p <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = expect_bartlett()))
+  q <- suppressWarnings(distrib_expected_hessian(d, y, th, approx = expect_bartlett()))
   expect_identical(p, q)
 })
 ## The clamp is numericals7's rule, and this is what says so.  `fd_steps()`

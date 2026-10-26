@@ -15,11 +15,10 @@ recycled. \code{sigma2} must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available. It is accepted so
-that the signature matches the generic's, where it selects between the
-Bartlett, quadrature, Monte Carlo and outer-product routes.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available. It is accepted so that the signature matches the
+generic's, where it selects the approximation of the expectation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -48,7 +47,7 @@ independent.
 
 The information does not depend on \eqn{\mu}, only on \eqn{\sigma^2}, the
 variance of \eqn{\log Y}. Because the values do not depend on the data,
-\code{approx} and \code{nsim} are ignored and \code{y} is read only for its length.
+\code{approx} is ignored and \code{y} is read only for its length.
 }
 \section{Notation}{
 

@@ -12,15 +12,15 @@
 \code{x}, invisibly. The function is called for the output that it writes.
 }
 \description{
-Writes the strategy for the expected information, with the Monte Carlo
-sample size when that is the strategy, and then any setting that overrides
+Writes the approximation of the expected information, with the Monte Carlo
+sample size when that is the approximation, and then any setting that overrides
 the fit's: a stopping rule set here is reported as set, and an iteration
-limit by its value. The line about the strategy carries the reminder that a
+limit by its value. The line about the approximation carries the reminder that a
 family with a closed-form expectation ignores it.
 }
 \examples{
 fisher_scoring()
-fisher_scoring(approx = "mc", nsim = 2000)
+fisher_scoring(approx = expect_mc(nsim = 2000))
 fisher_scoring(criterion = optimizers7::crit_grad(1e-9), maxit = 50)
 
 }

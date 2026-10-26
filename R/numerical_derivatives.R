@@ -622,10 +622,10 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #'
 #' @details
 #' The argument `approx` selects how the right-hand side is obtained, and the
-#' strategies differ in cost. The default `"opg"` reads
+#' approximations differ in cost. The default [expect_opg()] reads
 #' \eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no expectation,
-#' so it costs one call to [distrib_gradient()]; `"bartlett"` evaluates the
-#' expectation itself, which is a sum over the support for a discrete family
+#' so it costs one call to [distrib_gradient()]; [expect_bartlett()] evaluates
+#' the expectation itself, which is a sum over the support for a discrete family
 #' and a quadrature for a continuous one, and is orders of magnitude dearer.
 #' See [expected_by_opg()] for the properties that the default loses and those
 #' that it retains.
@@ -639,9 +639,10 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' @param scale `"parameter"` or `"link"`, the scale on which the components
 #'   are reported. The transformation is applied in the generic's body, so this
 #'   method always returns the parameter scale.
-#' @param approx One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, the
-#'   strategy that [expected_derivative()] uses. Defaults to `"opg"`.
-#' @param nsim Number of draws, read only by `approx = "mc"`.
+#' @param approx An object inheriting from [ExpectApprox]: [expect_opg()] (the
+#'   default), [expect_bartlett()], [expect_integrate()] or [expect_mc()], the
+#'   approximation that [expected_derivative()] uses. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the
 #'   generic's.
 #' @return A named list of expected Hessian component vectors.
@@ -649,7 +650,7 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #'   readings of the identity, and [expected_hessian_exact()] for the
 #'   predicate that determines whether a family reaches this method at all.
 #' @keywords internal
-S7::method(distrib_expected_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...) {
   expected_derivative(distrib, y, theta, order = 2L,
-                      approx = match.arg(approx), nsim = nsim)
+                      approx = approx)
 }

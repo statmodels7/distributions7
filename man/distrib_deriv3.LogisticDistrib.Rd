@@ -18,11 +18,9 @@ model are returned, in closed form. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
-\code{"opg"}. Ignored, because a closed form is available for the expected
-values; accepted so that the signature matches the generic's.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available for the expected values; accepted so that the
+signature matches the generic's. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -53,7 +51,7 @@ closed form: \eqn{1/(2\sigma^3)} for \code{mu_mu_sigma},
 \eqn{(2+\pi^2)/(2\sigma^3)} for \code{sigma_sigma_sigma}, and zero for the two
 components odd in \eqn{z}. They are integrals of the polynomials above
 against the logistic density, which reduce to values of the zeta function
-at even arguments. \code{approx} and \code{nsim} are ignored.
+at even arguments. \code{approx} is ignored.
 }
 \section{Notation}{
 

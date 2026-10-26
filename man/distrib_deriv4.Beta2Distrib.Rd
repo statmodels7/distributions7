@@ -19,9 +19,8 @@ observed and expected fourth derivatives are the same numbers. Defaults to
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{Ignored, because a closed form is available.}
-
-\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
+closed form is available. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -41,8 +40,7 @@ Each of the three mixed components is equal to
 \eqn{\psi'''(\alpha+\beta)}, with \eqn{\psi'''} the third derivative of the
 digamma function.
 
-As at third order the values are free of the response, so \code{expected},
-\code{approx} and \code{nsim} are all without effect and the result is the same for
+As at third order the values are free of the response, so \code{expected} and \code{approx} are without effect and the result is the same for
 every value of them.
 }
 \section{Notation}{
