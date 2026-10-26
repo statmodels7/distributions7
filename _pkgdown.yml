@@ -152,6 +152,7 @@ reference:
   - information_objects
   - observed_info
   - expected_info
+  - default_information
   - Information
 
 - title: Estimation

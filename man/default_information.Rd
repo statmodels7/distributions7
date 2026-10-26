@@ -10,15 +10,28 @@ default_information(distrib)
 \item{distrib}{An object inheriting from \code{distrib}.}
 }
 \value{
-An \link{Information} object.
+An \link{Information} object: an \code{ObservedInfo} or an \code{ExpectedInfo} with
+\code{method = NULL}.
 }
 \description{
-Returns \code{\link[=observed_info]{observed_info()}} when every parameter of the family has
-\code{\link[=params_order]{params_order()}} of at least 2, and \code{\link[=expected_info]{expected_info()}} with \code{method = NULL}
-otherwise. A parameter whose order is not established (\code{NA}) does not
-satisfy the condition.
+Returns the information object that a function takes when its \code{information}
+argument is \code{NULL}: \code{\link[=observed_info]{observed_info()}} when every parameter of the family
+has \code{\link[=params_order]{params_order()}} of at least 2, that is, when the log-likelihood is
+twice differentiable in every parameter, and \code{\link[=expected_info]{expected_info()}} with
+\code{method = NULL} otherwise, for the whole matrix. A family with a kink in a
+parameter (the Laplace, the elastic net) has a singular or undefined observed
+information in that parameter, and the closed-form expected information gives
+finite standard errors. A parameter whose order is not established (\code{NA})
+does not satisfy the condition. The rule is the one of
+\code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}, and it is available to packages that take an
+\code{information} argument with the same default.
+}
+\examples{
+default_information(gaussian1_distrib())
+default_information(laplace_distrib())
+
 }
 \seealso{
-\link{information_objects}, \code{\link[=resolve_information]{resolve_information()}}
+\link{information_objects}, \code{\link[=observed_info]{observed_info()}}, \code{\link[=expected_info]{expected_info()}},
+\code{\link[=params_order]{params_order()}}
 }
-\keyword{internal}

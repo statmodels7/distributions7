@@ -249,17 +249,30 @@ check_information <- function(x, arg = "information") {
 #' The Default Information of a Family
 #'
 #' @description
-#' Returns [observed_info()] when every parameter of the family has
-#' [params_order()] of at least 2, and [expected_info()] with `method = NULL`
-#' otherwise. A parameter whose order is not established (`NA`) does not
-#' satisfy the condition.
+#' Returns the information object that a function takes when its `information`
+#' argument is `NULL`: [observed_info()] when every parameter of the family
+#' has [params_order()] of at least 2, that is, when the log-likelihood is
+#' twice differentiable in every parameter, and [expected_info()] with
+#' `method = NULL` otherwise, for the whole matrix. A family with a kink in a
+#' parameter (the Laplace, the elastic net) has a singular or undefined observed
+#' information in that parameter, and the closed-form expected information gives
+#' finite standard errors. A parameter whose order is not established (`NA`)
+#' does not satisfy the condition. The rule is the one of
+#' [vcov.distrib_fit()], and it is available to packages that take an
+#' `information` argument with the same default.
 #'
 #' @param distrib An object inheriting from `distrib`.
 #'
-#' @return An [Information] object.
+#' @return An [Information] object: an `ObservedInfo` or an `ExpectedInfo` with
+#'   `method = NULL`.
 #'
-#' @seealso [information_objects], [resolve_information()]
-#' @keywords internal
+#' @examples
+#' default_information(gaussian1_distrib())
+#' default_information(laplace_distrib())
+#'
+#' @seealso [information_objects], [observed_info()], [expected_info()],
+#'   [params_order()]
+#' @export
 default_information <- function(distrib) {
   ord <- params_order(distrib)
   if (isTRUE(all(ord >= 2))) observed_info() else expected_info()

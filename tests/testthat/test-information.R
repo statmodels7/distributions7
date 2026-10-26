@@ -57,7 +57,7 @@ test_that("the default is the observed information for a smooth family", {
                  tolerance = 1e-12)
     expect_identical(vcov(fit), vcov(fit, information = observed_info()))
     expect_identical(vcov(fit), vcov(fit, information = NULL))
-    expect_true(S7::S7_inherits(distributions7:::default_information(d), ObservedInfo))
+    expect_true(S7::S7_inherits(distributions7::default_information(d), ObservedInfo))
     expect_equal(fit@se, sqrt(diag(vcov(fit))))
     expect_equal(fit@se_eta, sqrt(diag(vcov(fit, scale = "link"))))
   }
@@ -125,8 +125,8 @@ test_that("a family with a kink takes the expected information by default", {
   d <- laplace_distrib()
   y <- distrib_rng(d, 500, list(mu = 1, sigma = 2))
   fit <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
-  expect_true(S7::S7_inherits(distributions7:::default_information(d), ExpectedInfo))
-  expect_null(distributions7:::default_information(d)@method)
+  expect_true(S7::S7_inherits(distributions7::default_information(d), ExpectedInfo))
+  expect_null(distributions7::default_information(d)@method)
   expect_true(all(is.finite(fit@se)))
   V <- vcov(fit)
   expect_true(all(is.finite(V)))
@@ -144,7 +144,7 @@ test_that("a family with a kink takes the expected information by default", {
   y2 <- distrib_rng(d2, 500, list(mu = 1, lambda = 0.5))
   f2 <- fit_distrib(d2, y2, start = list(mu = 0, lambda = 1))
   expect_true(all(is.finite(f2@se)))
-  expect_true(S7::S7_inherits(distributions7:::default_information(enet_distrib()),
+  expect_true(S7::S7_inherits(distributions7::default_information(enet_distrib()),
                               ExpectedInfo))
 })
 
