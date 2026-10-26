@@ -13,12 +13,16 @@ rel_err <- function(got, ref) {
 
 test_that("lognormal2 second derivatives are accurate at v/m^2 = 1e-8", {
   d <- lognormal2_distrib()
+  # y is written in hexadecimal: the decimal literals 9998.0001999916658 and
+  # 10003.000450037502 parse one ulp away on R for arm64 macOS, and at
+  # sigma = 1e-4 one ulp of y moves these derivatives by 2e-12 relative
+  # (note/ci-git.md, item of 2026-09-11)
   cases <- list(
-  list(m = 10000, v = 1, y = 9998.0001999916658, fn = "p2_",
+  list(m = 10000, v = 1, y = 0x1.38700068da6d5p+13, fn = "p2_",
        ref = c(mean_mean = -1.0006000599974998, mean_var = 2.0003999949982885, var_var = -3.4999999800021535)),
-  list(m = 10000, v = 1, y = 9998.0001999916658, fn = "grad_y_hess_",
+  list(m = 10000, v = 1, y = 0x1.38700068da6d5p+13, fn = "grad_y_hess_",
        ref = c(mean_mean = 0.00030010001350085005, mean_var = -1.0006001000078335, var_var = 4.00080007000241)),
-  list(m = 10000, v = 1, y = 9998.0001999916658, fn = "hess_y_hess_",
+  list(m = 10000, v = 1, y = 0x1.38700068da6d5p+13, fn = "hess_y_hess_",
        ref = c(mean_mean = -5.0024005550773403e-08, mean_var = 0.00030016004000600057, var_var = -2.0012003200503385)),
   list(m = 10000, v = 1, y = 10000, fn = "p2_",
        ref = c(mean_mean = -1.0000000199999999, mean_var = -2.499999966666667e-13, var_var = 0.5)),
@@ -26,11 +30,11 @@ test_that("lognormal2 second derivatives are accurate at v/m^2 = 1e-8", {
        ref = c(mean_mean = 0.00029999999950000003, mean_var = -1, var_var = 0)),
   list(m = 10000, v = 1, y = 10000, fn = "hess_y_hess_",
        ref = c(mean_mean = -4.999999995e-08, mean_var = 0.00029999999999999997, var_var = -2)),
-  list(m = 10000, v = 1, y = 10003.000450037502, fn = "p2_",
+  list(m = 10000, v = 1, y = 0x1.389800ebf302dp+13, fn = "p2_",
        ref = c(mean_mean = -0.99910011000374932, mean_var = -2.999099992505275, var_var = -8.4999999550031529)),
-  list(m = 10000, v = 1, y = 10003.000450037502, fn = "grad_y_hess_",
+  list(m = 10000, v = 1, y = 0x1.389800ebf302dp+13, fn = "grad_y_hess_",
        ref = c(mean_mean = 0.00029985003099647519, mean_var = -0.99910022497075179, var_var = -5.9982002549830504)),
-  list(m = 10000, v = 1, y = 10003.000450037502, fn = "hess_y_hess_",
+  list(m = 10000, v = 1, y = 0x1.389800ebf302dp+13, fn = "hess_y_hess_",
        ref = c(mean_mean = -4.9964012547240406e-08, mean_var = 0.0002997600899790033, var_var = -1.9982007198245284))
   )
   gen <- list(p2_ = distrib_hessian, grad_y_hess_ = distrib_grad_y_hess,
