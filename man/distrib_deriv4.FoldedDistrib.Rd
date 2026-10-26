@@ -16,9 +16,12 @@ approximated by \code{\link[=expected_derivative]{expected_derivative()}}. Defau
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}: the approximation
-that \code{\link[=expected_derivative]{expected_derivative()}} uses when \code{expected = TRUE}. It is ignored
-otherwise. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -35,7 +38,7 @@ folded family closed forms to fourth order.
 }
 \details{
 With \code{expected = TRUE} the expectation goes to \code{\link[=expected_derivative]{expected_derivative()}},
-which reads \code{approx}.
+which reads \code{method}.
 }
 \section{Notation}{
 

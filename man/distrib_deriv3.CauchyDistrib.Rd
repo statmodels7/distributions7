@@ -19,8 +19,9 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
-closed form is available for both the observed and the expected values. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -44,10 +45,10 @@ so all of them are bounded in \eqn{y}. Three of the four tend to zero as
 \eqn{2/\sigma^3}. The kernel evaluates them as described in
 \code{\link[=distrib_deriv5.CauchyDistrib]{distrib_deriv5.CauchyDistrib()}}, without forming \eqn{r^2}.
 
-With \code{expected = TRUE} the expectations under the model are returned, also in
-closed form: the two components odd in \eqn{r} vanish by symmetry, and the
-other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes are
-closed form, so the method runs no quadrature and ignores \code{approx}.
+With \code{expected = TRUE} the expectations under the model are returned, also
+in closed form: the two components odd in \eqn{r} vanish by symmetry, and
+the other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes
+are closed form and the method runs no quadrature.
 }
 \section{Notation}{
 

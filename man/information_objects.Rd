@@ -17,7 +17,8 @@ is the choice of the standard errors. Two objects select it, \code{\link[=observ
 and \code{\link[=expected_info]{expected_info()}}, and both inherit from \link{Information}. A function that
 takes such an object, such as the \code{vcov()} method of a fit (see
 \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}), is told the matrix by the object and not by a
-character string.
+character string. The argument \code{information} of those functions is \code{NULL} by
+default, which selects the matrix described under "The default" below.
 }
 \details{
 \describe{
@@ -26,19 +27,20 @@ data,
 \deqn{-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top}\bigg|_{\hat\eta}.}
 It is computed from the second derivatives that the family supplies in
 closed form, or from their numerical fallbacks when the family
-supplies only a density. It has no approximation and takes no
-argument. It is the curvature of the likelihood in the sample at hand,
-and every family has it.}
+supplies only a density. It takes no argument. It is the curvature of the
+likelihood in the sample at hand, and every family has it. It describes
+the uncertainty only where the log-likelihood is twice differentiable in
+every parameter at the estimate.}
 \item{\code{\link[=expected_info]{expected_info()}}}{The Fisher information,
 \deqn{\mathbb{E}\left[-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top}
     \right]_{\hat\eta},}
 the average of the observed information over samples drawn from the
-model at the estimates. Where the family writes the expectation in
-closed form, that form is used and \code{approx} is not read. Where it does
-not (see \code{\link[=expected_hessian_exact]{expected_hessian_exact()}}), the expectation is approximated by
-the object in \code{approx}, one of \code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_bartlett]{expect_bartlett()}},
+model at the estimates. With \code{method = NULL}, the default, the closed
+form of the family is used where the family writes the expectation out
+(see \code{\link[=expected_hessian_exact]{expected_hessian_exact()}}), and \code{\link[=expect_opg]{expect_opg()}} otherwise. An object
+in \code{method} is used for every family, one of \code{\link[=expect_opg]{expect_opg()}},
 \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}}; \link{expected_derivative_methods}
-compares the four.}
+compares the three.}
 }
 
 The two matrices agree asymptotically and differ in a finite sample. The
@@ -47,15 +49,27 @@ definite wherever the family is regular. The observed information depends
 on the data, and it can be indefinite away from the estimate or at an
 outlier. Standard errors from the observed information describe the
 likelihood that was actually observed, which is the usual recommendation
-(Efron and Hinkley, 1978); for this reason \code{\link[=observed_info]{observed_info()}} is the default
-of \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}. For a family that has no closed-form expected
+(Efron and Hinkley, 1978). For a family that has no closed-form expected
 information, \code{\link[=expect_opg]{expect_opg()}} is a noisier estimate of the information than the
 observed matrix.
 }
+\section{The default}{
+The argument \code{information} of \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}, \code{\link[=confint.distrib_fit]{confint.distrib_fit()}},
+\code{\link[=print.distrib_fit]{print.distrib_fit()}} and \code{\link[=mv_summary]{mv_summary()}} is \code{NULL}. It resolves to
+\code{\link[=observed_info]{observed_info()}} when every parameter of the family has
+\code{\link[=params_order]{params_order()}} of at least 2, that is, when the log-likelihood is twice
+differentiable in every parameter, and to \code{\link[=expected_info]{expected_info()}} with
+\code{method = NULL} otherwise, for the whole matrix. A family with a kink in a
+parameter (the Laplace, the elastic net) has a singular or undefined
+observed information in that parameter, and the closed-form expected
+information gives finite standard errors. A fit states which information it
+used whenever it is not the observed one.
+}
+
 \examples{
 observed_info()
 expected_info()
-expected_info(approx = expect_bartlett())
+expected_info(method = expect_integrate(identity = "score"))
 
 # The standard errors of one fit under the two matrices.
 set.seed(1)
@@ -71,8 +85,9 @@ likelihood estimator: observed versus expected Fisher information.
 }
 \seealso{
 \code{\link[=observed_info]{observed_info()}} and \code{\link[=expected_info]{expected_info()}} for the constructors;
-\link{Information} for the classes; \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}, \code{\link[=summary.distrib_fit]{summary.distrib_fit()}}
-and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} for the functions that take the object;
-\link{expected_derivative_methods} for the approximations of the expected
+\link{Information} for the classes; \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}},
+\code{\link[=confint.distrib_fit]{confint.distrib_fit()}} and \code{\link[=mv_summary]{mv_summary()}} for the functions that take the
+object;
+\link{expected_derivative_methods} for the methods of the expected
 information.
 }

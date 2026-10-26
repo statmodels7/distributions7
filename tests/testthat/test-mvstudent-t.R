@@ -259,10 +259,12 @@ test_that("the expected information is exact and needs no strategy", {
   # the answer does not move between calls, which a sampled one does
   expect_identical(distrib_expected_hessian(d, y1, th),
                    distrib_expected_hessian(d, y1, th))
-  # and `approx` is now read by nothing here, so naming one is harmless
-  # rather than an error: what refuses it is fisher_scoring(), where the
-  # argument would silently do nothing
-  expect_no_error(distrib_expected_hessian(d, y1, th, approx = expect_integrate()))
+  # a method is used when it is named: sampling is available for a
+  # multivariate family, and a quadrature over the response is not
+  set.seed(50)
+  expect_no_error(distrib_expected_hessian(d, y1, th, method = expect_mc(nsim = 200)))
+  expect_error(distrib_expected_hessian(d, y1, th, method = expect_integrate()),
+               "expect_integrate")
 })
 
 test_that("check_distrib runs the multivariate battery on the t", {
@@ -319,10 +321,11 @@ test_that("Fisher scoring inverts the exact information here", {
   expect_equal(as.numeric(logLik(ff)), as.numeric(logLik(fn)),
                tolerance = 1e-8)
 
-  # naming an approximation is refused, since the family has a closed form
-  # and the argument would be ignored
-  expect_error(fit_distrib(d, y, method = fisher_scoring(approx = expect_mc())),
-               "would be ignored")
+  # a method given to fisher_scoring() is used, and the family's closed form
+  # is read when it is left at NULL
+  set.seed(49)
+  fm <- fit_distrib(d, y, method = fisher_scoring(method = expect_mc(nsim = 500)))
+  expect_false(identical(fm@coefficients, ff@coefficients))
 })
 
 

@@ -2,129 +2,189 @@
 % Please edit documentation in R/expected_derivatives.R
 \name{expected_derivative_methods}
 \alias{expected_derivative_methods}
-\title{Approximations of an Expected Derivative}
+\title{Methods for the Expectation of a Derivative}
 \value{
-Nothing. This page documents the \code{approx} argument shared by the
-generics named above; the value returned is theirs.
+Nothing. This page documents the argument \code{method} shared by the
+functions named above; the value returned is theirs.
 }
 \description{
-When a distribution does not supply a closed-form expected derivative, the
-expectation has to be approximated. The generics
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and \code{\link[=distrib_deriv4]{distrib_deriv4()}}, the
-derivatives of the expected information, and \code{\link[=fisher_scoring]{fisher_scoring()}} therefore
-take an \code{approx} argument, an object that selects how the expectation is
-taken. The argument is ignored when the distribution provides an analytical
-method, which is always preferred. A character string is not accepted.
+An expected derivative of the log-density, such as the expected Hessian (the
+negative of the Fisher information) or the expected third derivative, is the
+expectation \eqn{\mathbb{E}[\,\cdot\,]} of a function of the response taken
+under the distribution at the parameters. A family may write that
+expectation in closed form. When it does not, or when a different route is
+wanted, the expectation is obtained by one of three methods, which are
+objects: \code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}}. All of them
+inherit from \link{ExpectMethod} and are passed through the argument \code{method} of
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}, the
+derivatives of the expected information (\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} and
+the functions of its family), \code{\link[=fisher_scoring]{fisher_scoring()}} and \code{\link[=expected_info]{expected_info()}}.
 
-The four approximations are built by \code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_bartlett]{expect_bartlett()}},
-\code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}}, and they inherit from the class
-\link{ExpectApprox}.
-
-The expected information of a fit, the matrix whose inverse gives the
-standard errors when \code{\link[=expected_info]{expected_info()}} is selected, is built from the
-expected Hessian. An \code{\link[=expected_info]{expected_info()}} object carries one of the four
-approximations in its \code{approx} property, and the object \code{\link[=observed_info]{observed_info()}}
-takes none; \link{information_objects} compares the two information objects.
+The argument \code{method} has one rule. If it is \code{NULL}, which is the default,
+the function returns the closed form of the family where the family has one,
+and otherwise the default route of that function (the table below). If it is
+an object, the object is always used, also for a family that has the
+expectation in closed form; the closed form is then bypassed, and the result
+is the expectation as the method computes it.
 }
-\details{
+\section{Two identities and three ways}{
 Let \eqn{\ell} be the log-density and \eqn{\ell_{i}, \ell_{ij}, \dots} its
-derivatives with respect to the parameters.
+derivatives with respect to the parameters. The expected derivative of order
+\eqn{k} has two expressions inside the expectation, which are equal in
+expectation for a regular model.
 
 \describe{
-\item{\code{\link[=expect_opg]{expect_opg()}}}{At order 2, reads \eqn{-\ell_i \ell_j} at each
-observation and takes no expectation, at the cost of one score
-evaluation; see \code{\link[=expected_by_opg]{expected_by_opg()}}. Above order 2 it is routed to the
-computation of \code{\link[=expect_bartlett]{expect_bartlett()}}. The matrix is positive semidefinite,
-and it is the least accurate of the four as an estimate of the
-information at one observation.}
-
-\item{\code{\link[=expect_bartlett]{expect_bartlett()}}}{Uses the Bartlett
-identity of the corresponding order, which expresses the expected
-derivative through expectations of \emph{products of lower-order}
-derivatives. Writing the identity as a sum over set partitions of the
-index set,
+\item{The Hessian identity}{The expectation of the observed derivative of
+order \eqn{k} itself,
+\deqn{\mathbb{E}[\ell_{i_1 \dots i_k}].}
+At order 2 this is the expected Hessian read literally.}
+\item{The score identity}{The Bartlett partition identity, which writes
+the same expectation through products of derivatives of lower order. The
+identity states that
 \deqn{\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,}
-the target term (the single-block partition) is obtained from all the
-others. At order 2 this is exactly the familiar outer product of
-gradients, \eqn{\mathbb{E}[\ell_{ij}] = -\mathbb{E}[\ell_i \ell_j]};
-at order 3, \eqn{\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
-    \mathbb{E}[\ell_{ik}\ell_j] + \mathbb{E}[\ell_{jk}\ell_i] +
-    \mathbb{E}[\ell_i\ell_j\ell_k]\right)}, and so on.
-At order 2 it needs only the score, whose product it integrates or
-sums, so it is slower than \code{\link[=expect_opg]{expect_opg()}}. It stays valid when the
-log-likelihood is not differentiable in a parameter, where
-\eqn{\mathbb{E}[H]} degenerates but the score variance still gives the
-information (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
-It is deterministic. At higher orders it needs several integrals, so it
-is usually slower than \code{\link[=expect_integrate]{expect_integrate()}}. It never requires the
-top-order derivative itself, which is useful where only the lower orders
-are available in closed form.}
+where \eqn{\pi} runs over the partitions of the index set
+\eqn{\{i_1,\dots,i_k\}} and \eqn{\ell_B} is the derivative with respect
+to the parameters indexed by the block \eqn{B}. The single-block
+partition is the target, so that
+\deqn{\mathbb{E}[\ell_{i_1 \dots i_k}] = -\sum_{\pi,\ |\pi| \ge 2}
+    \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right].}
+At order 2 this is \eqn{-\mathbb{E}[\ell_i \ell_j]}, at order 3
+\eqn{-\mathbb{E}[\ell_{ij}\ell_k + \ell_{ik}\ell_j + \ell_{jk}\ell_i +
+    \ell_i\ell_j\ell_k]}, and at order 4 the sum over the partitions of four
+indices into at least two blocks. The target order is never needed.}
+}
 
-\item{\code{\link[=expect_integrate]{expect_integrate()}}}{Integrates the observed derivative of that
-order directly against the density (numerical quadrature for continuous
-distributions, series summation for discrete ones). It is deterministic
-and normally the most accurate when the observed derivative is available
-in closed form. It estimates \eqn{\mathbb{E}[\partial^k \ell]} literally,
-with one exception: at order 2, for a family with a non-smooth
-parameter (see \code{\link[=param_smoothness]{param_smoothness()}}), it evaluates
-\eqn{-\mathbb{E}[\ell_i \ell_j]} as \code{\link[=expect_bartlett]{expect_bartlett()}} does, because the
-observed \eqn{\ell_{ij}} then lacks the point mass at the kink. The
-tolerances and limits of the quadrature and of the series are
-arguments of the constructor, and their defaults are those of
-\code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} and \code{\link[numericals7:series_vec]{numericals7::series_vec()}}.}
+The expectation of either quantity is then obtained in one of three ways:
+computed by quadrature (or by a series over the support of a discrete
+family), simulated, or estimated from the sample in hand. The methods fill
+the table as follows.
 
-\item{\code{\link[=expect_mc]{expect_mc()}}}{Simulates \code{nsim} observations from the distribution
-and averages the observed derivative over them. The simplest and most
-robust option when quadrature performs poorly (heavy tails, awkward
-supports), but it is stochastic: the error decreases only as
-\eqn{1/\sqrt{n_{sim}}}, so results are not exactly reproducible unless
-the seed is fixed. Estimates
-the same quantity as \code{\link[=expect_integrate]{expect_integrate()}}.
-The cost of this option is the cost of simulating from the
-distribution. A native \code{\link[=distrib_rng]{distrib_rng()}} is best; failing that, the
-default generator uses inverse transform when the family has a quantile
-method of its own and \code{\link[=rng_grou]{rng_grou()}}, which only needs the density,
-otherwise. It becomes expensive only for a distribution that supplies a
-quantile function slow enough to make inverse transform sampling the
-bottleneck; prefer \code{\link[=expect_bartlett]{expect_bartlett()}} or \code{\link[=expect_integrate]{expect_integrate()}} in that
-case.}
+\tabular{lccc}{
+\tab computed by quadrature \tab simulated \tab estimated from the sample \cr
+Hessian identity \tab \code{expect_integrate(identity = "hessian")} \tab
+\code{expect_mc(identity = "hessian")} \tab not available \cr
+score identity \tab \code{expect_integrate(identity = "score")} \tab
+\code{expect_mc(identity = "score")} \tab \code{expect_opg()}
+}
+
+The estimate from the sample has no Hessian-identity entry because the
+observed derivative at the data, averaged over the observations, is the
+observed information and not an expectation. Reading the score identity at
+the data gives the empirical outer product of the scores, which is the
+BHHH estimator at order 2.
+
+\describe{
+\item{\code{\link[=expect_integrate]{expect_integrate()}}}{Computes the expectation by batched adaptive
+quadrature for a continuous family and by series summation for a
+discrete one. It is deterministic, and it is normally the most accurate
+method. With \code{identity = "hessian"} it costs one integral per component
+and needs the derivative of the target order, which every family of the
+package supplies or approximates by finite differences. With
+\code{identity = "score"} it costs one integral per partition and component
+and needs only the lower orders, which is the reason to choose it where
+only those are available in closed form. The tolerances and limits are
+arguments of the constructor. For a family with several parameters
+varying by observation, one integral is computed per distinct
+parameter configuration.}
+\item{\code{\link[=expect_mc]{expect_mc()}}}{Draws \code{nsim} observations from the distribution, with
+\code{\link[=distrib_rng]{distrib_rng()}}, at each parameter configuration and averages the
+quantity of the identity over them. It estimates the same quantity as
+\code{\link[=expect_integrate]{expect_integrate()}} with the same \code{identity}. The error decreases as
+\eqn{1/\sqrt{n_{sim}}}, and the result is reproducible only if the seed
+is fixed. The cost is that of \code{\link[=distrib_rng]{distrib_rng()}} times \code{nsim}, per
+parameter configuration. It is the simplest method where quadrature
+performs poorly (heavy tails, awkward supports); for a distribution
+whose generator inverts a slow quantile function, \code{\link[=expect_integrate]{expect_integrate()}}
+is cheaper.}
+\item{\code{\link[=expect_opg]{expect_opg()}}}{Reads the score identity at each observation and
+takes no expectation: nothing is integrated and nothing is simulated.
+At order 2 the quantity is \eqn{-\ell_i \ell_j}, evaluated with one
+call to \code{\link[=distrib_gradient]{distrib_gradient()}}; at orders 3 and 4 it is the sum of
+products of the identity, evaluated with the derivatives of orders 1 to
+\eqn{k-1}. Each observation contributes a noisy rank-one-like term, and
+the sum over \eqn{n} observations converges to \eqn{n} times the
+expectation at the rate \eqn{n^{-1/2}}. At order 2 the matrix is
+positive semidefinite by construction, which makes it adequate for the
+step of Fisher scoring, and it has the same fixed point as the
+expected information. The variance grows with the order, because the
+terms are products of up to \eqn{k} derivatives. The method is never
+routed to quadrature at any order.}
 }
 }
-\section{Defaults}{
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} and the generics for the derivatives of the
-expected information default to \code{\link[=expect_opg]{expect_opg()}}, which needs one score
-evaluation per observation and no expectation. \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
-\code{\link[=distrib_deriv4]{distrib_deriv4()}} default to \code{\link[=expect_integrate]{expect_integrate()}}, since at those orders
-direct integration of the available derivative is usually cheaper and more
-accurate. \code{\link[=fisher_scoring]{fisher_scoring()}} defaults to \code{\link[=expect_opg]{expect_opg()}}, and
-\code{\link[=fit_distrib]{fit_distrib()}} rejects an approximation other than that default for a
-family with a closed-form expected information. \code{\link[=expected_info]{expected_info()}}
-defaults to \code{\link[=expect_opg]{expect_opg()}}, and the \code{vcov()} method of a fit defaults to
-\code{\link[=observed_info]{observed_info()}}, which takes no approximation. Passing \code{\link[=expect_opg]{expect_opg()}} to \code{\link[=distrib_deriv3]{distrib_deriv3()}}
-or \code{\link[=distrib_deriv4]{distrib_deriv4()}} gives the computation of \code{\link[=expect_bartlett]{expect_bartlett()}}, because
-the outer product of the scores has no counterpart above order 2.
+
+\section{Defaults of each function}{
+When \code{method} is \code{NULL}, the function returns the closed form of the family
+where there is one. The route used otherwise is:
+
+\tabular{ll}{
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} \tab \code{\link[=expect_opg]{expect_opg()}} \cr
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} and \code{\link[=distrib_deriv4]{distrib_deriv4()}} with \code{expected = TRUE} \tab
+\code{\link[=expect_integrate]{expect_integrate()}} (\code{identity = "hessian"}) \cr
+\code{\link[=fisher_scoring]{fisher_scoring()}} and \code{\link[=expected_info]{expected_info()}} \tab \code{\link[=expect_opg]{expect_opg()}} (order 2) \cr
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}},
+\code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}} and \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} \tab
+none: a family without a closed form signals an error
+}
+
+These defaults reproduce the values that the functions returned before
+\code{method} was introduced.
+}
+
+\section{Derivatives of the expected information}{
+The functions that return the derivatives of the expected information with
+respect to the parameters have the closed form of the family as their only
+default. With a method, the \eqn{m}th derivative of the matrix
+\eqn{E_{ab}(\theta)} that the method defines is returned.
+
+For \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}} the matrix is the expectation
+\eqn{E_{ab}(\theta) = \mathbb{E}_\theta[f_{ab}]} of the integrand \eqn{f_{ab}}
+of the identity (\eqn{\ell_{ab}} for the Hessian identity and
+\eqn{-\ell_a\ell_b} for the score identity), and the derivative moves the
+density as well as the integrand,
+\deqn{\frac{\partial}{\partial\theta_c}\mathbb{E}_\theta[f] =
+\mathbb{E}_\theta\left[\frac{\partial f}{\partial\theta_c} + f\,\ell_c\right],}
+repeated for higher orders. The expectation of the right-hand side is taken
+by the method.
+
+For \code{\link[=expect_opg]{expect_opg()}} the matrix is the sum over the observations of
+\eqn{-\ell_a\ell_b} at the data, which is the matrix whose inverse the
+scoring step uses, and the density does not move: the exact derivative of
+that matrix with respect to \eqn{\theta_c} is, per observation,
+\deqn{-\left(\ell_{ac}\,\ell_b + \ell_a\,\ell_{bc}\right),}
+and the second derivative is
+\deqn{-\left(\ell_{acd}\,\ell_b + \ell_{ac}\,\ell_{bd} + \ell_{ad}\,\ell_{bc}
++ \ell_a\,\ell_{bcd}\right).}
+These are not estimates of \eqn{\partial \mathbb{E}[\ell_{ab}]/\partial
+\theta_c}, which contains the moved density; they are the derivatives of the
+matrix that \code{\link[=expect_opg]{expect_opg()}} returns, and a criterion built on that matrix
+needs these. The derivatives of order 3 and 4 follow the same rule by
+Leibniz's formula.
+
+A derivative of order \eqn{m} of the matrix needs the observed derivatives
+of the log-density up to order \eqn{m+1} for the score identity, which is
+always the case for \eqn{m \le 4}, and up to order \eqn{m+2} for the Hessian
+identity, which is available for \eqn{m \le 3}; for \eqn{m = 4} the Hessian
+identity signals an error that names \code{identity = "score"}.
 }
 
 \section{A kink in the log-density}{
-Where the log-density has a kink in a
-parameter, the observed second derivative has a point mass at the kink, and
-an average of its pointwise values does not contain that mass. For the
-Laplace location, \eqn{\ell_{\mu\mu}} is zero almost everywhere, so its
-pointwise average is zero, while the information is \eqn{1/\sigma^2}. The
-information of such a family is the variance of the score, and the second
-Bartlett identity evaluates that variance. \code{\link[=expect_bartlett]{expect_bartlett()}},
-\code{\link[=expect_opg]{expect_opg()}} and, at order 2, \code{\link[=expect_integrate]{expect_integrate()}} therefore return
-\eqn{-1/\sigma^2} per observation; \code{\link[=expect_mc]{expect_mc()}} averages the observed
-\eqn{\ell_{\mu\mu}} and returns 0. When the family declares where its kink
+Where the log-density has a kink in a parameter, the observed second
+derivative has a point mass at the kink, and an average of its pointwise
+values does not contain that mass. For the Laplace location,
+\eqn{\ell_{\mu\mu}} is zero almost everywhere, so its pointwise average is
+zero, while the information is \eqn{1/\sigma^2}. The information of such a
+family is the variance of the score, which the score identity evaluates.
+For a family that declares a non-smooth parameter (see
+\code{\link[=param_smoothness]{param_smoothness()}}), the Hessian identity at order 2, whether by
+\code{\link[=expect_integrate]{expect_integrate()}} or by \code{\link[=expect_mc]{expect_mc()}}, signals an error that names
+\code{identity = "score"}. \code{\link[=expect_opg]{expect_opg()}}, which uses the score identity, and
+\code{identity = "score"} remain valid. When the family declares where its kink
 is, through \code{\link[=kink_decomposition]{kink_decomposition()}}, the quadrature of \code{\link[=expectation]{expectation()}} places
 a knot there.
 }
 
 \examples{
-# A family defined by its density alone reads 'approx'. The two
-# deterministic approximations agree on the exact -2 / sigma^2; the outer
-# product of the scores reads one observation's score product, and Monte
-# Carlo carries sampling error.
+# A family defined by its density alone has no closed-form information.
 Dens <- S7::new_class("Dens", parent = continuous_distrib)
 S7::method(distrib_pdf, Dens) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dnorm(y, theta[[1]], theta[[2]], log = log)
@@ -140,29 +200,35 @@ d <- Dens(distrib_name = "dens", dimension = "univariate",
 th <- list(mu = 0, sigma = 2)
 y <- c(-1, 0.5, 2)
 
-approximations <- list(opg = expect_opg(), bartlett = expect_bartlett(),
-                       integrate = expect_integrate())
-vapply(approximations, function(a) {
-  distrib_expected_hessian(d, y, th, approx = a)$sigma_sigma[1]
+# The sigma-sigma entry of the expected Hessian is -2 / sigma^2 = -0.5.
+# The two quadratures agree; the empirical outer product of the scores is
+# the value at one observation, and Monte Carlo carries sampling error.
+methods <- list(
+  opg = expect_opg(),
+  integrate_hessian = expect_integrate(identity = "hessian"),
+  integrate_score = expect_integrate(identity = "score"),
+  mc_hessian = expect_mc(nsim = 2000, identity = "hessian"),
+  mc_score = expect_mc(nsim = 2000, identity = "score")
+)
+set.seed(3)
+vapply(methods, function(m) {
+  distrib_expected_hessian(d, y, th, method = m)$sigma_sigma[1]
 }, numeric(1))
 
-set.seed(3)
-distrib_expected_hessian(d, y, th, approx = expect_mc(nsim = 2000))$sigma_sigma[1]
-
-# A family that writes its expected information out ignores the argument,
-# and fit_distrib() rejects one given there rather than dropping it.
+# An object is used also by a family that has a closed form.
 g <- gaussian1_distrib()
-identical(distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1)),
-          distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1),
-                                   approx = expect_mc()))
+distrib_expected_hessian(g, 0, list(mu = 0, sigma = 2))$sigma_sigma
+distrib_expected_hessian(g, 0, list(mu = 0, sigma = 2),
+                         method = expect_integrate())$sigma_sigma
 
 }
 \seealso{
-\code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_bartlett]{expect_bartlett()}}, \code{\link[=expect_integrate]{expect_integrate()}} and
-\code{\link[=expect_mc]{expect_mc()}} for the constructors; \link{ExpectApprox} for the classes;
+\code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}} for the
+constructors; \link{ExpectMethod} for the classes;
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}, the generics that take \code{approx};
-\code{\link[=fisher_scoring]{fisher_scoring()}}, where it is set for a fit;
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, the generics that take \code{method};
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} for the derivatives of the expected
+information; \code{\link[=fisher_scoring]{fisher_scoring()}}, where it is set for a fit;
 \code{\link[=expected_info]{expected_info()}} and \code{\link[=observed_info]{observed_info()}}, the objects that select the
 information of a fit, and \link{information_objects} for their comparison;
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, \code{\link[=expected_by_integrate]{expected_by_integrate()}} and

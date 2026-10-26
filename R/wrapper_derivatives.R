@@ -324,12 +324,12 @@ head_override <- function(distrib, y, theta, order, res) {
 #' @keywords internal
 trans_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-           approx = expect_integrate(), ...) {
+           method = NULL, ...) {
     x <- distrib@transformer@trans_inv(y)
     if (order == 3L) distrib_deriv3(distrib@parent_distrib, x, theta, expected = expected,
-                                    approx = approx)
+                                    method = method)
     else distrib_deriv4(distrib@parent_distrib, x, theta, expected = expected,
-                        approx = approx)
+                        method = method)
   }
 }
 
@@ -370,10 +370,10 @@ trans_deriv_k <- function(order) {
 #' @keywords internal
 zi_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-           approx = expect_integrate(), ...) {
+           method = NULL, ...) {
     if (expected) {
       return(expected_derivative(distrib, y, theta, order = order,
-                                 approx = approx))
+                                 method = method))
     }
     parent <- distrib@parent_distrib
     params <- distrib@params
@@ -467,10 +467,10 @@ distrib_deriv_component <- function(parent, y, theta, idx, params, order) {
 #' @keywords internal
 za_disc_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-           approx = expect_integrate(), ...) {
+           method = NULL, ...) {
     if (expected) {
       return(expected_derivative(distrib, y, theta, order = order,
-                                 approx = approx))
+                                 method = method))
     }
     parent <- distrib@parent_distrib
     params <- distrib@params
@@ -533,10 +533,10 @@ za_disc_deriv_k <- function(order) {
 #' @keywords internal
 za_cont_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-           approx = expect_integrate(), ...) {
+           method = NULL, ...) {
     if (expected) {
       return(expected_derivative(distrib, y, theta, order = order,
-                                 approx = approx))
+                                 method = method))
     }
     parent <- distrib@parent_distrib
     params <- distrib@params
@@ -589,10 +589,10 @@ za_cont_deriv_k <- function(order) {
 #' @keywords internal
 trunc_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-           approx = expect_integrate(), ...) {
+           method = NULL, ...) {
     if (expected) {
       return(expected_derivative(distrib, y, theta, order = order,
-                                 approx = approx))
+                                 method = method))
     }
     parent <- distrib@parent_distrib
     params <- distrib@params
@@ -650,7 +650,7 @@ trunc_deriv_k <- function(order) {
 #'   adds none.
 #' @param expected Logical of length 1. The value is passed to the parent,
 #'   which computes the expectation in closed form or approximates it.
-#' @param ... Passed to the parent's method, `approx` among them.
+#' @param ... Passed to the parent's method, `method` among them.
 #'
 #' @return A named list of third-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters, each a
@@ -735,7 +735,7 @@ S7::method(distrib_deriv4, TransformedDistrib) <- trans_deriv_k(4L)
 #'   inflation probability in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation, which for
 #'   a discrete parent is an exact sum over the support.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of third-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters and `zi`,
@@ -777,7 +777,7 @@ S7::method(distrib_deriv3, ZeroInflatedDistrib) <- zi_deriv_k(3L)
 #' @param theta A named list with the parent's parameters followed by `zi`, the
 #'   inflation probability in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of fourth-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters and `zi`,
@@ -821,7 +821,7 @@ S7::method(distrib_deriv4, ZeroInflatedDistrib) <- zi_deriv_k(4L)
 #'   probability of a zero, in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation, an exact
 #'   sum over the support for a discrete parent.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of third-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
@@ -866,7 +866,7 @@ S7::method(distrib_deriv3, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(3L)
 #' @param theta A named list with the parent's parameters followed by `za`, the
 #'   probability of a zero, in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of fourth-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
@@ -909,7 +909,7 @@ S7::method(distrib_deriv4, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(4L)
 #'   probability of the atom, in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation over the
 #'   mixed law, which includes the atom.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of third-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
@@ -958,7 +958,7 @@ S7::method(distrib_deriv3, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(3L)
 #'   probability of the atom, in \eqn{(0, 1)}.
 #' @param expected Logical of length 1. `TRUE` takes the expectation over the
 #'   mixed law.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of fourth-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
@@ -1003,7 +1003,7 @@ S7::method(distrib_deriv4, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(4L)
 #'   none, because the endpoints are constants.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of third-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters, each a
@@ -1047,7 +1047,7 @@ S7::method(distrib_deriv3, TruncatedContinuousDistrib) <- trunc_deriv_k(3L)
 #'   none.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of fourth-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters, each a
@@ -1087,7 +1087,7 @@ S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 #'   none.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law, itself an exact sum.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of third-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters, each a
@@ -1130,7 +1130,7 @@ S7::method(distrib_deriv3, TruncatedDiscreteDistrib) <- trunc_deriv_k(3L)
 #'   none.
 #' @param expected Logical of length 1. `TRUE` takes the expectation under the
 #'   truncated law.
-#' @param ... Passed on, `approx` among them.
+#' @param ... Passed on, `method` among them.
 #'
 #' @return A named list of fourth-derivative components, keyed
 #'   lexicographically by [deriv_names()] on the parent's parameters, each a

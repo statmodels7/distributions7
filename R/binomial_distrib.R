@@ -448,8 +448,8 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' observed value, which loses relative accuracy where \eqn{|\eta|} is large
 #' (see [distrib_hessian.BinomialDistrib()]); the value returned here does not.
 #'
-#' Because the value does not depend on the data, `approx` is
-#' ignored. `y` is read only for its length.
+#' Because the value does not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
@@ -458,9 +458,10 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #'   of length 1 or of the length of `y`. `mu` must lie in \eqn{(0, 1)}.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available. It is accepted so that the signature matches the
-#'   generic's. See [expected_derivative_methods].
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -500,7 +501,7 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' rbind(observed = distrib_hessian(d, c(0, 4, 10), th, scale = "link")$mu_mu,
 #'       expected = distrib_expected_hessian(d, c(0, 4, 10), th,
 #'                                           scale = "link")$mu_mu)
-S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
+S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   a <- binomial_recycle(y, theta[[1]], distrib@size)
   binomial_expected_hessian_cpp(a$y, a$mu, a$size, threads)
 }
@@ -509,12 +510,11 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' @name distrib_deriv3.BinomialDistrib
 #' @description
 #' Computes the third derivative of the binomial log-mass with respect to the
-#' probability, in closed form:
-#' \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(n-y)}{(1-\mu)^3}.}
-#' With `expected = TRUE` the expectation is returned, obtained by substituting
-#' \eqn{\mathbb{E}[Y] = n\mu}, which gives \eqn{2n/\mu^2 - 2n/(1-\mu)^2}. Both
-#' routes are closed form, so the method runs no quadrature and ignores
-#' `approx`.
+#' probability, in closed form: \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} =
+#' \dfrac{2y}{\mu^3} - \dfrac{2(n-y)}{(1-\mu)^3}.} With `expected = TRUE` the
+#' expectation is returned, obtained by substituting \eqn{\mathbb{E}[Y] =
+#' n\mu}, which gives \eqn{2n/\mu^2 - 2n/(1-\mu)^2}. Both routes are closed
+#' form and the method runs no quadrature.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
@@ -526,8 +526,9 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both routes. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -567,7 +568,7 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' dn <- distrib_hessian(d, y, list(mu = 0.3 - eps))$mu_mu
 #' all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
 #'           tolerance = 1e-5)
-S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
+S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   a <- binomial_recycle(y, theta[[1]], distrib@size)
   if (expected) binomial_deriv3_expected_cpp(a$y, a$mu, a$size, threads)
   else binomial_deriv3_cpp(a$y, a$mu, a$size, threads)
@@ -577,11 +578,11 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #' @name distrib_deriv4.BinomialDistrib
 #' @description
 #' Computes the fourth derivative of the binomial log-mass with respect to the
-#' probability, in closed form:
-#' \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = -\dfrac{6y}{\mu^4} - \dfrac{6(n-y)}{(1-\mu)^4}.}
-#' With `expected = TRUE` the expectation is returned, obtained by substituting
-#' \eqn{\mathbb{E}[Y] = n\mu}, which gives \eqn{-6n/\mu^3 - 6n/(1-\mu)^3}. Both
-#' routes are closed form, so `approx` is ignored.
+#' probability, in closed form: \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} =
+#' -\dfrac{6y}{\mu^4} - \dfrac{6(n-y)}{(1-\mu)^4}.} With `expected = TRUE` the
+#' expectation is returned, obtained by substituting \eqn{\mathbb{E}[Y] =
+#' n\mu}, which gives \eqn{-6n/\mu^3 - 6n/(1-\mu)^3}. Both routes are closed
+#' form.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
@@ -593,8 +594,9 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both routes. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -631,7 +633,7 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #' dn <- distrib_deriv3(d, y, list(mu = 0.3 - eps))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
 #'           tolerance = 1e-5)
-S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
+S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   a <- binomial_recycle(y, theta[[1]], distrib@size)
   if (expected) binomial_deriv4_expected_cpp(a$y, a$mu, a$size, threads)
   else binomial_deriv4_cpp(a$y, a$mu, a$size, threads)

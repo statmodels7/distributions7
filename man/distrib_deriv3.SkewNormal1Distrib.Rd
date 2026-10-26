@@ -15,16 +15,18 @@ numeric vector of length 1 or of the length of \code{y}.}
 
 \item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
 derivatives at \code{y} are returned from the compiled kernel. When \code{TRUE} the
-expectation is approximated as \code{approx} states.}
+expectation is approximated as \code{method} states.}
 
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body, so this method always
 returns the parameter scale.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
-by default: the approximation of the expectation. It is read only when
-\code{expected = TRUE}; the default integrates the observed kernel against the
-density by quadrature. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -55,7 +57,7 @@ numbers.
 
 With \code{expected = TRUE} the value is an expectation, computed numerically by
 \code{\link[=expected_derivative]{expected_derivative()}} from the same kind of integrals as the expected
-information. The argument \code{approx} is used only in this case.
+information.
 }
 \section{Notation}{
 
@@ -81,10 +83,10 @@ rbind(analytic = d3$mu_mu_alpha,
 # which is exactly zero.
 distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 0))$mu_mu_mu
 
-# The expectation is numerical here, and the approximation is read.
+# The expectation is numerical here, and the method is read.
 set.seed(4)
 c(integrate = distrib_deriv3(d, 0, th, expected = TRUE)$alpha_alpha_alpha,
-  mc = distrib_deriv3(d, 0, th, expected = TRUE, approx = expect_mc(nsim = 2000))$alpha_alpha_alpha)
+  mc = distrib_deriv3(d, 0, th, expected = TRUE, method = expect_mc(nsim = 2000))$alpha_alpha_alpha)
 }
 \seealso{
 \code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for the order below,

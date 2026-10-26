@@ -11,7 +11,7 @@ reparam_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = expect_opg(),
+  method = NULL,
   ...
 )
 }
@@ -27,10 +27,10 @@ information reads them.}
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic after this method has returned.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, forwarded to the
-parent's \code{distrib_expected_hessian()}, and read only where the parent has
-no closed form for it; a parent that writes its expected information out
-ignores it, as every such family does. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+The generic applies an object before dispatching on the class, so this
+method receives \code{NULL} and forwards \code{NULL} to the parent, which returns
+its closed form where it has one. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

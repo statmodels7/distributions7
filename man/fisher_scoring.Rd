@@ -4,24 +4,25 @@
 \alias{fisher_scoring}
 \title{Fisher Scoring, With Its Own Settings}
 \usage{
-fisher_scoring(approx = expect_opg(), criterion = NULL, maxit = NULL)
+fisher_scoring(method = NULL, criterion = NULL, maxit = NULL)
 }
 \arguments{
-\item{approx}{An object that gives the approximation of the expected
-information when the family has no closed form for it, one of:
+\item{method}{\code{NULL} (the default) or an object that selects how the
+expected information is obtained:
 \itemize{
-\item \code{\link[=expect_opg]{expect_opg()}}, the default: the outer product of the observed scores,
-which costs one gradient;
-\item \code{\link[=expect_bartlett]{expect_bartlett()}}: the right-hand side of the second Bartlett
-identity, a sum over the support for a discrete family and a quadrature
-for a continuous one;
-\item \code{\link[=expect_integrate]{expect_integrate()}}: quadrature of the observed information;
-\item \code{\link[=expect_mc]{expect_mc()}}: Monte Carlo, with the sample size \code{nsim} set in that
-constructor.
+\item \code{NULL}: the closed form of the family where it has one, and
+\code{\link[=expect_opg]{expect_opg()}} otherwise;
+\item \code{\link[=expect_opg]{expect_opg()}}: the outer product of the observed scores, which costs
+one gradient;
+\item \code{\link[=expect_integrate]{expect_integrate()}}: quadrature (or summation over the support) of the
+observed Hessian with \code{identity = "hessian"}, or of minus the outer
+product of the scores with \code{identity = "score"};
+\item \code{\link[=expect_mc]{expect_mc()}}: Monte Carlo, with the sample size \code{nsim} and the identity
+set in that constructor.
 }
 
 Any other value, a character string included, signals an error.
-\link{expected_derivative_methods} compares the four.}
+\link{expected_derivative_methods} compares the methods.}
 
 \item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} (the
 default), in which case \code{\link[=fit_distrib]{fit_distrib()}} stops on
@@ -33,15 +34,15 @@ default) for the limit of \code{\link[optimizers7:newton]{optimizers7::newton()}
 \code{converged = FALSE} and keeps the point.}
 }
 \value{
-An S7 object of class \code{\link[=FisherScoring]{FisherScoring()}}, with properties \code{approx}
-(an object inheriting from \link{ExpectApprox}), \code{criterion} and \code{maxit}.
+An S7 object of class \code{\link[=FisherScoring]{FisherScoring()}}, with properties \code{method}
+(\code{NULL} or an object inheriting from \link{ExpectMethod}), \code{criterion} and
+\code{maxit}.
 }
 \description{
 Returns a specification of Fisher scoring for \code{\link[=fit_distrib]{fit_distrib()}}'s \code{method}
 argument. The specification records how the expected information is
-obtained when the family has no closed form for it, and optionally a
-stopping rule and an iteration limit of its own. It is \code{\link[=fit_distrib]{fit_distrib()}}'s
-default method.
+obtained, and optionally a stopping rule and an iteration limit of its own.
+It is \code{\link[=fit_distrib]{fit_distrib()}}'s default method.
 
 Fisher scoring is Newton's method in which the observed Hessian is replaced
 by minus the expected information, so it needs no implementation of its own
@@ -80,18 +81,17 @@ therefore succeeds on a family whose observed Hessian is indefinite; the
 Laplace is the standard case.
 }
 
-\section{Strategies for the expected information}{
-\code{approx} is read only where the family has no closed-form expected
-information, as for a family defined by its density alone or a truncated
-family. The approximations differ in cost and in variance:
-\code{\link[=expect_opg]{expect_opg()}} costs one gradient, \code{\link[=expect_bartlett]{expect_bartlett()}} and
-\code{\link[=expect_integrate]{expect_integrate()}} are deterministic and dearer, and \code{\link[=expect_mc]{expect_mc()}} adds
+\section{Methods for the expected information}{
+With \code{method = NULL}, the default, the fit takes the closed form of the
+expected information where the family has one, and the outer product of the
+observed scores (\code{\link[=expect_opg]{expect_opg()}}) otherwise, as for a family defined by its
+density alone or a truncated family. An object selects the method for every
+family, including a family that has the closed form: the fit then uses the
+expectation as that method computes it, and the closed form is not read. The
+methods differ in cost and in variance: \code{\link[=expect_opg]{expect_opg()}} costs one gradient,
+\code{\link[=expect_integrate]{expect_integrate()}} is deterministic and dearer, and \code{\link[=expect_mc]{expect_mc()}} adds
 simulation noise that decreases with its \code{nsim}.
-
-A family that supplies the expectation in closed form ignores \code{approx}, and
-\code{\link[=fit_distrib]{fit_distrib()}} signals an error when \code{approx} differs from the default
-\code{\link[=expect_opg]{expect_opg()}} for such a family, so that a fit never reports an
-approximation that was not used.
+\link{expected_derivative_methods} compares them.
 }
 
 \examples{
@@ -110,10 +110,11 @@ It <- distrib_expected_hessian(d, y, th)
 Ie <- distrib_expected_hessian(d, y, th, scale = "link")
 c(theta = sum(It$sigma_sigma), link = sum(Ie$sigma_sigma))   # ratio 2^2
 
-# 'approx' is read only where the family has no closed form (see the
-# examples of expected_derivative_methods). On a family that has one, a
-# value other than the default is rejected.
-try(fit_distrib(d, y, method = fisher_scoring(approx = expect_mc())))
+# An object in 'method' is used also by a family that has a closed form:
+# here the expected information is simulated, and the fit stays close to the
+# one that uses the closed form.
+set.seed(2)
+coef(fit_distrib(d, y, method = fisher_scoring(method = expect_mc(nsim = 2000))))
 
 # The stopping rule and the budget belong to the method.
 fit <- fit_distrib(d, y, method = fisher_scoring(maxit = 1))
@@ -123,7 +124,7 @@ c(iterations = fit@iterations, converged = fit@converged)
 \seealso{
 \code{\link[=fit_distrib]{fit_distrib()}}, which consumes this;
 \code{\link[=FisherScoring]{FisherScoring()}} for the class;
-\link{expected_derivative_methods} for what each \code{approx} computes;
+\link{expected_derivative_methods} for what each \code{method} computes;
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the matrix itself;
 \code{\link[optimizers7:newton]{optimizers7::newton()}}, whose iteration limit stands where this sets
 none.

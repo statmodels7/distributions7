@@ -4,22 +4,24 @@
 \alias{fit_report}
 \title{Standard Errors and Intervals of a Fit for a Chosen Information}
 \usage{
-fit_report(object, information)
+fit_report(object, information = NULL)
 }
 \arguments{
 \item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{information}{An \code{\link[=observed_info]{observed_info()}} or \code{\link[=expected_info]{expected_info()}} object.}
+\item{information}{\code{NULL}, an \code{\link[=observed_info]{observed_info()}} or an \code{\link[=expected_info]{expected_info()}}
+object.}
 }
 \value{
 A list as returned by \code{\link[=fit_inference]{fit_inference()}}.
 }
 \description{
 Returns the quantities of \code{\link[=fit_inference]{fit_inference()}} for the information selected by
-an \link{Information} object. For \code{\link[=observed_info]{observed_info()}} the quantities stored in the
-fit are returned, since the fit stores those of the observed information;
-for \code{\link[=expected_info]{expected_info()}} the link-scale variance matrix is recomputed by
-\code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}} and carried through \code{\link[=fit_inference]{fit_inference()}}.
+an \link{Information} object, or by the default of the family when \code{information}
+is \code{NULL}. The fit stores the quantities of the default information
+(\code{\link[=default_information]{default_information()}}), and they are returned when the selected
+information is the default; otherwise the link-scale variance matrix is
+recomputed by \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}} and carried through \code{\link[=fit_inference]{fit_inference()}}.
 }
 \seealso{
 \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}, \code{\link[=print.distrib_fit]{print.distrib_fit()}},

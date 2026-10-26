@@ -24,8 +24,9 @@ generic applies the link scale after dispatch; the method for
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Accepted for the
-generic's signature; the expectations are closed. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{..., threads}{Unused.}

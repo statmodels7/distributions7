@@ -10,7 +10,7 @@ distrib_deriv3(
   theta,
   expected = FALSE,
   scale = c("parameter", "link"),
-  approx = expect_integrate(),
+  method = NULL,
   ...
 )
 }
@@ -31,13 +31,16 @@ the parameters \eqn{\theta} on their natural (constrained) scale, or
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
-\item{approx}{An object that gives the approximation of the expectation when
-\code{expected = TRUE} and the distribution has no closed-form expected third
-derivatives; ignored otherwise. It is one of \code{\link[=expect_integrate]{expect_integrate()}} (the
-default), \code{\link[=expect_bartlett]{expect_bartlett()}} (equivalent to \code{\link[=expect_opg]{expect_opg()}} at this order),
-or \code{\link[=expect_mc]{expect_mc()}} (Monte Carlo, with its own sample size \code{nsim}). Any other
-value, a character string included, signals an error.
-\link{expected_derivative_methods} compares the approximations.}
+\item{method}{\code{NULL} (the default) or an object that selects how the
+expectation is obtained; it is read only when \code{expected = TRUE}. With
+\code{NULL}, the closed form of the family is returned where the family has
+one, and \code{\link[=expect_integrate]{expect_integrate()}} (with \code{identity = "hessian"}) is used
+otherwise. An object is always used, also for a family that has a closed
+form: \code{\link[=expect_opg]{expect_opg()}} (the empirical sum of products of the score
+identity, with no expectation), \code{\link[=expect_integrate]{expect_integrate()}} or \code{\link[=expect_mc]{expect_mc()}},
+the last two with \code{identity = "hessian"} or \code{identity = "score"}. Any
+other value, a character string included, signals an error.
+\link{expected_derivative_methods} compares the methods.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }

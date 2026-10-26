@@ -18,10 +18,12 @@ derivatives at \code{y} are returned from the compiled kernel.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
-by default: the approximation of the expectation. It is read only when
-\code{expected = TRUE}; for a discrete family \code{\link[=expect_integrate]{expect_integrate()}} is an exact
-sum over the support, not a quadrature. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -38,7 +40,8 @@ read off columns \code{d30}, \code{d21}, \code{d12} and \code{d03} of the compil
 \code{pig1_deriv3_cpp}, which computes the third order alone.
 
 With \code{expected = TRUE} the value is an expectation instead, and there it is
-not closed form: the call routes to \code{expected_derivative()}, so \code{approx} is read.
+not closed form: the call routes to \code{expected_derivative()}, which takes the
+expectation by \code{method}, \code{\link[=expect_integrate]{expect_integrate()}} when \code{method} is \code{NULL}.
 }
 \examples{
 d <- pig1_distrib()
@@ -55,7 +58,7 @@ rbind(analytic = d3$mu_mu_sigma,
                  distrib_hessian(d, y, list(mu = 3, sigma = 0.8 - eps))$mu_mu) /
                 (2 * eps))
 
-# The expected version is not closed form and reads the approximation.
+# The expected version is not closed form and uses the default method.
 distrib_deriv3(d, 0:200, th, expected = TRUE)$mu_mu_mu[1]
 }
 \seealso{

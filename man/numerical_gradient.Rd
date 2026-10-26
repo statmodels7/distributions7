@@ -33,7 +33,7 @@ Each component is one central difference of the log-density in its own
 parameter,
 
 \deqn{l^{(i)} = \frac{\partial}{\partial \theta_i} \log f(y; \theta)
-  \approx \frac{\log f(y; \theta + h_i e_i)
+  \method \frac{\log f(y; \theta + h_i e_i)
     - \log f(y; \theta - h_i e_i)}{2 h_i},}
 
 so the cost is two density evaluations per parameter when the two candidate

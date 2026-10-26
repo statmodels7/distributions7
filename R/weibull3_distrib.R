@@ -235,8 +235,9 @@ S7::method(distrib_rng, Weibull3Distrib) <- function(distrib, n, theta, ...) {
 #'   [distrib_deriv5()] applies it itself.
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
-#' @param approx An object inheriting from [ExpectApprox]. Accepted for the
-#'   generic's signature; the expectations are closed. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ...,threads Unused.
 #'
@@ -267,14 +268,14 @@ S7::method(distrib_hessian, Weibull3Distrib) <- function(
 
 S7::method(distrib_deriv3, Weibull3Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = expect_integrate(), ...) {
+    method = NULL, ...) {
   if (expected) weibull3_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
   else weibull3_deriv3_cpp(y, theta[[1]], theta[[2]])
 }
 
 S7::method(distrib_deriv4, Weibull3Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = expect_integrate(), ...) {
+    method = NULL, ...) {
   if (expected) weibull3_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
   else weibull3_deriv4_cpp(y, theta[[1]], theta[[2]])
 }
@@ -287,7 +288,7 @@ S7::method(distrib_deriv5, Weibull3Distrib) <- function(
 
 S7::method(distrib_expected_hessian, Weibull3Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = expect_opg(), ...,
+    method = NULL, ...,
     threads = 1L) {
   weibull3_expected_hessian_cpp(y, theta[[1]], theta[[2]])
 }

@@ -21,8 +21,11 @@ itself, through \code{\link[=deriv5_scale]{deriv5_scale()}}.}
 \item{expected}{Logical; for orders three and four, whether the expected
 derivative is returned, by \code{\link[=expected_derivative]{expected_derivative()}}.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, passed to
-\code{\link[=expected_derivative]{expected_derivative()}} when \code{expected} is \code{TRUE}. See
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}

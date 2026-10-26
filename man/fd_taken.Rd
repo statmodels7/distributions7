@@ -33,8 +33,8 @@ The point \eqn{x + h} is a double, so the step at which it lies is
 other side is \eqn{h_- = x - (x - h)}. Both may differ from \eqn{h}, and
 from each other, by the rounding of the evaluation points, at most one unit
 of the last place. With them
-\deqn{f'(x) \approx \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
-  f''(x) \approx \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
+\deqn{f'(x) \method \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
+  f''(x) \method \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
   {h_+ h_- (h_+ + h_-)},}
 which are the uniform formulas wherever \eqn{h_+ = h_- = h}. The
 correction is of the order of one unit of the last place over the step. It

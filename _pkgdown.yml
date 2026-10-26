@@ -131,17 +131,17 @@ reference:
   - expected_hessian_costly
   - has_exact_deriv4
 
-- title: Approximations of an expectation
+- title: Methods for an expectation
   desc: >
-    The objects that select how an expected derivative is computed when a
-    family has no closed form for it, and the page that compares them.
+    The objects that select how an expected derivative is obtained (computed
+    by quadrature, simulated or estimated from the sample), and the page that
+    compares them.
   contents:
   - expected_derivative_methods
   - expect_opg
-  - expect_bartlett
   - expect_integrate
   - expect_mc
-  - ExpectApprox
+  - ExpectMethod
 
 - title: Information matrices
   desc: >

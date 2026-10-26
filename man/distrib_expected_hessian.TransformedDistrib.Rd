@@ -15,10 +15,9 @@ length when its information is closed form and for its values otherwise.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because the
-delegation is exact; accepted so that the signature matches the generic's.
-It is not forwarded, so a parent whose own expected Hessian is approximate
-uses its own default. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -32,7 +31,7 @@ Returns the parent's expected Hessian, EXACTLY. Since
 and the Jacobian does not depend on \eqn{\theta}, the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. The
-wrapper does not add an approximation, and \code{approx} is not
+wrapper does not add an approximation, and \code{method} is not
 forwarded. The result is exact when the parent's expected Hessian is exact
 and otherwise is the value that the parent's own default route returns.
 }

@@ -1674,7 +1674,7 @@ S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
 #'
 #' @description
 #' The closed form is \eqn{E[Y] = \mu + \gamma\sigma}, with
-#' \eqn{\gamma \approx 0.5772157} the Euler-Mascheroni constant. The location
+#' \eqn{\gamma \method 0.5772157} the Euler-Mascheroni constant. The location
 #' is therefore not the mean: the distribution of a maximum is shifted to the
 #' right of its location by a fixed multiple of the scale. The constant is
 #' obtained as `-digamma(1)`, which agrees with \eqn{\gamma} to about
@@ -1716,7 +1716,7 @@ S7::method(mean, GumbelDistrib) <- function(x, theta, ...) {
 #' @description
 #' The closed form is \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/6}. The scale
 #' is not the standard deviation: it is smaller by
-#' \eqn{\pi/\sqrt6 \approx 1.2825}.
+#' \eqn{\pi/\sqrt6 \method 1.2825}.
 #' The location does not enter the value, because the family is
 #' location-scale.
 #'
@@ -1752,7 +1752,7 @@ S7::method(variance, GumbelDistrib) <- function(x, theta, ...) {
 #'
 #' @description
 #' The skewness is the constant
-#' \eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \approx 1.1395}, with
+#' \eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \method 1.1395}, with
 #' \eqn{\zeta(3)} Apery's constant. The Gumbel is a location-scale family with
 #' no shape parameter, so its standardized moments are constants: every Gumbel
 #' has this same right skew, whatever its location and scale.
@@ -1886,7 +1886,7 @@ skewnormal_delta <- function(alpha) {
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 #' location is not the mean unless the shape is zero: a positive shape pulls
 #' the mass to the right and the mean with it, by at most
-#' \eqn{\sigma\sqrt{2/\pi} \approx 0.7979\sigma}.
+#' \eqn{\sigma\sqrt{2/\pi} \method 0.7979\sigma}.
 #'
 #' @section Notation:
 #' \eqn{\mu} is the location, \eqn{\sigma > 0} the scale and \eqn{\alpha} the
@@ -1929,7 +1929,7 @@ S7::method(mean, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' \eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with
 #' \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 #' bracket is at most 1, a value attained only at shape zero, and it decreases
-#' towards \eqn{1 - 2/\pi \approx 0.3634} as the magnitude of the shape grows.
+#' towards \eqn{1 - 2/\pi \method 0.3634} as the magnitude of the shape grows.
 #' The scale is therefore an upper bound on the standard deviation.
 #'
 #' @section Notation:
@@ -2823,7 +2823,7 @@ S7::method(mean, LogisticDistrib) <- function(x, theta, ...) {
 #' @description
 #' The variance has the closed form
 #' \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The standard
-#' deviation is \eqn{\sigma\pi/\sqrt3 \approx 1.8138\sigma}, so the scale is
+#' deviation is \eqn{\sigma\pi/\sqrt3 \method 1.8138\sigma}, so the scale is
 #' smaller than the standard deviation by the factor \eqn{\pi/\sqrt3}, and a
 #' logistic scale is not comparable with a Gaussian standard deviation as it
 #' stands.
@@ -3699,7 +3699,7 @@ S7::method(skewness, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @param theta A named list with components `mu` (any real value) and `sigma2`
 #'   (positive); each is a numeric vector of length 1 or `n`. Only `sigma2`
 #'   enters the value; the leading exponential overflows to `Inf` past
-#'   \eqn{\sigma^2 \approx 177}.
+#'   \eqn{\sigma^2 \method 177}.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of excess kurtoses, of length
@@ -3981,7 +3981,7 @@ S7::method(variance, Beta1Distrib) <- function(x, theta, ...) {
 #' \deqn{\gamma_2 = \frac{6[(1-2\mu)^2(1+\phi)/(2+\phi) - \mu(1-\mu)]}
 #'   {\mu(1-\mu)(3+\phi)}.}
 #' Written in the shapes, the same quotients carry \eqn{\alpha\beta}, which
-#' underflows below \eqn{\phi \approx 10^{-154}} and overflows above
+#' underflows below \eqn{\phi \method 10^{-154}} and overflows above
 #' \eqn{10^{154}}; here \eqn{\phi} enters only through \eqn{1 + \phi},
 #' \eqn{2 + \phi} and \eqn{3 + \phi}, and never in a product of two of them.
 #'

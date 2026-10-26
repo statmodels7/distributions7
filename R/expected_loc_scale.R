@@ -482,9 +482,9 @@ S7::method(expected_hessian_costly, distrib) <- function(x, ...) {
 #' so that it returns `TRUE`.
 #'
 #' @details
-#' The `approx` arguments of the three generics are accepted and
-#' ignored, because the expectation is taken by the rule of [loc_scale_rule()]
-#' and not by one of the approximations between which `approx` selects.
+#' The `method` arguments of the three methods receive `NULL`, because the
+#' generic applies an object before dispatching, and the expectation is then
+#' taken by the rule of [loc_scale_rule()].
 #'
 #' @param cls An S7 class whose first two parameters are a location and a
 #'   scale.
@@ -495,13 +495,13 @@ S7::method(expected_hessian_costly, distrib) <- function(x, ...) {
 register_loc_scale_expected <- function(cls) {
   S7::method(distrib_expected_hessian, cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"),
-      approx = expect_opg(), ...,
+      method = NULL, ...,
       threads = 1L) {
     loc_scale_expected(distrib, theta, 0L, length(y), threads)
   }
   S7::method(distrib_dexpected_hessian, cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"),
-      approx = expect_opg(), ...,
+      method = NULL, ...,
       threads = 1L) {
     dexpected_analytic(distrib, y, theta, match.arg(scale), 1L, threads,
                        function(k) loc_scale_expected(distrib, theta, k,
@@ -509,7 +509,7 @@ register_loc_scale_expected <- function(cls) {
   }
   S7::method(distrib_d2expected_hessian, cls) <- function(
       distrib, y, theta, scale = c("parameter", "link"),
-      approx = expect_opg(), ...,
+      method = NULL, ...,
       threads = 1L) {
     dexpected_analytic(distrib, y, theta, match.arg(scale), 2L, threads,
                        function(k) loc_scale_expected(distrib, theta, k,

@@ -12,7 +12,7 @@ reparam_deriv3(
   theta,
   expected = FALSE,
   scale = c("parameter", "link"),
-  approx = expect_integrate(),
+  method = NULL,
   ...
 )
 }
@@ -30,11 +30,10 @@ score drops, because the score has mean zero.}
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic after this method has returned.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, the approximation
-that the parent uses for an expected derivative for which it has no closed
-form. It is passed straight through, and it is read only when \code{expected} is
-\code{TRUE} and only by a parent that approximates. See
-\link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+The generic applies an object before dispatching on the class, so this
+method receives \code{NULL} and forwards \code{NULL} to the parent, which returns
+its closed form where it has one. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

@@ -19,8 +19,9 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
-closed form is available for both the observed and the expected values. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -38,16 +39,14 @@ A named list of five numeric vectors, \code{mu_mu_mu_mu},
 \description{
 Computes the five distinct fourth derivatives of the Gaussian log-density
 with respect to \eqn{\mu} and \eqn{v = \sigma^2}, in closed form. Writing
-\eqn{r = y - \mu},
-\deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu v)} = 0, \qquad
-      \ell^{(\mu\mu vv)} = -\dfrac{2}{v^3}, \qquad
-      \ell^{(\mu vvv)} = -\dfrac{6r}{v^4}, \qquad
-      \ell^{(vvvv)} = \dfrac{3}{v^4} - \dfrac{12 r^2}{v^5}.}
-With \code{expected = TRUE} the expectations are returned, obtained by replacing
-\eqn{r} with 0 and \eqn{r^2} with \eqn{v}, which leaves \eqn{-2/v^3} in
-\eqn{\ell^{(\mu\mu vv)}}, \eqn{-9/v^4} in \eqn{\ell^{(vvvv)}} and zero in the
-other three. Both routes are closed form, so
-\code{approx} is ignored.
+\eqn{r = y - \mu}, \deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu v)} = 0,
+\qquad \ell^{(\mu\mu vv)} = -\dfrac{2}{v^3}, \qquad \ell^{(\mu vvv)} =
+-\dfrac{6r}{v^4}, \qquad \ell^{(vvvv)} = \dfrac{3}{v^4} - \dfrac{12
+r^2}{v^5}.} With \code{expected = TRUE} the expectations are returned, obtained
+by replacing \eqn{r} with 0 and \eqn{r^2} with \eqn{v}, which leaves
+\eqn{-2/v^3} in \eqn{\ell^{(\mu\mu vv)}}, \eqn{-9/v^4} in
+\eqn{\ell^{(vvvv)}} and zero in the other three. Both routes are closed
+form.
 }
 \section{Notation}{
 

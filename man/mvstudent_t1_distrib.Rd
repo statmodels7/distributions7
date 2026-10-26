@@ -127,10 +127,8 @@ derivative through the weight \eqn{c = (\nu+p)/(\nu+q)}, which falls as
 \section{The expected information}{
 The expected information has a closed form, obtained from the family's own
 scale mixture; see \code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the
-four blocks.
-\code{\link[=fit_distrib]{fit_distrib()}} therefore rejects an \code{approx} argument on
-\code{\link[=fisher_scoring]{fisher_scoring()}} for this family, as it does for any family that computes
-its expected information exactly.
+four blocks. \code{\link[=fisher_scoring]{fisher_scoring()}} with \code{method = NULL} uses it, and a method
+given there replaces it.
 }
 
 \section{Reading a fit}{

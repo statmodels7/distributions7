@@ -182,8 +182,9 @@ S7::method(distrib_rng, StudentT2Distrib) <- function(distrib, n, theta, ...) {
 #'   generic.
 #' @param expected Logical; for orders three and four, whether the expected
 #'   derivative is returned.
-#' @param approx An object inheriting from [ExpectApprox]. Accepted for the
-#'   generic's signature; the expectations are closed. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -219,14 +220,14 @@ S7::method(distrib_hessian, StudentT2Distrib) <- function(
 
 S7::method(distrib_deriv3, StudentT2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = expect_integrate(), ..., threads = 1L) {
+    method = NULL, ..., threads = 1L) {
   if (expected) student_t2_deriv3_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   else student_t2_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 S7::method(distrib_deriv4, StudentT2Distrib) <- function(
     distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
-    approx = expect_integrate(), ..., threads = 1L) {
+    method = NULL, ..., threads = 1L) {
   if (expected) student_t2_deriv4_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   else student_t2_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
@@ -239,7 +240,7 @@ S7::method(distrib_deriv5, StudentT2Distrib) <- function(
 
 S7::method(distrib_expected_hessian, StudentT2Distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = expect_opg(), ...,
+    method = NULL, ...,
     threads = 1L) {
   student_t2_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }

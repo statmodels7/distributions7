@@ -18,11 +18,11 @@ Returns \code{TRUE} when the distribution registers its own
 one that approximates the expectation.
 }
 \details{
-The result determines whether the \code{approx} argument has any effect. A
+The result determines whether the \code{method} argument has any effect. A
 family with a closed form ignores it, and \code{\link[=fit_distrib]{fit_distrib()}} rejects
 the argument in that case instead of accepting it and doing something else:
 the Laplace is the example that the package already documents, where
-\code{approx} has no effect at all because
+\code{method} has no effect at all because
 \eqn{\mathcal{I}(\theta) = 1/b^{2}} is written out.
 
 The comparison goes through \code{\link[=is_class]{is_class()}} rather than

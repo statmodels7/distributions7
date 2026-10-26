@@ -12,7 +12,7 @@ A single number.
 \description{
 Returns \eqn{\sup|\gamma_1|} over the skew normal family,
 \deqn{\dfrac{4-\pi}{2}\left(\dfrac{b}{\sqrt{1-b^2}}\right)^3
-      \approx 0.9952717,}
+      \method 0.9952717,}
 with \eqn{b = \sqrt{2/\pi}}. The bound is attained only in the limit
 \eqn{\alpha \to \pm\infty}, where the family degenerates to a half-normal.
 }

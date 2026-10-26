@@ -26,7 +26,6 @@ is a generic for this reason.
 \seealso{
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the predicate that consumers call;
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what the approximations are;
-\code{\link[=fit_distrib]{fit_distrib()}}, which rejects an \code{approx} given to \code{\link[=fisher_scoring]{fisher_scoring()}}
-where this is \code{TRUE}.
+\code{\link[=fit_distrib]{fit_distrib()}}, whose default information follows this rule.
 }
 \keyword{internal}

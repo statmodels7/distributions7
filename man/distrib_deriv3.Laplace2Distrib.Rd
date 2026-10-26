@@ -18,8 +18,9 @@ they are already their own expectations. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, for the same
-reason as \code{expected}. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -39,8 +40,7 @@ zero, and the only surviving component comes from \eqn{\log\lambda}:
 where \code{mu_mu_mu}, \code{mu_mu_lambda} and \code{mu_lambda_lambda} are all zero.
 
 These derivatives do not depend on the data, so the observed and expected
-values coincide: \code{expected} and \code{approx} are accepted and have no
-effect.
+values coincide: \code{expected} is accepted and has no effect.
 }
 \section{Notation}{
 

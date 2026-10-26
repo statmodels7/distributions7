@@ -24,7 +24,7 @@ A numeric vector as long as \code{y}.
 \description{
 Computes \eqn{\partial^2 \ell / \partial y^2} by the three-point central
 stencil
-\deqn{\frac{\partial^2\ell}{\partial y^2} \approx
+\deqn{\frac{\partial^2\ell}{\partial y^2} \method
   \frac{\ell(y+h) - 2\ell(y) + \ell(y-h)}{h^2},}
 evaluated on \code{distrib_pdf(..., log = TRUE)}. The default \code{\link[=distrib_hess_y]{distrib_hess_y()}}
 method runs it for a continuous family with no closed form.

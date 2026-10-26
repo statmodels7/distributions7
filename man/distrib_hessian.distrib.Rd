@@ -37,7 +37,7 @@ difference of an analytical quantity, with the step
 }
 \section{The step and the cost}{
 For a family that has only a density, the step is \eqn{h =
-\varepsilon^{1/4}\max(1, |\theta_i|) \approx 1.22\times10^{-4}}, twenty times
+\varepsilon^{1/4}\max(1, |\theta_i|) \method 1.22\times10^{-4}}, twenty times
 the gradient's: a second difference divides by \eqn{h^2}, so rounding grows
 as \eqn{1/h^2} and the optimum moves out. \code{\link[=fd_steps]{fd_steps()}} applies the same
 boundary clamp. One Hessian costs \eqn{2p} evaluations for the diagonal,

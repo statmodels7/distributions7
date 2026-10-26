@@ -470,14 +470,12 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the expected second derivatives in closed form. Every expectation
 #' that the observed Hessian requires is a moment of \eqn{u = (Y/a)^{p}}, which
-#' is
-#' Gamma with shape \eqn{k = d/p} and unit rate:
-#' \deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
-#'       E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
-#' So `approx` is ignored and [expected_hessian_exact()] returns
-#' `TRUE`. The Weibull and the Gumbel use the same device, with a standard
-#' exponential variable as the corresponding variable and the expectations as
-#' derivatives of \eqn{\Gamma} at 2.
+#' is Gamma with shape \eqn{k = d/p} and unit rate: \deqn{E[u] = k, \qquad
+#' E[u\log u] = k\,\psi(k+1), \qquad E[u(\log u)^{2}] = k\{\psi(k+1)^{2} +
+#' \psi'(k+1)\}.} So [expected_hessian_exact()] returns `TRUE`. The Weibull and
+#' the Gumbel use the same device, with a standard exponential variable as the
+#' corresponding variable and the expectations as derivatives of \eqn{\Gamma}
+#' at 2.
 #'
 #' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
 #' @param y A numeric vector. Its values do not enter the result, which is an
@@ -487,9 +485,10 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #'   positive.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored: the
-#'   expectation is closed form. It is accepted so that the signature matches
-#'   the generic's. See [expected_derivative_methods].
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`.
@@ -528,8 +527,8 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' # bilinear.
 #' c(expected = e$a_d, observed = -1 / 2)
 #'
-#' # The approx argument is ignored, because the expectation is closed form.
-#' identical(e, distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 5)))
+#' # The method argument is ignored, because the expectation is closed form.
+#' identical(e, distrib_expected_hessian(d, 0, th, method = expect_mc(nsim = 5)))
 #' distributions7:::expected_hessian_exact(d)
 #'
 #' # The information is ill conditioned: d and p act largely through d/p.
@@ -541,7 +540,7 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' round(ev$vectors[, 3], 3)   # this is the flat direction
 S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
-                                                                   approx = expect_opg(), ..., threads = 1L) {
+                                                                   method = NULL, ..., threads = 1L) {
   gengamma1_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 

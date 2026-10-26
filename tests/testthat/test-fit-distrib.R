@@ -56,12 +56,14 @@ test_that("laplace fit works despite the degenerate observed Hessian in mu", {
   expect_equal(unname(coef(f)["sigma"]), mean(abs(y - coef(f)[["mu"]])), tolerance = 1e-4)
   # the location is at (essentially) the sample median
   expect_equal(unname(coef(f)["mu"]), median(y), tolerance = 0.05)
-  # the observed Hessian in mu is zero, so the default standard errors are
-  # missing; the expected information is selected after the fit
-  expect_true(all(is.na(f@se)))
-  expect_true(all(is.na(vcov(f))))
-  V <- vcov(f, information = expected_info())
+  # the observed Hessian in mu is zero, and the location has a kink, so the
+  # default information is the expected one and the standard errors are finite
+  expect_true(all(is.finite(f@se)) && all(f@se > 0))
+  V <- vcov(f)
   expect_true(all(is.finite(V)) && all(diag(V) > 0))
+  expect_identical(V, vcov(f, information = expected_info()))
+  # the observed information, asked for by name, is singular in mu
+  expect_true(all(is.na(vcov(f, information = observed_info()))))
 })
 
 test_that("all optimization methods agree", {

@@ -509,8 +509,8 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' location-scale family such as the Gaussian they are orthogonal. Their
 #' maximum likelihood estimates are asymptotically correlated.
 #'
-#' Because the values do not depend on the data, `approx` is
-#' ignored. `y` is read only for its length.
+#' Because the values do not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -519,9 +519,9 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #'   must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available. It is accepted so that the signature matches the
-#'   generic's, where it selects the approximation of the expectation. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -538,7 +538,7 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' expectation of the observed information under the model. The Gumbel is a
 #' regular family, so the second Bartlett identity holds and this equals the
 #' variance of the score. \eqn{\gamma} is the Euler-Mascheroni constant,
-#' \eqn{-\psi(1) \approx 0.5772}.
+#' \eqn{-\psi(1) \method 0.5772}.
 #'
 #' @seealso [distrib_hessian.GumbelDistrib()] for the observed quantity whose
 #'   expectation this is, [distrib_expected_hessian.Weibull1Distrib()] for the
@@ -568,7 +568,7 @@ S7::method(distrib_hessian, GumbelDistrib) <- function(distrib, y, theta, scale 
 #' rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
 #'       expected = vapply(distrib_expected_hessian(d, z, th),
 #'                         function(v) v[1], numeric(1)))
-S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
+S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   gumbel_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -582,12 +582,10 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #'
 #' With `expected = TRUE` the expectations are returned, also in closed form.
 #' They rest on the fact that \eqn{w} is standard exponential under the model,
-#' which makes
-#' \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)} and
+#' which makes \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)} and
 #' \eqn{\mathbb{E}[z] = \gamma}: every expectation of the family is a
-#' derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma
-#' functions there.
-#' Since both routes are closed form, `approx` is ignored.
+#' derivative of \eqn{\Gamma} at 1 or at 2, assembled from polygamma functions
+#' there. Since both routes are closed form,
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -599,8 +597,9 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both the observed and the expected values. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -642,7 +641,7 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' up <- distrib_hessian(d, y, list(mu = 0 + eps, sigma = 1))$mu_mu
 #' dn <- distrib_hessian(d, y, list(mu = 0 - eps, sigma = 1))$mu_mu
 #' all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-5)
-S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
+S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) gumbel_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else gumbel_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -658,8 +657,7 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #'
 #' With `expected = TRUE` the expectations are returned, also closed form,
 #' resting on the same fact: \eqn{w} is standard exponential under the model,
-#' so \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)}. `approx` is
-#' ignored either way.
+#' so \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)}.
 #'
 #' @param distrib A `GumbelDistrib` object, from [gumbel_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -671,8 +669,9 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both the observed and the expected values. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -709,7 +708,7 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' up <- distrib_deriv3(d, y, list(mu = 0 + eps, sigma = 1))$mu_mu_mu
 #' dn <- distrib_deriv3(d, y, list(mu = 0 - eps, sigma = 1))$mu_mu_mu
 #' all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-4)
-S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
+S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) gumbel_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else gumbel_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -887,7 +886,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' function \eqn{Q(p) = \mu - \sigma\log(-\log p)}, both closed form. The mean
 #' is \eqn{\mu + \gamma\sigma} with \eqn{\gamma} the Euler-Mascheroni
 #' constant, the variance \eqn{\pi^2\sigma^2/6}, the skewness
-#' \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395} and the excess kurtosis
+#' \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \method 1.1395} and the excess kurtosis
 #' \eqn{12/5}. The last two are constants: this family has a fixed shape and
 #' only its location and spread can be fitted. The mode is \eqn{\mu}, the
 #' median \eqn{\mu - \sigma\log\log 2}, and the mean is above both.
@@ -946,7 +945,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 #' \eqn{\sigma > 0} the scale. \eqn{z = (y-\mu)/\sigma} is the standardized
 #' value and \eqn{w = e^{-z}}, standard exponential under the model.
-#' \eqn{\gamma} is the Euler-Mascheroni constant, \eqn{-\psi(1) \approx
+#' \eqn{\gamma} is the Euler-Mascheroni constant, \eqn{-\psi(1) \method
 #' 0.5772}. \eqn{\eta} is a parameter on the unconstrained scale of its link,
 #' with \eqn{\theta = g^{-1}(\eta)}.
 #'

@@ -43,7 +43,7 @@ the distribution function \eqn{F(q) = \exp\{-e^{-z}\}} and the quantile
 function \eqn{Q(p) = \mu - \sigma\log(-\log p)}, both closed form. The mean
 is \eqn{\mu + \gamma\sigma} with \eqn{\gamma} the Euler-Mascheroni
 constant, the variance \eqn{\pi^2\sigma^2/6}, the skewness
-\eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395} and the excess kurtosis
+\eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \method 1.1395} and the excess kurtosis
 \eqn{12/5}. The last two are constants: this family has a fixed shape and
 only its location and spread can be fitted. The mode is \eqn{\mu}, the
 median \eqn{\mu - \sigma\log\log 2}, and the mean is above both.
@@ -104,7 +104,7 @@ deviation. The example below shows them landing beside the estimates.
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 \eqn{\sigma > 0} the scale. \eqn{z = (y-\mu)/\sigma} is the standardized
 value and \eqn{w = e^{-z}}, standard exponential under the model.
-\eqn{\gamma} is the Euler-Mascheroni constant, \eqn{-\psi(1) \approx
+\eqn{\gamma} is the Euler-Mascheroni constant, \eqn{-\psi(1) \method
 0.5772}. \eqn{\eta} is a parameter on the unconstrained scale of its link,
 with \eqn{\theta = g^{-1}(\eta)}.
 }

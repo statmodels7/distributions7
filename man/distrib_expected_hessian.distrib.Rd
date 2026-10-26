@@ -14,10 +14,9 @@
 are reported. The transformation is applied in the generic's body, so this
 method always returns the parameter scale.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}: \code{\link[=expect_opg]{expect_opg()}} (the
-default), \code{\link[=expect_bartlett]{expect_bartlett()}}, \code{\link[=expect_integrate]{expect_integrate()}} or \code{\link[=expect_mc]{expect_mc()}}, the
-approximation that \code{\link[=expected_derivative]{expected_derivative()}} uses. See
-\link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default), which selects \code{\link[=expect_opg]{expect_opg()}}, or an
+object inheriting from \link{ExpectMethod} that \code{\link[=expected_derivative]{expected_derivative()}}
+applies. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the
 generic's.}
@@ -35,14 +34,14 @@ parameter (the location of a Laplace, where the observed Hessian is
 degenerate while the score variance is still the information).
 }
 \details{
-The argument \code{approx} selects how the right-hand side is obtained, and the
-approximations differ in cost. The default \code{\link[=expect_opg]{expect_opg()}} reads
-\eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no expectation,
-so it costs one call to \code{\link[=distrib_gradient]{distrib_gradient()}}; \code{\link[=expect_bartlett]{expect_bartlett()}} evaluates
-the expectation itself, which is a sum over the support for a discrete family
-and a quadrature for a continuous one, and is orders of magnitude dearer.
-See \code{\link[=expected_by_opg]{expected_by_opg()}} for the properties that the default loses and those
-that it retains.
+The argument \code{method} selects how the right-hand side is obtained, and the
+methods differ in cost. With \code{method = NULL} the default is \code{\link[=expect_opg]{expect_opg()}},
+which reads \eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no
+expectation, so it costs one call to \code{\link[=distrib_gradient]{distrib_gradient()}};
+\code{expect_integrate(identity = "score")} evaluates the expectation itself,
+which is a sum over the support for a discrete family and a quadrature for a
+continuous one, and is orders of magnitude dearer. See \code{\link[=expected_by_opg]{expected_by_opg()}}
+for the properties that the default loses and those that it retains.
 
 The score is taken from \code{\link[=distrib_gradient]{distrib_gradient()}}, so it uses the analytical
 gradient where the family has one and finite differences otherwise.

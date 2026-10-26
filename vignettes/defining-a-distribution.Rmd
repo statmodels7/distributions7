@@ -67,9 +67,10 @@ defaults until something more specific is registered. The defaults are:
   the highest-order derivative that the family implements itself; for a family
   defined by its density alone, this is a tensor-product stencil on the
   log-density (see `numerical_deriv3()` / `numerical_deriv4()`);
-* `distrib_expected_hessian`: by default (`approx = expect_opg()`) minus the outer
-  product of the score, read at each observation; `approx = expect_bartlett()`,
-  `expect_integrate()` and `expect_mc()` take an expectation;
+* `distrib_expected_hessian`: by default (`method = NULL`, which is
+  `expect_opg()` for a family without a closed form) minus the outer product of
+  the score, read at each observation; `expect_integrate()` and `expect_mc()`
+  take an expectation;
 * the moments: numerical `expectation()` of the relevant power.
 
 ## The minimal recipe
@@ -402,11 +403,11 @@ distrib_expected_hessian(d, 0, th)$mu_mu           # minus the information: -1/b
 ```
 
 The default `distrib_expected_hessian` reads the outer product of the score at
-each observation (`approx = expect_opg()`). For the Laplace location that product does
+each observation (`method = expect_opg()`). For the Laplace location that product does
 not depend on the observation, so the default returns the information itself.
 For a component whose squared score varies with the response, the default is a
 per-observation estimate whose average over the sample estimates the
-information, and `approx = expect_bartlett()` takes the expectation exactly. See
+information, and `method = expect_integrate(identity = "score")` takes the expectation exactly. See
 `?laplace_distrib` for the family that the package ships, written in
 $\sigma$ in place of $b$.
 

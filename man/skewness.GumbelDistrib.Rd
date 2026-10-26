@@ -18,7 +18,7 @@ length \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
 The skewness is the constant
-\eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \approx 1.1395}, with
+\eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \method 1.1395}, with
 \eqn{\zeta(3)} Apery's constant. The Gumbel is a location-scale family with
 no shape parameter, so its standardized moments are constants: every Gumbel
 has this same right skew, whatever its location and scale.

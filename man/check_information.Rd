@@ -15,7 +15,7 @@ check_information(x, arg = "information")
 \code{x}, invisibly.
 }
 \description{
-Returns \code{x} invisibly when it is an \code{\link[=observed_info]{observed_info()}} or an
+Returns \code{x} invisibly when it is \code{NULL}, an \code{\link[=observed_info]{observed_info()}} or an
 \code{\link[=expected_info]{expected_info()}} object and signals an error otherwise.
 }
 \seealso{

@@ -481,8 +481,8 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #' independent.
 #'
 #' The information does not depend on \eqn{\mu}, only on \eqn{\sigma^2}, the
-#' variance of \eqn{\log Y}. Because the values do not depend on the data,
-#' `approx` is ignored and `y` is read only for its length.
+#' variance of \eqn{\log Y}. Because the values do not depend on the data, `y`
+#' is read only for its length.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -491,9 +491,9 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #'   recycled. `sigma2` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available. It is accepted so that the signature matches the
-#'   generic's, where it selects the approximation of the expectation. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -537,7 +537,7 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #'        function(m) distrib_expected_hessian(d, 0,
 #'                      list(mu = m, sigma2 = 0.36))$sigma2_sigma2,
 #'        numeric(1))
-S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ..., threads = 1L) {
+S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   lognormal_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
@@ -558,7 +558,7 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}: the component odd in
 #' \eqn{r} vanishes and the pure variance one becomes \eqn{2/\sigma^6}. Both
-#' routes are closed form, so the method uses no quadrature and ignores `approx`.
+#' routes are closed form and the method runs no quadrature.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -570,8 +570,9 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both the observed and the expected values. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -612,7 +613,7 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #'
 #' # The third derivatives are identical to the Gaussian's at log y.
 #' all.equal(d3, distrib_deriv3(gaussian2_distrib(), log(y), th))
-S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
+S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) lognormal_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else lognormal_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -633,7 +634,7 @@ S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' With `expected = TRUE` the expectations are returned, obtained by replacing
 #' \eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}, which leaves
 #' \eqn{-9/\sigma^8} in the last component and zero in the two odd ones. Both
-#' routes are closed form, so `approx` is ignored.
+#' routes are closed form.
 #'
 #' @param distrib A `Lognormal1Distrib` object, from [lognormal1_distrib()].
 #' @param y A numeric vector of strictly positive observations. With
@@ -645,8 +646,9 @@ S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #'   model are returned in place of the observed values. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both the observed and the expected values. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -683,7 +685,7 @@ S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' # The expected value of the pure variance component is -9/sigma2^4.
 #' lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
 #' -9 / 0.36^4
-S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ..., threads = 1L) {
+S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ..., threads = 1L) {
   if (expected) lognormal_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else lognormal_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

@@ -15,12 +15,9 @@ recycled. \code{lambda} must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
-closed form is available; accepted so that the signature matches the
-generic's. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, \code{\link[=expect_mc]{expect_mc()}}, which averages the
-observed second derivative over simulated draws, would give 0 in the
-location, while the other approximations read the product of scores. See
-\link{expected_derivative_methods}.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -49,8 +46,8 @@ identity fails there, exactly as in
 \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0} by symmetry, and the rate entry
 equals its observed counterpart because that one carries no data.
 
-Because the values do not depend on the data, \code{approx} is
-ignored. \code{y} is read only for its length.
+Because the values do not depend on the data, \code{y} is read only for its
+length.
 }
 \section{Notation}{
 

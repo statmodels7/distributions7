@@ -9,10 +9,11 @@
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}; anything else signals an error.}
 
-\item{information}{An object that selects the information matrix to invert:
-\code{\link[=observed_info]{observed_info()}} (the default) or \code{\link[=expected_info]{expected_info()}}, which carries the
-\code{approx} used for a family with no closed-form expected information.
-Any other value signals an error. See \link{information_objects}.}
+\item{information}{\code{NULL} (the default), \code{\link[=observed_info]{observed_info()}} or
+\code{\link[=expected_info]{expected_info()}}, the information matrix to invert; \code{NULL} selects the
+default of the family described above. \code{\link[=expected_info]{expected_info()}} carries the
+\code{method} that obtains the expectation. Any other value signals an error.
+See \link{information_objects}.}
 
 \item{...}{Unused, accepted for compatibility with \code{\link[stats:vcov]{stats::vcov()}}.}
 }
@@ -39,31 +40,37 @@ is missing.
 }
 \section{Which information}{
 The \code{information} argument selects the matrix that is inverted, after the
-fit and independently of the \code{method} that computed the estimates. Two
-objects are admissible (see \link{information_objects}):
+fit and independently of the \code{method} that computed the estimates. It is
+\code{NULL}, \code{\link[=observed_info]{observed_info()}} or \code{\link[=expected_info]{expected_info()}} (see \link{information_objects}):
 \itemize{
-\item \code{\link[=observed_info]{observed_info()}}, the default: the negative Hessian of the
-log-likelihood at the data. It exists for every family, and it describes
-the curvature of the likelihood in the sample at hand.
-\item \code{\link[=expected_info]{expected_info()}}: the Fisher information. Where the family writes it out
-in closed form, that form is used. Where it does not, the object carries
-the approximation of the expectation, one of \code{\link[=expect_opg]{expect_opg()}},
-\code{\link[=expect_bartlett]{expect_bartlett()}}, \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}} (see
+\item \code{NULL}, the default: \code{\link[=observed_info]{observed_info()}} when every parameter of the family
+has \code{\link[=params_order]{params_order()}} of at least 2, and \code{\link[=expected_info]{expected_info()}} with
+\code{method = NULL} otherwise, for the whole matrix. A family with a kink in a
+parameter (the Laplace, the elastic net) has a singular or undefined
+observed information in that parameter, and the closed-form expected
+information gives finite standard errors.
+\item \code{\link[=observed_info]{observed_info()}}: the negative Hessian of the log-likelihood at the
+data. It exists for every family, and it describes the curvature of the
+likelihood in the sample at hand.
+\item \code{\link[=expected_info]{expected_info()}}: the Fisher information. With \code{method = NULL} the
+closed form of the family is used where there is one, and \code{\link[=expect_opg]{expect_opg()}}
+otherwise. An object in \code{method} is used for every family, one of
+\code{\link[=expect_opg]{expect_opg()}}, \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}} (see
 \link{expected_derivative_methods}).
 }
 
 The two matrices agree asymptotically and differ in a sample. The expected
 information is averaged over the model, and the observed information is the
-curvature of the likelihood at the data in hand. For a family with no
+curvature of the likelihood in the sample at hand. For a family with no
 closed-form expected information, \code{\link[=expect_opg]{expect_opg()}} is the outer product of the
 observed scores, which costs one gradient and is a noisier estimate of the
-information than the observed Hessian; \code{\link[=expect_bartlett]{expect_bartlett()}} evaluates the
-expectation itself, a sum over the support for a discrete family and a
-quadrature for a continuous one, and is dearer.
+information than the observed Hessian; \code{expect_integrate(identity = "score")}
+evaluates the expectation itself, a sum over the support for a discrete
+family and a quadrature for a continuous one, and is dearer.
 
-The observed information is the one that the fit computes at the optimum,
-and it is returned as stored. The expected information is recomputed at the
-optimum, so it costs one evaluation of that matrix and no refit.
+The fit stores the matrix of the default information and returns it as
+stored. Any other information is recomputed at the optimum, so it costs one
+evaluation of that matrix and no refit.
 }
 
 \examples{
@@ -93,5 +100,5 @@ sqrt(diag(vcov(fit, information = expected_info())))
 \code{\link[=coef.distrib_fit]{coef.distrib_fit()}} and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}, which take the
 same \code{scale}; \link{information_objects} for the two information objects;
 \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the information itself, and
-\code{\link[=expected_by_opg]{expected_by_opg()}} for what \code{approx = expect_opg()} computes.
+\code{\link[=expected_by_opg]{expected_by_opg()}} for what \code{method = expect_opg()} computes.
 }

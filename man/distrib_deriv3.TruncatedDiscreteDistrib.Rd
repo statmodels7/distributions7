@@ -15,7 +15,7 @@ none.}
 \item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
 truncated law, itself an exact sum.}
 
-\item{...}{Passed on, \code{approx} among them.}
+\item{...}{Passed on, \code{method} among them.}
 }
 \value{
 A named list of third-derivative components, keyed

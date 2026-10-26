@@ -16,10 +16,10 @@ recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positi
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
-the expectation is an exact sum. It is accepted so that the signature
-matches the generic's, where it selects the approximation of the
-expectation. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -40,10 +40,9 @@ sample. The summand is the observed Hessian of
 \code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian.BetaBinom1Distrib()}}, which comes from the direct sums for
 \eqn{\sigma < 0.1} and from the shapes above.
 
-\code{approx} is therefore ignored; every approximation returns the same
-three numbers. The compiled kernel is sequential: it evaluates the sum once
-for each run of consecutive observations that share their parameters, and
-\code{threads} is ignored.
+The compiled kernel is sequential: it evaluates the sum once for each run
+of consecutive observations that share their parameters, and \code{threads} is
+ignored.
 }
 \examples{
 d <- betabinom1_distrib(size = 10)
@@ -60,9 +59,9 @@ vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 # entry does not vanish, so their estimates are asymptotically correlated.
 eh$mu_sigma[1]
 
-# The approx argument has no effect, because the expectation is an exact
+# The method argument has no effect, because the expectation is an exact
 # sum.
-identical(eh, distrib_expected_hessian(d, 0:10, th, approx = expect_mc(nsim = 50)))
+identical(eh, distrib_expected_hessian(d, 0:10, th, method = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian.BetaBinom1Distrib()}} for the quantity this is the

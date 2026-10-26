@@ -1,4 +1,4 @@
-#' @include expect_approx.R
+#' @include expect_method.R
 NULL
 
 #' @title S7 Classes for the Information Matrix
@@ -16,21 +16,21 @@ NULL
 #' package can define a subclass of `Information` for a further choice of
 #' matrix. [information_objects] compares the two.
 #'
-#' `ObservedInfo` has no properties. `ExpectedInfo` has one, `approx`, an
-#' object that inherits from [ExpectApprox] and selects how the expected
-#' information is computed for a family that has no closed form for it. The raw
-#' constructors do not validate their properties; the functions
-#' [observed_info()] and [expected_info()] do.
+#' `ObservedInfo` has no properties. `ExpectedInfo` has one, `method`, which is
+#' `NULL` or an object that inherits from [ExpectMethod] and selects how the
+#' expected information is obtained. The raw constructors do not validate their
+#' properties; the functions [observed_info()] and [expected_info()] do.
 #'
-#' @param approx An object inheriting from [ExpectApprox], for `ExpectedInfo`.
+#' @param method `NULL` or an object inheriting from [ExpectMethod], for
+#'   `ExpectedInfo`.
 #'
 #' @return An S7 object of the class named, which inherits from `Information`.
 #'
 #' @examples
-#' a <- expected_info(approx = expect_mc(nsim = 500))
+#' a <- expected_info(method = expect_mc(nsim = 500))
 #' S7::S7_inherits(a, Information)
 #' S7::S7_inherits(a, ExpectedInfo)
-#' a@approx
+#' a@method
 #'
 #' @seealso [information_objects] for the comparison of the two constructors;
 #'   [observed_info()] and [expected_info()] for the constructors;
@@ -45,7 +45,7 @@ ObservedInfo <- S7::new_class("ObservedInfo", parent = Information)
 #' @rdname Information
 #' @export
 ExpectedInfo <- S7::new_class("ExpectedInfo", parent = Information,
-  properties = list(approx = ExpectApprox)
+  properties = list(method = S7::new_union(NULL, ExpectMethod))
 )
 
 
@@ -61,7 +61,8 @@ ExpectedInfo <- S7::new_class("ExpectedInfo", parent = Information,
 #' and [expected_info()], and both inherit from [Information]. A function that
 #' takes such an object, such as the `vcov()` method of a fit (see
 #' [vcov.distrib_fit()]), is told the matrix by the object and not by a
-#' character string.
+#' character string. The argument `information` of those functions is `NULL` by
+#' default, which selects the matrix described under "The default" below.
 #'
 #' @details
 #' \describe{
@@ -70,19 +71,20 @@ ExpectedInfo <- S7::new_class("ExpectedInfo", parent = Information,
 #'     \deqn{-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top}\bigg|_{\hat\eta}.}
 #'     It is computed from the second derivatives that the family supplies in
 #'     closed form, or from their numerical fallbacks when the family
-#'     supplies only a density. It has no approximation and takes no
-#'     argument. It is the curvature of the likelihood in the sample at hand,
-#'     and every family has it.}
+#'     supplies only a density. It takes no argument. It is the curvature of the
+#'     likelihood in the sample at hand, and every family has it. It describes
+#'     the uncertainty only where the log-likelihood is twice differentiable in
+#'     every parameter at the estimate.}
 #'   \item{[expected_info()]}{The Fisher information,
 #'     \deqn{\mathbb{E}\left[-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top}
 #'     \right]_{\hat\eta},}
 #'     the average of the observed information over samples drawn from the
-#'     model at the estimates. Where the family writes the expectation in
-#'     closed form, that form is used and `approx` is not read. Where it does
-#'     not (see [expected_hessian_exact()]), the expectation is approximated by
-#'     the object in `approx`, one of [expect_opg()], [expect_bartlett()],
+#'     model at the estimates. With `method = NULL`, the default, the closed
+#'     form of the family is used where the family writes the expectation out
+#'     (see [expected_hessian_exact()]), and [expect_opg()] otherwise. An object
+#'     in `method` is used for every family, one of [expect_opg()],
 #'     [expect_integrate()] and [expect_mc()]; [expected_derivative_methods]
-#'     compares the four.}
+#'     compares the three.}
 #' }
 #'
 #' The two matrices agree asymptotically and differ in a finite sample. The
@@ -91,10 +93,21 @@ ExpectedInfo <- S7::new_class("ExpectedInfo", parent = Information,
 #' on the data, and it can be indefinite away from the estimate or at an
 #' outlier. Standard errors from the observed information describe the
 #' likelihood that was actually observed, which is the usual recommendation
-#' (Efron and Hinkley, 1978); for this reason [observed_info()] is the default
-#' of [vcov.distrib_fit()]. For a family that has no closed-form expected
+#' (Efron and Hinkley, 1978). For a family that has no closed-form expected
 #' information, [expect_opg()] is a noisier estimate of the information than the
 #' observed matrix.
+#'
+#' # The default
+#' The argument `information` of [vcov.distrib_fit()], [confint.distrib_fit()],
+#' [print.distrib_fit()] and [mv_summary()] is `NULL`. It resolves to
+#' [observed_info()] when every parameter of the family has
+#' [params_order()] of at least 2, that is, when the log-likelihood is twice
+#' differentiable in every parameter, and to [expected_info()] with
+#' `method = NULL` otherwise, for the whole matrix. A family with a kink in a
+#' parameter (the Laplace, the elastic net) has a singular or undefined
+#' observed information in that parameter, and the closed-form expected
+#' information gives finite standard errors. A fit states which information it
+#' used whenever it is not the observed one.
 #'
 #' @references
 #' Efron, B. and Hinkley, D. V. (1978). Assessing the accuracy of the maximum
@@ -106,15 +119,16 @@ ExpectedInfo <- S7::new_class("ExpectedInfo", parent = Information,
 #'   [observed_info()] and [expected_info()] return.
 #'
 #' @seealso [observed_info()] and [expected_info()] for the constructors;
-#'   [Information] for the classes; [vcov.distrib_fit()], [summary.distrib_fit()]
-#'   and [confint.distrib_fit()] for the functions that take the object;
-#'   [expected_derivative_methods] for the approximations of the expected
+#'   [Information] for the classes; [vcov.distrib_fit()],
+#'   [confint.distrib_fit()] and [mv_summary()] for the functions that take the
+#'   object;
+#'   [expected_derivative_methods] for the methods of the expected
 #'   information.
 #'
 #' @examples
 #' observed_info()
 #' expected_info()
-#' expected_info(approx = expect_bartlett())
+#' expected_info(method = expect_integrate(identity = "score"))
 #'
 #' # The standard errors of one fit under the two matrices.
 #' set.seed(1)
@@ -134,13 +148,12 @@ NULL
 #' \deqn{-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top},}
 #' evaluated at the estimates. The matrix is computed from the second
 #' derivatives of the family, which are analytic where the family writes them
-#' and numerical otherwise (see [distrib_hessian()]). It has no approximation
-#' and the function takes no argument.
+#' and numerical otherwise (see [distrib_hessian()]). The function takes no
+#' argument.
 #'
 #' It is the default of the `information` argument of [vcov.distrib_fit()],
-#' [summary.distrib_fit()], [confint.distrib_fit()] and [print.distrib_fit()],
-#' so the standard errors that a fit reports are the inverse of this matrix
-#' unless another object is passed. [information_objects] compares it with
+#' [confint.distrib_fit()], [print.distrib_fit()] and [mv_summary()] for a family whose log-likelihood is twice differentiable in every
+#' parameter (see [information_objects]). [information_objects] compares it with
 #' [expected_info()].
 #'
 #' @return An S7 object of class `ObservedInfo`, which inherits from
@@ -168,31 +181,32 @@ observed_info <- function() ObservedInfo()
 #' Selects the expected information, the Fisher information
 #' \deqn{\mathbb{E}\left[-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top}
 #' \right],}
-#' evaluated at the estimates. Where the family writes the expected information
-#' out, the closed form is used and `approx` is not read. Where it does not
-#' (see [expected_hessian_exact()]), the expectation is approximated by
-#' `approx`.
+#' evaluated at the estimates. With `method = NULL`, the default, the closed
+#' form is used where the family writes the expected information out (see
+#' [expected_hessian_exact()]), and [expect_opg()] otherwise. An object in
+#' `method` is used for every family, also for one that has the closed form.
 #'
-#' @param approx An object that selects the approximation of the expectation,
-#'   read only for a family with no closed-form expected information:
-#'   - [expect_opg()], the default: the outer product of the observed scores,
-#'     which costs one gradient;
-#'   - [expect_bartlett()]: the right-hand side of the second Bartlett
-#'     identity, a sum over the support for a discrete family and a quadrature
-#'     for a continuous one;
-#'   - [expect_integrate()]: quadrature of the observed information against
-#'     the density;
-#'   - [expect_mc()]: Monte Carlo, with its own sample size `nsim`.
+#' @param method `NULL` (the default) or an object that selects how the
+#'   expectation is obtained:
+#'   - `NULL`: the closed form of the family where it has one, and
+#'     [expect_opg()] otherwise;
+#'   - [expect_opg()]: the outer product of the observed scores, which costs
+#'     one gradient;
+#'   - [expect_integrate()]: quadrature (or summation over the support) of the
+#'     observed information against the density with `identity = "hessian"`,
+#'     or of minus the outer product of the scores with `identity = "score"`;
+#'   - [expect_mc()]: Monte Carlo, with its own sample size `nsim` and
+#'     `identity`.
 #'
-#'   [expected_derivative_methods] compares the four. Any other value signals
-#'   an error.
+#'   [expected_derivative_methods] compares the methods. Any other value
+#'   signals an error.
 #'
 #' @return An S7 object of class `ExpectedInfo`, which inherits from
-#'   [Information], with the property `approx`.
+#'   [Information], with the property `method`.
 #'
 #' @examples
 #' expected_info()
-#' expected_info(approx = expect_mc(nsim = 2000))
+#' expected_info(method = expect_mc(nsim = 2000))
 #'
 #' set.seed(1)
 #' d <- gamma1_distrib()
@@ -200,19 +214,19 @@ observed_info <- function() ObservedInfo()
 #' vcov(fit, information = expected_info())
 #'
 #' @seealso [observed_info()] for the other object; [information_objects] for
-#'   the comparison; [expected_derivative_methods] for the approximations;
+#'   the comparison; [expected_derivative_methods] for the methods;
 #'   [vcov.distrib_fit()] for the function that takes the object.
 #' @export
-expected_info <- function(approx = expect_opg()) {
-  check_approx(approx)
-  ExpectedInfo(approx = approx)
+expected_info <- function(method = NULL) {
+  check_method(method)
+  ExpectedInfo(method = method)
 }
 
 
 #' Check That an Argument Is an Information Object
 #'
 #' @description
-#' Returns `x` invisibly when it is an [observed_info()] or an
+#' Returns `x` invisibly when it is `NULL`, an [observed_info()] or an
 #' [expected_info()] object and signals an error otherwise.
 #'
 #' @param x The value to check.
@@ -223,11 +237,75 @@ expected_info <- function(approx = expect_opg()) {
 #' @seealso [information_objects]
 #' @keywords internal
 check_information <- function(x, arg = "information") {
-  if (S7::S7_inherits(x, ObservedInfo) || S7::S7_inherits(x, ExpectedInfo)) {
+  if (is.null(x) || S7::S7_inherits(x, ObservedInfo) ||
+      S7::S7_inherits(x, ExpectedInfo)) {
     return(invisible(x))
   }
-  stop(sprintf("'%s' must be observed_info() or expected_info().", arg),
+  stop(sprintf("'%s' must be NULL, observed_info() or expected_info().", arg),
        call. = FALSE)
+}
+
+
+#' The Default Information of a Family
+#'
+#' @description
+#' Returns [observed_info()] when every parameter of the family has
+#' [params_order()] of at least 2, and [expected_info()] with `method = NULL`
+#' otherwise. A parameter whose order is not established (`NA`) does not
+#' satisfy the condition.
+#'
+#' @param distrib An object inheriting from `distrib`.
+#'
+#' @return An [Information] object.
+#'
+#' @seealso [information_objects], [resolve_information()]
+#' @keywords internal
+default_information <- function(distrib) {
+  ord <- params_order(distrib)
+  if (isTRUE(all(ord >= 2))) observed_info() else expected_info()
+}
+
+
+#' Whether Two Information Objects Select the Same Matrix
+#'
+#' @description
+#' Returns `TRUE` when both objects are [observed_info()], or both are
+#' [expected_info()] with the same `method` (two `NULL` values included).
+#'
+#' @param a,b [Information] objects.
+#'
+#' @return A single logical.
+#'
+#' @seealso [default_information()]
+#' @keywords internal
+same_information <- function(a, b) {
+  if (S7::S7_inherits(a, ObservedInfo) && S7::S7_inherits(b, ObservedInfo)) {
+    return(TRUE)
+  }
+  if (S7::S7_inherits(a, ExpectedInfo) && S7::S7_inherits(b, ExpectedInfo)) {
+    return(identical(a@method, b@method))
+  }
+  FALSE
+}
+
+
+#' Resolve the Information Argument
+#'
+#' @description
+#' Returns `information` when it is an object and [default_information()] of the
+#' family when it is `NULL`.
+#'
+#' @param distrib An object inheriting from `distrib`.
+#' @param information `NULL`, an [observed_info()] or an [expected_info()]
+#'   object.
+#'
+#' @return An [Information] object.
+#'
+#' @seealso [information_objects], [default_information()]
+#' @keywords internal
+resolve_information <- function(distrib, information) {
+  check_information(information)
+  if (is.null(information)) default_information(distrib) else information
 }
 
 
@@ -235,8 +313,8 @@ check_information <- function(x, arg = "information") {
 #' @name print.Information
 #'
 #' @description
-#' Writes one line naming the matrix and, for [expected_info()], the
-#' approximation of the expectation.
+#' Writes one line naming the matrix and, for [expected_info()], the method
+#' that obtains the expectation.
 #'
 #' @param x An object inheriting from [Information].
 #' @param ... Unused, accepted for compatibility with [base::print()].
@@ -245,13 +323,17 @@ check_information <- function(x, arg = "information") {
 #'
 #' @examples
 #' observed_info()
-#' expected_info(approx = expect_mc(nsim = 500))
+#' expected_info(method = expect_mc(nsim = 500))
 #'
 #' @seealso [information_objects]
 #' @keywords internal
 S7::method(print, Information) <- function(x, ...) {
   if (S7::S7_inherits(x, ExpectedInfo)) {
-    lab <- sub("^Expectation by ", "expectation by ", approx_label(x@approx))
+    lab <- if (is.null(x@method)) {
+      "closed form where the family has one, otherwise the outer product of the scores"
+    } else {
+      sub("^Expectation by ", "expectation by ", method_label(x@method))
+    }
     cat(sprintf("Expected information (%s)\n", lab))
   } else if (S7::S7_inherits(x, ObservedInfo)) {
     cat("Observed information\n")

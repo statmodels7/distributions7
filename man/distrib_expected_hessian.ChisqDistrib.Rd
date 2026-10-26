@@ -15,9 +15,9 @@ strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored because the
-expectation is exact. It is accepted so that the signature matches the
-generic's, where it selects the approximation of the expectation. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -33,13 +33,12 @@ is.
 }
 \description{
 Returns the same number as \code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}},
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
-      = -\dfrac{\psi'(\mu/2)}{4},}
-because the observed second derivative is free of the response and so equals
-its own expectation. The method does not average, integrate or simulate, so
-\code{approx} is ignored and \code{y} is read only for its length. The
-value is negative at every \eqn{\mu} because the trigamma function is
-positive, so the information is positive throughout.
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] =
+-\dfrac{\psi'(\mu/2)}{4},} because the observed second derivative is free of
+the response and so equals its own expectation. The method does not average,
+integrate or simulate, and \code{y} is read only for its length. The value is
+negative at every \eqn{\mu} because the trigamma function is positive, so
+the information is positive throughout.
 
 The identity holds on the parameter scale. On the link scale the
 second-order chain rule adds \eqn{h''(\eta)\,\partial\ell/\partial\mu} to

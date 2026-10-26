@@ -109,7 +109,7 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' in one variable do.
 #'
 #' # The step
-#' \eqn{\varepsilon^{1/3} \approx 6.1\times10^{-6}} balances the \eqn{O(h^2)}
+#' \eqn{\varepsilon^{1/3} \method 6.1\times10^{-6}} balances the \eqn{O(h^2)}
 #' truncation of a central difference against a rounding term growing as
 #' \eqn{1/h}, which is the usual optimum for a first derivative.
 #'

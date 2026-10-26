@@ -81,7 +81,7 @@ rates, are cumulants of the density proportional to
 \eqn{e^{-xs - s^2/2}} on \eqn{s > 0}, computed from its moment ratios in
 a compiled kernel; the form \eqn{G = x - 1/M} would cancel for large
 \eqn{x}, and each derivative built on it would lose more.
-\item \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \approx 38.5}, and the
+\item \eqn{\Phi(-x)} underflows to zero beyond \eqn{x \method 38.5}, and the
 distribution function and the quantile divide by it. At
 \eqn{\lambda = 20}, \eqn{\alpha = 0.995} the argument is 63, so both work
 on the log scale, through \code{log.p} and \code{qnorm(..., log.p = TRUE)}.

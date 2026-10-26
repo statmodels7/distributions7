@@ -152,7 +152,7 @@ test_that("the expected derivatives are the observed ones averaged", {
   d <- multinomial_distrib(3, size = 5)
   th <- list(probs_alr1 = 0.1, probs_alr2 = -0.2)
   y <- distrib_rng(d, 8, th)
-  e <- distrib_deriv3(d, y, th, expected = TRUE, approx = expect_mc(nsim = 2000))
+  e <- distrib_deriv3(d, y, th, expected = TRUE, method = expect_mc(nsim = 2000))
   expect_named(e, deriv_names(d@params, 3L))
   expect_true(all(vapply(e, function(v) length(unique(v)) == 1L, logical(1))))
   expect_true(all(is.finite(unlist(e))))

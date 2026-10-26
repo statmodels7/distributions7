@@ -12,12 +12,12 @@
 \code{x}, invisibly. The function is called for the output that it writes.
 }
 \description{
-Writes one line naming the matrix and, for \code{\link[=expected_info]{expected_info()}}, the
-approximation of the expectation.
+Writes one line naming the matrix and, for \code{\link[=expected_info]{expected_info()}}, the method
+that obtains the expectation.
 }
 \examples{
 observed_info()
-expected_info(approx = expect_mc(nsim = 500))
+expected_info(method = expect_mc(nsim = 500))
 
 }
 \seealso{

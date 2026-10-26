@@ -215,8 +215,8 @@ fd_stable_quotient <- function(quotient, y, bounds, h_rel) {
 #' other side is \eqn{h_- = x - (x - h)}. Both may differ from \eqn{h}, and
 #' from each other, by the rounding of the evaluation points, at most one unit
 #' of the last place. With them
-#' \deqn{f'(x) \approx \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
-#'   f''(x) \approx \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
+#' \deqn{f'(x) \method \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
+#'   f''(x) \method \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
 #'   {h_+ h_- (h_+ + h_-)},}
 #' which are the uniform formulas wherever \eqn{h_+ = h_- = h}. The
 #' correction is of the order of one unit of the last place over the step. It
@@ -266,7 +266,7 @@ fd_second_taken <- function(f, x, h, f0 = f(x)) {
 #' @description
 #' Computes \eqn{\partial \ell / \partial y} by the two-point central
 #' difference
-#' \deqn{\frac{\partial\ell}{\partial y} \approx
+#' \deqn{\frac{\partial\ell}{\partial y} \method
 #'   \frac{\ell(y+h) - \ell(y-h)}{2h},}
 #' evaluated on `distrib_pdf(..., log = TRUE)`. The default [distrib_grad_y()]
 #' method runs it for a continuous family with no closed form.
@@ -340,7 +340,7 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @description
 #' Computes \eqn{\partial^2 \ell / \partial y^2} by the three-point central
 #' stencil
-#' \deqn{\frac{\partial^2\ell}{\partial y^2} \approx
+#' \deqn{\frac{\partial^2\ell}{\partial y^2} \method
 #'   \frac{\ell(y+h) - 2\ell(y) + \ell(y-h)}{h^2},}
 #' evaluated on `distrib_pdf(..., log = TRUE)`. The default [distrib_hess_y()]
 #' method runs it for a continuous family with no closed form.

@@ -22,7 +22,7 @@ The closed form is
 \eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with
 \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
 bracket is at most 1, a value attained only at shape zero, and it decreases
-towards \eqn{1 - 2/\pi \approx 0.3634} as the magnitude of the shape grows.
+towards \eqn{1 - 2/\pi \method 0.3634} as the magnitude of the shape grows.
 The scale is therefore an upper bound on the standard deviation.
 }
 \section{Notation}{

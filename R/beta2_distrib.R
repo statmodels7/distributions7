@@ -507,7 +507,7 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}\left[\ell^{(\beta\beta)}\right] = \psi'(\alpha+\beta)
 #'         - \psi'(\beta).}
 #' The expectation is exact, so the method does not average, integrate or
-#' simulate; it ignores `approx` and reads `y` only for its length.
+#' simulate, and it reads `y` only for its length.
 #'
 #' The consequence for fitting is that Fisher scoring and Newton's method take
 #' the same step on the parameter scale, because both invert the same matrix.
@@ -524,9 +524,9 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #'   positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because the
-#'   expectation is exact. It is accepted so that the signature matches the
-#'   generic's, where it selects the approximation of the expectation. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -568,7 +568,7 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #' distrib_expected_hessian(d, 0.5, th)$alpha_beta
 S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta,
                                                                 scale = c("parameter", "link"),
-                                                                approx = expect_opg(), ...,
+                                                                method = NULL, ...,
                                                                 threads = 1L) {
   beta2_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -589,7 +589,6 @@ S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta
 #'
 #' The values are free of the response, so `expected` selects nothing: the same
 #' computation runs either way and the two results are identical to the bit.
-#' `approx` is ignored for the same reason.
 #'
 #' @param distrib A `Beta2Distrib` object, from [beta2_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -601,8 +600,10 @@ S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available. See [expected_derivative_methods].
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `alpha_alpha_alpha`,
@@ -640,7 +641,7 @@ S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta
 #' all.equal((up - dn) / (2 * eps), d3$alpha_alpha_alpha, tolerance = 1e-4)
 S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                       scale = c("parameter", "link"),
-                                                      approx = expect_integrate(), ...) {
+                                                      method = NULL, ...) {
   beta2_higher(theta, length(y), 3L)
 }
 
@@ -655,7 +656,7 @@ S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected
 #' \eqn{\psi'''(\alpha+\beta)}, with \eqn{\psi'''} the third derivative of the
 #' digamma function.
 #'
-#' As at third order the values are free of the response, so `expected` and `approx` are without effect and the result is the same for
+#' As at third order the values are free of the response, so `expected` and `method` are without effect and the result is the same for
 #' every value of them.
 #'
 #' @param distrib A `Beta2Distrib` object, from [beta2_distrib()].
@@ -668,8 +669,10 @@ S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected
 #'   `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available. See [expected_derivative_methods].
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors,
@@ -708,7 +711,7 @@ S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected
 #'           tolerance = 1e-3)
 S7::method(distrib_deriv4, Beta2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                       scale = c("parameter", "link"),
-                                                      approx = expect_integrate(), ...) {
+                                                      method = NULL, ...) {
   beta2_higher(theta, length(y), 4L)
 }
 

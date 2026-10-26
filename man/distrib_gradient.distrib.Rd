@@ -33,7 +33,7 @@ available.
 Each component is \eqn{[\ell(\theta_i + h) - \ell(\theta_i - h)]/(2h)}, so
 one gradient costs \eqn{2p} evaluations of the log-density when the two
 candidate steps coincide. The step is
-\eqn{h = \varepsilon^{1/3}\max(1, |\theta_i|) \approx 6.06\times10^{-6}}
+\eqn{h = \varepsilon^{1/3}\max(1, |\theta_i|) \method 6.06\times10^{-6}}
 at a parameter of order one, which balances the \eqn{O(h^2)} truncation of a
 central difference against a rounding term growing as \eqn{1/h}. Parameter
 domains here are open and a step through zero returns \code{NaN} from the density

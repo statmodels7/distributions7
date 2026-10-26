@@ -16,9 +16,9 @@ numeric vector of length 1 or of the length of \code{y}. A component of length
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
-the expectation is exact. It is accepted so that the signature matches the
-generic's, where it selects the approximation of the expectation. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -48,9 +48,9 @@ about \eqn{\mu} while the other two components are even in \eqn{r}. So
 \eqn{\hat\nu}, whereas \eqn{\hat\sigma} and \eqn{\hat\nu} are not
 asymptotically independent of each other.
 
-Because a closed form exists, \code{approx} is ignored: every
-approximation returns the same six numbers. The arithmetic runs in a compiled
-kernel, so the result does not depend on the thread count.
+Because a closed form exists, the method returns the same six numbers
+whatever the call. The arithmetic runs in a compiled kernel, so the result
+does not depend on the thread count.
 }
 \section{Notation}{
 
@@ -89,8 +89,8 @@ set.seed(1)
 z <- distrib_rng(d, 4e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The approx argument has no effect, because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, y, th, approx = expect_mc(nsim = 50)))
+# The method argument has no effect, because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, y, th, method = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the observed Hessian, of

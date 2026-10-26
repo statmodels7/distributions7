@@ -19,7 +19,7 @@ enter the value, so a setting that varies only \code{mu} repeats one number.
 \description{
 The closed form is \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/6}. The scale
 is not the standard deviation: it is smaller by
-\eqn{\pi/\sqrt6 \approx 1.2825}.
+\eqn{\pi/\sqrt6 \method 1.2825}.
 The location does not enter the value, because the family is
 location-scale.
 }

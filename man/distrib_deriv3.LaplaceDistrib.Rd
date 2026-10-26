@@ -19,9 +19,9 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because a
-closed form is available for both the observed and the expected values. See
-\link{expected_derivative_methods}.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -38,10 +38,10 @@ linear in \eqn{\mu} on each side of the kink and every component that
 differentiates twice or more in \eqn{\mu} is zero. The remaining components
 come from \eqn{-\log\sigma} and from \eqn{|r|/\sigma}.
 
-With \code{expected = TRUE} the expectations under the model are returned, also in
-closed form, using \eqn{\mathbb{E}|r| = \sigma} and
-\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form, so the
-method runs no quadrature and ignores \code{approx}.
+With \code{expected = TRUE} the expectations under the model are returned, also
+in closed form, using \eqn{\mathbb{E}|r| = \sigma} and
+\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form and the
+method runs no quadrature.
 }
 \section{Notation}{
 

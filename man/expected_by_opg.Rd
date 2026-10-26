@@ -2,9 +2,9 @@
 % Please edit documentation in R/expected_derivatives.R
 \name{expected_by_opg}
 \alias{expected_by_opg}
-\title{The Information as the Outer Product of the Observed Scores}
+\title{The Empirical Outer Product of the Scores}
 \usage{
-expected_by_opg(distrib, y, theta)
+expected_by_opg(distrib, y, theta, order = 2L)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -12,17 +12,23 @@ expected_by_opg(distrib, y, theta)
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
+
+\item{order}{The derivative order, 2 to 4. The default is 2.}
 }
 \value{
-A named list of expected Hessian component vectors, named by
-\code{\link[=hess_names]{hess_names()}}; each has the length of \code{y}.
+A named list of expected derivative component vectors, named as
+\code{\link[=observed_deriv]{observed_deriv()}} names that order; each has the length of \code{y}.
 }
 \description{
-Returns \eqn{\ell^{(ij)} \approx -\ell^{(i)}\ell^{(j)}} evaluated at each
-observation, the per-observation outer product of the score. It is the
-BHHH estimator of the information, and unlike every other route here it
-takes no expectation: it integrates nothing and sums nothing over the
-support, so it costs one call to \code{\link[=distrib_gradient]{distrib_gradient()}}.
+Returns the score identity of \link{expected_derivative_methods} evaluated at
+each observation, with no expectation. At order 2 this is
+\eqn{-\ell^{(i)}\ell^{(j)}}, the per-observation outer product of the score
+(the BHHH estimator of the information); at orders 3 and 4 it is the sum of
+products
+\eqn{-\sum_{\pi,\,|\pi| \ge 2} \prod_{B \in \pi} \ell_B}. Unlike every other
+route it takes no expectation: it integrates nothing and sums nothing over
+the support, so it costs the derivatives of orders 1 to \code{order - 1} at the
+observations.
 }
 \details{
 This route differs from the identity from which it comes. The second
@@ -37,14 +43,13 @@ kernel over the whole support for every observation, whereas this route
 evaluates it once per observation.
 
 The estimate has more variance than the exact expectation and remains
-consistent.
-\eqn{-\ell^{(i)}\ell^{(j)}} is an unbiased estimate of the corresponding
-component of \eqn{\mathbb{E}[\ell^{(ij)}]} at that observation, so the sum
-over observations, which a scoring step aggregates into
-\eqn{X^\top W X}, estimates the information consistently. Component by
-component it is a rank-one matrix and correlates poorly with the exact
-expectation; summed over the observations it approximates the exact
-information, and a fit driven by it reaches the same maximum.
+consistent: each term is an unbiased estimate of the corresponding
+component of the expected derivative at that observation, so the sum over
+observations estimates it consistently. Component by component at order 2 it
+is a rank-one matrix and correlates poorly with the exact expectation;
+summed over the observations it approximates the exact information, and a
+fit driven by it reaches the same maximum. At orders 3 and 4 the terms are
+products of up to four derivatives, and the variance is larger still.
 
 It is the right default for a scoring step because it is a sum of outer
 products and is therefore positive semidefinite by construction, whereas the
@@ -54,11 +59,6 @@ positive definite matrix takes a scoring iteration to the same stationary
 point. The route is not suited to a reported standard error, which is read
 off the observed information instead; see \code{\link[=fit_distrib]{fit_distrib()}} and its \code{vcov()}
 method.
-
-The function applies at order 2 only. The outer product of scores is the
-second-order identity and
-has no counterpart above it, so \code{\link[=expected_derivative]{expected_derivative()}} routes a higher
-order to \code{\link[=expected_by_bartlett]{expected_by_bartlett()}}.
 }
 \seealso{
 \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} for the identity that this function

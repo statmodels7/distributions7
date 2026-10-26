@@ -30,8 +30,9 @@ NULL
 #' @param y A numeric vector of observations, read for its length.
 #' @param theta A named list of parameters.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
-#'   that the signature matches the generic's. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused.
 #' @param threads A single positive integer, how many threads the kernel may

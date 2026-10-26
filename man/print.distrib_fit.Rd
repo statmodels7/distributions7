@@ -11,11 +11,12 @@
 and the tables are rounded to this many decimal places by
 \code{\link[base:Round]{base::round()}}.}
 
-\item{information}{An \code{\link[=observed_info]{observed_info()}} object (the default) or an
+\item{information}{\code{NULL} (the default), an \code{\link[=observed_info]{observed_info()}} object or an
 \code{\link[=expected_info]{expected_info()}} object, which selects the information matrix whose
 inverse gives the standard errors and the intervals shown; see
-\code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}. A line under the header names the matrix when it is
-the expected information.}
+\code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}. \code{NULL} selects the default of the family (see
+\link{information_objects}). A line under the header names the matrix whenever
+it is not the observed information.}
 
 \item{...}{Unused, accepted for compatibility with \code{\link[base:print]{base::print()}}.}
 }

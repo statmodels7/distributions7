@@ -4,7 +4,7 @@
 \alias{mv_summary}
 \title{Interpretable Estimates of a Multivariate Fit}
 \usage{
-mv_summary(object, level = object@level, information = observed_info())
+mv_summary(object, level = object@level, information = NULL)
 }
 \arguments{
 \item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} of a multivariate distribution. A univariate
@@ -14,7 +14,7 @@ quantities and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} is the 
 \item{level}{The confidence level, a single number strictly inside
 \eqn{(0, 1)}. Defaults to the fit's own \code{level}. Anything else is an error.}
 
-\item{information}{An \code{\link[=observed_info]{observed_info()}} object (the default) or an
+\item{information}{\code{NULL} (the default), an \code{\link[=observed_info]{observed_info()}} object or an
 \code{\link[=expected_info]{expected_info()}} object, which selects the information matrix whose
 inverse gives the standard errors; see \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}.}
 }

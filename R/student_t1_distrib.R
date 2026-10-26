@@ -508,9 +508,9 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #' \eqn{\hat\nu}, whereas \eqn{\hat\sigma} and \eqn{\hat\nu} are not
 #' asymptotically independent of each other.
 #'
-#' Because a closed form exists, `approx` is ignored: every
-#' approximation returns the same six numbers. The arithmetic runs in a compiled
-#' kernel, so the result does not depend on the thread count.
+#' Because a closed form exists, the method returns the same six numbers
+#' whatever the call. The arithmetic runs in a compiled kernel, so the result
+#' does not depend on the thread count.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param y A numeric vector of observations. Only its length is read, because
@@ -520,9 +520,9 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored here, because
-#'   the expectation is exact. It is accepted so that the signature matches the
-#'   generic's, where it selects the approximation of the expectation. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -572,9 +572,9 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #' z <- distrib_rng(d, 4e5, th)
 #' vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #'
-#' # The approx argument has no effect, because the expectation is exact.
-#' identical(eh, distrib_expected_hessian(d, y, th, approx = expect_mc(nsim = 50)))
-S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...,
+#' # The method argument has no effect, because the expectation is exact.
+#' identical(eh, distrib_expected_hessian(d, y, th, method = expect_mc(nsim = 50)))
+S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...,
                                        threads = 1L) {
   student_t1_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
@@ -587,11 +587,11 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #' are closed form and run in a compiled kernel decomposed over the elements of
 #' the output, so they do not depend on the thread count.
 #'
-#' The expected values are closed forms too: under the model
-#' \eqn{1/(1 + z^2/\nu)} follows a beta distribution with parameters
-#' \eqn{\nu/2} and \eqn{1/2}, so the expectation of every component is a
-#' rational function of \eqn{\nu} plus the derivatives of
-#' \eqn{\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)}. `approx` is accepted for the generic's signature and ignored.
+#' The expected values are closed forms too: under the model \eqn{1/(1 +
+#' z^2/\nu)} follows a beta distribution with parameters \eqn{\nu/2} and
+#' \eqn{1/2}, so the expectation of every component is a rational function of
+#' \eqn{\nu} plus the derivatives of \eqn{\log\Gamma((\nu+1)/2) -
+#' \log\Gamma(\nu/2)}.
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -603,8 +603,9 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Accepted for the
-#'   generic's signature; the expectations are closed forms. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -649,7 +650,7 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #' rbind(expected = vapply(distrib_deriv3(d, y, th, expected = TRUE),
 #'                         function(v) v[1], numeric(1)),
 #'       averaged = vapply(distrib_deriv3(d, z, th), mean, numeric(1)))
-S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
+S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...,
                                        threads = 1L) {
   if (expected) {
     student_t1_deriv3_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
@@ -667,8 +668,7 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' elements of the output, so they do not depend on the thread count.
 #'
 #' The expected values are closed forms, as for the third order (see
-#' [distrib_deriv3.StudentT1Distrib()]). `approx` is accepted for
-#' the generic's signature and ignored.
+#' [distrib_deriv3.StudentT1Distrib()]).
 #'
 #' @param distrib A `StudentT1Distrib` object, from [student_t1_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -680,8 +680,9 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #'   model is returned in place of the value at the data. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Accepted for the
-#'   generic's signature; the expectations are closed forms. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -723,7 +724,7 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' # finite.
 #' big <- distrib_deriv4(d, y, list(mu = 0.4, sigma = 1.2, nu = 1e300))
 #' all(vapply(big, function(v) all(is.finite(v)), logical(1)))
-S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...,
+S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...,
                                        threads = 1L) {
   if (expected) {
     student_t1_deriv4_expected_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)

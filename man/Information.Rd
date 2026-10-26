@@ -10,10 +10,11 @@ Information()
 
 ObservedInfo()
 
-ExpectedInfo(approx = ExpectApprox())
+ExpectedInfo(method = NULL)
 }
 \arguments{
-\item{approx}{An object inheriting from \link{ExpectApprox}, for \code{ExpectedInfo}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}, for
+\code{ExpectedInfo}.}
 }
 \value{
 An S7 object of the class named, which inherits from \code{Information}.
@@ -29,17 +30,16 @@ exported so that \code{S7::S7_inherits()} can test an object, and so that a
 package can define a subclass of \code{Information} for a further choice of
 matrix. \link{information_objects} compares the two.
 
-\code{ObservedInfo} has no properties. \code{ExpectedInfo} has one, \code{approx}, an
-object that inherits from \link{ExpectApprox} and selects how the expected
-information is computed for a family that has no closed form for it. The raw
-constructors do not validate their properties; the functions
-\code{\link[=observed_info]{observed_info()}} and \code{\link[=expected_info]{expected_info()}} do.
+\code{ObservedInfo} has no properties. \code{ExpectedInfo} has one, \code{method}, which is
+\code{NULL} or an object that inherits from \link{ExpectMethod} and selects how the
+expected information is obtained. The raw constructors do not validate their
+properties; the functions \code{\link[=observed_info]{observed_info()}} and \code{\link[=expected_info]{expected_info()}} do.
 }
 \examples{
-a <- expected_info(approx = expect_mc(nsim = 500))
+a <- expected_info(method = expect_mc(nsim = 500))
 S7::S7_inherits(a, Information)
 S7::S7_inherits(a, ExpectedInfo)
-a@approx
+a@method
 
 }
 \seealso{

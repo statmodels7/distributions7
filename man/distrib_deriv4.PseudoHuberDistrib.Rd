@@ -21,8 +21,12 @@ Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
-by default: the approximation of the expectation, read only when \code{expected = TRUE}. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -38,9 +42,8 @@ a compiled kernel. The Bessel functions enter through \eqn{\nu} alone, and
 their derivatives come from the three routes described in
 \code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}}.
 
-The expected fourth derivatives have no closed form. With
-\code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}. The arguments
-\code{approx} is read only in this case.
+The expected fourth derivatives have no closed form. With \code{expected = TRUE}
+the method calls \code{\link[=expected_derivative]{expected_derivative()}}.
 }
 \examples{
 d <- pseudohuber_distrib()

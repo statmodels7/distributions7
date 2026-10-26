@@ -197,7 +197,7 @@ S7::method(distrib_cdf, ExponentialDistrib) <- function(distrib, q, theta,
 #' Computes the exponential quantile function
 #' \deqn{Q(p; \mu) = -\mu \log(1 - p)}
 #' by calling [stats::qexp()] at `rate = 1/mu`. The median is
-#' \eqn{\mu \log 2 \approx 0.693\mu}, which is below the mean because the
+#' \eqn{\mu \log 2 \method 0.693\mu}, which is below the mean because the
 #' distribution is right skewed at every parameter value.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
@@ -397,8 +397,8 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #' \eqn{\mu/\sqrt n}, which is the standard error of a sample mean of variance
 #' \eqn{\mu^2}.
 #'
-#' Because the value does not depend on the data, `approx` is
-#' ignored. `y` is read only for its length.
+#' Because the value does not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param y A numeric vector of observations. Only its length is used.
@@ -406,9 +406,10 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available. It is accepted so that the signature matches the
-#'   generic's. See [expected_derivative_methods].
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -446,7 +447,7 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #'   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y, theta,
                                                                      scale = c("parameter", "link"),
-                                                                     approx = expect_opg(), ..., threads = 1L) {
+                                                                     method = NULL, ..., threads = 1L) {
   exponential_expected_hessian_cpp(y, theta[[1]], threads)
 }
 
@@ -454,11 +455,11 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 #' @name distrib_deriv3.ExponentialDistrib
 #' @description
 #' Computes the third derivative of the exponential log-density with respect to
-#' the mean, in closed form:
-#' \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.}
-#' With `expected = TRUE` the expectation is returned, obtained by substituting
-#' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{4/\mu^3}. Both routes are closed
-#' form, so quadrature is not run and `approx` is ignored.
+#' the mean, in closed form: \deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} =
+#' -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.} With `expected = TRUE` the
+#' expectation is returned, obtained by substituting \eqn{\mathbb{E}[Y] = \mu},
+#' which gives \eqn{4/\mu^3}. Both routes are closed form, so quadrature is not
+#' run.
 #'
 #' The family has one parameter, so there is one component, where a
 #' two-parameter family carries four at this order.
@@ -472,8 +473,9 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both the observed and the expected value. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -511,7 +513,7 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 #'           tolerance = 1e-5)
 S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = expect_integrate(), ..., threads = 1L) {
+                                                           method = NULL, ..., threads = 1L) {
   if (expected) exponential_deriv3_expected_cpp(y, theta[[1]], threads)
   else exponential_deriv3_cpp(y, theta[[1]], threads)
 }
@@ -520,11 +522,10 @@ S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, ex
 #' @name distrib_deriv4.ExponentialDistrib
 #' @description
 #' Computes the fourth derivative of the exponential log-density with respect
-#' to the mean, in closed form:
-#' \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = \dfrac{6}{\mu^4} - \dfrac{24y}{\mu^5}.}
-#' With `expected = TRUE` the expectation is returned, obtained by substituting
-#' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-18/\mu^4}. Both routes are
-#' closed form, so `approx` is ignored.
+#' to the mean, in closed form: \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} =
+#' \dfrac{6}{\mu^4} - \dfrac{24y}{\mu^5}.} With `expected = TRUE` the
+#' expectation is returned, obtained by substituting \eqn{\mathbb{E}[Y] = \mu},
+#' which gives \eqn{-18/\mu^4}. Both routes are closed form.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its
@@ -535,8 +536,9 @@ S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, ex
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both the observed and the expected value. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -572,7 +574,7 @@ S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, ex
 #'           tolerance = 1e-5)
 S7::method(distrib_deriv4, ExponentialDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
-                                                           approx = expect_integrate(), ..., threads = 1L) {
+                                                           method = NULL, ..., threads = 1L) {
   if (expected) exponential_deriv4_expected_cpp(y, theta[[1]], threads)
   else exponential_deriv4_cpp(y, theta[[1]], threads)
 }

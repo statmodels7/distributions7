@@ -16,9 +16,10 @@ positive.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored: the
-expectation is closed form. It is accepted so that the signature matches
-the generic's. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -34,14 +35,12 @@ negative definite.
 \description{
 Returns the expected second derivatives in closed form. Every expectation
 that the observed Hessian requires is a moment of \eqn{u = (Y/a)^{p}}, which
-is
-Gamma with shape \eqn{k = d/p} and unit rate:
-\deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
-      E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
-So \code{approx} is ignored and \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns
-\code{TRUE}. The Weibull and the Gumbel use the same device, with a standard
-exponential variable as the corresponding variable and the expectations as
-derivatives of \eqn{\Gamma} at 2.
+is Gamma with shape \eqn{k = d/p} and unit rate: \deqn{E[u] = k, \qquad
+E[u\log u] = k\,\psi(k+1), \qquad E[u(\log u)^{2}] = k\{\psi(k+1)^{2} +
+\psi'(k+1)\}.} So \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns \code{TRUE}. The Weibull and
+the Gumbel use the same device, with a standard exponential variable as the
+corresponding variable and the expectations as derivatives of \eqn{\Gamma}
+at 2.
 }
 \section{Identification}{
 
@@ -72,8 +71,8 @@ names(e)
 # bilinear.
 c(expected = e$a_d, observed = -1 / 2)
 
-# The approx argument is ignored, because the expectation is closed form.
-identical(e, distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 5)))
+# The method argument is ignored, because the expectation is closed form.
+identical(e, distrib_expected_hessian(d, 0, th, method = expect_mc(nsim = 5)))
 distributions7:::expected_hessian_exact(d)
 
 # The information is ill conditioned: d and p act largely through d/p.

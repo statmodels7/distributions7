@@ -16,9 +16,9 @@ recycled. Both must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
-the expectation is exact. It is accepted so that the signature matches the
-generic's, where it selects the approximation of the expectation. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -43,12 +43,12 @@ form and with no quadrature or simulation:
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
         = \dfrac{1 - \gamma}{\mu},}
-with \eqn{\gamma \approx 0.5772} the Euler-Mascheroni constant. The mixed
+with \eqn{\gamma \method 0.5772} the Euler-Mascheroni constant. The mixed
 entry does not vanish, so the scale and the shape are not orthogonal and
 their estimates are asymptotically correlated.
 
-Because a closed form exists, \code{approx} is ignored: every
-approximation returns the same three numbers.
+Because a closed form exists, the method returns the same three numbers
+whatever the call.
 }
 \section{Why the expectations are gamma derivatives}{
 Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
@@ -89,8 +89,8 @@ set.seed(4)
 z <- distrib_rng(d, 2e5, th)
 vapply(distrib_hessian(d, z, th), mean, numeric(1))
 
-# The approx argument has no effect, because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, y, th, approx = expect_mc(nsim = 50)))
+# The method argument has no effect, because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, y, th, method = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the observed Hessian, of

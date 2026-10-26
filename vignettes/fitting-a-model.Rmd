@@ -161,10 +161,10 @@ object supplied explicitly is never replaced, so the method reported is always
 the method that produced the estimates.
 
 Where the family has no closed-form expected information, Fisher scoring needs
-an approximation of it. The approximation is an object passed to
-`fisher_scoring()`, among `expect_opg()` (the default),
-`expect_bartlett()`, `expect_integrate()` and `expect_mc(nsim = 10000)`;
-`?expected_derivative_methods` compares them.
+a method that obtains it. The method is an object passed to `fisher_scoring()`,
+among `expect_opg()` (the default for such a family), `expect_integrate()` and
+`expect_mc(nsim = 10000)`; an object is used also by a family that has the
+closed form. `?expected_derivative_methods` compares them.
 
 ## Checking the fit against the data
 

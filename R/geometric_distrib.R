@@ -411,8 +411,8 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #' \eqn{1/(\mu(1+\mu))}, the reciprocal of the variance, so it is smaller
 #' than a Poisson's \eqn{1/\mu} at the same mean.
 #'
-#' Because the value does not depend on the data, `approx` is
-#' ignored. `y` is read only for its length.
+#' Because the value does not depend on the data, `y` is read only for its
+#' length.
 #'
 #' @param distrib A `GeometricDistrib` object, from [geometric_distrib()].
 #' @param y A numeric vector of counts. Only its length is used.
@@ -420,9 +420,10 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #'   of length 1 or of the length of `y`. `mu` must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available. It is accepted so that the signature matches the
-#'   generic's. See [expected_derivative_methods].
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. Defaults to `1L`.
@@ -462,7 +463,7 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #'   expected = distrib_expected_hessian(d, 0, th)$mu_mu)
 S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
-                                                                   approx = expect_opg(), ..., threads = 1L) {
+                                                                   method = NULL, ..., threads = 1L) {
   geometric_expected_hessian_cpp(y, theta[[1]], threads)
 }
 
@@ -487,8 +488,7 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #'
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2(1 - q^2)/\mu^2} with the same
-#' device. Both routes are closed form, so the method runs no quadrature and
-#' ignores `approx`.
+#' device. Both routes are closed form and the method runs no quadrature.
 #'
 #' The family has one parameter, so there is one component, where a
 #' two-parameter family carries four at this order.
@@ -502,8 +502,9 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both routes. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -536,7 +537,7 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #' unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                          scale = c("parameter", "link"),
-                                                         approx = expect_integrate(), ..., threads = 1L) {
+                                                         method = NULL, ..., threads = 1L) {
   if (expected) geometric_deriv3_expected_cpp(y, theta[[1]], threads)
   else geometric_deriv3_cpp(y, theta[[1]], threads)
 }
@@ -552,7 +553,7 @@ S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expe
 #'
 #' With `expected = TRUE` the expectation is returned, obtained by substituting
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{-6(1 - q^3)/\mu^3}. Both routes
-#' are closed form, so `approx` is ignored.
+#' are closed form.
 #'
 #' @param distrib A `GeometricDistrib` object, from [geometric_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -563,8 +564,9 @@ S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expe
 #'   model is returned in place of the observed value. Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored, because a
-#'   closed form is available for both routes. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
@@ -596,7 +598,7 @@ S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expe
 #' unique(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_mu_mu)
 S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                          scale = c("parameter", "link"),
-                                                         approx = expect_integrate(), ..., threads = 1L) {
+                                                         method = NULL, ..., threads = 1L) {
   if (expected) geometric_deriv4_expected_cpp(y, theta[[1]], threads)
   else geometric_deriv4_cpp(y, theta[[1]], threads)
 }

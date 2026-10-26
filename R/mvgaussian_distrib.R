@@ -1129,10 +1129,9 @@ param_pair_lookup <- function(s) {
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. Every link of this family is the identity, so the two scales
 #'   coincide.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored: the
-#'   expectation is exact, so the method does not use an approximation.
-#'   It is present so that the signature matches the generic's. See
-#'   [expected_derivative_methods].
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length \eqn{n}, keyed as
@@ -1176,7 +1175,7 @@ param_pair_lookup <- function(s) {
 #' @keywords internal
 S7::method(distrib_expected_hessian, MvGaussianDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = expect_opg(), ...) {
+    method = NULL, ...) {
   y <- as_mv_matrix(distrib, y)
   pc <- mvg_pieces(distrib, theta, derivs = TRUE)
   n <- nrow(y)
@@ -2300,8 +2299,7 @@ mvg_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #' @details
 #' With `expected = TRUE` the expectation is exact: the response enters through
 #' \eqn{r}, whose expectation is zero, and through \eqn{r^\top P_t r}, whose
-#' expectation is \eqn{\operatorname{tr}(P_t\Sigma)}. `approx` is
-#' not read.
+#' expectation is \eqn{\operatorname{tr}(P_t\Sigma)}.
 #'
 #' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. With
@@ -2313,8 +2311,9 @@ mvg_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. Every link of this family is the identity, so the two coincide.
-#' @param approx An object inheriting from [ExpectApprox]. Not read: the
-#'   expectation is exact. See [expected_derivative_methods].
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
@@ -2361,7 +2360,7 @@ mvg_higher <- function(distrib, y, theta, order, expected = FALSE) {
 #'   sampled = mean(big[["sigma_log_L1_sigma_log_L1_sigma_L2.1"]]))
 #'
 #' @keywords internal
-S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...) {
+S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   mvg_higher(distrib, y, theta, 3L, expected = expected)
 }
 
@@ -2378,7 +2377,7 @@ S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, exp
 #'
 #' @details
 #' With `expected = TRUE` the expectation is exact, for the reason given at
-#' order three. `approx` is not read.
+#' order three.
 #'
 #' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. With
@@ -2390,8 +2389,9 @@ S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, exp
 #' @param scale One of `"parameter"` (the default) or `"link"`. The method
 #'   returns the parameter scale and the generic applies the link scale to its
 #'   result. Every link of this family is the identity, so the two coincide.
-#' @param approx An object inheriting from [ExpectApprox]. Not read: the
-#'   expectation is exact. See [expected_derivative_methods].
+#' @param method `NULL`: the generic applies an object before dispatching on
+#'   the family, so this method receives `NULL` and returns the closed form.
+#'   See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length \eqn{n}, keyed and ordered
@@ -2429,6 +2429,6 @@ S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, exp
 #'              sum(distrib_deriv3(d, y, tm)[["mu1_mu2_sigma_L2.1"]])) / (2 * h))
 #'
 #' @keywords internal
-S7::method(distrib_deriv4, MvGaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = expect_integrate(), ...) {
+S7::method(distrib_deriv4, MvGaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), method = NULL, ...) {
   mvg_higher(distrib, y, theta, 4L, expected = expected)
 }

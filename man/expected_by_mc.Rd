@@ -4,7 +4,7 @@
 \alias{expected_by_mc}
 \title{Expected Derivatives by Monte Carlo}
 \usage{
-expected_by_mc(distrib, y, theta, order, nsim)
+expected_by_mc(distrib, y, theta, order, nsim, identity = "hessian")
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -16,13 +16,17 @@ expected_by_mc(distrib, y, theta, order, nsim)
 \item{order}{The derivative order, 2 to 4.}
 
 \item{nsim}{The number of draws per parameter configuration.}
+
+\item{identity}{\code{"hessian"} or \code{"score"}.}
 }
 \value{
 A named list of expected derivative component vectors; each has
 length \code{length(y)}.
 }
 \description{
-Simulates \code{nsim} draws and averages the observed derivative over them.
+Simulates \code{nsim} draws and averages over them the quantity of the identity
+that is requested: the observed derivative for \code{identity = "hessian"}, and
+the integrand of the score identity for \code{identity = "score"}.
 }
 \details{
 One simulation is run for each row of \code{theta} after recycling.
@@ -30,10 +34,13 @@ Observations whose parameters coincide are not merged, so a \code{theta} that
 varies over the observations costs one simulation per observation, and a
 scalar \code{theta} costs one simulation however long \code{y} is.
 
-Estimates the same quantity as \code{\link[=expected_by_integrate]{expected_by_integrate()}}, has an
-error that falls as \eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed
-is fixed. Its cost is the cost of \code{\link[=distrib_rng]{distrib_rng()}}, so it is expensive for a
-distribution whose generator inverts a slow quantile function.
+Estimates the same quantity as \code{\link[=expected_by_integrate]{expected_by_integrate()}} (Hessian identity)
+or \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} (score identity), has an error that falls as
+\eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed is fixed. Its cost
+is the cost of \code{\link[=distrib_rng]{distrib_rng()}}, so it is expensive for a distribution whose
+generator inverts a slow quantile function. The Hessian identity at order 2
+for a family with a non-smooth parameter signals an error, as in
+\code{\link[=expected_by_integrate]{expected_by_integrate()}}.
 }
 \seealso{
 \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}

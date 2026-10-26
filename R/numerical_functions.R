@@ -14,19 +14,19 @@
 #'
 #' @description
 #' Makes [quad_rows()] and [series_rows()] read their tolerances and limits
-#' from `approx`, and returns the settings that were in force so that the
+#' from `method`, and returns the settings that were in force so that the
 #' caller can restore them with `on.exit()`.
 #'
-#' @param approx An [ExpectIntegrate] object, or `NULL` for the defaults.
+#' @param method An [ExpectIntegrate] object, or `NULL` for the defaults.
 #'
 #' @return The previous settings, invisibly: an [ExpectIntegrate] object or
 #'   `NULL`.
 #'
 #' @seealso [expect_integrate()], [integration_settings()]
 #' @keywords internal
-set_integration_settings <- function(approx) {
-  old <- .integration_state$approx
-  .integration_state$approx <- approx
+set_integration_settings <- function(method) {
+  old <- .integration_state$method
+  .integration_state$method <- method
   invisible(old)
 }
 
@@ -41,7 +41,7 @@ set_integration_settings <- function(approx) {
 #' @seealso [set_integration_settings()]
 #' @keywords internal
 integration_settings <- function() {
-  a <- .integration_state$approx
+  a <- .integration_state$method
   if (is.null(a)) ExpectIntegrate() else a
 }
 

@@ -949,7 +949,7 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #'   quantities and [confint.distrib_fit()] is the function to call.
 #' @param level The confidence level, a single number strictly inside
 #'   \eqn{(0, 1)}. Defaults to the fit's own `level`. Anything else is an error.
-#' @param information An [observed_info()] object (the default) or an
+#' @param information `NULL` (the default), an [observed_info()] object or an
 #'   [expected_info()] object, which selects the information matrix whose
 #'   inverse gives the standard errors; see [vcov.distrib_fit()].
 #'
@@ -997,7 +997,7 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #'
 #' @export
 mv_summary <- function(object, level = object@level,
-                       information = observed_info()) {
+                       information = NULL) {
   if (!S7::S7_inherits(object, distrib_fit)) {
     stop("'object' must be a distrib_fit.", call. = FALSE)
   }

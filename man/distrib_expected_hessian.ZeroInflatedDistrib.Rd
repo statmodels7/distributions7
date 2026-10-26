@@ -15,12 +15,10 @@ parent block reads \code{y} itself, through \code{distrib_expected_hessian(paren
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The generic
 applies the link scale to the value that the method returns.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, forwarded to the
-parent's \code{distrib_expected_hessian()}, and read only where the parent has
-no closed form for it; every other block is an exact combination of the
-parent's density, score and observed Hessian at zero.
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns, for this class, the value that it
-returns for the parent. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -44,10 +42,10 @@ is then used only for its length.
 The blocks of the wrapper are exact combinations of the parent's mass, score
 and observed Hessian at zero and of the parent's expected Hessian, an
 expectation over the whole support from which the single point at zero is
-subtracted in closed form. \code{approx} is forwarded to the parent's
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} and take effect only where the parent has no
-closed form, so the result is exact exactly when the parent's is, as
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} reports.
+subtracted in closed form. \code{method} is \code{NULL} in this method and is
+forwarded as such to the parent's \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, which
+returns its closed form where it has one, so the result is exact exactly
+when the parent's is, as \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} reports.
 }
 \section{Notation}{
 

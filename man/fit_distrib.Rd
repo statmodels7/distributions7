@@ -35,10 +35,10 @@ of two kinds of object:
 \itemize{
 \item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default: Newton's method with the expected
 information in place of the observed Hessian, the object carrying the
-approximation (\link{ExpectApprox}) used to obtain that information when the
-family has no closed form for it. Passing an \code{approx} other than
-\code{\link[=expect_opg]{expect_opg()}} where the family does have one signals an error rather
-than ignoring it. Fisher scoring falls back to BFGS if it fails to
+method (\link{ExpectMethod}) that obtains that information. With
+\code{method = NULL} the closed form of the family is used where there is
+one, and \code{\link[=expect_opg]{expect_opg()}} otherwise; a method given there is used for
+every family. Fisher scoring falls back to BFGS if it fails to
 converge;
 \item an optimizer object from \pkg{optimizers7}, used as given and receiving
 the analytical gradient and the observed Hessian, so that

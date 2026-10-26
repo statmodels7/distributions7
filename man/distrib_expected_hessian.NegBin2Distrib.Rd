@@ -15,9 +15,9 @@ recycled. Both must be strictly positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored. The mean and
-mixed entries are closed form and the dispersion entry is a truncated exact
-sum. It is accepted so that the signature matches the generic's. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -49,8 +49,7 @@ as one sum over the support through the mass recurrence, carried in log
 scale until the terms are representable. Past the mode and after 100 terms
 the sum stops once \eqn{p_k (1+k)^2 \le 10^{-17}}, with \eqn{p_k} the mass
 at \eqn{k}. The entry is a truncated exact sum and not a quadrature or a
-simulation; \code{approx} is ignored, and \code{y} is read only for its
-length.
+simulation; \code{y} is read only for its length.
 }
 \section{The dispersion entry at large theta}{
 The trigamma difference and the term \eqn{\mu/(\theta s)} agree to leading

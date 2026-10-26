@@ -15,15 +15,16 @@ number.}
 
 \item{expected}{Logical of length 1. When \code{TRUE} the method returns the
 expectation, which it takes by sampling: it makes the number of draws
-that \code{approx} carries and averages the observed components. Defaults to \code{FALSE}.}
+that \code{method} carries and averages the observed components. Defaults to \code{FALSE}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}. The method
 returns the parameter scale and the generic applies the link scale to its
 result. The two differ here, because \code{nu} carries a log link by default.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. With \code{expected = TRUE} the method always takes the expectation by sampling, whatever the
-class: it uses the \code{nsim} of \code{\link[=expect_mc]{expect_mc()}} when the object is of that class
-and 10000 draws otherwise. It is not read when \code{expected = FALSE}. See
+\item{method}{\code{NULL}: the generic applies an object before dispatching on the
+family, so this method receives \code{NULL}. With \code{expected = TRUE} the
+method takes the expectation by sampling 10000 draws; an object such as
+\code{\link[=expect_mc]{expect_mc()}} with another \code{nsim} is applied by the generic. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}

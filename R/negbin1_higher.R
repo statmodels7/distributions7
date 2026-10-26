@@ -286,7 +286,7 @@ nb1_components_exact <- function(y, mu, th, order) {
 #' solved.
 #'
 #' With `expected = TRUE` the method calls [expected_derivative()] instead: the
-#' expected third derivatives have no closed form. The method reads `approx` only in this case.
+#' expected third derivatives have no closed form. The method reads `method` only in this case.
 #'
 #' @param distrib A `NegBin1Distrib` object, from [negbin1_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -299,9 +299,12 @@ nb1_components_exact <- function(y, mu, th, order) {
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
-#'   by default: the approximation of the expectation, read only when `expected
-#'   = TRUE`. See [expected_derivative_methods].
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of four numeric vectors, `mu_mu_mu`, `mu_mu_theta`,
@@ -349,10 +352,10 @@ nb1_components_exact <- function(y, mu, th, order) {
 S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
                                                         expected = FALSE,
                                                         scale = c("parameter", "link"),
-                                                        approx = expect_integrate(), ...) {
+                                                        method = NULL, ...) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = approx))
+                               method = method))
   }
   negbin1_components(y, theta, 3L)
 }
@@ -380,9 +383,12 @@ S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
 #'   Defaults to `FALSE`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
-#'   by default: the approximation of the expectation, read only when `expected
-#'   = TRUE`. See [expected_derivative_methods].
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of five numeric vectors, `mu_mu_mu_mu`,
@@ -420,10 +426,10 @@ S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, NegBin1Distrib) <- function(distrib, y, theta,
                                                         expected = FALSE,
                                                         scale = c("parameter", "link"),
-                                                        approx = expect_integrate(), ...) {
+                                                        method = NULL, ...) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = approx))
+                               method = method))
   }
   negbin1_components(y, theta, 4L)
 }

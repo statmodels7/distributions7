@@ -54,9 +54,13 @@ NULL
 #' @param theta A named list of parameters; each has length 1 or
 #'   `length(y)`.
 #' @param scale `"parameter"` or `"link"`.
-#' @param approx An object inheriting from [ExpectApprox]. Accepted for symmetry
-#'   with [distrib_dexpected_hessian()]; the methods ignore it. See
-#'   [expected_derivative_methods].
+#' @param method `NULL` (the default) or an object inheriting from
+#'   [ExpectMethod], as for [distrib_dexpected_hessian()]. An object returns the
+#'   derivative of the matrix that the method defines, by Leibniz's formula for
+#'   [expect_opg()] and with the moved density for [expect_integrate()] and
+#'   [expect_mc()]; with `identity = "hessian"` the fourth derivative needs
+#'   observed derivatives of order 6 and signals an error that names
+#'   `identity = "score"`. See [expected_derivative_methods].
 #' @param ... Passed to methods.
 #'
 #' @return A named list of numeric vectors, keyed as
@@ -73,12 +77,16 @@ NULL
 distrib_d3expected_hessian <- S7::new_generic(
   "distrib_d3expected_hessian", "distrib",
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = expect_opg(),
+           method = NULL,
            ...) {
     args <- check_derivative_args(distrib, y, theta)
-    if (!missing(approx)) check_approx(approx)
+    check_method(method)
     y <- args$y
     theta <- args$theta
+    if (!is.null(method)) {
+      return(dexpected_by_method(distrib, y, theta, match.arg(scale), 3L,
+                                 method))
+    }
     S7::S7_dispatch()
   })
 
@@ -93,15 +101,14 @@ distrib_d3expected_hessian <- S7::new_generic(
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Either `"parameter"` or `"link"`.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
-#'   that the signature matches the generic's. See
-#'   [expected_derivative_methods].
+#' @param method `NULL`: the generic handles an object before dispatching on
+#'   the family. See [expected_derivative_methods].
 #' @param ... Unused.
 #' @return A named list keyed as [d3expected_names()].
 #' @keywords internal
 S7::method(distrib_d3expected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = expect_opg(), ...) {
+    method = NULL, ...) {
   numerical_dexpected_higher(distrib, y, theta, match.arg(scale), 3L)
 }
 
@@ -145,12 +152,16 @@ S7::method(distrib_d3expected_hessian, distrib) <- function(
 distrib_d4expected_hessian <- S7::new_generic(
   "distrib_d4expected_hessian", "distrib",
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = expect_opg(),
+           method = NULL,
            ...) {
     args <- check_derivative_args(distrib, y, theta)
-    if (!missing(approx)) check_approx(approx)
+    check_method(method)
     y <- args$y
     theta <- args$theta
+    if (!is.null(method)) {
+      return(dexpected_by_method(distrib, y, theta, match.arg(scale), 4L,
+                                 method))
+    }
     S7::S7_dispatch()
   })
 
@@ -164,15 +175,14 @@ distrib_d4expected_hessian <- S7::new_generic(
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Either `"parameter"` or `"link"`.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored; accepted so
-#'   that the signature matches the generic's. See
-#'   [expected_derivative_methods].
+#' @param method `NULL`: the generic handles an object before dispatching on
+#'   the family. See [expected_derivative_methods].
 #' @param ... Unused.
 #' @return A named list keyed as [d4expected_names()].
 #' @keywords internal
 S7::method(distrib_d4expected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = expect_opg(), ...) {
+    method = NULL, ...) {
   numerical_dexpected_higher(distrib, y, theta, match.arg(scale), 4L)
 }
 

@@ -69,27 +69,20 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   # fisher_scoring() specification. How the expectation is approximated is a
   # property of Fisher scoring, so it cannot be handed to an optimizer that
   # would never look at it.
-  fs <- fisher_scoring(approx = expect_mc(nsim = 2000))
+  fs <- fisher_scoring(method = expect_mc(nsim = 2000))
   expect_s3_class(fs, "distributions7::FisherScoring")
-  expect_s3_class(fs@approx, "distributions7::ExpectMC")
-  expect_identical(fs@approx@nsim, 2000)
-  expect_false("approx" %in% names(formals(fit_distrib)))
+  expect_s3_class(fs@method, "distributions7::ExpectMC")
+  expect_identical(fs@method@nsim, 2000)
   expect_false("nsim" %in% names(formals(fit_distrib)))
 
-  # The gaussian's expected information is a closed form, so a strategy for
-  # approximating it would be ignored, and an argument that is silently
-  # ignored is how a caller comes to believe a fit used a method it did not.
+  # The gaussian's expected information is a closed form. A method given to
+  # fisher_scoring() is used all the same, and the default takes the closed form.
   g <- mvgaussian1_distrib(2)
   yg <- distrib_rng(g, 200, th[1:5])
-  expect_error(
-    fit_distrib(g, yg, method = fisher_scoring(approx = expect_mc())), "closed form"
-  )
-  expect_error(
+  expect_no_error(
     fit_distrib(gaussian1_distrib(), rnorm(50),
-                method = fisher_scoring(approx = expect_mc())),
-    "closed form"
+                method = fisher_scoring(method = expect_mc(nsim = 100)))
   )
-  # the default carries no claim and is accepted everywhere
   expect_silent(fit_distrib(g, yg, method = fisher_scoring()))
 
   # and where the strategy does change something it is taken, on a family
@@ -97,12 +90,12 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   set.seed(53)
   ypg <- distrib_rng(pig_bare_distrib(), 40, list(mu = 3, sigma = 0.5))
   expect_no_error(fit_distrib(pig_bare_distrib(), ypg,
-                              method = fisher_scoring(approx = expect_mc(nsim = 20L)),
+                              method = fisher_scoring(method = expect_mc(nsim = 20L)),
                               n_start = 1L))
 
   # the object validates its own arguments
-  expect_error(fisher_scoring(approx = "nonsense"), "ExpectApprox object")
-  expect_error(fisher_scoring(approx = "mc"), "ExpectApprox object")
+  expect_error(fisher_scoring(method = "nonsense"), "ExpectMethod object")
+  expect_error(fisher_scoring(method = "mc"), "ExpectMethod object")
   expect_error(expect_mc(nsim = -1), "positive")
   expect_error(fisher_scoring(nsim = 5), "unused argument")
   expect_error(fisher_scoring(criterion = "grad"), "stopping rule")
@@ -126,7 +119,7 @@ test_that("a family without a closed form still fits by Fisher scoring", {
 
 
 test_that("a family is asked correctly whether its expected information is exact", {
-  # has_exact_expected_hessian() decides whether fisher_scoring()'s 'approx'
+  # has_exact_expected_hessian() decides whether fisher_scoring()'s 'method'
   # means anything, so getting it backwards makes the refusal fire on exactly
   # the families the argument exists for. Its argument used to be called
   # 'distrib', which SHADOWS the base class of the same name, so the comparison
@@ -161,17 +154,13 @@ test_that("a family is asked correctly whether its expected information is exact
   set.seed(71)
   ys <- distrib_rng(pig_bare_distrib(), 40, list(mu = 3, sigma = 0.5))
   expect_no_error(
-    fit_distrib(pig_bare_distrib(), ys, method = fisher_scoring(approx = expect_mc(nsim = 20L)),
+    fit_distrib(pig_bare_distrib(), ys, method = fisher_scoring(method = expect_mc(nsim = 20L)),
                 n_start = 1L)
   )
-  # A strategy the family would ignore is refused -- and it has to be a
-  # NON-DEFAULT one, "opg" being the default since 0.44.0 and therefore
-  # indistinguishable from a plain fisher_scoring(). The predicate reads the
-  # default off the constructor rather than copying it.
-  expect_error(
+  # a method given for a family with a closed form is used and not refused
+  expect_no_error(
     fit_distrib(gaussian1_distrib(), stats::rnorm(100),
-                method = fisher_scoring(approx = expect_mc())),
-    "closed form"
+                method = fisher_scoring(method = expect_mc(nsim = 100)))
   )
   # and the default itself is accepted on the same family
   expect_silent(fit_distrib(gaussian1_distrib(), stats::rnorm(100),

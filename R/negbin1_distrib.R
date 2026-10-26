@@ -141,7 +141,7 @@ nb1_size <- function(mu, theta) mu / theta
 #' compiled kernel forms the log-mass by R's negative binomial in its mean
 #' parametrization (size \eqn{r} and mean \eqn{\mu}), which never forms the
 #' success probability \eqn{1/(1+\theta)}; that probability rounds to 1 below
-#' \eqn{\theta \approx 10^{-16}} and loses digits long before, so the mass
+#' \eqn{\theta \method 10^{-16}} and loses digits long before, so the mass
 #' stays accurate down to the Poisson limit. The log-mass is exponentiated
 #' when `log` is `FALSE`, and `log = TRUE` is the accurate route far into the
 #' tail.
@@ -537,16 +537,14 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Returns the expectation of the observed Hessian under the model. Every term
 #' carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, because
-#' its expectation vanishes by the first Bartlett identity. With
-#' \eqn{u_j = \mu + \theta j}, the entries are \eqn{-A},
-#' \eqn{W/\theta^2} and \eqn{-W/(\mu\theta)}, where
-#' \deqn{A = \mathbb{E}\Big[\sum_{j<Y} u_j^{-2}\Big], \qquad
-#'   W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta} -
-#'   \frac{\mu^2}{u_j^2}\Big)\Big].}
-#' \eqn{A} and \eqn{W} are not available in closed form. Each is summed
-#' against the exact mass until the terms fall below a tolerance, so this is a
-#' truncated exact sum and not a quadrature or a simulation. `approx` is ignored, and `y` is
-#' read only for its length.
+#' its expectation vanishes by the first Bartlett identity. With \eqn{u_j = \mu
+#' + \theta j}, the entries are \eqn{-A}, \eqn{W/\theta^2} and
+#' \eqn{-W/(\mu\theta)}, where \deqn{A = \mathbb{E}\Big[\sum_{j<Y}
+#' u_j^{-2}\Big], \qquad W = \mathbb{E}\Big[\sum_{j<Y} \Big(\frac{1}{1+\theta}
+#' - \frac{\mu^2}{u_j^2}\Big)\Big].} \eqn{A} and \eqn{W} are not available in
+#' closed form. Each is summed against the exact mass until the terms fall
+#' below a tolerance, so this is a truncated exact sum and not a quadrature or
+#' a simulation. `y` is read only for its length.
 #'
 #' The mixed entry does not vanish, so the mean and the dispersion are not
 #' orthogonal in this family; in [negbin2_distrib()] the same entry is exactly
@@ -581,9 +579,10 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #'   recycled. Both must be strictly positive.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored. The
-#'   surviving expectation is a truncated exact sum. It is accepted so that the
-#'   signature matches the generic's. See [expected_derivative_methods].
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the kernel may
 #'   use. For fewer observations than an internal threshold the kernel runs
@@ -629,7 +628,7 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #'        numeric(1))
 S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, theta,
                                                                   scale = c("parameter", "link"),
-                                                                  approx = expect_opg(), ...,
+                                                                  method = NULL, ...,
                                        threads = 1L) {
   negbin1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }

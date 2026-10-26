@@ -960,7 +960,7 @@ grou_core <- function(lp, b, n, r) {
 #'
 #' The choice keeps simulation-based tools usable. Inverting a purely
 #' numerical distribution function costs several root-finding iterations per
-#' draw, and each of those is itself a quadrature, so `approx = expect_mc()` and
+#' draw, and each of those is itself a quadrature, so `method = expect_mc()` and
 #' [check_distrib()] would be impractical on a family defined by its density
 #' alone.
 #'
@@ -1373,11 +1373,11 @@ S7::method(distrib_rng, discrete_distrib) <- function(distrib, n, theta, ...) {
 #' one that approximates the expectation.
 #'
 #' @details
-#' The result determines whether the `approx` argument has any effect. A
+#' The result determines whether the `method` argument has any effect. A
 #' family with a closed form ignores it, and [fit_distrib()] rejects
 #' the argument in that case instead of accepting it and doing something else:
 #' the Laplace is the example that the package already documents, where
-#' `approx` has no effect at all because
+#' `method` has no effect at all because
 #' \eqn{\mathcal{I}(\theta) = 1/b^{2}} is written out.
 #'
 #' The comparison goes through [is_class()] rather than
@@ -1452,8 +1452,7 @@ NULL
 #'
 #' @seealso [has_exact_expected_hessian()], the predicate that consumers call;
 #'   [expected_derivative_methods()] for what the approximations are;
-#'   [fit_distrib()], which rejects an `approx` given to [fisher_scoring()]
-#'   where this is `TRUE`.
+#'   [fit_distrib()], whose default information follows this rule.
 #' @keywords internal
 S7::method(expected_hessian_exact, distrib) <- function(x, ...) {
   m <- tryCatch(

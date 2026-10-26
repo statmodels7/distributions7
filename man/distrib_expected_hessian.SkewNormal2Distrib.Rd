@@ -14,8 +14,9 @@
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored; accepted so
-that the signature matches the generic's. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}

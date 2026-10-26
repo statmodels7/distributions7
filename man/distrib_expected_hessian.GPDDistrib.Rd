@@ -15,9 +15,10 @@ vector of length 1 or of the length of \code{y}.}
 \item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
 transformation is applied in the generic's body.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored: the
-expectation is closed form. It is accepted so that the signature matches
-the generic's. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -31,13 +32,12 @@ A named list of three numeric vectors in \code{\link[=hess_names]{hess_names()}}
 }
 \description{
 Returns Smith's (1985) closed form, valid for \eqn{\xi > -1/2}:
-\deqn{E\!\left[\dfrac{\partial^2\ell}{\partial\sigma^2}\right]
-        = \dfrac{-1}{(1+2\xi)\sigma^2}, \qquad
-      E\!\left[\dfrac{\partial^2\ell}{\partial\sigma\partial\xi}\right]
-        = \dfrac{-1}{(1+2\xi)\sigma(1+\xi)}, \qquad
-      E\!\left[\dfrac{\partial^2\ell}{\partial\xi^2}\right]
-        = \dfrac{-2}{(1+2\xi)(1+\xi)}.}
-Every entry is free of the data, so \code{approx} is ignored and
+\deqn{E\!\left[\dfrac{\partial^2\ell}{\partial\sigma^2}\right] =
+\dfrac{-1}{(1+2\xi)\sigma^2}, \qquad
+E\!\left[\dfrac{\partial^2\ell}{\partial\sigma\partial\xi}\right] =
+\dfrac{-1}{(1+2\xi)\sigma(1+\xi)}, \qquad
+E\!\left[\dfrac{\partial^2\ell}{\partial\xi^2}\right] =
+\dfrac{-2}{(1+2\xi)(1+\xi)}.} Every entry is free of the data, so
 \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} returns \code{TRUE}.
 }
 \section{Where it stops existing}{
@@ -80,9 +80,9 @@ t(vapply(c(-0.7, -0.5, -0.49, -0.3, 0),
            c(xi = x, sigma_sigma = u$sigma_sigma, xi_xi = u$xi_xi)
          }, numeric(3)))
 
-# The approx argument is ignored because the expectation is closed form.
+# The method argument is ignored because the expectation is closed form.
 identical(distrib_expected_hessian(d, 0, th),
-          distrib_expected_hessian(d, 0, th, approx = expect_mc(nsim = 10)))
+          distrib_expected_hessian(d, 0, th, method = expect_mc(nsim = 10)))
 }
 \references{
 Smith, R. L. (1985). Maximum likelihood estimation in a class of nonregular

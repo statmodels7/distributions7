@@ -30,7 +30,7 @@ evaluates only the density.
 
 The choice keeps simulation-based tools usable. Inverting a purely
 numerical distribution function costs several root-finding iterations per
-draw, and each of those is itself a quadrature, so \code{approx = expect_mc()} and
+draw, and each of those is itself a quadrature, so \code{method = expect_mc()} and
 \code{\link[=check_distrib]{check_distrib()}} would be impractical on a family defined by its density
 alone.
 }

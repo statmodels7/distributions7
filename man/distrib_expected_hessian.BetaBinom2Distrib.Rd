@@ -16,10 +16,10 @@ positive.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored here, because
-the expectation is an exact sum. It is accepted so that the signature
-matches the generic's, where it selects the approximation of the
-expectation. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -33,10 +33,9 @@ and \code{alpha_beta}, each of length \code{length(y)} and each constant along i
 \description{
 Returns the expectation of the observed Hessian under the model,
 \eqn{\sum_{k=0}^{n} P(Y=k)\,\partial^2\ell/\partial\theta_i\partial\theta_j}
-evaluated at \eqn{y = k}. Because the family is discrete on
-\eqn{\{0, \dots, n\}}, this is an exact finite sum of at most \eqn{n+1}
-terms, so the answer is the expectation to machine precision. \code{approx} is therefore ignored: every approximation returns the same three
-numbers.
+evaluated at \eqn{y = k}. Because the family is discrete on \eqn{\{0, \dots,
+n\}}, this is an exact finite sum of at most \eqn{n+1} terms, so the answer
+is the expectation to machine precision.
 
 The mixed entry does not vanish, so the two shapes are not orthogonal and
 their estimates are asymptotically correlated.
@@ -52,8 +51,8 @@ vapply(eh, function(v) v[1], numeric(1))
 w <- distrib_pdf(d, 0:10, th)
 vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 
-# The approx argument is inert because the expectation is an exact sum.
-identical(eh, distrib_expected_hessian(d, 0:10, th, approx = expect_mc(nsim = 50)))
+# The method argument is inert because the expectation is an exact sum.
+identical(eh, distrib_expected_hessian(d, 0:10, th, method = expect_mc(nsim = 50)))
 }
 \seealso{
 \code{\link[=betabinom2_expected]{betabinom2_expected()}} for the summation,

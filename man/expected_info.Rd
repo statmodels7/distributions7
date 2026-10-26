@@ -4,41 +4,42 @@
 \alias{expected_info}
 \title{The Expected (Fisher) Information}
 \usage{
-expected_info(approx = expect_opg())
+expected_info(method = NULL)
 }
 \arguments{
-\item{approx}{An object that selects the approximation of the expectation,
-read only for a family with no closed-form expected information:
+\item{method}{\code{NULL} (the default) or an object that selects how the
+expectation is obtained:
 \itemize{
-\item \code{\link[=expect_opg]{expect_opg()}}, the default: the outer product of the observed scores,
-which costs one gradient;
-\item \code{\link[=expect_bartlett]{expect_bartlett()}}: the right-hand side of the second Bartlett
-identity, a sum over the support for a discrete family and a quadrature
-for a continuous one;
-\item \code{\link[=expect_integrate]{expect_integrate()}}: quadrature of the observed information against
-the density;
-\item \code{\link[=expect_mc]{expect_mc()}}: Monte Carlo, with its own sample size \code{nsim}.
+\item \code{NULL}: the closed form of the family where it has one, and
+\code{\link[=expect_opg]{expect_opg()}} otherwise;
+\item \code{\link[=expect_opg]{expect_opg()}}: the outer product of the observed scores, which costs
+one gradient;
+\item \code{\link[=expect_integrate]{expect_integrate()}}: quadrature (or summation over the support) of the
+observed information against the density with \code{identity = "hessian"},
+or of minus the outer product of the scores with \code{identity = "score"};
+\item \code{\link[=expect_mc]{expect_mc()}}: Monte Carlo, with its own sample size \code{nsim} and
+\code{identity}.
 }
 
-\link{expected_derivative_methods} compares the four. Any other value signals
-an error.}
+\link{expected_derivative_methods} compares the methods. Any other value
+signals an error.}
 }
 \value{
 An S7 object of class \code{ExpectedInfo}, which inherits from
-\link{Information}, with the property \code{approx}.
+\link{Information}, with the property \code{method}.
 }
 \description{
 Selects the expected information, the Fisher information
 \deqn{\mathbb{E}\left[-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top}
 \right],}
-evaluated at the estimates. Where the family writes the expected information
-out, the closed form is used and \code{approx} is not read. Where it does not
-(see \code{\link[=expected_hessian_exact]{expected_hessian_exact()}}), the expectation is approximated by
-\code{approx}.
+evaluated at the estimates. With \code{method = NULL}, the default, the closed
+form is used where the family writes the expected information out (see
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}), and \code{\link[=expect_opg]{expect_opg()}} otherwise. An object in
+\code{method} is used for every family, also for one that has the closed form.
 }
 \examples{
 expected_info()
-expected_info(approx = expect_mc(nsim = 2000))
+expected_info(method = expect_mc(nsim = 2000))
 
 set.seed(1)
 d <- gamma1_distrib()
@@ -48,6 +49,6 @@ vcov(fit, information = expected_info())
 }
 \seealso{
 \code{\link[=observed_info]{observed_info()}} for the other object; \link{information_objects} for
-the comparison; \link{expected_derivative_methods} for the approximations;
+the comparison; \link{expected_derivative_methods} for the methods;
 \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}} for the function that takes the object.
 }

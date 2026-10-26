@@ -16,13 +16,12 @@ log-likelihood at the data,
 \deqn{-\frac{\partial^2 \ell}{\partial\eta\,\partial\eta^\top},}
 evaluated at the estimates. The matrix is computed from the second
 derivatives of the family, which are analytic where the family writes them
-and numerical otherwise (see \code{\link[=distrib_hessian]{distrib_hessian()}}). It has no approximation
-and the function takes no argument.
+and numerical otherwise (see \code{\link[=distrib_hessian]{distrib_hessian()}}). The function takes no
+argument.
 
 It is the default of the \code{information} argument of \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}},
-\code{\link[=summary.distrib_fit]{summary.distrib_fit()}}, \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} and \code{\link[=print.distrib_fit]{print.distrib_fit()}},
-so the standard errors that a fit reports are the inverse of this matrix
-unless another object is passed. \link{information_objects} compares it with
+\code{\link[=confint.distrib_fit]{confint.distrib_fit()}}, \code{\link[=print.distrib_fit]{print.distrib_fit()}} and \code{\link[=mv_summary]{mv_summary()}} for a family whose log-likelihood is twice differentiable in every
+parameter (see \link{information_objects}). \link{information_objects} compares it with
 \code{\link[=expected_info]{expected_info()}}.
 }
 \examples{

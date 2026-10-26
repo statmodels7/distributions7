@@ -9,7 +9,7 @@ distrib_dexpected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = expect_opg(),
+  method = NULL,
   ...
 )
 }
@@ -25,8 +25,16 @@ distrib_dexpected_hessian(
 \code{"link"} for \eqn{\partial/\partial\eta_c} of the link-scale expected
 information.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, passed to
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from
+\link{ExpectMethod}. With \code{NULL}, the closed form of the family is returned,
+and a family without one signals an error. An object is always used, also
+for a family that has the closed form, and returns the derivative of the
+matrix that the method defines: for \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}}
+the derivative of the expectation, which moves the density as well as the
+integrand, and for \code{\link[=expect_opg]{expect_opg()}} the exact derivative of the outer
+product of the scores at the data, which is minus
+\eqn{\ell_{ac}\ell_b + \ell_a\ell_{bc}} per observation. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Passed to methods.}
 }

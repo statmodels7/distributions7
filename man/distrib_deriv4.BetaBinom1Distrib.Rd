@@ -19,9 +19,10 @@ model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because the
-expectation is an exact finite sum. It is accepted so that the signature
-matches the generic's. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -41,8 +42,8 @@ carried through the map
 \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)} by the partition sum of
 \code{\link[=chain_derivatives]{chain_derivatives()}}, and the direct sums below are used otherwise.
 
-With \code{expected = TRUE} the method returns the expectation as an exact
-finite sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_expected()}}. \code{approx} is ignored on both branches.
+With \code{expected = TRUE} the method returns the expectation as an exact finite
+sum over the support, from \code{\link[=betabinom1_expected]{betabinom1_expected()}}.
 }
 \section{Notation}{
 

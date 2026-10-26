@@ -27,8 +27,8 @@ test_that("opg is no longer an alias of bartlett, and is the default", {
   y <- c(1, 3, 6, 10)
   th <- list(mu = 4, sigma = 0.7)
 
-  opg <- distrib_expected_hessian(d, y, th, approx = expect_opg())
-  bar <- distrib_expected_hessian(d, y, th, approx = expect_bartlett())
+  opg <- distrib_expected_hessian(d, y, th, method = expect_opg())
+  bar <- distrib_expected_hessian(d, y, th, method = expect_integrate(identity = "score"))
   def <- distrib_expected_hessian(d, y, th)
 
   expect_equal(def, opg)
@@ -57,30 +57,47 @@ test_that("the outer product estimates what the identity computes", {
   }
 })
 
-test_that("a family with a closed form is untouched by approx", {
+test_that("a family with a closed form uses an explicit method, and NULL its closed form", {
   for (fn in c("gaussian1_distrib", "gamma1_distrib", "poisson_distrib",
                "negbin2_distrib")) {
     d <- do.call(fn, list())
     th <- stats::setNames(as.list(rep(1, length(d@params))), d@params)
     y <- distrib_rng(d, 40L, th)
-    a <- distrib_expected_hessian(d, y, th, approx = expect_opg())
-    b <- distrib_expected_hessian(d, y, th, approx = expect_bartlett())
-    expect_equal(a, b, info = fn)
+    exact <- distrib_expected_hessian(d, y, th)
+    expect_identical(exact, distrib_expected_hessian(d, y, th, method = NULL))
+    a <- distrib_expected_hessian(d, y, th, method = expect_opg())
+    expect_identical(a, distributions7:::expected_by_opg(d, y, th), info = fn)
+    expect_false(isTRUE(all.equal(a, exact)), info = fn)
+    b <- distrib_expected_hessian(d, y, th, method = expect_integrate(identity = "score"))
+    expect_equal(b, exact, tolerance = 1e-6, info = fn)
   }
 })
 
-test_that("orders 3 and 4 route opg to bartlett", {
-  # the outer product of scores is the SECOND-order identity and has no
-  # counterpart above it
+test_that("orders 3 and 4 with opg are the empirical sums, not the quadrature", {
+  # the outer product of scores at order k is the score identity read at the
+  # observations; it is never routed to the integration of the same identity
   d <- gaussian1_distrib()
   th <- list(mu = 0, sigma = 1)
   y <- distrib_rng(d, 30L, th)
   for (k in 3:4) {
-    expect_equal(
-      distributions7:::expected_derivative(d, y, th, order = k, approx = expect_opg()),
-      distributions7:::expected_derivative(d, y, th, order = k,
-                                           approx = expect_bartlett())
-    )
+    o <- distributions7:::expected_derivative(d, y, th, order = k, method = expect_opg())
+    b <- distributions7:::expected_derivative(d, y, th, order = k,
+                                              method = expect_integrate(identity = "score"))
+    expect_identical(o, distributions7:::expected_by_opg(d, y, th, k))
+    expect_false(isTRUE(all.equal(o, b)))
+    # the integrated identity is constant over the observations, the sums are not
+    expect_equal(length(unique(round(b$mu_mu_sigma, 12))), 1L)
+    expect_gt(length(unique(round(o$mu_mu_sigma, 12))), 1L)
+  }
+  # and the sum over a large sample estimates the expectation
+  set.seed(6)
+  yy <- distrib_rng(d, 30000L, th)
+  for (k in 3:4) {
+    o <- distributions7:::expected_derivative(d, yy, th, order = k, method = expect_opg())
+    b <- distributions7:::expected_derivative(d, yy[1], th, order = k,
+                                              method = expect_integrate(identity = "score"))
+    nz <- names(b)[abs(unlist(b)) > 1e-6]
+    for (nm in nz) expect_equal(mean(o[[nm]]), b[[nm]], tolerance = 0.1)
   }
 })
 

@@ -19,8 +19,9 @@ model are returned in place of the observed values. Defaults to \code{FALSE}.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}. The generic reads it, and this method does not.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Ignored, because the
-expected values are closed form or exact sums. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
@@ -47,9 +48,9 @@ The mean component is formed from the same bracket as at third order.
 
 With \code{expected = TRUE} the expectations are returned. The pure dispersion
 one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support as at
-third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. \code{approx} is ignored either way. As at third order, the kernel performs the
-cancellation at large \eqn{\theta} symbolically
-(\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}).
+third order; the rest need only \eqn{\mathbb{E}[Y] = \mu}. As at third
+order, the kernel performs the cancellation at large \eqn{\theta}
+symbolically (\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}).
 }
 \section{Notation}{
 

@@ -488,12 +488,9 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #' Returns the expectation of the observed Hessian under the model, in closed
 #' form and with no quadrature or simulation:
 #' \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}] = -\phi^2\sum_{j} t_j A_{jk}A_{jl},
-#'       \qquad
-#'       \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_{j} t_j \mu_j A_{jk},
-#'       \qquad
-#'       \mathbb{E}[\ell^{(\phi\phi)}] = \psi'(\phi) - \sum_{j} t_j \mu_j^2,}
+#' \qquad \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_{j} t_j \mu_j A_{jk},
+#' \qquad \mathbb{E}[\ell^{(\phi\phi)}] = \psi'(\phi) - \sum_{j} t_j \mu_j^2,}
 #' with \eqn{t_j = \psi'(\alpha_j)} and \eqn{A = \partial\mu/\partial\eta}.
-#' `approx` is ignored: every approximation returns the same matrix.
 #'
 #' @details
 #' # The terms that carry the data
@@ -514,9 +511,9 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #'   free values followed by `phi`, each of length 1.
 #' @param scale One of `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]. The generic reads it, and this method does not.
-#' @param approx An object inheriting from [ExpectApprox]. Ignored here, because
-#'   the expectation is exact. It is accepted so that the signature matches the
-#'   generic's, where it selects the approximation of the expectation. See
+#' @param method `NULL` or an object inheriting from [ExpectMethod]. The generic
+#'   applies an object before dispatching on the family, so this method
+#'   receives `NULL`, and it returns the closed form of the family. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -553,11 +550,11 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #' colSums(do.call(cbind, parameters7::param_d1(d@param, eta)))
 #' vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
 #'
-#' # The approx argument is inert because the expectation is exact.
-#' identical(eh, distrib_expected_hessian(d, Y, th, approx = expect_mc(nsim = 50)))
+#' # The method argument is inert because the expectation is exact.
+#' identical(eh, distrib_expected_hessian(d, Y, th, method = expect_mc(nsim = 50)))
 S7::method(distrib_expected_hessian, DirichletDistrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = expect_opg(), ...) {
+                                                                    method = NULL, ...) {
   p <- dir_parts(distrib, theta)
   n <- n_obs(distrib, y)
   tt <- trigamma(p$alpha)

@@ -652,10 +652,10 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
 
   S7::method(distrib_expected_hessian, .fixed_cls) <- function(distrib, y, theta,
                                                                scale = c("parameter", "link"),
-                                                               approx = expect_opg(), ...) {
+                                                               method = NULL, ...) {
     res <- distrib_expected_hessian(distrib@parent_distrib, y,
       fixed_full_theta(distrib, theta),
-      scale = "parameter", approx = approx, ...
+      scale = "parameter", method = method, ...
     )
     res[hess_names(distrib@params)]
   }
@@ -678,10 +678,10 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
   S7::method(distrib_deriv3, .fixed_cls) <- function(distrib, y, theta,
                                                      expected = FALSE,
                                                      scale = c("parameter", "link"),
-                                                     approx = expect_integrate(), ...) {
+                                                     method = NULL, ...) {
     res <- distrib_deriv3(distrib@parent_distrib, y,
       fixed_full_theta(distrib, theta),
-      expected = expected, scale = "parameter", approx = approx, ...
+      expected = expected, scale = "parameter", method = method, ...
     )
     res[deriv_names(distrib@params, 3L)]
   }
@@ -689,10 +689,10 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
   S7::method(distrib_deriv4, .fixed_cls) <- function(distrib, y, theta,
                                                      expected = FALSE,
                                                      scale = c("parameter", "link"),
-                                                     approx = expect_integrate(), ...) {
+                                                     method = NULL, ...) {
     res <- distrib_deriv4(distrib@parent_distrib, y,
       fixed_full_theta(distrib, theta),
-      expected = expected, scale = "parameter", approx = approx, ...
+      expected = expected, scale = "parameter", method = method, ...
     )
     res[deriv_names(distrib@params, 4L)]
   }
@@ -920,10 +920,10 @@ S7::method(distrib_hessian, FixedMultivariateDistrib) <-
 
 S7::method(distrib_expected_hessian, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = expect_opg(), ...) {
+           method = NULL, ...) {
     out <- distrib_expected_hessian(distrib@parent_distrib, y,
                                     fixed_full_theta(distrib, theta),
-                                    scale = "parameter", approx = approx, ...)
+                                    scale = "parameter", method = method, ...)
     out[hess_names(distrib@params)]
   }
 
@@ -942,22 +942,22 @@ S7::method(has_exact_deriv4, FixedMultivariateDistrib) <- function(x, ...) {
 S7::method(distrib_deriv3, FixedMultivariateDistrib) <-
   function(distrib, y, theta, expected = FALSE,
            scale = c("parameter", "link"),
-           approx = expect_integrate(), ...) {
+           method = NULL, ...) {
     out <- distrib_deriv3(distrib@parent_distrib, y,
                           fixed_full_theta(distrib, theta),
                           expected = expected, scale = "parameter",
-                          approx = approx, ...)
+                          method = method, ...)
     out[deriv_names(distrib@params, 3L)]
   }
 
 S7::method(distrib_deriv4, FixedMultivariateDistrib) <-
   function(distrib, y, theta, expected = FALSE,
            scale = c("parameter", "link"),
-           approx = expect_integrate(), ...) {
+           method = NULL, ...) {
     out <- distrib_deriv4(distrib@parent_distrib, y,
                           fixed_full_theta(distrib, theta),
                           expected = expected, scale = "parameter",
-                          approx = approx, ...)
+                          method = method, ...)
     out[deriv_names(distrib@params, 4L)]
   }
 

@@ -23,7 +23,7 @@ A numeric vector as long as \code{y}.
 \description{
 Computes \eqn{\partial \ell / \partial y} by the two-point central
 difference
-\deqn{\frac{\partial\ell}{\partial y} \approx
+\deqn{\frac{\partial\ell}{\partial y} \method
   \frac{\ell(y+h) - \ell(y-h)}{2h},}
 evaluated on \code{distrib_pdf(..., log = TRUE)}. The default \code{\link[=distrib_grad_y]{distrib_grad_y()}}
 method runs it for a continuous family with no closed form.

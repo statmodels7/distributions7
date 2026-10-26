@@ -20,8 +20,9 @@ expectation under the model is returned. Defaults to \code{FALSE}.}
 \item{scale}{\code{"parameter"} or \code{"link"}; the link scale is applied by the
 generic for orders three and four and by \code{\link[=deriv5_scale]{deriv5_scale()}} for order five.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Accepted for the
-generic's signature; the expectations are closed forms. See
+\item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}. The generic
+applies an object before dispatching on the family, so this method
+receives \code{NULL}, and it returns the closed form of the family. See
 \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
@@ -58,9 +59,8 @@ upper end of the support when \eqn{\xi < 0}.
 
 The expected derivatives follow from \eqn{V = (1 + \xi Y/\sigma)^{-1/\xi}},
 uniform on \eqn{(0, 1)}: each is a rational function of \eqn{\xi} over
-\eqn{\sigma^r}. They exist for \eqn{\xi > -1/3} at order three and
-\eqn{\xi > -1/4} at order four, and are \code{NA} below; \code{approx} is
-not read.
+\eqn{\sigma^r}. They exist for \eqn{\xi > -1/3} at order three and \eqn{\xi
+> -1/4} at order four, and are \code{NA} below;
 
 Outside the support, \eqn{y < 0} or \eqn{1 + \xi y/\sigma \le 0}, every
 component is \code{NaN}.

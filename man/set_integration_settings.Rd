@@ -4,10 +4,10 @@
 \alias{set_integration_settings}
 \title{Set the Integration Settings of an Approximation}
 \usage{
-set_integration_settings(approx)
+set_integration_settings(method)
 }
 \arguments{
-\item{approx}{An \link{ExpectIntegrate} object, or \code{NULL} for the defaults.}
+\item{method}{An \link{ExpectIntegrate} object, or \code{NULL} for the defaults.}
 }
 \value{
 The previous settings, invisibly: an \link{ExpectIntegrate} object or
@@ -15,7 +15,7 @@ The previous settings, invisibly: an \link{ExpectIntegrate} object or
 }
 \description{
 Makes \code{\link[=quad_rows]{quad_rows()}} and \code{\link[=series_rows]{series_rows()}} read their tolerances and limits
-from \code{approx}, and returns the settings that were in force so that the
+from \code{method}, and returns the settings that were in force so that the
 caller can restore them with \code{on.exit()}.
 }
 \seealso{

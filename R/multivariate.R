@@ -562,12 +562,15 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'
 #' The `"integrate"` route of [continuous_distrib()] splits a one-dimensional
 #' integral at quantiles, and a multivariate family has no quantiles, so
-#' `approx = expect_integrate()` signals an error. The other values sample:
-#' [expect_opg()] and [expect_bartlett()] are the same computation here, the
-#' average of the negative outer product of the score, and [expect_mc()]
-#' averages the observed Hessian. The
-#' two averages agree in expectation by the second Bartlett identity and differ
-#' by sampling error at any finite `nsim`.
+#' `method = expect_integrate()` signals an error. The other methods sample:
+#' [expect_opg()] and [expect_mc()] with `identity = "score"` average the
+#' negative outer product of the score over simulated draws, and [expect_mc()]
+#' with `identity = "hessian"` averages the observed Hessian. The two averages
+#' agree in expectation by the second Bartlett identity and differ by sampling
+#' error at any finite `nsim`. The sample size is that of [expect_mc()] and
+#' 10000 for [expect_opg()]. The routine [mv_expected_sampled()] does the
+#' sampling and also serves an explicit `method` for a multivariate family
+#' that has a closed form.
 #'
 #' # Monte Carlo error
 #'
@@ -584,9 +587,9 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'   single number.
 #' @param scale One of `"parameter"` (the default) or `"link"`. The generic
 #'   applies the link scale to the result of the method.
-#' @param approx An object inheriting from [ExpectApprox]: [expect_opg()] (the
-#'   default), [expect_bartlett()] or [expect_mc()]. The first two are the same
-#'   computation here, and [expect_integrate()] signals an error. See
+#' @param method `NULL` (the default), which selects [expect_opg()], or an
+#'   object inheriting from [ExpectMethod]. [expect_opg()] and [expect_mc()]
+#'   sample, and [expect_integrate()] signals an error. See
 #'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -609,7 +612,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'
 #' set.seed(1)
 #' sampled <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-#'                 approx = expect_mc(nsim = 4000))
+#'                 method = expect_mc(nsim = 4000))
 #' exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
 #' round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
 #'             closed = vapply(exact, function(z) z[1], numeric(1))), 3)
@@ -617,39 +620,74 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #' # Two seeds give two values, because the result is a sample.
 #' set.seed(2)
 #' again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-#'               approx = expect_mc(nsim = 4000))
+#'               method = expect_mc(nsim = 4000))
 #' c(first = sampled$mu1_mu1[1], second = again$mu1_mu1[1])
 #'
 #' @keywords internal
 S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = expect_opg(), ...) {
-  check_approx(approx)
-  if (S7::S7_inherits(approx, ExpectIntegrate)) {
+    method = NULL, ...) {
+  check_method(method)
+  mv_expected_sampled(distrib, y, theta, 2L, resolve_method(method, 2L))
+}
+
+#' @title Expected Derivatives of a Multivariate Distribution, by Sampling
+#' @name mv_expected_sampled
+#'
+#' @description
+#' Computes the expected derivative of an order for a multivariate family as an
+#' average over a sample drawn from the family. It serves the fallback of
+#' [distrib_expected_hessian.multivariate_distrib()] and an explicit
+#' `method` given for a multivariate family that has a closed form.
+#'
+#' @details
+#' A multivariate family has no quantiles, so [expect_integrate()] signals an
+#' error. [expect_opg()] and [expect_mc()] with `identity = "score"` average
+#' minus the products of the score identity (at order 2, the negative outer
+#' product of the score) over `method_nsim(method)` draws, and [expect_mc()]
+#' with `identity = "hessian"` averages the observed derivative of the order.
+#' The averages agree in expectation and differ by sampling error at any finite
+#' `nsim`; the sample size is 10000 for [expect_opg()].
+#'
+#' @param distrib A [multivariate_distrib()] object.
+#' @param y The observations; only the number of rows is used, because the
+#'   expectation is over the law.
+#' @param theta A named list of parameters, in which each component is a single
+#'   number.
+#' @param order The derivative order, 2 to 4.
+#' @param method An object inheriting from [ExpectMethod].
+#'
+#' @return A named list of numeric vectors of length \eqn{n}, in which each
+#'   vector is constant.
+#'
+#' @seealso [expected_derivative_methods]
+#' @keywords internal
+mv_expected_sampled <- function(distrib, y, theta, order, method) {
+  if (S7::S7_inherits(method, ExpectIntegrate)) {
     mv_refuse(
       distrib, "distrib_expected_hessian",
-      "expect_integrate() builds a quadrature over an interval, which has no counterpart in several dimensions. Use expect_mc() or expect_bartlett()."
+      "expect_integrate() builds a quadrature over an interval, which has no counterpart in several dimensions. Use expect_mc() or expect_opg()."
     )
   }
-
   n <- n_obs(distrib, y)
   params <- distrib@params
-  nm <- hess_names(params)
-  big <- distrib_rng(distrib, approx_nsim(approx), theta)
-
-  vals <- if (S7::S7_inherits(approx, ExpectMC)) {
-    h <- distrib_hessian(distrib, big, theta)
-    vapply(nm, function(k) mean(h[[k]]), numeric(1))
-  } else {
+  nms <- if (order == 2L) hess_names(params) else deriv_names(params, order)
+  big <- distrib_rng(distrib, method_nsim(method), theta)
+  score <- S7::S7_inherits(method, ExpectOPG) ||
+    identical(method@identity, "score")
+  vals <- if (score && order == 2L) {
     s <- do.call(cbind, distrib_gradient(distrib, big, theta))
     pr <- hess_pairs(params)
-    vapply(nm, function(k) {
+    vapply(nms, function(k) {
       ij <- match(pr[[k]], params)
       -mean(s[, ij[1L]] * s[, ij[2L]])
     }, numeric(1))
+  } else {
+    d <- if (score) score_identity_terms(distrib, big, theta, order)
+         else observed_deriv(distrib, big, theta, order)
+    vapply(nms, function(k) mean(d[[k]]), numeric(1))
   }
-
-  stats::setNames(lapply(vals, function(v) rep(v, n)), nm)
+  stats::setNames(lapply(vals, function(v) rep(v, n)), nms)
 }
 
 #' @title A Factor of the Covariance for Sampling

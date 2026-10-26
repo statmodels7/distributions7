@@ -18,10 +18,12 @@ Hessian; \code{TRUE} takes the expectation of the observed derivatives through
 \item{scale}{Handled by the generic after dispatch; this method always
 returns the parameter scale.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
-by default, that gives the approximation of the expectation. It is read
-only when \code{expected} is \code{TRUE}. The Monte Carlo sample size is the \code{nsim}
-of \code{\link[=expect_mc]{expect_mc()}}. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }
@@ -35,8 +37,8 @@ Provides the fallback for a family that registers no third-order method.
 Observed derivatives come from \code{\link[=numerical_deriv3]{numerical_deriv3()}}: one central difference
 of the family's own \code{\link[=distrib_hessian]{distrib_hessian()}} along each parameter, or, for a
 family without its own Hessian, one tensor-product stencil on its score or
-its log-density. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} at the
-approximation selected by \code{approx}.
+its log-density. Expected ones come from \code{\link[=expected_derivative]{expected_derivative()}} by the
+method that \code{method} selects.
 
 Every family shipped in this package writes the observed third order out,
 so this method serves a family defined outside the package, and five orders
@@ -47,6 +49,6 @@ analytical kernels are validated.
 \seealso{
 \code{\link[=numerical_deriv3]{numerical_deriv3()}}, which does the differencing;
 \code{\link[=distrib_deriv4.distrib]{distrib_deriv4.distrib()}} for the order above;
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what \code{approx} selects.
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what \code{method} selects.
 }
 \keyword{internal}

@@ -19,8 +19,9 @@ component is returned. Defaults to \code{FALSE}.}
 returns the parameter scale and the generic applies the link scale to its
 result. Every link of this family is the identity, so the two coincide.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}. Not read: the
-expectation is exact. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL}: the generic applies an object before dispatching on
+the family, so this method receives \code{NULL} and returns the closed form.
+See \link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -43,8 +44,7 @@ The arrays \eqn{P_t} come from \code{\link[=mvg_ptensors]{mvg_ptensors()}}.
 \details{
 With \code{expected = TRUE} the expectation is exact: the response enters through
 \eqn{r}, whose expectation is zero, and through \eqn{r^\top P_t r}, whose
-expectation is \eqn{\operatorname{tr}(P_t\Sigma)}. \code{approx} is
-not read.
+expectation is \eqn{\operatorname{tr}(P_t\Sigma)}.
 }
 \section{Notation}{
 

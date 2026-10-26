@@ -303,7 +303,8 @@ S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
 #' compiled kernel `pig2_deriv3_cpp`, which computes the third order alone.
 #'
 #' With `expected = TRUE` the value is an expectation instead, and there it is
-#' not closed form: the call routes to `expected_derivative()`, so `approx` is read.
+#' not closed form: the call routes to `expected_derivative()`, which takes the
+#' expectation by `method`, [expect_integrate()] when `method` is `NULL`.
 #'
 #' @param distrib A `Pig2Distrib` object, from [pig2_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length
@@ -314,10 +315,12 @@ S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
 #'   derivatives at `y` are returned from the compiled kernel.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
-#'   by default: the approximation of the expectation. It is read only when
-#'   `expected = TRUE`; for a discrete family [expect_integrate()] is an exact
-#'   sum over the support. See [expected_derivative_methods].
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`.
@@ -347,10 +350,10 @@ S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = expect_integrate(), ..., threads = 1L) {
+                                                    method = NULL, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
-                               approx = approx))
+                               method = method))
   }
   pig2_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
@@ -381,9 +384,12 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
 #'   derivatives at `y` are returned from the compiled kernel.
 #' @param scale Either `"parameter"`, the default, or `"link"`. The
 #'   transformation is applied in the generic's body.
-#' @param approx An object inheriting from [ExpectApprox], [expect_integrate()]
-#'   by default: the approximation of the expectation, read only when `expected
-#'   = TRUE`. See [expected_derivative_methods].
+#' @param method `NULL` (the default) or an object inheriting from [ExpectMethod].
+#'   It is read only when `expected` is `TRUE`: `NULL` selects
+#'   [expect_integrate()], and an object selects its own route. The generic
+#'   applies an object before dispatching on the family, so that the object
+#'   is used also by a family that has a closed form. See
+#'   [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @param threads A single positive integer, how many threads the compiled
 #'   kernel may use. Defaults to `1L`.
@@ -414,10 +420,10 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
-                                                    approx = expect_integrate(), ..., threads = 1L) {
+                                                    method = NULL, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
-                               approx = approx))
+                               method = method))
   }
   pig2_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }

@@ -12,7 +12,7 @@ chain_derivatives(
   new_params,
   order,
   expected = FALSE,
-  approx = expect_opg()
+  method = NULL
 )
 }
 \arguments{
@@ -34,10 +34,10 @@ and orders the result.}
 \item{expected}{Should the expected derivatives be carried? It is a single
 logical, with default \code{FALSE}.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, forwarded to the
-parent's expected derivatives. It is \code{\link[=expect_opg]{expect_opg()}} by default;
-\code{\link[=expect_mc]{expect_mc()}} carries the number of draws. See
-\link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+The generic applies an object before dispatching on the class, so this
+method receives \code{NULL} and forwards \code{NULL} to the parent, which returns
+its closed form where it has one. See \link{expected_derivative_methods}.}
 }
 \value{
 A named list of numeric vectors, keyed as

@@ -94,7 +94,7 @@ test_that("a negative variance gives a NaN standard error, not zero", {
   Bad <- S7::new_class("Gaussian1BadInfo", parent = Gaussian1Distrib)
   S7::method(distrib_expected_hessian, Bad) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"),
-                                                      approx = expect_opg(),
+                                                      method = NULL,
                                                       ...) {
     s <- theta[[2]]
     n <- length(y)
@@ -654,7 +654,7 @@ test_that("the logistic expected third and fourth derivatives are closed form", 
                tolerance = 1e-14)
   # and the numerical route agrees
   num <- distributions7:::expected_derivative(d, 0, list(mu = 0.5, sigma = 0.7),
-                                              order = 4L, approx = expect_integrate())
+                                              order = 4L, method = expect_integrate())
   expect_equal(unlist(lapply(e4, `[`, 1)), unlist(num)[names(e4)], tolerance = 1e-8)
 })
 
@@ -827,7 +827,7 @@ test_that("the betabinom1 expected higher derivatives are exact sums", {
   th <- list(mu = 0.3, sigma = 0.2)
   w <- distrib_pdf(d, 0:10, th)
   o3 <- distrib_deriv3(d, 0:10, th)
-  e3 <- distrib_deriv3(d, 0, th, expected = TRUE, approx = expect_mc(nsim = 10))
+  e3 <- distrib_deriv3(d, 0, th, expected = TRUE)
   for (k in names(o3)) expect_rel(e3[[k]], sum(w * o3[[k]]), tolerance = 1e-13)
 })
 

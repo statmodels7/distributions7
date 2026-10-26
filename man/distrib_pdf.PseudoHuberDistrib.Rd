@@ -39,7 +39,7 @@ The normalizing constant is formed on the log scale through the
 exponentially scaled Bessel function,
 \eqn{\log K_1(x) = \log\{e^x K_1(x)\} - x}. The identity is exact, and the
 scaled function stays finite where \eqn{K_1(\sqrt{\nu})} itself
-underflows, which happens beyond \eqn{\sqrt{\nu} \approx 700}.
+underflows, which happens beyond \eqn{\sqrt{\nu} \method 700}.
 }
 \section{Notation}{
 

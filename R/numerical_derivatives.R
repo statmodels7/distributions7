@@ -221,7 +221,7 @@ fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE
 #' parameter,
 #'
 #' \deqn{l^{(i)} = \frac{\partial}{\partial \theta_i} \log f(y; \theta)
-#'   \approx \frac{\log f(y; \theta + h_i e_i)
+#'   \method \frac{\log f(y; \theta + h_i e_i)
 #'     - \log f(y; \theta - h_i e_i)}{2 h_i},}
 #'
 #' so the cost is two density evaluations per parameter when the two candidate
@@ -525,7 +525,7 @@ analytic_order <- function(distrib, upto) {
 #' Each component is \eqn{[\ell(\theta_i + h) - \ell(\theta_i - h)]/(2h)}, so
 #' one gradient costs \eqn{2p} evaluations of the log-density when the two
 #' candidate steps coincide. The step is
-#' \eqn{h = \varepsilon^{1/3}\max(1, |\theta_i|) \approx 6.06\times10^{-6}}
+#' \eqn{h = \varepsilon^{1/3}\max(1, |\theta_i|) \method 6.06\times10^{-6}}
 #' at a parameter of order one, which balances the \eqn{O(h^2)} truncation of a
 #' central difference against a rounding term growing as \eqn{1/h}. Parameter
 #' domains here are open and a step through zero returns `NaN` from the density
@@ -575,7 +575,7 @@ S7::method(distrib_gradient, distrib) <- function(distrib, y, theta, scale = c("
 #' @details
 #' # The step and the cost
 #' For a family that has only a density, the step is \eqn{h =
-#' \varepsilon^{1/4}\max(1, |\theta_i|) \approx 1.22\times10^{-4}}, twenty times
+#' \varepsilon^{1/4}\max(1, |\theta_i|) \method 1.22\times10^{-4}}, twenty times
 #' the gradient's: a second difference divides by \eqn{h^2}, so rounding grows
 #' as \eqn{1/h^2} and the optimum moves out. [fd_steps()] applies the same
 #' boundary clamp. One Hessian costs \eqn{2p} evaluations for the diagonal,
@@ -621,14 +621,14 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' degenerate while the score variance is still the information).
 #'
 #' @details
-#' The argument `approx` selects how the right-hand side is obtained, and the
-#' approximations differ in cost. The default [expect_opg()] reads
-#' \eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no expectation,
-#' so it costs one call to [distrib_gradient()]; [expect_bartlett()] evaluates
-#' the expectation itself, which is a sum over the support for a discrete family
-#' and a quadrature for a continuous one, and is orders of magnitude dearer.
-#' See [expected_by_opg()] for the properties that the default loses and those
-#' that it retains.
+#' The argument `method` selects how the right-hand side is obtained, and the
+#' methods differ in cost. With `method = NULL` the default is [expect_opg()],
+#' which reads \eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no
+#' expectation, so it costs one call to [distrib_gradient()];
+#' `expect_integrate(identity = "score")` evaluates the expectation itself,
+#' which is a sum over the support for a discrete family and a quadrature for a
+#' continuous one, and is orders of magnitude dearer. See [expected_by_opg()]
+#' for the properties that the default loses and those that it retains.
 #'
 #' The score is taken from [distrib_gradient()], so it uses the analytical
 #' gradient where the family has one and finite differences otherwise.
@@ -639,10 +639,9 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' @param scale `"parameter"` or `"link"`, the scale on which the components
 #'   are reported. The transformation is applied in the generic's body, so this
 #'   method always returns the parameter scale.
-#' @param approx An object inheriting from [ExpectApprox]: [expect_opg()] (the
-#'   default), [expect_bartlett()], [expect_integrate()] or [expect_mc()], the
-#'   approximation that [expected_derivative()] uses. See
-#'   [expected_derivative_methods].
+#' @param method `NULL` (the default), which selects [expect_opg()], or an
+#'   object inheriting from [ExpectMethod] that [expected_derivative()]
+#'   applies. See [expected_derivative_methods].
 #' @param ... Unused, and accepted so that the signature matches the
 #'   generic's.
 #' @return A named list of expected Hessian component vectors.
@@ -650,7 +649,7 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #'   readings of the identity, and [expected_hessian_exact()] for the
 #'   predicate that determines whether a family reaches this method at all.
 #' @keywords internal
-S7::method(distrib_expected_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = expect_opg(), ...) {
+S7::method(distrib_expected_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), method = NULL, ...) {
   expected_derivative(distrib, y, theta, order = 2L,
-                      approx = approx)
+                      method = method)
 }

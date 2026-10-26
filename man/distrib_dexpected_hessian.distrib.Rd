@@ -12,8 +12,8 @@
 
 \item{scale}{Either \code{"parameter"} or \code{"link"}.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, passed through. See
-\link{expected_derivative_methods}.}
+\item{method}{\code{NULL}: the generic handles an object before dispatching on
+the family. See \link{expected_derivative_methods}.}
 
 \item{...}{Unused.}
 }

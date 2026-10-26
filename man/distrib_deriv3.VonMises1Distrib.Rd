@@ -20,8 +20,12 @@ positive.}
 model is returned in place of the value at the data, computed numerically.
 Defaults to \code{FALSE}.}
 
-\item{approx}{An object inheriting from \link{ExpectApprox}, \code{\link[=expect_integrate]{expect_integrate()}}
-by default: the approximation of the expectation, read only when \code{expected = TRUE}. See \link{expected_derivative_methods}.}
+\item{method}{\code{NULL} (the default) or an object inheriting from \link{ExpectMethod}.
+It is read only when \code{expected} is \code{TRUE}: \code{NULL} selects
+\code{\link[=expect_integrate]{expect_integrate()}}, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+\link{expected_derivative_methods}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 
@@ -48,7 +52,7 @@ pure-\eqn{\kappa} one is \eqn{-A''(\kappa)}, which
 by a compiled kernel.
 
 With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, and only in
-this case are \code{approx} read.
+this case are \code{method} read.
 }
 \section{Notation}{
 

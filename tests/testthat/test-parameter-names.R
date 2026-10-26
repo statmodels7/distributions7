@@ -55,9 +55,9 @@ test_that("the Bartlett expected Hessian accepts an underscore in a name", {
   d_ok <- underscore_gauss(c("mu", "sigma"))
 
   a <- distrib_expected_hessian(d_us, y, list(mu = 0, log_scale = 1),
-                                approx = expect_bartlett())
+                                method = expect_integrate(identity = "score"))
   b <- distrib_expected_hessian(d_ok, y, list(mu = 0, sigma = 1),
-                                approx = expect_bartlett())
+                                method = expect_integrate(identity = "score"))
   expect_equal(unname(a), unname(b))
 
   # and it is the right answer: for a standard Gaussian the information is
