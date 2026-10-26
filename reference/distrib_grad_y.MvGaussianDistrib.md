@@ -64,7 +64,7 @@ distrib_grad_y(d, y, theta)
 num <- t(apply(y, 1, function(r)
   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
 max(abs(distrib_grad_y(d, y, theta) - num))
-#> [1] 4.958045e-11
+#> [1] 4.958367e-11
 
 # It is also minus the score in the mean, because this is a location
 # family.
