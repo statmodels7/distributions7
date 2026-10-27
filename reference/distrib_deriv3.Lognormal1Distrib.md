@@ -13,8 +13,7 @@ Gaussian's read at \\\log y\\.
 With `expected = TRUE` the expectations are returned, obtained by
 replacing \\r\\ with 0 and \\r^2\\ with \\\sigma^2\\: the component odd
 in \\r\\ vanishes and the pure variance one becomes \\2/\sigma^6\\. Both
-routes are closed form, so the method uses no quadrature and ignores
-`approx` and `nsim`.
+routes are closed form and the method runs no quadrature.
 
 ## Arguments
 
@@ -45,14 +44,14 @@ routes are closed form, so the method uses no quadrature and ignores
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both the observed and
-  the expected values.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

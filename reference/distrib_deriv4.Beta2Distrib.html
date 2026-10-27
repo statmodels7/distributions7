@@ -6,8 +6,7 @@ $$\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
 Each of the three mixed components is equal to
 \(\psi'''(\alpha+\beta)\), with \(\psi'''\) the third derivative of the
 digamma function.
-As at third order the values are free of the response, so expected,
-approx and nsim are all without effect and the result is the same for
+As at third order the values are free of the response, so expected and method are without effect and the result is the same for
 every value of them."><meta property="og:description" content="Computes the five distinct fourth derivatives of the beta log-density with
 respect to \(\alpha\) and \(\beta\), in closed form:
 $$\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
@@ -15,8 +14,7 @@ $$\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
 Each of the three mixed components is equal to
 \(\psi'''(\alpha+\beta)\), with \(\psi'''\) the third derivative of the
 digamma function.
-As at third order the values are free of the response, so expected,
-approx and nsim are all without effect and the result is the same for
+As at third order the values are free of the response, so expected and method are without effect and the result is the same for
 every value of them."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -25,7 +23,7 @@ every value of them."><meta property="og:image" content="https://statmodels7.git
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,8 +63,7 @@ $$\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
 Each of the three mixed components is equal to
 \(\psi'''(\alpha+\beta)\), with \(\psi'''\) the third derivative of the
 digamma function.</p>
-<p>As at third order the values are free of the response, so <code>expected</code>,
-<code>approx</code> and <code>nsim</code> are all without effect and the result is the same for
+<p>As at third order the values are free of the response, so <code>expected</code> and <code>method</code> are without effect and the result is the same for
 every value of them.</p>
     </div>
 
@@ -100,12 +97,11 @@ observed and expected fourth derivatives are the same numbers. Defaults to
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because a closed form is available.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

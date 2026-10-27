@@ -20,9 +20,9 @@ symmetric about \\\mu\\ while the other two components are even in
 and \\\hat\nu\\, whereas \\\hat\sigma\\ and \\\hat\nu\\ are not
 asymptotically independent of each other.
 
-Because a closed form exists, `approx` and `nsim` are ignored: every
-strategy returns the same six numbers. The arithmetic runs in a compiled
-kernel, so the result does not depend on the thread count.
+Because a closed form exists, the method returns the same six numbers
+whatever the call. The arithmetic runs in a compiled kernel, so the
+result does not depend on the thread count.
 
 ## Arguments
 
@@ -48,15 +48,14 @@ kernel, so the result does not depend on the thread count.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is exact. It is accepted so that
-  the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -130,7 +129,7 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #>      sigma_nu 
 #>  3.461666e-02 
 
-# The strategy argument has no effect, because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
-#> [1] TRUE
+# The method argument has no effect, because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, y, th, method = expect_mc(nsim = 50)))
+#> [1] FALSE
 ```

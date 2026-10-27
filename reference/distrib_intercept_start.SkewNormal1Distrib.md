@@ -25,7 +25,7 @@ A named list with `mu`, `sigma` and `alpha`, or an empty list.
 
 ## Details
 
-The skewness of the skew normal is bounded by \\\gamma\_{\max} \approx
+The skewness of the skew normal is bounded by \\\gamma\_{\max} \method
 0.9953\\. When the sample skewness of the response is beyond that bound,
 the intercept-only maximum likelihood fit has \\\alpha \to \infty\\ and
 \\\mu\\ at the smallest observation, which is the half-normal limit. In

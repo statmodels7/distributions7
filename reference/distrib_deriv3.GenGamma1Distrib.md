@@ -33,10 +33,14 @@ them is computed by its own compiled kernel.
   [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
   for order five.
 
-- approx, nsim:
+- method:
 
-  Accepted for the generic's signature; the expectations are closed
-  forms.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -66,7 +70,7 @@ coefficients contain the polygamma functions at \\k + 1\\, through
 poles in \\1/k\\ which the derivatives combine cancel in the closed form
 and not in floating point. The expected derivatives are polynomials in
 the central moments of \\U\\, whose cumulants are the polygamma
-functions at \\k\\; `approx` and `nsim` are not read.
+functions at \\k\\;
 
 ## See also
 

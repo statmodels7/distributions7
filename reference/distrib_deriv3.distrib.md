@@ -9,7 +9,7 @@ along each parameter, or, for a family without its own Hessian, one
 tensor-product stencil on its score or its log-density. Expected ones
 come from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-at the strategy selected by `approx`.
+by the method that `method` selects.
 
 Every family shipped in this package writes the observed third order
 out, so this method serves a family defined outside the package, and
@@ -43,17 +43,16 @@ kernels are validated.
   Handled by the generic after dispatch; this method always returns the
   parameter scale.
 
-- approx:
+- method:
 
-  Which strategy takes the expectation, read only when `expected` is
-  `TRUE`: `"integrate"` (the default at this order), `"bartlett"`,
-  `"opg"` or `"mc"`. See
-  [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
-
-- nsim:
-
-  Monte Carlo sample size, a single positive number, read only under
-  `approx = "mc"`. Defaults to 10000.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -73,4 +72,4 @@ which does the differencing;
 [`distrib_deriv4.distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.distrib.md)
 for the order above;
 [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-for what `approx` selects.
+for what `method` selects.

@@ -11,8 +11,7 @@ distrib_dexpected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 ```
@@ -36,10 +35,24 @@ distrib_dexpected_hessian(
   `"parameter"` for \\\partial/\partial\theta_c\\, `"link"` for
   \\\partial/\partial\eta_c\\ of the link-scale expected information.
 
-- approx, nsim:
+- method:
 
-  Passed to
-  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md).
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  With `NULL`, the closed form of the family is returned, and a family
+  without one signals an error. An object is always used, also for a
+  family that has the closed form, and returns the derivative of the
+  matrix that the method defines: for
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  and
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+  the derivative of the expectation, which moves the density as well as
+  the integrand, and for
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  the exact derivative of the outer product of the scores at the data,
+  which is minus \\\ell\_{ac}\ell_b + \ell_a\ell\_{bc}\\ per
+  observation. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

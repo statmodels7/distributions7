@@ -1,7 +1,7 @@
 # Variance of the Logistic Distribution
 
 The variance has the closed form \\\operatorname{Var}(Y) =
-\pi^2\sigma^2/3\\. The standard deviation is \\\sigma\pi/\sqrt3 \approx
+\pi^2\sigma^2/3\\. The standard deviation is \\\sigma\pi/\sqrt3 \method
 1.8138\sigma\\, so the scale is smaller than the standard deviation by
 the factor \\\pi/\sqrt3\\, and a logistic scale is not comparable with a
 Gaussian standard deviation as it stands.

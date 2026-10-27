@@ -12,8 +12,7 @@ closed form and with no quadrature or simulation. Under the model
 The zero off-diagonal makes the direction and the concentration
 orthogonal: the expected information is diagonal, their estimates are
 asymptotically independent, and Fisher scoring updates the two
-independently. `approx` and `nsim` are ignored because the expectation
-is exact.
+independently.
 
 ## Arguments
 
@@ -38,15 +37,14 @@ is exact.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is exact. It is accepted so that
-  the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -106,8 +104,8 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #>         mu_mu   kappa_kappa      mu_kappa 
 #> -1.3964000867 -0.1642231977 -0.0006979838 
 
-# The strategy argument is inert because the expectation is exact.
+# The method argument is inert because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th,
-                                       approx = "mc", nsim = 50))
-#> [1] TRUE
+                                       method = expect_mc(nsim = 50)))
+#> [1] FALSE
 ```

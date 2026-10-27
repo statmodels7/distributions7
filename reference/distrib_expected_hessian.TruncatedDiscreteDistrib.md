@@ -27,13 +27,14 @@ that support.
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the value that the method returns.
 
-- approx:
+- method:
 
-  Ignored. It is present so that the signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

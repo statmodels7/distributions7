@@ -3,8 +3,8 @@
 Returns a specification of Fisher scoring for
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)'s
 `method` argument. The specification records how the expected
-information is obtained when the family has no closed form for it, and
-optionally a stopping rule and an iteration limit of its own. It is
+information is obtained, and optionally a stopping rule and an iteration
+limit of its own. It is
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)'s
 default method.
 
@@ -17,34 +17,35 @@ obtained, and this object holds that statement.
 ## Usage
 
 ``` r
-fisher_scoring(
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
-  criterion = NULL,
-  maxit = NULL
-)
+fisher_scoring(method = NULL, criterion = NULL, maxit = NULL)
 ```
 
 ## Arguments
 
-- approx:
+- method:
 
-  How the expectation is approximated when the family has no closed-form
-  expected information. `"opg"` (the default) is the outer product of
-  the observed scores, which costs one gradient; `"bartlett"` evaluates
-  the right-hand side of the second Bartlett identity, a sum over the
-  support for a discrete family and a quadrature for a continuous one;
-  `"integrate"` is quadrature of the observed information; `"mc"` is
-  Monte Carlo. The value is matched by
-  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html), so any
-  other value signals an error that lists the four. See
-  [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
+  `NULL` (the default) or an object that selects how the expected
+  information is obtained:
 
-- nsim:
+  - `NULL`: the closed form of the family where it has one, and
+    [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+    otherwise;
 
-  Monte Carlo sample size, a single positive finite number. It is read
-  only when `approx = "mc"`. It defaults to 10000. A vector, a
-  non-finite value or a number below 1 signals an error.
+  - [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md):
+    the outer product of the observed scores, which costs one gradient;
+
+  - [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md):
+    quadrature (or summation over the support) of the observed Hessian
+    with `identity = "hessian"`, or of minus the outer product of the
+    scores with `identity = "score"`;
+
+  - [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md):
+    Monte Carlo, with the sample size `nsim` and the identity set in
+    that constructor.
+
+  Any other value, a character string included, signals an error.
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+  compares the methods.
 
 - criterion:
 
@@ -68,7 +69,9 @@ fisher_scoring(
 
 An S7 object of class
 [`FisherScoring()`](https://statmodels7.github.io/distributions7/reference/FisherScoring.md),
-with properties `approx`, `nsim`, `criterion` and `maxit`.
+with properties `method` (`NULL` or an object inheriting from
+[ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)),
+`criterion` and `maxit`.
 
 ## Values accepted by the method argument
 
@@ -98,19 +101,25 @@ The matrix inverted is therefore positive definite wherever
 therefore succeeds on a family whose observed Hessian is indefinite; the
 Laplace is the standard case.
 
-## Strategies for the expected information
+## Methods for the expected information
 
-`approx` is read only where the family has no closed-form expected
-information, as for a family defined by its density alone or a truncated
-family. The strategies differ in cost and in variance: `"opg"` costs one
-gradient, `"bartlett"` and `"integrate"` are deterministic and dearer,
-and `"mc"` adds simulation noise that decreases with `nsim`.
-
-A family that supplies the expectation in closed form ignores `approx`,
-and
-[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-signals an error when `approx` differs from the default `"opg"` for such
-a family, so that a fit never reports a strategy that was not used.
+With `method = NULL`, the default, the fit takes the closed form of the
+expected information where the family has one, and the outer product of
+the observed scores
+([`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md))
+otherwise, as for a family defined by its density alone or a truncated
+family. An object selects the method for every family, including a
+family that has the closed form: the fit then uses the expectation as
+that method computes it, and the closed form is not read. The methods
+differ in cost and in variance:
+[`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+costs one gradient,
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+is deterministic and dearer, and
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+adds simulation noise that decreases with its `nsim`.
+[expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+compares them.
 
 ## See also
 
@@ -118,8 +127,8 @@ a family, so that a fit never reports a strategy that was not used.
 which consumes this;
 [`FisherScoring()`](https://statmodels7.github.io/distributions7/reference/FisherScoring.md)
 for the class;
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-for what each `approx` computes;
+[expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+for what each `method` computes;
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for the matrix itself;
 [`optimizers7::newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html),
@@ -149,14 +158,13 @@ c(theta = sum(It$sigma_sigma), link = sum(Ie$sigma_sigma))   # ratio 2^2
 #> theta  link 
 #>   -50  -200 
 
-# 'approx' is read only where the family has no closed form (see the
-# examples of expected_derivative_methods). On a family that has one, a
-# value other than the default is rejected.
-try(fit_distrib(d, y, method = fisher_scoring(approx = "mc")))
-#> Error : 'gaussian1' computes its expected information exactly, in closed form or by
-#>   a quadrature of its own, so the 'approx' of fisher_scoring()
-#>   would be ignored. Use fisher_scoring() with no arguments: the fit
-#>   will take the exact expression.
+# An object in 'method' is used also by a family that has a closed form:
+# here the expected information is simulated, and the fit stays close to the
+# one that uses the closed form.
+set.seed(2)
+coef(fit_distrib(d, y, method = fisher_scoring(method = expect_mc(nsim = 2000))))
+#>       mu    sigma 
+#> 1.217775 1.787394 
 
 # The stopping rule and the budget belong to the method.
 fit <- fit_distrib(d, y, method = fisher_scoring(maxit = 1))

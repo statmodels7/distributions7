@@ -10,15 +10,7 @@ they pass.
 ## Usage
 
 ``` r
-reparam_chain(
-  distrib,
-  y,
-  theta,
-  order,
-  expected = FALSE,
-  approx = "opg",
-  nsim = 10000
-)
+reparam_chain(distrib, y, theta, order, expected = FALSE, method = NULL)
 ```
 
 ## Arguments
@@ -45,11 +37,14 @@ reparam_chain(
   with default `FALSE`. `TRUE` is meaningful from order 2 up, because
   the score has mean zero.
 
-- approx, nsim:
+- method:
 
-  Forwarded to the parent's expected derivatives: `approx` is one of
-  `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`, and
-  `nsim` is the number of draws for `"mc"`.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the class, so this
+  method receives `NULL` and forwards `NULL` to the parent, which
+  returns its closed form where it has one. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 ## Value
 

@@ -11,8 +11,8 @@ quadrature (continuous) or by summation (discrete), the quantile by root
 finding or by a lookup in the cumulative table, random draws by inverse
 transform or by the ratio-of-uniforms method, the derivatives of the
 log-density by finite differences, and the expected derivatives by the
-strategies of
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
+methods of
+[expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 A family defined by its density alone therefore has every quantity, and
 a family that writes a quantity out overrides the fallback by ordinary
 S7 dispatch.
@@ -119,7 +119,7 @@ for the base class and its properties;
 [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
 for the `scale` argument;
 [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-for the `approx` argument;
+for the `method` argument;
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
 which exercises the whole surface; the `defining-a-distribution`
 vignette.

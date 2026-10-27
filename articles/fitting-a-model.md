@@ -41,7 +41,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 656 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 792 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -73,13 +73,13 @@ coef(fit)
 vcov(fit)
 #>                 mu      sigma2
 #> mu     0.004024020 0.005451018
-#> sigma2 0.005451018 0.022443720
+#> sigma2 0.005451018 0.022443725
 logLik(fit)
 #> 'log Lik.' -844.0323 (df=2)
 confint(fit)
 #>            2.5%    97.5%
 #> mu     2.848824 3.097558
-#> sigma2 1.738803 2.328143
+#> sigma2 1.738803 2.328144
 ```
 
 [`coef()`](https://rdrr.io/r/stats/coef.html),
@@ -112,6 +112,22 @@ confint(fit, level = 0.99)
 #> sigma2 1.660868 2.437390
 ```
 
+The standard errors are the square roots of the diagonal of the inverse
+of the observed information at the estimates, whatever method computed
+them. The expected information is selected after the fit, with the
+`information` argument of [`vcov()`](https://rdrr.io/r/stats/vcov.html),
+[`confint()`](https://rdrr.io/r/stats/confint.html) and
+[`print()`](https://rdrr.io/r/base/print.html); see
+[`?information_objects`](https://statmodels7.github.io/distributions7/reference/information_objects.md).
+
+``` r
+
+vcov(fit, information = expected_info())
+#>                 mu      sigma2
+#> mu     0.004024020 0.005451018
+#> sigma2 0.005451018 0.022443720
+```
+
 The object also carries the information criteria, the number of
 iterations and the method that was actually used, and the print above
 shows all of them.
@@ -139,7 +155,7 @@ b <- bernoulli_distrib()
 fit_distrib(b, rbinom(40, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25
-#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 5 ms
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 1   time: 38 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -158,13 +174,20 @@ interval on the probability scale would have spilled past it.
 ## Choosing how it is optimized
 
 The default is Fisher scoring, which uses the *expected* information.
-Two other methods are available, and Fisher scoring and Newton fall back
-to BFGS if they fail to converge:
+Two other methods are available as optimizer objects from
+[optimizers7](https://statmodels7.github.io/optimizers7/), Newton’s
+method with the observed Hessian and BFGS, each with the stopping rule
+on the gradient that Fisher scoring uses. Fisher scoring falls back to
+BFGS if it fails to converge:
 
 ``` r
 
-fit_newton <- fit_distrib(d, y, method = "newton")
-fit_bfgs   <- fit_distrib(d, y, method = "bfgs")
+fit_newton <- fit_distrib(
+  d, y, method = optimizers7::newton(criterion = optimizers7::crit_grad())
+)
+fit_bfgs <- fit_distrib(
+  d, y, method = optimizers7::bfgs(criterion = optimizers7::crit_grad())
+)
 
 c(scoring = as.numeric(logLik(fit)),
   newton  = as.numeric(logLik(fit_newton)),
@@ -199,10 +222,21 @@ c(fit_lbfgs@method, fit_nm@method)
 #> [1] "L-BFGS"      "nelder-mead"
 ```
 
-The two second-order strategies, `"fisher"` and `"newton"`, fall back to
-BFGS when they fail to converge; `"bfgs"` and an optimizer supplied
-explicitly are never replaced, so the method reported is always the
-method that produced the estimates.
+Fisher scoring falls back to BFGS when it fails to converge; an
+optimizer object supplied explicitly is never replaced, so the method
+reported is always the method that produced the estimates.
+
+Where the family has no closed-form expected information, Fisher scoring
+needs a method that obtains it. The method is an object passed to
+[`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
+among
+[`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+(the default for such a family),
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+and `expect_mc(nsim = 10000)`; an object is used also by a family that
+has the closed form.
+[`?expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+compares them.
 
 ## Checking the fit against the data
 
@@ -216,7 +250,7 @@ density of the sample with the fitted density on top:
 plot(fit)
 ```
 
-![](fitting-a-model_files/figure-html/unnamed-chunk-10-1.png)
+![](fitting-a-model_files/figure-html/unnamed-chunk-11-1.png)
 
 For a discrete distribution it shows the observed frequencies as bars
 with the fitted probability mass overlaid, because a kernel density
@@ -229,7 +263,7 @@ yp <- distrib_rng(p, 300, list(mu = 4))
 plot(fit_distrib(p, yp))
 ```
 
-![](fitting-a-model_files/figure-html/unnamed-chunk-11-1.png)
+![](fitting-a-model_files/figure-html/unnamed-chunk-12-1.png)
 
 ## Simulating from the fit
 

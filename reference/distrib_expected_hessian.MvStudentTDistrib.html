@@ -17,7 +17,7 @@ y is used only for its row count."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,14 +85,10 @@ returns the parameter scale and the generic applies the link scale to its
 result. The two differ here, because <code>nu</code> carries a log link by default.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored: the expectation is exact, so the method does not
-consult an approximation strategy. <code><a href="fit_distrib.html">fit_distrib()</a></code> rejects a
-<code>fisher_scoring(approx =)</code> for this family for that reason.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code>: the generic applies an object before dispatching on
+the family, so this method receives <code>NULL</code> and returns the closed form.
+See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -21,7 +21,7 @@ registered on both truncated classes."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +71,7 @@ registered on both truncated classes.</p>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">theta</span>,</span>
 <span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameter"</span>, <span class="st">"link"</span><span class="op">)</span>,</span>
-<span>  approx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"opg"</span>, <span class="st">"bartlett"</span>, <span class="st">"integrate"</span>, <span class="st">"mc"</span><span class="op">)</span>,</span>
-<span>  nsim <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -98,13 +97,11 @@ registered on both truncated classes.</p>
 applies the link scale to the value that the method returns.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored. It is present so that the signature matches the
-generic's.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -127,10 +124,8 @@ covariance needs the second term on its own. For a parent with a scalar route
 the sums come from <code><a href="trunc_route_parts.html">trunc_route_parts()</a></code>.</p>
 <p>The components do not depend on the data, so for a single parameter vector
 every returned vector is constant; if a parameter varies by observation, the
-components vary with it. The arguments <code>approx</code> and <code>nsim</code> are accepted so
-that the signature matches the generic's, and the method does not read them:
-the identity above is exact, and the quantities on which it rests are
-computed by quadrature for every value of <code>approx</code>.</p>
+components vary with it. The identity above is exact, and the quantities on
+which it rests are computed by quadrature.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

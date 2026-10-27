@@ -21,7 +21,7 @@ is then used only for its length."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,16 +88,11 @@ parent block reads <code>y</code> itself, through <code>distrib_expected_hessian
 applies the link scale to the value that the method returns.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Forwarded to the parent's <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>, and
-read only where the parent has no closed form for it; every other block
-is an exact combination of the parent's density, score and observed Hessian
-at zero. <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> returns, for this class, the value that
-it returns for the parent.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Forwarded for the same reason and under the same condition.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -116,10 +111,10 @@ approximation can vary by observation.</p>
     <p>The blocks of the wrapper are exact combinations of the parent's mass, score
 and observed Hessian at zero and of the parent's expected Hessian, an
 expectation over the whole support from which the single point at zero is
-subtracted in closed form. <code>approx</code> and <code>nsim</code> are forwarded to the parent's
-<code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> and take effect only where the parent has no
-closed form, so the result is exact exactly when the parent's is, as
-<code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> reports.</p>
+subtracted in closed form. <code>method</code> is <code>NULL</code> in this method and is
+forwarded as such to the parent's <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>, which
+returns its closed form where it has one, so the result is exact exactly
+when the parent's is, as <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> reports.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

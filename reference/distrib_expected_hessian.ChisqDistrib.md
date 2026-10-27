@@ -5,10 +5,9 @@ Returns the same number as
 \$\$\mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu^2}\right\] =
 -\dfrac{\psi'(\mu/2)}{4},\$\$ because the observed second derivative is
 free of the response and so equals its own expectation. The method does
-not average, integrate or simulate, so `approx` and `nsim` are ignored
-and `y` is read only for its length. The value is negative at every
-\\\mu\\ because the trigamma function is positive, so the information is
-positive throughout.
+not average, integrate or simulate, and `y` is read only for its length.
+The value is negative at every \\\mu\\ because the trigamma function is
+positive, so the information is positive throughout.
 
 The identity holds on the parameter scale. On the link scale the
 second-order chain rule adds \\h''(\eta)\\\partial\ell/\partial\mu\\ to
@@ -41,15 +40,14 @@ score vanishes.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored because the expectation is exact. It is accepted so that the
-  signature matches the generic's, where it selects between the
-  Bartlett, quadrature, Monte Carlo and outer-product routes.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -107,8 +105,8 @@ vapply(c(0.5, 4, 40),
 # The two fitting methods differ on the link scale and land together.
 set.seed(7)
 z <- distrib_rng(d, 2000, th)
-c(newton = coef(fit_distrib(d, z, method = "newton")),
-  fisher = coef(fit_distrib(d, z, method = "fisher")))
+c(newton = coef(fit_distrib(d, z, method = optimizers7::newton())),
+  fisher = coef(fit_distrib(d, z, method = fisher_scoring())))
 #> newton.mu fisher.mu 
 #>  4.038376  4.038376 
 ```

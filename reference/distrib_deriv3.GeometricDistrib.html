@@ -15,8 +15,7 @@ zero coefficient contributes zero, so the value at \(y = 0\) stays finite
 however small \(\mu\) is.
 With expected = TRUE the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives \(2(1 - q^2)/\mu^2\) with the same
-device. Both routes are closed form, so the method runs no quadrature and
-ignores approx and nsim.
+device. Both routes are closed form and the method runs no quadrature.
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order."><meta property="og:description" content="Computes the third derivative of the geometric log-mass with respect to the
 mean, in closed form. The log-mass is
@@ -34,8 +33,7 @@ zero coefficient contributes zero, so the value at \(y = 0\) stays finite
 however small \(\mu\) is.
 With expected = TRUE the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives \(2(1 - q^2)/\mu^2\) with the same
-device. Both routes are closed form, so the method runs no quadrature and
-ignores approx and nsim.
+device. Both routes are closed form and the method runs no quadrature.
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -45,7 +43,7 @@ two-parameter family carries four at this order."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,8 +92,7 @@ zero coefficient contributes zero, so the value at \(y = 0\) stays finite
 however small \(\mu\) is.</p>
 <p>With <code>expected = TRUE</code> the expectation is returned, obtained by substituting
 \(\mathbb{E}[Y] = \mu\), which gives \(2(1 - q^2)/\mu^2\) with the same
-device. Both routes are closed form, so the method runs no quadrature and
-ignores <code>approx</code> and <code>nsim</code>.</p>
+device. Both routes are closed form and the method runs no quadrature.</p>
 <p>The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.</p>
     </div>
@@ -129,12 +126,11 @@ model is returned in place of the observed value. Defaults to <code>FALSE</code>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because a closed form is available for both routes.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

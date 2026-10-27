@@ -19,7 +19,7 @@ weighted by the probability \(1-\pi\) that an observation reaches it."><meta pro
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,16 +85,11 @@ its length.</p></dd>
 applies the link scale to the value that the method returns.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Forwarded to the parent's expected Hessian and used only where
-the parent has no closed form for it. The hurdle block is exact whatever
-the parent is. <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code> returns, for this class, the
-value that it returns for the parent, because the parent block is the only
-block that can fail to be exact.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Read for the same reason and under the same condition.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+The generic applies an object before dispatching on the class, so this
+method receives <code>NULL</code> and forwards <code>NULL</code> to the parent, which returns
+its closed form where it has one. See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -108,9 +103,9 @@ block that can fail to be exact.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>approx</code> and <code>nsim</code> are forwarded to the expected Hessian of the parent and
-are used only where the parent has no closed form. The hurdle block does not
-read them.</p>
+    <p><code>method</code> is <code>NULL</code> in this method and is forwarded as such to the expected
+Hessian of the parent, which returns its closed form where it has one. The
+hurdle block does not read them.</p>
     </div>
     <div class="section level2">
     <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>

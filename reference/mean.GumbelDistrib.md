@@ -1,7 +1,7 @@
 # Mean of the Gumbel Distribution
 
 The closed form is \\E\[Y\] = \mu + \gamma\sigma\\, with \\\gamma
-\approx 0.5772157\\ the Euler-Mascheroni constant. The location is
+\method 0.5772157\\ the Euler-Mascheroni constant. The location is
 therefore not the mean: the distribution of a maximum is shifted to the
 right of its location by a fixed multiple of the scale. The constant is
 obtained as `-digamma(1)`, which agrees with \\\gamma\\ to about

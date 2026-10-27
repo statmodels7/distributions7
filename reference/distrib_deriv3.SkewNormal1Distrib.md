@@ -16,8 +16,7 @@ numbers.
 With `expected = TRUE` the value is an expectation, computed numerically
 by
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-from the same kind of integrals as the expected information. The
-arguments `approx` and `nsim` are used only in this case.
+from the same kind of integrals as the expected information.
 
 ## Arguments
 
@@ -41,7 +40,7 @@ arguments `approx` and `nsim` are used only in this case.
 
   Logical of length 1. When `FALSE`, the default, the observed
   derivatives at `y` are returned from the compiled kernel. When `TRUE`
-  the expectation is approximated by the strategy in `approx`.
+  the expectation is approximated as `method` states.
 
 - scale:
 
@@ -49,18 +48,16 @@ arguments `approx` and `nsim` are used only in this case.
   applied in the generic's body, so this method always returns the
   parameter scale.
 
-- approx:
+- method:
 
-  One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, the strategy
-  for the expectation. It is read only when `expected = TRUE`; the first
-  is the default and integrates the observed kernel against the density
-  by quadrature.
-
-- nsim:
-
-  A single positive integer, the Monte Carlo sample size used when
-  `approx = "mc"`. The other strategies do not read it. Defaults to
-  `10000`.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -122,11 +119,10 @@ rbind(analytic = d3$mu_mu_alpha,
 distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 0))$mu_mu_mu
 #> [1] 0 0 0 0
 
-# The expectation is numerical here, and the strategy is read.
+# The expectation is numerical here, and the method is read.
 set.seed(4)
 c(integrate = distrib_deriv3(d, 0, th, expected = TRUE)$alpha_alpha_alpha,
-  mc = distrib_deriv3(d, 0, th, expected = TRUE, approx = "mc",
-                      nsim = 2000)$alpha_alpha_alpha)
+  mc = distrib_deriv3(d, 0, th, expected = TRUE, method = expect_mc(nsim = 2000))$alpha_alpha_alpha)
 #>  integrate         mc 
 #> 0.01970008 0.02005633 
 ```

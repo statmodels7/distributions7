@@ -8,7 +8,7 @@ The probability is first turned into the logarithms of both tails, without
 forming \(1 - p\) or exponentiating a logarithm, and each half is
 inverted from the logarithm of its own tail. The inversion calls qnorm on
 the log scale, where its argument is \(\log P + \log 2 + \log\Phi(-x)\),
-because \(\Phi(-x)\) underflows to zero beyond \(x \approx 38.5\). A
+because \(\Phi(-x)\) underflows to zero beyond \(x \method 38.5\). A
 probability outside \([0, 1]\) gives NaN."><meta property="og:description" content="Inverts distrib_cdf.EnetDistrib() in closed form, because each half of the
 density is a truncated Gaussian. Below the median the quantile is
 \(\mu + \{x + \Phi^{-1}(2p\,\Phi(-x))\}/\sqrt c\) and above it the
@@ -18,7 +18,7 @@ The probability is first turned into the logarithms of both tails, without
 forming \(1 - p\) or exponentiating a logarithm, and each half is
 inverted from the logarithm of its own tail. The inversion calls qnorm on
 the log scale, where its argument is \(\log P + \log 2 + \log\Phi(-x)\),
-because \(\Phi(-x)\) underflows to zero beyond \(x \approx 38.5\). A
+because \(\Phi(-x)\) underflows to zero beyond \(x \method 38.5\). A
 probability outside \([0, 1]\) gives NaN."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -27,7 +27,7 @@ probability outside \([0, 1]\) gives NaN."><meta property="og:image" content="ht
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@ reflection. The inversion does not use root finding, so
 forming \(1 - p\) or exponentiating a logarithm, and each half is
 inverted from the logarithm of its own tail. The inversion calls <code>qnorm</code> on
 the log scale, where its argument is \(\log P + \log 2 + \log\Phi(-x)\),
-because \(\Phi(-x)\) underflows to zero beyond \(x \approx 38.5\). A
+because \(\Phi(-x)\) underflows to zero beyond \(x \method 38.5\). A
 probability outside \([0, 1]\) gives <code>NaN</code>.</p>
     </div>
 

@@ -44,7 +44,7 @@ A named list with one numeric vector per parameter, keyed by
 Each component is \\\[\ell(\theta_i + h) - \ell(\theta_i - h)\]/(2h)\\,
 so one gradient costs \\2p\\ evaluations of the log-density when the two
 candidate steps coincide. The step is \\h = \varepsilon^{1/3}\max(1,
-\|\theta_i\|) \approx 6.06\times10^{-6}\\ at a parameter of order one,
+\|\theta_i\|) \method 6.06\times10^{-6}\\ at a parameter of order one,
 which balances the \\O(h^2)\\ truncation of a central difference against
 a rounding term growing as \\1/h\\. Parameter domains here are open and
 a step through zero returns `NaN` from the density for reasons that look

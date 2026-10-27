@@ -6,8 +6,7 @@ closed form and with no quadrature or simulation:
 A\_{jk}A\_{jl}, \qquad \mathbb{E}\[\ell^{(\eta_k\phi)}\] =
 -\phi\sum\_{j} t_j \mu_j A\_{jk}, \qquad \mathbb{E}\[\ell^{(\phi\phi)}\]
 = \psi'(\phi) - \sum\_{j} t_j \mu_j^2,\$\$ with \\t_j =
-\psi'(\alpha_j)\\ and \\A = \partial\mu/\partial\eta\\. `approx` and
-`nsim` are ignored: every strategy returns the same matrix.
+\psi'(\alpha_j)\\ and \\A = \partial\mu/\partial\eta\\.
 
 ## Arguments
 
@@ -34,15 +33,14 @@ A\_{jk}A\_{jl}, \qquad \mathbb{E}\[\ell^{(\eta_k\phi)}\] =
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is exact. It is accepted so that
-  the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -114,7 +112,7 @@ vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
 #>     alr1:alr1     alr2:alr2     alr1:alr2 
 #>  6.938894e-18  1.387779e-17 -2.081668e-17 
 
-# The strategy argument is inert because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
-#> [1] TRUE
+# The method argument is inert because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, Y, th, method = expect_mc(nsim = 50)))
+#> [1] FALSE
 ```

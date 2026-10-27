@@ -16,8 +16,7 @@ distrib_deriv3(
   theta,
   expected = FALSE,
   scale = c("parameter", "link"),
-  approx = c("integrate", "bartlett", "mc", "opg"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 ```
@@ -51,17 +50,24 @@ distrib_deriv3(
   predictors \\\eta = g(\theta)\\ defined by `distrib@link_params`. See
   [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 
-- approx:
+- method:
 
-  How the expectation is approximated when `expected = TRUE` and the
-  distribution has no closed-form expected third derivatives; ignored
-  otherwise. The value is one of `"integrate"` (default), `"bartlett"`
-  (equivalently `"opg"`) or `"mc"`. See
-  [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
-
-- nsim:
-
-  Monte Carlo sample size used when `approx = "mc"`. Defaults to 10000.
+  `NULL` (the default) or an object that selects how the expectation is
+  obtained; it is read only when `expected = TRUE`. With `NULL`, the
+  closed form of the family is returned where the family has one, and
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  (with `identity = "hessian"`) is used otherwise. An object is always
+  used, also for a family that has a closed form:
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  (the empirical sum of products of the score identity, with no
+  expectation),
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  or
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md),
+  the last two with `identity = "hessian"` or `identity = "score"`. Any
+  other value, a character string included, signals an error.
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+  compares the methods.
 
 - ...:
 

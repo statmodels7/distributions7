@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -578,13 +578,6 @@
 
         <dt>
 
-          <code><a href="expected_derivative_methods.html">expected_derivative_methods</a></code>
-
-        </dt>
-        <dd>Strategies for Expected Derivatives</dd>
-
-        <dt>
-
           <code><a href="expected_hessian_exact.html">expected_hessian_exact()</a></code>
 
         </dt>
@@ -603,6 +596,94 @@
 
         </dt>
         <dd>Whether a Family Supplies Its Own Fourth Derivative</dd>
+      </dl></div><div class="section level2">
+      <h2 id="methods-for-an-expectation">Methods for an expectation<a class="anchor" aria-label="anchor" href="#methods-for-an-expectation"></a></h2>
+
+      <div class="section-desc"><p>The objects that select how an expected derivative is obtained (computed by quadrature, simulated or estimated from the sample), and the page that compares them.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="expected_derivative_methods.html">expected_derivative_methods</a></code>
+
+        </dt>
+        <dd>Methods for the Expectation of a Derivative</dd>
+
+        <dt>
+
+          <code><a href="expect_opg.html">expect_opg()</a></code>
+
+        </dt>
+        <dd>The Outer Product of the Scores as the Expected Information</dd>
+
+        <dt>
+
+          <code><a href="expect_integrate.html">expect_integrate()</a></code>
+
+        </dt>
+        <dd>Integration Against the Density as the Expected Derivative</dd>
+
+        <dt>
+
+          <code><a href="expect_mc.html">expect_mc()</a></code>
+
+        </dt>
+        <dd>Monte Carlo as the Expected Derivative</dd>
+
+        <dt>
+
+          <code><a href="ExpectMethod.html">ExpectMethod()</a></code> <code><a href="ExpectMethod.html">ExpectOPG()</a></code> <code><a href="ExpectMethod.html">ExpectIntegrate()</a></code> <code><a href="ExpectMethod.html">ExpectMC()</a></code>
+
+        </dt>
+        <dd>S7 Classes for the Method of an Expectation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="information-matrices">Information matrices<a class="anchor" aria-label="anchor" href="#information-matrices"></a></h2>
+
+      <div class="section-desc"><p>The objects that select the observed or the expected information as the matrix whose inverse gives the standard errors of a fit, and the page that compares them.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="information_objects.html">information_objects</a></code>
+
+        </dt>
+        <dd>Information Matrices</dd>
+
+        <dt>
+
+          <code><a href="observed_info.html">observed_info()</a></code>
+
+        </dt>
+        <dd>The Observed Information</dd>
+
+        <dt>
+
+          <code><a href="expected_info.html">expected_info()</a></code>
+
+        </dt>
+        <dd>The Expected (Fisher) Information</dd>
+
+        <dt>
+
+          <code><a href="default_information.html">default_information()</a></code>
+
+        </dt>
+        <dd>The Default Information of a Family</dd>
+
+        <dt>
+
+          <code><a href="Information.html">Information()</a></code> <code><a href="Information.html">ObservedInfo()</a></code> <code><a href="Information.html">ExpectedInfo()</a></code>
+
+        </dt>
+        <dd>S7 Classes for the Information Matrix</dd>
       </dl></div><div class="section level2">
       <h2 id="estimation">Estimation<a class="anchor" aria-label="anchor" href="#estimation"></a></h2>
 
@@ -6768,6 +6849,27 @@
 
         <dt>
 
+          <code><a href="check_information.html">check_information()</a></code>
+
+        </dt>
+        <dd>Check That an Argument Is an Information Object</dd>
+
+        <dt>
+
+          <code><a href="check_kink_identity.html">check_kink_identity()</a></code>
+
+        </dt>
+        <dd>Stop at the Hessian Identity of a Family With a Kink</dd>
+
+        <dt>
+
+          <code><a href="check_method.html">check_method()</a></code>
+
+        </dt>
+        <dd>Check That an Argument Is an Expectation Method</dd>
+
+        <dt>
+
           <code><a href="check_not_stacked.html">check_not_stacked()</a></code>
 
         </dt>
@@ -6915,6 +7017,13 @@
 
         <dt>
 
+          <code><a href="dexpected_by_method.html">dexpected_by_method()</a></code>
+
+        </dt>
+        <dd>Derivatives of the Expected Information Under an Explicit Method</dd>
+
+        <dt>
+
           <code><a href="dexpected_chain.html">dexpected_chain()</a></code>
 
         </dt>
@@ -6936,6 +7045,20 @@
 
         <dt>
 
+          <code><a href="dexpected_components.html">dexpected_components()</a></code>
+
+        </dt>
+        <dd>The Components of a Derivative of the Expected Information</dd>
+
+        <dt>
+
+          <code><a href="dexpected_evaluate.html">dexpected_evaluate()</a></code>
+
+        </dt>
+        <dd>Evaluate Polynomials of Observed Derivatives by a Method</dd>
+
+        <dt>
+
           <code><a href="dexpected_link.html">dexpected_link()</a></code>
 
         </dt>
@@ -6947,6 +7070,13 @@
 
         </dt>
         <dd>The Derivatives of the Link-Scale Expected Information, Any Order</dd>
+
+        <dt>
+
+          <code><a href="dexpected_poly.html">poly_base()</a></code> <code><a href="dexpected_poly.html">poly_d()</a></code> <code><a href="dexpected_poly.html">poly_order()</a></code> <code><a href="dexpected_poly.html">poly_eval()</a></code>
+
+        </dt>
+        <dd>Polynomial Algebra of Observed Derivatives</dd>
 
         <dt>
 
@@ -8259,17 +8389,24 @@
 
         <dt>
 
+          <code><a href="expected_by_method.html">expected_by_method()</a></code>
+
+        </dt>
+        <dd>Expected Derivative by the Route of a Method</dd>
+
+        <dt>
+
           <code><a href="expected_by_opg.html">expected_by_opg()</a></code>
 
         </dt>
-        <dd>The Information as the Outer Product of the Observed Scores</dd>
+        <dd>The Empirical Outer Product of the Scores</dd>
 
         <dt>
 
           <code><a href="expected_derivative.html">expected_derivative()</a></code>
 
         </dt>
-        <dd>Dispatch an Expected-Derivative Strategy</dd>
+        <dd>Compute an Expected Derivative by a Method</dd>
 
         <dt>
 
@@ -8284,6 +8421,13 @@
 
         </dt>
         <dd>Expected Information Read from the Class of Its Method</dd>
+
+        <dt>
+
+          <code><a href="explicit_method.html">explicit_method()</a></code>
+
+        </dt>
+        <dd>Whether an Expectation Method Replaces the Family's Own Route</dd>
 
         <dt>
 
@@ -8399,10 +8543,24 @@
 
         <dt>
 
+          <code><a href="fit_inference.html">fit_inference()</a></code>
+
+        </dt>
+        <dd>Standard Errors and Intervals From a Link-Scale Variance Matrix</dd>
+
+        <dt>
+
           <code><a href="fit_loglik.html">fit_loglik()</a></code>
 
         </dt>
         <dd>Total Log-Likelihood</dd>
+
+        <dt>
+
+          <code><a href="fit_report.html">fit_report()</a></code>
+
+        </dt>
+        <dd>Standard Errors and Intervals of a Fit for a Chosen Information</dd>
 
         <dt>
 
@@ -8669,6 +8827,13 @@
 
         </dt>
         <dd>Set Partitions of a Multi-Index</dd>
+
+        <dt>
+
+          <code><a href="integration_settings.html">integration_settings()</a></code>
+
+        </dt>
+        <dd>The Integration Settings in Force</dd>
 
         <dt>
 
@@ -9631,6 +9796,27 @@
 
         <dt>
 
+          <code><a href="method_error.html">method_error()</a></code>
+
+        </dt>
+        <dd>Error Message for a Method That Is Not an Object</dd>
+
+        <dt>
+
+          <code><a href="method_label.html">method_label()</a></code>
+
+        </dt>
+        <dd>Description of an Expectation Method</dd>
+
+        <dt>
+
+          <code><a href="method_nsim.html">method_nsim()</a></code>
+
+        </dt>
+        <dd>Monte Carlo Sample Size of an Expectation Method</dd>
+
+        <dt>
+
           <code><a href="mixed_tensor_derivatives.html">mixed_tensor_derivatives()</a></code>
 
         </dt>
@@ -9726,6 +9912,13 @@
 
         </dt>
         <dd>Distinct Entries of a Symmetric Matrix, and Their Labels</dd>
+
+        <dt>
+
+          <code><a href="mv_expected_sampled.html">mv_expected_sampled()</a></code>
+
+        </dt>
+        <dd>Expected Derivatives of a Multivariate Distribution, by Sampling</dd>
 
         <dt>
 
@@ -10114,6 +10307,13 @@
 
         <dt>
 
+          <code><a href="observed_getter.html">observed_getter()</a></code>
+
+        </dt>
+        <dd>Observed Derivatives by Index Tuple</dd>
+
+        <dt>
+
           <code><a href="order_indices.html">order_indices()</a></code>
 
         </dt>
@@ -10268,10 +10468,24 @@
 
         <dt>
 
+          <code><a href="print.ExpectMethod.html">print.ExpectMethod</a></code>
+
+        </dt>
+        <dd>Print an Expectation Method</dd>
+
+        <dt>
+
           <code><a href="print.FisherScoring.html">print.FisherScoring</a></code>
 
         </dt>
         <dd>Print a Fisher Scoring Specification</dd>
+
+        <dt>
+
+          <code><a href="print.Information.html">print.Information</a></code>
+
+        </dt>
+        <dd>Print an Information Object</dd>
 
         <dt>
 
@@ -10471,10 +10685,38 @@
 
         <dt>
 
+          <code><a href="resolve_information.html">resolve_information()</a></code>
+
+        </dt>
+        <dd>Resolve the Information Argument</dd>
+
+        <dt>
+
+          <code><a href="resolve_method.html">resolve_method()</a></code>
+
+        </dt>
+        <dd>Resolve the Default Method of an Expected Derivative</dd>
+
+        <dt>
+
+          <code><a href="route_expected.html">route_expected()</a></code>
+
+        </dt>
+        <dd>Route an Explicit Expectation Method</dd>
+
+        <dt>
+
           <code><a href="safe_check.html">safe_check()</a></code>
 
         </dt>
         <dd>Run a Check, Turning an Error Into a Failure</dd>
+
+        <dt>
+
+          <code><a href="same_information.html">same_information()</a></code>
+
+        </dt>
+        <dd>Whether Two Information Objects Select the Same Matrix</dd>
 
         <dt>
 
@@ -10499,6 +10741,20 @@
 
         <dt>
 
+          <code><a href="score_identity_plan.html">score_identity_plan()</a></code>
+
+        </dt>
+        <dd>Index Tuples and Partitions of the Score Identity</dd>
+
+        <dt>
+
+          <code><a href="score_identity_terms.html">score_identity_terms()</a></code>
+
+        </dt>
+        <dd>The Score Identity Evaluated at Observations</dd>
+
+        <dt>
+
           <code><a href="separable_deriv.html">separable_deriv()</a></code>
 
         </dt>
@@ -10510,6 +10766,13 @@
 
         </dt>
         <dd>Batched Series Summation with Rejection</dd>
+
+        <dt>
+
+          <code><a href="set_integration_settings.html">set_integration_settings()</a></code>
+
+        </dt>
+        <dd>Set the Integration Settings of an Approximation</dd>
 
         <dt>
 

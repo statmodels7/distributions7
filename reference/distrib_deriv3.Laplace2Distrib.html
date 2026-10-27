@@ -8,8 +8,7 @@ zero, and the only surviving component comes from \(\log\lambda\):
 $$\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},$$
 where mu_mu_mu, mu_mu_lambda and mu_lambda_lambda are all zero.
 These derivatives do not depend on the data, so the observed and expected
-values coincide: expected, approx and nsim are accepted and have no
-effect."><meta property="og:description" content="Computes the four distinct third derivatives of the Laplace log-density with
+values coincide: expected is accepted and has no effect."><meta property="og:description" content="Computes the four distinct third derivatives of the Laplace log-density with
 respect to \(\mu\) and \(\lambda\). In this parametrization the
 log-density is \(\log(\lambda/2) - \lambda|y-\mu|\), which is linear in
 \(\lambda\) apart from \(\log\lambda\), and piecewise linear in
@@ -18,8 +17,7 @@ zero, and the only surviving component comes from \(\log\lambda\):
 $$\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},$$
 where mu_mu_mu, mu_mu_lambda and mu_lambda_lambda are all zero.
 These derivatives do not depend on the data, so the observed and expected
-values coincide: expected, approx and nsim are accepted and have no
-effect."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+values coincide: expected is accepted and has no effect."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +25,7 @@ effect."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,8 +67,7 @@ zero, and the only surviving component comes from \(\log\lambda\):
 $$\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},$$
 where <code>mu_mu_mu</code>, <code>mu_mu_lambda</code> and <code>mu_lambda_lambda</code> are all zero.</p>
 <p>These derivatives do not depend on the data, so the observed and expected
-values coincide: <code>expected</code>, <code>approx</code> and <code>nsim</code> are accepted and have no
-effect.</p>
+values coincide: <code>expected</code> is accepted and has no effect.</p>
     </div>
 
 
@@ -102,12 +99,10 @@ they are already their own expectations. Defaults to <code>FALSE</code>.</p></dd
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, for the same reason as <code>expected</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code>: the generic applies an object before dispatching on
+the family, so this method receives <code>NULL</code> and returns the closed form.
+See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

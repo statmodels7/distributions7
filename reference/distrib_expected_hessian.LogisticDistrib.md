@@ -13,8 +13,8 @@ the location is \\1/(3\sigma^2)\\, a third of a Gaussian's
 \\1/\sigma^2\\ at the same \\\sigma\\. Compared at equal variance the
 two are much closer, and the logistic variance is \\\pi^2\sigma^2/3\\.
 
-Because the values do not depend on the data, `approx` and `nsim` are
-ignored. `y` is read only for its length.
+Because the values do not depend on the data, `y` is read only for its
+length.
 
 ## Arguments
 
@@ -39,14 +39,14 @@ ignored. `y` is read only for its length.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available. It is accepted so that
-  the signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

@@ -5,10 +5,9 @@ y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert\\ and the
 Jacobian does not depend on \\\theta\\, the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. The
-wrapper does not add an approximation, and `approx` and `nsim` are not
-forwarded. The result is exact when the parent's expected Hessian is
-exact and otherwise is the value that the parent's own default route
-returns.
+wrapper does not add an approximation, and `method` is not forwarded.
+The result is exact when the parent's expected Hessian is exact and
+otherwise is the value that the parent's own default route returns.
 
 ## Arguments
 
@@ -33,15 +32,12 @@ returns.
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the value that the method returns.
 
-- approx:
+- method:
 
-  Ignored: the delegation is exact. It is present so that the signature
-  matches the generic's. Note that it is not forwarded, so a parent
-  whose OWN expected Hessian is approximate takes its own default.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

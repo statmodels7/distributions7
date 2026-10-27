@@ -9,7 +9,7 @@ inverse link, evaluated at \(\eta = g(\theta)\), up to order."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,10 +75,9 @@ inverse link, evaluated at \(\eta = g(\theta)\), up to <code>order</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This is the hot path of the link scale, so it is written against the
-order-specific generics of <span class="pkg">linkfunctions7</span> rather than the convenience
-router; see the comment in the body for why, and <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>
-for what the derivatives are then used for.</p>
+    <p>Each link is evaluated by one call to <code><a href="https://statmodels7.github.io/linkfunctions7/reference/linkinv_derivs.html" class="external-link">linkfunctions7::linkinv_derivs()</a></code>,
+which returns its derivatives of orders one to <code>order</code> together. See
+<code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code> for what the derivatives are then used for.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

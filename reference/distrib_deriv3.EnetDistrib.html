@@ -14,8 +14,8 @@ The kernel forms the components free of the data once per distinct pair
 \(\mathrm{sgn}(z) - z\) per observation. .enet_chain() is the same
 assembly written in R.
 With expected = TRUE the value is an expectation, and there it is not
-closed form: the call routes to expected_derivative(), so approx and
-nsim are read."><meta property="og:description" content="Computes the ten third derivatives of the log-density in closed form, in
+closed form: the call routes to expected_derivative(), which takes the
+expectation by method, expect_integrate() when method is NULL."><meta property="og:description" content="Computes the ten third derivatives of the log-density in closed form, in
 compiled code (enet_deriv3_cpp()). Written in \((\mu, a, c)\) the
 log-density is quadratic in \(z = y-\mu\) and linear in each rate, so at this order only
 the normalizing constant contributes, apart from
@@ -30,8 +30,8 @@ The kernel forms the components free of the data once per distinct pair
 \(\mathrm{sgn}(z) - z\) per observation. .enet_chain() is the same
 assembly written in R.
 With expected = TRUE the value is an expectation, and there it is not
-closed form: the call routes to expected_derivative(), so approx and
-nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+closed form: the call routes to expected_derivative(), which takes the
+expectation by method, expect_integrate() when method is NULL."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -39,7 +39,7 @@ nsim are read."><meta property="og:image" content="https://statmodels7.github.io
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,8 +87,8 @@ derivative in the rates is free of the data. <code>mu_mu_lambda</code>
 \(\mathrm{sgn}(z) - z\) per observation. <code><a href="dot-enet_chain.html">.enet_chain()</a></code> is the same
 assembly written in R.</p>
 <p>With <code>expected = TRUE</code> the value is an expectation, and there it is not
-closed form: the call routes to <code><a href="expected_derivative.html">expected_derivative()</a></code>, so <code>approx</code> and
-<code>nsim</code> are read.</p>
+closed form: the call routes to <code><a href="expected_derivative.html">expected_derivative()</a></code>, which takes the
+expectation by <code>method</code>, <code><a href="expect_integrate.html">expect_integrate()</a></code> when <code>method</code> is <code>NULL</code>.</p>
     </div>
 
 
@@ -120,14 +120,13 @@ derivatives at <code>y</code> are returned.</p></dd>
 transformation is applied in the generic's body.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code>, <code>"bartlett"</code>, <code>"mc"</code> or <code>"opg"</code>, read
-only when <code>expected = TRUE</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the Monte Carlo sample size used when
-<code>approx = "mc"</code>. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+It is read only when <code>expected</code> is <code>TRUE</code>: <code>NULL</code> selects
+<code><a href="expect_integrate.html">expect_integrate()</a></code>, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

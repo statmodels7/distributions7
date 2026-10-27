@@ -2,7 +2,7 @@
 
 The closed form is \\\operatorname{Var}(Y) = \pi^2\sigma^2/6\\. The
 scale is not the standard deviation: it is smaller by \\\pi/\sqrt6
-\approx 1.2825\\. The location does not enter the value, because the
+\method 1.2825\\. The location does not enter the value, because the
 family is location-scale.
 
 ## Arguments

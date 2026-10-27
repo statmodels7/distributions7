@@ -35,16 +35,16 @@ closed forms to fourth order.
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the value that the method returns.
 
-- approx:
+- method:
 
-  The strategy that
-  [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  uses when `expected = TRUE`. It is ignored otherwise.
-
-- nsim:
-
-  The Monte Carlo sample size when `approx = "mc"`. Defaults to `10000`.
-  It is ignored otherwise.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -59,7 +59,7 @@ A named list of numeric vectors, keyed and ordered as
 
 With `expected = TRUE` the expectation goes to
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-which reads `approx` and `nsim`.
+which reads `method`.
 
 ## Notation
 

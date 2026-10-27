@@ -13,7 +13,7 @@ law."><meta property="og:image" content="https://statmodels7.github.io/distribut
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,8 +124,9 @@ and read the folded third derivatives as well. At order 2 a parent
 without a route signals an error. The sums are
 accumulated as the scalar registry accumulates them. A parent that the
 registry does not cover, or that is not a location-scale family on the real
-line, is integrated by <code><a href="expected_derivative.html">expected_derivative()</a></code> with <code>approx = "integrate"</code> at
-order 0 and by <code><a href="numerical_dexpected_hessian.html">numerical_dexpected_hessian()</a></code> at order 1; at order 2 the
+line, is integrated by <code><a href="expected_derivative.html">expected_derivative()</a></code> with <code>method = expect_integrate()</code>
+at order 0 (with <code>identity = "score"</code> when the family has a non-smooth
+parameter) and by <code><a href="numerical_dexpected_hessian.html">numerical_dexpected_hessian()</a></code> at order 1; at order 2 the
 call signals an error. Where the parent's mass beyond the fold is below the
 square of the machine epsilon, the folded variable is the parent or its
 mirror image, and the expectations are the parent's own expected Hessian and

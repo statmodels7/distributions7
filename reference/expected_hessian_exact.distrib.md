@@ -32,6 +32,4 @@ the predicate that consumers call;
 [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
 for what the approximations are;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
-which rejects an `approx` given to
-[`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
-where this is `TRUE`.
+whose default information follows this rule.

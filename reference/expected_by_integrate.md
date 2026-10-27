@@ -3,14 +3,15 @@
 Integrates each observed derivative component directly against the
 density through
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md),
-component by component. It is deterministic and is normally the most
-accurate route where the observed derivative is available in closed
-form.
+component by component: the Hessian identity of
+[expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
+It is deterministic and is normally the most accurate route where the
+observed derivative is available in closed form.
 
 ## Usage
 
 ``` r
-expected_by_integrate(distrib, y, theta, order)
+expected_by_integrate(distrib, y, theta, order, method = expect_integrate())
 ```
 
 ## Arguments
@@ -32,6 +33,14 @@ expected_by_integrate(distrib, y, theta, order)
 
   The derivative order, a single integer from 2 to 4.
 
+- method:
+
+  An
+  [ExpectIntegrate](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+  object, whose tolerances and limits govern the quadrature and the
+  series summation. The default is
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md).
+
 ## Value
 
 A named list of expected derivative component vectors; each has length
@@ -43,12 +52,13 @@ uses at that order.
 
 The function estimates \\\mathbb{E}\[\partial^k \ell\]\\ literally. For
 a regular model that is the required quantity. For a family with a
-non-smooth parameter it is not: the observed \\\ell\_{ij}\\ has a point
-mass at the kink, which an integral of its pointwise values does not
-contain (on a Laplace the location component would be 0 instead of
-\\-1/\sigma^2\\). At order 2 such a family is therefore passed to
-[`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md),
-which needs only the score.
+non-smooth parameter it is not at order 2: the observed \\\ell\_{ij}\\
+has a point mass at the kink, which an integral of its pointwise values
+does not contain (on a Laplace the location component would be 0 instead
+of \\-1/\sigma^2\\). The function signals an error there, and the score
+identity of
+[`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md)
+is the route that applies.
 
 Quadrature is also unreliable where the observed derivative is itself a
 finite difference, since it then integrates numerical noise. The
@@ -60,7 +70,7 @@ integrator.
 ## See also
 
 [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-for the three strategies;
+for the methods;
 [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md),
 the route that survives a kink;
 [`expected_by_mc()`](https://statmodels7.github.io/distributions7/reference/expected_by_mc.md)

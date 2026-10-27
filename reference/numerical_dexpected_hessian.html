@@ -11,7 +11,7 @@ information."><meta property="og:image" content="https://statmodels7.github.io/d
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,8 +56,7 @@ information.</p>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">theta</span>,</span>
 <span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameter"</span>, <span class="st">"link"</span><span class="op">)</span>,</span>
-<span>  approx <span class="op">=</span> <span class="st">"bartlett"</span>,</span>
-<span>  nsim <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  h_rel <span class="op">=</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/fd_step.html" class="external-link">fd_step</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1L</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -82,8 +81,9 @@ information.</p>
 <dd><p>Either <code>"parameter"</code> or <code>"link"</code>.</p></dd>
 
 
-<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Passed to <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code>, passed to <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
@@ -101,7 +101,7 @@ rounding.</p></dd>
     <p>On the parameter scale the step is chosen by <code><a href="fd_stable_step.html">fd_stable_step()</a></code> from the
 candidates of <code><a href="fd_steps.html">fd_steps()</a></code>, which shrink near a finite boundary so that
 both evaluation points stay strictly inside the parameter's open domain;
-with <code>approx = "mc"</code> the step of <code><a href="fd_steps.html">fd_steps()</a></code> is used directly. On the link
+with an <code><a href="expect_mc.html">expect_mc()</a></code> method the step of <code><a href="fd_steps.html">fd_steps()</a></code> is used directly. On the link
 scale the domain is the whole line, so the step needs no clamp and is the
 plain relative one.</p>
 <p>The method signals an error where the expected information is itself an

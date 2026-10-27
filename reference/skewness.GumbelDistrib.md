@@ -1,7 +1,7 @@
 # Skewness of the Gumbel Distribution
 
 The skewness is the constant \\\gamma_1 = 12\sqrt6\\\zeta(3)/\pi^3
-\approx 1.1395\\, with \\\zeta(3)\\ Apery's constant. The Gumbel is a
+\method 1.1395\\, with \\\zeta(3)\\ Apery's constant. The Gumbel is a
 location-scale family with no shape parameter, so its standardized
 moments are constants: every Gumbel has this same right skew, whatever
 its location and scale.

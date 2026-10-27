@@ -34,15 +34,12 @@ constant across rows and `y` is used only for its row count.
   parameter scale and the generic applies the link scale to its result.
   Every link of this family is the identity, so the two scales coincide.
 
-- approx:
+- method:
 
-  Ignored: the expectation is exact, so the method does not use an
-  approximation strategy. It is present so that the signature matches
-  the generic's.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

@@ -153,5 +153,5 @@ d <- MyDist(
 y <- rng_grou(d, 1000, list(mu = 2, b = 1.5))
 c(mean = mean(y), var = var(y)) # ~ 2 and ~ 2 * 1.5^2
 #>     mean      var 
-#> 1.990910 4.941355 
+#> 1.996831 4.929349 
 ```

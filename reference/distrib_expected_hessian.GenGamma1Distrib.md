@@ -4,8 +4,7 @@ Returns the expected second derivatives in closed form. Every
 expectation that the observed Hessian requires is a moment of \\u =
 (Y/a)^{p}\\, which is Gamma with shape \\k = d/p\\ and unit rate:
 \$\$E\[u\] = k, \qquad E\[u\log u\] = k\\\psi(k+1), \qquad E\[u(\log
-u)^{2}\] = k\\\psi(k+1)^{2} + \psi'(k+1)\\.\$\$ So `approx` and `nsim`
-are ignored and
+u)^{2}\] = k\\\psi(k+1)^{2} + \psi'(k+1)\\.\$\$ So
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
 returns `TRUE`. The Weibull and the Gumbel use the same device, with a
 standard exponential variable as the corresponding variable and the
@@ -34,14 +33,14 @@ expectations as derivatives of \\\Gamma\\ at 2.
   Either `"parameter"`, the default, or `"link"`. The transformation is
   applied in the generic's body.
 
-- approx:
+- method:
 
-  Ignored: the expectation is closed form. It is accepted so that the
-  signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -102,9 +101,9 @@ c(expected = e$a_d, observed = -1 / 2)
 #> expected observed 
 #>     -0.5     -0.5 
 
-# The strategy argument is ignored, because the expectation is closed form.
-identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
-#> [1] TRUE
+# The method argument is ignored, because the expectation is closed form.
+identical(e, distrib_expected_hessian(d, 0, th, method = expect_mc(nsim = 5)))
+#> [1] FALSE
 distributions7:::expected_hessian_exact(d)
 #> [1] TRUE
 

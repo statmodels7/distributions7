@@ -29,9 +29,14 @@ its first and second derivatives in the parameters.
   One of `"parameter"` (the default) or `"link"`, matched by
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html).
 
-- approx, nsim:
+- method:
 
-  Ignored.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -69,8 +74,6 @@ which are exact in every parameter.
 
 The tail is integrated to \\\|z\| = 10^{60}\\, which leaves a relative
 \\10^{-60\nu}/\nu\\ and is negligible for \\\nu \ge 0.3\\.
-
-`approx` and `nsim` are accepted for the generic's sake and ignored.
 
 ## See also
 

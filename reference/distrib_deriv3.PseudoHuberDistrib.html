@@ -14,10 +14,10 @@ trapezoidal rule in \(\log t\); and from \(\nu = 400\) the asymptotic
 series of \(K_1\), differentiated term by term in powers of
 \(\nu^{-1/2}\). The same routes serve the score, the Hessian and the
 fourth order.
-The expected third derivatives have no closed form. With
-expected = TRUE the method calls expected_derivative(), which integrates
-the observed derivatives against the density by the strategy specified in
-approx. The arguments approx and nsim are read only in this case."><meta property="og:description" content="Computes the ten distinct third derivatives of the pseudo-Huber log-density
+The expected third derivatives have no closed form. With expected = TRUE
+the method calls expected_derivative(), which integrates the observed
+derivatives against the density by the method specified in method,
+expect_integrate() when method is NULL."><meta property="og:description" content="Computes the ten distinct third derivatives of the pseudo-Huber log-density
 in \(\mu\), \(\sigma\) and \(\nu\), in closed form, in a compiled
 kernel. Every component but the pure-\(\nu\) one is a rational function of
 \(r = y - \mu\), \(\sigma\) and \(D = \sqrt{\nu + (r/\sigma)^2}\);
@@ -32,10 +32,10 @@ trapezoidal rule in \(\log t\); and from \(\nu = 400\) the asymptotic
 series of \(K_1\), differentiated term by term in powers of
 \(\nu^{-1/2}\). The same routes serve the score, the Hessian and the
 fourth order.
-The expected third derivatives have no closed form. With
-expected = TRUE the method calls expected_derivative(), which integrates
-the observed derivatives against the density by the strategy specified in
-approx. The arguments approx and nsim are read only in this case."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The expected third derivatives have no closed form. With expected = TRUE
+the method calls expected_derivative(), which integrates the observed
+derivatives against the density by the method specified in method,
+expect_integrate() when method is NULL."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -43,7 +43,7 @@ approx. The arguments approx and nsim are read only in this case."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,10 +91,10 @@ trapezoidal rule in \(\log t\); and from \(\nu = 400\) the asymptotic
 series of \(K_1\), differentiated term by term in powers of
 \(\nu^{-1/2}\). The same routes serve the score, the Hessian and the
 fourth order.</p>
-<p>The expected third derivatives have no closed form. With
-<code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which integrates
-the observed derivatives against the density by the strategy specified in
-<code>approx</code>. The arguments <code>approx</code> and <code>nsim</code> are read only in this case.</p>
+<p>The expected third derivatives have no closed form. With <code>expected = TRUE</code>
+the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which integrates the observed
+derivatives against the density by the method specified in <code>method</code>,
+<code><a href="expect_integrate.html">expect_integrate()</a></code> when <code>method</code> is <code>NULL</code>.</p>
     </div>
 
 
@@ -129,15 +129,13 @@ Defaults to <code>FALSE</code>.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>. It is read only when <code>expected = TRUE</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. It is read only when <code>expected = TRUE</code>. Defaults to
-<code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+It is read only when <code>expected</code> is <code>TRUE</code>: <code>NULL</code> selects
+<code><a href="expect_integrate.html">expect_integrate()</a></code>, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -178,14 +176,14 @@ or <code>"opg"</code>. It is read only when <code>expected = TRUE</code>.</p></d
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="op">(</span><span class="va">up</span> <span class="op">-</span> <span class="va">dn</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">eps</span><span class="op">)</span>, <span class="va">d3</span><span class="op">$</span><span class="va">mu_mu_mu</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expected branch is a quadrature and takes a strategy; the components</span></span></span>
+<span class="r-in"><span><span class="co"># The expected branch is a quadrature and takes a method; the components</span></span></span>
 <span class="r-in"><span><span class="co"># odd in the residual come back at zero.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>       <span class="kw">function</span><span class="op">(</span><span class="va">v</span><span class="op">)</span> <span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu_mu_mu       mu_mu_sigma          mu_mu_nu    mu_sigma_sigma </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3.556183e-17      3.055008e-01      2.612955e-02     -4.163336e-17 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      3.556183e-17      3.055008e-01      2.612955e-02      0.000000e+00 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_sigma_nu          mu_nu_nu sigma_sigma_sigma    sigma_sigma_nu </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     -1.951564e-18     -4.662069e-18      3.135736e+00      7.878229e-02 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     -5.637851e-18     -4.662069e-18      3.135736e+00      7.878229e-02 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       sigma_nu_nu          nu_nu_nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      2.363469e-02      5.907273e-03 </span>
 </code></pre></div>

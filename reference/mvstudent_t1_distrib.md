@@ -150,11 +150,8 @@ The expected information has a closed form, obtained from the family's
 own scale mixture; see
 [`distrib_expected_hessian.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md)
 for the four blocks.
-[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-therefore rejects an `approx` argument on
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
-for this family, as it does for any family that computes its expected
-information exactly.
+with `method = NULL` uses it, and a method given there replaces it.
 
 ## Reading a fit
 

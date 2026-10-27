@@ -19,8 +19,9 @@ The expected third derivatives have no closed form. With
 `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
 which integrates the observed derivatives against the density by the
-strategy specified in `approx`. The arguments `approx` and `nsim` are
-read only in this case.
+method specified in `method`,
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+when `method` is `NULL`.
 
 ## Arguments
 
@@ -52,15 +53,16 @@ read only in this case.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. It is read only when `expected = TRUE`.
-
-- nsim:
-
-  A single positive integer, the sample size when `approx = "mc"`. It is
-  read only when `expected = TRUE`. Defaults to `10000`.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -103,14 +105,14 @@ dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu
 all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 #> [1] TRUE
 
-# The expected branch is a quadrature and takes a strategy; the components
+# The expected branch is a quadrature and takes a method; the components
 # odd in the residual come back at zero.
 vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
        function(v) v[1], numeric(1))
 #>          mu_mu_mu       mu_mu_sigma          mu_mu_nu    mu_sigma_sigma 
-#>      3.556183e-17      3.055008e-01      2.612955e-02     -4.163336e-17 
+#>      3.556183e-17      3.055008e-01      2.612955e-02      0.000000e+00 
 #>       mu_sigma_nu          mu_nu_nu sigma_sigma_sigma    sigma_sigma_nu 
-#>     -1.951564e-18     -4.662069e-18      3.135736e+00      7.878229e-02 
+#>     -5.637851e-18     -4.662069e-18      3.135736e+00      7.878229e-02 
 #>       sigma_nu_nu          nu_nu_nu 
 #>      2.363469e-02      5.907273e-03 
 ```

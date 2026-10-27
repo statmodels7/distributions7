@@ -18,8 +18,8 @@ however small \\\mu\\ is.
 
 With `expected = TRUE` the expectation is returned, obtained by
 substituting \\\mathbb{E}\[Y\] = \mu\\, which gives \\2(1 - q^2)/\mu^2\\
-with the same device. Both routes are closed form, so the method runs no
-quadrature and ignores `approx` and `nsim`.
+with the same device. Both routes are closed form and the method runs no
+quadrature.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.
@@ -52,13 +52,14 @@ two-parameter family carries four at this order.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both routes.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

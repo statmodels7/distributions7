@@ -50,7 +50,7 @@ uses above order 2.
 ## The step and the cost
 
 For a family that has only a density, the step is \\h =
-\varepsilon^{1/4}\max(1, \|\theta_i\|) \approx 1.22\times10^{-4}\\,
+\varepsilon^{1/4}\max(1, \|\theta_i\|) \method 1.22\times10^{-4}\\,
 twenty times the gradient's: a second difference divides by \\h^2\\, so
 rounding grows as \\1/h^2\\ and the optimum moves out.
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)

@@ -18,8 +18,7 @@ reparam_deriv4(
   theta,
   expected = FALSE,
   scale = c("parameter", "link"),
-  approx = c("integrate", "bartlett", "mc", "opg"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 ```
@@ -49,16 +48,14 @@ reparam_deriv4(
   Either `"parameter"` (the default) or `"link"`, handled by the generic
   after this method has returned.
 
-- approx:
+- method:
 
-  The strategy that the parent uses for an expected derivative for which
-  it has no closed form, one of `"integrate"`, `"bartlett"`, `"mc"` or
-  `"opg"`. The value is passed straight through.
-
-- nsim:
-
-  The number of draws for `approx = "mc"`, 10000 by default. The value
-  is passed through.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the class, so this
+  method receives `NULL` and forwards `NULL` to the parent, which
+  returns its closed form where it has one. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

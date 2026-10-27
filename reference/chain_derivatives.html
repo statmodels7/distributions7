@@ -15,7 +15,7 @@ copy of it: the hand-written second parametrizations all do."><meta property="og
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,8 +65,7 @@ copy of it: the hand-written second parametrizations all do.</p>
 <span>  <span class="va">new_params</span>,</span>
 <span>  <span class="va">order</span>,</span>
 <span>  expected <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  approx <span class="op">=</span> <span class="st">"opg"</span>,</span>
-<span>  nsim <span class="op">=</span> <span class="fl">10000</span></span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,10 +105,11 @@ and orders the result.</p></dd>
 logical, with default <code>FALSE</code>.</p></dd>
 
 
-<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Forwarded to the parent's expected derivatives: <code>approx</code>
-is one of <code>"opg"</code> (the default), <code>"bartlett"</code>, <code>"integrate"</code> or <code>"mc"</code>, and
-<code>nsim</code> is the number of draws for <code>"mc"</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+The generic applies an object before dispatching on the class, so this
+method receives <code>NULL</code> and forwards <code>NULL</code> to the parent, which returns
+its closed form where it has one. See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 </dl></div>
     <div class="section level2">

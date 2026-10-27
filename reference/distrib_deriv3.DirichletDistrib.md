@@ -42,14 +42,12 @@ indices all name it.
   One of `"parameter"` (the default) or `"link"`. The method returns the
   parameter scale and the generic applies the link scale to its result.
 
-- approx:
+- method:
 
-  Not read: the expectation is in closed form. It is present so that the
-  signature matches the generic's.
-
-- nsim:
-
-  Not read. It is present so that the signature matches the generic's.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

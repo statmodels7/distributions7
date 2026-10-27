@@ -9,8 +9,7 @@ log-density with respect to \\\mu\\ and \\\lambda\\, in closed form:
 from \\\tfrac12\log\lambda\\, so any component naming the shape twice
 and the mean once is exactly zero and the pure shape component carries
 only the logarithm. `expected` is passed straight to the kernel, which
-substitutes \\\mathbb{E}\[Y\] = \mu\\; both routes are closed form, so
-`approx` and `nsim` are ignored.
+substitutes \\\mathbb{E}\[Y\] = \mu\\; both routes are closed form.
 
 ## Arguments
 
@@ -41,14 +40,14 @@ substitutes \\\mathbb{E}\[Y\] = \mu\\; both routes are closed form, so
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both the observed and
-  the expected values.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

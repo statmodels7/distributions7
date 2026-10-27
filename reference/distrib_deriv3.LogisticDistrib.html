@@ -15,8 +15,8 @@ With expected = TRUE the expectations under the model are returned in
 closed form: \(1/(2\sigma^3)\) for mu_mu_sigma,
 \((2+\pi^2)/(2\sigma^3)\) for sigma_sigma_sigma, and zero for the two
 components odd in \(z\). They are integrals of the polynomials above
-against the logistic density, which reduce to values of the zeta function
-at even arguments. approx and nsim are ignored."><meta property="og:description" content="Computes the four distinct third derivatives of the logistic log-density
+against the logistic density, which reduce to values of the zeta function at
+even arguments."><meta property="og:description" content="Computes the four distinct third derivatives of the logistic log-density
 with respect to \(\mu\) and \(\sigma\). The observed values are closed
 form. Writing \(z = (y-\mu)/\sigma\), \(t = 1/(1+e^{-z})\) and
 \(u = 1-t\), the log-density is \(\ell = -\log\sigma + g(z)\) with
@@ -32,8 +32,8 @@ With expected = TRUE the expectations under the model are returned in
 closed form: \(1/(2\sigma^3)\) for mu_mu_sigma,
 \((2+\pi^2)/(2\sigma^3)\) for sigma_sigma_sigma, and zero for the two
 components odd in \(z\). They are integrals of the polynomials above
-against the logistic density, which reduce to values of the zeta function
-at even arguments. approx and nsim are ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+against the logistic density, which reduce to values of the zeta function at
+even arguments."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -41,7 +41,7 @@ at even arguments. approx and nsim are ignored."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,8 +90,8 @@ $$\dfrac{\partial^3 \ell}{\partial \mu \partial \sigma^2} = -\dfrac{2g_1 + 4z g_
 closed form: \(1/(2\sigma^3)\) for <code>mu_mu_sigma</code>,
 \((2+\pi^2)/(2\sigma^3)\) for <code>sigma_sigma_sigma</code>, and zero for the two
 components odd in \(z\). They are integrals of the polynomials above
-against the logistic density, which reduce to values of the zeta function
-at even arguments. <code>approx</code> and <code>nsim</code> are ignored.</p>
+against the logistic density, which reduce to values of the zeta function at
+even arguments.</p>
     </div>
 
 
@@ -123,14 +123,11 @@ model are returned, in closed form. Defaults to <code>FALSE</code>.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default), <code>"bartlett"</code>, <code>"mc"</code> or
-<code>"opg"</code>. Ignored, because a closed form is available for the expected
-values; accepted so that the signature matches the generic's.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

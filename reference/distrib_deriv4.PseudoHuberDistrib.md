@@ -9,7 +9,6 @@ their derivatives come from the three routes described in
 The expected fourth derivatives have no closed form. With
 `expected = TRUE` the method calls
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md).
-The arguments `approx` and `nsim` are read only in this case.
 
 ## Arguments
 
@@ -41,15 +40,16 @@ The arguments `approx` and `nsim` are read only in this case.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  One of `"integrate"` (the default here), `"bartlett"`, `"mc"` or
-  `"opg"`. It is read only when `expected = TRUE`.
-
-- nsim:
-
-  A single positive integer, the sample size when `approx = "mc"`. It is
-  read only when `expected = TRUE`. Defaults to `10000`.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

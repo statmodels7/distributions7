@@ -36,8 +36,8 @@ and
 - expected:
 
   Logical of length 1. When `TRUE` the method returns the expectation,
-  which it takes by sampling: it makes `nsim` draws and averages the
-  observed components. Defaults to `FALSE`.
+  which it takes by sampling: it makes the number of draws that `method`
+  carries and averages the observed components. Defaults to `FALSE`.
 
 - scale:
 
@@ -45,15 +45,15 @@ and
   parameter scale and the generic applies the link scale to its result.
   The two differ here, because `nu` carries a log link by default.
 
-- approx:
+- method:
 
-  Not read: `expected = TRUE` always takes the expectation by sampling.
-  It is present so that the signature matches the generic's.
-
-- nsim:
-
-  The number of draws used when `expected = TRUE`. Defaults to `10000`.
-  It is not read when `expected = FALSE`.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL`. With `expected = TRUE` the
+  method takes the expectation by sampling 10000 draws; an object such
+  as
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+  with another `nsim` is applied by the generic. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -80,7 +80,8 @@ depends on \\q\\, and \\\ell^{(\mu_1\mu_1\mu_1)}\\ is an ordinary
 non-zero number.
 
 With `expected = TRUE` the expectation is taken by sampling and carries
-Monte Carlo error of order `nsim^(-1/2)`.
+Monte Carlo error that falls as the inverse square root of the number of
+draws.
 
 ## Notation
 

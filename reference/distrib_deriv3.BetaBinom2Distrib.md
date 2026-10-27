@@ -14,7 +14,7 @@ instead from the direct sums over the integer shifts,
 ([`betabinom_direct()`](https://statmodels7.github.io/distributions7/reference/betabinom_direct.md)).
 
 With `expected = TRUE` the expectation is an exact finite sum over the
-support, so `approx` and `nsim` are ignored on both branches.
+support.
 
 ## Arguments
 
@@ -45,14 +45,14 @@ support, so `approx` and `nsim` are ignored on both branches.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because both branches are exact. It is accepted so that
-  the signature matches the generic's.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

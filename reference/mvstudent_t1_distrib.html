@@ -27,7 +27,7 @@ and to a log link on nu."><meta property="og:image" content="https://statmodels7
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -190,10 +190,8 @@ derivative through the weight \(c = (\nu+p)/(\nu+q)\), which falls as
     <h2 id="the-expected-information">The expected information<a class="anchor" aria-label="anchor" href="#the-expected-information"></a></h2>
     <p>The expected information has a closed form, obtained from the family's own
 scale mixture; see <code><a href="distrib_expected_hessian.MvStudentTDistrib.html">distrib_expected_hessian.MvStudentTDistrib()</a></code> for the
-four blocks.
-<code><a href="fit_distrib.html">fit_distrib()</a></code> therefore rejects an <code>approx</code> argument on
-<code><a href="fisher_scoring.html">fisher_scoring()</a></code> for this family, as it does for any family that computes
-its expected information exactly.</p>
+four blocks. <code><a href="fisher_scoring.html">fisher_scoring()</a></code> with <code>method = NULL</code> uses it, and a method
+given there replaces it.</p>
     </div>
     <div class="section level2">
     <h2 id="reading-a-fit">Reading a fit<a class="anchor" aria-label="anchor" href="#reading-a-fit"></a></h2>

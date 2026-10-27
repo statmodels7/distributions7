@@ -20,8 +20,8 @@ orthogonal here because this density is skewed, whereas in a symmetric
 location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.
 
-Because the values do not depend on the data, `approx` and `nsim` are
-ignored. `y` is read only for its length.
+Because the values do not depend on the data, `y` is read only for its
+length.
 
 ## Arguments
 
@@ -46,15 +46,14 @@ ignored. `y` is read only for its length.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available. It is accepted so that
-  the signature matches the generic's, where it selects between the
-  Bartlett, quadrature, Monte Carlo and outer-product routes.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -79,7 +78,7 @@ The expected information is
 the expectation of the observed information under the model. The Gumbel
 is a regular family, so the second Bartlett identity holds and this
 equals the variance of the score. \\\gamma\\ is the Euler-Mascheroni
-constant, \\-\psi(1) \approx 0.5772\\.
+constant, \\-\psi(1) \method 0.5772\\.
 
 ## See also
 

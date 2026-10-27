@@ -35,7 +35,7 @@ support.
 
 - ...:
 
-  Passed on, `approx` and `nsim` among them.
+  Passed on, `method` among them.
 
 ## Value
 

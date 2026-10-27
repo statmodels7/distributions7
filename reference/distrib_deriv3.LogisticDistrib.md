@@ -20,7 +20,7 @@ closed form: \\1/(2\sigma^3)\\ for `mu_mu_sigma`,
 \\(2+\pi^2)/(2\sigma^3)\\ for `sigma_sigma_sigma`, and zero for the two
 components odd in \\z\\. They are integrals of the polynomials above
 against the logistic density, which reduce to values of the zeta
-function at even arguments. `approx` and `nsim` are ignored.
+function at even arguments.
 
 ## Arguments
 
@@ -50,15 +50,14 @@ function at even arguments. `approx` and `nsim` are ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  One of `"integrate"` (the default), `"bartlett"`, `"mc"` or `"opg"`.
-  Ignored, because a closed form is available for the expected values;
-  accepted so that the signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

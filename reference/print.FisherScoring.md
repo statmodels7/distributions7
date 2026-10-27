@@ -1,10 +1,10 @@
 # Print a Fisher Scoring Specification
 
-Writes the strategy for the expected information, with the Monte Carlo
-sample size when that is the strategy, and then any setting that
+Writes the method that obtains the expected information, with the Monte
+Carlo sample size when that is the method, and then any setting that
 overrides the fit's: a stopping rule set here is reported as set, and an
-iteration limit by its value. The line about the strategy carries the
-reminder that a family with a closed-form expectation ignores it.
+iteration limit by its value. For `method = NULL` the line states that
+the closed form of the family is used where there is one.
 
 ## Arguments
 
@@ -33,13 +33,13 @@ for what each line reports.
 ``` r
 fisher_scoring()
 #> Fisher scoring
-#>   expected information: opg  [ignored when the family has a closed form]
-fisher_scoring(approx = "mc", nsim = 2000)
+#>   expected information: closed form where the family has one, otherwise the outer product of the scores
+fisher_scoring(method = expect_mc(nsim = 2000))
 #> Fisher scoring
-#>   expected information: mc (nsim = 2000)  [ignored when the family has a closed form]
+#>   expected information: by Monte Carlo (nsim = 2000)
 fisher_scoring(criterion = optimizers7::crit_grad(1e-9), maxit = 50)
 #> Fisher scoring
-#>   expected information: opg  [ignored when the family has a closed form]
+#>   expected information: closed form where the family has one, otherwise the outer product of the scores
 #>   criterion: set here
 #>   maxit: 50
 ```

@@ -7,7 +7,7 @@ This is the flattest of the three parametrizations of the Gaussian at fourth
 order; the log-density is quadratic in \(\mu\) and its \(\tau\) part is
 \(\tfrac{1}{2}\log\tau\) plus a term linear in \(\tau\), so every mixed
 component past \(\ell^{(\mu\mu\tau)}\) vanishes. Like the third order,
-the values are free of the response, so expected, approx and nsim are
+the values are free of the response, so expected and method are
 all without effect."><meta property="og:description" content="Computes the five distinct fourth derivatives of the Gaussian log-density
 with respect to \(\mu\) and \(\tau\), in closed form. Four of the five
 are exactly zero and the fifth is a constant:
@@ -16,7 +16,7 @@ This is the flattest of the three parametrizations of the Gaussian at fourth
 order; the log-density is quadratic in \(\mu\) and its \(\tau\) part is
 \(\tfrac{1}{2}\log\tau\) plus a term linear in \(\tau\), so every mixed
 component past \(\ell^{(\mu\mu\tau)}\) vanishes. Like the third order,
-the values are free of the response, so expected, approx and nsim are
+the values are free of the response, so expected and method are
 all without effect."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -25,7 +25,7 @@ all without effect."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ This is the flattest of the three parametrizations of the Gaussian at fourth
 order; the log-density is quadratic in \(\mu\) and its \(\tau\) part is
 \(\tfrac{1}{2}\log\tau\) plus a term linear in \(\tau\), so every mixed
 component past \(\ell^{(\mu\mu\tau)}\) vanishes. Like the third order,
-the values are free of the response, so <code>expected</code>, <code>approx</code> and <code>nsim</code> are
+the values are free of the response, so <code>expected</code> and <code>method</code> are
 all without effect.</p>
     </div>
 
@@ -100,12 +100,11 @@ be strictly positive.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because a closed form is available.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

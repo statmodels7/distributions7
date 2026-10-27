@@ -31,11 +31,16 @@ kernel.
   returned, by
   [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md).
 
-- approx, nsim:
+- method:
 
-  Passed to
-  [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  when `expected` is `TRUE`.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

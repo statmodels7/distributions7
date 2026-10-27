@@ -7,9 +7,9 @@ with respect to \\\alpha\\ and \\\beta\\, in closed form:
 the three mixed components is equal to \\\psi'''(\alpha+\beta)\\, with
 \\\psi'''\\ the third derivative of the digamma function.
 
-As at third order the values are free of the response, so `expected`,
-`approx` and `nsim` are all without effect and the result is the same
-for every value of them.
+As at third order the values are free of the response, so `expected` and
+`method` are without effect and the result is the same for every value
+of them.
 
 ## Arguments
 
@@ -38,13 +38,14 @@ for every value of them.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

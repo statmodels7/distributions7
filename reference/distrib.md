@@ -82,8 +82,8 @@ An object of class `distrib`.
 The methods are registered on the base class, so every distribution
 inherits them unless it registers something more specific. The
 derivatives of the log-density in the parameters are computed by finite
-differences and the expected derivatives by the strategy named in
-`approx`, so a subclass that implements nothing but
+differences and the expected derivatives by the method that `method`
+selects, so a subclass that implements nothing but
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 has every parameter derivative.
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)

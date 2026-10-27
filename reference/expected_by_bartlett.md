@@ -2,7 +2,9 @@
 
 Obtains the expected derivative of a given order from expectations of
 *products of lower-order* derivatives, by summing over set partitions of
-the index set.
+the index set: the score identity of
+[expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md),
+computed by quadrature or by summation over the support.
 
 ## Usage
 
@@ -48,8 +50,6 @@ At order 2 this reduces to \\\mathbb{E}\[\ell\_{ij}\] =
 the information where the log-likelihood has a kink: there the pointwise
 average of \\\partial^2 \ell\\ is not the information, while the score
 variance still is.
-[`expected_by_integrate()`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md)
-calls this function at order 2 for such a family.
 
 ## See also
 

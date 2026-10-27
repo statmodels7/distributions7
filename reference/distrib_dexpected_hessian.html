@@ -9,7 +9,7 @@ component per pair \((a,b)\) and differentiating parameter \(c\)."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,8 +53,7 @@ component per pair \((a,b)\) and differentiating parameter \(c\).</p>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">theta</span>,</span>
 <span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameter"</span>, <span class="st">"link"</span><span class="op">)</span>,</span>
-<span>  approx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"opg"</span>, <span class="st">"bartlett"</span>, <span class="st">"integrate"</span>, <span class="st">"mc"</span><span class="op">)</span>,</span>
-<span>  nsim <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -82,8 +81,17 @@ component per pair \((a,b)\) and differentiating parameter \(c\).</p>
 information.</p></dd>
 
 
-<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Passed to <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from
+<a href="ExpectMethod.html">ExpectMethod</a>. With <code>NULL</code>, the closed form of the family is returned,
+and a family without one signals an error. An object is always used, also
+for a family that has the closed form, and returns the derivative of the
+matrix that the method defines: for <code><a href="expect_integrate.html">expect_integrate()</a></code> and <code><a href="expect_mc.html">expect_mc()</a></code>
+the derivative of the expectation, which moves the density as well as the
+integrand, and for <code><a href="expect_opg.html">expect_opg()</a></code> the exact derivative of the outer
+product of the scores at the data, which is minus
+\(\ell_{ac}\ell_b + \ell_a\ell_{bc}\) per observation. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

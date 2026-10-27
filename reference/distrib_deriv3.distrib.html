@@ -3,8 +3,8 @@
 Observed derivatives come from numerical_deriv3(): one central difference
 of the family's own distrib_hessian() along each parameter, or, for a
 family without its own Hessian, one tensor-product stencil on its score or
-its log-density. Expected ones come from expected_derivative() at the
-strategy selected by approx.
+its log-density. Expected ones come from expected_derivative() by the
+method that method selects.
 Every family shipped in this package writes the observed third order out,
 so this method serves a family defined outside the package, and five orders
 are available for such a family from its density without any other method.
@@ -13,8 +13,8 @@ analytical kernels are validated."><meta property="og:description" content="Prov
 Observed derivatives come from numerical_deriv3(): one central difference
 of the family's own distrib_hessian() along each parameter, or, for a
 family without its own Hessian, one tensor-product stencil on its score or
-its log-density. Expected ones come from expected_derivative() at the
-strategy selected by approx.
+its log-density. Expected ones come from expected_derivative() by the
+method that method selects.
 Every family shipped in this package writes the observed third order out,
 so this method serves a family defined outside the package, and five orders
 are available for such a family from its density without any other method.
@@ -27,7 +27,7 @@ analytical kernels are validated."><meta property="og:image" content="https://st
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,8 +64,8 @@ analytical kernels are validated."><meta property="og:image" content="https://st
 Observed derivatives come from <code><a href="numerical_deriv3.html">numerical_deriv3()</a></code>: one central difference
 of the family's own <code><a href="distrib_hessian.html">distrib_hessian()</a></code> along each parameter, or, for a
 family without its own Hessian, one tensor-product stencil on its score or
-its log-density. Expected ones come from <code><a href="expected_derivative.html">expected_derivative()</a></code> at the
-strategy selected by <code>approx</code>.</p>
+its log-density. Expected ones come from <code><a href="expected_derivative.html">expected_derivative()</a></code> by the
+method that <code>method</code> selects.</p>
 <p>Every family shipped in this package writes the observed third order out,
 so this method serves a family defined outside the package, and five orders
 are available for such a family from its density without any other method.
@@ -102,15 +102,13 @@ Hessian; <code>TRUE</code> takes the expectation of the observed derivatives thr
 returns the parameter scale.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Which strategy takes the expectation, read only when
-<code>expected</code> is <code>TRUE</code>: <code>"integrate"</code> (the default at this order),
-<code>"bartlett"</code>, <code>"opg"</code> or <code>"mc"</code>. See <code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Monte Carlo sample size, a single positive number, read only
-under <code>approx = "mc"</code>. Defaults to 10000.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+It is read only when <code>expected</code> is <code>TRUE</code>: <code>NULL</code> selects
+<code><a href="expect_integrate.html">expect_integrate()</a></code>, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -127,7 +125,7 @@ under <code>approx = "mc"</code>. Defaults to 10000.</p></dd>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="numerical_deriv3.html">numerical_deriv3()</a></code>, which does the differencing;
 <code><a href="distrib_deriv4.distrib.html">distrib_deriv4.distrib()</a></code> for the order above;
-<code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code> for what <code>approx</code> selects.</p></div>
+<code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code> for what <code>method</code> selects.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -14,7 +14,7 @@ without forming \\1 - p\\ or exponentiating a logarithm, and each half
 is inverted from the logarithm of its own tail. The inversion calls
 `qnorm` on the log scale, where its argument is \\\log P + \log 2 +
 \log\Phi(-x)\\, because \\\Phi(-x)\\ underflows to zero beyond \\x
-\approx 38.5\\. A probability outside \\\[0, 1\]\\ gives `NaN`.
+\method 38.5\\. A probability outside \\\[0, 1\]\\ gives `NaN`.
 
 ## Arguments
 

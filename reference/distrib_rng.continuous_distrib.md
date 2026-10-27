@@ -14,8 +14,8 @@ whether the family has a quantile method of its own:
 
 The choice keeps simulation-based tools usable. Inverting a purely
 numerical distribution function costs several root-finding iterations
-per draw, and each of those is itself a quadrature, so `approx = "mc"`
-and
+per draw, and each of those is itself a quadrature, so
+`method = expect_mc()` and
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 would be impractical on a family defined by its density alone.
 

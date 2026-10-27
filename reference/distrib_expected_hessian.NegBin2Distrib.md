@@ -16,8 +16,7 @@ computed as one sum over the support through the mass recurrence,
 carried in log scale until the terms are representable. Past the mode
 and after 100 terms the sum stops once \\p_k (1+k)^2 \le 10^{-17}\\,
 with \\p_k\\ the mass at \\k\\. The entry is a truncated exact sum and
-not a quadrature or a simulation; `approx` and `nsim` are ignored, and
-`y` is read only for its length.
+not a quadrature or a simulation; `y` is read only for its length.
 
 ## Arguments
 
@@ -42,15 +41,14 @@ not a quadrature or a simulation; `approx` and `nsim` are ignored, and
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored. The mean and mixed entries are closed form and the dispersion
-  entry is a truncated exact sum. It is accepted so that the signature
-  matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

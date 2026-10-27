@@ -12,7 +12,7 @@ order is the same polygamma of the sum.
 
 The values are free of the response, so `expected` selects nothing: the
 same computation runs either way and the two results are identical to
-the bit. `approx` and `nsim` are ignored for the same reason.
+the bit.
 
 ## Arguments
 
@@ -41,13 +41,14 @@ the bit. `approx` and `nsim` are ignored for the same reason.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

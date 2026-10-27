@@ -11,7 +11,7 @@ log-density. On both routes each component is a single stencil, so the
 package's rule against nesting one difference inside another holds.
 Expected ones come from
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-at the strategy that `approx` names.
+by the method that `method` names.
 
 As at the order below, the families shipped in this package write the
 fourth order out themselves. A second difference of the Hessian is less
@@ -43,17 +43,16 @@ chosen accordingly.
   Handled by the generic after dispatch; this method always returns the
   parameter scale.
 
-- approx:
+- method:
 
-  Which strategy takes the expectation, read only when `expected` is
-  `TRUE`: `"integrate"` (the default at this order), `"bartlett"`,
-  `"opg"` or `"mc"`. See
-  [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
-
-- nsim:
-
-  Monte Carlo sample size, a single positive number, read only under
-  `approx = "mc"`. Defaults to 10000.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -73,4 +72,4 @@ which does the differencing;
 [`distrib_deriv3.distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.distrib.md)
 for the order below;
 [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-for what `approx` selects.
+for what `method` selects.

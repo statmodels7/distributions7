@@ -69,7 +69,7 @@ as nested differences in one variable do.
 
 ## The step
 
-\\\varepsilon^{1/3} \approx 6.1\times10^{-6}\\ balances the \\O(h^2)\\
+\\\varepsilon^{1/3} \method 6.1\times10^{-6}\\ balances the \\O(h^2)\\
 truncation of a central difference against a rounding term growing as
 \\1/h\\, which is the usual optimum for a first derivative.
 

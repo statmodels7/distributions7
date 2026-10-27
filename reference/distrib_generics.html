@@ -7,8 +7,8 @@ fallback: the distribution function by quadrature (continuous) or by
 summation (discrete), the quantile by root finding or by a lookup in the
 cumulative table, random draws by inverse transform or by the
 ratio-of-uniforms method, the derivatives of the log-density by finite
-differences, and the expected derivatives by the strategies of
-expected_derivative_methods(). A family defined by its density alone
+differences, and the expected derivatives by the methods of
+expected_derivative_methods. A family defined by its density alone
 therefore has every quantity, and a family that writes a quantity out
 overrides the fallback by ordinary S7 dispatch."><meta property="og:description" content="This page lists the S7 generics that apply to every distrib object,
 grouped by what they compute. Each generic is documented on its own page,
@@ -18,8 +18,8 @@ fallback: the distribution function by quadrature (continuous) or by
 summation (discrete), the quantile by root finding or by a lookup in the
 cumulative table, random draws by inverse transform or by the
 ratio-of-uniforms method, the derivatives of the log-density by finite
-differences, and the expected derivatives by the strategies of
-expected_derivative_methods(). A family defined by its density alone
+differences, and the expected derivatives by the methods of
+expected_derivative_methods. A family defined by its density alone
 therefore has every quantity, and a family that writes a quantity out
 overrides the fallback by ordinary S7 dispatch."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -29,7 +29,7 @@ overrides the fallback by ordinary S7 dispatch."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,8 +70,8 @@ fallback: the distribution function by quadrature (continuous) or by
 summation (discrete), the quantile by root finding or by a lookup in the
 cumulative table, random draws by inverse transform or by the
 ratio-of-uniforms method, the derivatives of the log-density by finite
-differences, and the expected derivatives by the strategies of
-<code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code>. A family defined by its density alone
+differences, and the expected derivatives by the methods of
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>. A family defined by its density alone
 therefore has every quantity, and a family that writes a quantity out
 overrides the fallback by ordinary S7 dispatch.</p>
     </div>
@@ -142,7 +142,7 @@ exception: its methods read <code>scale</code> and apply it themselves.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib.html">distrib()</a></code> for the base class and its properties;
 <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code> for the <code>scale</code> argument;
-<code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code> for the <code>approx</code> argument;
+<code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code> for the <code>method</code> argument;
 <code><a href="check_distrib.html">check_distrib()</a></code>, which exercises the whole surface;
 the <code>defining-a-distribution</code> vignette.</p></div>
     </div>

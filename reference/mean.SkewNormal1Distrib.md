@@ -3,7 +3,7 @@
 The closed form is \\E\[Y\] = \mu + \sigma b \delta\\, with \\\delta =
 \alpha/\sqrt{1+\alpha^2}\\ and \\b = \sqrt{2/\pi}\\. The location is not
 the mean unless the shape is zero: a positive shape pulls the mass to
-the right and the mean with it, by at most \\\sigma\sqrt{2/\pi} \approx
+the right and the mean with it, by at most \\\sigma\sqrt{2/\pi} \method
 0.7979\sigma\\.
 
 ## Arguments

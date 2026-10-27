@@ -14,7 +14,7 @@ derivatives are zero. On the parameter scale the observed and expected
 values therefore coincide, and the method runs the same kernel for
 either value of `expected`. On the link scale the generic adds terms in
 the score and the Hessian, which depend on the response, so the two
-differ there. `approx` and `nsim` are ignored.
+differ there.
 
 ## Arguments
 
@@ -45,13 +45,14 @@ differ there. `approx` and `nsim` are ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

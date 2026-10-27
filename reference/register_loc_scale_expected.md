@@ -29,7 +29,7 @@ register_loc_scale_expected(cls)
 
 ## Details
 
-The `approx` and `nsim` arguments of the three generics are accepted and
-ignored, because the expectation is taken by the rule of
-[`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md)
-and not by one of the approximations between which `approx` selects.
+The `method` arguments of the three methods receive `NULL`, because the
+generic applies an object before dispatching, and the expectation is
+then taken by the rule of
+[`loc_scale_rule()`](https://statmodels7.github.io/distributions7/reference/loc_scale_rule.md).

@@ -10,8 +10,7 @@ form. They rest on the fact that \\w\\ is standard exponential under the
 model, which makes \\\mathbb{E}\[z^k w\] = (-1)^k \Gamma^{(k)}(2)\\ and
 \\\mathbb{E}\[z\] = \gamma\\: every expectation of the family is a
 derivative of \\\Gamma\\ at 1 or at 2, assembled from polygamma
-functions there. Since both routes are closed form, `approx` and `nsim`
-are ignored.
+functions there. Since both routes are closed form,
 
 ## Arguments
 
@@ -42,14 +41,14 @@ are ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both the observed and
-  the expected values.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

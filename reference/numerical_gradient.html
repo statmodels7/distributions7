@@ -17,7 +17,7 @@ cost to its author."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@ cost to its author.</p>
     <p>Each component is one central difference of the log-density in its own
 parameter,</p>
 <p>$$l^{(i)} = \frac{\partial}{\partial \theta_i} \log f(y; \theta)
-  \approx \frac{\log f(y; \theta + h_i e_i)
+  \method \frac{\log f(y; \theta + h_i e_i)
     - \log f(y; \theta - h_i e_i)}{2 h_i},$$</p>
 <p>so the cost is two density evaluations per parameter when the two candidate
 steps of <code><a href="fd_steps.html">fd_steps()</a></code> coincide, and more when <code><a href="fd_stable_step.html">fd_stable_step()</a></code> compares

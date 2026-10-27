@@ -206,8 +206,16 @@ The optimization itself is delegated to
 package, which brings its own stopping rule;
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which is Newton’s method with the expected information and which records
-how that information is approximated when the family has no closed form
-for it; or one of the names `"fisher"`, `"newton"` and `"bfgs"`.
+how that information is obtained. By default the closed form of the
+family is used where there is one, and the outer product of the scores
+otherwise; an object
+([`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md),
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+or
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md))
+passed as the `method` argument of
+[`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
+replaces that choice for every family.
 
 ``` r
 

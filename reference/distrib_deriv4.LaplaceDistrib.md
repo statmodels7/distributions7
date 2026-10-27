@@ -8,8 +8,7 @@ remaining components come from the \\-\log\sigma\\ term and from
 \\\|r\|/\sigma\\.
 
 With `expected = TRUE` the expectations under the model are returned,
-also in closed form. Both routes are closed form, so `approx` and `nsim`
-are ignored.
+also in closed form. Both routes are closed form.
 
 ## Arguments
 
@@ -40,14 +39,12 @@ are ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both the observed and
-  the expected values.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

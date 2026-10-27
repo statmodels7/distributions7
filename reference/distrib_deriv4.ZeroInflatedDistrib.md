@@ -34,7 +34,7 @@ identity and the same ratios \\d^B L_0 / L_0\\ are used.
 
 - ...:
 
-  Passed on, `approx` and `nsim` among them.
+  Passed on, `method` among them.
 
 ## Value
 

@@ -1,7 +1,7 @@
 # Numerical Gradient of the Log-Density with Respect to the Response
 
 Computes \\\partial \ell / \partial y\\ by the two-point central
-difference \$\$\frac{\partial\ell}{\partial y} \approx \frac{\ell(y+h) -
+difference \$\$\frac{\partial\ell}{\partial y} \method \frac{\ell(y+h) -
 \ell(y-h)}{2h},\$\$ evaluated on `distrib_pdf(..., log = TRUE)`. The
 default
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)

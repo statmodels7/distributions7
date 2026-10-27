@@ -9,8 +9,7 @@ The expected values are closed forms too: under the model \\1/(1 +
 z^2/\nu)\\ follows a beta distribution with parameters \\\nu/2\\ and
 \\1/2\\, so the expectation of every component is a rational function of
 \\\nu\\ plus the derivatives of \\\log\Gamma((\nu+1)/2) -
-\log\Gamma(\nu/2)\\. `approx` and `nsim` are accepted for the generic's
-signature and ignored.
+\log\Gamma(\nu/2)\\.
 
 ## Arguments
 
@@ -41,10 +40,14 @@ signature and ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx, nsim:
+- method:
 
-  Accepted for the generic's signature; the expectations are closed
-  forms.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

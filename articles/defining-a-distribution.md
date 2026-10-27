@@ -64,9 +64,14 @@ is registered. The defaults are:
   [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
   /
   [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md));
-- `distrib_expected_hessian`: by default (`approx = "opg"`) minus the
-  outer product of the score, read at each observation;
-  `approx = "bartlett"`, `"integrate"` and `"mc"` take an expectation;
+- `distrib_expected_hessian`: by default (`method = NULL`, which is
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  for a family without a closed form) minus the outer product of the
+  score, read at each observation;
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  and
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+  take an expectation;
 - the moments: numerical
   [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
   of the relevant power.
@@ -453,7 +458,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 21 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 11 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -531,12 +536,13 @@ distrib_expected_hessian(d, 0, th)$mu_mu           # minus the information: -1/b
 ```
 
 The default `distrib_expected_hessian` reads the outer product of the
-score at each observation (`approx = "opg"`). For the Laplace location
-that product does not depend on the observation, so the default returns
-the information itself. For a component whose squared score varies with
-the response, the default is a per-observation estimate whose average
-over the sample estimates the information, and `approx = "bartlett"`
-takes the expectation exactly. See
+score at each observation (`method = expect_opg()`). For the Laplace
+location that product does not depend on the observation, so the default
+returns the information itself. For a component whose squared score
+varies with the response, the default is a per-observation estimate
+whose average over the sample estimates the information, and
+`method = expect_integrate(identity = "score")` takes the expectation
+exactly. See
 [`?laplace_distrib`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
 for the family that the package ships, written in $`\sigma`$ in place of
 $`b`$.

@@ -11,7 +11,7 @@ with one component per pair \((a,b)\) and per pair \((c,d)\)."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,8 +56,7 @@ with one component per pair \((a,b)\) and per pair \((c,d)\).</p>
 <span>  <span class="va">y</span>,</span>
 <span>  <span class="va">theta</span>,</span>
 <span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameter"</span>, <span class="st">"link"</span><span class="op">)</span>,</span>
-<span>  approx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"opg"</span>, <span class="st">"bartlett"</span>, <span class="st">"integrate"</span>, <span class="st">"mc"</span><span class="op">)</span>,</span>
-<span>  nsim <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -83,9 +82,14 @@ with one component per pair \((a,b)\) and per pair \((c,d)\).</p>
 <dd><p><code>"parameter"</code> or <code>"link"</code>.</p></dd>
 
 
-<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Accepted for symmetry with
-<code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>; the methods ignore them.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from
+<a href="ExpectMethod.html">ExpectMethod</a>, as for <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>. An object returns
+the second derivative of the matrix that the method defines; with
+<code><a href="expect_integrate.html">expect_integrate()</a></code> or <code><a href="expect_mc.html">expect_mc()</a></code> and <code>identity = "hessian"</code> it needs
+observed derivatives of order 4, and <code><a href="expect_opg.html">expect_opg()</a></code> returns the exact
+second derivative of the outer product of the scores at the data. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

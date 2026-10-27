@@ -13,7 +13,7 @@ quantities that do.
 ## Usage
 
 ``` r
-mv_summary(object, level = object@level)
+mv_summary(object, level = object@level, information = NULL)
 ```
 
 ## Arguments
@@ -31,6 +31,16 @@ mv_summary(object, level = object@level)
 
   The confidence level, a single number strictly inside \\(0, 1)\\.
   Defaults to the fit's own `level`. Anything else is an error.
+
+- information:
+
+  `NULL` (the default), an
+  [`observed_info()`](https://statmodels7.github.io/distributions7/reference/observed_info.md)
+  object or an
+  [`expected_info()`](https://statmodels7.github.io/distributions7/reference/expected_info.md)
+  object, which selects the information matrix whose inverse gives the
+  standard errors; see
+  [`vcov.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md).
 
 ## Value
 

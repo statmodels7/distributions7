@@ -8,8 +8,8 @@ own expectation: \$\$\mathbb{E}\left\[\ell^{(\alpha\alpha)}\right\] =
 \mathbb{E}\left\[\ell^{(\alpha\beta)}\right\] = \psi'(\alpha+\beta),
 \qquad \mathbb{E}\left\[\ell^{(\beta\beta)}\right\] =
 \psi'(\alpha+\beta) - \psi'(\beta).\$\$ The expectation is exact, so the
-method does not average, integrate or simulate; it ignores `approx` and
-`nsim` and reads `y` only for its length.
+method does not average, integrate or simulate, and it reads `y` only
+for its length.
 
 The consequence for fitting is that Fisher scoring and Newton's method
 take the same step on the parameter scale, because both invert the same
@@ -41,15 +41,14 @@ the two shapes are not orthogonal at any parameter setting.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because the expectation is exact. It is accepted so that the
-  signature matches the generic's, where it selects between the
-  Bartlett, quadrature, Monte Carlo and outer-product routes.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -110,8 +109,8 @@ identical(distrib_expected_hessian(d, y, th), distrib_hessian(d, y, th))
 
 set.seed(8)
 z <- distrib_rng(d, 2000, th)
-rbind(newton = coef(fit_distrib(d, z, method = "newton")),
-      fisher = coef(fit_distrib(d, z, method = "fisher")))
+rbind(newton = coef(fit_distrib(d, z, method = optimizers7::newton())),
+      fisher = coef(fit_distrib(d, z, method = fisher_scoring())))
 #>           alpha     beta
 #> newton 1.927355 4.827894
 #> fisher 1.927355 4.827894

@@ -11,7 +11,7 @@ evaluation points actually lie rather than by the nominal step."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,8 +87,8 @@ evaluation points actually lie rather than by the nominal step.</p>
 other side is \(h_- = x - (x - h)\). Both may differ from \(h\), and
 from each other, by the rounding of the evaluation points, at most one unit
 of the last place. With them
-$$f'(x) \approx \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
-  f''(x) \approx \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
+$$f'(x) \method \frac{f(x+h) - f(x-h)}{h_+ + h_-}, \qquad
+  f''(x) \method \frac{2\{h_- f(x+h) - (h_+ + h_-) f(x) + h_+ f(x-h)\}}
   {h_+ h_- (h_+ + h_-)},$$
 which are the uniform formulas wherever \(h_+ = h_- = h\). The
 correction is of the order of one unit of the last place over the step. It

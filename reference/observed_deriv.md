@@ -3,15 +3,19 @@
 Routes to
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
-or
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+or
+[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
 according to `order`, so that code working at an order fixed only at run
-time does not have to branch. The strategies of
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-other than `"opg"` read it: `"integrate"` and `"mc"` for the quantity
-that they average, and `"bartlett"` for the lower orders that its
-identity multiplies together.
+time does not have to branch. The methods of
+[expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+read it:
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+and
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+for the quantity that they average, and the score identity for the lower
+orders that it multiplies together.
 
 ## Usage
 
@@ -35,7 +39,7 @@ observed_deriv(distrib, y, theta, order)
 
 - order:
 
-  The derivative order, a single integer from 1 to 4. Anything else
+  The derivative order, a single integer from 1 to 5. Anything else
   signals an error.
 
 ## Value
@@ -50,7 +54,7 @@ name.
 
 ## See also
 
-[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md),
+[expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md),
 which reads it;
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 and

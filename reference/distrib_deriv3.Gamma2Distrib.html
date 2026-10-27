@@ -16,8 +16,7 @@ their digits when \(\alpha\) is large. Every component of this order carries
 \(\psi_2\), the second derivative of the digamma function.
 With expected = TRUE the expectations are returned, obtained by replacing
 \(Y\) with \(\mu\) and \(\log Y\) with \(\psi(\alpha) -
-\log\lambda\). Both routes are closed form, so the method uses no quadrature
-and ignores approx and nsim."><meta property="og:description" content="Computes the four distinct third derivatives of the gamma log-density with
+\log\lambda\). Both routes are closed form and the method runs no quadrature."><meta property="og:description" content="Computes the four distinct third derivatives of the gamma log-density with
 respect to \(\mu\) and \(\sigma^2\), in closed form. With
 \(\alpha = \mu^2/\sigma^2\) and \(z = y/\mu\) the log-density is
 \(\ell = G(\alpha) + \alpha e(\mu) - \log y\), with
@@ -34,8 +33,7 @@ their digits when \(\alpha\) is large. Every component of this order carries
 \(\psi_2\), the second derivative of the digamma function.
 With expected = TRUE the expectations are returned, obtained by replacing
 \(Y\) with \(\mu\) and \(\log Y\) with \(\psi(\alpha) -
-\log\lambda\). Both routes are closed form, so the method uses no quadrature
-and ignores approx and nsim."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\log\lambda\). Both routes are closed form and the method runs no quadrature."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -43,7 +41,7 @@ and ignores approx and nsim."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,8 +91,7 @@ their digits when \(\alpha\) is large. Every component of this order carries
 \(\psi_2\), the second derivative of the digamma function.</p>
 <p>With <code>expected = TRUE</code> the expectations are returned, obtained by replacing
 \(Y\) with \(\mu\) and \(\log Y\) with \(\psi(\alpha) -
-\log\lambda\). Both routes are closed form, so the method uses no quadrature
-and ignores <code>approx</code> and <code>nsim</code>.</p>
+\log\lambda\). Both routes are closed form and the method runs no quadrature.</p>
     </div>
 
 
@@ -127,13 +124,11 @@ model are returned in place of the observed values. Defaults to <code>FALSE</cod
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because a closed form is available for both the
-observed and the expected values.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

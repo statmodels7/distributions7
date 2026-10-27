@@ -53,25 +53,28 @@ fit_distrib(
 
 - method:
 
-  How to optimize. The argument takes one of three things:
+  An object that selects how to optimize. The argument takes one of two
+  kinds of object:
 
   - [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
     the default: Newton's method with the expected information in place
-    of the observed Hessian, the object carrying how that information is
-    to be obtained when the family has no closed form for it. Passing an
-    `approx` where the family does have one signals an error rather than
-    ignoring it;
+    of the observed Hessian, the object carrying the method
+    ([ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md))
+    that obtains that information. With `method = NULL` the closed form
+    of the family is used where there is one, and
+    [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+    otherwise; a method given there is used for every family. Fisher
+    scoring falls back to BFGS if it fails to converge;
 
   - an optimizer object from optimizers7, used as given and receiving
     the analytical gradient and the observed Hessian, so that
-    `method = lbfgs(criterion = crit_grad(1e-12))` selects the algorithm
-    and the stopping rule together. A stopping rule that the optimizer
-    cannot evaluate is rejected here, where the message can name it;
+    `method = optimizers7::lbfgs(criterion = optimizers7::crit_grad(1e-12))`
+    selects the algorithm and the stopping rule together. A stopping
+    rule that the optimizer cannot evaluate is rejected here, where the
+    message can name it. An optimizer that the caller chose is never
+    replaced.
 
-  - one of the strings `"fisher"`, `"newton"` or `"bfgs"`, short names
-    for the three ready-made strategies. The first two fall back to BFGS
-    if they fail to converge; an optimizer that the caller chose is
-    never replaced.
+  Any other value, a character string included, signals an error.
 
   The iteration limit and the stopping rule belong to the method and are
   set there, on an optimizer through its own `maxit` and `criterion` and
@@ -79,7 +82,7 @@ fit_distrib(
   [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
   through the same two arguments. For
   [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
-  and the three strings the rule is
+  the rule is
   [`optimizers7::crit_grad()`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
   at its default tolerance when the method does not set a rule; an
   optimizer object keeps its own default.
@@ -151,11 +154,19 @@ unscaled at the optimum.
 
 ## Standard errors and intervals
 
-The variance matrix on the link scale is the inverse information at
-\\\hat\eta\\. The expected information is used when the family writes it
-out, unless `method = "newton"` is requested; otherwise the observed
-Hessian, which every family has, is used. The delta method carries it to
-the parameter scale, \$\$\widehat{\mathrm{Var}}(\hat\theta) =
+The variance matrix on the link scale is the inverse of the observed
+information at \\\hat\eta\\, the negative Hessian of the log-likelihood,
+for every family and every `method`. The matrix with which the optimizer
+ended is not used, and another matrix is selected after the fit with the
+`information` argument of
+[`vcov.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md),
+[`print.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/print.distrib_fit.md)
+and
+[`confint.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.md)
+(see
+[information_objects](https://statmodels7.github.io/distributions7/reference/information_objects.md)).
+The delta method carries the matrix to the parameter scale,
+\$\$\widehat{\mathrm{Var}}(\hat\theta) =
 J\\\widehat{\mathrm{Var}}(\hat\eta)\\J, \qquad J =
 \mathrm{diag}\\\left(\frac{dg^{-1}}{d\eta}\Big\|\_{\hat\eta}\right).\$\$
 Intervals are built symmetrically on the link scale, \\\hat\eta \pm
@@ -172,12 +183,12 @@ that converged have reached the best objective found so far, to within
 negative log-likelihood. A single converged run is not taken as the
 answer because it may be a degenerate stationary point. Where fewer than
 two runs converge every start is tried and the best is kept. Fisher
-scoring and Newton's method fall back to BFGS from the same starting
-value when they fail; an optimizer that the caller named does not. Among
-the runs that finish, a run that converged beats one that did not
-converge and the objective breaks ties, so the fit reports the best run
-and not the last. A run of a discrete family whose log-likelihood came
-back positive is discarded before any comparison.
+scoring falls back to BFGS from the same starting value when it fails;
+an optimizer object that the caller supplied does not. Among the runs
+that finish, a run that converged beats one that did not converge and
+the objective breaks ties, so the fit reports the best run and not the
+last. A run of a discrete family whose log-likelihood came back positive
+is discarded before any comparison.
 
 ## See also
 
@@ -204,7 +215,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 5 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

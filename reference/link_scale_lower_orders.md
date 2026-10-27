@@ -8,7 +8,7 @@ expects.
 ## Usage
 
 ``` r
-link_scale_lower_orders(distrib, y, theta, expected, order)
+link_scale_lower_orders(distrib, y, theta, expected, order, method = NULL)
 ```
 
 ## Arguments
@@ -32,6 +32,14 @@ link_scale_lower_orders(distrib, y, theta, expected, order)
 - order:
 
   The order to assemble, 1 to 5.
+
+- method:
+
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md),
+  passed to the expected derivatives of the lower orders so that every
+  order of a call is obtained by the same method. It is read only when
+  `expected` is `TRUE`.
 
 ## Value
 

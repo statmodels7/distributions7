@@ -6,9 +6,10 @@ returns and that
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 accepts through its `method` argument. It holds the two things that a
 Fisher scoring run needs and that an ordinary optimizer cannot carry:
-how the expected information is obtained when the family has no closed
-form for it, and the stopping rule and iteration budget that the run
-uses.
+the method that obtains the expected information, `NULL` or an object of
+class
+[ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md),
+and the stopping rule and iteration budget that the run uses.
 
 This page documents the raw S7 constructor, which validates nothing.
 Build one with
@@ -18,28 +19,20 @@ which checks all four arguments.
 ## Usage
 
 ``` r
-FisherScoring(
-  approx = character(0),
-  nsim = integer(0),
-  criterion = NULL,
-  maxit = NULL
-)
+FisherScoring(method = NULL, criterion = NULL, maxit = NULL)
 ```
 
 ## Arguments
 
-- approx:
+- method:
 
-  How the expectation is approximated when the family has no closed-form
-  expected information: one of `"opg"`, `"bartlett"`, `"integrate"` or
-  `"mc"`. Ignored by a family that has one, and
-  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-  rejects any value other than the default `"opg"` in that case.
-
-- nsim:
-
-  Monte Carlo sample size, a single positive number, read only when
-  `approx = "mc"` is in force.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+  that selects how the expected information is obtained. `NULL` takes
+  the closed form of the family where it has one and
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  otherwise; an object is used for every family, also for one that has
+  the closed form.
 
 - criterion:
 
@@ -55,25 +48,31 @@ FisherScoring(
 
 ## Value
 
-An S7 object of class `FisherScoring` with those four properties.
+An S7 object of class `FisherScoring` with the properties `method`
+(`NULL` or an object inheriting from
+[ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)),
+`criterion` and `maxit`.
 
 ## See also
 
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which builds and validates one;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
-which consumes it.
+which consumes it;
+[ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+for the class of the `method` property.
 
 ## Examples
 
 ``` r
-fs <- fisher_scoring(approx = "mc", nsim = 2000)
+fs <- fisher_scoring(method = expect_mc(nsim = 2000))
 fs
 #> Fisher scoring
-#>   expected information: mc (nsim = 2000)  [ignored when the family has a closed form]
-c(approx = fs@approx, nsim = fs@nsim)
-#> approx   nsim 
-#>   "mc" "2000" 
+#>   expected information: by Monte Carlo (nsim = 2000)
+fs@method@nsim
+#> [1] 2000
+is.null(fisher_scoring()@method)
+#> [1] TRUE
 
 # The defaults leave the stopping rule and the budget to the fit.
 d <- fisher_scoring()

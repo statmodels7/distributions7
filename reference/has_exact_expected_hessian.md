@@ -23,12 +23,12 @@ A single logical.
 
 ## Details
 
-The result determines whether the `approx` argument has any effect. A
+The result determines whether the `method` argument has any effect. A
 family with a closed form ignores it, and
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 rejects the argument in that case instead of accepting it and doing
 something else: the Laplace is the example that the package already
-documents, where `approx` has no effect at all because
+documents, where `method` has no effect at all because
 \\\mathcal{I}(\theta) = 1/b^{2}\\ is written out.
 
 The comparison goes through

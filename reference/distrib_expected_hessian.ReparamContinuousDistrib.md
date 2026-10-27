@@ -17,8 +17,7 @@ reparam_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 ```
@@ -45,13 +44,14 @@ reparam_expected_hessian(
   Either `"parameter"` (the default) or `"link"`, handled by the generic
   after this method has returned.
 
-- approx, nsim:
+- method:
 
-  Forwarded to the parent's
-  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-  and read only where the parent has no closed form for it; a parent
-  that writes its expected information out ignores both, as every such
-  family does.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the class, so this
+  method receives `NULL` and forwards `NULL` to the parent, which
+  returns its closed form where it has one. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

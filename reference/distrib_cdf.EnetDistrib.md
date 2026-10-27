@@ -13,8 +13,8 @@ tail from it as \\\log(1 - e^{\cdot})\\ with
 [`log1p()`](https://rdrr.io/r/base/Log.html); the requested tail is
 returned on the log scale or exponentiated, so the method does not
 subtract from one for `lower.tail = FALSE` or for `log.p = TRUE`. The
-denominator \\\Phi(-x)\\ is subnormal from \\x \approx 37.5\\ and zero
-beyond \\x \approx 38.5\\ in double precision, and \\x\\ reaches that at
+denominator \\\Phi(-x)\\ is subnormal from \\x \method 37.5\\ and zero
+beyond \\x \method 38.5\\ in double precision, and \\x\\ reaches that at
 ordinary values of \\\alpha\\: at \\\lambda = 20\\, \\\alpha = 0.995\\
 it is 63.
 

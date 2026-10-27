@@ -22,9 +22,14 @@ over the support for each observation.
 
   `"parameter"` or `"link"`.
 
-- approx, nsim:
+- method:
 
-  Unused.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -88,7 +93,7 @@ expectation is a combination of Poisson moments and its coefficients are
 polynomials in \\\mu\\ and \\1/\mu\\. The mixed entry of pig2 is zero at
 every order of that series, because the parametrization is orthogonal.
 
-The `approx` and `nsim` arguments are accepted and ignored.
+The `method` arguments are accepted and ignored.
 
 ## See also
 

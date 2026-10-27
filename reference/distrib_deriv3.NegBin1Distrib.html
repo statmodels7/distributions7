@@ -7,8 +7,7 @@ piece is \(G(\mu/\theta)\), and its mixed derivatives follow a recursion
 in the powers of \(r\) and the order of \(G\) that is run rather than
 solved.
 With expected = TRUE the method calls expected_derivative() instead: the
-expected third derivatives have no closed form. The method reads approx
-and nsim only in this case."><meta property="og:description" content="Computes the four distinct third derivatives of the NB1 log-likelihood in
+expected third derivatives have no closed form. The method reads method only in this case."><meta property="og:description" content="Computes the four distinct third derivatives of the NB1 log-likelihood in
 the mean \(\mu\) and the dispersion \(\theta\), in closed form,
 through negbin1_components(). In the size \(r = \mu/\theta\) the
 log-likelihood is \(G(r) + rB(\theta) + C(\theta)\), so the only composite
@@ -16,8 +15,7 @@ piece is \(G(\mu/\theta)\), and its mixed derivatives follow a recursion
 in the powers of \(r\) and the order of \(G\) that is run rather than
 solved.
 With expected = TRUE the method calls expected_derivative() instead: the
-expected third derivatives have no closed form. The method reads approx
-and nsim only in this case."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+expected third derivatives have no closed form. The method reads method only in this case."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +23,7 @@ and nsim only in this case."><meta property="og:image" content="https://statmode
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,8 +64,7 @@ piece is \(G(\mu/\theta)\), and its mixed derivatives follow a recursion
 in the powers of \(r\) and the order of \(G\) that is run rather than
 solved.</p>
 <p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code> instead: the
-expected third derivatives have no closed form. The method reads <code>approx</code>
-and <code>nsim</code> only in this case.</p>
+expected third derivatives have no closed form. The method reads <code>method</code> only in this case.</p>
     </div>
 
 
@@ -101,15 +98,13 @@ Defaults to <code>FALSE</code>.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>. It is read only when <code>expected = TRUE</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. It is read only when <code>expected = TRUE</code>. Defaults to
-<code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+It is read only when <code>expected</code> is <code>TRUE</code>: <code>NULL</code> selects
+<code><a href="expect_integrate.html">expect_integrate()</a></code>, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -1,5 +1,74 @@
 # Changelog
 
+## distributions7 0.90.0
+
+- How an expectation is obtained is an object of class `ExpectMethod`,
+  passed as `method` (the argument was `approx`):
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  (the outer product of the scores at the data),
+  `expect_integrate(identity = )` (the expectation computed by
+  quadrature or summation, with its tolerances as arguments) and
+  `expect_mc(nsim = , identity = )` (the expectation simulated).
+  `identity = "hessian"` takes the expectation of the derivative itself
+  and `identity = "score"` that of the products of lower derivatives
+  given by the Bartlett identity; `expect_bartlett()` is removed. The
+  default `method = NULL` is the family’s closed form where it has one
+  and
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  (order 2) or
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  (orders 3 and 4) otherwise. An explicit method is always used, also by
+  a family with a closed form. `identity = "hessian"` at order 2 on a
+  non-smooth parameter signals an error.
+
+- [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  at orders 3 and 4 is the sum over the observations of the products of
+  the score identity, with no integration. In the derivatives of the
+  expected information it returns the exact derivative of the matrix of
+  outer products at the data;
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  and
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+  return the derivative of the expectation.
+
+- `Information`,
+  [`observed_info()`](https://statmodels7.github.io/distributions7/reference/observed_info.md),
+  `expected_info(method = NULL)` and
+  [`default_information()`](https://statmodels7.github.io/distributions7/reference/default_information.md)
+  select the matrix behind the standard errors of a fit, after the fit
+  and independently of the method that computed it.
+  [`vcov()`](https://rdrr.io/r/stats/vcov.html),
+  [`confint()`](https://rdrr.io/r/stats/confint.html),
+  [`print()`](https://rdrr.io/r/base/print.html) and
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  of a fit take `information = NULL`: the observed information where
+  every parameter is twice differentiable
+  ([`params_order()`](https://statmodels7.github.io/distributions7/reference/params_order.md)),
+  the expected information otherwise, so that a Laplace or elastic-net
+  fit has finite standard errors.
+
+- `fit_distrib(method = )` takes
+  [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
+  or an optimizers7 optimizer object; `nsim` is an argument of
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+  only.
+
+## distributions7 0.89.0
+
+- The derivatives on the link scale read the inverse link’s derivatives
+  through
+  [`linkfunctions7::linkinv_derivs()`](https://statmodels7.github.io/linkfunctions7/reference/linkinv_derivs.html),
+  one call per parameter. For the log link `exp(eta)` is computed once
+  instead of once per order; the values are unchanged. Requires
+  linkfunctions7 0.6.0.
+
+- The bound test that every generic applies to the parameters runs as
+  one compiled pass over each double vector; the R expression, which
+  made four passes and allocated four logical vectors per parameter,
+  runs only to build the message when a value is outside its domain. At
+  n = 20000 the test costs 20 microseconds where it cost 270. The
+  messages are unchanged.
+
 ## distributions7 0.88.1
 
 - The expected information of pig1 and pig2 and its first and second

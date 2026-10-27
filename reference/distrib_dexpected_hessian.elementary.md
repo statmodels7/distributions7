@@ -25,9 +25,12 @@ on the link scale the result is carried across by
 
   `"parameter"` or `"link"`.
 
-- approx, nsim:
+- method:
 
-  Unused.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

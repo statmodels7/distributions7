@@ -29,19 +29,14 @@ is constant whenever the parent's expected Hessian is.
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the value that the method returns.
 
-- approx:
+- method:
 
-  Forwarded to the parent's
-  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-  and read only where the parent has no closed form for it; every other
-  block is an exact combination of the parent's density, score and
-  observed Hessian at zero.
-  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-  returns, for this class, the value that it returns for the parent.
-
-- nsim:
-
-  Forwarded for the same reason and under the same condition.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the class, so this
+  method receives `NULL` and forwards `NULL` to the parent, which
+  returns its closed form where it has one. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -53,7 +48,7 @@ A named list of numeric vectors of length `length(y)`, keyed as
 [`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md).
 The vectors are constant across observations when the parent's own
 expected information is constant, which is always true for a family that
-reaches this method with the default `approx = "opg"` and a closed-form
+reaches this method with the default `method = NULL` and a closed-form
 parent. If the parent's expected information is evaluated by an
 approximation, the vectors can vary by observation, because `h_orig_exp`
 is read at the actual `y` rather than at zero.
@@ -62,10 +57,10 @@ is read at the actual `y` rather than at zero.
 
 Because the information matrix is block diagonal, a hurdle model is
 cheap to fit: the two halves can be estimated independently, and the
-matrix inverts blockwise. `approx` and `nsim` are forwarded to the
-expected Hessian of the parent and are used only where the parent has no
-closed form. The remaining blocks are exact, and the whole expectation
-is exact when the parent's is.
+matrix inverts blockwise. `method` is `NULL` in this method and is
+forwarded as such to the expected Hessian of the parent, which returns
+its closed form where it has one. The remaining blocks are exact, and
+the whole expectation is exact when the parent's is.
 
 ## Notation
 

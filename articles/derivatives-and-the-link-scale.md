@@ -208,8 +208,8 @@ c(parameter = eh_par$sigma_sigma[1],
 and
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 also take `expected = TRUE`. Some distributions have closed-form
-expected derivatives; where they do not, the value is approximated by
-the strategy that the `approx` argument selects:
+expected derivatives; where they do not, the value is obtained by the
+method that the `method` argument selects:
 
 ``` r
 
@@ -227,19 +227,33 @@ distrib_deriv3(gamma2_distrib(), 0, list(mu = 3, sigma2 = 2), expected = TRUE)
 #> [1] 0.2638418
 ```
 
-The strategies are `"opg"`, `"bartlett"`, `"integrate"` and `"mc"`,
-trading speed against robustness. `"bartlett"` rests on the Bartlett
-identities: the outer product of gradients is their order-two case, and
-the general identity expresses an expected derivative of any order
-through products of lower-order ones. `"opg"` reads that outer product
-at each observation without taking an expectation, and `"integrate"` and
-`"mc"` average the observed derivative itself, by quadrature or by
-simulation. The default is `"opg"` for
+The methods are objects:
+[`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md),
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+and `expect_mc(nsim = 10000)`, trading speed against accuracy. An
+expected derivative has two expressions inside the expectation, the
+observed derivative itself (`identity = "hessian"`) and the Bartlett
+identity, which writes it through products of lower-order derivatives
+(`identity = "score"`; the outer product of gradients is its order-two
+case).
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+and
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+take the expectation of either, by quadrature or by simulation, and
+[`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+reads the score identity at each observation without taking an
+expectation. With `method = NULL`, the default, a family that has the
+expectation in closed form returns it; otherwise
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-and `"integrate"` for
+uses
+[`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+and
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 and
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md);
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+use
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md).
+An object is always used, also by a family with a closed form.
 [`?expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
 has the details.
 

@@ -12,8 +12,8 @@ square \\1/\sigma^2\\ almost surely, so \\\mathrm{Var} = 1/\sigma^2\\.
 The mixed entry vanishes because the family is symmetric about \\\mu\\,
 so \\\mathbb{E}\[\mathrm{sign}(r)\] = 0\\.
 
-Because the values do not depend on the data, `approx` and `nsim` are
-ignored. `y` is read only for its length.
+Because the values do not depend on the data, `y` is read only for its
+length.
 
 ## Arguments
 
@@ -38,19 +38,12 @@ ignored. `y` is read only for its length.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available. It is accepted so that
-  the signature matches the generic's. Of the strategies of the generic,
-  `"mc"` averages the observed second derivative over simulated draws
-  and would give 0 for the location; `"opg"`, `"bartlett"` and
-  `"integrate"` (which uses the Bartlett identity for a family with a
-  non-smooth parameter) read the product of scores and give
-  \\-1/\sigma^2\\.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -89,7 +82,7 @@ whose variance this is;
 which inverts this matrix and so fits this family where a Newton step
 could not; and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-for the generic and the strategies that it offers for a family with no
+for the generic and the methods that it offers for a family with no
 closed form.
 
 ## Examples

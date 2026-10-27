@@ -15,8 +15,8 @@ variance is \\\lambda^2\\. The mixed entry vanishes because
 \\\mathbb{E}\[\mathrm{sign}(r)\] = 0\\ by symmetry, and the rate entry
 equals its observed counterpart because that one carries no data.
 
-Because the values do not depend on the data, `approx` and `nsim` are
-ignored. `y` is read only for its length.
+Because the values do not depend on the data, `y` is read only for its
+length.
 
 ## Arguments
 
@@ -41,18 +41,12 @@ ignored. `y` is read only for its length.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available. It is accepted so that
-  the signature matches the generic's. As for
-  [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md),
-  the strategy `"mc"` of the generic, which averages the observed second
-  derivative over simulated draws, would give 0 in the location, while
-  `"opg"`, `"bartlett"` and `"integrate"` read the product of scores.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

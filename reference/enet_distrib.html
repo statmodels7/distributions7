@@ -23,7 +23,7 @@ Gaussian one."><meta property="og:image" content="https://statmodels7.github.io/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -145,7 +145,7 @@ rates, are cumulants of the density proportional to
 \(e^{-xs - s^2/2}\) on \(s &gt; 0\), computed from its moment ratios in
 a compiled kernel; the form \(G = x - 1/M\) would cancel for large
 \(x\), and each derivative built on it would lose more.</p></li>
-<li><p>\(\Phi(-x)\) underflows to zero beyond \(x \approx 38.5\), and the
+<li><p>\(\Phi(-x)\) underflows to zero beyond \(x \method 38.5\), and the
 distribution function and the quantile divide by it. At
 \(\lambda = 20\), \(\alpha = 0.995\) the argument is 63, so both work
 on the log scale, through <code>log.p</code> and <code>qnorm(..., log.p = TRUE)</code>.</p></li>

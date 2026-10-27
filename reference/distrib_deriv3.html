@@ -15,7 +15,7 @@ numerical_deriv3())."><meta property="og:image" content="https://statmodels7.git
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,8 +63,7 @@ differences of the highest order that the family implements itself (see
 <span>  <span class="va">theta</span>,</span>
 <span>  expected <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parameter"</span>, <span class="st">"link"</span><span class="op">)</span>,</span>
-<span>  approx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"integrate"</span>, <span class="st">"bartlett"</span>, <span class="st">"mc"</span>, <span class="st">"opg"</span><span class="op">)</span>,</span>
-<span>  nsim <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  method <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -99,15 +98,17 @@ predictors \(\eta = g(\theta)\) defined by <code>distrib@link_params</code>.
 See <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>How the expectation is approximated when <code>expected = TRUE</code>
-and the distribution has no closed-form expected third derivatives; ignored
-otherwise. The value is one of <code>"integrate"</code> (default), <code>"bartlett"</code>
-(equivalently <code>"opg"</code>) or <code>"mc"</code>. See <code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Monte Carlo sample size used when <code>approx = "mc"</code>. Defaults to 10000.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object that selects how the
+expectation is obtained; it is read only when <code>expected = TRUE</code>. With
+<code>NULL</code>, the closed form of the family is returned where the family has
+one, and <code><a href="expect_integrate.html">expect_integrate()</a></code> (with <code>identity = "hessian"</code>) is used
+otherwise. An object is always used, also for a family that has a closed
+form: <code><a href="expect_opg.html">expect_opg()</a></code> (the empirical sum of products of the score
+identity, with no expectation), <code><a href="expect_integrate.html">expect_integrate()</a></code> or <code><a href="expect_mc.html">expect_mc()</a></code>,
+the last two with <code>identity = "hessian"</code> or <code>identity = "score"</code>. Any
+other value, a character string included, signals an error.
+<a href="expected_derivative_methods.html">expected_derivative_methods</a> compares the methods.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

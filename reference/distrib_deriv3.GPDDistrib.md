@@ -33,10 +33,14 @@ Each of these comes from its own compiled kernel.
   [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
   for order five.
 
-- approx, nsim:
+- method:
 
-  Accepted for the generic's signature; the expectations are closed
-  forms.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -73,8 +77,7 @@ upper end of the support when \\\xi \< 0\\.
 The expected derivatives follow from \\V = (1 + \xi
 Y/\sigma)^{-1/\xi}\\, uniform on \\(0, 1)\\: each is a rational function
 of \\\xi\\ over \\\sigma^r\\. They exist for \\\xi \> -1/3\\ at order
-three and \\\xi \> -1/4\\ at order four, and are `NA` below; `approx`
-and `nsim` are not read.
+three and \\\xi \> -1/4\\ at order four, and are `NA` below;
 
 Outside the support, \\y \< 0\\ or \\1 + \xi y/\sigma \le 0\\, every
 component is `NaN`.

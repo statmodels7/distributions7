@@ -37,6 +37,20 @@ the degrees of freedom of a \\t\\, is printed after them.
   digits, and the tables are rounded to this many decimal places by
   [`base::round()`](https://rdrr.io/r/base/Round.html).
 
+- information:
+
+  `NULL` (the default), an
+  [`observed_info()`](https://statmodels7.github.io/distributions7/reference/observed_info.md)
+  object or an
+  [`expected_info()`](https://statmodels7.github.io/distributions7/reference/expected_info.md)
+  object, which selects the information matrix whose inverse gives the
+  standard errors and the intervals shown; see
+  [`vcov.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md).
+  `NULL` selects the default of the family (see
+  [information_objects](https://statmodels7.github.io/distributions7/reference/information_objects.md)).
+  A line under the header names the matrix whenever it is not the
+  observed information.
+
 - ...:
 
   Unused, accepted for compatibility with
@@ -66,8 +80,26 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 print(fit_distrib(d, y))
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
+#> Converged: yes (gradient (max-norm) < 1e-06)
+#> 
+#> Parameter scale:
+#>       Estimate Std. Error   2.5%  97.5%
+#> mu      2.0679     0.1356 1.8021 2.3338
+#> sigma   3.0327     0.0959 2.8505 3.2267
+#> 
+#> Link scale:
+#>       Estimate Std. Error   2.5%  97.5%
+#> mu      2.0679     0.1356 1.8021 2.3338
+#> sigma   1.1095     0.0316 1.0475 1.1714
+
+# Standard errors from the expected information instead.
+print(fit_distrib(d, y), information = expected_info())
+#> Maximum-likelihood fit: gaussian1
+#> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
 #> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 7 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
+#> Standard errors from the expected information.
 #> 
 #> Parameter scale:
 #>       Estimate Std. Error   2.5%  97.5%
@@ -85,17 +117,17 @@ print(fit_distrib(d, y))
 g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
 print(g, digits = 3)
 #> Maximum-likelihood fit: gamma2
-#> Observations: 300   Log-likelihood: -403   AIC: 810   BIC: 817
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 7 ms
+#> Observations: 300   Log-likelihood: -401   AIC: 806   BIC: 813
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 10 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
 #>        Estimate Std. Error  2.5% 97.5%
-#> mu        1.948      0.059 1.836 2.067
-#> sigma2    1.045      0.103 0.861 1.269
+#> mu        1.944      0.059 1.833 2.063
+#> sigma2    1.028      0.102 0.847 1.248
 #> 
 #> Link scale:
 #>        Estimate Std. Error   2.5% 97.5%
-#> mu        0.667      0.030  0.607 0.726
-#> sigma2    0.044      0.099 -0.149 0.238
+#> mu        0.665      0.030  0.606 0.724
+#> sigma2    0.028      0.099 -0.165 0.222
 ```

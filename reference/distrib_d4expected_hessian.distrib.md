@@ -22,9 +22,11 @@ and signals an error where the family has no analytic second derivative.
 
   Either `"parameter"` or `"link"`.
 
-- approx, nsim:
+- method:
 
-  Unused.
+  `NULL`: the generic handles an object before dispatching on the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

@@ -8,10 +8,9 @@ dispersion component carries \(\psi_3(y+\theta) - \psi_3(\theta)\), with
 The mean component is formed from the same bracket as at third order.
 With expected = TRUE the expectations are returned. The pure dispersion
 one needs \(\mathbb{E}[\psi_3(Y+\theta)]\), summed over the support as at
-third order; the rest need only \(\mathbb{E}[Y] = \mu\). approx and
-nsim are ignored either way. As at third order, the kernel performs the
-cancellation at large \(\theta\) symbolically
-(distrib_deriv3.NegBin2Distrib())."><meta property="og:description" content="Computes the five distinct fourth derivatives of the negative binomial
+third order; the rest need only \(\mathbb{E}[Y] = \mu\). As at third
+order, the kernel performs the cancellation at large \(\theta\)
+symbolically (distrib_deriv3.NegBin2Distrib())."><meta property="og:description" content="Computes the five distinct fourth derivatives of the negative binomial
 log-mass with respect to \(\mu\) and \(\theta\), in closed form, by the
 same route that the third order takes: the components involving the mean are
 rational in \((\mu, \theta)\) and linear in \(y\), and the pure
@@ -20,10 +19,9 @@ dispersion component carries \(\psi_3(y+\theta) - \psi_3(\theta)\), with
 The mean component is formed from the same bracket as at third order.
 With expected = TRUE the expectations are returned. The pure dispersion
 one needs \(\mathbb{E}[\psi_3(Y+\theta)]\), summed over the support as at
-third order; the rest need only \(\mathbb{E}[Y] = \mu\). approx and
-nsim are ignored either way. As at third order, the kernel performs the
-cancellation at large \(\theta\) symbolically
-(distrib_deriv3.NegBin2Distrib())."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+third order; the rest need only \(\mathbb{E}[Y] = \mu\). As at third
+order, the kernel performs the cancellation at large \(\theta\)
+symbolically (distrib_deriv3.NegBin2Distrib())."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +29,7 @@ cancellation at large \(\theta\) symbolically
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,10 +71,9 @@ dispersion component carries \(\psi_3(y+\theta) - \psi_3(\theta)\), with
 <p>The mean component is formed from the same bracket as at third order.</p>
 <p>With <code>expected = TRUE</code> the expectations are returned. The pure dispersion
 one needs \(\mathbb{E}[\psi_3(Y+\theta)]\), summed over the support as at
-third order; the rest need only \(\mathbb{E}[Y] = \mu\). <code>approx</code> and
-<code>nsim</code> are ignored either way. As at third order, the kernel performs the
-cancellation at large \(\theta\) symbolically
-(<code><a href="distrib_deriv3.NegBin2Distrib.html">distrib_deriv3.NegBin2Distrib()</a></code>).</p>
+third order; the rest need only \(\mathbb{E}[Y] = \mu\). As at third
+order, the kernel performs the cancellation at large \(\theta\)
+symbolically (<code><a href="distrib_deriv3.NegBin2Distrib.html">distrib_deriv3.NegBin2Distrib()</a></code>).</p>
     </div>
 
 
@@ -109,13 +106,11 @@ model are returned in place of the observed values. Defaults to <code>FALSE</cod
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because the expected values are closed form or exact
-sums.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -19,8 +19,7 @@ With `expected = TRUE` the expectations under the model are returned in
 closed form, as at third order: \\1/(15\sigma^4)\\ for `mu_mu_mu_mu`,
 \\(\pi^2-60)/(45\sigma^4)\\ for `mu_mu_sigma_sigma`,
 \\(7\pi^4-600\pi^2-810)/(225\sigma^4)\\ for `sigma_sigma_sigma_sigma`,
-and zero for the two components odd in \\z\\. `approx` and `nsim` are
-ignored.
+and zero for the two components odd in \\z\\.
 
 ## Arguments
 
@@ -50,15 +49,14 @@ ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  One of `"integrate"` (the default), `"bartlett"`, `"mc"` or `"opg"`.
-  Ignored, because a closed form is available for the expected values;
-  accepted so that the signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

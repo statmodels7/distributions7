@@ -9,7 +9,7 @@ $$\mathbb{E}\left[\ell^{(\alpha\alpha)}\right] = \psi'(\alpha+\beta)
       \mathbb{E}\left[\ell^{(\beta\beta)}\right] = \psi'(\alpha+\beta)
         - \psi'(\beta).$$
 The expectation is exact, so the method does not average, integrate or
-simulate; it ignores approx and nsim and reads y only for its length.
+simulate, and it reads y only for its length.
 The consequence for fitting is that Fisher scoring and Newton's method take
 the same step on the parameter scale, because both invert the same matrix.
 On the link scale they differ, because the chain rule there adds a term in
@@ -25,7 +25,7 @@ $$\mathbb{E}\left[\ell^{(\alpha\alpha)}\right] = \psi'(\alpha+\beta)
       \mathbb{E}\left[\ell^{(\beta\beta)}\right] = \psi'(\alpha+\beta)
         - \psi'(\beta).$$
 The expectation is exact, so the method does not average, integrate or
-simulate; it ignores approx and nsim and reads y only for its length.
+simulate, and it reads y only for its length.
 The consequence for fitting is that Fisher scoring and Newton's method take
 the same step on the parameter scale, because both invert the same matrix.
 On the link scale they differ, because the chain rule there adds a term in
@@ -39,7 +39,7 @@ two shapes are not orthogonal at any parameter setting."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@ $$\mathbb{E}\left[\ell^{(\alpha\alpha)}\right] = \psi'(\alpha+\beta)
       \mathbb{E}\left[\ell^{(\beta\beta)}\right] = \psi'(\alpha+\beta)
         - \psi'(\beta).$$
 The expectation is exact, so the method does not average, integrate or
-simulate; it ignores <code>approx</code> and <code>nsim</code> and reads <code>y</code> only for its length.</p>
+simulate, and it reads <code>y</code> only for its length.</p>
 <p>The consequence for fitting is that Fisher scoring and Newton's method take
 the same step on the parameter scale, because both invert the same matrix.
 On the link scale they differ, because the chain rule there adds a term in
@@ -115,14 +115,11 @@ positive.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because the expectation is exact. It is accepted so that
-the signature matches the generic's, where it selects between the Bartlett,
-quadrature, Monte Carlo and outer-product routes.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -181,8 +178,8 @@ and the precision does have an observed Hessian that reads the data;
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">2000</span>, <span class="va">th</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>newton <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, method <span class="op">=</span> <span class="st">"newton"</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>      fisher <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, method <span class="op">=</span> <span class="st">"fisher"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>newton <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, method <span class="op">=</span> <span class="fu">optimizers7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">newton</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>      fisher <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">z</span>, method <span class="op">=</span> <span class="fu"><a href="fisher_scoring.html">fisher_scoring</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           alpha     beta</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> newton 1.927355 4.827894</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> fisher 1.927355 4.827894</span>

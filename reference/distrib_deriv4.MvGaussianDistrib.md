@@ -38,13 +38,12 @@ and the fourth derivative of the log-determinant.
   parameter scale and the generic applies the link scale to its result.
   Every link of this family is the identity, so the two coincide.
 
-- approx:
+- method:
 
-  Not read: the expectation is exact.
-
-- nsim:
-
-  Not read, for the same reason.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -59,7 +58,7 @@ constant.
 ## Details
 
 With `expected = TRUE` the expectation is exact, for the reason given at
-order three. `approx` and `nsim` are not read.
+order three.
 
 ## Notation
 

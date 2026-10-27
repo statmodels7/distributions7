@@ -33,16 +33,12 @@ constant across rows and `y` is used only for its row count.
   parameter scale and the generic applies the link scale to its result.
   The two differ here, because `nu` carries a log link by default.
 
-- approx:
+- method:
 
-  Ignored: the expectation is exact, so the method does not consult an
-  approximation strategy.
-  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-  rejects a `fisher_scoring(approx =)` for this family for that reason.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

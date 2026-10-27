@@ -20,7 +20,9 @@ is the same assembly written in R.
 With `expected = TRUE` the value is an expectation, and there it is not
 closed form: the call routes to
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md),
-so `approx` and `nsim` are read.
+which takes the expectation by `method`,
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+when `method` is `NULL`.
 
 ## Arguments
 
@@ -49,15 +51,16 @@ so `approx` and `nsim` are read.
   Either `"parameter"`, the default, or `"link"`. The transformation is
   applied in the generic's body.
 
-- approx:
+- method:
 
-  One of `"integrate"`, `"bartlett"`, `"mc"` or `"opg"`, read only when
-  `expected = TRUE`.
-
-- nsim:
-
-  A single positive integer, the Monte Carlo sample size used when
-  `approx = "mc"`. Defaults to `10000`.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  It is read only when `expected` is `TRUE`: `NULL` selects
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md),
+  and an object selects its own route. The generic applies an object
+  before dispatching on the family, so that the object is used also by a
+  family that has a closed form. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

@@ -85,7 +85,8 @@ an error. The sums are accumulated as the scalar registry accumulates
 them. A parent that the registry does not cover, or that is not a
 location-scale family on the real line, is integrated by
 [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-with `approx = "integrate"` at order 0 and by
+with `method = expect_integrate()` at order 0 (with `identity = "score"`
+when the family has a non-smooth parameter) and by
 [`numerical_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_dexpected_hessian.md)
 at order 1; at order 2 the call signals an error. Where the parent's
 mass beyond the fold is below the square of the machine epsilon, the

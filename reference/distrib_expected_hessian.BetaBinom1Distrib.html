@@ -6,20 +6,18 @@ an exact finite sum of \(n+1\) terms rather than a quadrature or a
 sample. The summand is the observed Hessian of
 distrib_hessian.BetaBinom1Distrib(), which comes from the direct sums for
 \(\sigma &amp;lt; 0.1\) and from the shapes above.
-approx and nsim are therefore ignored; every strategy returns the same
-three numbers. The compiled kernel is sequential: it evaluates the sum once
-for each run of consecutive observations that share their parameters, and
-threads is ignored."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model,
+The compiled kernel is sequential: it evaluates the sum once for each run
+of consecutive observations that share their parameters, and threads is
+ignored."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model,
 \(\sum_{k=0}^{n} P(Y=k)\, \partial^2\ell/\partial\theta_i\partial\theta_j\)
 evaluated at \(y = k\). Because the support is finite, the expectation is
 an exact finite sum of \(n+1\) terms rather than a quadrature or a
 sample. The summand is the observed Hessian of
 distrib_hessian.BetaBinom1Distrib(), which comes from the direct sums for
 \(\sigma &amp;lt; 0.1\) and from the shapes above.
-approx and nsim are therefore ignored; every strategy returns the same
-three numbers. The compiled kernel is sequential: it evaluates the sum once
-for each run of consecutive observations that share their parameters, and
-threads is ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The compiled kernel is sequential: it evaluates the sum once for each run
+of consecutive observations that share their parameters, and threads is
+ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +25,7 @@ threads is ignored."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,10 +65,9 @@ an exact finite sum of \(n+1\) terms rather than a quadrature or a
 sample. The summand is the observed Hessian of
 <code><a href="distrib_hessian.BetaBinom1Distrib.html">distrib_hessian.BetaBinom1Distrib()</a></code>, which comes from the direct sums for
 \(\sigma &lt; 0.1\) and from the shapes above.</p>
-<p><code>approx</code> and <code>nsim</code> are therefore ignored; every strategy returns the same
-three numbers. The compiled kernel is sequential: it evaluates the sum once
-for each run of consecutive observations that share their parameters, and
-<code>threads</code> is ignored.</p>
+<p>The compiled kernel is sequential: it evaluates the sum once for each run
+of consecutive observations that share their parameters, and <code>threads</code> is
+ignored.</p>
     </div>
 
 
@@ -98,14 +95,11 @@ recycled. <code>mu</code> must lie in \((0, 1)\) and <code>sigma</code> be stric
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored here, because the expectation is an exact sum. It is
-accepted so that the signature matches the generic's, where it selects
-between <code>"bartlett"</code>, <code>"integrate"</code>, <code>"mc"</code> and <code>"opg"</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored here, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -151,11 +145,10 @@ expectation of, <code><a href="distrib_gradient.BetaBinom1Distrib.html">distrib_
 <span class="r-in"><span><span class="va">eh</span><span class="op">$</span><span class="va">mu_sigma</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9716737</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The strategy argument has no effect, because the expectation is an exact</span></span></span>
+<span class="r-in"><span><span class="co"># The method argument has no effect, because the expectation is an exact</span></span></span>
 <span class="r-in"><span><span class="co"># sum.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>, <span class="va">th</span>, approx <span class="op">=</span> <span class="st">"mc"</span>,</span></span>
-<span class="r-in"><span>                                       nsim <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">10</span>, <span class="va">th</span>, method <span class="op">=</span> <span class="fu"><a href="expect_mc.html">expect_mc</a></span><span class="op">(</span>nsim <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

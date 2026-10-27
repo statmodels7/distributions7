@@ -5,9 +5,6 @@ density is an exponential family, so the information in those rates is
 the Hessian of the log normalizing constant, which the observed Hessian
 also uses.
 
-`approx` and `nsim` are accepted and ignored because the answer is
-exact.
-
 ## Arguments
 
 - distrib:
@@ -29,14 +26,14 @@ exact.
   Either `"parameter"`, the default, or `"link"`. The transformation is
   applied in the generic's body.
 
-- approx:
+- method:
 
-  Ignored: the answer is exact. It is accepted so that the signature
-  matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -141,7 +138,11 @@ rbind(alpha = c(1 - 1e-8, 0.5, 1e-8),
 #> information    4 2.525135 2e+00
 #> limit          4       NA 2e+00
 
-# The strategy arguments are ignored because the answer is exact.
-identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
-#> [1] TRUE
+# A method object replaces the closed form by an estimate; at the kink in
+# mu the Monte Carlo estimate is built on the score.
+set.seed(1)
+distrib_expected_hessian(d, 0, th,
+                         method = expect_mc(nsim = 2000,
+                                            identity = "score"))$mu_mu
+#> [1] -2.565098
 ```

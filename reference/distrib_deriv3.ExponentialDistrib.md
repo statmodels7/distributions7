@@ -5,8 +5,7 @@ respect to the mean, in closed form: \$\$\dfrac{\partial^3
 \ell}{\partial \mu^3} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.\$\$ With
 `expected = TRUE` the expectation is returned, obtained by substituting
 \\\mathbb{E}\[Y\] = \mu\\, which gives \\4/\mu^3\\. Both routes are
-closed form, so quadrature is not run and `approx` and `nsim` are
-ignored.
+closed form, so quadrature is not run.
 
 The family has one parameter, so there is one component, where a
 two-parameter family carries four at this order.
@@ -39,14 +38,14 @@ two-parameter family carries four at this order.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both the observed and
-  the expected value.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

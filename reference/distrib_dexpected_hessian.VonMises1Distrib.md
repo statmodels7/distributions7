@@ -23,9 +23,14 @@ order performs the computation from numericals7's compiled Bessel ratio.
 
   `"parameter"` or `"link"`.
 
-- approx, nsim:
+- method:
 
-  Unused.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

@@ -10,9 +10,8 @@ more \(\mu\) vanishes and the sum is short. This route is taken for
 \(\sigma \ge 0.1\); for \(\sigma &amp;lt; 0.1\) the components are the direct
 sums over the integer shifts given on betabinom1_distrib(), which keep
 their accuracy as \(\sigma\) goes to zero (betabinom1_components()).
-With expected = TRUE the method returns the expectation as an exact
-finite sum over the support, from betabinom1_expected(). approx and
-nsim are ignored on both branches."><meta property="og:description" content="Computes the four distinct third derivatives of the beta-binomial log-mass
+With expected = TRUE the method returns the expectation as an exact finite
+sum over the support, from betabinom1_expected()."><meta property="og:description" content="Computes the four distinct third derivatives of the beta-binomial log-mass
 in \(\mu\) and \(\sigma\), in closed form. The shape parametrization
 carries closed derivatives at every order, and each of them is a difference
 of polygammas. This parametrization is that one at
@@ -23,9 +22,8 @@ more \(\mu\) vanishes and the sum is short. This route is taken for
 \(\sigma \ge 0.1\); for \(\sigma &amp;lt; 0.1\) the components are the direct
 sums over the integer shifts given on betabinom1_distrib(), which keep
 their accuracy as \(\sigma\) goes to zero (betabinom1_components()).
-With expected = TRUE the method returns the expectation as an exact
-finite sum over the support, from betabinom1_expected(). approx and
-nsim are ignored on both branches."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+With expected = TRUE the method returns the expectation as an exact finite
+sum over the support, from betabinom1_expected()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -33,7 +31,7 @@ nsim are ignored on both branches."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,9 +75,8 @@ more \(\mu\) vanishes and the sum is short. This route is taken for
 \(\sigma \ge 0.1\); for \(\sigma &lt; 0.1\) the components are the direct
 sums over the integer shifts given on <code><a href="betabinom1_distrib.html">betabinom1_distrib()</a></code>, which keep
 their accuracy as \(\sigma\) goes to zero (<code><a href="betabinom1_components.html">betabinom1_components()</a></code>).</p>
-<p>With <code>expected = TRUE</code> the method returns the expectation as an exact
-finite sum over the support, from <code><a href="betabinom1_expected.html">betabinom1_expected()</a></code>. <code>approx</code> and
-<code>nsim</code> are ignored on both branches.</p>
+<p>With <code>expected = TRUE</code> the method returns the expectation as an exact finite
+sum over the support, from <code><a href="betabinom1_expected.html">betabinom1_expected()</a></code>.</p>
     </div>
 
 
@@ -112,13 +109,11 @@ model is returned in place of the value at the data. Defaults to <code>FALSE</co
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because the expectation is an exact finite sum. It is
-accepted so that the signature matches the generic's.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

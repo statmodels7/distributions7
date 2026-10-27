@@ -9,8 +9,8 @@ u_j^{-2}\Big\], \qquad W = \mathbb{E}\Big\[\sum\_{j\<Y}
 \Big(\frac{1}{1+\theta} - \frac{\mu^2}{u_j^2}\Big)\Big\].\$\$ \\A\\ and
 \\W\\ are not available in closed form. Each is summed against the exact
 mass until the terms fall below a tolerance, so this is a truncated
-exact sum and not a quadrature or a simulation. `approx` and `nsim` are
-ignored, and `y` is read only for its length.
+exact sum and not a quadrature or a simulation. `y` is read only for its
+length.
 
 The mixed entry does not vanish, so the mean and the dispersion are not
 orthogonal in this family; in
@@ -41,14 +41,14 @@ families, so this difference does not come from the parametrization.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored. The surviving expectation is a truncated exact sum. It is
-  accepted so that the signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

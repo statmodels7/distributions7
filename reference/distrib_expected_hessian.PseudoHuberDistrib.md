@@ -30,9 +30,14 @@ its first and second derivatives in the parameters.
   One of `"parameter"` (the default) or `"link"`, matched by
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html).
 
-- approx, nsim:
+- method:
 
-  Ignored.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -69,8 +74,6 @@ The law is symmetric about \\\mu\\, so every component carrying \\\mu\\
 an odd number of times vanishes. The rule's nodes are symmetric about
 zero, so the two halves of such an integral cancel up to rounding, and
 the entry comes back as zero to about \\10^{-20}\\.
-
-`approx` and `nsim` are accepted for the generic's sake and ignored.
 
 ## See also
 

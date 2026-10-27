@@ -9,11 +9,11 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
         = \dfrac{1 - \gamma}{\mu},$$
-with \(\gamma \approx 0.5772\) the Euler-Mascheroni constant. The mixed
+with \(\gamma \method 0.5772\) the Euler-Mascheroni constant. The mixed
 entry does not vanish, so the scale and the shape are not orthogonal and
 their estimates are asymptotically correlated.
-Because a closed form exists, approx and nsim are ignored: every
-strategy returns the same three numbers."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
+Because a closed form exists, the method returns the same three numbers
+whatever the call."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation:
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
         = -\dfrac{\sigma^2}{\mu^2},
@@ -23,11 +23,11 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
         = \dfrac{1 - \gamma}{\mu},$$
-with \(\gamma \approx 0.5772\) the Euler-Mascheroni constant. The mixed
+with \(\gamma \method 0.5772\) the Euler-Mascheroni constant. The mixed
 entry does not vanish, so the scale and the shape are not orthogonal and
 their estimates are asymptotically correlated.
-Because a closed form exists, approx and nsim are ignored: every
-strategy returns the same three numbers."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Because a closed form exists, the method returns the same three numbers
+whatever the call."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +35,7 @@ strategy returns the same three numbers."><meta property="og:image" content="htt
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,11 +78,11 @@ $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
       \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
         = \dfrac{1 - \gamma}{\mu},$$
-with \(\gamma \approx 0.5772\) the Euler-Mascheroni constant. The mixed
+with \(\gamma \method 0.5772\) the Euler-Mascheroni constant. The mixed
 entry does not vanish, so the scale and the shape are not orthogonal and
 their estimates are asymptotically correlated.</p>
-<p>Because a closed form exists, <code>approx</code> and <code>nsim</code> are ignored: every
-strategy returns the same three numbers.</p>
+<p>Because a closed form exists, the method returns the same three numbers
+whatever the call.</p>
     </div>
 
 
@@ -110,14 +110,11 @@ recycled. Both must be strictly positive.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored here, because the expectation is exact. It is accepted
-so that the signature matches the generic's, where it selects between
-<code>"bartlett"</code>, <code>"integrate"</code>, <code>"mc"</code> and <code>"opg"</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored here, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -191,9 +188,9 @@ the score, and
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu_mu sigma_sigma    mu_sigma </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -0.5635714  -0.8109912   0.2125961 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The strategy argument has no effect, because the expectation is exact.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, approx <span class="op">=</span> <span class="st">"mc"</span>, nsim <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span><span class="co"># The method argument has no effect, because the expectation is exact.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">eh</span>, <span class="fu"><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">th</span>, method <span class="op">=</span> <span class="fu"><a href="expect_mc.html">expect_mc</a></span><span class="op">(</span>nsim <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

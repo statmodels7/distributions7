@@ -18,15 +18,7 @@ indefinite. The expected information at the same point is \\-400 I\\.
 ## Usage
 
 ``` r
-fit_hess_matrix(
-  distrib,
-  y,
-  theta,
-  expected,
-  approx = "opg",
-  nsim = 10000,
-  threads = 1L
-)
+fit_hess_matrix(distrib, y, theta, expected, method = NULL, threads = 1L)
 ```
 
 ## Arguments
@@ -50,17 +42,16 @@ fit_hess_matrix(
   Logical of length 1, with no default. `TRUE` assembles the expected
   Hessian and `FALSE` the observed one.
 
-- approx:
+- method:
 
-  How the expectation is approximated for a family with no closed form
-  for it: `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`.
-  It is read only when `expected` is `TRUE` and the family has no exact
-  expression; ignored otherwise.
-
-- nsim:
-
-  Monte Carlo sample size, a single positive integer, read only when
-  `approx = "mc"` is in force. Defaults to 10000.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+  that selects how the expected information is obtained: `NULL` takes
+  the closed form of the family where it has one and
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  otherwise, and an object is used for every family; see
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
+  It is read only when `expected` is `TRUE`.
 
 - threads:
 
@@ -81,4 +72,4 @@ and
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
 which supply the components;
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
-where `approx` and `nsim` are set.
+where `method` is set.

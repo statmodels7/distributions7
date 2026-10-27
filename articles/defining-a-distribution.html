@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -188,9 +188,10 @@ this is a tensor-product stencil on the log-density (see
 <code><a href="../reference/numerical_deriv3.html">numerical_deriv3()</a></code> / <code><a href="../reference/numerical_deriv4.html">numerical_deriv4()</a></code>);</li>
 <li>
 <code>distrib_expected_hessian</code>: by default
-(<code>approx = "opg"</code>) minus the outer product of the score, read
-at each observation; <code>approx = "bartlett"</code>,
-<code>"integrate"</code> and <code>"mc"</code> take an expectation;</li>
+(<code>method = NULL</code>, which is <code><a href="../reference/expect_opg.html">expect_opg()</a></code> for a
+family without a closed form) minus the outer product of the score, read
+at each observation; <code><a href="../reference/expect_integrate.html">expect_integrate()</a></code> and
+<code><a href="../reference/expect_mc.html">expect_mc()</a></code> take an expectation;</li>
 <li>the moments: numerical <code><a href="../reference/expectation.html">expectation()</a></code> of the relevant
 power.</li>
 </ul>
@@ -548,7 +549,7 @@ scale:</p>
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gaussian1</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 21 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 11 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -624,14 +625,15 @@ would give a degenerate zero:</p>
 <span><span class="fu"><a href="../reference/distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu</span>           <span class="co"># minus the information: -1/b^2</span></span>
 <span><span class="co">#&gt; [1] -0.25</span></span></code></pre></div>
 <p>The default <code>distrib_expected_hessian</code> reads the outer
-product of the score at each observation (<code>approx = "opg"</code>).
-For the Laplace location that product does not depend on the
-observation, so the default returns the information itself. For a
-component whose squared score varies with the response, the default is a
-per-observation estimate whose average over the sample estimates the
-information, and <code>approx = "bartlett"</code> takes the expectation
-exactly. See <code><a href="../reference/laplace_distrib.html">?laplace_distrib</a></code> for the family that the
-package ships, written in
+product of the score at each observation
+(<code>method = expect_opg()</code>). For the Laplace location that
+product does not depend on the observation, so the default returns the
+information itself. For a component whose squared score varies with the
+response, the default is a per-observation estimate whose average over
+the sample estimates the information, and
+<code>method = expect_integrate(identity = "score")</code> takes the
+expectation exactly. See <code><a href="../reference/laplace_distrib.html">?laplace_distrib</a></code> for the family
+that the package ships, written in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
 in place of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>.</p>

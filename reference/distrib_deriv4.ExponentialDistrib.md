@@ -5,7 +5,7 @@ respect to the mean, in closed form: \$\$\dfrac{\partial^4
 \ell}{\partial \mu^4} = \dfrac{6}{\mu^4} - \dfrac{24y}{\mu^5}.\$\$ With
 `expected = TRUE` the expectation is returned, obtained by substituting
 \\\mathbb{E}\[Y\] = \mu\\, which gives \\-18/\mu^4\\. Both routes are
-closed form, so `approx` and `nsim` are ignored.
+closed form.
 
 ## Arguments
 
@@ -35,14 +35,14 @@ closed form, so `approx` and `nsim` are ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both the observed and
-  the expected value.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

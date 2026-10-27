@@ -177,8 +177,8 @@ rbind(fitted  = coef(fit),
 
 # Every derivative past the first is free of the response, so Newton and
 # Fisher scoring invert the same matrix and reach the same point.
-rbind(newton = coef(fit_distrib(d, z, method = "newton")),
-      fisher = coef(fit_distrib(d, z, method = "fisher")))
+rbind(newton = coef(fit_distrib(d, z, method = optimizers7::newton())),
+      fisher = coef(fit_distrib(d, z, method = fisher_scoring())))
 #>           alpha     beta
 #> newton 1.927355 4.827894
 #> fisher 1.927355 4.827894

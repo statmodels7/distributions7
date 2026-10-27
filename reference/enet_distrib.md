@@ -95,7 +95,7 @@ other entry.
   kernel; the form \\G = x - 1/M\\ would cancel for large \\x\\, and
   each derivative built on it would lose more.
 
-- \\\Phi(-x)\\ underflows to zero beyond \\x \approx 38.5\\, and the
+- \\\Phi(-x)\\ underflows to zero beyond \\x \method 38.5\\, and the
   distribution function and the quantile divide by it. At \\\lambda =
   20\\, \\\alpha = 0.995\\ the argument is 63, so both work on the log
   scale, through `log.p` and `qnorm(..., log.p = TRUE)`.

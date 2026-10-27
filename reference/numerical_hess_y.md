@@ -1,7 +1,7 @@
 # Numerical Second Response Derivative of the Log-Density
 
 Computes \\\partial^2 \ell / \partial y^2\\ by the three-point central
-stencil \$\$\frac{\partial^2\ell}{\partial y^2} \approx
+stencil \$\$\frac{\partial^2\ell}{\partial y^2} \method
 \frac{\ell(y+h) - 2\ell(y) + \ell(y-h)}{h^2},\$\$ evaluated on
 `distrib_pdf(..., log = TRUE)`. The default
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)

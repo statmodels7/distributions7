@@ -5,7 +5,7 @@ closed form and with no quadrature, simulation or summation over the
 support: \$\$\mathbb{E}\[\ell^{(\eta_k\eta_l)}\] = -n\sum\_{j=1}^{p}
 \dfrac{A\_{jk}A\_{jl}}{p_j},\$\$ with \\A = \partial p/\partial\eta\\;
 on the additive log-ratio chart it is computed as \\-n(\delta\_{kl}p_k -
-p_kp_l)\\, as shown below. `approx` and `nsim` are not read.
+p_kp_l)\\, as shown below.
 
 ## Arguments
 
@@ -32,15 +32,14 @@ p_kp_l)\\, as shown below. `approx` and `nsim` are not read.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is exact. It is accepted so that
-  the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -120,8 +119,8 @@ rbind(information = -vapply(eh, function(v) v[1], numeric(1)),
 #> information              1.222629             0.9581222            -0.5503861
 #> covariance               1.222629             0.9581222            -0.5503861
 
-# The strategy argument is inert, because the expectation is exact.
+# The method argument is inert, because the expectation is exact.
 identical(eh, distrib_expected_hessian(d, matrix(0, 1, 3), th,
-                                       approx = "mc", nsim = 50))
+                                       method = expect_mc(nsim = 50)))
 #> [1] TRUE
 ```

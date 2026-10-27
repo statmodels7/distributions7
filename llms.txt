@@ -206,8 +206,16 @@ The optimization itself is delegated to
 package, which brings its own stopping rule;
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which is Newton’s method with the expected information and which records
-how that information is approximated when the family has no closed form
-for it; or one of the names `"fisher"`, `"newton"` and `"bfgs"`.
+how that information is obtained. By default the closed form of the
+family is used where there is one, and the outer product of the scores
+otherwise; an object
+([`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md),
+[`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+or
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md))
+passed as the `method` argument of
+[`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
+replaces that choice for every family.
 
 ``` r
 
@@ -586,14 +594,51 @@ response and of the distribution function.
   : A Resolved Kernel for One Parameter's Link-Scale Derivatives
 - [`distrib_scalar_route()`](https://statmodels7.github.io/distributions7/reference/distrib_scalar_route.md)
   : The Scalar Route of a Distribution
-- [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
-  : Strategies for Expected Derivatives
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
   : Whether a Family's Expected Information Is Written Out
 - [`expected_hessian_costly()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_costly.md)
   : Is a Family's Exact Expected Information Costly to Compute?
 - [`has_exact_deriv4()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.md)
   : Whether a Family Supplies Its Own Fourth Derivative
+
+## Methods for an expectation
+
+The objects that select how an expected derivative is obtained (computed
+by quadrature, simulated or estimated from the sample), and the page
+that compares them.
+
+- [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+  : Methods for the Expectation of a Derivative
+- [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  : The Outer Product of the Scores as the Expected Information
+- [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  : Integration Against the Density as the Expected Derivative
+- [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+  : Monte Carlo as the Expected Derivative
+- [`ExpectMethod()`](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+  [`ExpectOPG()`](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+  [`ExpectIntegrate()`](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+  [`ExpectMC()`](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md)
+  : S7 Classes for the Method of an Expectation
+
+## Information matrices
+
+The objects that select the observed or the expected information as the
+matrix whose inverse gives the standard errors of a fit, and the page
+that compares them.
+
+- [`information_objects`](https://statmodels7.github.io/distributions7/reference/information_objects.md)
+  : Information Matrices
+- [`observed_info()`](https://statmodels7.github.io/distributions7/reference/observed_info.md)
+  : The Observed Information
+- [`expected_info()`](https://statmodels7.github.io/distributions7/reference/expected_info.md)
+  : The Expected (Fisher) Information
+- [`default_information()`](https://statmodels7.github.io/distributions7/reference/default_information.md)
+  : The Default Information of a Family
+- [`Information()`](https://statmodels7.github.io/distributions7/reference/Information.md)
+  [`ObservedInfo()`](https://statmodels7.github.io/distributions7/reference/Information.md)
+  [`ExpectedInfo()`](https://statmodels7.github.io/distributions7/reference/Information.md)
+  : S7 Classes for the Information Matrix
 
 ## Estimation
 
@@ -2656,6 +2701,15 @@ transforms that make it work on a divergent density.
 - [`check_distrib_mv()`](https://statmodels7.github.io/distributions7/reference/check_distrib_mv.md)
   : Validate a Multivariate Distribution
 
+- [`check_information()`](https://statmodels7.github.io/distributions7/reference/check_information.md)
+  : Check That an Argument Is an Information Object
+
+- [`check_kink_identity()`](https://statmodels7.github.io/distributions7/reference/check_kink_identity.md)
+  : Stop at the Hessian Identity of a Family With a Kink
+
+- [`check_method()`](https://statmodels7.github.io/distributions7/reference/check_method.md)
+  : Check That an Argument Is an Expectation Method
+
 - [`check_not_stacked()`](https://statmodels7.github.io/distributions7/reference/check_not_stacked.md)
   : Reject the Composition of Two Zero Wrappers
 
@@ -2728,6 +2782,9 @@ transforms that make it work on a divergent density.
   : The Analytic Derivatives of the Expected Information, on Either
   Scale
 
+- [`dexpected_by_method()`](https://statmodels7.github.io/distributions7/reference/dexpected_by_method.md)
+  : Derivatives of the Expected Information Under an Explicit Method
+
 - [`dexpected_chain()`](https://statmodels7.github.io/distributions7/reference/dexpected_chain.md)
   : The Chain Rule for the Expected Information's Derivatives
 
@@ -2739,11 +2796,23 @@ transforms that make it work on a divergent density.
   : The Fourth Derivative of the Expected Information Through a
   Reparametrization
 
+- [`dexpected_components()`](https://statmodels7.github.io/distributions7/reference/dexpected_components.md)
+  : The Components of a Derivative of the Expected Information
+
+- [`dexpected_evaluate()`](https://statmodels7.github.io/distributions7/reference/dexpected_evaluate.md)
+  : Evaluate Polynomials of Observed Derivatives by a Method
+
 - [`dexpected_link()`](https://statmodels7.github.io/distributions7/reference/dexpected_link.md)
   : The Derivatives of the Link-Scale Expected Information
 
 - [`dexpected_link_higher()`](https://statmodels7.github.io/distributions7/reference/dexpected_link_higher.md)
   : The Derivatives of the Link-Scale Expected Information, Any Order
+
+- [`poly_base()`](https://statmodels7.github.io/distributions7/reference/dexpected_poly.md)
+  [`poly_d()`](https://statmodels7.github.io/distributions7/reference/dexpected_poly.md)
+  [`poly_order()`](https://statmodels7.github.io/distributions7/reference/dexpected_poly.md)
+  [`poly_eval()`](https://statmodels7.github.io/distributions7/reference/dexpected_poly.md)
+  : Polynomial Algebra of Observed Derivatives
 
 - [`dir_b_index()`](https://statmodels7.github.io/distributions7/reference/dir_b_index.md)
   : The Position of a Second-Derivative Block
@@ -3444,17 +3513,23 @@ transforms that make it work on a divergent density.
 - [`expected_by_mc()`](https://statmodels7.github.io/distributions7/reference/expected_by_mc.md)
   : Expected Derivatives by Monte Carlo
 
+- [`expected_by_method()`](https://statmodels7.github.io/distributions7/reference/expected_by_method.md)
+  : Expected Derivative by the Route of a Method
+
 - [`expected_by_opg()`](https://statmodels7.github.io/distributions7/reference/expected_by_opg.md)
-  : The Information as the Outer Product of the Observed Scores
+  : The Empirical Outer Product of the Scores
 
 - [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
-  : Dispatch an Expected-Derivative Strategy
+  : Compute an Expected Derivative by a Method
 
 - [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
   : Whether a Family's Expected Information Is Written Out
 
 - [`expected_hessian_exact.distrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.distrib.md)
   : Expected Information Read from the Class of Its Method
+
+- [`explicit_method()`](https://statmodels7.github.io/distributions7/reference/explicit_method.md)
+  : Whether an Expectation Method Replaces the Family's Own Route
 
 - [`fd_is_reliable()`](https://statmodels7.github.io/distributions7/reference/fd_is_reliable.md)
   : Observations at Which the Finite-Difference Reference Can Be Trusted
@@ -3505,8 +3580,14 @@ transforms that make it work on a divergent density.
 - [`fit_hess_matrix()`](https://statmodels7.github.io/distributions7/reference/fit_hess_matrix.md)
   : Summed Hessian on the Link Scale, as a Matrix
 
+- [`fit_inference()`](https://statmodels7.github.io/distributions7/reference/fit_inference.md)
+  : Standard Errors and Intervals From a Link-Scale Variance Matrix
+
 - [`fit_loglik()`](https://statmodels7.github.io/distributions7/reference/fit_loglik.md)
   : Total Log-Likelihood
+
+- [`fit_report()`](https://statmodels7.github.io/distributions7/reference/fit_report.md)
+  : Standard Errors and Intervals of a Fit for a Chosen Information
 
 - [`fit_score()`](https://statmodels7.github.io/distributions7/reference/fit_score.md)
   : Summed Score on the Link Scale
@@ -3626,6 +3707,9 @@ transforms that make it work on a divergent density.
 
 - [`index_partitions()`](https://statmodels7.github.io/distributions7/reference/index_partitions.md)
   : Set Partitions of a Multi-Index
+
+- [`integration_settings()`](https://statmodels7.github.io/distributions7/reference/integration_settings.md)
+  : The Integration Settings in Force
 
 - [`inverse_link_derivs()`](https://statmodels7.github.io/distributions7/reference/inverse_link_derivs.md)
   : Inverse-Link Derivatives for Every Parameter
@@ -4051,6 +4135,15 @@ transforms that make it work on a divergent density.
 - [`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
   : Memoize a Ratio Function on Its Block
 
+- [`method_error()`](https://statmodels7.github.io/distributions7/reference/method_error.md)
+  : Error Message for a Method That Is Not an Object
+
+- [`method_label()`](https://statmodels7.github.io/distributions7/reference/method_label.md)
+  : Description of an Expectation Method
+
+- [`method_nsim()`](https://statmodels7.github.io/distributions7/reference/method_nsim.md)
+  : Monte Carlo Sample Size of an Expectation Method
+
 - [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
   : Mixed Derivatives by One Stencil on the Highest Analytical Quantity
 
@@ -4092,6 +4185,9 @@ transforms that make it work on a divergent density.
 
 - [`mv_entry_index()`](https://statmodels7.github.io/distributions7/reference/mv_entry_index.md)
   : Distinct Entries of a Symmetric Matrix, and Their Labels
+
+- [`mv_expected_sampled()`](https://statmodels7.github.io/distributions7/reference/mv_expected_sampled.md)
+  : Expected Derivatives of a Multivariate Distribution, by Sampling
 
 - [`mv_flat_theta()`](https://statmodels7.github.io/distributions7/reference/mv_flat_theta.md)
   : Require Scalar Parameters, and Flatten Them
@@ -4265,6 +4361,9 @@ transforms that make it work on a divergent density.
 - [`observed_deriv()`](https://statmodels7.github.io/distributions7/reference/observed_deriv.md)
   : Observed Derivatives of a Given Order
 
+- [`observed_getter()`](https://statmodels7.github.io/distributions7/reference/observed_getter.md)
+  : Observed Derivatives by Index Tuple
+
 - [`order_indices()`](https://statmodels7.github.io/distributions7/reference/order_indices.md)
   : Multi-Indices of a Given Order, as Parameter Names
 
@@ -4334,8 +4433,14 @@ transforms that make it work on a divergent density.
 - [`power_negative_transform()`](https://statmodels7.github.io/distributions7/reference/power_negative_transform.md)
   : Even Power of a Negative Variable
 
+- [`print.ExpectMethod`](https://statmodels7.github.io/distributions7/reference/print.ExpectMethod.md)
+  : Print an Expectation Method
+
 - [`print.FisherScoring`](https://statmodels7.github.io/distributions7/reference/print.FisherScoring.md)
   : Print a Fisher Scoring Specification
+
+- [`print.Information`](https://statmodels7.github.io/distributions7/reference/print.Information.md)
+  : Print an Information Object
 
 - [`print.distrib`](https://statmodels7.github.io/distributions7/reference/print.distrib.md)
   :
@@ -4438,8 +4543,20 @@ transforms that make it work on a divergent density.
 - [`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)
   : The Parent's Parameters at the New Ones
 
+- [`resolve_information()`](https://statmodels7.github.io/distributions7/reference/resolve_information.md)
+  : Resolve the Information Argument
+
+- [`resolve_method()`](https://statmodels7.github.io/distributions7/reference/resolve_method.md)
+  : Resolve the Default Method of an Expected Derivative
+
+- [`route_expected()`](https://statmodels7.github.io/distributions7/reference/route_expected.md)
+  : Route an Explicit Expectation Method
+
 - [`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
   : Run a Check, Turning an Error Into a Failure
+
+- [`same_information()`](https://statmodels7.github.io/distributions7/reference/same_information.md)
+  : Whether Two Information Objects Select the Same Matrix
 
 - [`scale_only_cross2_method()`](https://statmodels7.github.io/distributions7/reference/scale_only_cross2_method.md)
   : The Scale Component of the Response Curvature's Derivative
@@ -4450,11 +4567,20 @@ transforms that make it work on a divergent density.
 - [`scale_only_theta2_methods()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2_methods.md)
   : The Mixed Grid of a Family With No Location
 
+- [`score_identity_plan()`](https://statmodels7.github.io/distributions7/reference/score_identity_plan.md)
+  : Index Tuples and Partitions of the Score Identity
+
+- [`score_identity_terms()`](https://statmodels7.github.io/distributions7/reference/score_identity_terms.md)
+  : The Score Identity Evaluated at Observations
+
 - [`separable_deriv()`](https://statmodels7.github.io/distributions7/reference/separable_deriv.md)
   : Partial Derivatives of a Product of a Location Term and a Scale Term
 
 - [`series_rows()`](https://statmodels7.github.io/distributions7/reference/series_rows.md)
   : Batched Series Summation with Rejection
+
+- [`set_integration_settings()`](https://statmodels7.github.io/distributions7/reference/set_integration_settings.md)
+  : Set the Integration Settings of an Approximation
 
 - [`simplex_map_tensors()`](https://statmodels7.github.io/distributions7/reference/simplex_map_tensors.md)
   : Derivative Arrays of a Simplex-Valued Map

@@ -8,8 +8,8 @@ model, in closed form and with no quadrature or simulation:
 information is \\1/(\mu(1+\mu))\\, the reciprocal of the variance, so it
 is smaller than a Poisson's \\1/\mu\\ at the same mean.
 
-Because the value does not depend on the data, `approx` and `nsim` are
-ignored. `y` is read only for its length.
+Because the value does not depend on the data, `y` is read only for its
+length.
 
 ## Arguments
 
@@ -33,14 +33,14 @@ ignored. `y` is read only for its length.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available. It is accepted so that
-  the signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

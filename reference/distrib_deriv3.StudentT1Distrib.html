@@ -3,21 +3,19 @@
 log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed values
 are closed form and run in a compiled kernel decomposed over the elements of
 the output, so they do not depend on the thread count.
-The expected values are closed forms too: under the model
-\(1/(1 + z^2/\nu)\) follows a beta distribution with parameters
-\(\nu/2\) and \(1/2\), so the expectation of every component is a
-rational function of \(\nu\) plus the derivatives of
-\(\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)\). approx and nsim
-are accepted for the generic's signature and ignored."><meta property="og:description" content="Computes the ten distinct third derivatives of the location-scale Student t
+The expected values are closed forms too: under the model \(1/(1 +
+z^2/\nu)\) follows a beta distribution with parameters \(\nu/2\) and
+\(1/2\), so the expectation of every component is a rational function of
+\(\nu\) plus the derivatives of \(\log\Gamma((\nu+1)/2) -
+\log\Gamma(\nu/2)\)."><meta property="og:description" content="Computes the ten distinct third derivatives of the location-scale Student t
 log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed values
 are closed form and run in a compiled kernel decomposed over the elements of
 the output, so they do not depend on the thread count.
-The expected values are closed forms too: under the model
-\(1/(1 + z^2/\nu)\) follows a beta distribution with parameters
-\(\nu/2\) and \(1/2\), so the expectation of every component is a
-rational function of \(\nu\) plus the derivatives of
-\(\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)\). approx and nsim
-are accepted for the generic's signature and ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+The expected values are closed forms too: under the model \(1/(1 +
+z^2/\nu)\) follows a beta distribution with parameters \(\nu/2\) and
+\(1/2\), so the expectation of every component is a rational function of
+\(\nu\) plus the derivatives of \(\log\Gamma((\nu+1)/2) -
+\log\Gamma(\nu/2)\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -25,7 +23,7 @@ are accepted for the generic's signature and ignored."><meta property="og:image"
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,12 +60,11 @@ are accepted for the generic's signature and ignored."><meta property="og:image"
 log-density in \(\mu\), \(\sigma\) and \(\nu\). The observed values
 are closed form and run in a compiled kernel decomposed over the elements of
 the output, so they do not depend on the thread count.</p>
-<p>The expected values are closed forms too: under the model
-\(1/(1 + z^2/\nu)\) follows a beta distribution with parameters
-\(\nu/2\) and \(1/2\), so the expectation of every component is a
-rational function of \(\nu\) plus the derivatives of
-\(\log\Gamma((\nu+1)/2) - \log\Gamma(\nu/2)\). <code>approx</code> and <code>nsim</code>
-are accepted for the generic's signature and ignored.</p>
+<p>The expected values are closed forms too: under the model \(1/(1 +
+z^2/\nu)\) follows a beta distribution with parameters \(\nu/2\) and
+\(1/2\), so the expectation of every component is a rational function of
+\(\nu\) plus the derivatives of \(\log\Gamma((\nu+1)/2) -
+\log\Gamma(\nu/2)\).</p>
     </div>
 
 
@@ -100,9 +97,11 @@ model is returned in place of the value at the data. Defaults to <code>FALSE</co
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Accepted for the generic's signature; the expectations
-are closed forms.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

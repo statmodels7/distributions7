@@ -11,7 +11,7 @@ them is computed by its own compiled kernel."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,9 +78,11 @@ expectation under the model is returned. Defaults to <code>FALSE</code>.</p></dd
 generic for orders three and four and by <code><a href="deriv5_scale.html">deriv5_scale()</a></code> for order five.</p></dd>
 
 
-<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Accepted for the generic's signature; the expectations
-are closed forms.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -100,19 +102,17 @@ and five.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>With \(k = d/p\) and \(U = p\log(y/a)\), the log-density is
-$$\ell = \log p - \log y + kU - e^{U} - \log\Gamma(k),$$
-and \(e^{U} = (y/a)^p\) is a gamma variable with shape \(k\) and unit
-rate. Every component is a closed form derived offline and written out: a
-polynomial in \(U\) and \(e^{U}\) whose coefficients depend
-only on \((d, p)\), multiplied by \(a^{-r}\) for \(r\) derivatives
-in \(a\). The coefficients contain the polygamma functions at
-\(k + 1\), through
-\(\psi^{(n)}(k) = \psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}\), so that the
-poles in \(1/k\) which the derivatives combine cancel in the closed form
-and not in floating point. The expected derivatives are polynomials in the
-central moments of \(U\), whose cumulants are the polygamma functions at
-\(k\); <code>approx</code> and <code>nsim</code> are not read.</p>
+    <p>With \(k = d/p\) and \(U = p\log(y/a)\), the log-density is $$\ell =
+\log p - \log y + kU - e^{U} - \log\Gamma(k),$$ and \(e^{U} = (y/a)^p\) is
+a gamma variable with shape \(k\) and unit rate. Every component is a
+closed form derived offline and written out: a polynomial in \(U\) and
+\(e^{U}\) whose coefficients depend only on \((d, p)\), multiplied by
+\(a^{-r}\) for \(r\) derivatives in \(a\). The coefficients contain
+the polygamma functions at \(k + 1\), through \(\psi^{(n)}(k) =
+\psi^{(n)}(k+1) + (-1)^{n+1} n!/k^{n+1}\), so that the poles in \(1/k\)
+which the derivatives combine cancel in the closed form and not in floating
+point. The expected derivatives are polynomials in the central moments of
+\(U\), whose cumulants are the polygamma functions at \(k\);</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

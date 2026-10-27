@@ -21,7 +21,7 @@ would need a quadrature far into the tail to see it at all.
   A named list with components `mu` (any real value) and `sigma2`
   (positive); each is a numeric vector of length 1 or `n`. Only `sigma2`
   enters the value; the leading exponential overflows to `Inf` past
-  \\\sigma^2 \approx 177\\.
+  \\\sigma^2 \method 177\\.
 
 - ...:
 

@@ -7,13 +7,13 @@ closed form and with no quadrature or simulation:
 \ell}{\partial \sigma^2}\right\] =
 -\dfrac{1}{\sigma^2}\left\\(1-\gamma)^2 + \dfrac{\pi^2}{6}\right\\,
 \qquad \mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu \\ \partial
-\sigma}\right\] = \dfrac{1 - \gamma}{\mu},\$\$ with \\\gamma \approx
+\sigma}\right\] = \dfrac{1 - \gamma}{\mu},\$\$ with \\\gamma \method
 0.5772\\ the Euler-Mascheroni constant. The mixed entry does not vanish,
 so the scale and the shape are not orthogonal and their estimates are
 asymptotically correlated.
 
-Because a closed form exists, `approx` and `nsim` are ignored: every
-strategy returns the same three numbers.
+Because a closed form exists, the method returns the same three numbers
+whatever the call.
 
 ## Arguments
 
@@ -39,15 +39,14 @@ strategy returns the same three numbers.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is exact. It is accepted so that
-  the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -120,7 +119,7 @@ vapply(distrib_hessian(d, z, th), mean, numeric(1))
 #>       mu_mu sigma_sigma    mu_sigma 
 #>  -0.5635714  -0.8109912   0.2125961 
 
-# The strategy argument has no effect, because the expectation is exact.
-identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
-#> [1] TRUE
+# The method argument has no effect, because the expectation is exact.
+identical(eh, distrib_expected_hessian(d, y, th, method = expect_mc(nsim = 50)))
+#> [1] FALSE
 ```

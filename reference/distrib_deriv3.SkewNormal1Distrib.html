@@ -14,7 +14,7 @@ on \(s &amp;gt; 0\), so that the kernel never forms a difference of large
 numbers.
 With expected = TRUE the value is an expectation, computed numerically by
 expected_derivative() from the same kind of integrals as the expected
-information. The arguments approx and nsim are used only in this case."><meta property="og:description" content="Computes the ten third derivatives of the log-density in closed form, in a
+information."><meta property="og:description" content="Computes the ten third derivatives of the log-density in closed form, in a
 compiled kernel. With \(t = \alpha z\) and \(R(t) = \phi(t)/\Phi(t)\)
 the inverse Mills ratio, \(R' = -R(t+R)\), so every derivative of
 \(\log\Phi(t)\) is a polynomial in \(t\) and \(R\). For
@@ -29,7 +29,7 @@ on \(s &amp;gt; 0\), so that the kernel never forms a difference of large
 numbers.
 With expected = TRUE the value is an expectation, computed numerically by
 expected_derivative() from the same kind of integrals as the expected
-information. The arguments approx and nsim are used only in this case."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+information."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -37,7 +37,7 @@ information. The arguments approx and nsim are used only in this case."><meta pr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,7 @@ on \(s &gt; 0\), so that the kernel never forms a difference of large
 numbers.</p>
 <p>With <code>expected = TRUE</code> the value is an expectation, computed numerically by
 <code><a href="expected_derivative.html">expected_derivative()</a></code> from the same kind of integrals as the expected
-information. The arguments <code>approx</code> and <code>nsim</code> are used only in this case.</p>
+information.</p>
     </div>
 
 
@@ -111,7 +111,7 @@ numeric vector of length 1 or of the length of <code>y</code>.</p></dd>
 <dt id="arg-expected">expected<a class="anchor" aria-label="anchor" href="#arg-expected"></a></dt>
 <dd><p>Logical of length 1. When <code>FALSE</code>, the default, the observed
 derivatives at <code>y</code> are returned from the compiled kernel. When <code>TRUE</code> the
-expectation is approximated by the strategy in <code>approx</code>.</p></dd>
+expectation is approximated as <code>method</code> states.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
@@ -120,17 +120,13 @@ transformation is applied in the generic's body, so this method always
 returns the parameter scale.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code>, <code>"bartlett"</code>, <code>"mc"</code> or <code>"opg"</code>, the
-strategy for the expectation. It is read only when <code>expected = TRUE</code>; the first
-is the default and integrates the observed kernel against the density by
-quadrature.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the Monte Carlo sample size used when
-<code>approx = "mc"</code>. The other strategies do not read it. Defaults to
-<code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+It is read only when <code>expected</code> is <code>TRUE</code>: <code>NULL</code> selects
+<code><a href="expect_integrate.html">expect_integrate()</a></code>, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -191,11 +187,10 @@ ratio and \(\ell\) the log-density of one observation.</p>
 <span class="r-in"><span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 0 0 0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expectation is numerical here, and the strategy is read.</span></span></span>
+<span class="r-in"><span><span class="co"># The expectation is numerical here, and the method is read.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>integrate <span class="op">=</span> <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">alpha_alpha_alpha</span>,</span></span>
-<span class="r-in"><span>  mc <span class="op">=</span> <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span>, approx <span class="op">=</span> <span class="st">"mc"</span>,</span></span>
-<span class="r-in"><span>                      nsim <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">$</span><span class="va">alpha_alpha_alpha</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  mc <span class="op">=</span> <span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span>, method <span class="op">=</span> <span class="fu"><a href="expect_mc.html">expect_mc</a></span><span class="op">(</span>nsim <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">alpha_alpha_alpha</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  integrate         mc </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.01970008 0.02005633 </span>
 </code></pre></div>

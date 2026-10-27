@@ -12,8 +12,8 @@ logit is the canonical link, so iteratively reweighted least squares is
 Fisher scoring and Newton's method at once. The generic composes the
 observed value, which loses relative accuracy where \(|\eta|\) is large
 (see distrib_hessian.BinomialDistrib()); the value returned here does not.
-Because the value does not depend on the data, approx and nsim are
-ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed second derivative under the model,
+Because the value does not depend on the data, y is read only for its
+length."><meta property="og:description" content="Returns the expectation of the observed second derivative under the model,
 in closed form and with no quadrature or simulation:
 $$\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)},$$
 which follows from \(\mathbb{E}[Y] = n\mu\) in
@@ -26,8 +26,8 @@ logit is the canonical link, so iteratively reweighted least squares is
 Fisher scoring and Newton's method at once. The generic composes the
 observed value, which loses relative accuracy where \(|\eta|\) is large
 (see distrib_hessian.BinomialDistrib()); the value returned here does not.
-Because the value does not depend on the data, approx and nsim are
-ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Because the value does not depend on the data, y is read only for its
+length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +35,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,8 +81,8 @@ logit is the canonical link, so iteratively reweighted least squares is
 Fisher scoring and Newton's method at once. The generic composes the
 observed value, which loses relative accuracy where \(|\eta|\) is large
 (see <code><a href="distrib_hessian.BinomialDistrib.html">distrib_hessian.BinomialDistrib()</a></code>); the value returned here does not.</p>
-<p>Because the value does not depend on the data, <code>approx</code> and <code>nsim</code> are
-ignored. <code>y</code> is read only for its length.</p>
+<p>Because the value does not depend on the data, <code>y</code> is read only for its
+length.</p>
     </div>
 
 
@@ -109,13 +109,11 @@ of length 1 or of the length of <code>y</code>. <code>mu</code> must lie in \((0
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because a closed form is available. It is accepted so
-that the signature matches the generic's.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

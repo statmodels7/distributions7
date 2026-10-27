@@ -12,8 +12,8 @@ nothing to expand. Since \(\partial\log I_0(\kappa(\rho))/\partial\rho
 components are computed by a compiled kernel, which reads
 \(\kappa'\), \(\kappa''\) and \(\kappa'''\) from
 \(A'\), \(A''\) and \(A'''\) by the inverse function rule.
-With expected = TRUE the method calls expected_derivative(), which is
-the one place on this page where approx and nsim are read."><meta property="og:description" content="Computes the four distinct third derivatives of the log-density in
+With expected = TRUE the method calls expected_derivative(), which takes
+the expectation by method."><meta property="og:description" content="Computes the four distinct third derivatives of the log-density in
 \(\mu\) and \(\rho\), in closed form. Every component carrying at least
 one \(\mu\) collapses to a single term
 \(D_a \kappa^{(b)}(\rho)\), with \(D_a\) the \(a\)-th
@@ -26,8 +26,8 @@ nothing to expand. Since \(\partial\log I_0(\kappa(\rho))/\partial\rho
 components are computed by a compiled kernel, which reads
 \(\kappa'\), \(\kappa''\) and \(\kappa'''\) from
 \(A'\), \(A''\) and \(A'''\) by the inverse function rule.
-With expected = TRUE the method calls expected_derivative(), which is
-the one place on this page where approx and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+With expected = TRUE the method calls expected_derivative(), which takes
+the expectation by method."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +35,7 @@ the one place on this page where approx and nsim are read."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,8 +81,8 @@ nothing to expand. Since \(\partial\log I_0(\kappa(\rho))/\partial\rho
 components are computed by a compiled kernel, which reads
 \(\kappa'\), \(\kappa''\) and \(\kappa'''\) from
 \(A'\), \(A''\) and \(A'''\) by the inverse function rule.</p>
-<p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which is
-the one place on this page where <code>approx</code> and <code>nsim</code> are read.</p>
+<p>With <code>expected = TRUE</code> the method calls <code><a href="expected_derivative.html">expected_derivative()</a></code>, which takes
+the expectation by <code>method</code>.</p>
     </div>
 
 
@@ -116,15 +116,13 @@ model is returned in place of the value at the data, computed numerically.
 Defaults to <code>FALSE</code>.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default here), <code>"bartlett"</code>, <code>"mc"</code>
-or <code>"opg"</code>. It is read only when <code>expected = TRUE</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the sample size when
-<code>approx = "mc"</code>. It is read only when <code>expected = TRUE</code>. Defaults to
-<code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+It is read only when <code>expected</code> is <code>TRUE</code>: <code>NULL</code> selects
+<code><a href="expect_integrate.html">expect_integrate()</a></code>, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

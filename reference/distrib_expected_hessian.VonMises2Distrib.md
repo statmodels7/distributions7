@@ -15,8 +15,6 @@ information. The information in \\\kappa\\ is \\A'(\kappa)\\ and
 \\A'(\kappa)\\\kappa'(\rho)\\^2 = 1/A'(\kappa)\\, the reciprocal of the
 information in \\\kappa\\. The two parameters remain orthogonal.
 
-`approx` and `nsim` are ignored because the expectation is exact.
-
 ## Arguments
 
 - distrib:
@@ -40,15 +38,14 @@ information in \\\kappa\\. The two parameters remain orthogonal.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is exact. It is accepted so that
-  the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

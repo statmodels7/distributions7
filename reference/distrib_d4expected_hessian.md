@@ -12,8 +12,7 @@ distrib_d4expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 ```
@@ -36,11 +35,23 @@ distrib_d4expected_hessian(
 
   `"parameter"` or `"link"`.
 
-- approx, nsim:
+- method:
 
-  Accepted for symmetry with
-  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md);
-  the methods ignore them.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md),
+  as for
+  [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md).
+  An object returns the derivative of the matrix that the method
+  defines, by Leibniz's formula for
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  and with the moved density for
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  and
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md);
+  with `identity = "hessian"` the fourth derivative needs observed
+  derivatives of order 6 and signals an error that names
+  `identity = "score"`. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

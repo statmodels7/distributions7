@@ -16,8 +16,7 @@ trunc_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("opg", "bartlett", "integrate", "mc"),
-  nsim = 10000,
+  method = NULL,
   ...
 )
 ```
@@ -41,13 +40,14 @@ trunc_expected_hessian(
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the value that the method returns.
 
-- approx:
+- method:
 
-  Ignored. It is present so that the signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -71,11 +71,8 @@ its own. For a parent with a scalar route the sums come from
 
 The components do not depend on the data, so for a single parameter
 vector every returned vector is constant; if a parameter varies by
-observation, the components vary with it. The arguments `approx` and
-`nsim` are accepted so that the signature matches the generic's, and the
-method does not read them: the identity above is exact, and the
-quantities on which it rests are computed by quadrature for every value
-of `approx`.
+observation, the components vary with it. The identity above is exact,
+and the quantities on which it rests are computed by quadrature.
 
 ## Notation
 

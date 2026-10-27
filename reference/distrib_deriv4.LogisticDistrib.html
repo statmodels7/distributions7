@@ -11,9 +11,8 @@ $$\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_
 With expected = TRUE the expectations under the model are returned in
 closed form, as at third order: \(1/(15\sigma^4)\) for mu_mu_mu_mu,
 \((\pi^2-60)/(45\sigma^4)\) for mu_mu_sigma_sigma,
-\((7\pi^4-600\pi^2-810)/(225\sigma^4)\) for sigma_sigma_sigma_sigma,
-and zero for the two components odd in \(z\). approx and nsim are
-ignored."><meta property="og:description" content="Computes the five distinct fourth derivatives of the logistic log-density
+\((7\pi^4-600\pi^2-810)/(225\sigma^4)\) for sigma_sigma_sigma_sigma, and
+zero for the two components odd in \(z\)."><meta property="og:description" content="Computes the five distinct fourth derivatives of the logistic log-density
 with respect to \(\mu\) and \(\sigma\). The observed values are closed
 form, as polynomials in \(z = (y-\mu)/\sigma\) with the \(g_j\) of
 distrib_deriv3.LogisticDistrib() as coefficients:
@@ -25,9 +24,8 @@ $$\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_
 With expected = TRUE the expectations under the model are returned in
 closed form, as at third order: \(1/(15\sigma^4)\) for mu_mu_mu_mu,
 \((\pi^2-60)/(45\sigma^4)\) for mu_mu_sigma_sigma,
-\((7\pi^4-600\pi^2-810)/(225\sigma^4)\) for sigma_sigma_sigma_sigma,
-and zero for the two components odd in \(z\). approx and nsim are
-ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+\((7\pi^4-600\pi^2-810)/(225\sigma^4)\) for sigma_sigma_sigma_sigma, and
+zero for the two components odd in \(z\)."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -35,7 +33,7 @@ ignored."><meta property="og:image" content="https://statmodels7.github.io/distr
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,9 +78,8 @@ $$\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_
 <p>With <code>expected = TRUE</code> the expectations under the model are returned in
 closed form, as at third order: \(1/(15\sigma^4)\) for <code>mu_mu_mu_mu</code>,
 \((\pi^2-60)/(45\sigma^4)\) for <code>mu_mu_sigma_sigma</code>,
-\((7\pi^4-600\pi^2-810)/(225\sigma^4)\) for <code>sigma_sigma_sigma_sigma</code>,
-and zero for the two components odd in \(z\). <code>approx</code> and <code>nsim</code> are
-ignored.</p>
+\((7\pi^4-600\pi^2-810)/(225\sigma^4)\) for <code>sigma_sigma_sigma_sigma</code>, and
+zero for the two components odd in \(z\).</p>
     </div>
 
 
@@ -114,14 +111,11 @@ model are returned, in closed form. Defaults to <code>FALSE</code>.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code> (the default), <code>"bartlett"</code>, <code>"mc"</code> or
-<code>"opg"</code>. Ignored, because a closed form is available for the expected
-values; accepted so that the signature matches the generic's.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

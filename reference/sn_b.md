@@ -1,6 +1,6 @@
 # The Constant Behind the Centered Parametrization
 
-Returns \\b = \sqrt{2/\pi} \approx 0.7978846\\, which is \\E\[\|Z\|\]\\
+Returns \\b = \sqrt{2/\pi} \method 0.7978846\\, which is \\E\[\|Z\|\]\\
 for a standard Gaussian \\Z\\. It is the one constant that the skew
 normal's first moment introduces, and it appears in every quantity of
 the centered parametrization: the mean is \\\xi + \omega b\delta\\, the

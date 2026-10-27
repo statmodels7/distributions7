@@ -36,7 +36,7 @@ tests it correctly: the density integrates to \\1 - \pi\\, not to 1.
 
 - ...:
 
-  Passed on, `approx` and `nsim` among them.
+  Passed on, `method` among them.
 
 ## Value
 

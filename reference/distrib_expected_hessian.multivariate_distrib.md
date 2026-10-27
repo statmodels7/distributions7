@@ -28,15 +28,19 @@ runs only for a family written elsewhere.
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the result of the method.
 
-- approx:
+- method:
 
-  One of `"opg"` (the default), `"bartlett"` or `"mc"`; the first two
-  are the same computation here. `"integrate"` signals an error.
-
-- nsim:
-
-  The Monte Carlo sample size. Defaults to `10000`. The error falls as
-  its square root.
+  `NULL` (the default), which selects
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md),
+  or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  [`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+  and
+  [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+  sample, and
+  [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
+  signals an error. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -53,12 +57,24 @@ in which each vector is constant.
 The `"integrate"` route of
 [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 splits a one-dimensional integral at quantiles, and a multivariate
-family has no quantiles, so `approx = "integrate"` signals an error. The
-other values sample: `"opg"` and `"bartlett"` are the same computation
-here, the average of the negative outer product of the score, and `"mc"`
-averages the observed Hessian. The two averages agree in expectation by
-the second Bartlett identity and differ by sampling error at any finite
-`nsim`.
+family has no quantiles, so `method = expect_integrate()` signals an
+error. The other methods sample:
+[`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md)
+and
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+with `identity = "score"` average the negative outer product of the
+score over simulated draws, and
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+with `identity = "hessian"` averages the observed Hessian. The two
+averages agree in expectation by the second Bartlett identity and differ
+by sampling error at any finite `nsim`. The sample size is that of
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+and 10000 for
+[`expect_opg()`](https://statmodels7.github.io/distributions7/reference/expect_opg.md).
+The routine
+[`mv_expected_sampled()`](https://statmodels7.github.io/distributions7/reference/mv_expected_sampled.md)
+does the sampling and also serves an explicit `method` for a
+multivariate family that has a closed form.
 
 ## Monte Carlo error
 
@@ -90,7 +106,7 @@ base <- S7::method(distrib_expected_hessian, multivariate_distrib)
 
 set.seed(1)
 sampled <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-                approx = "mc", nsim = 4000)
+                method = expect_mc(nsim = 4000))
 exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
 round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
             closed = vapply(exact, function(z) z[1], numeric(1))), 3)
@@ -113,7 +129,7 @@ round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
 # Two seeds give two values, because the result is a sample.
 set.seed(2)
 again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
-              approx = "mc", nsim = 4000)
+              method = expect_mc(nsim = 4000))
 c(first = sampled$mu1_mu1[1], second = again$mu1_mu1[1])
 #>  first second 
 #>  -1.25  -1.25 

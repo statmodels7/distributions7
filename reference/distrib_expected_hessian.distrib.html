@@ -19,7 +19,7 @@ degenerate while the score variance is still the information)."><meta property="
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,13 +84,10 @@ are reported. The transformation is applied in the generic's body, so this
 method always returns the parameter scale.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"opg"</code>, <code>"bartlett"</code>, <code>"integrate"</code> or <code>"mc"</code>, the
-strategy that <code><a href="expected_derivative.html">expected_derivative()</a></code> uses. Defaults to <code>"opg"</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Number of draws, read only by <code>approx = "mc"</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default), which selects <code><a href="expect_opg.html">expect_opg()</a></code>, or an
+object inheriting from <a href="ExpectMethod.html">ExpectMethod</a> that <code><a href="expected_derivative.html">expected_derivative()</a></code>
+applies. See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -104,14 +101,14 @@ generic's.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The argument <code>approx</code> selects how the right-hand side is obtained, and the
-strategies differ in cost. The default <code>"opg"</code> reads
-\(-\ell^{(i)}\ell^{(j)}\) at each observation and takes no expectation,
-so it costs one call to <code><a href="distrib_gradient.html">distrib_gradient()</a></code>; <code>"bartlett"</code> evaluates the
-expectation itself, which is a sum over the support for a discrete family
-and a quadrature for a continuous one, and is orders of magnitude dearer.
-See <code><a href="expected_by_opg.html">expected_by_opg()</a></code> for the properties that the default loses and those
-that it retains.</p>
+    <p>The argument <code>method</code> selects how the right-hand side is obtained, and the
+methods differ in cost. With <code>method = NULL</code> the default is <code><a href="expect_opg.html">expect_opg()</a></code>,
+which reads \(-\ell^{(i)}\ell^{(j)}\) at each observation and takes no
+expectation, so it costs one call to <code><a href="distrib_gradient.html">distrib_gradient()</a></code>;
+<code>expect_integrate(identity = "score")</code> evaluates the expectation itself,
+which is a sum over the support for a discrete family and a quadrature for a
+continuous one, and is orders of magnitude dearer. See <code><a href="expected_by_opg.html">expected_by_opg()</a></code>
+for the properties that the default loses and those that it retains.</p>
 <p>The score is taken from <code><a href="distrib_gradient.html">distrib_gradient()</a></code>, so it uses the analytical
 gradient where the family has one and finite differences otherwise.</p>
     </div>

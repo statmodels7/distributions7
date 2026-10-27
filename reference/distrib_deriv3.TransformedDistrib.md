@@ -32,7 +32,7 @@ the fourth.
 
 - ...:
 
-  Passed to the parent's method, `approx` and `nsim` among them.
+  Passed to the parent's method, `method` among them.
 
 ## Value
 

@@ -13,8 +13,7 @@ numerical_dexpected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = "bartlett",
-  nsim = 10000,
+  method = NULL,
   h_rel = numericals7::fd_step(1, 1L)
 )
 ```
@@ -37,10 +36,12 @@ numerical_dexpected_hessian(
 
   Either `"parameter"` or `"link"`.
 
-- approx, nsim:
+- method:
 
-  Passed to
+  `NULL`, passed to
   [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md).
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - h_rel:
 
@@ -60,8 +61,9 @@ On the parameter scale the step is chosen by
 from the candidates of
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md),
 which shrink near a finite boundary so that both evaluation points stay
-strictly inside the parameter's open domain; with `approx = "mc"` the
-step of
+strictly inside the parameter's open domain; with an
+[`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md)
+method the step of
 [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
 is used directly. On the link scale the domain is the whole line, so the
 step needs no clamp and is the plain relative one.

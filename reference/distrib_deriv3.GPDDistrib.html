@@ -11,7 +11,7 @@ of these comes from its own compiled kernel."><meta property="og:image" content=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,9 +78,11 @@ expectation under the model is returned. Defaults to <code>FALSE</code>.</p></dd
 generic for orders three and four and by <code><a href="deriv5_scale.html">deriv5_scale()</a></code> for order five.</p></dd>
 
 
-<dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Accepted for the generic's signature; the expectations
-are closed forms.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -117,9 +119,8 @@ the exact product \(\xi y\), which keeps its relative accuracy near the
 upper end of the support when \(\xi &lt; 0\).</p>
 <p>The expected derivatives follow from \(V = (1 + \xi Y/\sigma)^{-1/\xi}\),
 uniform on \((0, 1)\): each is a rational function of \(\xi\) over
-\(\sigma^r\). They exist for \(\xi &gt; -1/3\) at order three and
-\(\xi &gt; -1/4\) at order four, and are <code>NA</code> below; <code>approx</code> and <code>nsim</code> are
-not read.</p>
+\(\sigma^r\). They exist for \(\xi &gt; -1/3\) at order three and \(\xi
+&gt; -1/4\) at order four, and are <code>NA</code> below;</p>
 <p>Outside the support, \(y &lt; 0\) or \(1 + \xi y/\sigma \le 0\), every
 component is <code>NaN</code>.</p>
     </div>

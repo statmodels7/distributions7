@@ -8,7 +8,7 @@ success probability \\1/(1+\theta)\\, \$\$P(Y = y; \mu, \theta) =
 compiled kernel forms the log-mass by R's negative binomial in its mean
 parametrization (size \\r\\ and mean \\\mu\\), which never forms the
 success probability \\1/(1+\theta)\\; that probability rounds to 1 below
-\\\theta \approx 10^{-16}\\ and loses digits long before, so the mass
+\\\theta \method 10^{-16}\\ and loses digits long before, so the mass
 stays accurate down to the Poisson limit. The log-mass is exponentiated
 when `log` is `FALSE`, and `log = TRUE` is the accurate route far into
 the tail.

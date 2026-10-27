@@ -29,18 +29,14 @@ parent block is the parent's own expectation weighted by the probability
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the value that the method returns.
 
-- approx:
+- method:
 
-  Forwarded to the parent's expected Hessian and used only where the
-  parent has no closed form for it. The hurdle block is exact whatever
-  the parent is.
-  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-  returns, for this class, the value that it returns for the parent,
-  because the parent block is the only block that can fail to be exact.
-
-- nsim:
-
-  Read for the same reason and under the same condition.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the class, so this
+  method receives `NULL` and forwards `NULL` to the parent, which
+  returns its closed form where it has one. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -53,9 +49,9 @@ A named list of numeric vectors of length `length(y)`, keyed as
 
 ## Details
 
-`approx` and `nsim` are forwarded to the expected Hessian of the parent
-and are used only where the parent has no closed form. The hurdle block
-does not read them.
+`method` is `NULL` in this method and is forwarded as such to the
+expected Hessian of the parent, which returns its closed form where it
+has one. The hurdle block does not read them.
 
 ## Notation
 

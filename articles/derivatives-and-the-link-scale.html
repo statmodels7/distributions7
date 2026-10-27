@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -260,8 +260,8 @@ entry is multiplied by
 </h2>
 <p><code><a href="../reference/distrib_deriv3.html">distrib_deriv3()</a></code> and <code><a href="../reference/distrib_deriv4.html">distrib_deriv4()</a></code> also
 take <code>expected = TRUE</code>. Some distributions have closed-form
-expected derivatives; where they do not, the value is approximated by
-the strategy that the <code>approx</code> argument selects:</p>
+expected derivatives; where they do not, the value is obtained by the
+method that the <code>method</code> argument selects:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="fu"><a href="../reference/gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $mu_mu_mu</span></span>
@@ -275,18 +275,24 @@ the strategy that the <code>approx</code> argument selects:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $sigma2_sigma2_sigma2</span></span>
 <span><span class="co">#&gt; [1] 0.2638418</span></span></code></pre></div>
-<p>The strategies are <code>"opg"</code>, <code>"bartlett"</code>,
-<code>"integrate"</code> and <code>"mc"</code>, trading speed against
-robustness. <code>"bartlett"</code> rests on the Bartlett identities:
-the outer product of gradients is their order-two case, and the general
-identity expresses an expected derivative of any order through products
-of lower-order ones. <code>"opg"</code> reads that outer product at each
-observation without taking an expectation, and <code>"integrate"</code>
-and <code>"mc"</code> average the observed derivative itself, by
-quadrature or by simulation. The default is <code>"opg"</code> for
-<code><a href="../reference/distrib_expected_hessian.html">distrib_expected_hessian()</a></code> and <code>"integrate"</code> for
-<code><a href="../reference/distrib_deriv3.html">distrib_deriv3()</a></code> and <code><a href="../reference/distrib_deriv4.html">distrib_deriv4()</a></code>;
-<code><a href="../reference/expected_derivative_methods.html">?expected_derivative_methods</a></code> has the details.</p>
+<p>The methods are objects: <code><a href="../reference/expect_opg.html">expect_opg()</a></code>,
+<code><a href="../reference/expect_integrate.html">expect_integrate()</a></code> and
+<code>expect_mc(nsim = 10000)</code>, trading speed against accuracy. An
+expected derivative has two expressions inside the expectation, the
+observed derivative itself (<code>identity = "hessian"</code>) and the
+Bartlett identity, which writes it through products of lower-order
+derivatives (<code>identity = "score"</code>; the outer product of
+gradients is its order-two case). <code><a href="../reference/expect_integrate.html">expect_integrate()</a></code> and
+<code><a href="../reference/expect_mc.html">expect_mc()</a></code> take the expectation of either, by quadrature
+or by simulation, and <code><a href="../reference/expect_opg.html">expect_opg()</a></code> reads the score identity
+at each observation without taking an expectation. With
+<code>method = NULL</code>, the default, a family that has the
+expectation in closed form returns it; otherwise
+<code><a href="../reference/distrib_expected_hessian.html">distrib_expected_hessian()</a></code> uses <code><a href="../reference/expect_opg.html">expect_opg()</a></code>
+and <code><a href="../reference/distrib_deriv3.html">distrib_deriv3()</a></code> and <code><a href="../reference/distrib_deriv4.html">distrib_deriv4()</a></code> use
+<code><a href="../reference/expect_integrate.html">expect_integrate()</a></code>. An object is always used, also by a
+family with a closed form. <code><a href="../reference/expected_derivative_methods.html">?expected_derivative_methods</a></code> has
+the details.</p>
 </div>
 <div class="section level2">
 <h2 id="a-note-for-authors-of-derivative-methods">A note for authors of derivative methods<a class="anchor" aria-label="anchor" href="#a-note-for-authors-of-derivative-methods"></a>

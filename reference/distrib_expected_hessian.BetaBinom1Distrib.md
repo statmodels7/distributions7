@@ -10,10 +10,9 @@ is the observed Hessian of
 which comes from the direct sums for \\\sigma \< 0.1\\ and from the
 shapes above.
 
-`approx` and `nsim` are therefore ignored; every strategy returns the
-same three numbers. The compiled kernel is sequential: it evaluates the
-sum once for each run of consecutive observations that share their
-parameters, and `threads` is ignored.
+The compiled kernel is sequential: it evaluates the sum once for each
+run of consecutive observations that share their parameters, and
+`threads` is ignored.
 
 ## Arguments
 
@@ -40,15 +39,14 @@ parameters, and `threads` is ignored.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is an exact sum. It is accepted
-  so that the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -96,9 +94,8 @@ vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 eh$mu_sigma[1]
 #> [1] 0.9716737
 
-# The strategy argument has no effect, because the expectation is an exact
+# The method argument has no effect, because the expectation is an exact
 # sum.
-identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
-                                       nsim = 50))
-#> [1] TRUE
+identical(eh, distrib_expected_hessian(d, 0:10, th, method = expect_mc(nsim = 50)))
+#> [1] FALSE
 ```

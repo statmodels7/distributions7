@@ -40,6 +40,16 @@ without refitting, so an interval at 99% follows from a fit computed at
   `confint(fit, "sigma", "link")` passes `"link"` as `level`, which then
   signals an error.
 
+- information:
+
+  `NULL` (the default), an
+  [`observed_info()`](https://statmodels7.github.io/distributions7/reference/observed_info.md)
+  object or an
+  [`expected_info()`](https://statmodels7.github.io/distributions7/reference/expected_info.md)
+  object, which selects the information matrix whose inverse gives the
+  standard errors that the interval is built on; see
+  [`vcov.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md).
+
 - ...:
 
   Unused, accepted for compatibility with

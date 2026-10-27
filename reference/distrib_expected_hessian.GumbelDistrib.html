@@ -19,8 +19,8 @@ The mixed entry does not vanish. The location and the scale are not
 orthogonal here because this density is skewed, whereas in a symmetric
 location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.
-Because the values do not depend on the data, approx and nsim are
-ignored. y is read only for its length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
+Because the values do not depend on the data, y is read only for its
+length."><meta property="og:description" content="Returns the expectation of the observed Hessian under the model, in closed
 form and with no quadrature or simulation. With \(\gamma\) the
 Euler-Mascheroni constant,
 $$\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2},
@@ -40,8 +40,8 @@ The mixed entry does not vanish. The location and the scale are not
 orthogonal here because this density is skewed, whereas in a symmetric
 location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.
-Because the values do not depend on the data, approx and nsim are
-ignored. y is read only for its length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+Because the values do not depend on the data, y is read only for its
+length."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -49,7 +49,7 @@ ignored. y is read only for its length."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,8 +102,8 @@ Here that is \(\mathbb{E}[w] = 1\),
 orthogonal here because this density is skewed, whereas in a symmetric
 location-scale family such as the Gaussian they are orthogonal. Their
 maximum likelihood estimates are asymptotically correlated.</p>
-<p>Because the values do not depend on the data, <code>approx</code> and <code>nsim</code> are
-ignored. <code>y</code> is read only for its length.</p>
+<p>Because the values do not depend on the data, <code>y</code> is read only for its
+length.</p>
     </div>
 
 
@@ -130,14 +130,11 @@ must be strictly positive.</p></dd>
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because a closed form is available. It is accepted so
-that the signature matches the generic's, where it selects between the
-Bartlett, quadrature, Monte Carlo and outer-product routes.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -165,7 +162,7 @@ itself when the parameters are.</p>
 expectation of the observed information under the model. The Gumbel is a
 regular family, so the second Bartlett identity holds and this equals the
 variance of the score. \(\gamma\) is the Euler-Mascheroni constant,
-\(-\psi(1) \approx 0.5772\).</p>
+\(-\psi(1) \method 0.5772\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -19,8 +19,7 @@ chain_derivatives(
   new_params,
   order,
   expected = FALSE,
-  approx = "opg",
-  nsim = 10000
+  method = NULL
 )
 ```
 
@@ -59,11 +58,14 @@ chain_derivatives(
   Should the expected derivatives be carried? It is a single logical,
   with default `FALSE`.
 
-- approx, nsim:
+- method:
 
-  Forwarded to the parent's expected derivatives: `approx` is one of
-  `"opg"` (the default), `"bartlett"`, `"integrate"` or `"mc"`, and
-  `nsim` is the number of draws for `"mc"`.
+  `NULL` (the default) or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the class, so this
+  method receives `NULL` and forwards `NULL` to the parent, which
+  returns its closed form where it has one. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 ## Value
 

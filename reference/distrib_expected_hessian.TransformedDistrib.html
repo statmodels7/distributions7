@@ -4,14 +4,14 @@
 and the Jacobian does not depend on \(\theta\), the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. The
-wrapper does not add an approximation, and approx and nsim are not
+wrapper does not add an approximation, and method is not
 forwarded. The result is exact when the parent's expected Hessian is exact
 and otherwise is the value that the parent's own default route returns."><meta property="og:description" content="Returns the parent's expected Hessian, EXACTLY. Since
 \(\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert\)
 and the Jacobian does not depend on \(\theta\), the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. The
-wrapper does not add an approximation, and approx and nsim are not
+wrapper does not add an approximation, and method is not
 forwarded. The result is exact when the parent's expected Hessian is exact
 and otherwise is the value that the parent's own default route returns."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +21,7 @@ and otherwise is the value that the parent's own default route returns."><meta p
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ and otherwise is the value that the parent's own default route returns."><meta p
 and the Jacobian does not depend on \(\theta\), the expectation of the
 transformed model's second derivative is the parent's expectation
 reparametrized by the change of variables, which is the same number. The
-wrapper does not add an approximation, and <code>approx</code> and <code>nsim</code> are not
+wrapper does not add an approximation, and <code>method</code> is not
 forwarded. The result is exact when the parent's expected Hessian is exact
 and otherwise is the value that the parent's own default route returns.</p>
     </div>
@@ -88,14 +88,10 @@ length when its information is closed form and for its values otherwise.</p></dd
 applies the link scale to the value that the method returns.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored: the delegation is exact. It is present so that the
-signature matches the generic's. Note that it is not forwarded, so a parent
-whose OWN expected Hessian is approximate takes its own default.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code>: the generic applies an object before dispatching on
+the family, so this method receives <code>NULL</code> and returns the closed form.
+See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

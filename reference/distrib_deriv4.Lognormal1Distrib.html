@@ -11,7 +11,7 @@ As at the lower orders these are the Gaussian's read at \(\log y\).
 With expected = TRUE the expectations are returned, obtained by replacing
 \(r\) with 0 and \(r^2\) with \(\sigma^2\), which leaves
 \(-9/\sigma^8\) in the last component and zero in the two odd ones. Both
-routes are closed form, so approx and nsim are ignored."><meta property="og:description" content="Computes the five distinct fourth derivatives of the lognormal log-density
+routes are closed form."><meta property="og:description" content="Computes the five distinct fourth derivatives of the lognormal log-density
 with respect to \(\mu\) and \(\sigma^2\), in closed form. With
 \(r = \log y - \mu\),
 $$\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu\sigma^2)} = 0, \qquad
@@ -23,7 +23,7 @@ As at the lower orders these are the Gaussian's read at \(\log y\).
 With expected = TRUE the expectations are returned, obtained by replacing
 \(r\) with 0 and \(r^2\) with \(\sigma^2\), which leaves
 \(-9/\sigma^8\) in the last component and zero in the two odd ones. Both
-routes are closed form, so approx and nsim are ignored."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+routes are closed form."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -31,7 +31,7 @@ routes are closed form, so approx and nsim are ignored."><meta property="og:imag
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ As at the lower orders these are the Gaussian's read at \(\log y\).</p>
 <p>With <code>expected = TRUE</code> the expectations are returned, obtained by replacing
 \(r\) with 0 and \(r^2\) with \(\sigma^2\), which leaves
 \(-9/\sigma^8\) in the last component and zero in the two odd ones. Both
-routes are closed form, so <code>approx</code> and <code>nsim</code> are ignored.</p>
+routes are closed form.</p>
     </div>
 
 
@@ -109,13 +109,11 @@ model are returned in place of the observed values. Defaults to <code>FALSE</cod
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, because a closed form is available for both the
-observed and the expected values.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>. The generic
+applies an object before dispatching on the family, so this method
+receives <code>NULL</code>, and it returns the closed form of the family. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

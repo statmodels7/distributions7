@@ -40,8 +40,8 @@ The point \\x + h\\ is a double, so the step at which it lies is \\h\_+
 = (x + h) - x\\, a subtraction that is exact, and the step on the other
 side is \\h\_- = x - (x - h)\\. Both may differ from \\h\\, and from
 each other, by the rounding of the evaluation points, at most one unit
-of the last place. With them \$\$f'(x) \approx \frac{f(x+h) -
-f(x-h)}{h\_+ + h\_-}, \qquad f''(x) \approx \frac{2\\h\_- f(x+h) -
+of the last place. With them \$\$f'(x) \method \frac{f(x+h) -
+f(x-h)}{h\_+ + h\_-}, \qquad f''(x) \method \frac{2\\h\_- f(x+h) -
 (h\_+ + h\_-) f(x) + h\_+ f(x-h)\\} {h\_+ h\_- (h\_+ + h\_-)},\$\$ which
 are the uniform formulas wherever \\h\_+ = h\_- = h\\. The correction is
 of the order of one unit of the last place over the step. It is

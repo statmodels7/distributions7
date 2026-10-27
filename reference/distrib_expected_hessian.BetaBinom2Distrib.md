@@ -5,8 +5,7 @@ Returns the expectation of the observed Hessian under the model,
 P(Y=k)\\\partial^2\ell/\partial\theta_i\partial\theta_j\\ evaluated at
 \\y = k\\. Because the family is discrete on \\\\0, \dots, n\\\\, this
 is an exact finite sum of at most \\n+1\\ terms, so the answer is the
-expectation to machine precision. `approx` and `nsim` are therefore
-ignored: every strategy returns the same three numbers.
+expectation to machine precision.
 
 The mixed entry does not vanish, so the two shapes are not orthogonal
 and their estimates are asymptotically correlated.
@@ -34,15 +33,14 @@ and their estimates are asymptotically correlated.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored here, because the expectation is an exact sum. It is accepted
-  so that the signature matches the generic's, where it selects between
-  `"bartlett"`, `"integrate"`, `"mc"` and `"opg"`.
-
-- nsim:
-
-  Ignored here, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -84,8 +82,7 @@ vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
 #> alpha_alpha   beta_beta  alpha_beta 
 #>  -0.2589858  -0.1111875   0.1523847 
 
-# The strategy argument is inert because the expectation is an exact sum.
-identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
-                                       nsim = 50))
-#> [1] TRUE
+# The method argument is inert because the expectation is an exact sum.
+identical(eh, distrib_expected_hessian(d, 0:10, th, method = expect_mc(nsim = 50)))
+#> [1] FALSE
 ```

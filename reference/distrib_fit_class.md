@@ -8,10 +8,10 @@ log-likelihood with the two information criteria built on it, and a
 record of what the optimizer did.
 
 Both scales are kept because the fit is computed on one and read on the
-other. The variance matrix is the inverse information at \\\hat\eta\\;
-`vcov` is its image under the delta method and `ci` is `ci_eta` mapped
-through \\g^{-1}\\, so a limit on the parameter scale respects the
-parameter's domain by construction.
+other. The variance matrix is the inverse of the observed information at
+\\\hat\eta\\; `vcov` is its image under the delta method and `ci` is
+`ci_eta` mapped through \\g^{-1}\\, so a limit on the parameter scale
+respects the parameter's domain by construction.
 
 This page documents the raw S7 constructor. It validates nothing and is
 not the way to build a fit; call
@@ -74,9 +74,10 @@ distrib_fit(
 
 - se:
 
-  Named standard errors on the parameter scale, from the delta method.
-  An entry is `NaN` where the corresponding variance came back negative
-  and `NA` where it is missing.
+  Named standard errors on the parameter scale, from the delta method
+  applied to the inverse of the observed information. An entry is `NaN`
+  where the corresponding variance came back negative and `NA` where it
+  is missing.
 
 - ci:
 
@@ -91,7 +92,9 @@ distrib_fit(
 
   Named standard errors on the link scale, the square roots of the
   diagonal of `vcov_eta`. These are the standard errors that the fit
-  computes; `se` is derived from them.
+  computes; `se` is derived from them. Another information matrix is
+  selected after the fit through
+  [`vcov.distrib_fit()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md).
 
 - ci_eta:
 

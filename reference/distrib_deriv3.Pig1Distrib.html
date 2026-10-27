@@ -3,13 +3,13 @@
 read off columns d30, d21, d12 and d03 of the compiled kernel
 pig1_deriv3_cpp, which computes the third order alone.
 With expected = TRUE the value is an expectation instead, and there it is
-not closed form: the call routes to expected_derivative(), so approx
-and nsim are read."><meta property="og:description" content="Returns the exact third derivatives of the log-mass in \((\mu, \sigma)\),
+not closed form: the call routes to expected_derivative(), which takes the
+expectation by method, expect_integrate() when method is NULL."><meta property="og:description" content="Returns the exact third derivatives of the log-mass in \((\mu, \sigma)\),
 read off columns d30, d21, d12 and d03 of the compiled kernel
 pig1_deriv3_cpp, which computes the third order alone.
 With expected = TRUE the value is an expectation instead, and there it is
-not closed form: the call routes to expected_derivative(), so approx
-and nsim are read."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+not closed form: the call routes to expected_derivative(), which takes the
+expectation by method, expect_integrate() when method is NULL."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ and nsim are read."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ and nsim are read."><meta property="og:image" content="https://statmodels7.githu
 read off columns <code>d30</code>, <code>d21</code>, <code>d12</code> and <code>d03</code> of the compiled kernel
 <code>pig1_deriv3_cpp</code>, which computes the third order alone.</p>
 <p>With <code>expected = TRUE</code> the value is an expectation instead, and there it is
-not closed form: the call routes to <code><a href="expected_derivative.html">expected_derivative()</a></code>, so <code>approx</code>
-and <code>nsim</code> are read.</p>
+not closed form: the call routes to <code><a href="expected_derivative.html">expected_derivative()</a></code>, which takes the
+expectation by <code>method</code>, <code><a href="expect_integrate.html">expect_integrate()</a></code> when <code>method</code> is <code>NULL</code>.</p>
     </div>
 
 
@@ -87,16 +87,13 @@ derivatives at <code>y</code> are returned from the compiled kernel.</p></dd>
 transformation is applied in the generic's body.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>One of <code>"integrate"</code>, <code>"bartlett"</code>, <code>"mc"</code> or <code>"opg"</code>, the
-strategy for the expectation. It is read only when <code>expected = TRUE</code>; for a
-discrete family <code>"integrate"</code> is an exact sum over the support, not a
-quadrature.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>A single positive integer, the Monte Carlo sample size used when
-<code>approx = "mc"</code>. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code> (the default) or an object inheriting from <a href="ExpectMethod.html">ExpectMethod</a>.
+It is read only when <code>expected</code> is <code>TRUE</code>: <code>NULL</code> selects
+<code><a href="expect_integrate.html">expect_integrate()</a></code>, and an object selects its own route. The generic
+applies an object before dispatching on the family, so that the object
+is used also by a family that has a closed form. See
+<a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -144,7 +141,7 @@ the kernel, and <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> 
 <span class="r-out co"><span class="r-pr">#&gt;</span> analytic 0.1743171</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> numeric  0.1743171</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># The expected version is not closed form and reads the strategy.</span></span></span>
+<span class="r-in"><span><span class="co"># The expected version is not closed form and uses the default method.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">200</span>, <span class="va">th</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">mu_mu_mu</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1016449</span>
 </code></pre></div>

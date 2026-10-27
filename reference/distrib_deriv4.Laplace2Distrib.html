@@ -5,15 +5,13 @@ component involving \(\mu\) is zero and the only survivor comes from
 \(\log\lambda\):
 $$\dfrac{\partial^4 \ell}{\partial \lambda^4} = -\dfrac{6}{\lambda^4}.$$
 These derivatives do not depend on the data, so the observed and expected
-values coincide: expected, approx and nsim are accepted and have no
-effect."><meta property="og:description" content="Computes the five distinct fourth derivatives of the Laplace log-density
+values coincide: expected is accepted and has no effect."><meta property="og:description" content="Computes the five distinct fourth derivatives of the Laplace log-density
 with respect to \(\mu\) and \(\lambda\). As at third order, every
 component involving \(\mu\) is zero and the only survivor comes from
 \(\log\lambda\):
 $$\dfrac{\partial^4 \ell}{\partial \lambda^4} = -\dfrac{6}{\lambda^4}.$$
 These derivatives do not depend on the data, so the observed and expected
-values coincide: expected, approx and nsim are accepted and have no
-effect."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+values coincide: expected is accepted and has no effect."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +19,7 @@ effect."><meta property="og:image" content="https://statmodels7.github.io/distri
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +58,7 @@ component involving \(\mu\) is zero and the only survivor comes from
 \(\log\lambda\):
 $$\dfrac{\partial^4 \ell}{\partial \lambda^4} = -\dfrac{6}{\lambda^4}.$$</p>
 <p>These derivatives do not depend on the data, so the observed and expected
-values coincide: <code>expected</code>, <code>approx</code> and <code>nsim</code> are accepted and have no
-effect.</p>
+values coincide: <code>expected</code> is accepted and has no effect.</p>
     </div>
 
 
@@ -92,12 +89,10 @@ they are already their own expectations. Defaults to <code>FALSE</code>.</p></dd
 <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">base::match.arg()</a></code>. The generic reads it, and this method does not.</p></dd>
 
 
-<dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
-<dd><p>Ignored, for the same reason as <code>expected</code>.</p></dd>
-
-
-<dt id="arg-nsim">nsim<a class="anchor" aria-label="anchor" href="#arg-nsim"></a></dt>
-<dd><p>Ignored, for the same reason. Defaults to <code>10000</code>.</p></dd>
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p><code>NULL</code>: the generic applies an object before dispatching on
+the family, so this method receives <code>NULL</code> and returns the closed form.
+See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -31,9 +31,14 @@ Each of them is computed by its own compiled kernel.
   Logical; for orders three and four, whether the expected derivative is
   returned.
 
-- approx, nsim:
+- method:
 
-  Accepted for the generic's signature; the expectations are closed.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ..., threads:
 

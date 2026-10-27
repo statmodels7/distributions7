@@ -32,19 +32,14 @@ Hessian is, and `y` is then used only for its length.
   One of `"parameter"` (the default) or `"link"`. The generic applies
   the link scale to the value that the method returns.
 
-- approx:
+- method:
 
-  Forwarded to the parent's
-  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-  and read only where the parent has no closed form for it; every other
-  block is an exact combination of the parent's density, score and
-  observed Hessian at zero.
-  [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
-  returns, for this class, the value that it returns for the parent.
-
-- nsim:
-
-  Forwarded for the same reason and under the same condition.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -62,11 +57,11 @@ is; a parent evaluated by an approximation can vary by observation.
 The blocks of the wrapper are exact combinations of the parent's mass,
 score and observed Hessian at zero and of the parent's expected Hessian,
 an expectation over the whole support from which the single point at
-zero is subtracted in closed form. `approx` and `nsim` are forwarded to
-the parent's
-[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-and take effect only where the parent has no closed form, so the result
-is exact exactly when the parent's is, as
+zero is subtracted in closed form. `method` is `NULL` in this method and
+is forwarded as such to the parent's
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+which returns its closed form where it has one, so the result is exact
+exactly when the parent's is, as
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
 reports.
 

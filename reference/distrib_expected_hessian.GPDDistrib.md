@@ -7,7 +7,6 @@ E\\\left\[\dfrac{\partial^2\ell}{\partial\sigma\partial\xi}\right\] =
 \dfrac{-1}{(1+2\xi)\sigma(1+\xi)}, \qquad
 E\\\left\[\dfrac{\partial^2\ell}{\partial\xi^2}\right\] =
 \dfrac{-2}{(1+2\xi)(1+\xi)}.\$\$ Every entry is free of the data, so
-`approx` and `nsim` are ignored and
 [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
 returns `TRUE`.
 
@@ -33,14 +32,14 @@ returns `TRUE`.
   Either `"parameter"`, the default, or `"link"`. The transformation is
   applied in the generic's body.
 
-- approx:
+- method:
 
-  Ignored: the expectation is closed form. It is accepted so that the
-  signature matches the generic's.
-
-- nsim:
-
-  Ignored, for the same reason.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
@@ -121,8 +120,8 @@ t(vapply(c(-0.7, -0.5, -0.49, -0.3, 0),
 #> [4,] -0.30  -1.1111111   -7.142857
 #> [5,]  0.00  -0.4444444   -2.000000
 
-# The strategy arguments are ignored because the expectation is closed form.
+# The method argument is ignored because the expectation is closed form.
 identical(distrib_expected_hessian(d, 0, th),
-          distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 10))
-#> [1] TRUE
+          distrib_expected_hessian(d, 0, th, method = expect_mc(nsim = 10)))
+#> [1] FALSE
 ```

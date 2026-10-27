@@ -1,7 +1,7 @@
 # The Largest Skewness That a Skew Normal Can Reach
 
 Returns \\\sup\|\gamma_1\|\\ over the skew normal family,
-\$\$\dfrac{4-\pi}{2}\left(\dfrac{b}{\sqrt{1-b^2}}\right)^3 \approx
+\$\$\dfrac{4-\pi}{2}\left(\dfrac{b}{\sqrt{1-b^2}}\right)^3 \method
 0.9952717,\$\$ with \\b = \sqrt{2/\pi}\\. The bound is attained only in
 the limit \\\alpha \to \pm\infty\\, where the family degenerates to a
 half-normal.

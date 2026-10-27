@@ -7,9 +7,9 @@ of the digamma function, one case of \\\ell^{(k)} =
 -\psi^{(k-2)}(\mu/2)/2^{k}\\.
 
 On the parameter scale the value is free of the response, so `expected`,
-`approx` and `nsim` have no effect and the result is identical to the
-bit in either case. With `scale = "link"` the observed and the expected
-results differ.
+`method` has no effect and the result is identical to the bit in either
+case. With `scale = "link"` the observed and the expected results
+differ.
 
 ## Arguments
 
@@ -41,13 +41,14 @@ results differ.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

@@ -41,7 +41,7 @@ printed after them."><meta property="og:image" content="https://statmodels7.gith
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.88.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,6 +110,15 @@ and the tables are rounded to this many decimal places by
 <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">base::round()</a></code>.</p></dd>
 
 
+<dt id="arg-information">information<a class="anchor" aria-label="anchor" href="#arg-information"></a></dt>
+<dd><p><code>NULL</code> (the default), an <code><a href="observed_info.html">observed_info()</a></code> object or an
+<code><a href="expected_info.html">expected_info()</a></code> object, which selects the information matrix whose
+inverse gives the standard errors and the intervals shown; see
+<code><a href="vcov.distrib_fit.html">vcov.distrib_fit()</a></code>. <code>NULL</code> selects the default of the family (see
+<a href="information_objects.html">information_objects</a>). A line under the header names the matrix whenever
+it is not the observed information.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Unused, accepted for compatibility with <code><a href="https://rdrr.io/r/base/print.html" class="external-link">base::print()</a></code>.</p></dd>
 
@@ -134,8 +143,26 @@ and the tables are rounded to this many decimal places by
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum-likelihood fit: gaussian1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Converged: yes (gradient (max-norm) &lt; 1e-06)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Parameter scale:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Estimate Std. Error   2.5%  97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu      2.0679     0.1356 1.8021 2.3338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma   3.0327     0.0959 2.8505 3.2267</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Link scale:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Estimate Std. Error   2.5%  97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu      2.0679     0.1356 1.8021 2.3338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma   1.1095     0.0316 1.0475 1.1714</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Standard errors from the expected information instead.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span>, information <span class="op">=</span> <span class="fu"><a href="expected_info.html">expected_info</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Maximum-likelihood fit: gaussian1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 7 ms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Converged: yes (gradient (max-norm) &lt; 1e-06)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Standard errors from the expected information.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter scale:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Estimate Std. Error   2.5%  97.5%</span>
@@ -153,19 +180,19 @@ and the tables are rounded to this many decimal places by
 <span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="fl">300</span>, shape <span class="op">=</span> <span class="fl">4</span>, rate <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">g</span>, digits <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum-likelihood fit: gamma2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Observations: 300   Log-likelihood: -403   AIC: 810   BIC: 817</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 7 ms</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Observations: 300   Log-likelihood: -401   AIC: 806   BIC: 813</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 10 ms</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Converged: yes (gradient (max-norm) &lt; 1e-06)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameter scale:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Estimate Std. Error  2.5% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mu        1.948      0.059 1.836 2.067</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2    1.045      0.103 0.861 1.269</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu        1.944      0.059 1.833 2.063</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2    1.028      0.102 0.847 1.248</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Link scale:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        Estimate Std. Error   2.5% 97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mu        0.667      0.030  0.607 0.726</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2    0.044      0.099 -0.149 0.238</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mu        0.665      0.030  0.606 0.724</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma2    0.028      0.099 -0.165 0.222</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

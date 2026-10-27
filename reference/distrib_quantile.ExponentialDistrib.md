@@ -3,7 +3,7 @@
 Computes the exponential quantile function \$\$Q(p; \mu) = -\mu \log(1 -
 p)\$\$ by calling
 [`stats::qexp()`](https://rdrr.io/r/stats/Exponential.html) at
-`rate = 1/mu`. The median is \\\mu \log 2 \approx 0.693\mu\\, which is
+`rate = 1/mu`. The median is \\\mu \log 2 \method 0.693\mu\\, which is
 below the mean because the distribution is right skewed at every
 parameter value.
 

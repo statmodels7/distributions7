@@ -5,8 +5,7 @@ the probability, in closed form: \$\$\dfrac{\partial^3 \ell}{\partial
 \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(n-y)}{(1-\mu)^3}.\$\$ With
 `expected = TRUE` the expectation is returned, obtained by substituting
 \\\mathbb{E}\[Y\] = n\mu\\, which gives \\2n/\mu^2 - 2n/(1-\mu)^2\\.
-Both routes are closed form, so the method runs no quadrature and
-ignores `approx` and `nsim`.
+Both routes are closed form and the method runs no quadrature.
 
 ## Arguments
 
@@ -37,13 +36,14 @@ ignores `approx` and `nsim`.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, because a closed form is available for both routes.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL` or an object inheriting from
+  [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+  The generic applies an object before dispatching on the family, so
+  this method receives `NULL`, and it returns the closed form of the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

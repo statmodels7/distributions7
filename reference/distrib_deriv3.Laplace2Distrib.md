@@ -11,8 +11,7 @@ zero, and the only surviving component comes from \\\log\lambda\\:
 `mu_lambda_lambda` are all zero.
 
 These derivatives do not depend on the data, so the observed and
-expected values coincide: `expected`, `approx` and `nsim` are accepted
-and have no effect.
+expected values coincide: `expected` is accepted and has no effect.
 
 ## Arguments
 
@@ -42,13 +41,12 @@ and have no effect.
   [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). The
   generic reads it, and this method does not.
 
-- approx:
+- method:
 
-  Ignored, for the same reason as `expected`.
-
-- nsim:
-
-  Ignored, for the same reason. Defaults to `10000`.
+  `NULL`: the generic applies an object before dispatching on the
+  family, so this method receives `NULL` and returns the closed form.
+  See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 

@@ -30,9 +30,9 @@ A list with one element per parameter; each element is a list whose
 
 ## Details
 
-This is the hot path of the link scale, so it is written against the
-order-specific generics of linkfunctions7 rather than the convenience
-router; see the comment in the body for why, and
+Each link is evaluated by one call to
+[`linkfunctions7::linkinv_derivs()`](https://statmodels7.github.io/linkfunctions7/reference/linkinv_derivs.html),
+which returns its derivatives of orders one to `order` together. See
 [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
 for what the derivatives are then used for.
 

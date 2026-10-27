@@ -23,9 +23,11 @@ approximated.
 
   Either `"parameter"` or `"link"`.
 
-- approx, nsim:
+- method:
 
-  Passed through.
+  `NULL`: the generic handles an object before dispatching on the
+  family. See
+  [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:
 
