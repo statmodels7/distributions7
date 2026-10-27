@@ -98,8 +98,12 @@ rbind(alpha = c(1 - 1e-8, 0.5, 1e-8),
       information = vapply(c(1 - 1e-8, 0.5, 1e-8), inf_mu, 0),
       limit = c(2^2, NA, 2 * (1 - 1e-8)))
 
-# The method argument is ignored because the answer is exact.
-identical(e, distrib_expected_hessian(d, 0, th, method = expect_mc(nsim = 5)))
+# A method object replaces the closed form by an estimate; at the kink in
+# mu the Monte Carlo estimate is built on the score.
+set.seed(1)
+distrib_expected_hessian(d, 0, th,
+                         method = expect_mc(nsim = 2000,
+                                            identity = "score"))$mu_mu
 }
 \seealso{
 \code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the observed curvature, which
