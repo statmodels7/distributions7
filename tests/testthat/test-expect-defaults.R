@@ -33,10 +33,14 @@ test_that("the default of the third and fourth derivatives is integration of the
   d <- dens_default()
   th <- list(mu = 0.2, sigma = 1.7)
   y <- c(-1, 0.5, 2)
+  # the family is a gaussian written as a density only, so the references are
+  # the closed forms 2 / sigma^3 and -6 / sigma^4; the default route
+  # integrates a stencil derivative, whose result differs by 1.3e-7 (relative)
+  # on arm64 macOS and by less on Windows, hence the tolerance
   expect_equal(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_sigma,
-               rep(0.40708324284787489, 3), tolerance = 1e-7)
+               rep(2 / th$sigma^3, 3), tolerance = 1e-6)
   expect_equal(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_sigma_sigma,
-               rep(-0.71838214294515546, 3), tolerance = 1e-7)
+               rep(-6 / th$sigma^4, 3), tolerance = 1e-6)
   # the pig1 third derivative is not a closed form
   expect_equal(distrib_deriv3(pig1_distrib(), c(0, 1, 3, 5), list(mu = 2, sigma = 0.8),
                               expected = TRUE)$mu_mu_mu,
