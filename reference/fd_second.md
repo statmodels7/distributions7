@@ -6,7 +6,7 @@ from a single stencil, without nested first differences.
 ## Usage
 
 ``` r
-fd_second(f, x, k, l, h_rel = NULL)
+fd_second(f, x, k, l, rel_step = NULL)
 ```
 
 ## Arguments
@@ -23,7 +23,7 @@ fd_second(f, x, k, l, h_rel = NULL)
 
   The coordinates with respect to which `f` is differentiated.
 
-- h_rel:
+- rel_step:
 
   Deprecated and unused; the step is
   [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)'s

@@ -16,7 +16,7 @@ Prints one line per check, with the worst gap behind it.
 
 - gaps:
 
-  Per-parameter gaps of the `dv` check.
+  Per-parameter gaps of the `deriv_v` check.
 
 - jumps:
 
@@ -48,7 +48,7 @@ Prints one line per check, with the worst gap behind it.
 ``` r
 check_kink(laplace_distrib(), verbose = TRUE)
 #> check_kink: laplace,  phi = abs,  order 0
-#>   dv against a difference of v      [PASSED]  worst 4.55e-12
+#>   deriv_v against a difference of v [PASSED]  worst 4.55e-12
 #>   the jump of the score             [PASSED]  worst 0.00e+00
 #>   the smooth parameters             [PASSED]
 #>       mu         measured            2   declared            2

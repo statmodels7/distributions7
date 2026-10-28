@@ -11,7 +11,7 @@ score function from this default at no further cost to its author.
 ## Usage
 
 ``` r
-numerical_gradient(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_gradient(distrib, y, theta, rel_step = .Machine$double.eps^(1/3))
 ```
 
 ## Arguments
@@ -28,7 +28,7 @@ numerical_gradient(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
   A named list of parameters (each element has length 1 or `length(y)`).
 
-- h_rel:
+- rel_step:
 
   Numeric, the relative step size. Defaults to
   `.Machine$double.eps^(1/3)` (optimal for central differences).

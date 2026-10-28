@@ -11,7 +11,7 @@ differences that score instead.
 ## Usage
 
 ``` r
-numerical_hessian(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
+numerical_hessian(distrib, y, theta, rel_step = .Machine$double.eps^(1/4))
 ```
 
 ## Arguments
@@ -28,7 +28,7 @@ numerical_hessian(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 
   A named list of parameters (each element has length 1 or `length(y)`).
 
-- h_rel:
+- rel_step:
 
   Numeric, the relative step size. Defaults to
   `.Machine$double.eps^(1/4)` (optimal for second differences).

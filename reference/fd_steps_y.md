@@ -1,6 +1,6 @@
 # Finite-Difference Steps Within the Support
 
-Returns the step for a central difference in the RESPONSE: `h_rel`
+Returns the step for a central difference in the RESPONSE: `rel_step`
 scaled by \\\max(1, \|y\|)\\ and kept strictly inside the distribution's
 support, either by cutting it to under half the distance to the nearest
 finite bound or by scaling it on that distance. It is the response
@@ -14,7 +14,7 @@ and both numerical response derivatives take their step from it.
 fd_steps_y(
   y,
   bounds,
-  h_rel,
+  rel_step,
   to_bound = c("clamp", "scale"),
   order = 1L,
   accuracy = 2L
@@ -32,7 +32,7 @@ fd_steps_y(
   A numeric vector of length two, the distribution's support. An
   infinite endpoint imposes nothing on that side.
 
-- h_rel:
+- rel_step:
 
   The relative step size, a single positive number. The callers pass
   \\\varepsilon^{1/3}\\ at first order and \\\varepsilon^{1/4}\\ at
@@ -113,24 +113,24 @@ which takes both.
 ## Examples
 
 ``` r
-# On the whole line the step is h_rel times max(1, |y|).
-h_rel <- .Machine$double.eps^(1 / 3)
-distributions7:::fd_steps_y(c(-100, 0, 0.5, 100), c(-Inf, Inf), h_rel)
+# On the whole line the step is rel_step times max(1, |y|).
+rel_step <- .Machine$double.eps^(1 / 3)
+distributions7:::fd_steps_y(c(-100, 0, 0.5, 100), c(-Inf, Inf), rel_step)
 #> [1] 6.055454e-04 6.055454e-06 6.055454e-06 6.055454e-04
-h_rel * pmax(1, abs(c(-100, 0, 0.5, 100)))
+rel_step * pmax(1, abs(c(-100, 0, 0.5, 100)))
 #> [1] 6.055454e-04 6.055454e-06 6.055454e-06 6.055454e-04
 
 # Near a bound the step is cut to 0.49 of the distance to it, so the left
 # evaluation point stays inside the support.
 y <- c(1e-8, 1e-3, 1)
-h <- distributions7:::fd_steps_y(y, c(0, Inf), h_rel)
+h <- distributions7:::fd_steps_y(y, c(0, Inf), rel_step)
 rbind(step = h, left_point = y - h)
 #>               [,1]         [,2]         [,3]
 #> step       4.9e-09 6.055454e-06 6.055454e-06
 #> left_point 5.1e-09 9.939445e-04 9.999939e-01
 
 # Scaled on the distance instead, the step keeps shrinking with it.
-distributions7:::fd_steps_y(y, c(0, Inf), h_rel, "scale")
+distributions7:::fd_steps_y(y, c(0, Inf), rel_step, "scale")
 #> [1] 6.055454e-14 6.055454e-09 6.055454e-06
 
 # The two steps that the callers use differ by a factor of twenty.

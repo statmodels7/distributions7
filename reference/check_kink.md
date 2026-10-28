@@ -42,11 +42,11 @@ check does not apply.
 The function runs three checks, at probe parameters inside every
 interval:
 
-- `dv`:
+- `deriv_v`:
 
   each \\\partial v/\partial \theta_p\\ against a central difference of
-  \\v\\ itself. This checks `dv` on its own, although the jump check
-  below reads it as well.
+  \\v\\ itself. This checks `deriv_v` on its own, although the jump
+  check below reads it as well.
 
 - `jump`:
 
@@ -56,8 +56,8 @@ interval:
   \\(v)\_+\\), the score of \\c(\theta)\phi(v)\\ jumps by
   \$\$c(\theta)\\ \Delta\phi' \\ \partial v/\partial \theta_p\$\$ as
   \\y\\ crosses the surface \\v = 0\\. This is the most important check:
-  it reads `phi`, `v`, `dv` and `coef` at once, and a wrong `v` fails
-  it.
+  it reads `phi`, `v`, `deriv_v` and `coef` at once, and a wrong `v`
+  fails it.
 
 - `smooth`:
 
@@ -83,14 +83,14 @@ for the family's own battery.
 ``` r
 check_kink(laplace_distrib())
 #> check_kink: laplace,  phi = abs,  order 0
-#>   dv against a difference of v      [PASSED]  worst 4.55e-12
+#>   deriv_v against a difference of v [PASSED]  worst 4.55e-12
 #>   the jump of the score             [PASSED]  worst 0.00e+00
 #>   the smooth parameters             [PASSED]
 #>       mu         measured            2   declared            2
 #>       sigma      measured            0   declared            0
 check_kink(laplace2_distrib())
 #> check_kink: laplace2,  phi = abs,  order 0
-#>   dv against a difference of v      [PASSED]  worst 4.55e-12
+#>   deriv_v against a difference of v [PASSED]  worst 4.55e-12
 #>   the jump of the score             [PASSED]  worst 0.00e+00
 #>   the smooth parameters             [PASSED]
 #>       mu         measured            2   declared            2

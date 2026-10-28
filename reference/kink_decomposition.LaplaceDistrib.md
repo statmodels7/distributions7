@@ -46,7 +46,7 @@ params_order(laplace_distrib())
 #>     0   Inf 
 check_kink(laplace_distrib())
 #> check_kink: laplace,  phi = abs,  order 0
-#>   dv against a difference of v      [PASSED]  worst 4.55e-12
+#>   deriv_v against a difference of v [PASSED]  worst 4.55e-12
 #>   the jump of the score             [PASSED]  worst 0.00e+00
 #>   the smooth parameters             [PASSED]
 #>       mu         measured            2   declared            2

@@ -9,7 +9,7 @@ itself reliable.
 ## Usage
 
 ``` r
-fd_is_reliable(fd_at, ref, h_rel, smooth_all)
+fd_is_reliable(fd_at, ref, rel_step, smooth_all)
 ```
 
 ## Arguments
@@ -21,10 +21,10 @@ fd_is_reliable(fd_at, ref, h_rel, smooth_all)
 
 - ref:
 
-  The reference already computed at `h_rel`, a named list of component
-  vectors.
+  The reference already computed at `rel_step`, a named list of
+  component vectors.
 
-- h_rel:
+- rel_step:
 
   The relative step with which `ref` was computed.
 

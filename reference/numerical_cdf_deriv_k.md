@@ -16,7 +16,7 @@ numerical_cdf_deriv_k(
   q,
   theta,
   order,
-  h_rel = .Machine$double.eps^(1/(order + 2))
+  rel_step = .Machine$double.eps^(1/(order + 2))
 )
 ```
 
@@ -38,7 +38,7 @@ numerical_cdf_deriv_k(
 
   The derivative order, 3 or 4.
 
-- h_rel:
+- rel_step:
 
   The relative step. It is a single number that defaults to
   \\\varepsilon^{1/(\mathrm{order}+2)}\\. A step much smaller than the

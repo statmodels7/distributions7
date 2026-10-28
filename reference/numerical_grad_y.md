@@ -10,7 +10,7 @@ method runs it for a continuous family with no closed form.
 ## Usage
 
 ``` r
-numerical_grad_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_grad_y(distrib, y, theta, rel_step = .Machine$double.eps^(1/3))
 ```
 
 ## Arguments
@@ -28,7 +28,7 @@ numerical_grad_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
   A named list of parameters.
 
-- h_rel:
+- rel_step:
 
   The relative step, defaulting to `.Machine$double.eps^(1/3)`, the
   exponent that minimizes the total error of a central first difference.
@@ -42,8 +42,8 @@ A numeric vector as long as `y`.
 The stencil's truncation error is \\O(h^2)\\ and its rounding error
 \\O(\varepsilon/h)\\, so the total is smallest at \\h \sim
 \varepsilon^{1/3}\\, which is the default. Measured against the gamma's
-own closed form at `h_rel` from \\10^{-1}\\ to \\10^{-8}\\, the error is
-8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
+own closed form at `rel_step` from \\10^{-1}\\ to \\10^{-8}\\, the error
+is 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
 2.0e-08: it divides by a hundred per decade while the truncation
 dominates, turns near the default and rises again once the rounding
 error dominates. A step ten times shorter than the default is therefore
@@ -96,7 +96,7 @@ max(abs(numerical_grad_y(d, y, theta) - distrib_grad_y(d, y, theta)))
 
 # The error falls as h^2 and then rises as eps / h, and the default sits
 # near the turn.
-err <- function(p) max(abs(numerical_grad_y(d, y, theta, h_rel = 10^(-p)) -
+err <- function(p) max(abs(numerical_grad_y(d, y, theta, rel_step = 10^(-p)) -
                            distrib_grad_y(d, y, theta)))
 setNames(vapply(1:8, err, numeric(1)), paste0("1e-", 1:8))
 #>         1e-1         1e-2         1e-3         1e-4         1e-5         1e-6 

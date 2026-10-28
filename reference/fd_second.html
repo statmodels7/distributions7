@@ -9,7 +9,7 @@ a single stencil, without nested first differences."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.91.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@ a single stencil, without nested first differences.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_second</span><span class="op">(</span><span class="va">f</span>, <span class="va">x</span>, <span class="va">k</span>, <span class="va">l</span>, h_rel <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_second</span><span class="op">(</span><span class="va">f</span>, <span class="va">x</span>, <span class="va">k</span>, <span class="va">l</span>, rel_step <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,7 +67,7 @@ a single stencil, without nested first differences.</p>
 <dd><p>The coordinates with respect to which <code>f</code> is differentiated.</p></dd>
 
 
-<dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
+<dt id="arg-rel-step">rel_step<a class="anchor" aria-label="anchor" href="#arg-rel-step"></a></dt>
 <dd><p>Deprecated and unused; the step is
 <code><a href="https://statmodels7.github.io/numericals7/reference/fd_step.html" class="external-link">numericals7::fd_step()</a></code>'s at order two.</p></dd>
 

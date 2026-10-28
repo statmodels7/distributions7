@@ -1,5 +1,14 @@
 # Changelog
 
+## distributions7 0.91.0
+
+- Renamed for readability: the argument `h_rel` of the `numerical_*()`
+  functions is `rel_step`; the argument and property `dv` of
+  [`kink_spec()`](https://statmodels7.github.io/distributions7/reference/kink_spec.md)
+  is `deriv_v`, and so is the element of the result of
+  [`check_kink()`](https://statmodels7.github.io/distributions7/reference/check_kink.md).
+  Requires numericals7 0.25.0 and optimizers7 0.19.0.
+
 ## distributions7 0.90.0
 
 - How an expectation is obtained is an object of class `ExpectMethod`,

@@ -6,7 +6,7 @@ multivariate checks and keeps numDeriv out of the hard dependencies.
 ## Usage
 
 ``` r
-numDeriv_grad(f, x, h_rel = NULL)
+numDeriv_grad(f, x, rel_step = NULL)
 ```
 
 ## Arguments
@@ -19,7 +19,7 @@ numDeriv_grad(f, x, h_rel = NULL)
 
   The point.
 
-- h_rel:
+- rel_step:
 
   Deprecated and unused; the step is
   [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)'s.

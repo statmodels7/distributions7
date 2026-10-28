@@ -15,7 +15,7 @@ differentiability off it."><meta property="og:image" content="https://statmodels
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.91.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@ differentiability off it.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">kink_spec</span><span class="op">(</span></span>
 <span>  phi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  v <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="cn">NULL</span>,</span>
-<span>  dv <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="cn">NULL</span>,</span>
+<span>  deriv_v <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="cn">NULL</span>,</span>
 <span>  coef <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -79,7 +79,7 @@ differentiability off it.</p>
 value per observation.</p></dd>
 
 
-<dt id="arg-dv">dv<a class="anchor" aria-label="anchor" href="#arg-dv"></a></dt>
+<dt id="arg-deriv-v">deriv_v<a class="anchor" aria-label="anchor" href="#arg-deriv-v"></a></dt>
 <dd><p>A function of <code>(y, theta)</code> returning a named list with one entry
 per parameter, \(\partial v / \partial \theta_p\). An entry that is
 identically zero indicates that the kink does not move with it.</p></dd>
@@ -121,7 +121,7 @@ the validator.</p></div>
 <span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fu">kink_spec</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  phi  <span class="op">=</span> <span class="st">"abs"</span>,</span></span>
 <span class="r-in"><span>  v    <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">theta</span><span class="op">)</span> <span class="va">y</span> <span class="op">-</span> <span class="va">theta</span><span class="op">$</span><span class="va">mu</span>,</span></span>
-<span class="r-in"><span>  dv   <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">theta</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  deriv_v <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">y</span>, <span class="va">theta</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  coef <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span><span class="op">)</span> <span class="op">-</span><span class="fl">1</span> <span class="op">/</span> <span class="va">theta</span><span class="op">$</span><span class="va">sigma</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">k</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;kink_spec&gt; c(theta) * phi(v),  phi = abs,  order 0</span>

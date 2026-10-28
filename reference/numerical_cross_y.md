@@ -3,9 +3,9 @@
 Computes \\\partial^2 \ell / \partial y\\ \partial \theta_i\\ by one
 central difference of
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
-in each parameter, at a step of `h_rel` relative to the parameter's own
-magnitude. A family with a closed form for some of its parameters calls
-it for the remaining ones through `which`. The default
+in each parameter, at a step of `rel_step` relative to the parameter's
+own magnitude. A family with a closed form for some of its parameters
+calls it for the remaining ones through `which`. The default
 [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 method for a continuous family uses
 [`mixed_tensor_derivatives()`](https://statmodels7.github.io/distributions7/reference/mixed_tensor_derivatives.md)
@@ -18,7 +18,7 @@ numerical_cross_y(
   distrib,
   y,
   theta,
-  h_rel = .Machine$double.eps^(1/3),
+  rel_step = .Machine$double.eps^(1/3),
   which = NULL
 )
 ```
@@ -37,7 +37,7 @@ numerical_cross_y(
 
   A named list of parameters, aligned to `distrib@params`.
 
-- h_rel:
+- rel_step:
 
   The relative finite-difference step, a single positive number.
   Defaults to `.Machine$double.eps^(1/3)`. The step is taken by

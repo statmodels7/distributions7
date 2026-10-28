@@ -11,7 +11,7 @@ derivatives and its distribution function.
 ## Usage
 
 ``` r
-fd_stable_quotient(quotient, y, bounds, h_rel)
+fd_stable_quotient(quotient, y, bounds, rel_step)
 ```
 
 ## Arguments
@@ -32,7 +32,7 @@ fd_stable_quotient(quotient, y, bounds, h_rel)
 
   The support, a numeric vector of length two.
 
-- h_rel:
+- rel_step:
 
   The relative step, a single positive number.
 

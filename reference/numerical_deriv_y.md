@@ -11,7 +11,7 @@ numerical_deriv_y(
   y,
   theta,
   order,
-  h_rel = .Machine$double.eps^(1/(order + 2))
+  rel_step = .Machine$double.eps^(1/(order + 2))
 )
 ```
 
@@ -33,7 +33,7 @@ numerical_deriv_y(
 
   The derivative order, 3 or 4.
 
-- h_rel:
+- rel_step:
 
   Relative finite-difference step.
 

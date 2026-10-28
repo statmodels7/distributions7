@@ -14,7 +14,7 @@ numerical_dexpected_hessian(
   theta,
   scale = c("parameter", "link"),
   method = NULL,
-  h_rel = numericals7::fd_step(1, 1L)
+  rel_step = numericals7::fd_step(1, 1L)
 )
 ```
 
@@ -43,7 +43,7 @@ numerical_dexpected_hessian(
   See
   [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
-- h_rel:
+- rel_step:
 
   The relative step, a cube root of machine epsilon by default, the
   value at which a central difference balances truncation against

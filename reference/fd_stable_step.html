@@ -17,7 +17,7 @@ tensor_derivatives() and numerical_deriv5() use rules of their own."><meta prope
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.91.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@ mixed response derivatives take their step from it;
 <span>  <span class="va">quotient</span>,</span>
 <span>  <span class="va">theta_j</span>,</span>
 <span>  <span class="va">bounds_j</span>,</span>
-<span>  <span class="va">h_rel</span>,</span>
+<span>  <span class="va">rel_step</span>,</span>
 <span>  need_value <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  order <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  accuracy <span class="op">=</span> <span class="fl">2L</span></span>
@@ -91,7 +91,7 @@ over all of them together.</p></dd>
 <code>NULL</code>.</p></dd>
 
 
-<dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
+<dt id="arg-rel-step">rel_step<a class="anchor" aria-label="anchor" href="#arg-rel-step"></a></dt>
 <dd><p>The relative step size.</p></dd>
 
 
@@ -137,7 +137,7 @@ signal.</p>
 coincide at every entry, which is every call on a parameter with no finite
 bound and every positive parameter at or above one: there the clamped step
 is returned at once and each quotient is evaluated only once.</p>
-<p>Each order selects its own step, with its own <code>h_rel</code> and its own stencil;
+<p>Each order selects its own step, with its own <code>rel_step</code> and its own stencil;
 a choice made at first order is not reused at higher orders.</p>
     </div>
     <div class="section level2">

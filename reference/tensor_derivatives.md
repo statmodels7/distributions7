@@ -16,7 +16,7 @@ tensor_derivatives(
   theta,
   order,
   base,
-  h_rel = NULL,
+  rel_step = NULL,
   skip = NULL,
   scale = c("parameter", "link"),
   accuracy = 4L
@@ -45,7 +45,7 @@ tensor_derivatives(
 
   The highest order that the family implements itself, 0 to 4.
 
-- h_rel:
+- rel_step:
 
   `NULL`, the default, for the step above, or a relative step that
   replaces \\\varepsilon^{1/(r+a)}\\.

@@ -19,7 +19,7 @@ is both cheaper and more accurate."><meta property="og:image" content="https://s
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.91.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ is both cheaper and more accurate.</p>
 <span>  <span class="va">q</span>,</span>
 <span>  <span class="va">theta</span>,</span>
 <span>  order <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  h_rel <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">order</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  rel_step <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">order</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  which <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -94,7 +94,7 @@ may be vectors; the step is then chosen elementwise.</p></dd>
 <dd><p>The derivative order, 1 (the default) or 2.</p></dd>
 
 
-<dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
+<dt id="arg-rel-step">rel_step<a class="anchor" aria-label="anchor" href="#arg-rel-step"></a></dt>
 <dd><p>The relative step. It is a single number that defaults to
 \(\varepsilon^{1/(\mathrm{order}+2)}\), which balances the stencil's
 truncation against its rounding. A step much smaller than the default is

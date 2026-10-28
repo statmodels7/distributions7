@@ -11,7 +11,13 @@ instead.
 ## Usage
 
 ``` r
-numerical_theta2_y(distrib, y, theta, inner, h_rel = .Machine$double.eps^(1/3))
+numerical_theta2_y(
+  distrib,
+  y,
+  theta,
+  inner,
+  rel_step = .Machine$double.eps^(1/3)
+)
 ```
 
 ## Arguments
@@ -36,7 +42,7 @@ numerical_theta2_y(distrib, y, theta, inner, h_rel = .Machine$double.eps^(1/3))
   first-order components as a list with one entry per parameter,
   typically `function(th) distrib_cross_y(distrib, y, th)`.
 
-- h_rel:
+- rel_step:
 
   The relative step, defaulting to `.Machine$double.eps^(1/3)`, which is
   the optimal exponent for a central first difference.

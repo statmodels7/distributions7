@@ -18,7 +18,7 @@ numerical_cdf_deriv(
   q,
   theta,
   order = 1L,
-  h_rel = .Machine$double.eps^(1/(order + 2)),
+  rel_step = .Machine$double.eps^(1/(order + 2)),
   which = NULL
 )
 ```
@@ -42,7 +42,7 @@ numerical_cdf_deriv(
 
   The derivative order, 1 (the default) or 2.
 
-- h_rel:
+- rel_step:
 
   The relative step. It is a single number that defaults to
   \\\varepsilon^{1/(\mathrm{order}+2)}\\, which balances the stencil's

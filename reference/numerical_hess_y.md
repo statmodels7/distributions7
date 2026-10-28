@@ -10,7 +10,7 @@ method runs it for a continuous family with no closed form.
 ## Usage
 
 ``` r
-numerical_hess_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
+numerical_hess_y(distrib, y, theta, rel_step = .Machine$double.eps^(1/4))
 ```
 
 ## Arguments
@@ -28,7 +28,7 @@ numerical_hess_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 
   A named list of parameters.
 
-- h_rel:
+- rel_step:
 
   The relative step, defaulting to `.Machine$double.eps^(1/4)`, the
   exponent that minimizes the total error of a central second
@@ -46,10 +46,11 @@ because the numerator is a difference of quantities of the same size and
 is divided by \\h^2\\. The total is smallest at \\h \sim
 \varepsilon^{1/4}\\, which is the default and is twenty times the first
 order's step, and the accuracy attainable is correspondingly coarser.
-Measured against the gamma's own closed form at `h_rel` from \\10^{-1}\\
-to \\10^{-8}\\, the error is 2.5e-01, 2.4e-03, 2.4e-05, 2.8e-07,
-5.4e-06, 6.2e-04, 3.5e-02 and 3.1e+00. The rise past the optimum is far
-steeper than the first order's, which is the \\h^{-2}\\ at work.
+Measured against the gamma's own closed form at `rel_step` from
+\\10^{-1}\\ to \\10^{-8}\\, the error is 2.5e-01, 2.4e-03, 2.4e-05,
+2.8e-07, 5.4e-06, 6.2e-04, 3.5e-02 and 3.1e+00. The rise past the
+optimum is far steeper than the first order's, which is the \\h^{-2}\\
+at work.
 
 ## The cost
 
@@ -93,7 +94,7 @@ c(order2 = max(abs(numerical_hess_y(d, y, theta) -
 #> 3.576279e-07 3.142242e-10 
 
 # And it degrades far faster below its optimal step.
-err <- function(p) max(abs(numerical_hess_y(d, y, theta, h_rel = 10^(-p)) -
+err <- function(p) max(abs(numerical_hess_y(d, y, theta, rel_step = 10^(-p)) -
                            distrib_hess_y(d, y, theta)))
 setNames(vapply(3:8, err, numeric(1)), paste0("1e-", 3:8))
 #>         1e-3         1e-4         1e-5         1e-6         1e-7         1e-8 

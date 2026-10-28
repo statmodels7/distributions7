@@ -11,7 +11,7 @@ the nearest finite bound or by scaling it on that distance.
 fd_steps(
   theta_j,
   bounds_j,
-  h_rel,
+  rel_step,
   to_bound = c("clamp", "scale"),
   order = 1L,
   accuracy = 2L
@@ -28,7 +28,7 @@ fd_steps(
 
   A length-2 numeric vector giving that parameter's domain, or `NULL`.
 
-- h_rel:
+- rel_step:
 
   The relative step size, typically a root of machine epsilon chosen for
   the stencil in use.
@@ -88,11 +88,11 @@ inside the domain but lies farther out than the \\0.49 d\\ that the
 clamp is meant to enforce.
 
 When the reach is accounted for, the clamped branch at the default
-`h_rel` is
+`rel_step` is
 [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)
 with `bounds`, and a test asserts the two are
 [`identical()`](https://rdrr.io/r/base/identical.html) so they cannot
-drift. It is written here rather than delegated because `h_rel` is an
+drift. It is written here rather than delegated because `rel_step` is an
 argument that the callers vary:
 [`fd_stable_step()`](https://statmodels7.github.io/distributions7/reference/fd_stable_step.md)
 halves it and
@@ -115,4 +115,4 @@ which take the chosen step.
 [`fd_steps_y()`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md)
 is the response counterpart.
 [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)
-is the same rule at the default `h_rel`.
+is the same rule at the default `rel_step`.

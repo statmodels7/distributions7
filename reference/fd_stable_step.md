@@ -18,7 +18,7 @@ fd_stable_step(
   quotient,
   theta_j,
   bounds_j,
-  h_rel,
+  rel_step,
   need_value = TRUE,
   order = 1L,
   accuracy = 2L
@@ -42,7 +42,7 @@ fd_stable_step(
 
   That parameter's domain, a length-2 numeric vector, or `NULL`.
 
-- h_rel:
+- rel_step:
 
   The relative step size.
 
@@ -94,7 +94,7 @@ finite bound and every positive parameter at or above one: there the
 clamped step is returned at once and each quotient is evaluated only
 once.
 
-Each order selects its own step, with its own `h_rel` and its own
+Each order selects its own step, with its own `rel_step` and its own
 stencil; a choice made at first order is not reused at higher orders.
 
 ## See also

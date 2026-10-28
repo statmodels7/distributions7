@@ -14,7 +14,7 @@ numerical_deriv3(
   distrib,
   y,
   theta,
-  h_rel = .Machine$double.eps^(1/3),
+  rel_step = .Machine$double.eps^(1/3),
   skip = NULL
 )
 ```
@@ -33,7 +33,7 @@ numerical_deriv3(
 
   A named list of parameters (each of length 1 or `length(y)`).
 
-- h_rel:
+- rel_step:
 
   Numeric; the relative finite-difference step. Defaults to
   `.Machine$double.eps^(1/3)` for a family with its own Hessian, and to

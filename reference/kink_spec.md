@@ -13,7 +13,7 @@ reads the order of differentiability off it.
 kink_spec(
   phi = character(0),
   v = function() NULL,
-  dv = function() NULL,
+  deriv_v = function() NULL,
   coef = function() NULL
 )
 ```
@@ -30,7 +30,7 @@ kink_spec(
   A function of `(y, theta)` returning the argument of `phi`, one value
   per observation.
 
-- dv:
+- deriv_v:
 
   A function of `(y, theta)` returning a named list with one entry per
   parameter, \\\partial v / \partial \theta_p\\. An entry that is
@@ -86,7 +86,7 @@ for the validator.
 k <- kink_spec(
   phi  = "abs",
   v    = function(y, theta) y - theta$mu,
-  dv   = function(y, theta) list(mu = -1, sigma = 0),
+  deriv_v = function(y, theta) list(mu = -1, sigma = 0),
   coef = function(theta) -1 / theta$sigma)
 k
 #> <kink_spec> c(theta) * phi(v),  phi = abs,  order 0

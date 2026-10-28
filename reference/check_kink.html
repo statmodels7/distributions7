@@ -13,7 +13,7 @@ score are written independently of it, so the two can be compared."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.90.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.91.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,9 +86,9 @@ where a check does not apply.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function runs three checks, at probe parameters inside every interval:</p>
-<dl><dt><code>dv</code></dt>
+<dl><dt><code>deriv_v</code></dt>
 <dd><p>each \(\partial v/\partial \theta_p\) against a central
-difference of \(v\) itself. This checks <code>dv</code> on its own, although
+difference of \(v\) itself. This checks <code>deriv_v</code> on its own, although
 the jump check below reads it as well.</p></dd>
 
 <dt><code>jump</code></dt>
@@ -98,7 +98,7 @@ that the declaration predicts. Writing \(\Delta\phi'\) for the jump of
 \((v)_+\)), the score of \(c(\theta)\phi(v)\) jumps by
 $$c(\theta)\, \Delta\phi' \, \partial v/\partial \theta_p$$
 as \(y\) crosses the surface \(v = 0\). This is the most important
-check: it reads <code>phi</code>, <code>v</code>, <code>dv</code> and <code>coef</code> at once, and a wrong <code>v</code>
+check: it reads <code>phi</code>, <code>v</code>, <code>deriv_v</code> and <code>coef</code> at once, and a wrong <code>v</code>
 fails it.</p></dd>
 
 <dt><code>smooth</code></dt>
@@ -122,14 +122,14 @@ declaration would satisfy.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">check_kink</span><span class="op">(</span><span class="fu"><a href="laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> check_kink: laplace,  phi = abs,  order 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   dv against a difference of v      [PASSED]  worst 4.55e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   deriv_v against a difference of v [PASSED]  worst 4.55e-12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   the jump of the score             [PASSED]  worst 0.00e+00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   the smooth parameters             [PASSED]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu         measured            2   declared            2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       sigma      measured            0   declared            0</span>
 <span class="r-in"><span><span class="fu">check_kink</span><span class="op">(</span><span class="fu"><a href="laplace2_distrib.html">laplace2_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> check_kink: laplace2,  phi = abs,  order 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   dv against a difference of v      [PASSED]  worst 4.55e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   deriv_v against a difference of v [PASSED]  worst 4.55e-12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   the jump of the score             [PASSED]  worst 0.00e+00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   the smooth parameters             [PASSED]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu         measured            2   declared            2</span>
