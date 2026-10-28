@@ -4,7 +4,7 @@
 \alias{fd_stable_quotient}
 \title{A Response Difference with a Selected Step}
 \usage{
-fd_stable_quotient(quotient, y, bounds, h_rel)
+fd_stable_quotient(quotient, y, bounds, rel_step)
 }
 \arguments{
 \item{quotient}{A function of a vector of steps as long as \code{y}, returning
@@ -15,7 +15,7 @@ which its evaluation points actually lie, as \code{\link[=fd_first_taken]{fd_fir
 
 \item{bounds}{The support, a numeric vector of length two.}
 
-\item{h_rel}{The relative step, a single positive number.}
+\item{rel_step}{The relative step, a single positive number.}
 }
 \value{
 A numeric vector as long as \code{y}.

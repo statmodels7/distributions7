@@ -4,7 +4,7 @@
 \alias{numerical_hess_y}
 \title{Numerical Second Response Derivative of the Log-Density}
 \usage{
-numerical_hess_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
+numerical_hess_y(distrib, y, theta, rel_step = .Machine$double.eps^(1/4))
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{continuous_distrib}. A discrete
@@ -14,7 +14,7 @@ family has no derivative in the response and registers no method.}
 
 \item{theta}{A named list of parameters.}
 
-\item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/4)},
+\item{rel_step}{The relative step, defaulting to \code{.Machine$double.eps^(1/4)},
 the exponent that minimizes the total error of a central second
 difference.}
 }
@@ -37,7 +37,7 @@ of the same size and is divided by \eqn{h^2}. The
 total is smallest at \eqn{h \sim \varepsilon^{1/4}}, which is the default
 and is twenty times the first order's step, and the accuracy attainable is
 correspondingly coarser. Measured against the gamma's own closed form at
-\code{h_rel} from \eqn{10^{-1}} to \eqn{10^{-8}}, the error is 2.5e-01, 2.4e-03,
+\code{rel_step} from \eqn{10^{-1}} to \eqn{10^{-8}}, the error is 2.5e-01, 2.4e-03,
 2.4e-05, 2.8e-07, 5.4e-06, 6.2e-04, 3.5e-02 and 3.1e+00. The rise past the
 optimum is far steeper than the first order's, which is the \eqn{h^{-2}} at
 work.
@@ -71,7 +71,7 @@ c(order2 = max(abs(numerical_hess_y(d, y, theta) -
                    distrib_grad_y(d, y, theta))))
 
 # And it degrades far faster below its optimal step.
-err <- function(p) max(abs(numerical_hess_y(d, y, theta, h_rel = 10^(-p)) -
+err <- function(p) max(abs(numerical_hess_y(d, y, theta, rel_step = 10^(-p)) -
                            distrib_hess_y(d, y, theta)))
 setNames(vapply(3:8, err, numeric(1)), paste0("1e-", 3:8))
 

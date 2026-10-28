@@ -266,7 +266,7 @@ has_mv_grad_y <- function(x) {
 #'
 #' @param f A function of a numeric vector, returning one number.
 #' @param x The point.
-#' @param h_rel Deprecated and unused; the step is
+#' @param rel_step Deprecated and unused; the step is
 #'   [numericals7::fd_step()]'s.
 #'
 #' @return A numeric vector the length of `x`.
@@ -274,7 +274,7 @@ has_mv_grad_y <- function(x) {
 #' @seealso [numericals7::fd_weights()]
 #'
 #' @keywords internal
-numDeriv_grad <- function(f, x, h_rel = NULL) {
+numDeriv_grad <- function(f, x, rel_step = NULL) {
   s <- numericals7::fd_offsets(1L, accuracy = 2L)$central
   w <- numericals7::fd_weights(s, 1L)
   vapply(seq_along(x), function(k) {
@@ -307,7 +307,7 @@ numDeriv_grad <- function(f, x, h_rel = NULL) {
 #' @param f A function of a numeric vector, returning one number.
 #' @param x The point.
 #' @param k,l The coordinates with respect to which `f` is differentiated.
-#' @param h_rel Deprecated and unused; the step is
+#' @param rel_step Deprecated and unused; the step is
 #'   [numericals7::fd_step()]'s at order two.
 #'
 #' @return A single number.
@@ -315,7 +315,7 @@ numDeriv_grad <- function(f, x, h_rel = NULL) {
 #' @seealso [numericals7::fd_weights()]
 #'
 #' @keywords internal
-fd_second <- function(f, x, k, l, h_rel = NULL) {
+fd_second <- function(f, x, k, l, rel_step = NULL) {
   hk <- numericals7::fd_step(x[k], 2L, accuracy = 2L)
   hl <- numericals7::fd_step(x[l], 2L, accuracy = 2L)
   if (k == l) {

@@ -271,7 +271,7 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters on the parameter scale.
 #' @param order The derivative order, 3 or 4.
-#' @param h_rel The relative step. It is a single number that defaults to
+#' @param rel_step The relative step. It is a single number that defaults to
 #'   \eqn{\varepsilon^{1/(\mathrm{order}+2)}}. A step much smaller than the
 #'   default is worse, because the rounding grows as
 #'   \eqn{h^{-\mathrm{order}}}.
@@ -286,9 +286,9 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'
 #' @keywords internal
 numerical_cdf_deriv_k <- function(distrib, q, theta, order,
-                                  h_rel = .Machine$double.eps^(1 / (order + 2))) {
+                                  rel_step = .Machine$double.eps^(1 / (order + 2))) {
   params <- distrib@params
-  hs <- lapply(params, function(p) h_rel * pmax(1, abs(theta[[p]])))
+  hs <- lapply(params, function(p) rel_step * pmax(1, abs(theta[[p]])))
   names(hs) <- params
 
   fac <- list(

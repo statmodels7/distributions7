@@ -9,7 +9,7 @@ numerical_cdf_deriv_k(
   q,
   theta,
   order,
-  h_rel = .Machine$double.eps^(1/(order + 2))
+  rel_step = .Machine$double.eps^(1/(order + 2))
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ numerical_cdf_deriv_k(
 
 \item{order}{The derivative order, 3 or 4.}
 
-\item{h_rel}{The relative step. It is a single number that defaults to
+\item{rel_step}{The relative step. It is a single number that defaults to
 \eqn{\varepsilon^{1/(\mathrm{order}+2)}}. A step much smaller than the
 default is worse, because the rounding grows as
 \eqn{h^{-\mathrm{order}}}.}

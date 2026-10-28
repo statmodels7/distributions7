@@ -4,7 +4,7 @@
 \alias{fd_second}
 \title{A Second Derivative From One Stencil}
 \usage{
-fd_second(f, x, k, l, h_rel = NULL)
+fd_second(f, x, k, l, rel_step = NULL)
 }
 \arguments{
 \item{f}{A function of a numeric vector, returning one number.}
@@ -13,7 +13,7 @@ fd_second(f, x, k, l, h_rel = NULL)
 
 \item{k, l}{The coordinates with respect to which \code{f} is differentiated.}
 
-\item{h_rel}{Deprecated and unused; the step is
+\item{rel_step}{Deprecated and unused; the step is
 \code{\link[numericals7:fd_step]{numericals7::fd_step()}}'s at order two.}
 }
 \value{

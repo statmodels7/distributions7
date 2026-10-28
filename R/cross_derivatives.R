@@ -93,7 +93,7 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' @description
 #' Computes \eqn{\partial^2 \ell / \partial y\, \partial \theta_i} by one
 #' central difference of [distrib_grad_y()] in each parameter, at a step of
-#' `h_rel` relative to the parameter's own magnitude. A family with a closed
+#' `rel_step` relative to the parameter's own magnitude. A family with a closed
 #' form for some of its parameters calls it for the remaining ones through
 #' `which`. The default [distrib_cross_y()] method for a continuous family
 #' uses [mixed_tensor_derivatives()] instead.
@@ -116,7 +116,7 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' @param distrib An object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned to `distrib@params`.
-#' @param h_rel The relative finite-difference step, a single positive number.
+#' @param rel_step The relative finite-difference step, a single positive number.
 #'   Defaults to `.Machine$double.eps^(1/3)`. The step is taken by
 #'   [fd_stable_step()], which keeps both evaluation points inside the bounds
 #'   of the parameter.
@@ -146,7 +146,7 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #'   [numerical_grad_y()] for the quantity that it differences;
 #'   [numerical_cross2_y()] for the third-order analogue.
 #' @export
-numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3),
+numerical_cross_y <- function(distrib, y, theta, rel_step = .Machine$double.eps^(1 / 3),
                               which = NULL) {
   params <- distrib@params
   keep <- if (is.null(which)) params else which
@@ -162,7 +162,7 @@ numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
         distrib_grad_y(distrib, y, th_dn)) / (2 * h)
     }
     out[[p]] <- fd_stable_step(quotient, theta[[j]],
-                               distrib@params_bounds[[p]], h_rel)$value
+                               distrib@params_bounds[[p]], rel_step)$value
   }
   out
 }

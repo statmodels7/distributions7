@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.90.0
+Version: 0.91.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Probability distributions as objects, built on the S7 object
@@ -28,10 +28,10 @@ LinkingTo:
     RcppParallel
 Imports:
     graphics,
-    numericals7 (>= 0.23.3),
+    numericals7 (>= 0.25.0),
     parameters7 (>= 0.26.0),
     linkfunctions7 (>= 0.6.0),
-    optimizers7,
+    optimizers7 (>= 0.19.0),
     Rcpp,
     RcppParallel,
     S7,

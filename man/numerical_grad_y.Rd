@@ -4,7 +4,7 @@
 \alias{numerical_grad_y}
 \title{Numerical Gradient of the Log-Density with Respect to the Response}
 \usage{
-numerical_grad_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_grad_y(distrib, y, theta, rel_step = .Machine$double.eps^(1/3))
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{continuous_distrib}. A discrete
@@ -14,7 +14,7 @@ family has no derivative in the response and registers no method.}
 
 \item{theta}{A named list of parameters.}
 
-\item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
+\item{rel_step}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
 the exponent that minimizes the total error of a central first difference.}
 }
 \value{
@@ -32,7 +32,7 @@ method runs it for a continuous family with no closed form.
 The stencil's truncation error is \eqn{O(h^2)} and its rounding error
 \eqn{O(\varepsilon/h)}, so the total is smallest at
 \eqn{h \sim \varepsilon^{1/3}}, which is the default. Measured against the
-gamma's own closed form at \code{h_rel} from \eqn{10^{-1}} to \eqn{10^{-8}}, the
+gamma's own closed form at \code{rel_step} from \eqn{10^{-1}} to \eqn{10^{-8}}, the
 error is 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
 2.0e-08: it divides by a hundred per decade while the truncation dominates,
 turns near the default and rises again once the rounding error dominates.
@@ -70,7 +70,7 @@ max(abs(numerical_grad_y(d, y, theta) - distrib_grad_y(d, y, theta)))
 
 # The error falls as h^2 and then rises as eps / h, and the default sits
 # near the turn.
-err <- function(p) max(abs(numerical_grad_y(d, y, theta, h_rel = 10^(-p)) -
+err <- function(p) max(abs(numerical_grad_y(d, y, theta, rel_step = 10^(-p)) -
                            distrib_grad_y(d, y, theta)))
 setNames(vapply(1:8, err, numeric(1)), paste0("1e-", 1:8))
 

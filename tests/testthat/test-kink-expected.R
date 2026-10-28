@@ -26,7 +26,7 @@ user_laplace <- function(with_kink) {
   if (with_kink) {
     S7::method(kink_decomposition, K) <- function(distrib) {
       kink_spec(phi = "abs", v = function(y, theta) y - theta$mu,
-                dv = function(y, theta) list(mu = -1, sigma = 0),
+                deriv_v = function(y, theta) list(mu = -1, sigma = 0),
                 coef = function(theta) -1 / theta$sigma)
     }
   }
@@ -55,7 +55,7 @@ test_that("kink_knots() locates the kink of a family, a fold and a truncation", 
   expect_length(kink_knots(gaussian1_distrib(), list(mu = 0, sigma = 1), -10, 10), 0L)
   # a v with two roots gives both
   hub <- kink_spec(phi = "hinge", v = function(y, theta) abs(y - theta$mu) - theta$k,
-                   dv = function(y, theta) list(mu = -sign(y - theta$mu), k = -1),
+                   deriv_v = function(y, theta) list(mu = -sign(y - theta$mu), k = -1),
                    coef = function(theta) 1)
   expect_equal(.kink_roots(hub, list(mu = 1, k = 0.3), -20, 20), c(0.7, 1.3))
 })

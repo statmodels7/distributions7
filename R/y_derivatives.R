@@ -9,7 +9,7 @@ NULL
 #' @title Finite-Difference Steps Within the Support
 #'
 #' @description
-#' Returns the step for a central difference in the RESPONSE: `h_rel` scaled by
+#' Returns the step for a central difference in the RESPONSE: `rel_step` scaled by
 #' \eqn{\max(1, |y|)} and kept strictly inside the distribution's support,
 #' either by cutting it to under half the distance to the nearest finite bound
 #' or by scaling it on that distance. It is the response counterpart of
@@ -46,7 +46,7 @@ NULL
 #' @param y A numeric vector of observations.
 #' @param bounds A numeric vector of length two, the distribution's support.
 #'   An infinite endpoint imposes nothing on that side.
-#' @param h_rel The relative step size, a single positive number. The callers
+#' @param rel_step The relative step size, a single positive number. The callers
 #'   pass \eqn{\varepsilon^{1/3}} at first order and \eqn{\varepsilon^{1/4}} at
 #'   second.
 #' @param order,accuracy The stencil for which the step is computed. Its reach,
@@ -75,34 +75,34 @@ NULL
 #' @keywords internal
 #'
 #' @examples
-#' # On the whole line the step is h_rel times max(1, |y|).
-#' h_rel <- .Machine$double.eps^(1 / 3)
-#' distributions7:::fd_steps_y(c(-100, 0, 0.5, 100), c(-Inf, Inf), h_rel)
-#' h_rel * pmax(1, abs(c(-100, 0, 0.5, 100)))
+#' # On the whole line the step is rel_step times max(1, |y|).
+#' rel_step <- .Machine$double.eps^(1 / 3)
+#' distributions7:::fd_steps_y(c(-100, 0, 0.5, 100), c(-Inf, Inf), rel_step)
+#' rel_step * pmax(1, abs(c(-100, 0, 0.5, 100)))
 #'
 #' # Near a bound the step is cut to 0.49 of the distance to it, so the left
 #' # evaluation point stays inside the support.
 #' y <- c(1e-8, 1e-3, 1)
-#' h <- distributions7:::fd_steps_y(y, c(0, Inf), h_rel)
+#' h <- distributions7:::fd_steps_y(y, c(0, Inf), rel_step)
 #' rbind(step = h, left_point = y - h)
 #'
 #' # Scaled on the distance instead, the step keeps shrinking with it.
-#' distributions7:::fd_steps_y(y, c(0, Inf), h_rel, "scale")
+#' distributions7:::fd_steps_y(y, c(0, Inf), rel_step, "scale")
 #'
 #' # The two steps that the callers use differ by a factor of twenty.
 #' c(first_order = .Machine$double.eps^(1 / 3),
 #'   second_order = .Machine$double.eps^(1 / 4))
-fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
+fd_steps_y <- function(y, bounds, rel_step, to_bound = c("clamp", "scale"),
                        order = 1L, accuracy = 2L) {
   to_bound <- match.arg(to_bound)
   if (identical(to_bound, "scale")) {
     s <- pmax(1, abs(y))
     if (is.finite(bounds[1])) s <- pmin(s, y - bounds[1])
     if (is.finite(bounds[2])) s <- pmin(s, bounds[2] - y)
-    return(h_rel * s)
+    return(rel_step * s)
   }
-  reach <- numericals7::fd_offsets(order, accuracy = accuracy)$reach
-  h <- h_rel * pmax(1, abs(y))
+  reach <- numericals7::fd_offsets(order, accuracy = accuracy)$half_width
+  h <- rel_step * pmax(1, abs(y))
   if (is.finite(bounds[1])) h <- pmin(h, 0.49 * (y - bounds[1]) / reach)
   if (is.finite(bounds[2])) h <- pmin(h, 0.49 * (bounds[2] - y) / reach)
   h
@@ -168,7 +168,7 @@ fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
 #'   which its evaluation points actually lie, as [fd_first_taken()] does.
 #' @param y The points, a numeric vector.
 #' @param bounds The support, a numeric vector of length two.
-#' @param h_rel The relative step, a single positive number.
+#' @param rel_step The relative step, a single positive number.
 #'
 #' @return A numeric vector as long as `y`.
 #'
@@ -177,13 +177,13 @@ fd_steps_y <- function(y, bounds, h_rel, to_bound = c("clamp", "scale"),
 #'   steps taken.
 #'
 #' @keywords internal
-fd_stable_quotient <- function(quotient, y, bounds, h_rel) {
+fd_stable_quotient <- function(quotient, y, bounds, rel_step) {
   # no candidate below two units of the spacing at y, so that its half step is
   # still a step: within about 1e-11 of a non-zero bound the scaled step
   # otherwise rounds to zero
   fl <- 2 * pmax(abs(y), 2^-1022) * .Machine$double.eps
-  hA <- pmax(fd_steps_y(y, bounds, h_rel, "clamp"), fl)
-  hB <- pmax(fd_steps_y(y, bounds, h_rel, "scale"), fl)
+  hA <- pmax(fd_steps_y(y, bounds, rel_step, "clamp"), fl)
+  hB <- pmax(fd_steps_y(y, bounds, rel_step, "scale"), fl)
   a1 <- quotient(hA)
   if (isTRUE(all(hA == hB))) return(a1)
   a2 <- quotient(hA / 2)
@@ -277,7 +277,7 @@ fd_second_taken <- function(f, x, h, f0 = f(x)) {
 #' The stencil's truncation error is \eqn{O(h^2)} and its rounding error
 #' \eqn{O(\varepsilon/h)}, so the total is smallest at
 #' \eqn{h \sim \varepsilon^{1/3}}, which is the default. Measured against the
-#' gamma's own closed form at `h_rel` from \eqn{10^{-1}} to \eqn{10^{-8}}, the
+#' gamma's own closed form at `rel_step` from \eqn{10^{-1}} to \eqn{10^{-8}}, the
 #' error is 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
 #' 2.0e-08: it divides by a hundred per decade while the truncation dominates,
 #' turns near the default and rises again once the rounding error dominates.
@@ -297,7 +297,7 @@ fd_second_taken <- function(f, x, h, f0 = f(x)) {
 #'   family has no derivative in the response and registers no method.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param h_rel The relative step, defaulting to `.Machine$double.eps^(1/3)`,
+#' @param rel_step The relative step, defaulting to `.Machine$double.eps^(1/3)`,
 #'   the exponent that minimizes the total error of a central first difference.
 #'
 #' @return A numeric vector as long as `y`.
@@ -324,13 +324,13 @@ fd_second_taken <- function(f, x, h, f0 = f(x)) {
 #'
 #' # The error falls as h^2 and then rises as eps / h, and the default sits
 #' # near the turn.
-#' err <- function(p) max(abs(numerical_grad_y(d, y, theta, h_rel = 10^(-p)) -
+#' err <- function(p) max(abs(numerical_grad_y(d, y, theta, rel_step = 10^(-p)) -
 #'                            distrib_grad_y(d, y, theta)))
 #' setNames(vapply(1:8, err, numeric(1)), paste0("1e-", 1:8))
 #'
 #' @export
-numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
-  h <- fd_steps_y(y, distrib@bounds, h_rel)
+numerical_grad_y <- function(distrib, y, theta, rel_step = .Machine$double.eps^(1 / 3)) {
+  h <- fd_steps_y(y, distrib@bounds, rel_step)
   (distrib_pdf(distrib, y + h, theta, log = TRUE) -
     distrib_pdf(distrib, y - h, theta, log = TRUE)) / (2 * h)
 }
@@ -355,7 +355,7 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' total is smallest at \eqn{h \sim \varepsilon^{1/4}}, which is the default
 #' and is twenty times the first order's step, and the accuracy attainable is
 #' correspondingly coarser. Measured against the gamma's own closed form at
-#' `h_rel` from \eqn{10^{-1}} to \eqn{10^{-8}}, the error is 2.5e-01, 2.4e-03,
+#' `rel_step` from \eqn{10^{-1}} to \eqn{10^{-8}}, the error is 2.5e-01, 2.4e-03,
 #' 2.4e-05, 2.8e-07, 5.4e-06, 6.2e-04, 3.5e-02 and 3.1e+00. The rise past the
 #' optimum is far steeper than the first order's, which is the \eqn{h^{-2}} at
 #' work.
@@ -369,7 +369,7 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'   family has no derivative in the response and registers no method.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param h_rel The relative step, defaulting to `.Machine$double.eps^(1/4)`,
+#' @param rel_step The relative step, defaulting to `.Machine$double.eps^(1/4)`,
 #'   the exponent that minimizes the total error of a central second
 #'   difference.
 #'
@@ -399,13 +399,13 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'                    distrib_grad_y(d, y, theta))))
 #'
 #' # And it degrades far faster below its optimal step.
-#' err <- function(p) max(abs(numerical_hess_y(d, y, theta, h_rel = 10^(-p)) -
+#' err <- function(p) max(abs(numerical_hess_y(d, y, theta, rel_step = 10^(-p)) -
 #'                            distrib_hess_y(d, y, theta)))
 #' setNames(vapply(3:8, err, numeric(1)), paste0("1e-", 3:8))
 #'
 #' @export
-numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {
-  h <- fd_steps_y(y, distrib@bounds, h_rel)
+numerical_hess_y <- function(distrib, y, theta, rel_step = .Machine$double.eps^(1 / 4)) {
+  h <- fd_steps_y(y, distrib@bounds, rel_step)
   (distrib_pdf(distrib, y + h, theta, log = TRUE) -
     2 * distrib_pdf(distrib, y, theta, log = TRUE) +
     distrib_pdf(distrib, y - h, theta, log = TRUE)) / (h^2)

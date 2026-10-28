@@ -464,7 +464,7 @@ log_tail_nodes <- local({
       a <- br[-length(br)]
       h <- diff(br) / 2
       cache <<- list(u = as.vector(outer(r$nodes, h) + rep(a + h, each = 15)),
-                     w = as.vector(outer(r$wk, h)))
+                     w = as.vector(outer(r$kronrod_weights, h)))
     }
     cache
   }

@@ -24,11 +24,11 @@ rel_to_scale <- function(num, ana) {
 
 ## what the package computed before the step was chosen: the clamped step, used
 ## by every component
-clamped_gradient <- function(d, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
+clamped_gradient <- function(d, y, theta, rel_step = .Machine$double.eps^(1 / 3)) {
   ps <- d@params
   out <- stats::setNames(vector("list", length(ps)), ps)
   for (j in seq_along(ps)) {
-    h <- fd_steps(theta[[j]], d@params_bounds[[ps[j]]], h_rel, "clamp")
+    h <- fd_steps(theta[[j]], d@params_bounds[[ps[j]]], rel_step, "clamp")
     tp <- tm <- theta
     tp[[j]] <- theta[[j]] + h
     tm[[j]] <- theta[[j]] - h
@@ -39,22 +39,22 @@ clamped_gradient <- function(d, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
 }
 
 test_that("the two candidate steps coincide away from a bound, and are ordered near one", {
-  h_rel <- .Machine$double.eps^(1 / 3)
+  rel_step <- .Machine$double.eps^(1 / 3)
   ## no finite bound: nothing to scale on
-  expect_identical(fd_steps(3, c(-Inf, Inf), h_rel, "clamp"),
-                   fd_steps(3, c(-Inf, Inf), h_rel, "scale"))
+  expect_identical(fd_steps(3, c(-Inf, Inf), rel_step, "clamp"),
+                   fd_steps(3, c(-Inf, Inf), rel_step, "scale"))
   ## a positive parameter at or above one: the distance is the magnitude
-  expect_identical(fd_steps(2, c(0, Inf), h_rel, "clamp"),
-                   fd_steps(2, c(0, Inf), h_rel, "scale"))
+  expect_identical(fd_steps(2, c(0, Inf), rel_step, "clamp"),
+                   fd_steps(2, c(0, Inf), rel_step, "scale"))
   ## below one the scaled step is the shorter, in proportion to the distance
-  expect_equal(fd_steps(0.25, c(0, Inf), h_rel, "scale"), h_rel * 0.25)
-  expect_equal(fd_steps(0.25, c(0, Inf), h_rel, "clamp"), h_rel)
+  expect_equal(fd_steps(0.25, c(0, Inf), rel_step, "scale"), rel_step * 0.25)
+  expect_equal(fd_steps(0.25, c(0, Inf), rel_step, "clamp"), rel_step)
   ## on a bounded interval the distance is to the nearer end
-  expect_equal(fd_steps(0.3, c(0, 1), h_rel, "scale"), h_rel * 0.3)
-  expect_equal(fd_steps(0.8, c(0, 1), h_rel, "scale"), h_rel * 0.2)
+  expect_equal(fd_steps(0.3, c(0, 1), rel_step, "scale"), rel_step * 0.3)
+  expect_equal(fd_steps(0.8, c(0, 1), rel_step, "scale"), rel_step * 0.2)
   ## a parameter on its boundary is reported, whichever variant is asked
-  expect_error(fd_steps(0, c(0, Inf), h_rel, "clamp"), "domain boundary")
-  expect_error(fd_steps(0, c(0, Inf), h_rel, "scale"), "domain boundary")
+  expect_error(fd_steps(0, c(0, Inf), rel_step, "clamp"), "domain boundary")
+  expect_error(fd_steps(0, c(0, Inf), rel_step, "scale"), "domain boundary")
 })
 
 test_that("where the two steps coincide the result is IDENTICAL to the clamped step", {
@@ -105,16 +105,16 @@ test_that("the choice is made for the whole vector and not observation by observ
   th <- list(mu = 3, phi = 0.3)
   set.seed(11)
   y <- distrib_rng(d, 40, th)
-  h_rel <- .Machine$double.eps^(1 / 3)
+  rel_step <- .Machine$double.eps^(1 / 3)
   quotient <- function(h) {
     tp <- tm <- th
     tp$phi <- th$phi + h
     tm$phi <- th$phi - h
     (distrib_pdf(d, y, tp, log = TRUE) - distrib_pdf(d, y, tm, log = TRUE)) / (2 * h)
   }
-  got <- fd_stable_step(quotient, th$phi, c(0, Inf), h_rel)
-  expect_true(identical(got$h, fd_steps(th$phi, c(0, Inf), h_rel, "clamp")) ||
-              identical(got$h, fd_steps(th$phi, c(0, Inf), h_rel, "scale")))
+  got <- fd_stable_step(quotient, th$phi, c(0, Inf), rel_step)
+  expect_true(identical(got$h, fd_steps(th$phi, c(0, Inf), rel_step, "clamp")) ||
+              identical(got$h, fd_steps(th$phi, c(0, Inf), rel_step, "scale")))
   expect_identical(got$value, quotient(got$h))
 })
 
@@ -128,10 +128,10 @@ test_that("fd_self_consistency reports the two readings that are not usable", {
 test_that("a tie keeps the clamped step", {
   ## isTRUE(kB < kA) is FALSE for a tie and for any reading that is NA, so the
   ## answer is the clamped step unless the scaled one is measurably better.
-  h_rel <- .Machine$double.eps^(1 / 3)
+  rel_step <- .Machine$double.eps^(1 / 3)
   const <- function(h) rep(2, 5)           # identical at every step: a tie
-  got <- fd_stable_step(const, 0.25, c(0, Inf), h_rel)
-  expect_identical(got$h, fd_steps(0.25, c(0, Inf), h_rel, "clamp"))
+  got <- fd_stable_step(const, 0.25, c(0, Inf), rel_step)
+  expect_identical(got$h, fd_steps(0.25, c(0, Inf), rel_step, "clamp"))
 })
 
 test_that("the derivative of an expected information does not choose its step under Monte Carlo", {
@@ -156,7 +156,7 @@ test_that("the derivative of an expected information does not choose its step un
   expect_identical(p, q)
 })
 ## The clamp is numericals7's rule, and this is what says so.  `fd_steps()`
-## writes it out rather than delegating, because `h_rel` is an argument the
+## writes it out rather than delegating, because `rel_step` is an argument the
 ## callers vary and `numericals7::fd_step()` derives its own from the order and
 ## the accuracy.  At the step `fd_step()` would have chosen the two must
 ## therefore agree, and by identity rather than by tolerance: they are the same
@@ -166,11 +166,11 @@ test_that("the clamped step is numericals7::fd_step()", {
   theta <- c(10, 1, 0.5, 0.1, 1e-3, 1e-6, 1e-9)
   for (order in 1:4) {
     for (accuracy in c(2L, 4L)) {
-      h_rel <- numericals7::fd_step(1, order, accuracy = accuracy)
+      rel_step <- numericals7::fd_step(1, order, accuracy = accuracy)
       for (b in list(c(0, Inf), c(-Inf, 1), c(0, 20), NULL)) {
         x <- if (is.null(b) || !is.finite(b[2])) theta else theta[theta < b[2]]
         expect_identical(
-          fd_steps(x, b, h_rel, "clamp", order, accuracy),
+          fd_steps(x, b, rel_step, "clamp", order, accuracy),
           numericals7::fd_step(x, order, accuracy = accuracy, bounds = b),
           info = paste("order", order, "accuracy", accuracy))
       }
@@ -187,19 +187,19 @@ test_that("the clamped step is numericals7::fd_step()", {
 test_that("the clamp is on the outermost node", {
   b <- c(0, Inf)
   x <- 1e-3
-  h_rel <- 1                      # large enough that the clamp always binds
+  rel_step <- 1                      # large enough that the clamp always binds
   for (order in 1:4) {
     for (accuracy in c(2L, 4L)) {
-      reach <- numericals7::fd_offsets(order, accuracy = accuracy)$reach
-      h <- fd_steps(x, b, h_rel, "clamp", order, accuracy)
+      reach <- numericals7::fd_offsets(order, accuracy = accuracy)$half_width
+      h <- fd_steps(x, b, rel_step, "clamp", order, accuracy)
       expect_equal(x - reach * h, 0.51 * x, tolerance = 1e-12,
                    info = paste("order", order, "accuracy", accuracy))
       expect_gt(x - reach * h, 0)
     }
   }
   # and the reach really is more than one somewhere, or the block is vacuous
-  expect_gt(numericals7::fd_offsets(1L, accuracy = 4L)$reach, 1)
-  expect_gt(numericals7::fd_offsets(3L, accuracy = 2L)$reach, 1)
+  expect_gt(numericals7::fd_offsets(1L, accuracy = 4L)$half_width, 1)
+  expect_gt(numericals7::fd_offsets(3L, accuracy = 2L)$half_width, 1)
 })
 
 ## Every live caller of the clamped branch is a reach-one stencil, which is
@@ -208,5 +208,5 @@ test_that("the clamp is on the outermost node", {
 ## gets moves and this goes red.
 test_that("the clamped sites in use have reach one", {
   for (a in list(c(1L, 2L), c(2L, 2L)))
-    expect_identical(numericals7::fd_offsets(a[1], accuracy = a[2])$reach, 1L)
+    expect_identical(numericals7::fd_offsets(a[1], accuracy = a[2])$half_width, 1L)
 })

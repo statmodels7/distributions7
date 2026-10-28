@@ -8,7 +8,7 @@ fd_stable_step(
   quotient,
   theta_j,
   bounds_j,
-  h_rel,
+  rel_step,
   need_value = TRUE,
   order = 1L,
   accuracy = 2L
@@ -25,7 +25,7 @@ over all of them together.}
 \item{bounds_j}{That parameter's domain, a length-2 numeric vector, or
 \code{NULL}.}
 
-\item{h_rel}{The relative step size.}
+\item{rel_step}{The relative step size.}
 
 \item{need_value}{Whether the caller will use the quotient at the chosen
 step. A caller that needs only the step sets it to \code{FALSE}, and the
@@ -74,7 +74,7 @@ coincide at every entry, which is every call on a parameter with no finite
 bound and every positive parameter at or above one: there the clamped step
 is returned at once and each quotient is evaluated only once.
 
-Each order selects its own step, with its own \code{h_rel} and its own stencil;
+Each order selects its own step, with its own \code{rel_step} and its own stencil;
 a choice made at first order is not reused at higher orders.
 }
 \seealso{

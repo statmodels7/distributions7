@@ -1020,6 +1020,6 @@ S7::method(kink_decomposition, LaplaceDistrib) <- function(distrib) {
   kink_spec(
     phi  = "abs",
     v    = function(y, theta) y - theta$mu,
-    dv   = function(y, theta) list(mu = -1, sigma = 0),
+    deriv_v = function(y, theta) list(mu = -1, sigma = 0),
     coef = function(theta) -1 / theta$sigma)
 }

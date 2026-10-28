@@ -334,7 +334,7 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #' @param inner A function that takes `theta` as its only argument and returns
 #'   the first-order components as a list with one entry per parameter,
 #'   typically `function(th) distrib_cross_y(distrib, y, th)`.
-#' @param h_rel The relative step, defaulting to `.Machine$double.eps^(1/3)`,
+#' @param rel_step The relative step, defaulting to `.Machine$double.eps^(1/3)`,
 #'   which is the optimal exponent for a central first difference.
 #'
 #' @return A named list with one numeric vector per unordered pair of
@@ -374,7 +374,7 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #'
 #' @export
 numerical_theta2_y <- function(distrib, y, theta, inner,
-                               h_rel = .Machine$double.eps^(1 / 3)) {
+                               rel_step = .Machine$double.eps^(1 / 3)) {
   params <- distrib@params
   diffs <- stats::setNames(vector("list", length(params)), params)
   for (j in seq_along(params)) {
@@ -388,7 +388,7 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
       stats::setNames(lapply(params, function(q) (up[[q]] - dn[[q]]) / (2 * h)), params)
     }
     diffs[[p]] <- fd_stable_step(quotient, theta[[j]],
-                                 distrib@params_bounds[[p]], h_rel)$value
+                                 distrib@params_bounds[[p]], rel_step)$value
   }
   prs <- hess_pairs(params)
   stats::setNames(lapply(names(prs), function(nm) {

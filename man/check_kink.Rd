@@ -30,8 +30,8 @@ score are written independently of it, so the two can be compared.
 The function runs three checks, at probe parameters inside every interval:
 
 \describe{
-\item{\code{dv}}{each \eqn{\partial v/\partial \theta_p} against a central
-difference of \eqn{v} itself. This checks \code{dv} on its own, although
+\item{\code{deriv_v}}{each \eqn{\partial v/\partial \theta_p} against a central
+difference of \eqn{v} itself. This checks \code{deriv_v} on its own, although
 the jump check below reads it as well.}
 \item{\code{jump}}{the jump of the score across the kink against the one
 that the declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
@@ -39,7 +39,7 @@ that the declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
 \eqn{(v)_+}), the score of \eqn{c(\theta)\phi(v)} jumps by
 \deqn{c(\theta)\, \Delta\phi' \, \partial v/\partial \theta_p}
 as \eqn{y} crosses the surface \eqn{v = 0}. This is the most important
-check: it reads \code{phi}, \code{v}, \code{dv} and \code{coef} at once, and a wrong \code{v}
+check: it reads \code{phi}, \code{v}, \code{deriv_v} and \code{coef} at once, and a wrong \code{v}
 fails it.}
 \item{\code{smooth}}{the score of every parameter that the declaration calls
 smooth really is continuous across the same surface. Without this the

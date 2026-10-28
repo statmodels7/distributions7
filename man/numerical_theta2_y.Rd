@@ -4,7 +4,13 @@
 \alias{numerical_theta2_y}
 \title{Numerical Hyperparameter Hessians of the Response Derivatives}
 \usage{
-numerical_theta2_y(distrib, y, theta, inner, h_rel = .Machine$double.eps^(1/3))
+numerical_theta2_y(
+  distrib,
+  y,
+  theta,
+  inner,
+  rel_step = .Machine$double.eps^(1/3)
+)
 }
 \arguments{
 \item{distrib}{A distribution object. Its \code{params} and \code{params_bounds} set
@@ -19,7 +25,7 @@ because \code{inner} has already closed over it.}
 the first-order components as a list with one entry per parameter,
 typically \code{function(th) distrib_cross_y(distrib, y, th)}.}
 
-\item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
+\item{rel_step}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
 which is the optimal exponent for a central first difference.}
 }
 \value{

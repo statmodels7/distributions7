@@ -348,7 +348,7 @@ numerical_dexpected_higher <- function(distrib, y, theta, scale, order) {
   # stencil at order four, each at the step that balances its truncation
   # against rounding
   st <- order - 2L
-  h_rel <- .Machine$double.eps^(1 / (st + 2))
+  rel_step <- .Machine$double.eps^(1 / (st + 2))
   eta <- if (link) {
     stats::setNames(lapply(params, function(q)
       linkfunctions7::linkfun(distrib@link_params[[q]], theta[[q]])), params)
@@ -357,9 +357,9 @@ numerical_dexpected_higher <- function(distrib, y, theta, scale, order) {
   }
   step <- stats::setNames(lapply(params, function(q) {
     if (link) {
-      h_rel * pmax(1, abs(eta[[q]]))
+      rel_step * pmax(1, abs(eta[[q]]))
     } else {
-      fd_steps(theta[[q]], distrib@params_bounds[[q]], h_rel, order = st)
+      fd_steps(theta[[q]], distrib@params_bounds[[q]], rel_step, order = st)
     }
   }), params)
   # the second derivative at theta moved by `k` steps along each parameter

@@ -408,7 +408,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
       order_check("gradient vs finite differences", distrib_gradient, {
         a <- distrib_gradient(distrib, y, theta)
         e <- numerical_gradient(distrib, y, theta)
-        keep <- fd_is_reliable(function(h) numerical_gradient(distrib, y, theta, h_rel = h),
+        keep <- fd_is_reliable(function(h) numerical_gradient(distrib, y, theta, rel_step = h),
                                e, .Machine$double.eps^(1 / 3), smooth_all)
         err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
         new_check("gradient vs finite differences", err < tol, err)
@@ -419,7 +419,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
       order_check("hessian vs finite differences", distrib_hessian, {
         a <- distrib_hessian(distrib, y, theta)
         e <- numerical_hessian(distrib, y, theta)
-        keep <- fd_is_reliable(function(h) numerical_hessian(distrib, y, theta, h_rel = h),
+        keep <- fd_is_reliable(function(h) numerical_hessian(distrib, y, theta, rel_step = h),
                                e, .Machine$double.eps^(1 / 4), smooth_all)
         err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
         new_check("hessian vs finite differences", err < tol, err)
@@ -602,11 +602,11 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
       # none with the draws above left out.
       lp <- function(v) distrib_pdf(distrib, v, theta, log = TRUE)
       l0 <- lp(y)
-      grad_ref <- function(h_rel) {
-        fd_stable_quotient(function(h) fd_first_taken(lp, y, h), y, b, h_rel)
+      grad_ref <- function(rel_step) {
+        fd_stable_quotient(function(h) fd_first_taken(lp, y, h), y, b, rel_step)
       }
-      hess_ref <- function(h_rel) {
-        fd_stable_quotient(function(h) fd_second_taken(lp, y, h, l0), y, b, h_rel)
+      hess_ref <- function(rel_step) {
+        fd_stable_quotient(function(h) fd_second_taken(lp, y, h, l0), y, b, rel_step)
       }
       g_ref <- grad_ref(.Machine$double.eps^(1 / 3))
       k1 <- fd_is_reliable(function(h) list(v = grad_ref(h)),
@@ -816,9 +816,9 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #'
 #' @param fd_at A function of one argument, the relative step, returning the
 #'   finite-difference reference computed with that step.
-#' @param ref The reference already computed at `h_rel`, a named list of
+#' @param ref The reference already computed at `rel_step`, a named list of
 #'   component vectors.
-#' @param h_rel The relative step with which `ref` was computed.
+#' @param rel_step The relative step with which `ref` was computed.
 #' @param smooth_all Logical; `TRUE` when every parameter is declared
 #'   smooth, in which case the guard drops no observation and does not
 #'   run at all.
@@ -827,13 +827,13 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #'
 #' @seealso [check_distrib()]
 #' @keywords internal
-fd_is_reliable <- function(fd_at, ref, h_rel, smooth_all) {
+fd_is_reliable <- function(fd_at, ref, rel_step, smooth_all) {
   # defined after check_distrib(): a roxygen block attaches to the object that
   # follows it, so a helper placed between them takes its documentation
   n <- length(ref[[1L]])
   if (isTRUE(smooth_all)) return(rep(TRUE, n))
 
-  half <- tryCatch(fd_at(h_rel / 2), error = function(e) NULL)
+  half <- tryCatch(fd_at(rel_step / 2), error = function(e) NULL)
   if (is.null(half)) return(rep(TRUE, n))
 
   ok <- rep(TRUE, n)

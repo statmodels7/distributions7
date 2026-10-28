@@ -46,7 +46,7 @@ NULL
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 3 or 4.
-#' @param h_rel Relative finite-difference step.
+#' @param rel_step Relative finite-difference step.
 #'
 #' @return A numeric vector the length of `y`.
 #'
@@ -58,13 +58,13 @@ NULL
 #'
 #' @export
 numerical_deriv_y <- function(distrib, y, theta, order,
-                              h_rel = .Machine$double.eps^(1 / (order + 2))) {
+                              rel_step = .Machine$double.eps^(1 / (order + 2))) {
   # any other order used to fall through to the fourth-order stencil
   if (length(order) != 1L || is.na(order) || !(order %in% c(3, 4))) {
     stop("'order' must be 3 or 4; numerical_hess_y() gives the second order.",
          call. = FALSE)
   }
-  h <- fd_steps_y(y, distrib@bounds, h_rel, "clamp", order = order)
+  h <- fd_steps_y(y, distrib@bounds, rel_step, "clamp", order = order)
   ld <- function(s) distrib_pdf(distrib, y + s * h, theta, log = TRUE)
   if (order == 3L) {
     (-0.5 * ld(-2) + ld(-1) - ld(1) + 0.5 * ld(2)) / h^3

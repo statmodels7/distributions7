@@ -4,7 +4,7 @@
 \alias{numerical_gradient}
 \title{Numerical Gradient of the Log-Density}
 \usage{
-numerical_gradient(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_gradient(distrib, y, theta, rel_step = .Machine$double.eps^(1/3))
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -14,7 +14,7 @@ numerical_gradient(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 \item{theta}{A named list of parameters (each element has length 1 or
 \code{length(y)}).}
 
-\item{h_rel}{Numeric, the relative step size. Defaults to
+\item{rel_step}{Numeric, the relative step size. Defaults to
 \code{.Machine$double.eps^(1/3)} (optimal for central differences).}
 }
 \value{

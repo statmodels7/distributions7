@@ -285,7 +285,7 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #' @param theta A named list of parameters on the parameter scale. Components
 #'   may be vectors; the step is then chosen elementwise.
 #' @param order The derivative order, 1 (the default) or 2.
-#' @param h_rel The relative step. It is a single number that defaults to
+#' @param rel_step The relative step. It is a single number that defaults to
 #'   \eqn{\varepsilon^{1/(\mathrm{order}+2)}}, which balances the stencil's
 #'   truncation against its rounding. A step much smaller than the default is
 #'   worse, because the rounding grows as \eqn{h^{-\mathrm{order}}}.
@@ -322,7 +322,7 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #'
 #' @export
 numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
-                                h_rel = .Machine$double.eps^(1 / (order + 2)),
+                                rel_step = .Machine$double.eps^(1 / (order + 2)),
                                 which = NULL) {
   params <- distrib@params
   p <- length(params)
@@ -334,7 +334,7 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
   }
   # one step per observation, not per parameter: theta may be vectorized, and a
   # step chosen from its first element would be wrong everywhere else.
-  hs <- lapply(seq_len(p), function(j) h_rel * pmax(1, abs(theta[[j]])))
+  hs <- lapply(seq_len(p), function(j) rel_step * pmax(1, abs(theta[[j]])))
 
   if (order == 1L) {
     js <- match(keep, params)

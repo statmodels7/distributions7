@@ -1242,6 +1242,6 @@ S7::method(kink_decomposition, EnetDistrib) <- function(distrib) {
   kink_spec(
     phi  = "abs",
     v    = function(y, theta) y - theta$mu,
-    dv   = function(y, theta) list(mu = -1, lambda = 0, alpha = 0),
+    deriv_v = function(y, theta) list(mu = -1, lambda = 0, alpha = 0),
     coef = function(theta) -theta$lambda * theta$alpha)
 }

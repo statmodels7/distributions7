@@ -10,7 +10,7 @@ numerical_dexpected_hessian(
   theta,
   scale = c("parameter", "link"),
   method = NULL,
-  h_rel = numericals7::fd_step(1, 1L)
+  rel_step = numericals7::fd_step(1, 1L)
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ numerical_dexpected_hessian(
 \item{method}{\code{NULL}, passed to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}. See
 \link{expected_derivative_methods}.}
 
-\item{h_rel}{The relative step, a cube root of machine epsilon by default,
+\item{rel_step}{The relative step, a cube root of machine epsilon by default,
 the value at which a central difference balances truncation against
 rounding.}
 }

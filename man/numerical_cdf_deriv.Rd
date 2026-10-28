@@ -9,7 +9,7 @@ numerical_cdf_deriv(
   q,
   theta,
   order = 1L,
-  h_rel = .Machine$double.eps^(1/(order + 2)),
+  rel_step = .Machine$double.eps^(1/(order + 2)),
   which = NULL
 )
 }
@@ -23,7 +23,7 @@ may be vectors; the step is then chosen elementwise.}
 
 \item{order}{The derivative order, 1 (the default) or 2.}
 
-\item{h_rel}{The relative step. It is a single number that defaults to
+\item{rel_step}{The relative step. It is a single number that defaults to
 \eqn{\varepsilon^{1/(\mathrm{order}+2)}}, which balances the stencil's
 truncation against its rounding. A step much smaller than the default is
 worse, because the rounding grows as \eqn{h^{-\mathrm{order}}}.}

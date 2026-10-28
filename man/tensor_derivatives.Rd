@@ -10,7 +10,7 @@ tensor_derivatives(
   theta,
   order,
   base,
-  h_rel = NULL,
+  rel_step = NULL,
   skip = NULL,
   scale = c("parameter", "link"),
   accuracy = 4L
@@ -27,7 +27,7 @@ tensor_derivatives(
 
 \item{base}{The highest order that the family implements itself, 0 to 4.}
 
-\item{h_rel}{\code{NULL}, the default, for the step above, or a relative step
+\item{rel_step}{\code{NULL}, the default, for the step above, or a relative step
 that replaces \eqn{\varepsilon^{1/(r+a)}}.}
 
 \item{skip}{Character vector of component names left \code{NULL}, or \code{NULL}.}

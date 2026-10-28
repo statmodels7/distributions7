@@ -7,7 +7,7 @@
 fd_steps(
   theta_j,
   bounds_j,
-  h_rel,
+  rel_step,
   to_bound = c("clamp", "scale"),
   order = 1L,
   accuracy = 2L
@@ -19,7 +19,7 @@ fd_steps(
 \item{bounds_j}{A length-2 numeric vector giving that parameter's domain, or
 \code{NULL}.}
 
-\item{h_rel}{The relative step size, typically a root of machine epsilon
+\item{rel_step}{The relative step size, typically a root of machine epsilon
 chosen for the stencil in use.}
 
 \item{to_bound}{\code{"clamp"}, the default, or \code{"scale"}, as above.}
@@ -72,10 +72,10 @@ rules of accuracy four reach two. Without the division a step cut to
 which is inside the domain but lies farther out than the \eqn{0.49 d} that
 the clamp is meant to enforce.
 
-When the reach is accounted for, the clamped branch at the default \code{h_rel} is
+When the reach is accounted for, the clamped branch at the default \code{rel_step} is
 \code{\link[numericals7:fd_step]{numericals7::fd_step()}} with \code{bounds}, and a test asserts the two are
 \code{identical()} so they cannot drift. It is written here rather than
-delegated because \code{h_rel} is an argument that the callers vary:
+delegated because \code{rel_step} is an argument that the callers vary:
 \code{\link[=fd_stable_step]{fd_stable_step()}} halves it and \code{check_distrib()} reads the quotient at two
 steps, neither of which \code{fd_step()} can express.
 
@@ -88,6 +88,6 @@ epsilon.
 \code{\link[=fd_stable_step]{fd_stable_step()}}, which chooses between the two, and
 \code{\link[=numerical_gradient]{numerical_gradient()}} and \code{\link[=numerical_hessian]{numerical_hessian()}}, which take the chosen
 step. \code{\link[=fd_steps_y]{fd_steps_y()}} is the response counterpart.
-\code{\link[numericals7:fd_step]{numericals7::fd_step()}} is the same rule at the default \code{h_rel}.
+\code{\link[numericals7:fd_step]{numericals7::fd_step()}} is the same rule at the default \code{rel_step}.
 }
 \keyword{internal}

@@ -9,7 +9,7 @@
 \arguments{
 \item{out}{The logical vector of results.}
 
-\item{gaps}{Per-parameter gaps of the \code{dv} check.}
+\item{gaps}{Per-parameter gaps of the \code{deriv_v} check.}
 
 \item{jumps}{Measured jumps of the score, or \code{NULL}.}
 

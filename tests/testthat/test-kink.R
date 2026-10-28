@@ -35,7 +35,7 @@ test_that("params_order deduces the order rather than reading a declaration", {
   S7::method(kink_decomposition, Hub) <- function(distrib) {
     kink_spec(phi  = "hinge2",
               v    = function(y, theta) abs(y - theta$mu) - 1.5 * theta$sigma,
-              dv   = function(y, theta) list(mu = -sign(y - theta$mu), sigma = -1.5),
+              deriv_v = function(y, theta) list(mu = -sign(y - theta$mu), sigma = -1.5),
               coef = function(theta) -0.5)
   }
   h <- Hub(distrib_name = "hub", dimension = "univariate", bounds = c(-Inf, Inf),
@@ -83,7 +83,7 @@ test_that("a wrapper reports NA rather than Inf, which is the honest state", {
 test_that("check_kink holds a declaration to the family that declares it", {
   for (f in c("laplace_distrib", "laplace2_distrib", "enet_distrib")) {
     r <- check_kink(do.call(f, list()), verbose = FALSE)
-    expect_true(r[["dv"]],     info = f)
+    expect_true(r[["deriv_v"]],     info = f)
     expect_true(r[["jump"]],   info = f)
     expect_true(r[["smooth"]], info = f)
   }
@@ -105,7 +105,7 @@ test_that("check_kink REFUSES a wrong declaration", {
   # (a) a v that puts the kink in the wrong place
   S7::method(kink_decomposition, Wrong) <- function(distrib) {
     kink_spec(phi = "abs", v = function(y, theta) y - 2 * theta$mu,
-              dv = function(y, theta) list(mu = -2, sigma = 0),
+              deriv_v = function(y, theta) list(mu = -2, sigma = 0),
               coef = function(theta) -1 / theta$sigma)
   }
   r <- check_kink(mk(), verbose = FALSE)
@@ -114,28 +114,28 @@ test_that("check_kink REFUSES a wrong declaration", {
   # (b) a coefficient wrong by a factor
   S7::method(kink_decomposition, Wrong) <- function(distrib) {
     kink_spec(phi = "abs", v = function(y, theta) y - theta$mu,
-              dv = function(y, theta) list(mu = -1, sigma = 0),
+              deriv_v = function(y, theta) list(mu = -1, sigma = 0),
               coef = function(theta) -2 / theta$sigma)
   }
   expect_false(check_kink(mk(), verbose = FALSE)[["jump"]])
 
-  # (c) a dv that does not differentiate v
+  # (c) a deriv_v that does not differentiate v
   S7::method(kink_decomposition, Wrong) <- function(distrib) {
     kink_spec(phi = "abs", v = function(y, theta) y - theta$mu,
-              dv = function(y, theta) list(mu = 1, sigma = 0),
+              deriv_v = function(y, theta) list(mu = 1, sigma = 0),
               coef = function(theta) -1 / theta$sigma)
   }
-  expect_false(check_kink(mk(), verbose = FALSE)[["dv"]])
+  expect_false(check_kink(mk(), verbose = FALSE)[["deriv_v"]])
 
   # (d) a declaration that names too FEW parameters: the scale is called smooth
   #     while v moves with it.  Without the third check this would pass.
   S7::method(kink_decomposition, Wrong) <- function(distrib) {
     kink_spec(phi = "abs", v = function(y, theta) abs(y - theta$mu) - theta$sigma,
-              dv = function(y, theta) list(mu = -sign(y - theta$mu), sigma = 0),
+              deriv_v = function(y, theta) list(mu = -sign(y - theta$mu), sigma = 0),
               coef = function(theta) -1 / theta$sigma)
   }
   r <- check_kink(mk(), verbose = FALSE)
-  expect_false(isTRUE(r[["dv"]]) && isTRUE(r[["jump"]]) && isTRUE(r[["smooth"]]))
+  expect_false(isTRUE(r[["deriv_v"]]) && isTRUE(r[["jump"]]) && isTRUE(r[["smooth"]]))
 })
 
 test_that("kink_order is the first derivative that jumps", {

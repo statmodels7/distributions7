@@ -4,16 +4,16 @@
 \alias{fd_is_reliable}
 \title{Observations at Which the Finite-Difference Reference Can Be Trusted}
 \usage{
-fd_is_reliable(fd_at, ref, h_rel, smooth_all)
+fd_is_reliable(fd_at, ref, rel_step, smooth_all)
 }
 \arguments{
 \item{fd_at}{A function of one argument, the relative step, returning the
 finite-difference reference computed with that step.}
 
-\item{ref}{The reference already computed at \code{h_rel}, a named list of
+\item{ref}{The reference already computed at \code{rel_step}, a named list of
 component vectors.}
 
-\item{h_rel}{The relative step with which \code{ref} was computed.}
+\item{rel_step}{The relative step with which \code{ref} was computed.}
 
 \item{smooth_all}{Logical; \code{TRUE} when every parameter is declared
 smooth, in which case the guard drops no observation and does not

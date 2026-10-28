@@ -55,7 +55,7 @@ NULL
 #'   `"hinge3"` or `"step"`.
 #' @param v A function of `(y, theta)` returning the argument of `phi`, one
 #'   value per observation.
-#' @param dv A function of `(y, theta)` returning a named list with one entry
+#' @param deriv_v A function of `(y, theta)` returning a named list with one entry
 #'   per parameter, \eqn{\partial v / \partial \theta_p}. An entry that is
 #'   identically zero indicates that the kink does not move with it.
 #' @param coef A function of `theta` returning the multiplier \eqn{c(\theta)}
@@ -68,7 +68,7 @@ NULL
 #' k <- kink_spec(
 #'   phi  = "abs",
 #'   v    = function(y, theta) y - theta$mu,
-#'   dv   = function(y, theta) list(mu = -1, sigma = 0),
+#'   deriv_v = function(y, theta) list(mu = -1, sigma = 0),
 #'   coef = function(theta) -1 / theta$sigma)
 #' k
 #' kink_order(k@phi)
@@ -82,7 +82,7 @@ kink_spec <- S7::new_class(
   properties = list(
     phi  = S7::class_character,
     v    = S7::class_function,
-    dv   = S7::class_function,
+    deriv_v = S7::class_function,
     coef = S7::class_function),
   validator = function(self) {
     if (length(self@phi) != 1L || is.na(self@phi) ||
@@ -92,8 +92,8 @@ kink_spec <- S7::new_class(
     }
     if (!identical(names(formals(self@v))[1:2], c("y", "theta")))
       return("'v' must take (y, theta).")
-    if (!identical(names(formals(self@dv))[1:2], c("y", "theta")))
-      return("'dv' must take (y, theta).")
+    if (!identical(names(formals(self@deriv_v))[1:2], c("y", "theta")))
+      return("'deriv_v' must take (y, theta).")
     if (!identical(names(formals(self@coef))[1L], "theta"))
       return("'coef' must take (theta).")
     NULL
@@ -247,9 +247,9 @@ params_order <- function(distrib, ...) {
   ys <- .kink_probe_y(distrib, th)
   hit <- character(0)
   for (y in ys) {
-    dv <- kd@dv(y, th)
+    deriv_v <- kd@deriv_v(y, th)
     for (p in distrib@params) {
-      v <- dv[[p]]
+      v <- deriv_v[[p]]
       if (!is.null(v) && any(is.finite(v)) && any(v[is.finite(v)] != 0))
         hit <- c(hit, p)
     }
@@ -342,8 +342,8 @@ S7::method(kink_decomposition, distrib) <- function(distrib) NULL
 #' The function runs three checks, at probe parameters inside every interval:
 #'
 #' \describe{
-#'   \item{`dv`}{each \eqn{\partial v/\partial \theta_p} against a central
-#'     difference of \eqn{v} itself. This checks `dv` on its own, although
+#'   \item{`deriv_v`}{each \eqn{\partial v/\partial \theta_p} against a central
+#'     difference of \eqn{v} itself. This checks `deriv_v` on its own, although
 #'     the jump check below reads it as well.}
 #'   \item{`jump`}{the jump of the score across the kink against the one
 #'     that the declaration predicts. Writing \eqn{\Delta\phi'} for the jump of
@@ -351,7 +351,7 @@ S7::method(kink_decomposition, distrib) <- function(distrib) NULL
 #'     \eqn{(v)_+}), the score of \eqn{c(\theta)\phi(v)} jumps by
 #'     \deqn{c(\theta)\, \Delta\phi' \, \partial v/\partial \theta_p}
 #'     as \eqn{y} crosses the surface \eqn{v = 0}. This is the most important
-#'     check: it reads `phi`, `v`, `dv` and `coef` at once, and a wrong `v`
+#'     check: it reads `phi`, `v`, `deriv_v` and `coef` at once, and a wrong `v`
 #'     fails it.}
 #'   \item{`smooth`}{the score of every parameter that the declaration calls
 #'     smooth really is continuous across the same surface. Without this the
@@ -391,9 +391,9 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
   ord     <- kink_order(kd@phi)
   dphi    <- unname(.KINK_DPHI[[kd@phi]])
 
-  out <- c(dv = NA, jump = NA, smooth = NA)
+  out <- c(deriv_v = NA, jump = NA, smooth = NA)
 
-  # (1) dv against a central difference of v.
+  # (1) deriv_v against a central difference of v.
   h <- 1e-5
   gaps <- vapply(pars, function(p) {
     tp <- tm <- theta
@@ -401,10 +401,10 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
     tp[[p]] <- theta[[p]] + step; tm[[p]] <- theta[[p]] - step
     y  <- .kink_probe_y(distrib, theta)
     num <- (kd@v(y, tp) - kd@v(y, tm)) / (2 * step)
-    ana <- rep_len(kd@dv(y, theta)[[p]], length(y))
+    ana <- rep_len(kd@deriv_v(y, theta)[[p]], length(y))
     max(abs(num - ana)) / max(1, max(abs(ana)))
   }, numeric(1))
-  out[["dv"]] <- all(gaps < tol)
+  out[["deriv_v"]] <- all(gaps < tol)
 
   # (2) and (3): the jump of the score across v = 0.
   ystar <- .kink_locate(distrib, kd, theta)
@@ -416,12 +416,12 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
   gp <- distrib_gradient(distrib, ystar + e, theta)
   gm <- distrib_gradient(distrib, ystar - e, theta)
   cc <- kd@coef(theta)
-  dv <- kd@dv(ystar, theta)
+  deriv_v <- kd@deriv_v(ystar, theta)
 
   jumps <- vapply(pars, function(p) unname(gp[[p]] - gm[[p]]), numeric(1))
   pred  <- vapply(pars, function(p) {
     if (!p %in% touched) return(0)
-    unname(cc * dphi * rep_len(dv[[p]], 1L))
+    unname(cc * dphi * rep_len(deriv_v[[p]], 1L))
   }, numeric(1))
   sc <- max(1, max(abs(pred)))
   out[["jump"]]   <- all(abs(jumps[touched] - pred[touched]) < tol * sc)
@@ -468,7 +468,7 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
 #' @description Prints one line per check, with the worst gap behind it.
 #'
 #' @param out The logical vector of results.
-#' @param gaps Per-parameter gaps of the `dv` check.
+#' @param gaps Per-parameter gaps of the `deriv_v` check.
 #' @param jumps Measured jumps of the score, or `NULL`.
 #' @param pred Predicted jumps, or `NULL`.
 #' @param kd A [kink_spec()].
@@ -485,8 +485,8 @@ check_kink <- function(distrib, theta = NULL, tol = 1e-6, verbose = TRUE) {
   cat(sprintf("check_kink: %s,  phi = %s,  order %s\n",
               distrib@distrib_name, kd@phi, format(ord)))
   mark <- function(v) if (is.na(v)) "[not checked]" else if (v) "[PASSED]" else "[FAILED]"
-  cat(sprintf("  dv against a difference of v      %s  worst %.2e\n",
-              mark(out[["dv"]]), max(gaps)))
+  cat(sprintf("  deriv_v against a difference of v %s  worst %.2e\n",
+              mark(out[["deriv_v"]]), max(gaps)))
   if (is.null(jumps)) {
     cat(sprintf("  the jump of the score             %s  phi' does not jump for \"%s\"\n",
                 mark(out[["jump"]]), kd@phi))

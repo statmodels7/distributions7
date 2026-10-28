@@ -128,7 +128,7 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #' @param distrib A distribution object inheriting from `continuous_distrib`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters at which the derivative is computed.
-#' @param h_rel The relative step, defaulting to `.Machine$double.eps^(1/3)`,
+#' @param rel_step The relative step, defaulting to `.Machine$double.eps^(1/3)`,
 #'   the optimal exponent for a central first difference.
 #' @param which An optional character vector naming a subset of
 #'   `distrib@params`. The default, `NULL`, computes every component; a subset
@@ -171,7 +171,7 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #'
 #' @export
 numerical_cross2_y <- function(distrib, y, theta,
-                               h_rel = .Machine$double.eps^(1 / 3),
+                               rel_step = .Machine$double.eps^(1 / 3),
                                which = NULL) {
   params <- distrib@params
   keep <- if (is.null(which)) params else which
@@ -187,7 +187,7 @@ numerical_cross2_y <- function(distrib, y, theta,
         distrib_hess_y(distrib, y, th_dn)) / (2 * h)
     }
     out[[p]] <- fd_stable_step(quotient, theta[[j]],
-                               distrib@params_bounds[[p]], h_rel)$value
+                               distrib@params_bounds[[p]], rel_step)$value
   }
   out
 }

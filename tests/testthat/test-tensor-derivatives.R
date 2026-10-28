@@ -88,7 +88,7 @@ test_that("skip and an explicit step reach the stencil route", {
   s <- numerical_deriv3(d, y, th, skip = "mu_mu_mu")
   expect_null(s$mu_mu_mu)
   expect_identical(names(s), deriv_names(d@params, 3))
-  a <- numerical_deriv3(d, y, th, h_rel = 1e-3)
+  a <- numerical_deriv3(d, y, th, rel_step = 1e-3)
   b <- numerical_deriv3(d, y, th)
   expect_false(identical(a, b))
   expect_lt(rel(a, distrib_deriv3(gamma1_distrib(), y, th)), 1e-3)
@@ -97,5 +97,5 @@ test_that("skip and an explicit step reach the stencil route", {
 test_that("a shipped family keeps the route through its own Hessian", {
   d <- gamma1_distrib()
   h <- .Machine$double.eps^(1 / 3)
-  expect_identical(numerical_deriv3(d, y, th), numerical_deriv3(d, y, th, h_rel = h))
+  expect_identical(numerical_deriv3(d, y, th), numerical_deriv3(d, y, th, rel_step = h))
 })

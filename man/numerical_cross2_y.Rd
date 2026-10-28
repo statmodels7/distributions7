@@ -8,7 +8,7 @@ numerical_cross2_y(
   distrib,
   y,
   theta,
-  h_rel = .Machine$double.eps^(1/3),
+  rel_step = .Machine$double.eps^(1/3),
   which = NULL
 )
 }
@@ -19,7 +19,7 @@ numerical_cross2_y(
 
 \item{theta}{A named list of parameters at which the derivative is computed.}
 
-\item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
+\item{rel_step}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
 the optimal exponent for a central first difference.}
 
 \item{which}{An optional character vector naming a subset of

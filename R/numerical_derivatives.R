@@ -44,10 +44,10 @@ NULL
 #' which is inside the domain but lies farther out than the \eqn{0.49 d} that
 #' the clamp is meant to enforce.
 #'
-#' When the reach is accounted for, the clamped branch at the default `h_rel` is
+#' When the reach is accounted for, the clamped branch at the default `rel_step` is
 #' [numericals7::fd_step()] with `bounds`, and a test asserts the two are
 #' `identical()` so they cannot drift. It is written here rather than
-#' delegated because `h_rel` is an argument that the callers vary:
+#' delegated because `rel_step` is an argument that the callers vary:
 #' [fd_stable_step()] halves it and `check_distrib()` reads the quotient at two
 #' steps, neither of which `fd_step()` can express.
 #'
@@ -59,7 +59,7 @@ NULL
 #' @param theta_j A numeric vector, the values of one parameter.
 #' @param bounds_j A length-2 numeric vector giving that parameter's domain, or
 #'   `NULL`.
-#' @param h_rel The relative step size, typically a root of machine epsilon
+#' @param rel_step The relative step size, typically a root of machine epsilon
 #'   chosen for the stencil in use.
 #' @param to_bound `"clamp"`, the default, or `"scale"`, as above.
 #' @param order,accuracy The stencil for which the step is built; they fix its
@@ -71,9 +71,9 @@ NULL
 #' @seealso [fd_stable_step()], which chooses between the two, and
 #'   [numerical_gradient()] and [numerical_hessian()], which take the chosen
 #'   step. [fd_steps_y()] is the response counterpart.
-#'   [numericals7::fd_step()] is the same rule at the default `h_rel`.
+#'   [numericals7::fd_step()] is the same rule at the default `rel_step`.
 #' @keywords internal
-fd_steps <- function(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"),
+fd_steps <- function(theta_j, bounds_j, rel_step, to_bound = c("clamp", "scale"),
                      order = 1L, accuracy = 2L) {
   to_bound <- match.arg(to_bound)
   if (identical(to_bound, "scale")) {
@@ -82,10 +82,10 @@ fd_steps <- function(theta_j, bounds_j, h_rel, to_bound = c("clamp", "scale"),
       if (is.finite(bounds_j[1])) s <- pmin(s, theta_j - bounds_j[1])
       if (is.finite(bounds_j[2])) s <- pmin(s, bounds_j[2] - theta_j)
     }
-    h <- h_rel * s
+    h <- rel_step * s
   } else {
-    reach <- numericals7::fd_offsets(order, accuracy = accuracy)$reach
-    h <- h_rel * pmax(1, abs(theta_j))
+    reach <- numericals7::fd_offsets(order, accuracy = accuracy)$half_width
+    h <- rel_step * pmax(1, abs(theta_j))
     if (!is.null(bounds_j)) {
       if (is.finite(bounds_j[1]))
         h <- pmin(h, 0.49 * (theta_j - bounds_j[1]) / reach)
@@ -154,7 +154,7 @@ fd_self_consistency <- function(x_half, x_full) {
 #' bound and every positive parameter at or above one: there the clamped step
 #' is returned at once and each quotient is evaluated only once.
 #'
-#' Each order selects its own step, with its own `h_rel` and its own stencil;
+#' Each order selects its own step, with its own `rel_step` and its own stencil;
 #' a choice made at first order is not reused at higher orders.
 #'
 #' @param quotient A function of one step, returning the difference quotient at
@@ -164,7 +164,7 @@ fd_self_consistency <- function(x_half, x_full) {
 #' @param theta_j A numeric vector, the values of one parameter.
 #' @param bounds_j That parameter's domain, a length-2 numeric vector, or
 #'   `NULL`.
-#' @param h_rel The relative step size.
+#' @param rel_step The relative step size.
 #' @param need_value Whether the caller will use the quotient at the chosen
 #'   step. A caller that needs only the step sets it to `FALSE`, and the
 #'   function then skips every evaluation where the two candidates coincide: the
@@ -182,10 +182,10 @@ fd_self_consistency <- function(x_half, x_full) {
 #'   the reading they are compared on, and [fd_stable_quotient()] for the
 #'   response direction.
 #' @keywords internal
-fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE,
+fd_stable_step <- function(quotient, theta_j, bounds_j, rel_step, need_value = TRUE,
                            order = 1L, accuracy = 2L) {
-  hA <- fd_steps(theta_j, bounds_j, h_rel, "clamp", order, accuracy)
-  hB <- fd_steps(theta_j, bounds_j, h_rel, "scale", order, accuracy)
+  hA <- fd_steps(theta_j, bounds_j, rel_step, "clamp", order, accuracy)
+  hB <- fd_steps(theta_j, bounds_j, rel_step, "scale", order, accuracy)
   if (isTRUE(all(hA == hB))) {
     return(list(h = hA, value = if (need_value) quotient(hA) else NULL))
   }
@@ -211,7 +211,7 @@ fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each element has length 1 or
 #'   `length(y)`).
-#' @param h_rel Numeric, the relative step size. Defaults to
+#' @param rel_step Numeric, the relative step size. Defaults to
 #'   `.Machine$double.eps^(1/3)` (optimal for central differences).
 #'
 #' @return A named list (one element per parameter) of gradient vectors.
@@ -242,7 +242,7 @@ fd_stable_step <- function(quotient, theta_j, bounds_j, h_rel, need_value = TRUE
 #' numerical_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
-numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
+numerical_gradient <- function(distrib, y, theta, rel_step = .Machine$double.eps^(1 / 3)) {
   params <- distrib@params
   out <- vector("list", length(params))
   names(out) <- params
@@ -256,7 +256,7 @@ numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1
         distrib_pdf(distrib, y, tm, log = TRUE)) / (2 * h)
     }
     out[[j]] <- fd_stable_step(quotient, theta[[j]],
-                               distrib@params_bounds[[params[j]]], h_rel)$value
+                               distrib@params_bounds[[params[j]]], rel_step)$value
   }
 
   out
@@ -275,7 +275,7 @@ numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each element has length 1 or
 #'   `length(y)`).
-#' @param h_rel Numeric, the relative step size. Defaults to
+#' @param rel_step Numeric, the relative step size. Defaults to
 #'   `.Machine$double.eps^(1/4)` (optimal for second differences).
 #'
 #' @return A named list of Hessian component vectors, in [hess_names()] order
@@ -292,7 +292,7 @@ numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1
 #' numerical_hessian(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
-numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {
+numerical_hessian <- function(distrib, y, theta, rel_step = .Machine$double.eps^(1 / 4)) {
   params <- distrib@params
   p <- length(params)
   lp <- function(th) distrib_pdf(distrib, y, th, log = TRUE)
@@ -312,7 +312,7 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
       (lp(tp) - 2 * lp0 + lp(tm)) / (hj^2)
     }
     fd_stable_step(quotient, theta[[j]], distrib@params_bounds[[params[j]]],
-                   h_rel, order = 2L)
+                   rel_step, order = 2L)
   })
   h <- lapply(chosen, `[[`, "h")
 
@@ -379,7 +379,7 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
 #' @param theta A named list of parameters, aligned by the generic.
 #' @param order The order of the derivatives, a whole number above `base`.
 #' @param base The highest order that the family implements itself, 0 to 4.
-#' @param h_rel `NULL`, the default, for the step above, or a relative step
+#' @param rel_step `NULL`, the default, for the step above, or a relative step
 #'   that replaces \eqn{\varepsilon^{1/(r+a)}}.
 #' @param skip Character vector of component names left `NULL`, or `NULL`.
 #' @param scale `"parameter"` or `"link"`, the scale of the coordinates and
@@ -393,7 +393,7 @@ numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 
 #' @seealso [analytic_order()] for how `base` is found; [numerical_deriv3()],
 #'   [numerical_deriv4()] and [numerical_deriv5()], which call this.
 #' @keywords internal
-tensor_derivatives <- function(distrib, y, theta, order, base, h_rel = NULL,
+tensor_derivatives <- function(distrib, y, theta, order, base, rel_step = NULL,
                                skip = NULL, scale = c("parameter", "link"),
                                accuracy = 4L) {
   scale <- match.arg(scale)
@@ -424,7 +424,7 @@ tensor_derivatives <- function(distrib, y, theta, order, base, h_rel = NULL,
   }
   got <- numericals7::fd_tensor(f, cs$x, components = comp, known = known,
                                 bounds = cs$bounds, accuracy = accuracy,
-                                h_rel = h_rel)
+                                rel_step = rel_step)
   out[want] <- unname(got)
   out
 }

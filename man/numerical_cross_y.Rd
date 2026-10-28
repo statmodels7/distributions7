@@ -8,7 +8,7 @@ numerical_cross_y(
   distrib,
   y,
   theta,
-  h_rel = .Machine$double.eps^(1/3),
+  rel_step = .Machine$double.eps^(1/3),
   which = NULL
 )
 }
@@ -19,7 +19,7 @@ numerical_cross_y(
 
 \item{theta}{A named list of parameters, aligned to \code{distrib@params}.}
 
-\item{h_rel}{The relative finite-difference step, a single positive number.
+\item{rel_step}{The relative finite-difference step, a single positive number.
 Defaults to \code{.Machine$double.eps^(1/3)}. The step is taken by
 \code{\link[=fd_stable_step]{fd_stable_step()}}, which keeps both evaluation points inside the bounds
 of the parameter.}
@@ -37,7 +37,7 @@ is \code{NULL}. Each vector has length \code{length(y)}.
 \description{
 Computes \eqn{\partial^2 \ell / \partial y\, \partial \theta_i} by one
 central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}} in each parameter, at a step of
-\code{h_rel} relative to the parameter's own magnitude. A family with a closed
+\code{rel_step} relative to the parameter's own magnitude. A family with a closed
 form for some of its parameters calls it for the remaining ones through
 \code{which}. The default \code{\link[=distrib_cross_y]{distrib_cross_y()}} method for a continuous family
 uses \code{\link[=mixed_tensor_derivatives]{mixed_tensor_derivatives()}} instead.

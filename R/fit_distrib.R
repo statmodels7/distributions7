@@ -754,7 +754,7 @@ fit_distrib <- function(distrib, y, start = NULL,
   spent <- 0
 
   run <- function(opt, eta0, he, label) {
-    r <- optimizers7::minimize(opt, fn = nll, par = eta0, gr = nll_gr, he = he)
+    r <- optimizers7::minimize(opt, fn = nll, par = eta0, gr = nll_gr, hess = he)
     if (length(r@elapsed) && is.finite(r@elapsed)) spent <<- spent + r@elapsed
     # The optimizer's gradient is that of -l(eta)/n, so its max-norm IS the
     # score per observation the stopping rule tested. Keeping it means the

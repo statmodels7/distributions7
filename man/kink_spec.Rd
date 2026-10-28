@@ -7,7 +7,7 @@
 kink_spec(
   phi = character(0),
   v = function() NULL,
-  dv = function() NULL,
+  deriv_v = function() NULL,
   coef = function() NULL
 )
 }
@@ -18,7 +18,7 @@ kink_spec(
 \item{v}{A function of \verb{(y, theta)} returning the argument of \code{phi}, one
 value per observation.}
 
-\item{dv}{A function of \verb{(y, theta)} returning a named list with one entry
+\item{deriv_v}{A function of \verb{(y, theta)} returning a named list with one entry
 per parameter, \eqn{\partial v / \partial \theta_p}. An entry that is
 identically zero indicates that the kink does not move with it.}
 
@@ -64,7 +64,7 @@ than assumed.
 k <- kink_spec(
   phi  = "abs",
   v    = function(y, theta) y - theta$mu,
-  dv   = function(y, theta) list(mu = -1, sigma = 0),
+  deriv_v = function(y, theta) list(mu = -1, sigma = 0),
   coef = function(theta) -1 / theta$sigma)
 k
 kink_order(k@phi)

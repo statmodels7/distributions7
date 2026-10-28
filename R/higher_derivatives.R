@@ -23,7 +23,7 @@ NULL
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
-#' @param h_rel Numeric; the relative finite-difference step. Defaults to
+#' @param rel_step Numeric; the relative finite-difference step. Defaults to
 #'   `.Machine$double.eps^(1/3)` for a family with its own Hessian, and to the
 #'   step that [tensor_derivatives()] chooses for the order of its difference
 #'   otherwise; a value given explicitly is used on either route.
@@ -59,11 +59,11 @@ NULL
 #' numerical_deriv3(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #'
 #' @export
-numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3), skip = NULL) {
+numerical_deriv3 <- function(distrib, y, theta, rel_step = .Machine$double.eps^(1 / 3), skip = NULL) {
   base <- analytic_order(distrib, 2L)
   if (base < 2L) {
     return(tensor_derivatives(distrib, y, theta, order = 3L, base = base,
-                              h_rel = if (missing(h_rel)) NULL else h_rel,
+                              rel_step = if (missing(rel_step)) NULL else rel_step,
                               skip = skip))
   }
   params <- distrib@params
@@ -92,7 +92,7 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
                distrib_hessian(distrib, y, tm), SIMPLIFY = FALSE)
       }
       hsteps[[k]] <<- fd_stable_step(quotient, theta[[k]],
-                                     bounds[[params[k]]], h_rel,
+                                     bounds[[params[k]]], rel_step,
                                      need_value = FALSE)$h
     }
     hsteps[[k]]
@@ -128,7 +128,7 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters (each of length 1 or `length(y)`).
-#' @param h_rel Numeric; the relative finite-difference step. Defaults to
+#' @param rel_step Numeric; the relative finite-difference step. Defaults to
 #'   `.Machine$double.eps^(1/4)` for a family with its own Hessian, and to the
 #'   step that [tensor_derivatives()] chooses for the order of its difference
 #'   otherwise; a value given explicitly is used on either route.
@@ -158,11 +158,11 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' numerical_deriv4(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #'
 #' @export
-numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4), skip = NULL) {
+numerical_deriv4 <- function(distrib, y, theta, rel_step = .Machine$double.eps^(1 / 4), skip = NULL) {
   base <- analytic_order(distrib, 2L)
   if (base < 2L) {
     return(tensor_derivatives(distrib, y, theta, order = 4L, base = base,
-                              h_rel = if (missing(h_rel)) NULL else h_rel,
+                              rel_step = if (missing(rel_step)) NULL else rel_step,
                               skip = skip))
   }
   params <- distrib@params
@@ -193,7 +193,7 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
           (Hp[[nm]] - 2 * H0[[nm]] + Hm[[nm]]) / (hk^2)), names(H0))
       }
       hsteps[[k]] <<- fd_stable_step(quotient, theta[[k]],
-                                     bounds[[params[k]]], h_rel,
+                                     bounds[[params[k]]], rel_step,
                                      need_value = FALSE, order = 2L)$h
     }
     hsteps[[k]]

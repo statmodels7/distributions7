@@ -215,7 +215,7 @@ dexpected_key <- function(params, a, b, k) {
 #' @param scale Either `"parameter"` or `"link"`.
 #' @param method `NULL`, passed to [distrib_expected_hessian()]. See
 #'   [expected_derivative_methods].
-#' @param h_rel The relative step, a cube root of machine epsilon by default,
+#' @param rel_step The relative step, a cube root of machine epsilon by default,
 #'   the value at which a central difference balances truncation against
 #'   rounding.
 #'
@@ -227,7 +227,7 @@ dexpected_key <- function(params, a, b, k) {
 numerical_dexpected_hessian <- function(distrib, y, theta,
                                         scale = c("parameter", "link"),
                                         method = NULL,
-                                        h_rel = numericals7::fd_step(1, 1L)) {
+                                        rel_step = numericals7::fd_step(1, 1L)) {
   scale <- match.arg(scale)
   if (!has_exact_expected_hessian(distrib)) {
     stop(sprintf(paste0(
@@ -261,7 +261,7 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
     if (link) {
       lk <- distrib@link_params[[p]]
       base <- linkfunctions7::linkfun(lk, theta[[p]])
-      h <- h_rel * pmax(1, abs(base))
+      h <- rel_step * pmax(1, abs(base))
       shift <- function(hh) {
         tu <- td <- theta
         tu[[p]] <- linkfunctions7::linkinv(lk, base + hh)
@@ -284,10 +284,10 @@ numerical_dexpected_hessian <- function(distrib, y, theta,
     # The link scale carries no finite bound, so there is nothing to choose
     # there and the magnitude step stands.
     q <- if (link || !choose_step) {
-      if (!link) h <- fd_steps(theta[[p]], distrib@params_bounds[[p]], h_rel)
+      if (!link) h <- fd_steps(theta[[p]], distrib@params_bounds[[p]], rel_step)
       quotient(h)
     } else {
-      fd_stable_step(quotient, theta[[p]], distrib@params_bounds[[p]], h_rel)$value
+      fd_stable_step(quotient, theta[[p]], distrib@params_bounds[[p]], rel_step)$value
     }
     for (nm in hn) {
       out[[paste0(nm, "_", p)]] <- q[[nm]]

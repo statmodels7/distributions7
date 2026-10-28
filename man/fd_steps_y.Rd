@@ -7,7 +7,7 @@
 fd_steps_y(
   y,
   bounds,
-  h_rel,
+  rel_step,
   to_bound = c("clamp", "scale"),
   order = 1L,
   accuracy = 2L
@@ -19,7 +19,7 @@ fd_steps_y(
 \item{bounds}{A numeric vector of length two, the distribution's support.
 An infinite endpoint imposes nothing on that side.}
 
-\item{h_rel}{The relative step size, a single positive number. The callers
+\item{rel_step}{The relative step size, a single positive number. The callers
 pass \eqn{\varepsilon^{1/3}} at first order and \eqn{\varepsilon^{1/4}} at
 second.}
 
@@ -40,7 +40,7 @@ an observation strictly inside the support and zero for one on a finite
 bound.
 }
 \description{
-Returns the step for a central difference in the RESPONSE: \code{h_rel} scaled by
+Returns the step for a central difference in the RESPONSE: \code{rel_step} scaled by
 \eqn{\max(1, |y|)} and kept strictly inside the distribution's support,
 either by cutting it to under half the distance to the nearest finite bound
 or by scaling it on that distance. It is the response counterpart of
@@ -82,19 +82,19 @@ epsilon, \code{.Machine$double.eps}.
 }
 
 \examples{
-# On the whole line the step is h_rel times max(1, |y|).
-h_rel <- .Machine$double.eps^(1 / 3)
-distributions7:::fd_steps_y(c(-100, 0, 0.5, 100), c(-Inf, Inf), h_rel)
-h_rel * pmax(1, abs(c(-100, 0, 0.5, 100)))
+# On the whole line the step is rel_step times max(1, |y|).
+rel_step <- .Machine$double.eps^(1 / 3)
+distributions7:::fd_steps_y(c(-100, 0, 0.5, 100), c(-Inf, Inf), rel_step)
+rel_step * pmax(1, abs(c(-100, 0, 0.5, 100)))
 
 # Near a bound the step is cut to 0.49 of the distance to it, so the left
 # evaluation point stays inside the support.
 y <- c(1e-8, 1e-3, 1)
-h <- distributions7:::fd_steps_y(y, c(0, Inf), h_rel)
+h <- distributions7:::fd_steps_y(y, c(0, Inf), rel_step)
 rbind(step = h, left_point = y - h)
 
 # Scaled on the distance instead, the step keeps shrinking with it.
-distributions7:::fd_steps_y(y, c(0, Inf), h_rel, "scale")
+distributions7:::fd_steps_y(y, c(0, Inf), rel_step, "scale")
 
 # The two steps that the callers use differ by a factor of twenty.
 c(first_order = .Machine$double.eps^(1 / 3),

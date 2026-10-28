@@ -6,7 +6,7 @@
 # takes the fourth order it differences as an argument, the generic having
 # moved to accuracy 4.
 
-twin_tensor_derivatives <- function(distrib, y, theta, order, base, h_rel = NULL,
+twin_tensor_derivatives <- function(distrib, y, theta, order, base, rel_step = NULL,
                                skip = NULL) {
   params <- distrib@params
   p <- length(params)
@@ -14,13 +14,13 @@ twin_tensor_derivatives <- function(distrib, y, theta, order, base, h_rel = NULL
   idx_of <- deriv_indices(params, order)
   r_tot <- order - base
   if (r_tot < 1L) stop("'order' must exceed 'base'.", call. = FALSE)
-  if (is.null(h_rel)) h_rel <- .Machine$double.eps^(1 / (r_tot + 2))
+  if (is.null(rel_step)) rel_step <- .Machine$double.eps^(1 / (r_tot + 2))
 
   # one step per parameter, clamped for the widest stencil of this order
-  reach <- numericals7::fd_offsets(r_tot, 2L)$reach
+  reach <- numericals7::fd_offsets(r_tot, 2L)$half_width
   h <- lapply(seq_len(p), function(j) {
     x <- theta[[params[j]]]
-    hj <- h_rel * pmax(1, abs(x))
+    hj <- rel_step * pmax(1, abs(x))
     b <- distrib@params_bounds[[params[j]]]
     if (!is.null(b)) {
       if (is.finite(b[1])) hj <- pmin(hj, 0.49 * (x - b[1]) / reach)
@@ -120,14 +120,14 @@ twin_mixed_tensor_derivatives <- function(distrib, y, theta, ay, ctheta) {
   base <- usable[[best[which.max(vapply(usable[best], function(b) b$c,
                                         integer(1)))]]]
   r_tot <- min(r_of)
-  h_rel <- .Machine$double.eps^(1 / (r_tot + 2))
+  rel_step <- .Machine$double.eps^(1 / (r_tot + 2))
 
   ry <- ay - base$a
-  hy <- if (ry > 0L) fd_steps_y(y, distrib@bounds, h_rel, "clamp", order = ry)
+  hy <- if (ry > 0L) fd_steps_y(y, distrib@bounds, rel_step, "clamp", order = ry)
   hth <- lapply(seq_len(p), function(j) {
     x <- theta[[params[j]]]
-    hj <- h_rel * pmax(1, abs(x))
-    reach <- numericals7::fd_offsets(max(1L, ctheta - base$c), 2L)$reach
+    hj <- rel_step * pmax(1, abs(x))
+    reach <- numericals7::fd_offsets(max(1L, ctheta - base$c), 2L)$half_width
     b <- distrib@params_bounds[[params[j]]]
     if (!is.null(b)) {
       if (is.finite(b[1])) hj <- pmin(hj, 0.49 * (x - b[1]) / reach)

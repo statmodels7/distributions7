@@ -4,14 +4,14 @@
 \alias{numDeriv_grad}
 \title{A Central-Difference Gradient Without a Dependency}
 \usage{
-numDeriv_grad(f, x, h_rel = NULL)
+numDeriv_grad(f, x, rel_step = NULL)
 }
 \arguments{
 \item{f}{A function of a numeric vector, returning one number.}
 
 \item{x}{The point.}
 
-\item{h_rel}{Deprecated and unused; the step is
+\item{rel_step}{Deprecated and unused; the step is
 \code{\link[numericals7:fd_step]{numericals7::fd_step()}}'s.}
 }
 \value{

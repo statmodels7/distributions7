@@ -8,7 +8,7 @@ numerical_deriv3(
   distrib,
   y,
   theta,
-  h_rel = .Machine$double.eps^(1/3),
+  rel_step = .Machine$double.eps^(1/3),
   skip = NULL
 )
 }
@@ -19,7 +19,7 @@ numerical_deriv3(
 
 \item{theta}{A named list of parameters (each of length 1 or \code{length(y)}).}
 
-\item{h_rel}{Numeric; the relative finite-difference step. Defaults to
+\item{rel_step}{Numeric; the relative finite-difference step. Defaults to
 \code{.Machine$double.eps^(1/3)} for a family with its own Hessian, and to the
 step that \code{\link[=tensor_derivatives]{tensor_derivatives()}} chooses for the order of its difference
 otherwise; a value given explicitly is used on either route.}

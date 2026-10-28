@@ -161,23 +161,23 @@ test_that("a discrete family has no response derivative at these orders", {
 ## that outermost node.  It used to divide the step by two by hand, which is
 ## the same thing only where the clamp binds: away from a bound it halved the
 ## step everywhere and sat below the balanced value.  The step is now
-## `fd_steps_y()`'s with the stencil's reach, which at the default `h_rel` is
+## `fd_steps_y()`'s with the stencil's reach, which at the default `rel_step` is
 ## `numericals7::fd_step()`.
 test_that("the response step of orders three and four is numericals7's", {
   d <- gamma1_distrib()
   y <- c(1e-4, 0.05, 0.4, 2, 5, 12)
   for (order in 3:4) {
-    h_rel <- .Machine$double.eps^(1 / (order + 2))
+    rel_step <- .Machine$double.eps^(1 / (order + 2))
     expect_identical(
-      fd_steps_y(y, d@bounds, h_rel, "clamp", order = order),
+      fd_steps_y(y, d@bounds, rel_step, "clamp", order = order),
       numericals7::fd_step(y, order, accuracy = 2L, bounds = d@bounds),
       info = paste("order", order))
   }
   # and the orders below keep the reach-one step, so nothing there moves
   for (order in 1:2) {
-    h_rel <- .Machine$double.eps^(1 / (order + 2))
-    expect_identical(fd_steps_y(y, d@bounds, h_rel, "clamp"),
-                     fd_steps_y(y, d@bounds, h_rel, "clamp", order = order))
+    rel_step <- .Machine$double.eps^(1 / (order + 2))
+    expect_identical(fd_steps_y(y, d@bounds, rel_step, "clamp"),
+                     fd_steps_y(y, d@bounds, rel_step, "clamp", order = order))
   }
 })
 
