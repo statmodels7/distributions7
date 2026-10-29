@@ -1,3 +1,11 @@
+# distributions7 0.92.1
+
+* The `plot()` method of a continuous fit names the rug of the observations
+  in its legend. The panel matrix of a multivariate family or fit has one
+  legend, in the top-right panel, for the density (its marginal curves and
+  its contours) and, for a fit, the kernel estimates and the observations;
+  the correlation is labeled with the two coordinates.
+
 # distributions7 0.92.0
 
 * The argument `threads` of `fit_distrib()` is a whole number (default 1)

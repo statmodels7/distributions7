@@ -1761,9 +1761,16 @@ S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
   if (isTRUE(rug)) graphics::rug(y, col = col_data)
 
   if (isTRUE(legend)) {
-    graphics::legend("topright", bty = "n", lwd = 2,
-      col = c(col_data, col_fit),
-      legend = c("kernel density", paste("fitted", d@distrib_name)))
+    lab <- c("kernel density", paste("fitted", d@distrib_name))
+    if (isTRUE(rug)) {
+      graphics::legend("topright", bty = "n",
+        col = c(col_data, col_fit, col_data),
+        lwd = c(2, 2, NA), pch = c(NA, NA, 124),
+        legend = c(lab, "observations"))
+    } else {
+      graphics::legend("topright", bty = "n", lwd = 2,
+        col = c(col_data, col_fit), legend = lab)
+    }
   }
 
   invisible(x)

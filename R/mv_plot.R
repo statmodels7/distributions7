@@ -257,13 +257,9 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
         )
         if (!is.null(kd)) {
           graphics::lines(kd, col = col_data, lwd = 2, lty = 2)
-          if (a == 1L) {
-            graphics::legend("topright",
-              legend = c("fitted", "kernel"), col = c(col_fit, col_data),
-              lty = c(1, 2), lwd = 2, bty = "n", cex = 0.8
-            )
-          }
         }
+        # with one coordinate there is no upper panel to hold the legend
+        if (k == 1L) mv_pairs_legend(col_fit, col_data, data)
       } else if (a > b) {
         m <- mv_marginal(d, theta, c(jb, ja))
         gx <- seq(rng[[as.character(jb)]][1], rng[[as.character(jb)]][2],
@@ -298,11 +294,44 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
           xlim = c(0, 1), ylim = c(0, 1), axes = FALSE,
           xlab = "", ylab = "", main = ""
         )
-        graphics::text(0.5, 0.5, sprintf("corr\n%.3f", r),
-          cex = 1.3, col = col_fit
+        graphics::text(0.5, 0.62, sprintf("%s of %s and %s\n%.3f",
+          if (is.null(data)) "correlation" else "fitted correlation",
+          lab[a], lab[b], r),
+          cex = 1.1, col = col_fit
         )
+        # the panel at the top right also holds the legend of the matrix
+        if (a == 1L && b == k) mv_pairs_legend(col_fit, col_data, data)
       }
     }
+  }
+  invisible(NULL)
+}
+
+
+#' The Legend of a Panel Matrix
+#'
+#' @description
+#' Names the elements of the panels drawn by [mv_pairs_panels()] at the
+#' bottom of the current panel: the density (its marginal curves and its
+#' contours) and, when there are data, the kernel estimate of each marginal
+#' and the observations.
+#'
+#' @param col_fit,col_data The colors of the density and of the data.
+#' @param data The data matrix, or `NULL`.
+#'
+#' @return `NULL`, invisibly. Called for the legend that it draws.
+#'
+#' @keywords internal
+mv_pairs_legend <- function(col_fit, col_data, data) {
+  if (is.null(data)) {
+    graphics::legend("bottom", bty = "n", cex = 0.85, col = col_fit, lwd = 2,
+      legend = "density: marginal curves and contours")
+  } else {
+    graphics::legend("bottom", bty = "n", cex = 0.85,
+      col = c(col_fit, col_data, col_data),
+      lty = c(1, 2, NA), lwd = c(2, 2, NA), pch = c(NA, NA, 16),
+      legend = c("fitted density: marginal curves and contours",
+                 "kernel estimate of a marginal", "observations"))
   }
   invisible(NULL)
 }

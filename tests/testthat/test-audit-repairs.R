@@ -8,7 +8,8 @@ test_that("the pairs panels of a fit read the data by coordinate", {
   rec <- new.env()
   grDevices::pdf(NULL)
   on.exit(grDevices::dev.off(), add = TRUE)
-  suppressMessages(trace(graphics::points, bquote(assign(
+  # a single point is the key that the legend draws, not the scatter
+  suppressMessages(trace(graphics::points, bquote(if (length(x) > 1L) assign(
     "xs", c(get0("xs", envir = .(rec)), range(x)), envir = .(rec))),
     print = FALSE))
   on.exit(suppressMessages(untrace(graphics::points)), add = TRUE)
