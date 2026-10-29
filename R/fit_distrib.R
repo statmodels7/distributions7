@@ -455,9 +455,9 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   `start` is `NULL`. Defaults to 5. A family that returns its own estimate
 #'   returns one and ignores this. It is ignored entirely when `start` is
 #'   given.
-#' @param threads How many threads the fit may use, as
-#'   [numericals7::n_threads()] constructs it. The default, `n_threads(1)`, is
-#'   sequential and takes the sequential code path. The count reaches the
+#' @param threads How many threads the fit may use inside this R process, a
+#'   single whole number (see [numericals7::local_threads()]). The default, `1`,
+#'   is sequential and takes the sequential code path. The count reaches the
 #'   family's compiled per-observation kernels as an argument; the result does
 #'   not depend on it, bit for bit, because every parallel region decomposes
 #'   its work over the elements of its output and never splits a reduction.
@@ -564,13 +564,12 @@ distrib_fit <- S7::new_class("distrib_fit",
 fit_distrib <- function(distrib, y, start = NULL,
                         method = fisher_scoring(),
                         level = 0.95, n_start = 5,
-                        threads = numericals7::n_threads()) {
+                        threads = 1) {
   # The count is read once and passed DOWN as an argument; the process-level
   # RcppParallel setting is sized here and restored when this frame exits,
   # so a fit never leaves it moved for the code that runs after it. At
   # threads = 1 neither call touches anything.
-  tc <- numericals7::thread_count(threads)
-  numericals7::local_threads(threads)
+  tc <- numericals7::local_threads(threads)
   # The response is a numeric vector, or a numeric matrix for a multivariate
   # family. Anything else -- the object cens() returns is the case met in
   # practice -- reached the first coercion and stopped with "cannot coerce

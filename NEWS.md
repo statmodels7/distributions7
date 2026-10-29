@@ -1,3 +1,9 @@
+# distributions7 0.92.0
+
+* The argument `threads` of `fit_distrib()` is a whole number (default 1)
+  and is validated by `numericals7::local_threads()`; the object returned by
+  `n_threads()` is no longer accepted, since numericals7 0.26.0 removes it.
+
 # distributions7 0.91.0
 
 * Renamed for readability: the argument `h_rel` of the `numerical_*()`

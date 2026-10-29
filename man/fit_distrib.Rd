@@ -11,7 +11,7 @@ fit_distrib(
   method = fisher_scoring(),
   level = 0.95,
   n_start = 5,
-  threads = numericals7::n_threads()
+  threads = 1
 )
 }
 \arguments{
@@ -67,9 +67,9 @@ refitting.}
 returns one and ignores this. It is ignored entirely when \code{start} is
 given.}
 
-\item{threads}{How many threads the fit may use, as
-\code{\link[numericals7:n_threads]{numericals7::n_threads()}} constructs it. The default, \code{n_threads(1)}, is
-sequential and takes the sequential code path. The count reaches the
+\item{threads}{How many threads the fit may use inside this R process, a
+single whole number (see \code{\link[numericals7:local_threads]{numericals7::local_threads()}}). The default, \code{1},
+is sequential and takes the sequential code path. The count reaches the
 family's compiled per-observation kernels as an argument; the result does
 not depend on it, bit for bit, because every parallel region decomposes
 its work over the elements of its output and never splits a reduction.}

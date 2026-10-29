@@ -99,7 +99,7 @@ test_that("a fit does not depend on threads", {
   y <- rnorm(30000, 2, 3)
   f1 <- fit_distrib(gaussian1_distrib(), y)
   f2 <- fit_distrib(gaussian1_distrib(), y,
-                    threads = numericals7::n_threads(2))
+                    threads = 2)
   expect_equal(coef(f1), coef(f2), tolerance = 1e-10)
   expect_equal(f1@loglik, f2@loglik, tolerance = 1e-10)
   expect_equal(vcov(f1), vcov(f2), tolerance = 1e-10)
@@ -107,20 +107,22 @@ test_that("a fit does not depend on threads", {
   yg <- rgamma(6000, shape = 2, scale = 1.5)
   g1 <- fit_distrib(gamma1_distrib(), yg)
   g2 <- fit_distrib(gamma1_distrib(), yg,
-                    threads = numericals7::n_threads(2))
+                    threads = 2)
   expect_equal(coef(g1), coef(g2), tolerance = 1e-10)
   expect_equal(g1@loglik, g2@loglik, tolerance = 1e-10)
 })
 
-test_that("threads must be the n_threads() object", {
-  expect_error(fit_distrib(gaussian1_distrib(), rnorm(50), threads = 2),
-               "n_threads")
+test_that("threads must be a whole number", {
+  expect_error(fit_distrib(gaussian1_distrib(), rnorm(50), threads = 0),
+               "whole number")
+  expect_error(fit_distrib(gaussian1_distrib(), rnorm(50), threads = "2"),
+               "whole number")
 })
 
 test_that("the process-level setting is restored after a fit", {
   old <- Sys.getenv("RCPP_PARALLEL_NUM_THREADS", unset = NA_character_)
   invisible(fit_distrib(gaussian1_distrib(), rnorm(200),
-                        threads = numericals7::n_threads(2)))
+                        threads = 2))
   expect_identical(Sys.getenv("RCPP_PARALLEL_NUM_THREADS",
                               unset = NA_character_), old)
 })
