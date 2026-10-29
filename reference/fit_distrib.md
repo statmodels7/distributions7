@@ -24,7 +24,7 @@ fit_distrib(
   method = fisher_scoring(),
   level = 0.95,
   n_start = 5,
-  threads = numericals7::n_threads()
+  threads = 1
 )
 ```
 
@@ -105,13 +105,14 @@ fit_distrib(
 
 - threads:
 
-  How many threads the fit may use, as
-  [`numericals7::n_threads()`](https://statmodels7.github.io/numericals7/reference/n_threads.html)
-  constructs it. The default, `n_threads(1)`, is sequential and takes
-  the sequential code path. The count reaches the family's compiled
-  per-observation kernels as an argument; the result does not depend on
-  it, bit for bit, because every parallel region decomposes its work
-  over the elements of its output and never splits a reduction.
+  How many threads the fit may use inside this R process, a single whole
+  number (see
+  [`numericals7::local_threads()`](https://statmodels7.github.io/numericals7/reference/local_threads.html)).
+  The default, `1`, is sequential and takes the sequential code path.
+  The count reaches the family's compiled per-observation kernels as an
+  argument; the result does not depend on it, bit for bit, because every
+  parallel region decomposes its work over the elements of its output
+  and never splits a reduction.
 
 ## Value
 
@@ -215,7 +216,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 8 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
