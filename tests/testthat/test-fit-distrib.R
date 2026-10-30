@@ -428,3 +428,19 @@ test_that("an optimizer with no minimize() method and a non-numeric response are
   expect_error(fit_distrib(d, Cens(y = y)), "censored response")
   expect_error(fit_distrib(d, list(y)), "'y' must be a numeric vector")
 })
+
+test_that("the gradient is checked at the first run of a fit only", {
+  set.seed(5)
+  d <- student_t2_distrib()
+  y <- distrib_rng(d, 300, list(mu = 1, sigma = 2, nu = 5))
+  checks <- logical(0)
+  local_mocked_bindings(check_gradient_consistency = function(fn, gr, par) {
+    checks <<- c(checks, isTRUE(getOption("optimizers7.check_gradient", TRUE)))
+    invisible(TRUE)
+  }, .package = "optimizers7")
+  set.seed(1)
+  f <- fit_distrib(d, y, n_start = 5)
+  expect_gt(length(checks), 1L)
+  expect_identical(checks, c(TRUE, rep(FALSE, length(checks) - 1L)))
+  expect_true(isTRUE(getOption("optimizers7.check_gradient", TRUE)))
+})

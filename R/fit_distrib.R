@@ -752,7 +752,18 @@ fit_distrib <- function(distrib, y, start = NULL,
   # and the fallback are part of that.
   spent <- 0
 
+  # THE GRADIENT IS CHECKED AT THE FIRST RUN ONLY. optimizers7::minimize()
+  # compares the supplied gradient with a central difference at the start of
+  # every call; every run below minimizes the same objective with the same
+  # gradient, so the comparisons after the first repeat it. A family's own
+  # score method that is wrong is reported by the first.
+  checked <- FALSE
   run <- function(opt, eta0, he, label) {
+    if (checked) {
+      old <- options(optimizers7.check_gradient = FALSE)
+      on.exit(options(old), add = TRUE)
+    }
+    checked <<- TRUE
     r <- optimizers7::minimize(opt, fn = nll, par = eta0, gr = nll_gr, hess = he)
     if (length(r@elapsed) && is.finite(r@elapsed)) spent <<- spent + r@elapsed
     # The optimizer's gradient is that of -l(eta)/n, so its max-norm IS the
