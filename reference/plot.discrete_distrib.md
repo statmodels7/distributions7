@@ -1,13 +1,25 @@
 # Plot Method for Discrete Distributions
 
-Draws the probability mass of a discrete family as stems over the
-integers in range, one set per parameter setting. A component of `theta`
-given as a vector gives one setting per element, exactly as in
+[`autoplot()`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+returns a graph of the probability mass of a discrete family as stems
+over the integers in range, one set per parameter setting, and
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) prints that
+graph. A component of `theta` given as a vector gives one setting per
+element, exactly as in
 [`plot.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md).
+
+## Usage
+
+``` r
+# S3 method for class 'discrete_distrib'
+plot(x, theta, xlim = NULL, legend = TRUE, ...)
+
+autoplot_discrete_distrib(object, theta, xlim = NULL, legend = TRUE, ...)
+```
 
 ## Arguments
 
-- x:
+- x, object:
 
   An object inheriting from `discrete_distrib`.
 
@@ -26,20 +38,19 @@ given as a vector gives one setting per element, exactly as in
 
 - legend:
 
-  Logical of length 1: draw the key when several settings are plotted.
-  Defaults to `TRUE`.
+  Logical of length 1: draw the legend below the panel when several
+  settings are plotted. Defaults to `TRUE`.
 
 - ...:
 
-  Passed to
-  [`graphics::plot()`](https://rdrr.io/r/graphics/plot.default.html),
-  for instance `main`, `xlab` or `ylim`. A `col` or `pch` given here
-  wins over the palette and is recycled over the settings; an `lty` is
-  accepted and has no effect on the stems.
+  Unused; an argument passed here signals an error.
 
 ## Value
 
-`x`, invisibly. The function is called for the plot that it draws.
+[`autoplot()`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+returns a ggplot2 object;
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) prints the same
+object and returns it invisibly.
 
 ## The two keys, and why they are not the continuous ones
 
@@ -47,11 +58,16 @@ Settings are separated by color and symbol together, and the symbol sits
 at the top of each stem, where the point already is. The line type is
 not used here, because it would dash the stems and a dashed stem reads
 as a broken one, so at a support of any size the panel fills with
-fragments that cross each other.
+fragments that cross each other. The parameters that vary are named in a
+legend below the panel and those held fixed are stated once in the
+title.
 
 Several settings are also shifted sideways by a fraction of the spacing,
 so that equal masses at one support point stay countable instead of
 standing one in front of another.
+
+The graph is drawn with ggplot2, which is suggested; the methods signal
+an error that names it when it is not installed.
 
 ## See also
 
@@ -75,5 +91,4 @@ plot(poisson_distrib(), list(mu = c(1, 4, 10)))
 
 # Overdispersion at a fixed mean: the mass spreads as theta falls.
 plot(negbin2_distrib(), list(mu = 5, theta = c(0.5, 2, 50)))
-
 ```

@@ -77,6 +77,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/asinh_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/assemble_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/atom_mass_at.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/autoplot.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/bb_direct_cut.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/bc_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/bell_f_ratio.html</loc></url>
@@ -123,6 +124,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_method.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_not_stacked.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_params_dim.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/check_plot_args.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_support_is_rich_enough.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_theta_bounds.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_truncation_points.html</loc></url>
@@ -996,6 +998,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/index.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/index_partitions.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/information_objects.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/integer_breaks.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/integration_settings.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/inverse_link_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/inverse_transform.html</loc></url>
@@ -1196,6 +1199,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_moment_start.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_outer_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_own_block.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mv_pairs_keys.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mv_pairs_legend.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_param_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_prefixed_names.html</loc></url>
@@ -1241,6 +1246,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/n_obs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/n_support_points.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/nb1_size.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/need_ggplot.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/negbin1_components.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/negbin1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/negbin2_distrib.html</loc></url>
@@ -1287,10 +1293,11 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/plot_key_theme.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot_keys.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot_labels.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/plot_legend_side.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot_settings.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/plot_univariate_setup.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/poisson_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/power_negative_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/power_transform.html</loc></url>

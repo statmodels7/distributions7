@@ -1,19 +1,38 @@
 # Panels of a Multivariate Density
 
-Draws a multivariate distribution as a matrix of panels: the marginal
-density of each coordinate on the diagonal, contours of each bivariate
-marginal below it, and the implied correlation printed above it. The
-density panels are built from marginals, so the plot exists where
+[`autoplot()`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+returns a graph of a multivariate distribution as a matrix of panels,
+and [`plot()`](https://rdrr.io/r/graphics/plot.default.html) prints that
+graph: the marginal density of each coordinate on the diagonal, contours
+of each bivariate marginal below it, and the implied correlation printed
+above it. The density panels are built from marginals, so the graph
+exists where
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
 returns a marginal of several coordinates, which holds for the
 multivariate gaussian and Student \\t\\. For the Dirichlet and the
 multinomial, whose marginals are returned one coordinate at a time, the
-plot signals the error of
+graph signals the error of
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md).
+
+## Usage
+
+``` r
+# S3 method for class 'multivariate_distrib'
+plot(x, theta, which = NULL, n_grid = 80, legend = TRUE, ...)
+
+autoplot_multivariate_distrib(
+  object,
+  theta,
+  which = NULL,
+  n_grid = 80,
+  legend = TRUE,
+  ...
+)
+```
 
 ## Arguments
 
-- x:
+- x, object:
 
   An object inheriting from
   [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md).
@@ -39,19 +58,21 @@ plot signals the error of
   panels evaluate the density on an `n_grid * n_grid` grid, so the cost
   is quadratic in it.
 
-- col_fit:
+- legend:
 
-  Color of the density curves, the contours and the printed
-  correlations. Defaults to `"#B22222"`.
+  Logical of length 1: draw the legend below the panel matrix. Defaults
+  to `TRUE`.
 
 - ...:
 
-  It is accepted so that the signature matches the generic's, and not
-  used.
+  Unused; an argument passed here signals an error.
 
 ## Value
 
-`x`, invisibly. The function is called for the plot that it draws.
+[`autoplot()`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+returns a patchwork object;
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) prints the same
+object and returns it invisibly.
 
 ## At most three coordinates
 
@@ -63,10 +84,9 @@ that names the number of coordinates and suggests `which`.
 
 The contours are levels of the density and not of the probability
 content of the enclosed region, which would require the mass of each
-level set of the density. The levels are those that
-[`graphics::contour()`](https://rdrr.io/r/graphics/contour.html) selects
-(about six, from [`pretty()`](https://rdrr.io/r/base/pretty.html)) over
-the range of the density on the grid.
+level set of the density. The levels are the values that
+[`pretty()`](https://rdrr.io/r/base/pretty.html) selects, about six,
+over the range of the density on the grid.
 
 ## One setting only
 
@@ -88,6 +108,10 @@ variance, so
 cannot be the source. For an elliptical family the two matrices agree up
 to a factor, which is enough for a plotting range.
 
+The panels are drawn with ggplot2 and joined with patchwork; both
+packages are suggested, and the methods signal an error that names them
+when they are not installed.
+
 ## See also
 
 [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md),
@@ -104,20 +128,15 @@ d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(
   c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
 ))
-
-op <- graphics::par(no.readonly = TRUE)
 plot(d, theta)
 
-graphics::par(op)
 
 # Two coordinates of a heavy-tailed family are drawn, and its contours are
 # wider than a gaussian's at the same matrix.
 t2 <- mvstudent_t1_distrib(3)
 th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
-op <- graphics::par(no.readonly = TRUE)
 plot(t2, th2, which = c(1, 2))
 
-graphics::par(op)
 
 # Four coordinates would give sixteen panels, so the call signals an error.
 d4 <- mvgaussian1_distrib(4)

@@ -1,5 +1,38 @@
 # Changelog
 
+## distributions7 0.93.0
+
+- The graphs of a univariate family, of a fit and of a multivariate
+  family are drawn with ggplot2, and the panel matrix of a multivariate
+  family or fit is joined with patchwork; both are suggested.
+  [`autoplot()`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+  returns the graph and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) prints it and
+  returns it invisibly, where it returned the object. The legends are
+  below the panel, and `legend = FALSE` removes them; the panel matrix
+  has one legend below it.
+- A fit drawn against its data names the fitted density or
+  probabilities, the kernel density estimate, the observed relative
+  frequencies and the rug of the observations in its legend.
+- The graphical arguments that
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) passed to
+  base graphics are removed, and so are `col_fit` and `col_data`: the
+  returned object is modified instead. A single setting of a family is
+  drawn in the main colour of the toolkit’s graphs, and
+  [`plot_keys()`](https://statmodels7.github.io/distributions7/reference/plot_keys.md)
+  no longer reads a caller’s `col`, `lty` or `pch`. `plot_legend_side()`
+  is removed, the legend being below the panel. `graphics` is no longer
+  imported.
+
+## distributions7 0.92.1
+
+- The [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method of
+  a continuous fit names the rug of the observations in its legend. The
+  panel matrix of a multivariate family or fit has one legend, in the
+  top-right panel, for the density (its marginal curves and its
+  contours) and, for a fit, the kernel estimates and the observations;
+  the correlation is labeled with the two coordinates.
+
 ## distributions7 0.92.0
 
 - The argument `threads` of

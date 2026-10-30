@@ -1,20 +1,40 @@
 # Plot a Fitted Distribution Against the Data
 
-Compares the fitted distribution with the sample from which it was
-estimated, choosing the comparison from the family's support. A
-continuous family is drawn as the fitted density over a kernel estimate
-of the data, with a rug of the observations underneath. A discrete one
-is drawn as the observed relative frequencies in bars with the fitted
-mass overlaid, because a kernel estimate misrepresents a sample from a
-discrete distribution.
+[`autoplot()`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+returns a graph that compares the fitted distribution with the sample
+from which it was estimated, and
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) prints that
+graph. The comparison is chosen from the family's support. A continuous
+family is drawn as the fitted density over a kernel estimate of the
+data, with a rug of the observations underneath. A discrete one is drawn
+as the observed relative frequencies in bars with the fitted
+probabilities overlaid, because a kernel estimate misrepresents a sample
+from a discrete distribution. A legend below the panel names each
+element.
 
 A multivariate fit is drawn as a panel matrix: the fitted marginal
 density and a kernel estimate of the data on the diagonal, the fitted
 contours over the observations below it, the fitted correlation above.
 
+## Usage
+
+``` r
+# S3 method for class 'distrib_fit'
+plot(x, n_grid = 512, rug = NULL, legend = TRUE, mv_which = NULL, ...)
+
+autoplot_distrib_fit(
+  object,
+  n_grid = 512,
+  rug = NULL,
+  legend = TRUE,
+  mv_which = NULL,
+  ...
+)
+```
+
 ## Arguments
 
-- x:
+- x, object:
 
   A
   [`distrib_fit()`](https://statmodels7.github.io/distributions7/reference/distrib_fit_class.md)
@@ -34,14 +54,8 @@ contours over the observations below it, the fitted correlation above.
 
 - legend:
 
-  Logical of length 1: add a legend. Defaults to `TRUE`.
-
-- col_fit, col_data:
-
-  Colors of the fitted curve and of the empirical summary, in any form
-  that
-  [`grDevices::col2rgb()`](https://rdrr.io/r/grDevices/col2rgb.html)
-  accepts.
+  Logical of length 1: draw the legend below the panel. Defaults to
+  `TRUE`.
 
 - mv_which:
 
@@ -53,13 +67,22 @@ contours over the observations below it, the fitted correlation above.
 
 - ...:
 
-  Further arguments passed to
-  [`graphics::plot()`](https://rdrr.io/r/graphics/plot.default.html),
-  such as `main`, `xlab` or `xlim`.
+  Unused; an argument passed here signals an error.
 
 ## Value
 
-`x`, invisibly. The function is called for the plot that it draws.
+[`autoplot()`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+returns a ggplot2 object (a patchwork object for a multivariate fit);
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) prints the same
+object and returns it invisibly.
+
+## Details
+
+The graph is drawn with ggplot2, which is suggested, and the panel
+matrix of a multivariate fit is joined with patchwork, also suggested;
+the methods signal an error that names them when they are not installed.
+The title, the labels of the axes and the colours are changed on the
+returned object.
 
 ## See also
 
@@ -81,6 +104,7 @@ plot(fit)
 
 # A count family is compared on its support, not through a kernel estimate.
 fp <- fit_distrib(poisson_distrib(), rpois(300, 4))
-plot(fp, main = "Poisson fit")
+p <- plot(fp)
 
+p + ggplot2::labs(title = "Poisson fit")
 ```

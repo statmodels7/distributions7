@@ -3,7 +3,7 @@
 Splits a set of plot settings into what varies and what does not: the
 varying parameters become one legend entry per curve, and the fixed ones
 are stated once in the title beside the family's name. A reader then
-sees which parameter the panel is about without counting curves, and
+sees which parameter the graph is about without counting curves, and
 reads the held values without a second key.
 
 If every parameter is fixed, there is one curve and no legend, and the
@@ -39,8 +39,6 @@ fixed values.
 
 [`plot_settings()`](https://statmodels7.github.io/distributions7/reference/plot_settings.md),
 which supplies `ps`;
-[`plot_legend_side()`](https://statmodels7.github.io/distributions7/reference/plot_legend_side.md)
-for where the legend goes;
 [`plot.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
 and
 [`plot.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md),

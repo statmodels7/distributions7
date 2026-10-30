@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.92.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,16 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.93.0" id="distributions7-0930">distributions7 0.93.0<a class="anchor" aria-label="anchor" href="#distributions7-0930"></a></h2>
+<ul><li>The graphs of a univariate family, of a fit and of a multivariate family are drawn with ggplot2, and the panel matrix of a multivariate family or fit is joined with patchwork; both are suggested. <code><a href="../reference/autoplot.html">autoplot()</a></code> returns the graph and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> prints it and returns it invisibly, where it returned the object. The legends are below the panel, and <code>legend = FALSE</code> removes them; the panel matrix has one legend below it.</li>
+<li>A fit drawn against its data names the fitted density or probabilities, the kernel density estimate, the observed relative frequencies and the rug of the observations in its legend.</li>
+<li>The graphical arguments that <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> passed to base graphics are removed, and so are <code>col_fit</code> and <code>col_data</code>: the returned object is modified instead. A single setting of a family is drawn in the main colour of the toolkit’s graphs, and <code><a href="../reference/plot_keys.html">plot_keys()</a></code> no longer reads a caller’s <code>col</code>, <code>lty</code> or <code>pch</code>. <code>plot_legend_side()</code> is removed, the legend being below the panel. <code>graphics</code> is no longer imported.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.92.1" id="distributions7-0921">distributions7 0.92.1<a class="anchor" aria-label="anchor" href="#distributions7-0921"></a></h2>
+<ul><li>The <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method of a continuous fit names the rug of the observations in its legend. The panel matrix of a multivariate family or fit has one legend, in the top-right panel, for the density (its marginal curves and its contours) and, for a fit, the kernel estimates and the observations; the correlation is labeled with the two coordinates.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.92.0" id="distributions7-0920">distributions7 0.92.0<a class="anchor" aria-label="anchor" href="#distributions7-0920"></a></h2>
 <ul><li>The argument <code>threads</code> of <code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> is a whole number (default 1) and is validated by <code><a href="https://statmodels7.github.io/numericals7/reference/local_threads.html" class="external-link">numericals7::local_threads()</a></code>; the object returned by <code>n_threads()</code> is no longer accepted, since numericals7 0.26.0 removes it.</li>

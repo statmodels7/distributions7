@@ -1,10 +1,11 @@
 # Colors, Line Types and Symbols for a Set of Curves
 
-Returns the three visual keys by which a plot method distinguishes its
+Returns the three visual keys by which a graph distinguishes its
 settings, and each key is recycled to length \\k\\. A single curve is
-black, solid and a filled circle. Several take a qualitative palette,
-the six base line types and six distinguishable symbols, so that a
-printed copy with no color is still readable.
+drawn in the main colour of the toolkit's graphs, solid and with a
+filled circle. Several take a qualitative palette, the six line types
+and six distinguishable symbols, so that a printed copy with no color is
+still readable.
 
 A continuous family draws with the color and the line type. A discrete
 family draws with the color and the symbol, because a line type would
@@ -13,7 +14,7 @@ dash the stems and a dashed stem reads as a broken one.
 ## Usage
 
 ``` r
-plot_keys(k, dots = list())
+plot_keys(k)
 ```
 
 ## Arguments
@@ -21,11 +22,6 @@ plot_keys(k, dots = list())
 - k:
 
   How many settings are drawn, a single positive integer.
-
-- dots:
-
-  The caller's `...`, as a list. A `col`, `lty` or `pch` given there
-  wins and is recycled over the settings; anything else is ignored.
 
 ## Value
 

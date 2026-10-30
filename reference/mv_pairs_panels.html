@@ -5,13 +5,15 @@ ordered pair of the chosen coordinates: the marginal density on the
 diagonal, contours of the bivariate marginal below it, and the implied
 correlation printed above it. The density panels come from mv_marginal(),
 so the function does not integrate anything; the printed correlation comes
-from mv_sigma()."><meta property="og:description" content="This function is the shared engine of plot.multivariate_distrib() and the
+from mv_sigma(). One legend below the matrix, built by
+mv_pairs_legend(), names the elements of every panel."><meta property="og:description" content="This function is the shared engine of plot.multivariate_distrib() and the
 multivariate branch of plot.distrib_fit(). It lays out one panel per
 ordered pair of the chosen coordinates: the marginal density on the
 diagonal, contours of the bivariate marginal below it, and the implied
 correlation printed above it. The density panels come from mv_marginal(),
 so the function does not integrate anything; the printed correlation comes
-from mv_sigma()."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+from mv_sigma(). One legend below the matrix, built by
+mv_pairs_legend(), names the elements of every panel."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +21,7 @@ from mv_sigma()."><meta property="og:image" content="https://statmodels7.github.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.92.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +60,8 @@ ordered pair of the chosen coordinates: the marginal density on the
 diagonal, contours of the bivariate marginal below it, and the implied
 correlation printed above it. The density panels come from <code><a href="mv_marginal.html">mv_marginal()</a></code>,
 so the function does not integrate anything; the printed correlation comes
-from <code><a href="mv_sigma.html">mv_sigma()</a></code>.</p>
+from <code><a href="mv_sigma.html">mv_sigma()</a></code>. One legend below the matrix, built by
+<code><a href="mv_pairs_legend.html">mv_pairs_legend()</a></code>, names the elements of every panel.</p>
     </div>
 
     <div class="section level2">
@@ -68,11 +71,9 @@ from <code><a href="mv_sigma.html">mv_sigma()</a></code>.</p>
 <span>  <span class="va">theta</span>,</span>
 <span>  <span class="va">which</span>,</span>
 <span>  <span class="va">n_grid</span>,</span>
-<span>  <span class="va">col_fit</span>,</span>
 <span>  <span class="va">data</span>,</span>
-<span>  col_data <span class="op">=</span> <span class="st">"#4682B4"</span>,</span>
 <span>  which_arg <span class="op">=</span> <span class="st">"which"</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -98,20 +99,10 @@ more than three coordinates, is an error.</p></dd>
 <dd><p>Points per axis, a single positive whole number.</p></dd>
 
 
-<dt id="arg-col-fit">col_fit<a class="anchor" aria-label="anchor" href="#arg-col-fit"></a></dt>
-<dd><p>Color of the fitted density, the contours and the printed
-correlations.</p></dd>
-
-
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>An \(n \times p\) matrix of observations with one column
 per coordinate of the distribution, whichever coordinates <code>which</code>
 selects, or <code>NULL</code> for a distribution with no data behind it.</p></dd>
-
-
-<dt id="arg-col-data">col_data<a class="anchor" aria-label="anchor" href="#arg-col-data"></a></dt>
-<dd><p>Color of the observed summary, used only when <code>data</code> is
-given. Defaults to <code>"#4682B4"</code>.</p></dd>
 
 
 <dt id="arg-which-arg">which_arg<a class="anchor" aria-label="anchor" href="#arg-which-arg"></a></dt>
@@ -120,15 +111,13 @@ used in the error message for more than three coordinates. Defaults to
 <code>"which"</code>; <code><a href="plot.distrib_fit.html">plot.distrib_fit()</a></code> passes <code>"mv_which"</code>.</p></dd>
 
 
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Unused.</p></dd>
+<dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
+<dd><p>Whether the legend is drawn below the matrix.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>NULL</code>, invisibly. The function is called for the plot that it draws.
-The function sets <code>mfrow</code>, <code>mar</code> and <code>mgp</code> for the panel matrix and
-restores the previous values on exit.</p>
+    <p>A patchwork object.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -155,20 +144,15 @@ callers, and <code><a href="mv_marginal.html">mv_marginal()</a></code> for the p
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>              sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Without data, the plot shows the density alone.</span></span></span>
-<span class="r-in"><span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>no.readonly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mv_pairs_panels</span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, <span class="cn">NULL</span>, <span class="fl">40</span>, <span class="st">"#B22222"</span>, data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Without data, the graph shows the density alone.</span></span></span>
+<span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mv_pairs_panels</span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, <span class="cn">NULL</span>, <span class="fl">40</span>, data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="mv_pairs_panels-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># With data: the same frame carries a kernel estimate and the observations.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>no.readonly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mv_pairs_panels</span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, <span class="cn">NULL</span>, <span class="fl">40</span>, <span class="st">"#B22222"</span>,</span></span>
+<span class="r-in"><span><span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">mv_pairs_panels</span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, <span class="cn">NULL</span>, <span class="fl">40</span>,</span></span>
 <span class="r-in"><span>                                 data <span class="op">=</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">200</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="mv_pairs_panels-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

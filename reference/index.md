@@ -454,7 +454,8 @@ show what the default methods compute.
   : Simulate From a Fitted Distribution
 - [`print.distrib_fit`](https://statmodels7.github.io/distributions7/reference/print.distrib_fit.md)
   : Print Method for Maximum-Likelihood Fits
-- [`plot.distrib_fit`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
+- [`plot(`*`<distrib_fit>`*`)`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
+  [`autoplot_distrib_fit()`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
   : Plot a Fitted Distribution Against the Data
 - [`mean.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
   [`variance.GenGamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma2Distrib.md)
@@ -2179,6 +2180,9 @@ transforms that make it work on a divergent density.
 - [`atom_mass_at()`](https://statmodels7.github.io/distributions7/reference/atom_mass_at.md)
   : Mass of an Atom at One Point, by Observation
 
+- [`autoplot`](https://statmodels7.github.io/distributions7/reference/autoplot.md)
+  : The autoplot() Generic of ggplot2
+
 - [`bb_direct_cut()`](https://statmodels7.github.io/distributions7/reference/bb_direct_cut.md)
   : The Concentration Above Which the Beta-Binomial Uses the Direct Sums
 
@@ -2285,6 +2289,9 @@ transforms that make it work on a divergent density.
 
 - [`check_not_stacked()`](https://statmodels7.github.io/distributions7/reference/check_not_stacked.md)
   : Reject the Composition of Two Zero Wrappers
+
+- [`check_plot_args()`](https://statmodels7.github.io/distributions7/reference/check_plot_args.md)
+  : The Arguments That a Graph Accepts
 
 - [`check_support_is_rich_enough()`](https://statmodels7.github.io/distributions7/reference/check_support_is_rich_enough.md)
   : Reject a Model With More Parameters Than the Support Can Distinguish
@@ -3281,6 +3288,9 @@ transforms that make it work on a divergent density.
 - [`index_partitions()`](https://statmodels7.github.io/distributions7/reference/index_partitions.md)
   : Set Partitions of a Multi-Index
 
+- [`integer_breaks()`](https://statmodels7.github.io/distributions7/reference/integer_breaks.md)
+  : Whole-Number Breaks of an Axis
+
 - [`integration_settings()`](https://statmodels7.github.io/distributions7/reference/integration_settings.md)
   : The Integration Settings in Force
 
@@ -3801,6 +3811,12 @@ transforms that make it work on a divergent density.
 - [`mv_own_block()`](https://statmodels7.github.io/distributions7/reference/mv_own_block.md)
   : Quantities Declared by a Structured Parametrization
 
+- [`mv_pairs_keys()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_keys.md)
+  : The Elements of a Panel Matrix and Their Colours
+
+- [`mv_pairs_legend()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_legend.md)
+  : The Legend of a Panel Matrix
+
 - [`mv_pairs_panels()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.md)
   : Draw the Panel Matrix of a Multivariate Density
 
@@ -3909,6 +3925,9 @@ transforms that make it work on a divergent density.
 - [`nb1_size()`](https://statmodels7.github.io/distributions7/reference/nb1_size.md)
   : The Size Behind an NB1 Mean
 
+- [`need_ggplot()`](https://statmodels7.github.io/distributions7/reference/need_ggplot.md)
+  : The Packages That a Graph Requires
+
 - [`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
   [`nb1_exact_cut()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
   [`nb1_M_derivs()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
@@ -3982,14 +4001,20 @@ transforms that make it work on a divergent density.
 - [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
   : The Dispersion Implied by a Poisson-Inverse Gaussian Alpha
 
-- [`plot.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
+- [`plot(`*`<continuous_distrib>`*`)`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
+  [`autoplot_continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
   : Plot Method for Continuous Distributions
 
-- [`plot.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md)
+- [`plot(`*`<discrete_distrib>`*`)`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md)
+  [`autoplot_discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md)
   : Plot Method for Discrete Distributions
 
-- [`plot.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md)
+- [`plot(`*`<multivariate_distrib>`*`)`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md)
+  [`autoplot_multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md)
   : Panels of a Multivariate Density
+
+- [`plot_key_theme()`](https://statmodels7.github.io/distributions7/reference/plot_key_theme.md)
+  : The Placement of the Legends of a Graph
 
 - [`plot_keys()`](https://statmodels7.github.io/distributions7/reference/plot_keys.md)
   : Colors, Line Types and Symbols for a Set of Curves
@@ -3997,11 +4022,11 @@ transforms that make it work on a divergent density.
 - [`plot_labels()`](https://statmodels7.github.io/distributions7/reference/plot_labels.md)
   : The Legend Entries and the Title of a Distribution Plot
 
-- [`plot_legend_side()`](https://statmodels7.github.io/distributions7/reference/plot_legend_side.md)
-  : Placing the Legend
-
 - [`plot_settings()`](https://statmodels7.github.io/distributions7/reference/plot_settings.md)
   : One Parameter Setting Per Curve
+
+- [`plot_univariate_setup()`](https://statmodels7.github.io/distributions7/reference/plot_univariate_setup.md)
+  : The Settings of a Univariate Graph
 
 - [`power_negative_transform()`](https://statmodels7.github.io/distributions7/reference/power_negative_transform.md)
   : Even Power of a Negative Variable
