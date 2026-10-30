@@ -93,7 +93,8 @@ NULL
 #' try(plot(d4, th4))
 #'
 #' @keywords internal
-S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
+#' @export
+plot.multivariate_distrib <- function(x, theta, which = NULL,
                                                    n_grid = 80, legend = TRUE,
                                                    ...) {
   p <- autoplot_multivariate_distrib(x, theta, which = which, n_grid = n_grid,
@@ -101,6 +102,7 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
   print(p)
   invisible(p)
 }
+S7::method(plot, multivariate_distrib) <- plot.multivariate_distrib
 
 #' @rdname plot.multivariate_distrib
 autoplot_multivariate_distrib <- function(object, theta, which = NULL,

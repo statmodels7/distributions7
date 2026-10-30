@@ -5,9 +5,13 @@
 \alias{autoplot_discrete_distrib}
 \title{Plot Method for Discrete Distributions}
 \usage{
+\method{plot}{discrete_distrib}(x, theta, xlim = NULL, legend = TRUE, ...)
+
 autoplot_discrete_distrib(object, theta, xlim = NULL, legend = TRUE, ...)
 }
 \arguments{
+\item{x, object}{An object inheriting from \code{discrete_distrib}.}
+
 \item{theta}{A named list or numeric vector holding one entry per parameter
 of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} sets of stems, and
 every component must have length 1 or that same \eqn{k}. When \code{theta} is
@@ -21,8 +25,6 @@ the range from the quantiles over every setting.}
 several settings are plotted. Defaults to \code{TRUE}.}
 
 \item{...}{Unused; an argument passed here signals an error.}
-
-\item{x, object}{An object inheriting from \code{discrete_distrib}.}
 }
 \value{
 \code{autoplot()} returns a ggplot2 object; \code{plot()} prints the same

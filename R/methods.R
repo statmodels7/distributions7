@@ -367,12 +367,14 @@ plot_univariate_setup <- function(x, theta) {
 #'   [plot.distrib_fit()] to compare a fit with data;
 #'   [plot_settings()], [plot_keys()] and [plot_labels()] for the pieces.
 #' @keywords internal
-S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
+#' @export
+plot.continuous_distrib <- function(x, theta, xlim = NULL,
                                                  legend = TRUE, ...) {
   p <- autoplot_continuous_distrib(x, theta, xlim = xlim, legend = legend, ...)
   print(p)
   invisible(p)
 }
+S7::method(plot, continuous_distrib) <- plot.continuous_distrib
 
 #' @rdname plot.continuous_distrib
 autoplot_continuous_distrib <- function(object, theta, xlim = NULL,
@@ -483,12 +485,14 @@ S7::method(autoplot, continuous_distrib) <- autoplot_continuous_distrib
 #'   [plot.distrib_fit()] to compare a fit with data;
 #'   [plot_settings()], [plot_keys()] and [plot_labels()] for the pieces.
 #' @keywords internal
-S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL,
+#' @export
+plot.discrete_distrib <- function(x, theta, xlim = NULL,
                                                legend = TRUE, ...) {
   p <- autoplot_discrete_distrib(x, theta, xlim = xlim, legend = legend, ...)
   print(p)
   invisible(p)
 }
+S7::method(plot, discrete_distrib) <- plot.discrete_distrib
 
 #' @rdname plot.discrete_distrib
 autoplot_discrete_distrib <- function(object, theta, xlim = NULL,

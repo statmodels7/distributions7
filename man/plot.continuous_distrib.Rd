@@ -5,9 +5,13 @@
 \alias{autoplot_continuous_distrib}
 \title{Plot Method for Continuous Distributions}
 \usage{
+\method{plot}{continuous_distrib}(x, theta, xlim = NULL, legend = TRUE, ...)
+
 autoplot_continuous_distrib(object, theta, xlim = NULL, legend = TRUE, ...)
 }
 \arguments{
+\item{x, object}{An object inheriting from \code{continuous_distrib}.}
+
 \item{theta}{A named list or numeric vector holding one entry per parameter
 of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} curves, and every
 component must have length 1 or that same \eqn{k}. When \code{theta} is
@@ -21,8 +25,6 @@ the range from the quantiles as above.}
 several settings are plotted. Defaults to \code{TRUE}.}
 
 \item{...}{Unused; an argument passed here signals an error.}
-
-\item{x, object}{An object inheriting from \code{continuous_distrib}.}
 }
 \value{
 \code{autoplot()} returns a ggplot2 object; \code{plot()} prints the same

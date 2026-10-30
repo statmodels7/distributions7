@@ -5,6 +5,8 @@
 \alias{autoplot_multivariate_distrib}
 \title{Panels of a Multivariate Density}
 \usage{
+\method{plot}{multivariate_distrib}(x, theta, which = NULL, n_grid = 80, legend = TRUE, ...)
+
 autoplot_multivariate_distrib(
   object,
   theta,
@@ -15,6 +17,8 @@ autoplot_multivariate_distrib(
 )
 }
 \arguments{
+\item{x, object}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
+
 \item{theta}{A named list or vector of parameters in which each component is
 a single number. When missing, parameters are drawn by
 \code{\link[=generate_random_theta]{generate_random_theta()}} and reported in a message. A component of
@@ -33,8 +37,6 @@ quadratic in it.}
 Defaults to \code{TRUE}.}
 
 \item{...}{Unused; an argument passed here signals an error.}
-
-\item{x, object}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 }
 \value{
 \code{autoplot()} returns a patchwork object; \code{plot()} prints the same

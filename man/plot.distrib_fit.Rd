@@ -5,6 +5,8 @@
 \alias{autoplot_distrib_fit}
 \title{Plot a Fitted Distribution Against the Data}
 \usage{
+\method{plot}{distrib_fit}(x, n_grid = 512, rug = NULL, legend = TRUE, mv_which = NULL, ...)
+
 autoplot_distrib_fit(
   object,
   n_grid = 512,
@@ -15,6 +17,8 @@ autoplot_distrib_fit(
 )
 }
 \arguments{
+\item{x, object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
+
 \item{n_grid}{Number of points at which the fitted density is evaluated, a
 single positive integer. Defaults to 512. Read for a continuous family
 only; a discrete one is evaluated on its support.}
@@ -33,8 +37,6 @@ coordinates signals an error unless \code{mv_which} selects at most three.
 The argument is ignored for a univariate fit.}
 
 \item{...}{Unused; an argument passed here signals an error.}
-
-\item{x, object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 }
 \value{
 \code{autoplot()} returns a ggplot2 object (a patchwork object for a

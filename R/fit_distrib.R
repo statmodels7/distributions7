@@ -1696,7 +1696,8 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' @seealso [fit_distrib()] for the fit; [simulate.distrib_fit()] for draws
 #'   from it; [plot.multivariate_distrib()], the same panel matrix drawn from
 #'   a distribution with no data beside it.
-S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
+#' @export
+plot.distrib_fit <- function(x, n_grid = 512, rug = NULL,
                                           legend = TRUE, mv_which = NULL,
                                           ...) {
   p <- autoplot_distrib_fit(x, n_grid = n_grid, rug = rug, legend = legend,
@@ -1704,6 +1705,7 @@ S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
   print(p)
   invisible(p)
 }
+S7::method(plot, distrib_fit) <- plot.distrib_fit
 
 #' @rdname plot.distrib_fit
 autoplot_distrib_fit <- function(object, n_grid = 512, rug = NULL,
