@@ -24,6 +24,8 @@ test_that("the panel matrix refuses to be unreadable", {
   # and says what to do about it
   expect_error(plot(d, th), "which = ")
   # three is the most that is drawn, and choosing three of five is allowed
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
   expect_silent({
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off(), add = TRUE)
@@ -32,6 +34,8 @@ test_that("the panel matrix refuses to be unreadable", {
 })
 
 test_that("the panel matrix draws a density and a fit", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
   grDevices::pdf(NULL)
   on.exit(grDevices::dev.off(), add = TRUE)
 
@@ -57,6 +61,30 @@ test_that("the panel matrix draws a density and a fit", {
   dt <- mvstudent_t1_distrib(2)
   expect_silent(plot(dt, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                               sigma_L2.1 = 0.3, nu = 1.5)))
+})
+
+test_that("the panel matrix has one legend below it", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
+  d <- mvgaussian1_distrib(2)
+  th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+             sigma_L2.1 = 0.6)
+  p <- ggplot2::autoplot(d, th)
+  # the matrix of panels, and the legend below it
+  expect_s3_class(p, "patchwork")
+  expect_length(ggplot2::autoplot(d, th, legend = FALSE)$patches$plots, 3L)
+  expect_identical(names(distributions7:::mv_pairs_keys(NULL)),
+                   "density: marginal curves and contours")
+  expect_s3_class(distributions7:::mv_pairs_legend(NULL), "gtable")
+  set.seed(3)
+  fit <- fit_distrib(d, distrib_rng(d, 100, th))
+  expect_length(distributions7:::mv_pairs_keys(fit@y), 3L)
+  # the correlation panel reads the fitted matrix
+  q <- ggplot2::autoplot(fit, legend = FALSE)
+  s <- mv_sigma(d, align_theta(d, as.list(fit@coefficients)))
+  expect_match(q[[2]]$layers[[1]]$aes_params$label,
+               sprintf("%.3f", s[1, 2] / sqrt(s[1, 1] * s[2, 2])), fixed = TRUE)
+  expect_error(plot(d, th, col_fit = "red"), "no further arguments")
 })
 
 test_that("the strategy for the expected information lives on fisher_scoring()", {

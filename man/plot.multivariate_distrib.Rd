@@ -2,10 +2,19 @@
 % Please edit documentation in R/mv_plot.R
 \name{plot.multivariate_distrib}
 \alias{plot.multivariate_distrib}
+\alias{autoplot_multivariate_distrib}
 \title{Panels of a Multivariate Density}
+\usage{
+autoplot_multivariate_distrib(
+  object,
+  theta,
+  which = NULL,
+  n_grid = 80,
+  legend = TRUE,
+  ...
+)
+}
 \arguments{
-\item{x}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
-
 \item{theta}{A named list or vector of parameters in which each component is
 a single number. When missing, parameters are drawn by
 \code{\link[=generate_random_theta]{generate_random_theta()}} and reported in a message. A component of
@@ -20,23 +29,26 @@ on the diagonal use \code{4 * n_grid} points. Defaults to \code{80}. The bivaria
 panels evaluate the density on an \code{n_grid * n_grid} grid, so the cost is
 quadratic in it.}
 
-\item{col_fit}{Color of the density curves, the contours and the printed
-correlations. Defaults to \code{"#B22222"}.}
+\item{legend}{Logical of length 1: draw the legend below the panel matrix.
+Defaults to \code{TRUE}.}
 
-\item{...}{It is accepted so that the signature matches the generic's, and
-not used.}
+\item{...}{Unused; an argument passed here signals an error.}
+
+\item{x, object}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 }
 \value{
-\code{x}, invisibly. The function is called for the plot that it draws.
+\code{autoplot()} returns a patchwork object; \code{plot()} prints the same
+object and returns it invisibly.
 }
 \description{
-Draws a multivariate distribution as a matrix of panels: the marginal density
-of each coordinate on the diagonal, contours of each bivariate marginal below
-it, and the implied correlation printed above it. The density panels are
-built from marginals, so the plot exists where \code{\link[=mv_marginal]{mv_marginal()}} returns a
+\code{autoplot()} returns a graph of a multivariate distribution as a matrix of
+panels, and \code{plot()} prints that graph: the marginal density of each
+coordinate on the diagonal, contours of each bivariate marginal below it,
+and the implied correlation printed above it. The density panels are
+built from marginals, so the graph exists where \code{\link[=mv_marginal]{mv_marginal()}} returns a
 marginal of several coordinates, which holds for the multivariate gaussian
 and Student \eqn{t}. For the Dirichlet and the multinomial, whose marginals
-are returned one coordinate at a time, the plot signals the error of
+are returned one coordinate at a time, the graph signals the error of
 \code{\link[=mv_marginal]{mv_marginal()}}.
 }
 \section{At most three coordinates}{
@@ -48,8 +60,8 @@ names the number of coordinates and suggests \code{which}.
 \section{The contour levels}{
 The contours are levels of the density and not of the probability content of
 the enclosed region, which would require the mass of each level set of the
-density. The levels are those that \code{graphics::contour()} selects (about six,
-from \code{pretty()}) over the range of the density on the grid.
+density. The levels are the values that \code{pretty()} selects, about six,
+over the range of the density on the grid.
 }
 
 \section{One setting only}{
@@ -66,31 +78,31 @@ carries (see \code{\link[=mv_sigma]{mv_sigma()}}). A multivariate Student \eqn{t
 2} has an infinite variance, so \code{\link[=variance]{variance()}} cannot be the source. For an
 elliptical family the two matrices agree up to a factor, which is enough for
 a plotting range.
+
+The panels are drawn with \pkg{ggplot2} and joined with \pkg{patchwork};
+both packages are suggested, and the methods signal an error that names
+them when they are not installed.
 }
 
 \examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("patchwork", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(
   c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
 ))
-
-op <- graphics::par(no.readonly = TRUE)
 plot(d, theta)
-graphics::par(op)
 
 # Two coordinates of a heavy-tailed family are drawn, and its contours are
 # wider than a gaussian's at the same matrix.
 t2 <- mvstudent_t1_distrib(3)
 th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
-op <- graphics::par(no.readonly = TRUE)
 plot(t2, th2, which = c(1, 2))
-graphics::par(op)
 
 # Four coordinates would give sixteen panels, so the call signals an error.
 d4 <- mvgaussian1_distrib(4)
 th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
 try(plot(d4, th4))
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=mv_marginal]{mv_marginal()}}, which supplies the density panels,

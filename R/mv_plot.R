@@ -1,4 +1,4 @@
-#' @include multivariate.R mvgaussian_distrib.R
+#' @include multivariate.R mvgaussian_distrib.R ggplot.R
 NULL
 
 
@@ -6,13 +6,14 @@ NULL
 #' @name plot.multivariate_distrib
 #'
 #' @description
-#' Draws a multivariate distribution as a matrix of panels: the marginal density
-#' of each coordinate on the diagonal, contours of each bivariate marginal below
-#' it, and the implied correlation printed above it. The density panels are
-#' built from marginals, so the plot exists where [mv_marginal()] returns a
+#' `autoplot()` returns a graph of a multivariate distribution as a matrix of
+#' panels, and `plot()` prints that graph: the marginal density of each
+#' coordinate on the diagonal, contours of each bivariate marginal below it,
+#' and the implied correlation printed above it. The density panels are
+#' built from marginals, so the graph exists where [mv_marginal()] returns a
 #' marginal of several coordinates, which holds for the multivariate gaussian
 #' and Student \eqn{t}. For the Dirichlet and the multinomial, whose marginals
-#' are returned one coordinate at a time, the plot signals the error of
+#' are returned one coordinate at a time, the graph signals the error of
 #' [mv_marginal()].
 #'
 #' @details
@@ -26,8 +27,8 @@ NULL
 #'
 #' The contours are levels of the density and not of the probability content of
 #' the enclosed region, which would require the mass of each level set of the
-#' density. The levels are those that `graphics::contour()` selects (about six,
-#' from `pretty()`) over the range of the density on the grid.
+#' density. The levels are the values that `pretty()` selects, about six,
+#' over the range of the density on the grid.
 #'
 #' # One setting only
 #'
@@ -45,7 +46,11 @@ NULL
 #' elliptical family the two matrices agree up to a factor, which is enough for
 #' a plotting range.
 #'
-#' @param x An object inheriting from [multivariate_distrib()].
+#' The panels are drawn with \pkg{ggplot2} and joined with \pkg{patchwork};
+#' both packages are suggested, and the methods signal an error that names
+#' them when they are not installed.
+#'
+#' @param x,object An object inheriting from [multivariate_distrib()].
 #' @param theta A named list or vector of parameters in which each component is
 #'   a single number. When missing, parameters are drawn by
 #'   [generate_random_theta()] and reported in a message. A component of
@@ -57,35 +62,30 @@ NULL
 #'   on the diagonal use `4 * n_grid` points. Defaults to `80`. The bivariate
 #'   panels evaluate the density on an `n_grid * n_grid` grid, so the cost is
 #'   quadratic in it.
-#' @param col_fit Color of the density curves, the contours and the printed
-#'   correlations. Defaults to `"#B22222"`.
-#' @param ... It is accepted so that the signature matches the generic's, and
-#'   not used.
+#' @param legend Logical of length 1: draw the legend below the panel matrix.
+#'   Defaults to `TRUE`.
+#' @param ... Unused; an argument passed here signals an error.
 #'
-#' @return `x`, invisibly. The function is called for the plot that it draws.
+#' @return `autoplot()` returns a patchwork object; `plot()` prints the same
+#'   object and returns it invisibly.
 #'
 #' @seealso [mv_marginal()], which supplies the density panels,
 #'   [plot.distrib_fit()], which draws the same matrix with the data on it,
 #'   and [plot.continuous_distrib()] for the one-dimensional case, which does
 #'   overlay several settings.
 #'
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("patchwork", quietly = TRUE)
 #' d <- mvgaussian1_distrib(3)
 #' theta <- as.list(stats::setNames(
 #'   c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
 #' ))
-#'
-#' op <- graphics::par(no.readonly = TRUE)
 #' plot(d, theta)
-#' graphics::par(op)
 #'
 #' # Two coordinates of a heavy-tailed family are drawn, and its contours are
 #' # wider than a gaussian's at the same matrix.
 #' t2 <- mvstudent_t1_distrib(3)
 #' th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
-#' op <- graphics::par(no.readonly = TRUE)
 #' plot(t2, th2, which = c(1, 2))
-#' graphics::par(op)
 #'
 #' # Four coordinates would give sixteen panels, so the call signals an error.
 #' d4 <- mvgaussian1_distrib(4)
@@ -94,8 +94,19 @@ NULL
 #'
 #' @keywords internal
 S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
-                                                   n_grid = 80,
-                                                   col_fit = "#B22222", ...) {
+                                                   n_grid = 80, legend = TRUE,
+                                                   ...) {
+  p <- autoplot_multivariate_distrib(x, theta, which = which, n_grid = n_grid,
+                                     legend = legend, ...)
+  print(p)
+  invisible(p)
+}
+
+#' @rdname plot.multivariate_distrib
+autoplot_multivariate_distrib <- function(object, theta, which = NULL,
+                                          n_grid = 80, legend = TRUE, ...) {
+  check_plot_args(legend, ...)
+  x <- object
   if (missing(theta)) {
     theta <- generate_random_theta(x)
     message(sprintf(
@@ -116,9 +127,10 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
                  paste(sprintf("'%s'", long), collapse = ", "),
                  if (length(long) == 1L) "ies" else "y"), call. = FALSE)
   }
-  mv_pairs_panels(x, theta, which, n_grid, col_fit, data = NULL, ...)
-  invisible(x)
+  mv_pairs_panels(x, theta, which, n_grid, data = NULL, legend = legend)
 }
+
+S7::method(autoplot, multivariate_distrib) <- autoplot_multivariate_distrib
 
 
 #' @title Draw the Panel Matrix of a Multivariate Density
@@ -130,7 +142,8 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #' diagonal, contours of the bivariate marginal below it, and the implied
 #' correlation printed above it. The density panels come from [mv_marginal()],
 #' so the function does not integrate anything; the printed correlation comes
-#' from [mv_sigma()].
+#' from [mv_sigma()]. One legend below the matrix, built by
+#' [mv_pairs_legend()], names the elements of every panel.
 #'
 #' @details
 #' When `data` is supplied the diagonal also carries a kernel density estimate
@@ -151,45 +164,35 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #'   of them. An empty, non-integer, out-of-range or duplicated `which`, or
 #'   more than three coordinates, is an error.
 #' @param n_grid Points per axis, a single positive whole number.
-#' @param col_fit Color of the fitted density, the contours and the printed
-#'   correlations.
 #' @param data An \eqn{n \times p} matrix of observations with one column
 #'   per coordinate of the distribution, whichever coordinates `which`
 #'   selects, or `NULL` for a distribution with no data behind it.
-#' @param col_data Color of the observed summary, used only when `data` is
-#'   given. Defaults to `"#4682B4"`.
 #' @param which_arg The name of the caller's argument that carries `which`,
 #'   used in the error message for more than three coordinates. Defaults to
 #'   `"which"`; [plot.distrib_fit()] passes `"mv_which"`.
-#' @param ... Unused.
+#' @param legend Whether the legend is drawn below the matrix.
 #'
-#' @return `NULL`, invisibly. The function is called for the plot that it draws.
-#'   The function sets `mfrow`, `mar` and `mgp` for the panel matrix and
-#'   restores the previous values on exit.
+#' @return A patchwork object.
 #'
 #' @seealso [plot.multivariate_distrib()] and [plot.distrib_fit()], its two
 #'   callers, and [mv_marginal()] for the panels.
 #'
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("patchwork", quietly = TRUE)
 #' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
 #'               sigma_log_L2 = 0, sigma_L2.1 = 0.6)
 #'
-#' # Without data, the plot shows the density alone.
-#' op <- graphics::par(no.readonly = TRUE)
-#' distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222", data = NULL)
-#' graphics::par(op)
+#' # Without data, the graph shows the density alone.
+#' distributions7:::mv_pairs_panels(d, theta, NULL, 40, data = NULL)
 #'
 #' # With data: the same frame carries a kernel estimate and the observations.
 #' set.seed(1)
-#' op <- graphics::par(no.readonly = TRUE)
-#' distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222",
+#' distributions7:::mv_pairs_panels(d, theta, NULL, 40,
 #'                                  data = distrib_rng(d, 200, theta))
-#' graphics::par(op)
 #'
 #' @keywords internal
-mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
-                            col_data = "#4682B4", which_arg = "which", ...) {
+mv_pairs_panels <- function(d, theta, which, n_grid, data,
+                            which_arg = "which", legend = TRUE) {
   p <- d@n_dim
   if (is.null(which)) which <- seq_len(p)
   if (!is.numeric(which) || !length(which) || !all(is.finite(which)) ||
@@ -207,6 +210,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
       "  Choose at most three with '%s', for instance %s = c(1, 2, 3)."
     ), k, k * k, which_arg, which_arg), call. = FALSE)
   }
+  need_ggplot(patchwork = TRUE)
 
   # The range each coordinate is drawn over, from its own marginal: three
   # standard deviations either side of the mean cover the shape without
@@ -228,11 +232,13 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
   })
   names(rng) <- as.character(which)
 
-  op <- graphics::par(mfrow = c(k, k), mar = c(3.2, 3.2, 1.6, 0.8),
-                      mgp = c(2, 0.6, 0))
-  on.exit(graphics::par(op), add = TRUE)
-
   lab <- paste0("v", which)
+  key <- mv_pairs_keys(data)
+  .data <- ggplot2::.data
+  # every panel carries the same colour scale, so that its legend can be
+  # removed and the matrix shows the one legend below it
+  scale <- ggplot2::scale_colour_manual(values = key, guide = "none")
+  panels <- vector("list", k * k)
 
   for (a in seq_len(k)) {
     for (b in seq_len(k)) {
@@ -244,22 +250,19 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
           length.out = n_grid * 4L
         )
         dens <- distrib_pdf(m$distrib, matrix(xs, ncol = 1L), m$theta)
-        ymax <- max(dens)
-        kd <- NULL
+        g <- ggplot2::ggplot() +
+          ggplot2::geom_line(data = data.frame(x = xs, y = dens),
+                             ggplot2::aes(x = .data$x, y = .data$y,
+                                          colour = names(key)[1L]),
+                             linewidth = 0.8)
         if (!is.null(data)) {
           kd <- stats::density(data[, ja])
-          ymax <- max(ymax, max(kd$y))
+          g <- g + ggplot2::geom_line(data = data.frame(x = kd$x, y = kd$y),
+                                      ggplot2::aes(x = .data$x, y = .data$y,
+                                                   colour = names(key)[2L]),
+                                      linewidth = 0.8)
         }
-        graphics::plot(xs, dens,
-          type = "l", col = col_fit, lwd = 2,
-          xlab = lab[a], ylab = "density", ylim = c(0, ymax * 1.05),
-          main = ""
-        )
-        if (!is.null(kd)) {
-          graphics::lines(kd, col = col_data, lwd = 2, lty = 2)
-        }
-        # with one coordinate there is no upper panel to hold the legend
-        if (k == 1L) mv_pairs_legend(col_fit, col_data, data)
+        g <- g + ggplot2::labs(x = lab[a], y = "density")
       } else if (a > b) {
         m <- mv_marginal(d, theta, c(jb, ja))
         gx <- seq(rng[[as.character(jb)]][1], rng[[as.character(jb)]][2],
@@ -268,72 +271,116 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
         gy <- seq(rng[[as.character(ja)]][1], rng[[as.character(ja)]][2],
           length.out = n_grid
         )
-        grid <- as.matrix(expand.grid(gx, gy))
-        z <- matrix(distrib_pdf(m$distrib, grid, m$theta), n_grid, n_grid)
-        graphics::plot(NA,
-          xlim = range(gx), ylim = range(gy),
-          xlab = lab[b], ylab = lab[a], main = ""
-        )
+        grid <- expand.grid(x = gx, y = gy)
+        grid$z <- distrib_pdf(m$distrib, as.matrix(grid[, c("x", "y")]),
+                              m$theta)
+        g <- ggplot2::ggplot()
         if (!is.null(data)) {
-          graphics::points(data[, jb], data[, ja],
-            pch = 16, cex = 0.35,
-            col = grDevices::adjustcolor(col_data, alpha.f = 0.35)
-          )
+          g <- g + ggplot2::geom_point(
+            data = data.frame(x = data[, jb], y = data[, ja]),
+            ggplot2::aes(x = .data$x, y = .data$y, colour = names(key)[3L]),
+            size = 0.7, alpha = 0.35)
         }
-        graphics::contour(gx, gy, z,
-          add = TRUE, col = col_fit, lwd = 1.6,
-          drawlabels = FALSE, nlevels = 6
-        )
+        g <- g + ggplot2::geom_contour(
+            data = grid,
+            ggplot2::aes(x = .data$x, y = .data$y, z = .data$z,
+                         colour = names(key)[1L]),
+            breaks = pretty(range(grid$z), 6L), linewidth = 0.6) +
+          ggplot2::coord_cartesian(xlim = range(gx), ylim = range(gy),
+                                   expand = FALSE) +
+          ggplot2::labs(x = lab[b], y = lab[a])
       } else {
         # The upper triangle repeats the lower one with the axes swapped, so it
         # is left empty and used for the correlation instead, which is the one
         # number a reader wants from a pair and cannot read off a contour.
         s <- mv_sigma(d, theta)
         r <- s[ja, jb] / sqrt(s[ja, ja] * s[jb, jb])
-        graphics::plot(NA,
-          xlim = c(0, 1), ylim = c(0, 1), axes = FALSE,
-          xlab = "", ylab = "", main = ""
-        )
-        graphics::text(0.5, 0.62, sprintf("%s of %s and %s\n%.3f",
-          if (is.null(data)) "correlation" else "fitted correlation",
-          lab[a], lab[b], r),
-          cex = 1.1, col = col_fit
-        )
-        # the panel at the top right also holds the legend of the matrix
-        if (a == 1L && b == k) mv_pairs_legend(col_fit, col_data, data)
+        g <- ggplot2::ggplot() +
+          ggplot2::annotate("text", x = 0.5, y = 0.5, size = 4,
+            colour = "grey20",
+            label = sprintf("%s of %s and %s\n%.3f",
+              if (is.null(data)) "correlation" else "fitted correlation",
+              lab[a], lab[b], r)) +
+          ggplot2::xlim(0, 1) + ggplot2::ylim(0, 1) +
+          ggplot2::labs(x = NULL, y = NULL)
       }
+      g <- g + scale + ggplot2::theme_bw()
+      if (a < b) {
+        g <- g + ggplot2::theme(axis.text = ggplot2::element_blank(),
+                                axis.ticks = ggplot2::element_blank(),
+                                panel.grid = ggplot2::element_blank())
+      }
+      panels[[(a - 1L) * k + b]] <- g
     }
   }
-  invisible(NULL)
+  out <- patchwork::wrap_plots(panels, ncol = k, byrow = TRUE)
+  if (!legend) return(out)
+  leg <- mv_pairs_legend(data)
+  patchwork::wrap_plots(out, patchwork::wrap_elements(full = leg), ncol = 1L,
+                        heights = grid::unit.c(grid::unit(1, "null"),
+                                               sum(leg$heights)))
+}
+
+
+#' The Elements of a Panel Matrix and Their Colours
+#'
+#' @description
+#' Returns the names of the elements that [mv_pairs_panels()] draws, as the
+#' names of a vector of colours: the density (its marginal curves and its
+#' contours) and, when there are data, the kernel density estimate of each
+#' marginal and the observations.
+#'
+#' @param data The data matrix, or `NULL`.
+#'
+#' @return A named character vector of colours, of length 1 without data and
+#'   3 with data.
+#'
+#' @keywords internal
+mv_pairs_keys <- function(data) {
+  if (is.null(data)) {
+    return(c("density: marginal curves and contours" = "#1f5fa8"))
+  }
+  c("fitted density: marginal curves and contours" = "#1f5fa8",
+    "kernel density estimate of a marginal of the observations" = "grey30",
+    "observations" = "grey30")
 }
 
 
 #' The Legend of a Panel Matrix
 #'
 #' @description
-#' Names the elements of the panels drawn by [mv_pairs_panels()] at the
-#' bottom of the current panel: the density (its marginal curves and its
-#' contours) and, when there are data, the kernel estimate of each marginal
-#' and the observations.
+#' Builds the legend that [mv_pairs_panels()] places below the panel matrix,
+#' as a grob: a graph that draws each element of the matrix once is built
+#' with its legend below the panel, and the legend is taken from it. The
+#' entries are stacked one per row.
 #'
-#' @param col_fit,col_data The colors of the density and of the data.
 #' @param data The data matrix, or `NULL`.
 #'
-#' @return `NULL`, invisibly. Called for the legend that it draws.
+#' @return A gtable holding the legend.
 #'
 #' @keywords internal
-mv_pairs_legend <- function(col_fit, col_data, data) {
-  if (is.null(data)) {
-    graphics::legend("bottom", bty = "n", cex = 0.85, col = col_fit, lwd = 2,
-      legend = "density: marginal curves and contours")
-  } else {
-    graphics::legend("bottom", bty = "n", cex = 0.85,
-      col = c(col_fit, col_data, col_data),
-      lty = c(1, 2, NA), lwd = c(2, 2, NA), pch = c(NA, NA, 16),
-      legend = c("fitted density: marginal curves and contours",
-                 "kernel estimate of a marginal", "observations"))
+mv_pairs_legend <- function(data) {
+  key <- mv_pairs_keys(data)
+  .data <- ggplot2::.data
+  src <- data.frame(x = c(0, 1), y = c(0, 1))
+  g <- ggplot2::ggplot(src, ggplot2::aes(x = .data$x, y = .data$y)) +
+    ggplot2::geom_line(ggplot2::aes(colour = names(key)[1L]), linewidth = 0.8)
+  if (!is.null(data)) {
+    g <- g +
+      ggplot2::geom_line(ggplot2::aes(colour = names(key)[2L]),
+                         linewidth = 0.8) +
+      ggplot2::geom_point(ggplot2::aes(colour = names(key)[3L]), alpha = 0.6)
   }
-  invisible(NULL)
+  # one entry per row, as the entries are long and the panels share the width
+  g <- g + ggplot2::scale_colour_manual(
+      name = NULL, values = key, breaks = names(key),
+      guide = ggplot2::guide_legend(ncol = 1L)) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "bottom",
+                   legend.key.width = ggplot2::unit(2, "lines"),
+                   legend.key.spacing.y = ggplot2::unit(0, "pt"))
+  gt <- ggplot2::ggplotGrob(g)
+  gt$grobs[[which(gt$layout$name == "guide-box-bottom")]]
 }
 
 

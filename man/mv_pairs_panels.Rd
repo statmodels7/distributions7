@@ -9,11 +9,9 @@ mv_pairs_panels(
   theta,
   which,
   n_grid,
-  col_fit,
   data,
-  col_data = "#4682B4",
   which_arg = "which",
-  ...
+  legend = TRUE
 )
 }
 \arguments{
@@ -27,26 +25,18 @@ more than three coordinates, is an error.}
 
 \item{n_grid}{Points per axis, a single positive whole number.}
 
-\item{col_fit}{Color of the fitted density, the contours and the printed
-correlations.}
-
 \item{data}{An \eqn{n \times p} matrix of observations with one column
 per coordinate of the distribution, whichever coordinates \code{which}
 selects, or \code{NULL} for a distribution with no data behind it.}
-
-\item{col_data}{Color of the observed summary, used only when \code{data} is
-given. Defaults to \code{"#4682B4"}.}
 
 \item{which_arg}{The name of the caller's argument that carries \code{which},
 used in the error message for more than three coordinates. Defaults to
 \code{"which"}; \code{\link[=plot.distrib_fit]{plot.distrib_fit()}} passes \code{"mv_which"}.}
 
-\item{...}{Unused.}
+\item{legend}{Whether the legend is drawn below the matrix.}
 }
 \value{
-\code{NULL}, invisibly. The function is called for the plot that it draws.
-The function sets \code{mfrow}, \code{mar} and \code{mgp} for the panel matrix and
-restores the previous values on exit.
+A patchwork object.
 }
 \description{
 This function is the shared engine of \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} and the
@@ -55,7 +45,8 @@ ordered pair of the chosen coordinates: the marginal density on the
 diagonal, contours of the bivariate marginal below it, and the implied
 correlation printed above it. The density panels come from \code{\link[=mv_marginal]{mv_marginal()}},
 so the function does not integrate anything; the printed correlation comes
-from \code{\link[=mv_sigma]{mv_sigma()}}.
+from \code{\link[=mv_sigma]{mv_sigma()}}. One legend below the matrix, built by
+\code{\link[=mv_pairs_legend]{mv_pairs_legend()}}, names the elements of every panel.
 }
 \details{
 When \code{data} is supplied the diagonal also carries a kernel density estimate
@@ -71,22 +62,19 @@ spread is taken from \code{\link[=mv_sigma]{mv_sigma()}}, so a Student \eqn{t} w
 still has a finite range, where \code{\link[=variance]{variance()}} returns an infinite matrix.
 }
 \examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("patchwork", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
               sigma_log_L2 = 0, sigma_L2.1 = 0.6)
 
-# Without data, the plot shows the density alone.
-op <- graphics::par(no.readonly = TRUE)
-distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222", data = NULL)
-graphics::par(op)
+# Without data, the graph shows the density alone.
+distributions7:::mv_pairs_panels(d, theta, NULL, 40, data = NULL)
 
 # With data: the same frame carries a kernel estimate and the observations.
 set.seed(1)
-op <- graphics::par(no.readonly = TRUE)
-distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222",
+distributions7:::mv_pairs_panels(d, theta, NULL, 40,
                                  data = distrib_rng(d, 200, theta))
-graphics::par(op)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} and \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}, its two

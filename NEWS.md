@@ -1,3 +1,21 @@
+# distributions7 0.93.0
+
+* The graphs of a univariate family, of a fit and of a multivariate family
+  are drawn with ggplot2, and the panel matrix of a multivariate family or
+  fit is joined with patchwork; both are suggested. `autoplot()` returns the
+  graph and `plot()` prints it and returns it invisibly, where it returned
+  the object. The legends are below the panel, and `legend = FALSE` removes
+  them; the panel matrix has one legend below it.
+* A fit drawn against its data names the fitted density or probabilities,
+  the kernel density estimate, the observed relative frequencies and the
+  rug of the observations in its legend.
+* The graphical arguments that `plot()` passed to base graphics are
+  removed, and so are `col_fit` and `col_data`: the returned object is
+  modified instead. A single setting of a family is drawn in the main colour
+  of the toolkit's graphs, and `plot_keys()` no longer reads a caller's
+  `col`, `lty` or `pch`. `plot_legend_side()` is removed, the legend being
+  below the panel. `graphics` is no longer imported.
+
 # distributions7 0.92.1
 
 * The `plot()` method of a continuous fit names the rug of the observations

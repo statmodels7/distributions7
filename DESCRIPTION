@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.92.1
+Version: 0.93.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Probability distributions as objects, built on the S7 object
@@ -27,7 +27,6 @@ LinkingTo:
     Rcpp,
     RcppParallel
 Imports:
-    graphics,
     numericals7 (>= 0.26.0),
     parameters7 (>= 0.26.0),
     linkfunctions7 (>= 0.6.0),
@@ -136,6 +135,7 @@ Collate:
     'd34e_chisq.R'
     'd34e_enet.R'
     'd34e_exponential.R'
+    'ggplot.R'
     'mvgaussian_distrib.R'
     'mv_plot.R'
     'mvstudent_t_distrib.R'
@@ -241,6 +241,9 @@ Collate:
     'truncated_route.R'
     'wrapper_deriv5.R'
 Suggests:
+    ggplot2 (>= 3.5.0),
+    grid,
+    patchwork,
     testthat (>= 3.0.0),
     knitr,
     numDeriv,

@@ -4,23 +4,21 @@
 \alias{plot_keys}
 \title{Colors, Line Types and Symbols for a Set of Curves}
 \usage{
-plot_keys(k, dots = list())
+plot_keys(k)
 }
 \arguments{
 \item{k}{How many settings are drawn, a single positive integer.}
-
-\item{dots}{The caller's \code{...}, as a list. A \code{col}, \code{lty} or \code{pch} given
-there wins and is recycled over the settings; anything else is ignored.}
 }
 \value{
 A list with components \code{col}, \code{lty} and \code{pch}, each of length \code{k}.
 }
 \description{
-Returns the three visual keys by which a plot method distinguishes its
-settings, and each key is recycled to length \eqn{k}. A single curve is
-black, solid and a filled circle. Several take a qualitative palette, the
-six base line types and six distinguishable symbols, so that a printed copy
-with no color is still readable.
+Returns the three visual keys by which a graph distinguishes its settings,
+and each key is recycled to length \eqn{k}. A single curve is drawn in the
+main colour of the toolkit's graphs, solid and with a filled circle.
+Several take a qualitative palette, the six line types and six
+distinguishable symbols, so that a printed copy with no color is still
+readable.
 
 A continuous family draws with the color and the line type. A discrete
 family draws with the color and the symbol, because a line type would dash

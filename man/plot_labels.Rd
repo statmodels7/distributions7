@@ -22,7 +22,7 @@ fixed values.
 Splits a set of plot settings into what varies and what does not: the
 varying parameters become one legend entry per curve, and the fixed ones are
 stated once in the title beside the family's name. A reader then sees which
-parameter the panel is about without counting curves, and reads the held
+parameter the graph is about without counting curves, and reads the held
 values without a second key.
 
 If every parameter is fixed, there is one curve and no legend, and the title
@@ -31,7 +31,6 @@ family's name. Values are rounded to three decimals.
 }
 \seealso{
 \code{\link[=plot_settings]{plot_settings()}}, which supplies \code{ps};
-\code{\link[=plot_legend_side]{plot_legend_side()}} for where the legend goes;
 \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} and \code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}}, the callers.
 }
 \keyword{internal}

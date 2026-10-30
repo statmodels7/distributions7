@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R link_scale.R
+#' @include distrib.R generics.R utility_functions.R link_scale.R ggplot.R
 NULL
 
 # --- internal helpers ------------------------------------------------------
@@ -1642,39 +1642,47 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' @name plot.distrib_fit
 #'
 #' @description
-#' Compares the fitted distribution with the sample from which it was
-#' estimated, choosing the comparison from the family's support. A continuous
-#' family is drawn as the fitted density over a kernel estimate of the data,
-#' with a rug of the observations underneath. A discrete one is drawn as the
-#' observed relative frequencies in bars with the fitted mass overlaid,
+#' `autoplot()` returns a graph that compares the fitted distribution with the
+#' sample from which it was estimated, and `plot()` prints that graph. The
+#' comparison is chosen from the family's support. A continuous family is
+#' drawn as the fitted density over a kernel estimate of the data, with a rug
+#' of the observations underneath. A discrete one is drawn as the observed
+#' relative frequencies in bars with the fitted probabilities overlaid,
 #' because a kernel estimate misrepresents a sample from a discrete
-#' distribution.
+#' distribution. A legend below the panel names each element.
 #'
 #' A multivariate fit is drawn as a panel matrix: the fitted marginal density
 #' and a kernel estimate of the data on the diagonal, the fitted contours over
 #' the observations below it, the fitted correlation above.
 #'
-#' @param x A [distrib_fit()] object.
+#' @details
+#' The graph is drawn with \pkg{ggplot2}, which is suggested, and the panel
+#' matrix of a multivariate fit is joined with \pkg{patchwork}, also
+#' suggested; the methods signal an error that names them when they are not
+#' installed. The title, the labels of the axes and the colours are changed
+#' on the returned object.
+#'
+#' @param x,object A [distrib_fit()] object.
 #' @param n_grid Number of points at which the fitted density is evaluated, a
 #'   single positive integer. Defaults to 512. Read for a continuous family
 #'   only; a discrete one is evaluated on its support.
 #' @param rug Logical of length 1: draw a rug of the observations. Defaults to
 #'   `TRUE` when there are at most 2000 of them, above which the rug becomes a
 #'   solid band that conveys no information.
-#' @param legend Logical of length 1: add a legend. Defaults to `TRUE`.
-#' @param col_fit,col_data Colors of the fitted curve and of the empirical
-#'   summary, in any form that [grDevices::col2rgb()] accepts.
+#' @param legend Logical of length 1: draw the legend below the panel.
+#'   Defaults to `TRUE`.
 #' @param mv_which For a multivariate fit, which coordinates to show, by index.
 #'   Defaults to all of them. At most three coordinates can be drawn, because
 #'   a larger panel matrix is not readable, so a fit with more than three
 #'   coordinates signals an error unless `mv_which` selects at most three.
 #'   The argument is ignored for a univariate fit.
-#' @param ... Further arguments passed to [graphics::plot()], such as `main`,
-#'   `xlab` or `xlim`.
+#' @param ... Unused; an argument passed here signals an error.
 #'
-#' @return `x`, invisibly. The function is called for the plot that it draws.
+#' @return `autoplot()` returns a ggplot2 object (a patchwork object for a
+#'   multivariate fit); `plot()` prints the same object and returns it
+#'   invisibly.
 #'
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' set.seed(1)
 #' y <- rgamma(300, shape = 4, rate = 2)
 #' fit <- fit_distrib(gamma2_distrib(), y)
@@ -1682,17 +1690,26 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #'
 #' # A count family is compared on its support, not through a kernel estimate.
 #' fp <- fit_distrib(poisson_distrib(), rpois(300, 4))
-#' plot(fp, main = "Poisson fit")
+#' p <- plot(fp)
+#' p + ggplot2::labs(title = "Poisson fit")
 #'
 #' @seealso [fit_distrib()] for the fit; [simulate.distrib_fit()] for draws
 #'   from it; [plot.multivariate_distrib()], the same panel matrix drawn from
 #'   a distribution with no data beside it.
-#' @importFrom graphics lines legend rug barplot points
 S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
-                                          legend = TRUE,
-                                          col_fit = "#B22222", col_data = "#4682B4",
-                                          mv_which = NULL,
+                                          legend = TRUE, mv_which = NULL,
                                           ...) {
+  p <- autoplot_distrib_fit(x, n_grid = n_grid, rug = rug, legend = legend,
+                            mv_which = mv_which, ...)
+  print(p)
+  invisible(p)
+}
+
+#' @rdname plot.distrib_fit
+autoplot_distrib_fit <- function(object, n_grid = 512, rug = NULL,
+                                 legend = TRUE, mv_which = NULL, ...) {
+  check_plot_args(legend, ...)
+  x <- object
   y <- x@y
   if (!length(y)) {
     stop("This fit carries no data to plot.", call. = FALSE)
@@ -1705,37 +1722,37 @@ S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
   # contours over the observations off it. The kernel estimate is the
   # comparison that does not assume the model.
   if (S7::S7_inherits(d, multivariate_distrib)) {
-    mv_pairs_panels(d, align_theta(d, theta), which = mv_which,
-      which_arg = "mv_which",
-      n_grid = 80L, col_fit = col_fit,
-      data = as_mv_matrix(d, y), col_data = col_data
-    )
-    return(invisible(x))
+    return(mv_pairs_panels(d, align_theta(d, theta), which = mv_which,
+      which_arg = "mv_which", n_grid = 80L, data = as_mv_matrix(d, y),
+      legend = legend
+    ))
   }
-  dots <- list(...)
-  if (is.null(dots$main)) {
-    dots$main <- paste0("Fitted ", d@distrib_name, " and observed data")
-  }
-  if (is.null(dots$xlab)) dots$xlab <- "y"
+  need_ggplot()
+  .data <- ggplot2::.data
+  main <- paste0("Fitted ", d@distrib_name, " and observed data")
 
   if (S7::S7_inherits(d, discrete_distrib)) {
     ks <- seq(max(min(y), d@bounds[1]), min(max(y), d@bounds[2]))
     obs <- as.numeric(table(factor(y, levels = ks))) / length(y)
     fitted <- distrib_pdf(d, ks, theta)
-
-    if (is.null(dots$ylab)) dots$ylab <- "probability"
-    mids <- do.call(graphics::barplot,
-      c(list(obs, names.arg = ks, col = col_data, border = NA,
-             ylim = c(0, max(obs, fitted) * 1.1)), dots))
-    graphics::points(mids, fitted, col = col_fit, pch = 16)
-    graphics::lines(mids, fitted, col = col_fit, lwd = 2)
-    if (isTRUE(legend)) {
-      graphics::legend("topright", bty = "n",
-        legend = c("observed frequency", "fitted pmf"),
-        fill = c(col_data, NA), border = c(NA, NA),
-        lty = c(NA, 1), lwd = c(NA, 2), col = c(NA, col_fit))
-    }
-    return(invisible(x))
+    k_obs <- "observed relative frequency"
+    k_fit <- sprintf("fitted %s probability", d@distrib_name)
+    df <- data.frame(k = ks, obs = obs, fitted = fitted)
+    return(ggplot2::ggplot(df, ggplot2::aes(x = .data$k)) +
+      ggplot2::geom_col(ggplot2::aes(y = .data$obs, fill = k_obs),
+                        width = 0.8) +
+      ggplot2::geom_line(ggplot2::aes(y = .data$fitted, colour = k_fit),
+                         linewidth = 0.8) +
+      ggplot2::geom_point(ggplot2::aes(y = .data$fitted, colour = k_fit),
+                          size = 2) +
+      ggplot2::scale_fill_manual(name = NULL,
+                                 values = stats::setNames("grey70", k_obs)) +
+      ggplot2::scale_colour_manual(name = NULL,
+                                   values = stats::setNames("#1f5fa8", k_fit)) +
+      ggplot2::scale_x_continuous(breaks = integer_breaks) +
+      ggplot2::labs(title = main, x = "y", y = "probability") +
+      ggplot2::theme_bw() +
+      plot_key_theme(legend))
   }
 
   dens <- stats::density(y)
@@ -1747,31 +1764,34 @@ S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
   hi <- min(dens$x[length(dens$x)], nudge(b[2], -1))
   grid <- seq(lo, hi, length.out = n_grid)
   fitted <- distrib_pdf(d, grid, theta)
-  fitted[!is.finite(fitted)] <- NA_real_
-
-  if (is.null(dots$ylab)) dots$ylab <- "density"
-  if (is.null(dots$ylim)) dots$ylim <- c(0, max(c(dens$y, fitted), na.rm = TRUE) * 1.05)
-  if (is.null(dots$xlim)) dots$xlim <- range(dens$x)
-
-  do.call(graphics::plot,
-    c(list(dens$x, dens$y, type = "l", col = col_data, lwd = 2), dots))
-  graphics::lines(grid, fitted, col = col_fit, lwd = 2)
+  fit_df <- data.frame(x = grid, y = fitted)
+  fit_df <- fit_df[is.finite(fit_df$y), , drop = FALSE]
 
   if (is.null(rug)) rug <- length(y) <= 2000
-  if (isTRUE(rug)) graphics::rug(y, col = col_data)
-
-  if (isTRUE(legend)) {
-    lab <- c("kernel density", paste("fitted", d@distrib_name))
-    if (isTRUE(rug)) {
-      graphics::legend("topright", bty = "n",
-        col = c(col_data, col_fit, col_data),
-        lwd = c(2, 2, NA), pch = c(NA, NA, 124),
-        legend = c(lab, "observations"))
-    } else {
-      graphics::legend("topright", bty = "n", lwd = 2,
-        col = c(col_data, col_fit), legend = lab)
-    }
+  k_fit <- sprintf("fitted %s density", d@distrib_name)
+  k_kern <- "kernel density estimate of the observations"
+  k_obs <- "observations"
+  p <- ggplot2::ggplot() +
+    ggplot2::geom_line(data = data.frame(x = dens$x, y = dens$y),
+                       ggplot2::aes(x = .data$x, y = .data$y, colour = k_kern),
+                       linewidth = 0.8) +
+    ggplot2::geom_line(data = fit_df,
+                       ggplot2::aes(x = .data$x, y = .data$y, colour = k_fit),
+                       linewidth = 0.8)
+  if (isTRUE(rug)) {
+    p <- p + ggplot2::geom_rug(data = data.frame(x = y),
+                               ggplot2::aes(x = .data$x, colour = k_obs),
+                               sides = "b", alpha = 0.5,
+                               key_glyph = "vline")
   }
-
-  invisible(x)
+  p + ggplot2::scale_colour_manual(
+        name = NULL,
+        values = stats::setNames(c("#1f5fa8", "grey30", "grey50"),
+                                 c(k_fit, k_kern, k_obs)),
+        breaks = c(k_fit, k_kern, if (isTRUE(rug)) k_obs)) +
+    ggplot2::labs(title = main, x = "y", y = "density") +
+    ggplot2::theme_bw() +
+    plot_key_theme(legend)
 }
+
+S7::method(autoplot, distrib_fit) <- autoplot_distrib_fit

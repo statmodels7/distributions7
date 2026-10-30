@@ -2,10 +2,12 @@
 % Please edit documentation in R/methods.R
 \name{plot.discrete_distrib}
 \alias{plot.discrete_distrib}
+\alias{autoplot_discrete_distrib}
 \title{Plot Method for Discrete Distributions}
+\usage{
+autoplot_discrete_distrib(object, theta, xlim = NULL, legend = TRUE, ...)
+}
 \arguments{
-\item{x}{An object inheriting from \code{discrete_distrib}.}
-
 \item{theta}{A named list or numeric vector holding one entry per parameter
 of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} sets of stems, and
 every component must have length 1 or that same \eqn{k}. When \code{theta} is
@@ -15,42 +17,48 @@ missing, random values for all parameters are drawn by
 \item{xlim}{A numeric vector of length 2, or \code{NULL} (the default) to compute
 the range from the quantiles over every setting.}
 
-\item{legend}{Logical of length 1: draw the key when several settings are
-plotted. Defaults to \code{TRUE}.}
+\item{legend}{Logical of length 1: draw the legend below the panel when
+several settings are plotted. Defaults to \code{TRUE}.}
 
-\item{...}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}, for instance \code{main}, \code{xlab} or
-\code{ylim}. A \code{col} or \code{pch} given here wins over the palette and is recycled
-over the settings; an \code{lty} is accepted and has no effect on the stems.}
+\item{...}{Unused; an argument passed here signals an error.}
+
+\item{x, object}{An object inheriting from \code{discrete_distrib}.}
 }
 \value{
-\code{x}, invisibly. The function is called for the plot that it draws.
+\code{autoplot()} returns a ggplot2 object; \code{plot()} prints the same
+object and returns it invisibly.
 }
 \description{
-Draws the probability mass of a discrete family as stems over the integers
-in range, one set per parameter setting. A component of \code{theta} given as a
-vector gives one setting per element, exactly as in
-\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}.
+\code{autoplot()} returns a graph of the probability mass of a discrete family
+as stems over the integers in range, one set per parameter setting, and
+\code{plot()} prints that graph. A component of \code{theta} given as a vector gives
+one setting per element, exactly as in \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}.
 }
 \section{The two keys, and why they are not the continuous ones}{
 Settings are separated by color and symbol together, and the symbol sits
 at the top of each stem, where the point already is. The line type is not
 used here, because it would dash the stems and a dashed stem reads as a
 broken one, so at a support of any size the panel fills with fragments that
-cross each other.
+cross each other. The parameters that vary are named in a legend below the
+panel and those held fixed are stated once in the title.
 
 Several settings are also shifted sideways by a fraction of the spacing, so
 that equal masses at one support point stay countable instead of standing
 one in front of another.
+
+The graph is drawn with \pkg{ggplot2}, which is suggested; the methods
+signal an error that names it when it is not installed.
 }
 
 \examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # The three rates have masses that are countable at every support point
 # because the settings are offset sideways.
 plot(poisson_distrib(), list(mu = c(1, 4, 10)))
 
 # Overdispersion at a fixed mean: the mass spreads as theta falls.
 plot(negbin2_distrib(), list(mu = 5, theta = c(0.5, 2, 50)))
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} for a density;

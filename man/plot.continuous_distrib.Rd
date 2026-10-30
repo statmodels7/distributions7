@@ -2,10 +2,12 @@
 % Please edit documentation in R/methods.R
 \name{plot.continuous_distrib}
 \alias{plot.continuous_distrib}
+\alias{autoplot_continuous_distrib}
 \title{Plot Method for Continuous Distributions}
+\usage{
+autoplot_continuous_distrib(object, theta, xlim = NULL, legend = TRUE, ...)
+}
 \arguments{
-\item{x}{An object inheriting from \code{continuous_distrib}.}
-
 \item{theta}{A named list or numeric vector holding one entry per parameter
 of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} curves, and every
 component must have length 1 or that same \eqn{k}. When \code{theta} is
@@ -15,29 +17,32 @@ missing, random values for all parameters are drawn by
 \item{xlim}{A numeric vector of length 2, or \code{NULL} (the default) to compute
 the range from the quantiles as above.}
 
-\item{legend}{Logical of length 1: draw the key when several settings are
-plotted. Defaults to \code{TRUE}. A single setting is drawn without a key.}
+\item{legend}{Logical of length 1: draw the legend below the panel when
+several settings are plotted. Defaults to \code{TRUE}.}
 
-\item{...}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}, for instance \code{main}, \code{xlab} or
-\code{ylim}. A \code{col} or \code{lty} given here wins over the palette and is recycled
-over the curves.}
+\item{...}{Unused; an argument passed here signals an error.}
+
+\item{x, object}{An object inheriting from \code{continuous_distrib}.}
 }
 \value{
-\code{x}, invisibly. The function is called for the plot that it draws.
+\code{autoplot()} returns a ggplot2 object; \code{plot()} prints the same
+object and returns it invisibly.
 }
 \description{
-Draws the density of a continuous family over a grid of 1000 points, one
-curve per parameter setting. A component of \code{theta} given as a vector gives
-one curve per element, so \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))}
-draws three densities that share a mean and differ in scale.
+\code{autoplot()} returns a graph of the density of a continuous family over a
+grid of 1000 points, one curve per parameter setting, and \code{plot()} prints
+that graph. A component of \code{theta} given as a vector gives one curve per
+element, so \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))} draws three
+densities that share a mean and differ in scale.
 }
 \section{The two keys}{
 Curves are separated by color and line type together, so that a printed
 copy with no color is still readable. The parameters that vary are named in
-a legend and those held fixed are stated once in the title, so a reader sees
-what the panel is about without counting curves. The legend goes in
-whichever top corner the mass leaves emptier. See
-\code{\link[=plot_settings]{plot_settings()}} for the rule on lengths and \code{\link[=plot_keys]{plot_keys()}} for the palette.
+a legend below the panel and those held fixed are stated once in the title,
+so a reader sees what the graph is about without counting curves. A single
+setting is drawn without a legend, and its title carries every parameter.
+See \code{\link[=plot_settings]{plot_settings()}} for the rule on lengths and \code{\link[=plot_keys]{plot_keys()}} for the
+palette.
 }
 
 \section{The horizontal range}{
@@ -46,16 +51,21 @@ the largest 99.5\% quantile over them, widened by a tenth and clamped to the
 support. Give \code{xlim} to override it, which is useful for a heavy-tailed
 family, whose 99.5\% quantile can sit orders of magnitude past anything worth
 drawing.
+
+The graph is drawn with \pkg{ggplot2}, which is suggested; the methods
+signal an error that names it when it is not installed. The title, the
+labels of the axes and the colours are changed on the returned object.
 }
 
 \examples{
-# The plot has one curve per value of the scale, at a shared mean.
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+# The graph has one curve per value of the scale, at a shared mean.
 plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 
 # A heavy-tailed family needs its own window: the 99.5\% quantile of a
 # standard Cauchy is about ten times as far out as the window drawn here.
 plot(cauchy_distrib(), list(mu = 0, sigma = 1), xlim = c(-6, 6))
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}} for a discrete family;

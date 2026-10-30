@@ -4,20 +4,18 @@
 \alias{mv_pairs_legend}
 \title{The Legend of a Panel Matrix}
 \usage{
-mv_pairs_legend(col_fit, col_data, data)
+mv_pairs_legend(data)
 }
 \arguments{
-\item{col_fit, col_data}{The colors of the density and of the data.}
-
 \item{data}{The data matrix, or \code{NULL}.}
 }
 \value{
-\code{NULL}, invisibly. Called for the legend that it draws.
+A gtable holding the legend.
 }
 \description{
-Names the elements of the panels drawn by \code{\link[=mv_pairs_panels]{mv_pairs_panels()}} at the
-bottom of the current panel: the density (its marginal curves and its
-contours) and, when there are data, the kernel estimate of each marginal
-and the observations.
+Builds the legend that \code{\link[=mv_pairs_panels]{mv_pairs_panels()}} places below the panel matrix,
+as a grob: a graph that draws each element of the matrix once is built
+with its legend below the panel, and the legend is taken from it. The
+entries are stacked one per row.
 }
 \keyword{internal}

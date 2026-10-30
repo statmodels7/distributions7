@@ -120,28 +120,36 @@ test_that("simulate() works for a discrete and a transformed fit", {
 })
 
 test_that("plot() draws for continuous, discrete and transformed fits", {
-  skip_if_not(capabilities("png"))
-  tmp <- tempfile(fileext = ".png")
-  grDevices::png(tmp)
-  on.exit({
-    grDevices::dev.off()
-    unlink(tmp)
-  }, add = TRUE)
+  skip_if_not_installed("ggplot2")
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
 
   set.seed(78)
   f1 <- fit_distrib(gaussian1_distrib(), stats::rnorm(200, 3, 2))
-  expect_identical(plot(f1), f1)
+  p1 <- plot(f1)
+  expect_s3_class(p1, "ggplot")
+  # the fitted density, the kernel estimate and the rug, each in the legend
+  expect_identical(
+    ggplot2::ggplot_build(p1)$plot$scales$get_scales("colour")$get_labels(),
+    c("fitted gaussian1 density",
+      "kernel density estimate of the observations", "observations"))
+  expect_identical(p1$theme$legend.position, "bottom")
 
   f2 <- fit_distrib(poisson_distrib(), stats::rpois(200, 4))
-  expect_identical(plot(f2), f2)
+  p2 <- plot(f2)
+  expect_equal(sum(p2$data$obs), 1)
+  expect_equal(p2$data$fitted, stats::dpois(p2$data$k, f2@coefficients[["mu"]]))
 
   d <- transformation(gamma2_distrib(), log_transform())
   f3 <- fit_distrib(d, distrib_rng(d, 200, list(mu = 3, sigma2 = 2)))
-  expect_identical(plot(f3), f3)
+  expect_no_warning(ggplot2::ggplot_build(plot(f3)))
 
   # a bounded support: the fit must not be evaluated outside it
   f4 <- fit_distrib(beta1_distrib(), distrib_rng(beta1_distrib(), 200, list(mu = 0.4, phi = 6)))
-  expect_identical(plot(f4, legend = FALSE, rug = FALSE), f4)
+  p4 <- plot(f4, legend = FALSE, rug = FALSE)
+  expect_identical(p4$theme$legend.position, "none")
+  expect_length(p4$layers, 2L)
+  expect_error(plot(f4, col_fit = "red"), "no further arguments")
 })
 
 test_that("the fit keeps the data it was estimated from", {

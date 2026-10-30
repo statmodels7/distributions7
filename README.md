@@ -166,7 +166,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 20 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

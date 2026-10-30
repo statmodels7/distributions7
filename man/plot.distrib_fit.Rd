@@ -2,10 +2,19 @@
 % Please edit documentation in R/fit_distrib.R
 \name{plot.distrib_fit}
 \alias{plot.distrib_fit}
+\alias{autoplot_distrib_fit}
 \title{Plot a Fitted Distribution Against the Data}
+\usage{
+autoplot_distrib_fit(
+  object,
+  n_grid = 512,
+  rug = NULL,
+  legend = TRUE,
+  mv_which = NULL,
+  ...
+)
+}
 \arguments{
-\item{x}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
-
 \item{n_grid}{Number of points at which the fitted density is evaluated, a
 single positive integer. Defaults to 512. Read for a continuous family
 only; a discrete one is evaluated on its support.}
@@ -14,10 +23,8 @@ only; a discrete one is evaluated on its support.}
 \code{TRUE} when there are at most 2000 of them, above which the rug becomes a
 solid band that conveys no information.}
 
-\item{legend}{Logical of length 1: add a legend. Defaults to \code{TRUE}.}
-
-\item{col_fit, col_data}{Colors of the fitted curve and of the empirical
-summary, in any form that \code{\link[grDevices:col2rgb]{grDevices::col2rgb()}} accepts.}
+\item{legend}{Logical of length 1: draw the legend below the panel.
+Defaults to \code{TRUE}.}
 
 \item{mv_which}{For a multivariate fit, which coordinates to show, by index.
 Defaults to all of them. At most three coordinates can be drawn, because
@@ -25,26 +32,38 @@ a larger panel matrix is not readable, so a fit with more than three
 coordinates signals an error unless \code{mv_which} selects at most three.
 The argument is ignored for a univariate fit.}
 
-\item{...}{Further arguments passed to \code{\link[graphics:plot.default]{graphics::plot()}}, such as \code{main},
-\code{xlab} or \code{xlim}.}
+\item{...}{Unused; an argument passed here signals an error.}
+
+\item{x, object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 }
 \value{
-\code{x}, invisibly. The function is called for the plot that it draws.
+\code{autoplot()} returns a ggplot2 object (a patchwork object for a
+multivariate fit); \code{plot()} prints the same object and returns it
+invisibly.
 }
 \description{
-Compares the fitted distribution with the sample from which it was
-estimated, choosing the comparison from the family's support. A continuous
-family is drawn as the fitted density over a kernel estimate of the data,
-with a rug of the observations underneath. A discrete one is drawn as the
-observed relative frequencies in bars with the fitted mass overlaid,
+\code{autoplot()} returns a graph that compares the fitted distribution with the
+sample from which it was estimated, and \code{plot()} prints that graph. The
+comparison is chosen from the family's support. A continuous family is
+drawn as the fitted density over a kernel estimate of the data, with a rug
+of the observations underneath. A discrete one is drawn as the observed
+relative frequencies in bars with the fitted probabilities overlaid,
 because a kernel estimate misrepresents a sample from a discrete
-distribution.
+distribution. A legend below the panel names each element.
 
 A multivariate fit is drawn as a panel matrix: the fitted marginal density
 and a kernel estimate of the data on the diagonal, the fitted contours over
 the observations below it, the fitted correlation above.
 }
+\details{
+The graph is drawn with \pkg{ggplot2}, which is suggested, and the panel
+matrix of a multivariate fit is joined with \pkg{patchwork}, also
+suggested; the methods signal an error that names them when they are not
+installed. The title, the labels of the axes and the colours are changed
+on the returned object.
+}
 \examples{
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 set.seed(1)
 y <- rgamma(300, shape = 4, rate = 2)
 fit <- fit_distrib(gamma2_distrib(), y)
@@ -52,8 +71,9 @@ plot(fit)
 
 # A count family is compared on its support, not through a kernel estimate.
 fp <- fit_distrib(poisson_distrib(), rpois(300, 4))
-plot(fp, main = "Poisson fit")
-
+p <- plot(fp)
+p + ggplot2::labs(title = "Poisson fit")
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=fit_distrib]{fit_distrib()}} for the fit; \code{\link[=simulate.distrib_fit]{simulate.distrib_fit()}} for draws

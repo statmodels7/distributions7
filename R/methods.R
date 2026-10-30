@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R
+#' @include distrib.R generics.R ggplot.R
 NULL
 
 #' @title Print Method for `distrib` Objects
@@ -209,66 +209,29 @@ plot_settings <- function(x, theta) {
 #' @title Colors, Line Types and Symbols for a Set of Curves
 #'
 #' @description
-#' Returns the three visual keys by which a plot method distinguishes its
-#' settings, and each key is recycled to length \eqn{k}. A single curve is
-#' black, solid and a filled circle. Several take a qualitative palette, the
-#' six base line types and six distinguishable symbols, so that a printed copy
-#' with no color is still readable.
+#' Returns the three visual keys by which a graph distinguishes its settings,
+#' and each key is recycled to length \eqn{k}. A single curve is drawn in the
+#' main colour of the toolkit's graphs, solid and with a filled circle.
+#' Several take a qualitative palette, the six line types and six
+#' distinguishable symbols, so that a printed copy with no color is still
+#' readable.
 #'
 #' A continuous family draws with the color and the line type. A discrete
 #' family draws with the color and the symbol, because a line type would dash
 #' the stems and a dashed stem reads as a broken one.
 #'
 #' @param k How many settings are drawn, a single positive integer.
-#' @param dots The caller's `...`, as a list. A `col`, `lty` or `pch` given
-#'   there wins and is recycled over the settings; anything else is ignored.
 #'
 #' @return A list with components `col`, `lty` and `pch`, each of length `k`.
 #'
 #' @seealso [plot.continuous_distrib()] and [plot.discrete_distrib()], which
 #'   read different pairs of these; [plot_settings()] for `k`.
 #' @keywords internal
-plot_keys <- function(k, dots = list()) {
-  col <- if (!is.null(dots$col)) rep_len(dots$col, k)
-         else if (k == 1L) "black"
-         else grDevices::hcl.colors(k, palette = "Dark 3")
-  lty <- if (!is.null(dots$lty)) rep_len(dots$lty, k)
-         else if (k == 1L) 1L
-         else rep_len(seq_len(6L), k)
-  pch <- if (!is.null(dots$pch)) rep_len(dots$pch, k)
-         else if (k == 1L) 16L
-         else rep_len(c(16L, 17L, 15L, 18L, 1L, 2L), k)
-  list(col = col, lty = lty, pch = pch)
-}
-
-#' @title Placing the Legend
-#'
-#' @description
-#' Returns the corner of the panel in which the legend is drawn, the one that
-#' the curves leave emptier. A right-skewed family puts its mass on the left,
-#' so a key at the top right does not meet it; a left-skewed family puts its
-#' mass on the right, where a key at the top right would cover it.
-#'
-#' The side is read off the drawing. The density's center of mass across all
-#' the settings is compared with the middle of the horizontal range, and the
-#' key goes to the other side.
-#'
-#' @param y The evaluation points, a numeric vector.
-#' @param dens A list of densities, one per setting, in which each has the
-#'   length of `y`. Non-finite and negative entries are treated as zero.
-#'
-#' @return `"topright"` or `"topleft"`, a character string of length 1.
-#'   The function returns `"topright"` when no setting has any positive mass.
-#'
-#' @seealso [plot.continuous_distrib()] and [plot.discrete_distrib()], the
-#'   callers; [plot_labels()] for what goes in the key.
-#' @keywords internal
-plot_legend_side <- function(y, dens) {
-  w <- do.call(pmax, c(dens, list(na.rm = TRUE)))
-  w[!is.finite(w) | w < 0] <- 0
-  if (!any(w > 0)) return("topright")
-  centre <- sum(y * w) / sum(w)
-  if (centre < mean(range(y))) "topright" else "topleft"
+plot_keys <- function(k) {
+  if (k == 1L) return(list(col = "#1f5fa8", lty = 1L, pch = 16L))
+  list(col = grDevices::hcl.colors(k, palette = "Dark 3"),
+       lty = rep_len(seq_len(6L), k),
+       pch = rep_len(c(16L, 17L, 15L, 18L, 1L, 2L), k))
 }
 
 #' @title The Legend Entries and the Title of a Distribution Plot
@@ -277,7 +240,7 @@ plot_legend_side <- function(y, dens) {
 #' Splits a set of plot settings into what varies and what does not: the
 #' varying parameters become one legend entry per curve, and the fixed ones are
 #' stated once in the title beside the family's name. A reader then sees which
-#' parameter the panel is about without counting curves, and reads the held
+#' parameter the graph is about without counting curves, and reads the held
 #' values without a second key.
 #'
 #' If every parameter is fixed, there is one curve and no legend, and the title
@@ -294,7 +257,6 @@ plot_legend_side <- function(y, dens) {
 #'   fixed values.
 #'
 #' @seealso [plot_settings()], which supplies `ps`;
-#'   [plot_legend_side()] for where the legend goes;
 #'   [plot.continuous_distrib()] and [plot.discrete_distrib()], the callers.
 #' @keywords internal
 plot_labels <- function(x, ps) {
@@ -321,24 +283,51 @@ plot_labels <- function(x, ps) {
   list(legend = legend, main = main)
 }
 
+#' @title The Settings of a Univariate Graph
+#'
+#' @description
+#' Draws random parameters when `theta` is missing, reporting them in a
+#' message, and returns the settings, the legend entries and the title of the
+#' graph. It is the first step of the `autoplot()` methods of
+#' [plot.continuous_distrib()] and [plot.discrete_distrib()].
+#'
+#' @param x A univariate distribution object.
+#' @param theta The caller's `theta`, possibly missing.
+#'
+#' @return A list with the components `ps` (the value of [plot_settings()])
+#'   and `labs` (the value of [plot_labels()]).
+#'
+#' @keywords internal
+plot_univariate_setup <- function(x, theta) {
+  if (missing(theta)) {
+    theta <- generate_random_theta(x)
+    param_str <- paste(names(theta), round(unlist(theta), 3), sep = " = ", collapse = ", ")
+    message(sprintf("Argument 'theta' is missing. The plot uses random parameters: %s", param_str))
+  }
+  ps <- plot_settings(x, theta)
+  list(ps = ps, labs = plot_labels(x, ps))
+}
+
 #' @title Plot Method for Continuous Distributions
 #'
 #' @name plot.continuous_distrib
 #'
 #' @description
-#' Draws the density of a continuous family over a grid of 1000 points, one
-#' curve per parameter setting. A component of `theta` given as a vector gives
-#' one curve per element, so `plot(d, list(mu = 0, sigma = c(1, 2, 4)))`
-#' draws three densities that share a mean and differ in scale.
+#' `autoplot()` returns a graph of the density of a continuous family over a
+#' grid of 1000 points, one curve per parameter setting, and `plot()` prints
+#' that graph. A component of `theta` given as a vector gives one curve per
+#' element, so `plot(d, list(mu = 0, sigma = c(1, 2, 4)))` draws three
+#' densities that share a mean and differ in scale.
 #'
 #' @details
 #' # The two keys
 #' Curves are separated by color and line type together, so that a printed
 #' copy with no color is still readable. The parameters that vary are named in
-#' a legend and those held fixed are stated once in the title, so a reader sees
-#' what the panel is about without counting curves. The legend goes in
-#' whichever top corner the mass leaves emptier. See
-#' [plot_settings()] for the rule on lengths and [plot_keys()] for the palette.
+#' a legend below the panel and those held fixed are stated once in the title,
+#' so a reader sees what the graph is about without counting curves. A single
+#' setting is drawn without a legend, and its title carries every parameter.
+#' See [plot_settings()] for the rule on lengths and [plot_keys()] for the
+#' palette.
 #'
 #' # The horizontal range
 #' It covers every setting, not the first: from the smallest 0.5% quantile to
@@ -347,7 +336,11 @@ plot_labels <- function(x, ps) {
 #' family, whose 99.5% quantile can sit orders of magnitude past anything worth
 #' drawing.
 #'
-#' @param x An object inheriting from `continuous_distrib`.
+#' The graph is drawn with \pkg{ggplot2}, which is suggested; the methods
+#' signal an error that names it when it is not installed. The title, the
+#' labels of the axes and the colours are changed on the returned object.
+#'
+#' @param x,object An object inheriting from `continuous_distrib`.
 #' @param theta A named list or numeric vector holding one entry per parameter
 #'   of `x`. A component of length \eqn{k > 1} draws \eqn{k} curves, and every
 #'   component must have length 1 or that same \eqn{k}. When `theta` is
@@ -355,16 +348,15 @@ plot_labels <- function(x, ps) {
 #'   [generate_random_theta()].
 #' @param xlim A numeric vector of length 2, or `NULL` (the default) to compute
 #'   the range from the quantiles as above.
-#' @param legend Logical of length 1: draw the key when several settings are
-#'   plotted. Defaults to `TRUE`. A single setting is drawn without a key.
-#' @param ... Passed to [graphics::plot()], for instance `main`, `xlab` or
-#'   `ylim`. A `col` or `lty` given here wins over the palette and is recycled
-#'   over the curves.
+#' @param legend Logical of length 1: draw the legend below the panel when
+#'   several settings are plotted. Defaults to `TRUE`.
+#' @param ... Unused; an argument passed here signals an error.
 #'
-#' @return `x`, invisibly. The function is called for the plot that it draws.
+#' @return `autoplot()` returns a ggplot2 object; `plot()` prints the same
+#'   object and returns it invisibly.
 #'
-#' @examples
-#' # The plot has one curve per value of the scale, at a shared mean.
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' # The graph has one curve per value of the scale, at a shared mean.
 #' plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
 #'
 #' # A heavy-tailed family needs its own window: the 99.5% quantile of a
@@ -374,17 +366,22 @@ plot_labels <- function(x, ps) {
 #' @seealso [plot.discrete_distrib()] for a discrete family;
 #'   [plot.distrib_fit()] to compare a fit with data;
 #'   [plot_settings()], [plot_keys()] and [plot_labels()] for the pieces.
-#' @importFrom graphics plot
 #' @keywords internal
 S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
                                                  legend = TRUE, ...) {
-  if (missing(theta)) {
-    theta <- generate_random_theta(x)
-    param_str <- paste(names(theta), round(unlist(theta), 3), sep = " = ", collapse = ", ")
-    message(sprintf("Argument 'theta' is missing. The plot uses random parameters: %s", param_str))
-  }
-  ps <- plot_settings(x, theta)
-  labs <- plot_labels(x, ps)
+  p <- autoplot_continuous_distrib(x, theta, xlim = xlim, legend = legend, ...)
+  print(p)
+  invisible(p)
+}
+
+#' @rdname plot.continuous_distrib
+autoplot_continuous_distrib <- function(object, theta, xlim = NULL,
+                                        legend = TRUE, ...) {
+  check_plot_args(legend, ...)
+  x <- object
+  st <- plot_univariate_setup(x, theta)
+  ps <- st$ps
+  labs <- st$labs
 
   if (is.null(xlim)) {
     # the window has to hold every setting, so the quantiles are taken over
@@ -404,47 +401,44 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
       min(upper_q + 0.1 * span, x@bounds[2], na.rm = TRUE)
     )
   }
+  need_ggplot()
 
   seq_x <- seq(xlim[1], xlim[2], length.out = 1000)
   dens <- lapply(ps$settings,
                  function(th) distrib_pdf(x, seq_x, th, log = FALSE))
 
-  dots <- list(...)
-  keys <- plot_keys(ps$k, dots)
-  if (is.null(dots$main)) dots$main <- labs$main
-  if (is.null(dots$xlab)) dots$xlab <- "y"
-  if (is.null(dots$ylab)) dots$ylab <- "Density (PDF)"
-  if (is.null(dots$lwd)) dots$lwd <- 2
-  if (is.null(dots$ylim)) {
-    dots$ylim <- c(0, max(unlist(dens)[is.finite(unlist(dens))], na.rm = TRUE))
-  }
-  dots$col <- NULL
-  dots$lty <- NULL
-
-  plot_args <- c(list(x = seq_x, y = dens[[1L]], xlim = xlim, type = "n"), dots)
-  do.call(graphics::plot, plot_args)
-  for (i in seq_len(ps$k)) {
-    graphics::lines(seq_x, dens[[i]], col = keys$col[i], lty = keys$lty[i],
-                    lwd = dots$lwd)
-  }
-  if (isTRUE(legend) && !is.null(labs$legend)) {
-    graphics::legend(plot_legend_side(seq_x, dens), legend = labs$legend,
-                     col = keys$col, lty = keys$lty, lwd = dots$lwd,
-                     bty = "n")
-  }
-
-  invisible(x)
+  keys <- plot_keys(ps$k)
+  key <- if (is.null(labs$legend)) "density" else labs$legend
+  d <- data.frame(y = rep(seq_x, ps$k), dens = unlist(dens),
+                  setting = factor(rep(key, each = length(seq_x)),
+                                   levels = key))
+  # an infinite density at an edge of the support is left out of the curve
+  d <- d[is.finite(d$dens), , drop = FALSE]
+  .data <- ggplot2::.data
+  ggplot2::ggplot(d, ggplot2::aes(x = .data$y, y = .data$dens,
+                                  colour = .data$setting,
+                                  linetype = .data$setting)) +
+    ggplot2::geom_line(linewidth = 0.8) +
+    ggplot2::scale_colour_manual(name = NULL,
+                                 values = stats::setNames(keys$col, key)) +
+    ggplot2::scale_linetype_manual(name = NULL,
+                                   values = stats::setNames(keys$lty, key)) +
+    ggplot2::labs(title = labs$main, x = "y", y = "density") +
+    ggplot2::theme_bw() +
+    plot_key_theme(legend && ps$k > 1L)
 }
+
+S7::method(autoplot, continuous_distrib) <- autoplot_continuous_distrib
 
 #' @title Plot Method for Discrete Distributions
 #'
 #' @name plot.discrete_distrib
 #'
 #' @description
-#' Draws the probability mass of a discrete family as stems over the integers
-#' in range, one set per parameter setting. A component of `theta` given as a
-#' vector gives one setting per element, exactly as in
-#' [plot.continuous_distrib()].
+#' `autoplot()` returns a graph of the probability mass of a discrete family
+#' as stems over the integers in range, one set per parameter setting, and
+#' `plot()` prints that graph. A component of `theta` given as a vector gives
+#' one setting per element, exactly as in [plot.continuous_distrib()].
 #'
 #' @details
 #' # The two keys, and why they are not the continuous ones
@@ -452,13 +446,17 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #' at the top of each stem, where the point already is. The line type is not
 #' used here, because it would dash the stems and a dashed stem reads as a
 #' broken one, so at a support of any size the panel fills with fragments that
-#' cross each other.
+#' cross each other. The parameters that vary are named in a legend below the
+#' panel and those held fixed are stated once in the title.
 #'
 #' Several settings are also shifted sideways by a fraction of the spacing, so
 #' that equal masses at one support point stay countable instead of standing
 #' one in front of another.
 #'
-#' @param x An object inheriting from `discrete_distrib`.
+#' The graph is drawn with \pkg{ggplot2}, which is suggested; the methods
+#' signal an error that names it when it is not installed.
+#'
+#' @param x,object An object inheriting from `discrete_distrib`.
 #' @param theta A named list or numeric vector holding one entry per parameter
 #'   of `x`. A component of length \eqn{k > 1} draws \eqn{k} sets of stems, and
 #'   every component must have length 1 or that same \eqn{k}. When `theta` is
@@ -466,15 +464,14 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #'   [generate_random_theta()].
 #' @param xlim A numeric vector of length 2, or `NULL` (the default) to compute
 #'   the range from the quantiles over every setting.
-#' @param legend Logical of length 1: draw the key when several settings are
-#'   plotted. Defaults to `TRUE`.
-#' @param ... Passed to [graphics::plot()], for instance `main`, `xlab` or
-#'   `ylim`. A `col` or `pch` given here wins over the palette and is recycled
-#'   over the settings; an `lty` is accepted and has no effect on the stems.
+#' @param legend Logical of length 1: draw the legend below the panel when
+#'   several settings are plotted. Defaults to `TRUE`.
+#' @param ... Unused; an argument passed here signals an error.
 #'
-#' @return `x`, invisibly. The function is called for the plot that it draws.
+#' @return `autoplot()` returns a ggplot2 object; `plot()` prints the same
+#'   object and returns it invisibly.
 #'
-#' @examples
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
 #' # The three rates have masses that are countable at every support point
 #' # because the settings are offset sideways.
 #' plot(poisson_distrib(), list(mu = c(1, 4, 10)))
@@ -485,17 +482,22 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #' @seealso [plot.continuous_distrib()] for a density;
 #'   [plot.distrib_fit()] to compare a fit with data;
 #'   [plot_settings()], [plot_keys()] and [plot_labels()] for the pieces.
-#' @importFrom graphics plot segments points
 #' @keywords internal
 S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL,
                                                legend = TRUE, ...) {
-  if (missing(theta)) {
-    theta <- generate_random_theta(x)
-    param_str <- paste(names(theta), round(unlist(theta), 3), sep = " = ", collapse = ", ")
-    message(sprintf("Argument 'theta' is missing. The plot uses random parameters: %s", param_str))
-  }
-  ps <- plot_settings(x, theta)
-  labs <- plot_labels(x, ps)
+  p <- autoplot_discrete_distrib(x, theta, xlim = xlim, legend = legend, ...)
+  print(p)
+  invisible(p)
+}
+
+#' @rdname plot.discrete_distrib
+autoplot_discrete_distrib <- function(object, theta, xlim = NULL,
+                                      legend = TRUE, ...) {
+  check_plot_args(legend, ...)
+  x <- object
+  st <- plot_univariate_setup(x, theta)
+  ps <- st$ps
+  labs <- st$labs
 
   if (is.null(xlim)) {
     qs <- vapply(ps$settings, function(th) {
@@ -507,6 +509,7 @@ S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL,
       min(ceiling(max(qs[2L, ], na.rm = TRUE)), x@bounds[2], na.rm = TRUE)
     )
   }
+  need_ggplot()
 
   # Generate strict integer sequence clamped to mathematical bounds
   seq_x <- seq(floor(xlim[1]), ceiling(xlim[2]), by = 1)
@@ -515,40 +518,33 @@ S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL,
   dens <- lapply(ps$settings,
                  function(th) distrib_pdf(x, seq_x, th, log = FALSE))
 
-  dots <- list(...)
-  keys <- plot_keys(ps$k, dots)
-  if (is.null(dots$main)) dots$main <- labs$main
-  if (is.null(dots$xlab)) dots$xlab <- "y"
-  if (is.null(dots$ylab)) dots$ylab <- "Probability (PMF)"
-  if (is.null(dots$lwd)) dots$lwd <- 2
-  if (is.null(dots$ylim)) {
-    dots$ylim <- c(0, max(unlist(dens)[is.finite(unlist(dens))], na.rm = TRUE))
-  }
-  dots$col <- NULL
-  dots$lty <- NULL
-  dots$pch <- NULL
-
-  plot_args <- c(list(x = seq_x, y = dens[[1L]], xlim = xlim, type = "n"), dots)
-  do.call(graphics::plot, plot_args)
-
   # A shift of a fraction of the unit spacing, so that equal masses at one
   # support point stay countable. The stems are drawn solid whatever the
   # setting and told apart by their symbol: a dashed stem reads as a broken
   # one, and at a support of any size the panel fills with fragments.
   shift <- if (ps$k > 1L) (seq_len(ps$k) - (ps$k + 1) / 2) * (0.55 / ps$k)
            else 0
-  stem_lwd <- if (ps$k > 1L) max(1, dots$lwd - 1) else dots$lwd
-  for (i in seq_len(ps$k)) {
-    at <- seq_x + shift[i]
-    graphics::segments(x0 = at, y0 = 0, x1 = at, y1 = dens[[i]],
-                       col = keys$col[i], lwd = stem_lwd)
-    graphics::points(at, dens[[i]], pch = keys$pch[i], col = keys$col[i],
-                     cex = if (ps$k > 1L) 0.65 else 1)
-  }
-  if (isTRUE(legend) && !is.null(labs$legend)) {
-    graphics::legend(plot_legend_side(seq_x, dens), legend = labs$legend,
-                     col = keys$col, pch = keys$pch, bty = "n")
-  }
-
-  invisible(x)
+  keys <- plot_keys(ps$k)
+  key <- if (is.null(labs$legend)) "probability" else labs$legend
+  n <- length(seq_x)
+  d <- data.frame(at = as.vector(outer(seq_x, shift, `+`)),
+                  prob = unlist(dens),
+                  setting = factor(rep(key, each = n), levels = key))
+  .data <- ggplot2::.data
+  ggplot2::ggplot(d, ggplot2::aes(x = .data$at, y = .data$prob,
+                                  colour = .data$setting)) +
+    ggplot2::geom_segment(ggplot2::aes(xend = .data$at, yend = 0),
+                          linewidth = if (ps$k > 1L) 0.5 else 0.7) +
+    ggplot2::geom_point(ggplot2::aes(shape = .data$setting),
+                        size = if (ps$k > 1L) 1.6 else 2) +
+    ggplot2::scale_colour_manual(name = NULL,
+                                 values = stats::setNames(keys$col, key)) +
+    ggplot2::scale_shape_manual(name = NULL,
+                                values = stats::setNames(keys$pch, key)) +
+    ggplot2::scale_x_continuous(breaks = integer_breaks) +
+    ggplot2::labs(title = labs$main, x = "y", y = "probability") +
+    ggplot2::theme_bw() +
+    plot_key_theme(legend && ps$k > 1L)
 }
+
+S7::method(autoplot, discrete_distrib) <- autoplot_discrete_distrib

@@ -58,17 +58,11 @@ test_that("several settings are told apart without relying on colour", {
   expect_identical(anyDuplicated(k3$lty), 0L)
   expect_identical(anyDuplicated(k3$pch), 0L)
 
-  # one curve keeps the plain appearance the method always had
+  # one curve is drawn in the main colour of the toolkit's graphs
   k1 <- distributions7:::plot_keys(1)
-  expect_identical(k1$col, "black")
+  expect_identical(k1$col, "#1f5fa8")
   expect_identical(k1$lty, 1L)
   expect_identical(k1$pch, 16L)
-
-  # and the caller's choice wins, recycled over the settings
-  own <- distributions7:::plot_keys(3, list(col = "red", lty = 1, pch = 3))
-  expect_identical(own$col, rep("red", 3))
-  expect_identical(own$lty, rep(1, 3))
-  expect_identical(own$pch, rep(3, 3))
 })
 
 test_that("the varying parameters go in the legend and the fixed in the title", {
@@ -87,27 +81,51 @@ test_that("the varying parameters go in the legend and the fixed in the title", 
 })
 
 test_that("the univariate methods draw every setting without error", {
-  f <- tempfile(fileext = ".png")
-  grDevices::png(f, width = 400, height = 300)
-  on.exit({grDevices::dev.off(); unlink(f)}, add = TRUE)
+  skip_if_not_installed("ggplot2")
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
 
-  expect_silent(plot(gaussian1_distrib(), list(mu = 0, sigma = c(0.7, 1.5, 3))))
+  expect_silent(p <- plot(gaussian1_distrib(), list(mu = 0, sigma = c(0.7, 1.5, 3))))
+  expect_s3_class(p, "ggplot")
   expect_silent(plot(poisson_distrib(), list(mu = c(1, 4, 10))))
   # and one setting still works, which is what every existing caller passes
   expect_silent(plot(gaussian1_distrib(), list(mu = 0, sigma = 1)))
   expect_silent(plot(poisson_distrib(), list(mu = 4)))
 })
 
+test_that("the graph of a family names the varying parameters in its legend", {
+  skip_if_not_installed("ggplot2")
+  d <- gaussian1_distrib()
+  p <- ggplot2::autoplot(d, list(mu = 0, sigma = c(1, 2)))
+  expect_identical(levels(p$data$setting), c("sigma = 1", "sigma = 2"))
+  expect_identical(p$labels$title, "gaussian1 distribution\n(mu = 0)")
+  expect_identical(p$theme$legend.position, "bottom")
+  # the curves are the densities of the two settings
+  one <- p$data[p$data$setting == "sigma = 2", ]
+  expect_equal(one$dens, distrib_pdf(d, one$y, list(mu = 0, sigma = 2)))
+  # a single setting, and legend = FALSE, draw no legend
+  expect_identical(
+    ggplot2::autoplot(d, list(mu = 0, sigma = 1))$theme$legend.position, "none")
+  expect_identical(
+    ggplot2::autoplot(d, list(mu = 0, sigma = c(1, 2)),
+                      legend = FALSE)$theme$legend.position, "none")
+  # a discrete family: the stems of each setting, offset sideways
+  q <- ggplot2::autoplot(poisson_distrib(), list(mu = c(1, 4)))
+  expect_identical(levels(q$data$setting), c("mu = 1", "mu = 4"))
+  four <- q$data[q$data$setting == "mu = 4", ]
+  expect_equal(four$prob, stats::dpois(round(four$at), 4))
+  expect_error(plot(d, list(mu = 0, sigma = 1), col = "red"),
+               "no further arguments")
+  expect_error(plot(d, list(mu = 0, sigma = 1), legend = NA),
+               "'legend' must be TRUE or FALSE")
+})
+
 test_that("the window covers every setting, not the first", {
+  skip_if_not_installed("ggplot2")
   # the widest setting has to fit, or the curves the caller asked to compare
   # are drawn cut off at the panel's edge
   d <- gaussian1_distrib()
-  f <- tempfile(fileext = ".png")
-  grDevices::png(f, width = 400, height = 300)
-  plot(d, list(mu = 0, sigma = c(1, 5)))
-  got <- graphics::par("usr")[1:2]
-  grDevices::dev.off()
-  unlink(f)
+  got <- range(ggplot2::autoplot(d, list(mu = 0, sigma = c(1, 5)))$data$y)
 
   # sigma = 5 reaches about -12.9 at its 0.5% quantile
   expect_lt(got[1L], distrib_quantile(d, 0.005, list(mu = 0, sigma = 5)) + 1)

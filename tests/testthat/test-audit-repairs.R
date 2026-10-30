@@ -2,26 +2,21 @@
 # 0.76.1 and passes on the repaired code.
 
 test_that("the pairs panels of a fit read the data by coordinate", {
+  skip_if_not_installed("ggplot2")
+  skip_if_not_installed("patchwork")
   set.seed(2)
   X <- cbind(rnorm(100), rnorm(100, 100), rnorm(100, 5000))
   fm <- fit_distrib(mvgaussian1_distrib(3), X)
-  rec <- new.env()
-  grDevices::pdf(NULL)
-  on.exit(grDevices::dev.off(), add = TRUE)
-  # a single point is the key that the legend draws, not the scatter
-  suppressMessages(trace(graphics::points, bquote(if (length(x) > 1L) assign(
-    "xs", c(get0("xs", envir = .(rec)), range(x)), envir = .(rec))),
-    print = FALSE))
-  on.exit(suppressMessages(untrace(graphics::points)), add = TRUE)
-  plot(fm, mv_which = c(2, 3))
-  # the one scatter panel has coordinate 2 on its horizontal axis
-  expect_true(all(rec$xs > 90 & rec$xs < 110))
+  p <- ggplot2::autoplot(fm, mv_which = c(2, 3), legend = FALSE)
+  # the one scatter panel, below the diagonal, has coordinate 2 on its
+  # horizontal axis and coordinate 3 on its vertical one
+  pts <- p[[3]]$layers[[1]]$data
+  expect_true(all(pts$x > 90 & pts$x < 110))
+  expect_true(all(pts$y > 4900 & pts$y < 5100))
 })
 
 test_that("a fit over four coordinates names mv_which in its error", {
   f4 <- fit_distrib(mvgaussian1_distrib(4), as.matrix(iris[, 1:4]))
-  grDevices::pdf(NULL)
-  on.exit(grDevices::dev.off(), add = TRUE)
   expect_error(plot(f4), "mv_which = c(1, 2, 3)", fixed = TRUE)
 })
 
