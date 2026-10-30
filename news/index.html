@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,11 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.93.1" id="distributions7-0931">distributions7 0.93.1<a class="anchor" aria-label="anchor" href="#distributions7-0931"></a></h2>
+<ul><li>
+<code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> checks the supplied gradient against a central difference at its first run only; the further runs of the same fit minimize the same objective with the same gradient. The fits are unchanged and 4 per cent faster over the families.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.93.0" id="distributions7-0930">distributions7 0.93.0<a class="anchor" aria-label="anchor" href="#distributions7-0930"></a></h2>
 <ul><li>The graphs of a univariate family, of a fit and of a multivariate family are drawn with ggplot2, and the panel matrix of a multivariate family or fit is joined with patchwork; both are suggested. <code><a href="../reference/autoplot.html">autoplot()</a></code> returns the graph and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> prints it and returns it invisibly, where it returned the object. The legends are below the panel, and <code>legend = FALSE</code> removes them; the panel matrix has one legend below it.</li>

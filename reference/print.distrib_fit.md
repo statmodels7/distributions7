@@ -97,7 +97,7 @@ print(fit_distrib(d, y))
 print(fit_distrib(d, y), information = expected_info())
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 6 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 4 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> Standard errors from the expected information.
 #> 
@@ -118,7 +118,7 @@ g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
 print(g, digits = 3)
 #> Maximum-likelihood fit: gamma2
 #> Observations: 300   Log-likelihood: -401   AIC: 806   BIC: 813
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 8 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 7 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
