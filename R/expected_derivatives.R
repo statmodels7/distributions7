@@ -251,6 +251,7 @@ NULL
 #' @param theta A named list of parameters, aligned to `distrib@params`.
 #' @param order The derivative order, a single integer from 1 to 6. Anything
 #'   else signals an error.
+#' @param scale `"parameter"` (the default) or `"link"`, passed to the generic.
 #'
 #' @return A named list of derivative component vectors; each has length
 #'   `length(y)`. The keys are `distrib@params` at order 1, [hess_names()] at
@@ -261,14 +262,14 @@ NULL
 #'   [deriv_names()] and [hess_names()] for the two keyings;
 #'   [expected_derivative()], the router above it.
 #' @keywords internal
-observed_deriv <- function(distrib, y, theta, order) {
+observed_deriv <- function(distrib, y, theta, order, scale = "parameter") {
   switch(as.character(order),
-    "1" = distrib_gradient(distrib, y, theta),
-    "2" = distrib_hessian(distrib, y, theta),
-    "3" = distrib_deriv3(distrib, y, theta),
-    "4" = distrib_deriv4(distrib, y, theta),
-    "5" = distrib_deriv5(distrib, y, theta),
-    "6" = distrib_deriv6(distrib, y, theta),
+    "1" = distrib_gradient(distrib, y, theta, scale = scale),
+    "2" = distrib_hessian(distrib, y, theta, scale = scale),
+    "3" = distrib_deriv3(distrib, y, theta, scale = scale),
+    "4" = distrib_deriv4(distrib, y, theta, scale = scale),
+    "5" = distrib_deriv5(distrib, y, theta, scale = scale),
+    "6" = distrib_deriv6(distrib, y, theta, scale = scale),
     stop("Unsupported derivative order: ", order, call. = FALSE)
   )
 }

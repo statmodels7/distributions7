@@ -4,7 +4,7 @@
 \alias{dexpected_evaluate}
 \title{Evaluate Polynomials of Observed Derivatives by a Method}
 \usage{
-dexpected_evaluate(distrib, y, theta, polys, method)
+dexpected_evaluate(distrib, y, theta, polys, method, scale = "parameter")
 }
 \arguments{
 \item{distrib}{A univariate distribution.}
@@ -17,6 +17,9 @@ methods that take an expectation.}
 \item{polys}{A list of polynomials.}
 
 \item{method}{An object inheriting from \link{ExpectMethod}.}
+
+\item{scale}{\code{"parameter"} (the default) or \code{"link"}, the scale of the
+observed derivatives in the polynomials.}
 }
 \value{
 A list of numeric vectors, each of length \code{length(y)}.

@@ -50,9 +50,14 @@ identity. The package provides six orders, the sixth by the stencil of
 \code{\link[=distrib_deriv6]{distrib_deriv6()}}, so the Hessian identity at \code{m = 5} signals an error
 that names \code{identity = "score"}.
 
-On the link scale the parameter-scale derivatives of every order up to \code{m}
-are computed by the same method and carried across by
-\code{\link[=dexpected_link_higher]{dexpected_link_higher()}}.
+On the link scale and for \code{m} up to 4, the parameter-scale derivatives of
+every order up to \code{m} are computed by the same method and carried across by
+\code{\link[=dexpected_link_higher]{dexpected_link_higher()}}. At \code{m = 5} the polynomial is evaluated with the
+observed derivatives on the link scale instead, the route that
+\code{\link[=distrib_d5expected_hessian]{distrib_d5expected_hessian()}} takes for its stencil: the identities and the
+moved density hold in any coordinates, and the composition would read the
+parameter-scale stencil of \code{\link[=distrib_deriv6]{distrib_deriv6()}} through the Faa di Bruno
+formula at order six.
 }
 \seealso{
 \link{expected_derivative_methods}

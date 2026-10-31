@@ -22,7 +22,8 @@ unconstrained predictors.}
 method passes \code{accuracy} to \code{\link[=numerical_deriv6]{numerical_deriv6()}}.}
 }
 \value{
-A named list of derivative-component vectors, in which each vector
+A named list of derivative-component vectors, on the requested
+scale, in which each vector
 has length \code{length(y)} and the names are those that
 \code{\link[=deriv_names]{deriv_names(distrib@params, 6)}} gives (e.g.
 \code{"mu_mu_mu_sigma_sigma_sigma"}).
@@ -48,11 +49,18 @@ family implements. A difference of a difference is never formed.
 
 As for \code{\link[=distrib_deriv5]{distrib_deriv5()}}, there is no \code{expected} argument.
 
-The method returns the parameter scale, and the generic applies the link
-scale after dispatch, by the diagonal Faa di Bruno formula of
-\code{\link[=to_link_scale]{to_link_scale()}} at order six. It composes the sixth order with the
-parameter-scale orders one to five and with the derivatives of the inverse
-links up to the sixth.
+On the link scale the stencil is taken in the linear predictors
+\eqn{\eta}, on the link-scale fifth order, which \code{\link[=distrib_deriv5]{distrib_deriv5()}}
+computes exactly from the analytic orders and the derivatives of the inverse
+links. The alternative, a stencil on the parameter scale composed with the
+lower orders by the Faa di Bruno formula at order six, was measured against
+50-digit references and rejected: where a parameter is small the terms of
+that formula are large and of opposite sign (for a Poisson mean of 0.05
+every link-scale derivative is \eqn{-\mu}, while the parameter-scale terms
+are of order \eqn{120 y/\mu^6}), so the stencil's error is amplified, up to
+a relative error of 2e-2 against 2e-10 for the stencil in \eqn{\eta}. As
+for \code{\link[=distrib_deriv5]{distrib_deriv5()}}, the method reads \code{scale} and returns the scale that
+it is given.
 }
 \examples{
 distrib_deriv6(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))

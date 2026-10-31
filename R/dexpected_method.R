@@ -105,17 +105,21 @@ poly_eval <- function(poly, getter) {
 #' @param distrib An object inheriting from `distrib`.
 #' @param ys The observations.
 #' @param th The parameters, aligned.
+#' @param scale `"parameter"` (the default) or `"link"`, the scale of the
+#'   observed derivatives.
 #'
 #' @return A function of an integer tuple.
 #'
 #' @seealso [dexpected_by_method()]
 #' @keywords internal
-observed_getter <- function(distrib, ys, th) {
+observed_getter <- function(distrib, ys, th, scale = "parameter") {
   params <- distrib@params
   cache <- vector("list", 6L)
   function(tuple) {
     k <- length(tuple)
-    if (is.null(cache[[k]])) cache[[k]] <<- observed_deriv(distrib, ys, th, k)
+    if (is.null(cache[[k]])) {
+      cache[[k]] <<- observed_deriv(distrib, ys, th, k, scale = scale)
+    }
     key <- if (k == 1L) params[tuple] else if (k == 2L) {
       hess_pair_name(params, tuple[1L], tuple[2L])
     } else paste(params[tuple], collapse = "_")
@@ -191,9 +195,14 @@ dexpected_components <- function(params, m) {
 #' [distrib_deriv6()], so the Hessian identity at `m = 5` signals an error
 #' that names `identity = "score"`.
 #'
-#' On the link scale the parameter-scale derivatives of every order up to `m`
-#' are computed by the same method and carried across by
-#' [dexpected_link_higher()].
+#' On the link scale and for `m` up to 4, the parameter-scale derivatives of
+#' every order up to `m` are computed by the same method and carried across by
+#' [dexpected_link_higher()]. At `m = 5` the polynomial is evaluated with the
+#' observed derivatives on the link scale instead, the route that
+#' [distrib_d5expected_hessian()] takes for its stencil: the identities and the
+#' moved density hold in any coordinates, and the composition would read the
+#' parameter-scale stencil of [distrib_deriv6()] through the Faa di Bruno
+#' formula at order six.
 #'
 #' @param distrib A univariate distribution.
 #' @param y A numeric vector of observations.
@@ -230,22 +239,26 @@ dexpected_by_method <- function(distrib, y, theta, scale, m, method) {
     check_kink_identity(distrib, 2L, if (S7::S7_inherits(method, ExpectMC))
       "expect_mc" else "expect_integrate")
   }
+  # at order five the polynomial is read on the requested scale directly
+  direct <- m == 5L
+  obs_scale <- if (direct) scale else "parameter"
   nat <- vector("list", m + 1L)
-  for (j in 0:m) {
+  for (j in if (direct) m else 0:m) {
     comps <- dexpected_components(params, j)
     polys <- lapply(comps, function(cp) {
       pl <- poly_base(identity, cp$a, cp$b)
       for (cc in cp$S) pl <- poly_d(pl, cc, moved = !opg)
       pl
     })
-    vals <- dexpected_evaluate(distrib, y, theta, polys, method)
+    vals <- dexpected_evaluate(distrib, y, theta, polys, method,
+                               scale = obs_scale)
     names(vals) <- vapply(comps, function(cp) cp$key, character(1))
     canon <- switch(j + 1L, hess_names(params), dexpected_names(params),
                     d2expected_names(params), d3expected_names(params),
                     d4expected_names(params), d5expected_names(params))
     nat[[j + 1L]] <- vals[canon]
   }
-  if (identical(scale, "parameter")) return(nat[[m + 1L]])
+  if (direct || identical(scale, "parameter")) return(nat[[m + 1L]])
   h <- inverse_link_derivs(distrib, theta, m + 1L)
   dexpected_link_higher(params, nat, h, m)
 }
@@ -263,15 +276,18 @@ dexpected_by_method <- function(distrib, y, theta, scale, m, method) {
 #' @param theta A named list of parameters, aligned.
 #' @param polys A list of polynomials.
 #' @param method An object inheriting from [ExpectMethod].
+#' @param scale `"parameter"` (the default) or `"link"`, the scale of the
+#'   observed derivatives in the polynomials.
 #'
 #' @return A list of numeric vectors, each of length `length(y)`.
 #'
 #' @seealso [dexpected_by_method()]
 #' @keywords internal
-dexpected_evaluate <- function(distrib, y, theta, polys, method) {
+dexpected_evaluate <- function(distrib, y, theta, polys, method,
+                               scale = "parameter") {
   n <- length(y)
   if (S7::S7_inherits(method, ExpectOPG)) {
-    getter <- observed_getter(distrib, y, theta)
+    getter <- observed_getter(distrib, y, theta, scale = scale)
     return(lapply(polys, function(pl) rep_len(poly_eval(pl, getter), n)))
   }
   if (S7::S7_inherits(method, ExpectIntegrate)) {
@@ -279,7 +295,7 @@ dexpected_evaluate <- function(distrib, y, theta, polys, method) {
     on.exit(set_integration_settings(old))
     return(lapply(polys, function(pl) {
       v <- expectation(distrib, function(y, theta) {
-        poly_eval(pl, observed_getter(distrib, y, theta))
+        poly_eval(pl, observed_getter(distrib, y, theta, scale = scale))
       }, theta)
       rep(v, length.out = n)
     }))
@@ -289,7 +305,7 @@ dexpected_evaluate <- function(distrib, y, theta, polys, method) {
   per_row <- lapply(th_rows, function(r) {
     th <- as.list(r)
     ys <- distrib_rng(distrib, method@nsim, th)
-    getter <- observed_getter(distrib, ys, th)
+    getter <- observed_getter(distrib, ys, th, scale = scale)
     vapply(polys, function(pl) base::mean(poly_eval(pl, getter)), numeric(1))
   })
   m <- do.call(rbind, per_row)

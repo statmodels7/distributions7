@@ -40,18 +40,26 @@ NULL
 #' \eqn{r} is \eqn{\varepsilon^{1/(r+4)}\max(1, |x|)} in the coordinate
 #' \eqn{x}, reduced so that every node stays inside the domain.
 #'
-#' The method returns the parameter scale. On `scale = "link"` the generic
-#' composes the result with the expected information and its derivatives of
-#' orders one to four on the parameter scale, by Leibniz's rule and the
-#' diagonal Faa di Bruno formula of [dexpected_link_higher()], which reads the
-#' derivatives of the inverse links up to the sixth.
+#' On `scale = "link"` the stencil is taken in the linear predictors, on the
+#' link-scale fourth derivative, which [distrib_d4expected_hessian()] computes
+#' exactly from the analytic orders and the derivatives of the inverse links.
+#' A stencil on the parameter scale composed with the lower orders by Leibniz's
+#' rule and the Faa di Bruno formula would need the sixth derivative of the
+#' inverse links, and was measured against 50-digit references and rejected:
+#' where a parameter is small the terms of the composition cancel, and the
+#' stencil's error is amplified up to a relative error of 6e-3, against 2e-9
+#' or better for the stencil in \eqn{\eta}. The method reads `scale` and
+#' returns the scale that it is given.
 #'
 #' With an object as `method`, the result is the derivative of the matrix that
 #' the method defines, computed as for the lower orders by Leibniz's formula
 #' for [expect_opg()] and with the moved density for [expect_integrate()] and
 #' [expect_mc()]. It reads observed derivatives up to the sixth
 #' ([distrib_deriv6()]), so only `identity = "score"` is available; the
-#' Hessian identity would need the seventh order and signals an error.
+#' Hessian identity would need the seventh order and signals an error. On the
+#' link scale the polynomial is evaluated with the observed derivatives on the
+#' link scale, for the same reason: the identities and the moved density hold
+#' in any coordinates.
 #'
 #' @param distrib A distribution object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
@@ -93,8 +101,7 @@ distrib_d5expected_hessian <- S7::new_generic(
     if (!is.null(method)) {
       return(dexpected_by_method(distrib, y, theta, scale, 5L, method))
     }
-    res <- S7::S7_dispatch()
-    if (scale == "link") d5expected_link(distrib, y, theta, res) else res
+    S7::S7_dispatch()
   })
 
 
@@ -108,8 +115,8 @@ distrib_d5expected_hessian <- S7::new_generic(
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale Handled by the generic after dispatch; this method always
-#'   returns the parameter scale.
+#' @param scale Either `"parameter"` or `"link"`, passed to
+#'   [numerical_d5expected()], which perturbs on that scale.
 #' @param method `NULL`: the generic handles an object before dispatching on
 #'   the family. See [expected_derivative_methods].
 #' @param ... Passed to [numerical_d5expected()], which accepts `accuracy`.
@@ -118,34 +125,7 @@ distrib_d5expected_hessian <- S7::new_generic(
 S7::method(distrib_d5expected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
     method = NULL, ...) {
-  numerical_d5expected(distrib, y, theta, "parameter", ...)
-}
-
-
-#' Carry the Fifth Derivative of the Expected Information to the Link Scale
-#'
-#' @description
-#' Composes the parameter-scale fifth derivative with the expected information
-#' and its derivatives of orders one to four, through
-#' [dexpected_link_higher()] at order five.
-#'
-#' @param distrib A distribution object.
-#' @param y,theta The observations and the parameters, aligned.
-#' @param res The fifth derivative on the parameter scale.
-#'
-#' @return A named list keyed as [d5expected_names()], on the link scale.
-#'
-#' @keywords internal
-d5expected_link <- function(distrib, y, theta, res) {
-  nat <- list(
-    distrib_expected_hessian(distrib, y, theta, scale = "parameter"),
-    distrib_dexpected_hessian(distrib, y, theta, scale = "parameter"),
-    distrib_d2expected_hessian(distrib, y, theta, scale = "parameter"),
-    distrib_d3expected_hessian(distrib, y, theta, scale = "parameter"),
-    distrib_d4expected_hessian(distrib, y, theta, scale = "parameter"),
-    res)
-  h <- inverse_link_derivs(distrib, theta, 6L)
-  dexpected_link_higher(distrib@params, nat, h, 5L)
+  numerical_d5expected(distrib, y, theta, match.arg(scale), ...)
 }
 
 
@@ -244,10 +224,9 @@ d5expected_base <- function(x) {
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale `"parameter"` or `"link"`. [distrib_d5expected_hessian()]
-#'   uses the parameter scale and applies the link scale itself; on `"link"`
-#'   the stencil is taken in the linear predictors on the link-scale
-#'   derivatives, a second route kept for comparison.
+#' @param scale `"parameter"` or `"link"`; on `"link"` the stencil is taken
+#'   in the linear predictors on the link-scale derivatives of the base
+#'   order.
 #' @param accuracy The order of accuracy of the stencils, passed to
 #'   [numericals7::fd_tensor()].
 #'

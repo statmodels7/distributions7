@@ -52,9 +52,9 @@
 #' `params_bounds`, treated as open intervals. The derivative generics in
 #' the parameters of orders one to four also take `scale`, which the generic
 #' applies after dispatch, so a method returns the parameter scale and
-#' never reads it; see [link_scale_derivatives()]. The same holds for
-#' [distrib_deriv6()]. [distrib_deriv5()] is the exception: its methods read
-#' `scale` and apply it themselves.
+#' never reads it; see [link_scale_derivatives()]. [distrib_deriv5()] and
+#' [distrib_deriv6()] are the exception: their methods read `scale` and apply
+#' it themselves.
 #'
 #' @return Nothing. This page is the index of the generics documented on their
 #'   own pages; the value returned is theirs.
@@ -724,11 +724,18 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
 #'
 #' As for [distrib_deriv5()], there is no `expected` argument.
 #'
-#' The method returns the parameter scale, and the generic applies the link
-#' scale after dispatch, by the diagonal Faa di Bruno formula of
-#' [to_link_scale()] at order six. It composes the sixth order with the
-#' parameter-scale orders one to five and with the derivatives of the inverse
-#' links up to the sixth.
+#' On the link scale the stencil is taken in the linear predictors
+#' \eqn{\eta}, on the link-scale fifth order, which [distrib_deriv5()]
+#' computes exactly from the analytic orders and the derivatives of the inverse
+#' links. The alternative, a stencil on the parameter scale composed with the
+#' lower orders by the Faa di Bruno formula at order six, was measured against
+#' 50-digit references and rejected: where a parameter is small the terms of
+#' that formula are large and of opposite sign (for a Poisson mean of 0.05
+#' every link-scale derivative is \eqn{-\mu}, while the parameter-scale terms
+#' are of order \eqn{120 y/\mu^6}), so the stencil's error is amplified, up to
+#' a relative error of 2e-2 against 2e-10 for the stencil in \eqn{\eta}. As
+#' for [distrib_deriv5()], the method reads `scale` and returns the scale that
+#' it is given.
 #'
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param y A numeric vector of observations.
@@ -740,7 +747,8 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
 #' @param ... Additional arguments passed to the specific method; the default
 #'   method passes `accuracy` to [numerical_deriv6()].
 #'
-#' @return A named list of derivative-component vectors, in which each vector
+#' @return A named list of derivative-component vectors, on the requested
+#'   scale, in which each vector
 #'   has length `length(y)` and the names are those that
 #'   [`deriv_names(distrib@params, 6)`][deriv_names] gives (e.g.
 #'   `"mu_mu_mu_sigma_sigma_sigma"`).
@@ -757,13 +765,7 @@ distrib_deriv6 <- S7::new_generic("distrib_deriv6", "distrib", function(distrib,
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)
-  res <- S7::S7_dispatch()
-  if (scale == "link") {
-    nat <- link_scale_lower_orders(distrib, y, theta, FALSE, 6L)
-    to_link_scale(distrib, theta, c(nat, list(res)), 6L)
-  } else {
-    res
-  }
+  S7::S7_dispatch()
 })
 
 #' Whether a Family Supplies Its Own Fourth Derivative

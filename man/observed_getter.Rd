@@ -4,7 +4,7 @@
 \alias{observed_getter}
 \title{Observed Derivatives by Index Tuple}
 \usage{
-observed_getter(distrib, ys, th)
+observed_getter(distrib, ys, th, scale = "parameter")
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
@@ -12,6 +12,9 @@ observed_getter(distrib, ys, th)
 \item{ys}{The observations.}
 
 \item{th}{The parameters, aligned.}
+
+\item{scale}{\code{"parameter"} (the default) or \code{"link"}, the scale of the
+observed derivatives.}
 }
 \value{
 A function of an integer tuple.

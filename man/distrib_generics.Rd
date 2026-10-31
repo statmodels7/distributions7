@@ -58,9 +58,9 @@ by name, removes the names carried by the values and validates it against
 \code{params_bounds}, treated as open intervals. The derivative generics in
 the parameters of orders one to four also take \code{scale}, which the generic
 applies after dispatch, so a method returns the parameter scale and
-never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. The same holds for
-\code{\link[=distrib_deriv6]{distrib_deriv6()}}. \code{\link[=distrib_deriv5]{distrib_deriv5()}} is the exception: its methods read
-\code{scale} and apply it themselves.
+never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. \code{\link[=distrib_deriv5]{distrib_deriv5()}} and
+\code{\link[=distrib_deriv6]{distrib_deriv6()}} are the exception: their methods read \code{scale} and apply
+it themselves.
 }
 
 \examples{

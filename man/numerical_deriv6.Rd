@@ -52,11 +52,11 @@ The step of a difference of order \eqn{r} is
 \eqn{\varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with \eqn{a} the
 accuracy, reduced so that every node stays inside the parameter's domain.
 
-\code{\link[=distrib_deriv6]{distrib_deriv6()}} calls this on the parameter scale and carries the result
-to the link scale itself. With \code{scale = "link"} the perturbation is applied
-to \eqn{\eta} and the differenced quantity is read on the link scale, so
-the result is the derivative of a link-scale quantity, obtained without the
-sixth derivative of a link; this second route is kept for comparison.
+On the link scale the perturbation is applied to \eqn{\eta} and the
+differenced quantity is read on the link scale, which \code{\link[=distrib_deriv5]{distrib_deriv5()}}
+gives exactly, so the result is the derivative of a link-scale quantity and
+needs no sixth derivative of a link. \code{\link[=distrib_deriv6]{distrib_deriv6()}} explains why this
+route is preferred to the composition of the parameter scale.
 }
 \examples{
 numerical_deriv6(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))

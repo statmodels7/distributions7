@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of parameters, aligned by the generic.}
 
-\item{scale}{Handled by the generic after dispatch; this method always
-returns the parameter scale.}
+\item{scale}{Passed through to \code{\link[=numerical_deriv6]{numerical_deriv6()}}, which reads the
+differenced order on that scale and perturbs on it.}
 
 \item{...}{Passed to \code{\link[=numerical_deriv6]{numerical_deriv6()}}, which accepts \code{accuracy}.}
 }

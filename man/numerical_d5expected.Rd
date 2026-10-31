@@ -13,10 +13,9 @@ numerical_d5expected(distrib, y, theta, scale, accuracy = 4L)
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{\code{"parameter"} or \code{"link"}. \code{\link[=distrib_d5expected_hessian]{distrib_d5expected_hessian()}}
-uses the parameter scale and applies the link scale itself; on \code{"link"}
-the stencil is taken in the linear predictors on the link-scale
-derivatives, a second route kept for comparison.}
+\item{scale}{\code{"parameter"} or \code{"link"}; on \code{"link"} the stencil is taken
+in the linear predictors on the link-scale derivatives of the base
+order.}
 
 \item{accuracy}{The order of accuracy of the stencils, passed to
 \code{\link[numericals7:fd_tensor]{numericals7::fd_tensor()}}.}

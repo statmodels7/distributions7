@@ -60,18 +60,26 @@ as it does for the third and fourth orders. The step of a stencil of order
 \eqn{r} is \eqn{\varepsilon^{1/(r+4)}\max(1, |x|)} in the coordinate
 \eqn{x}, reduced so that every node stays inside the domain.
 
-The method returns the parameter scale. On \code{scale = "link"} the generic
-composes the result with the expected information and its derivatives of
-orders one to four on the parameter scale, by Leibniz's rule and the
-diagonal Faa di Bruno formula of \code{\link[=dexpected_link_higher]{dexpected_link_higher()}}, which reads the
-derivatives of the inverse links up to the sixth.
+On \code{scale = "link"} the stencil is taken in the linear predictors, on the
+link-scale fourth derivative, which \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} computes
+exactly from the analytic orders and the derivatives of the inverse links.
+A stencil on the parameter scale composed with the lower orders by Leibniz's
+rule and the Faa di Bruno formula would need the sixth derivative of the
+inverse links, and was measured against 50-digit references and rejected:
+where a parameter is small the terms of the composition cancel, and the
+stencil's error is amplified up to a relative error of 6e-3, against 2e-9
+or better for the stencil in \eqn{\eta}. The method reads \code{scale} and
+returns the scale that it is given.
 
 With an object as \code{method}, the result is the derivative of the matrix that
 the method defines, computed as for the lower orders by Leibniz's formula
 for \code{\link[=expect_opg]{expect_opg()}} and with the moved density for \code{\link[=expect_integrate]{expect_integrate()}} and
 \code{\link[=expect_mc]{expect_mc()}}. It reads observed derivatives up to the sixth
 (\code{\link[=distrib_deriv6]{distrib_deriv6()}}), so only \code{identity = "score"} is available; the
-Hessian identity would need the seventh order and signals an error.
+Hessian identity would need the seventh order and signals an error. On the
+link scale the polynomial is evaluated with the observed derivatives on the
+link scale, for the same reason: the identities and the moved density hold
+in any coordinates.
 }
 \examples{
 d <- poisson_distrib()

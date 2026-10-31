@@ -468,11 +468,11 @@ S7::method(distrib_deriv5, distrib) <- function(distrib, y, theta, scale = c("pa
 #' \eqn{\varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with \eqn{a} the
 #' accuracy, reduced so that every node stays inside the parameter's domain.
 #'
-#' [distrib_deriv6()] calls this on the parameter scale and carries the result
-#' to the link scale itself. With `scale = "link"` the perturbation is applied
-#' to \eqn{\eta} and the differenced quantity is read on the link scale, so
-#' the result is the derivative of a link-scale quantity, obtained without the
-#' sixth derivative of a link; this second route is kept for comparison.
+#' On the link scale the perturbation is applied to \eqn{\eta} and the
+#' differenced quantity is read on the link scale, which [distrib_deriv5()]
+#' gives exactly, so the result is the derivative of a link-scale quantity and
+#' needs no sixth derivative of a link. [distrib_deriv6()] explains why this
+#' route is preferred to the composition of the parameter scale.
 #'
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
@@ -536,8 +536,8 @@ deriv6_base <- function(x) {
 #' @param distrib An object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned by the generic.
-#' @param scale Handled by the generic after dispatch; this method always
-#'   returns the parameter scale.
+#' @param scale Passed through to [numerical_deriv6()], which reads the
+#'   differenced order on that scale and perturbs on it.
 #' @param ... Passed to [numerical_deriv6()], which accepts `accuracy`.
 #'
 #' @return A named list of sixth-derivative component vectors, each of length
@@ -548,5 +548,5 @@ deriv6_base <- function(x) {
 #'   [distrib_deriv5.distrib()] for the order below.
 #' @keywords internal
 S7::method(distrib_deriv6, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  numerical_deriv6(distrib, y, theta, scale = "parameter", ...)
+  numerical_deriv6(distrib, y, theta, scale = scale, ...)
 }

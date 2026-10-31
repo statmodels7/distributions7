@@ -2,12 +2,10 @@
 # expected information.
 #
 # Both are one tensor stencil (numericals7::fd_tensor()) on the highest
-# analytic order of the family, on the parameter scale; the generic carries the
-# result to the link scale by Faa di Bruno with the inverse links' derivatives
-# to the sixth. The references below are closed forms written in the test,
-# 50-digit values from sympy/mpmath (misure_quinto_ordine/ref.py), and the
-# second route that differentiates the link-scale order below in the
-# predictors.
+# analytic order of the family, taken on the scale requested: in the
+# parameters, or in the linear predictors on the exact link-scale order below.
+# The references below are closed forms written in the test and 50-digit
+# values from sympy/mpmath (misure_quinto_ordine/ref.py).
 
 rel_all <- function(a, b) {
   max(abs(unlist(a[names(b)]) - unlist(b))) / max(abs(unlist(b)))
@@ -103,19 +101,20 @@ test_that("the base order is the fifth where it is analytic", {
 })
 
 
-test_that("the link scale composes the parameter scale by Faa di Bruno", {
+test_that("the link scale is a stencil in the predictors", {
   # The log link of the poisson gives l(eta) = y eta - exp(eta) - log y!, so
-  # every derivative of order two or more in eta is -mu.
+  # every derivative of order two or more in eta is -mu, also at a small mean,
+  # where a composition of the parameter scale loses two digits in five
   d <- poisson_distrib()
-  got <- distrib_deriv6(d, c(0, 2, 5), list(mu = 3), scale = "link")
-  expect_equal(got[[1]], rep(-3, 3), tolerance = 1e-7)
-  # the route that differences the link-scale fifth order in the predictors
-  # agrees on an ordinary case
+  for (mu in c(3, 0.05)) {
+    got <- distrib_deriv6(d, c(0, 2, 5), list(mu = mu), scale = "link")
+    expect_lt(max(abs(got[[1]] + mu)) / mu, 1e-9)
+  }
   d <- gamma1_distrib()
   y <- c(0.4, 1.6)
   th <- list(mu = 2, phi = 0.7)
-  expect_lt(rel_all(distrib_deriv6(d, y, th, scale = "link"),
-                    numerical_deriv6(d, y, th, scale = "link")), 1e-6)
+  expect_identical(distrib_deriv6(d, y, th, scale = "link"),
+                   numerical_deriv6(d, y, th, scale = "link"))
 })
 
 
@@ -140,8 +139,10 @@ test_that("the fifth derivative of the information has its closed forms", {
   p <- distrib_d5expected_hessian(d, y, list(mu = 3))
   expect_identical(names(p), d5expected_names("mu"))
   expect_equal(p[[1]], rep(120 / 3^6, 3), tolerance = 1e-9)
-  l <- distrib_d5expected_hessian(d, y, list(mu = 3), scale = "link")
-  expect_equal(l[[1]], rep(-3, 3), tolerance = 1e-7)
+  for (mu in c(3, 0.05)) {
+    l <- distrib_d5expected_hessian(d, y, list(mu = mu), scale = "link")
+    expect_lt(max(abs(l[[1]] + mu)) / mu, 1e-9)
+  }
   # gaussian: E[l_mumu] = -1/sigma^2 is -exp(-2 eta) on the log link, and
   # E[l_sigmasigma] = -2/sigma^2 is the constant -2 there
   g <- gaussian1_distrib()
@@ -154,8 +155,8 @@ test_that("the fifth derivative of the information has its closed forms", {
   lg <- distrib_d5expected_hessian(g, 0, list(mu = 0, sigma = s),
                                    scale = "link")
   expect_equal(lg[["mu_mu_sigma_sigma_sigma_sigma_sigma"]], 32 / s^2,
-               tolerance = 1e-7)
-  expect_lt(abs(lg[["sigma_sigma_sigma_sigma_sigma_sigma_sigma"]]), 1e-6)
+               tolerance = 1e-9)
+  expect_lt(abs(lg[["sigma_sigma_sigma_sigma_sigma_sigma_sigma"]]), 1e-9)
 })
 
 
@@ -195,6 +196,10 @@ test_that("a method object gives the derivative of its own matrix", {
   # expect_opg(): -(y/mu - 1)^2 at the data, differentiated five times
   o <- distrib_d5expected_hessian(d, y, list(mu = mu), method = expect_opg())
   expect_equal(o[[1]], 720 * y^2 / mu^7 - 240 * y / mu^6, tolerance = 1e-7)
+  # on the log link it is -(y - exp(eta))^2, read with link-scale derivatives
+  ol <- distrib_d5expected_hessian(d, y, list(mu = mu), scale = "link",
+                                   method = expect_opg())
+  expect_equal(ol[[1]], 2 * y * mu - 32 * mu^2, tolerance = 1e-8)
   # the score identity integrates to the closed form
   s <- distrib_d5expected_hessian(d, y, list(mu = mu),
                                   method = expect_integrate(identity = "score"))

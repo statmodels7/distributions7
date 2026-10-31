@@ -4,7 +4,7 @@
 \alias{observed_deriv}
 \title{Observed Derivatives of a Given Order}
 \usage{
-observed_deriv(distrib, y, theta, order)
+observed_deriv(distrib, y, theta, order, scale = "parameter")
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib}.}
@@ -15,6 +15,8 @@ observed_deriv(distrib, y, theta, order)
 
 \item{order}{The derivative order, a single integer from 1 to 6. Anything
 else signals an error.}
+
+\item{scale}{\code{"parameter"} (the default) or \code{"link"}, passed to the generic.}
 }
 \value{
 A named list of derivative component vectors; each has length

@@ -10,8 +10,8 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{Handled by the generic after dispatch; this method always
-returns the parameter scale.}
+\item{scale}{Either \code{"parameter"} or \code{"link"}, passed to
+\code{\link[=numerical_d5expected]{numerical_d5expected()}}, which perturbs on that scale.}
 
 \item{method}{\code{NULL}: the generic handles an object before dispatching on
 the family. See \link{expected_derivative_methods}.}
