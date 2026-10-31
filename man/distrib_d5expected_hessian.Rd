@@ -60,16 +60,21 @@ as it does for the third and fourth orders. The step of a stencil of order
 \eqn{r} is \eqn{\varepsilon^{1/(r+4)}\max(1, |x|)} in the coordinate
 \eqn{x}, reduced so that every node stays inside the domain.
 
-On \code{scale = "link"} the stencil is taken in the linear predictors, on the
-link-scale fourth derivative, which \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} computes
-exactly from the analytic orders and the derivatives of the inverse links.
-A stencil on the parameter scale composed with the lower orders by Leibniz's
-rule and the Faa di Bruno formula would need the sixth derivative of the
-inverse links, and was measured against 50-digit references and rejected:
-where a parameter is small the terms of the composition cancel, and the
-stencil's error is amplified up to a relative error of 6e-3, against 2e-9
-or better for the stencil in \eqn{\eta}. The method reads \code{scale} and
-returns the scale that it is given.
+The route on \code{scale = "link"} depends on where the parameter-scale fifth
+order comes from. A family that registers its own method for this generic
+(see \code{\link[=has_exact_d5expected]{has_exact_d5expected()}}) returns the parameter scale, and the generic
+composes it with the lower orders by Leibniz's rule and the Faa di Bruno
+formula, using the derivatives of the inverse links up to the sixth. Every
+term is exact, and the composition is correct up to rounding. For any
+other family the fifth order is itself a stencil, and the stencil is taken
+in the linear predictors, on the link-scale fourth derivative, which
+\code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} computes exactly from the analytic orders and
+the derivatives of the inverse links. Composing a stencil on the parameter
+scale instead was measured against 50-digit references and rejected: where
+a parameter is small the terms of the composition cancel, and the error of
+the stencil is amplified up to a relative error of 6e-3, against 2e-9 or
+better for the stencil in \eqn{\eta}. The default method reads \code{scale} and
+returns the scale that it is given; a method of a family does not read it.
 
 With an object as \code{method}, the result is the derivative of the matrix that
 the method defines, computed as for the lower orders by Leibniz's formula
@@ -92,5 +97,5 @@ r[["sigma_sigma_sigma_sigma_sigma_sigma_sigma"]]
 }
 \seealso{
 \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} for the order below,
-\code{\link[=d5expected_names]{d5expected_names()}}, \code{\link[=distrib_deriv6]{distrib_deriv6()}}
+\code{\link[=d5expected_names]{d5expected_names()}}, \code{\link[=distrib_deriv6]{distrib_deriv6()}}, \code{\link[=has_exact_d5expected]{has_exact_d5expected()}}
 }

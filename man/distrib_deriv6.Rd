@@ -49,18 +49,24 @@ family implements. A difference of a difference is never formed.
 
 As for \code{\link[=distrib_deriv5]{distrib_deriv5()}}, there is no \code{expected} argument.
 
-On the link scale the stencil is taken in the linear predictors
-\eqn{\eta}, on the link-scale fifth order, which \code{\link[=distrib_deriv5]{distrib_deriv5()}}
-computes exactly from the analytic orders and the derivatives of the inverse
-links. The alternative, a stencil on the parameter scale composed with the
-lower orders by the Faa di Bruno formula at order six, was measured against
-50-digit references and rejected: where a parameter is small the terms of
-that formula are large and of opposite sign (for a Poisson mean of 0.05
+The route on the link scale depends on where the parameter-scale sixth
+order comes from. A family that registers its own method for this generic
+(see \code{\link[=has_exact_deriv6]{has_exact_deriv6()}}) returns the parameter scale, as the methods of
+orders one to four do, and the generic composes it with the lower orders by
+the Faa di Bruno formula at order six, using the derivatives of the inverse
+links up to the sixth. Every term is then exact and the composition is
+correct up to rounding. For any other family the sixth order is itself a
+stencil, and the stencil is taken in the linear predictors \eqn{\eta}, on
+the link-scale fifth order, which \code{\link[=distrib_deriv5]{distrib_deriv5()}} computes exactly from
+the analytic orders and the derivatives of the inverse links. Composing a
+stencil on the parameter scale instead was measured against 50-digit
+references and rejected: where a parameter is small the terms of the Faa di
+Bruno formula are large and of opposite sign (for a Poisson mean of 0.05
 every link-scale derivative is \eqn{-\mu}, while the parameter-scale terms
-are of order \eqn{120 y/\mu^6}), so the stencil's error is amplified, up to
-a relative error of 2e-2 against 2e-10 for the stencil in \eqn{\eta}. As
-for \code{\link[=distrib_deriv5]{distrib_deriv5()}}, the method reads \code{scale} and returns the scale that
-it is given.
+are of order \eqn{120 y/\mu^6}), so the error of the stencil is amplified,
+up to a relative error of 2e-2 against 2e-10 for the stencil in
+\eqn{\eta}. The default method reads \code{scale} and returns the scale that it
+is given; a method of a family does not read it.
 }
 \examples{
 distrib_deriv6(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
@@ -69,5 +75,6 @@ distrib_deriv6(poisson_distrib(), c(0, 2, 5), list(mu = 3), scale = "link")
 }
 \seealso{
 \code{\link[=distrib_deriv5]{distrib_deriv5()}} for the order below, \code{\link[=numerical_deriv6]{numerical_deriv6()}} for
-the differencing.
+the differencing, \code{\link[=has_exact_deriv6]{has_exact_deriv6()}} for the predicate that selects the
+route on the link scale.
 }

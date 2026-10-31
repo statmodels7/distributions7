@@ -40,16 +40,21 @@ NULL
 #' \eqn{r} is \eqn{\varepsilon^{1/(r+4)}\max(1, |x|)} in the coordinate
 #' \eqn{x}, reduced so that every node stays inside the domain.
 #'
-#' On `scale = "link"` the stencil is taken in the linear predictors, on the
-#' link-scale fourth derivative, which [distrib_d4expected_hessian()] computes
-#' exactly from the analytic orders and the derivatives of the inverse links.
-#' A stencil on the parameter scale composed with the lower orders by Leibniz's
-#' rule and the Faa di Bruno formula would need the sixth derivative of the
-#' inverse links, and was measured against 50-digit references and rejected:
-#' where a parameter is small the terms of the composition cancel, and the
-#' stencil's error is amplified up to a relative error of 6e-3, against 2e-9
-#' or better for the stencil in \eqn{\eta}. The method reads `scale` and
-#' returns the scale that it is given.
+#' The route on `scale = "link"` depends on where the parameter-scale fifth
+#' order comes from. A family that registers its own method for this generic
+#' (see [has_exact_d5expected()]) returns the parameter scale, and the generic
+#' composes it with the lower orders by Leibniz's rule and the Faa di Bruno
+#' formula, using the derivatives of the inverse links up to the sixth. Every
+#' term is exact, and the composition is correct up to rounding. For any
+#' other family the fifth order is itself a stencil, and the stencil is taken
+#' in the linear predictors, on the link-scale fourth derivative, which
+#' [distrib_d4expected_hessian()] computes exactly from the analytic orders and
+#' the derivatives of the inverse links. Composing a stencil on the parameter
+#' scale instead was measured against 50-digit references and rejected: where
+#' a parameter is small the terms of the composition cancel, and the error of
+#' the stencil is amplified up to a relative error of 6e-3, against 2e-9 or
+#' better for the stencil in \eqn{\eta}. The default method reads `scale` and
+#' returns the scale that it is given; a method of a family does not read it.
 #'
 #' With an object as `method`, the result is the derivative of the matrix that
 #' the method defines, computed as for the lower orders by Leibniz's formula
@@ -85,7 +90,7 @@ NULL
 #' r[["sigma_sigma_sigma_sigma_sigma_sigma_sigma"]]
 #'
 #' @seealso [distrib_d4expected_hessian()] for the order below,
-#'   [d5expected_names()], [distrib_deriv6()]
+#'   [d5expected_names()], [distrib_deriv6()], [has_exact_d5expected()]
 #'
 #' @export
 distrib_d5expected_hessian <- S7::new_generic(
@@ -101,7 +106,12 @@ distrib_d5expected_hessian <- S7::new_generic(
     if (!is.null(method)) {
       return(dexpected_by_method(distrib, y, theta, scale, 5L, method))
     }
-    S7::S7_dispatch()
+    # a method of the family's own returns the parameter scale and the link
+    # scale is composed here; the default method reads the scale itself
+    link <- scale == "link" && has_exact_d5expected(distrib)
+    if (link) scale <- "parameter"
+    res <- S7::S7_dispatch()
+    if (link) d5expected_scale(distrib, y, theta, res) else res
   })
 
 

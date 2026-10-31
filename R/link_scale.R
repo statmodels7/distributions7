@@ -629,3 +629,93 @@ deriv5_scale <- function(distrib, y, theta, res, scale) {
   nat <- link_scale_lower_orders(distrib, y, theta, FALSE, 5L)
   to_link_scale(distrib, theta, c(nat, list(res)), 5L)
 }
+
+
+#' Carry an Analytic Sixth Order to the Link Scale
+#'
+#' @description
+#' Composes the sixth-order parameter-scale derivatives of a family that
+#' registers its own [distrib_deriv6()] method with the parameter-scale orders
+#' one to five, through [to_link_scale()], which uses the derivatives of the
+#' inverse links up to the sixth.
+#'
+#' @param distrib A distribution object.
+#' @param y,theta The observations and the parameters, as given to the generic.
+#' @param res The sixth order on the parameter scale.
+#'
+#' @return A named list of link-scale sixth-order components.
+#'
+#' @seealso [has_exact_deriv6()], [deriv5_scale()].
+#'
+#' @keywords internal
+deriv6_scale <- function(distrib, y, theta, res) {
+  nat <- link_scale_lower_orders(distrib, y, theta, FALSE, 6L)
+  to_link_scale(distrib, theta, c(nat, list(res)), 6L)
+}
+
+#' Does a Family Supply Its Own Sixth Derivative?
+#'
+#' @description
+#' Returns `TRUE` where the [distrib_deriv6()] method that dispatches is
+#' registered on a class other than the package's base classes, whose method
+#' is the stencil of [numerical_deriv6()]. A wrapper registers no sixth-order
+#' method, so the result is `FALSE` for it.
+#'
+#' @param x A distribution object.
+#'
+#' @return A single logical.
+#'
+#' @seealso [distrib_deriv6()], which selects its route on the link scale
+#'   with it.
+#'
+#' @keywords internal
+has_exact_deriv6 <- function(x) owns_method(x, distrib_deriv6)
+
+#' Does a Family Supply Its Own Fifth Derivative of the Information?
+#'
+#' @description
+#' Returns `TRUE` where the [distrib_d5expected_hessian()] method that
+#' dispatches is registered on a class other than the package's base classes,
+#' whose method is the stencil of [numerical_d5expected()].
+#'
+#' @param x A distribution object.
+#'
+#' @return A single logical.
+#'
+#' @seealso [distrib_d5expected_hessian()], which selects its route on the
+#'   link scale with it.
+#'
+#' @keywords internal
+has_exact_d5expected <- function(x) owns_method(x, distrib_d5expected_hessian)
+
+#' Carry an Analytic Fifth Derivative of the Information to the Link Scale
+#'
+#' @description
+#' Composes the fifth derivative of the expected information of a family that
+#' registers its own [distrib_d5expected_hessian()] method with the
+#' parameter-scale information and its derivatives of orders one to four,
+#' through [dexpected_link_higher()], which uses the derivatives of the
+#' inverse links up to the sixth.
+#'
+#' @param distrib A distribution object.
+#' @param y,theta The observations and the parameters, as given to the generic.
+#' @param res The fifth derivative on the parameter scale.
+#'
+#' @return A named list keyed as [d5expected_names()].
+#'
+#' @seealso [has_exact_d5expected()], [d34expected_analytic()].
+#'
+#' @keywords internal
+d5expected_scale <- function(distrib, y, theta, res) {
+  params <- distrib@params
+  nat <- list(
+    distrib_expected_hessian(distrib, y, theta),
+    distrib_dexpected_hessian(distrib, y, theta),
+    distrib_d2expected_hessian(distrib, y, theta),
+    distrib_d3expected_hessian(distrib, y, theta),
+    distrib_d4expected_hessian(distrib, y, theta),
+    res)
+  h <- inverse_link_derivs(distrib, theta, 6L)
+  out <- dexpected_link_higher(params, nat, h, 5L)
+  out[d5expected_names(params)]
+}

@@ -218,3 +218,165 @@ test_that("the arguments are checked as at the order below", {
                                           method = "opg"), "ExpectMethod")
   expect_error(distrib_deriv6(d, 0, list(mu = 0, sigma = 1), scale = "eta"))
 })
+
+
+# A family that registers its own sixth order, or its own fifth derivative of
+# the information, returns the parameter scale, and the generic carries it to
+# the link scale by the Faa di Bruno composition with the inverse links
+# up to the sixth. The families below exist in this file only: a subclass of a
+# shipped family with closed forms written out, and a counter that records
+# whether, and on which scale, the method was called.
+d6_family_ <- function(base, deriv6 = NULL, d5e = NULL, log = new.env()) {
+  cls <- S7::new_class(paste0("D6Test_", base@distrib_name), package = NULL,
+                       parent = S7::S7_class(base))
+  log$calls6 <- 0L
+  log$calls5e <- 0L
+  if (!is.null(deriv6)) {
+    S7::method(distrib_deriv6, cls) <- function(distrib, y, theta,
+        scale = c("parameter", "link"), ...) {
+      log$calls6 <- log$calls6 + 1L
+      log$scale6 <- scale
+      deriv6(y, theta)
+    }
+  }
+  if (!is.null(d5e)) {
+    S7::method(distrib_d5expected_hessian, cls) <- function(distrib, y, theta,
+        scale = c("parameter", "link"), method = NULL, ...) {
+      log$calls5e <- log$calls5e + 1L
+      log$scale5e <- scale
+      d5e(y, theta)
+    }
+  }
+  do.call(cls, S7::props(base))
+}
+
+d6_family <- function(...) suppressMessages(d6_family_(...))
+
+d6_poisson <- function(log) {
+  d6_family(
+    poisson_distrib(),
+    deriv6 = function(y, theta) {
+      stats::setNames(list(-120 * y / theta[[1]]^6), deriv_names("mu", 6L))
+    },
+    d5e = function(y, theta) {
+      stats::setNames(list(rep(120 / theta[[1]]^6, length(y))),
+                      d5expected_names("mu"))
+    },
+    log = log)
+}
+
+d6_gaussian <- function(log) {
+  d6_family(
+    gaussian1_distrib(),
+    deriv6 = function(y, theta) {
+      nm <- deriv_names(c("mu", "sigma"), 6L)
+      tok <- strsplit(nm, "_")
+      stats::setNames(lapply(tok, function(t) {
+        gauss_d(y, theta[[1]], theta[[2]], sum(t == "mu"), sum(t == "sigma"))
+      }), nm)
+    },
+    d5e = function(y, theta) {
+      nm <- d5expected_names(c("mu", "sigma"))
+      s <- theta[[2]]
+      stats::setNames(lapply(strsplit(nm, "_"), function(t) {
+        if (!all(t[3:7] == "sigma")) return(rep(0, length(y)))
+        pair <- paste(t[1:2], collapse = "_")
+        rep(switch(pair, mu_mu = 720, sigma_sigma = 1440, 0) / s^7, length(y))
+      }), nm)
+    },
+    log = log)
+}
+
+
+test_that("an own sixth order is composed with the inverse links", {
+  lg <- new.env()
+  d <- d6_poisson(lg)
+  expect_true(distributions7:::has_exact_deriv6(d))
+  expect_false(distributions7:::has_exact_deriv6(poisson_distrib()))
+  y <- c(0, 2, 5)
+  for (mu in c(3, 0.05)) {
+    th <- list(mu = mu)
+    lg$calls6 <- 0L
+    got <- distrib_deriv6(d, y, th, scale = "link")
+    # the family's method ran once, and was asked for the parameter scale
+    expect_identical(lg$calls6, 1L)
+    expect_identical(lg$scale6, "parameter")
+    # on the log link every derivative of order two or more is -mu
+    expect_lt(max(abs(got[[1]] + mu)) / mu, 1e-11)
+    # and the parameter scale is the method's own result
+    expect_equal(distrib_deriv6(d, y, th)[[1]], -120 * y / mu^6)
+  }
+})
+
+
+test_that("without an own sixth order the stencil in the predictors is taken", {
+  d <- poisson_distrib()
+  y <- c(0, 2, 5)
+  for (mu in c(3, 0.05)) {
+    th <- list(mu = mu)
+    got <- distrib_deriv6(d, y, th, scale = "link")
+    expect_identical(got, numerical_deriv6(d, y, th, scale = "link"))
+    expect_lt(max(abs(got[[1]] + mu)) / mu, 1e-9)
+  }
+})
+
+
+test_that("the composition at order six agrees with the stencil in the predictors", {
+  lg <- new.env()
+  d <- d6_gaussian(lg)
+  b <- gaussian1_distrib()
+  y <- c(-0.7, 0.4, 1.9)
+  th <- list(mu = 0.3, sigma = 1.4)
+  comp <- distrib_deriv6(d, y, th, scale = "link")
+  expect_identical(lg$calls6, 1L)
+  sten <- distrib_deriv6(b, y, th, scale = "link")
+  expect_identical(names(comp), names(sten))
+  expect_lt(rel_all(comp, sten), 1e-7)
+  # the parameter scale is the closed form, untouched by the composition
+  par <- distrib_deriv6(d, y, th)
+  expect_equal(par[["mu_mu_sigma_sigma_sigma_sigma"]],
+               gauss_d(y, 0.3, 1.4, 2, 4))
+})
+
+
+test_that("an own fifth derivative of the information is composed with the inverse links", {
+  lg <- new.env()
+  d <- d6_poisson(lg)
+  y <- c(0, 2, 5)
+  for (mu in c(3, 0.05)) {
+    th <- list(mu = mu)
+    lg$calls5e <- 0L
+    got <- distrib_d5expected_hessian(d, y, th, scale = "link")
+    expect_identical(lg$calls5e, 1L)
+    expect_identical(lg$scale5e, "parameter")
+    expect_identical(names(got), d5expected_names("mu"))
+    # the information on the log link is -mu at every order of eta
+    expect_lt(max(abs(got[[1]] + mu)) / mu, 1e-11)
+    expect_equal(distrib_d5expected_hessian(d, y, th)[[1]],
+                 rep(120 / mu^6, 3))
+    # the stencil of the family without the method, for comparison
+    expect_lt(max(abs(distrib_d5expected_hessian(poisson_distrib(), y, th,
+                                                 scale = "link")[[1]] + mu)) /
+                mu, 1e-9)
+  }
+  expect_true(distributions7:::has_exact_d5expected(d))
+  expect_false(distributions7:::has_exact_d5expected(poisson_distrib()))
+})
+
+
+test_that("the composition of the information at order five has the exact values", {
+  lg <- new.env()
+  g <- d6_gaussian(lg)
+  s <- 1.3
+  th <- list(mu = 0, sigma = s)
+  comp <- distrib_d5expected_hessian(g, 0, th, scale = "link")
+  expect_identical(lg$calls5e, 1L)
+  # the values of the stencil-based test above, here to rounding
+  expect_equal(comp[["mu_mu_sigma_sigma_sigma_sigma_sigma"]], 32 / s^2,
+               tolerance = 1e-12)
+  expect_lt(abs(comp[["sigma_sigma_sigma_sigma_sigma_sigma_sigma"]]), 1e-11)
+  sten <- distrib_d5expected_hessian(gaussian1_distrib(), 0, th,
+                                     scale = "link")
+  expect_identical(names(comp), names(sten))
+  expect_lt(rel_all(comp, sten), 1e-7)
+})

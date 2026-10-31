@@ -724,18 +724,24 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
 #'
 #' As for [distrib_deriv5()], there is no `expected` argument.
 #'
-#' On the link scale the stencil is taken in the linear predictors
-#' \eqn{\eta}, on the link-scale fifth order, which [distrib_deriv5()]
-#' computes exactly from the analytic orders and the derivatives of the inverse
-#' links. The alternative, a stencil on the parameter scale composed with the
-#' lower orders by the Faa di Bruno formula at order six, was measured against
-#' 50-digit references and rejected: where a parameter is small the terms of
-#' that formula are large and of opposite sign (for a Poisson mean of 0.05
+#' The route on the link scale depends on where the parameter-scale sixth
+#' order comes from. A family that registers its own method for this generic
+#' (see [has_exact_deriv6()]) returns the parameter scale, as the methods of
+#' orders one to four do, and the generic composes it with the lower orders by
+#' the Faa di Bruno formula at order six, using the derivatives of the inverse
+#' links up to the sixth. Every term is then exact and the composition is
+#' correct up to rounding. For any other family the sixth order is itself a
+#' stencil, and the stencil is taken in the linear predictors \eqn{\eta}, on
+#' the link-scale fifth order, which [distrib_deriv5()] computes exactly from
+#' the analytic orders and the derivatives of the inverse links. Composing a
+#' stencil on the parameter scale instead was measured against 50-digit
+#' references and rejected: where a parameter is small the terms of the Faa di
+#' Bruno formula are large and of opposite sign (for a Poisson mean of 0.05
 #' every link-scale derivative is \eqn{-\mu}, while the parameter-scale terms
-#' are of order \eqn{120 y/\mu^6}), so the stencil's error is amplified, up to
-#' a relative error of 2e-2 against 2e-10 for the stencil in \eqn{\eta}. As
-#' for [distrib_deriv5()], the method reads `scale` and returns the scale that
-#' it is given.
+#' are of order \eqn{120 y/\mu^6}), so the error of the stencil is amplified,
+#' up to a relative error of 2e-2 against 2e-10 for the stencil in
+#' \eqn{\eta}. The default method reads `scale` and returns the scale that it
+#' is given; a method of a family does not read it.
 #'
 #' @param distrib A distribution object inheriting from the `distrib` class.
 #' @param y A numeric vector of observations.
@@ -758,14 +764,20 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
 #' distrib_deriv6(poisson_distrib(), c(0, 2, 5), list(mu = 3), scale = "link")
 #'
 #' @seealso [distrib_deriv5()] for the order below, [numerical_deriv6()] for
-#'   the differencing.
+#'   the differencing, [has_exact_deriv6()] for the predicate that selects the
+#'   route on the link scale.
 #' @export
 distrib_deriv6 <- S7::new_generic("distrib_deriv6", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
   y <- args$y
   theta <- args$theta
   scale <- match.arg(scale)
-  S7::S7_dispatch()
+  # a method of the family's own returns the parameter scale and the link
+  # scale is composed here; the default method reads the scale itself
+  link <- scale == "link" && has_exact_deriv6(distrib)
+  if (link) scale <- "parameter"
+  res <- S7::S7_dispatch()
+  if (link) deriv6_scale(distrib, y, theta, res) else res
 })
 
 #' Whether a Family Supplies Its Own Fourth Derivative
