@@ -1,3 +1,12 @@
+# distributions7 0.94.1
+
+* A family that registers its own method for `distrib_deriv6()` or
+  `distrib_d5expected_hessian()` returns the parameter scale, and the link
+  scale is obtained by the Faa di Bruno composition with the inverse-link
+  derivatives up to the sixth, exact up to rounding. Families without such a
+  method keep the single stencil in the linear predictors. A user's method
+  for either generic receives `scale = "parameter"`.
+
 # distributions7 0.94.0
 
 * `distrib_deriv6()` and `distrib_d5expected_hessian()` return the sixth
