@@ -1,3 +1,18 @@
+# distributions7 0.94.0
+
+* `distrib_deriv6()` and `distrib_d5expected_hessian()` return the sixth
+  derivative of the log-likelihood and the fifth derivative of the expected
+  information. Each is one tensor stencil (`numericals7::fd_tensor()`) on the
+  highest order that the family computes in closed form. On the link scale
+  the stencil is taken in the linear predictors, on the exact link-scale
+  order below. `numerical_deriv6()`, `d5expected_names()` and
+  `d5expected_key()` are exported.
+* A `method` object of the expected-information derivatives reaches order
+  five with `identity = "score"`, and `distrib_d4expected_hessian()` with
+  `identity = "hessian"` returns the derivative instead of signalling an
+  error.
+* Requires linkfunctions7 0.8.0.
+
 # distributions7 0.93.1
 
 * `fit_distrib()` checks the supplied gradient against a central difference
