@@ -40,12 +40,14 @@ pages; the value returned is theirs.
   [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
   [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
   [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
+  [`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md),
   and the derivatives of the expected information
   [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md),
   [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md),
-  [`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md)
+  [`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md),
+  [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
   and
-  [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md).
+  [`distrib_d5expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.md).
 
 - derivatives in the response:
 
@@ -110,7 +112,9 @@ derivative generics in the parameters of orders one to four also take
 the parameter scale and never reads it; see
 [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
-is the exception: its methods read `scale` and apply it themselves.
+and
+[`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
+are the exception: their methods read `scale` and apply it themselves.
 
 ## See also
 

@@ -29,7 +29,7 @@ overrides the fallback by ordinary S7 dispatch."><meta property="og:image" conte
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,10 +92,10 @@ own pages; the value returned is theirs.</p>
 <dt>derivatives in the parameters</dt>
 <dd><p><code><a href="distrib_gradient.html">distrib_gradient()</a></code>,
 <code><a href="distrib_hessian.html">distrib_hessian()</a></code>, <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>, <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code>,
-<code><a href="distrib_deriv4.html">distrib_deriv4()</a></code>, <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code>, and the derivatives of the
-expected information <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>,
-<code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>, <code><a href="distrib_d3expected_hessian.html">distrib_d3expected_hessian()</a></code> and
-<code><a href="distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code>.</p></dd>
+<code><a href="distrib_deriv4.html">distrib_deriv4()</a></code>, <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code>, <code><a href="distrib_deriv6.html">distrib_deriv6()</a></code>, and the
+derivatives of the expected information <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>,
+<code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>, <code><a href="distrib_d3expected_hessian.html">distrib_d3expected_hessian()</a></code>,
+<code><a href="distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code> and <code><a href="distrib_d5expected_hessian.html">distrib_d5expected_hessian()</a></code>.</p></dd>
 
 <dt>derivatives in the response</dt>
 <dd><p><code><a href="distrib_grad_y.html">distrib_grad_y()</a></code>,
@@ -135,8 +135,9 @@ by name, removes the names carried by the values and validates it against
 <code>params_bounds</code>, treated as open intervals. The derivative generics in
 the parameters of orders one to four also take <code>scale</code>, which the generic
 applies after dispatch, so a method returns the parameter scale and
-never reads it; see <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>. <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> is the
-exception: its methods read <code>scale</code> and apply it themselves.</p>
+never reads it; see <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>. <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> and
+<code><a href="distrib_deriv6.html">distrib_deriv6()</a></code> are the exception: their methods read <code>scale</code> and apply
+it themselves.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

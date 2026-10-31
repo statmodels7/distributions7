@@ -10,7 +10,7 @@ or its Monte Carlo mean
 ## Usage
 
 ``` r
-dexpected_evaluate(distrib, y, theta, polys, method)
+dexpected_evaluate(distrib, y, theta, polys, method, scale = "parameter")
 ```
 
 ## Arguments
@@ -36,6 +36,11 @@ dexpected_evaluate(distrib, y, theta, polys, method)
 
   An object inheriting from
   [ExpectMethod](https://statmodels7.github.io/distributions7/reference/ExpectMethod.md).
+
+- scale:
+
+  `"parameter"` (the default) or `"link"`, the scale of the observed
+  derivatives in the polynomials.
 
 ## Value
 

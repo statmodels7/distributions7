@@ -4,9 +4,10 @@ Routes to
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
-or
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
+or
+[`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
 according to `order`, so that code working at an order fixed only at run
 time does not have to branch. The methods of
 [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
@@ -20,7 +21,7 @@ orders that it multiplies together.
 ## Usage
 
 ``` r
-observed_deriv(distrib, y, theta, order)
+observed_deriv(distrib, y, theta, order, scale = "parameter")
 ```
 
 ## Arguments
@@ -39,8 +40,12 @@ observed_deriv(distrib, y, theta, order)
 
 - order:
 
-  The derivative order, a single integer from 1 to 5. Anything else
+  The derivative order, a single integer from 1 to 6. Anything else
   signals an error.
+
+- scale:
+
+  `"parameter"` (the default) or `"link"`, passed to the generic.
 
 ## Value
 

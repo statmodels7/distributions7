@@ -1,6 +1,6 @@
 # Inverse-Link Derivatives for Every Parameter
 
-Returns the derivatives \\h', h'', \dots, h^{(5)}\\ of each parameter's
+Returns the derivatives \\h', h'', \dots, h^{(6)}\\ of each parameter's
 inverse link, evaluated at \\\eta = g(\theta)\\, up to `order`.
 
 ## Usage
@@ -21,7 +21,7 @@ inverse_link_derivs(distrib, theta, order)
 
 - order:
 
-  The highest derivative order needed, 1 to 5.
+  The highest derivative order needed, 1 to 6.
 
 ## Value
 

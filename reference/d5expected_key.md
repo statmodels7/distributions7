@@ -1,0 +1,43 @@
+# The Key of One Component of the Expected Information's Fifth Derivative
+
+Returns the name under which
+[`distrib_d5expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.md)
+returns
+\\\partial^5\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\\partial\theta_d\\
+\partial\theta_e\\\partial\theta_f\\\partial\theta_g\\.
+
+## Usage
+
+``` r
+d5expected_key(params, a, b, c, d, e, f, g)
+```
+
+## Arguments
+
+- params:
+
+  A character vector of parameter names, in the family's order.
+
+- a, b:
+
+  Indices of the information's pair; their order does not matter.
+
+- c, d, e, f, g:
+
+  Indices of the parameters with respect to which the derivative is
+  taken; their order does not matter either.
+
+## Value
+
+A single string.
+
+## See also
+
+[`d5expected_names()`](https://statmodels7.github.io/distributions7/reference/d5expected_names.md)
+
+## Examples
+
+``` r
+d5expected_key(c("mu", "sigma"), 1, 2, 2, 2, 1, 2, 1)
+#> [1] "mu_sigma_mu_mu_sigma_sigma_sigma"
+```

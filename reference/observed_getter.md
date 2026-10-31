@@ -7,7 +7,7 @@ each order once.
 ## Usage
 
 ``` r
-observed_getter(distrib, ys, th)
+observed_getter(distrib, ys, th, scale = "parameter")
 ```
 
 ## Arguments
@@ -23,6 +23,11 @@ observed_getter(distrib, ys, th)
 - th:
 
   The parameters, aligned.
+
+- scale:
+
+  `"parameter"` (the default) or `"link"`, the scale of the observed
+  derivatives.
 
 ## Value
 

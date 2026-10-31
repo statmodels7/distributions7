@@ -2,7 +2,7 @@
 
 Applies Leibniz's rule and the diagonal Faa di Bruno formula to
 \\F\_{ab}(\eta) = E\_{ab}(\theta(\eta))\\h_a'(\eta_a)\\h_b'(\eta_b)\\,
-at orders one to four.
+at orders one to five.
 
 ## Usage
 
@@ -24,9 +24,10 @@ dexpected_link_higher(params, nat, h, order)
   and `nat[[m + 1]]` its derivatives of order `m`, keyed as
   [`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md),
   [`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md),
-  [`d3expected_names()`](https://statmodels7.github.io/distributions7/reference/d3expected_names.md)
+  [`d3expected_names()`](https://statmodels7.github.io/distributions7/reference/d3expected_names.md),
+  [`d4expected_names()`](https://statmodels7.github.io/distributions7/reference/d4expected_names.md)
   and
-  [`d4expected_names()`](https://statmodels7.github.io/distributions7/reference/d4expected_names.md).
+  [`d5expected_names()`](https://statmodels7.github.io/distributions7/reference/d5expected_names.md).
 
 - h:
 
@@ -36,7 +37,7 @@ dexpected_link_higher(params, nat, h, order)
 
 - order:
 
-  `1L` to `4L`.
+  `1L` to `5L`.
 
 ## Value
 

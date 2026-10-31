@@ -1,7 +1,7 @@
-# Partial Bell Polynomials for Orders up to Five
+# Partial Bell Polynomials for Orders up to Six
 
 Evaluates the partial (incomplete) Bell polynomial \\B\_{m,j}\\ at the
-derivatives of the inverse link, for \\m \le 5\\.
+derivatives of the inverse link, for \\m \le 6\\.
 
 ## Usage
 
@@ -13,7 +13,7 @@ bell_partial(m, j, h)
 
 - m:
 
-  The total order, 1 to 5.
+  The total order, 1 to 6.
 
 - j:
 
@@ -34,12 +34,13 @@ These are the coefficients that Faa di Bruno's formula needs. Because
 each parameter carries its own link, the Jacobian of \\\theta \mapsto
 \eta\\ is diagonal and the multivariate formula factorizes into a
 product of univariate ones, so only \\B\_{m,j}\\ for a single variable
-is required. They are written out as a table of the fifteen polynomials
-with \\m \le 5\\.
+is required. They are written out as a table of the twenty-one
+polynomials with \\m \le 6\\.
 
 The polynomial \\B\_{m,j}\\ is the coefficient of \\t^m/m!\\ in
 \\(\sum_k x_k t^k/k!)^j/j!\\. The coefficients of the order-5 row sum to
-the Bell number \\B_5 = 52\\.
+the Bell number \\B_5 = 52\\, and those of the order-6 row to \\B_6 =
+203\\.
 
 ## See also
 

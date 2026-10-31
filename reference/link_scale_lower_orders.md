@@ -31,7 +31,8 @@ link_scale_lower_orders(distrib, y, theta, expected, order, method = NULL)
 
 - order:
 
-  The order to assemble, 1 to 5.
+  The order to assemble, 1 to 6. Order 6 is observed only, and
+  `expected = TRUE` with it signals an error.
 
 - method:
 

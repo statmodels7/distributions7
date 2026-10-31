@@ -131,12 +131,16 @@ response and of the distribution function.
   : The Third Derivative of the Expected Information
 - [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
   : The Fourth Derivative of the Expected Information
+- [`distrib_d5expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.md)
+  : The Fifth Derivative of the Expected Information
 - [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
   : Analytical Third-Order Derivatives
 - [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
   : Analytical Fourth-Order Derivatives
 - [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
   : Fifth-Order Derivatives
+- [`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
+  : Sixth-Order Derivatives
 - [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
   : Gradient of the Log-Density with Respect to the Response
 - [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
@@ -370,6 +374,8 @@ show what the default methods compute.
   : Numerical Fourth-Order Derivatives of the Log-Density
 - [`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
   : Fifth-Order Derivatives by One Tensor Stencil
+- [`numerical_deriv6()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv6.md)
+  : Sixth-Order Derivatives by One Tensor Stencil
 - [`numerical_grad_y()`](https://statmodels7.github.io/distributions7/reference/numerical_grad_y.md)
   : Numerical Gradient of the Log-Density with Respect to the Response
 - [`numerical_hess_y()`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md)
@@ -425,6 +431,11 @@ show what the default methods compute.
   : The Names of the Expected Information's Fourth Derivative
 - [`d4expected_key()`](https://statmodels7.github.io/distributions7/reference/d4expected_key.md)
   : The Key of One Component of the Expected Information's Fourth
+  Derivative
+- [`d5expected_names()`](https://statmodels7.github.io/distributions7/reference/d5expected_names.md)
+  : The Names of the Expected Information's Fifth Derivative
+- [`d5expected_key()`](https://statmodels7.github.io/distributions7/reference/d5expected_key.md)
+  : The Key of One Component of the Expected Information's Fifth
   Derivative
 - [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)
   : Per-Parameter Smoothness of the Log-Likelihood
@@ -2190,7 +2201,7 @@ transforms that make it work on a divergent density.
   : Complete Bell Polynomial in the Parent's Log-Derivatives
 
 - [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
-  : Partial Bell Polynomials for Orders up to Five
+  : Partial Bell Polynomials for Orders up to Six
 
 - [`beta2_higher()`](https://statmodels7.github.io/distributions7/reference/beta2_higher.md)
   : Higher Derivatives of the Beta in Its Shapes
@@ -2343,6 +2354,10 @@ transforms that make it work on a divergent density.
   : The Analytic Third and Fourth Derivatives of the Expected
   Information
 
+- [`d5expected_base()`](https://statmodels7.github.io/distributions7/reference/d5expected_base.md)
+  : The Order from Which the Fifth Derivative of the Information Is
+  Differenced
+
 - [`declares_atoms()`](https://statmodels7.github.io/distributions7/reference/declares_atoms.md)
   : Does a Distribution Declare Atoms
 
@@ -2351,6 +2366,9 @@ transforms that make it work on a divergent density.
 
 - [`deriv5_scale()`](https://statmodels7.github.io/distributions7/reference/deriv5_scale.md)
   : Carry an Analytic Fifth Order to the Link Scale
+
+- [`deriv6_base()`](https://statmodels7.github.io/distributions7/reference/deriv6_base.md)
+  : The Order from Which a Sixth Derivative Is Differenced
 
 - [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
   : Index Tuples Matching the Package's Component Naming
@@ -2576,6 +2594,9 @@ transforms that make it work on a divergent density.
 - [`distrib_d4expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.distrib.md)
   : Default Fourth Derivative of the Expected Information
 
+- [`distrib_d5expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.distrib.md)
+  : Default Fifth Derivative of the Expected Information
+
 - [`distrib_deriv3.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.md)
   : Multivariate Gaussian Third Derivatives
 
@@ -2641,6 +2662,11 @@ transforms that make it work on a divergent density.
   [`distrib_deriv5.FixedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
   [`wrapper_deriv5_method`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.wrappers.md)
   : The Wrappers' Fifth Derivatives
+
+- [`distrib_deriv6.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.distrib.md)
+  :
+
+  Default Sixth-Order Derivatives for `distrib` Objects
 
 - [`distrib_deriv_component()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.md)
   : One Component of the Parent's Derivative
@@ -3942,6 +3968,9 @@ transforms that make it work on a divergent density.
 
 - [`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md)
   : Numerical CDF Derivatives of Any Order
+
+- [`numerical_d5expected()`](https://statmodels7.github.io/distributions7/reference/numerical_d5expected.md)
+  : The Fifth Derivative of the Expected Information by One Stencil
 
 - [`numerical_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_dexpected_hessian.md)
   : Differencing the Expected Information Once

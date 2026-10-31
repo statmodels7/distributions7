@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,13 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.94.0" id="distributions7-0940">distributions7 0.94.0<a class="anchor" aria-label="anchor" href="#distributions7-0940"></a></h2>
+<ul><li>
+<code><a href="../reference/distrib_deriv6.html">distrib_deriv6()</a></code> and <code><a href="../reference/distrib_d5expected_hessian.html">distrib_d5expected_hessian()</a></code> return the sixth derivative of the log-likelihood and the fifth derivative of the expected information. Each is one tensor stencil (<code><a href="https://statmodels7.github.io/numericals7/reference/fd_tensor.html" class="external-link">numericals7::fd_tensor()</a></code>) on the highest order that the family computes in closed form. On the link scale the stencil is taken in the linear predictors, on the exact link-scale order below. <code><a href="../reference/numerical_deriv6.html">numerical_deriv6()</a></code>, <code><a href="../reference/d5expected_names.html">d5expected_names()</a></code> and <code><a href="../reference/d5expected_key.html">d5expected_key()</a></code> are exported.</li>
+<li>A <code>method</code> object of the expected-information derivatives reaches order five with <code>identity = "score"</code>, and <code><a href="../reference/distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code> with <code>identity = "hessian"</code> returns the derivative instead of signalling an error.</li>
+<li>Requires linkfunctions7 0.8.0.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.93.1" id="distributions7-0931">distributions7 0.93.1<a class="anchor" aria-label="anchor" href="#distributions7-0931"></a></h2>
 <ul><li>

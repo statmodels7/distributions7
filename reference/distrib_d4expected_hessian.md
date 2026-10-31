@@ -48,9 +48,10 @@ distrib_d4expected_hessian(
   [`expect_integrate()`](https://statmodels7.github.io/distributions7/reference/expect_integrate.md)
   and
   [`expect_mc()`](https://statmodels7.github.io/distributions7/reference/expect_mc.md);
-  with `identity = "hessian"` the fourth derivative needs observed
-  derivatives of order 6 and signals an error that names
-  `identity = "score"`. See
+  with `identity = "hessian"` the fourth derivative reads observed
+  derivatives of order 6, which
+  [`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
+  computes by one stencil on the fifth. See
   [expected_derivative_methods](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - ...:

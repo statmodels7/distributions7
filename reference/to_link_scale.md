@@ -28,7 +28,7 @@ to_link_scale(distrib, theta, nat, order)
 
 - order:
 
-  The derivative order to assemble, 1 to 5.
+  The derivative order to assemble, 1 to 6.
 
 ## Value
 

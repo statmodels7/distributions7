@@ -1,5 +1,28 @@
 # Changelog
 
+## distributions7 0.94.0
+
+- [`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
+  and
+  [`distrib_d5expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.md)
+  return the sixth derivative of the log-likelihood and the fifth
+  derivative of the expected information. Each is one tensor stencil
+  ([`numericals7::fd_tensor()`](https://statmodels7.github.io/numericals7/reference/fd_tensor.html))
+  on the highest order that the family computes in closed form. On the
+  link scale the stencil is taken in the linear predictors, on the exact
+  link-scale order below.
+  [`numerical_deriv6()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv6.md),
+  [`d5expected_names()`](https://statmodels7.github.io/distributions7/reference/d5expected_names.md)
+  and
+  [`d5expected_key()`](https://statmodels7.github.io/distributions7/reference/d5expected_key.md)
+  are exported.
+- A `method` object of the expected-information derivatives reaches
+  order five with `identity = "score"`, and
+  [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
+  with `identity = "hessian"` returns the derivative instead of
+  signalling an error.
+- Requires linkfunctions7 0.8.0.
+
 ## distributions7 0.93.1
 
 - [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)

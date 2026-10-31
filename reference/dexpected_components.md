@@ -19,7 +19,7 @@ dexpected_components(params, m)
 
 - m:
 
-  The derivative order, 0 to 4.
+  The derivative order, 0 to 5.
 
 ## Value
 

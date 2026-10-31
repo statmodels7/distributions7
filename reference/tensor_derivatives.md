@@ -3,9 +3,10 @@
 Computes the derivative components of order `order` of the log-density
 from the highest order that the family implements itself: the
 log-density (`base = 0`), the score (`base = 1`), the Hessian
-(`base = 2`), the third order (`base = 3`) or the fourth (`base = 4`).
-Each component is a single tensor-product central difference of order
-`order - base`, never a difference of a difference.
+(`base = 2`), the third order (`base = 3`), the fourth (`base = 4`) or
+the fifth (`base = 5`). Each component is a single tensor-product
+central difference of order `order - base`, never a difference of a
+difference.
 
 ## Usage
 
@@ -43,7 +44,7 @@ tensor_derivatives(
 
 - base:
 
-  The highest order that the family implements itself, 0 to 4.
+  The highest order that the family implements itself, 0 to 5.
 
 - rel_step:
 
@@ -98,7 +99,8 @@ derivative of a link-scale quantity.
 [`analytic_order()`](https://statmodels7.github.io/distributions7/reference/analytic_order.md)
 for how `base` is found;
 [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
+[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
+[`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md)
 and
-[`numerical_deriv5()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv5.md),
+[`numerical_deriv6()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv6.md),
 which call this.

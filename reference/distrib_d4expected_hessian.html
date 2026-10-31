@@ -11,7 +11,7 @@ per pair \((a,b)\) and per unordered quadruple \((c,d,e,f)\)."><meta property="o
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,9 +87,9 @@ per pair \((a,b)\) and per unordered quadruple \((c,d,e,f)\).</p>
 <a href="ExpectMethod.html">ExpectMethod</a>, as for <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>. An object returns the
 derivative of the matrix that the method defines, by Leibniz's formula for
 <code><a href="expect_opg.html">expect_opg()</a></code> and with the moved density for <code><a href="expect_integrate.html">expect_integrate()</a></code> and
-<code><a href="expect_mc.html">expect_mc()</a></code>; with <code>identity = "hessian"</code> the fourth derivative needs
-observed derivatives of order 6 and signals an error that names
-<code>identity = "score"</code>. See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
+<code><a href="expect_mc.html">expect_mc()</a></code>; with <code>identity = "hessian"</code> the fourth derivative reads
+observed derivatives of order 6, which <code><a href="distrib_deriv6.html">distrib_deriv6()</a></code> computes by one
+stencil on the fifth. See <a href="expected_derivative_methods.html">expected_derivative_methods</a>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

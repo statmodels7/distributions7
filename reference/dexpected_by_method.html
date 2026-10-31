@@ -3,13 +3,13 @@
 ExpectMethod defines, with respect to the parameters, on the parameter
 scale or the link scale. It is the route of
 distrib_dexpected_hessian(), distrib_d2expected_hessian(),
-distrib_d3expected_hessian() and distrib_d4expected_hessian() when
-method is an object."><meta property="og:description" content="Returns the derivative of order m of the matrix that an
+distrib_d3expected_hessian(), distrib_d4expected_hessian() and
+distrib_d5expected_hessian() when method is an object."><meta property="og:description" content="Returns the derivative of order m of the matrix that an
 ExpectMethod defines, with respect to the parameters, on the parameter
 scale or the link scale. It is the route of
 distrib_dexpected_hessian(), distrib_d2expected_hessian(),
-distrib_d3expected_hessian() and distrib_d4expected_hessian() when
-method is an object."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+distrib_d3expected_hessian(), distrib_d4expected_hessian() and
+distrib_d5expected_hessian() when method is an object."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +17,7 @@ method is an object."><meta property="og:image" content="https://statmodels7.git
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.93.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,8 +54,8 @@ method is an object."><meta property="og:image" content="https://statmodels7.git
 <a href="ExpectMethod.html">ExpectMethod</a> defines, with respect to the parameters, on the parameter
 scale or the link scale. It is the route of
 <code><a href="distrib_dexpected_hessian.html">distrib_dexpected_hessian()</a></code>, <code><a href="distrib_d2expected_hessian.html">distrib_d2expected_hessian()</a></code>,
-<code><a href="distrib_d3expected_hessian.html">distrib_d3expected_hessian()</a></code> and <code><a href="distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code> when
-<code>method</code> is an object.</p>
+<code><a href="distrib_d3expected_hessian.html">distrib_d3expected_hessian()</a></code>, <code><a href="distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code> and
+<code><a href="distrib_d5expected_hessian.html">distrib_d5expected_hessian()</a></code> when <code>method</code> is an object.</p>
     </div>
 
     <div class="section level2">
@@ -84,7 +84,7 @@ scale or the link scale. It is the route of
 
 
 <dt id="arg-m">m<a class="anchor" aria-label="anchor" href="#arg-m"></a></dt>
-<dd><p>The derivative order, 1 to 4.</p></dd>
+<dd><p>The derivative order, 1 to 5.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
@@ -94,7 +94,7 @@ scale or the link scale. It is the route of
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list keyed as <code><a href="dexpected_names.html">dexpected_names()</a></code>, <code><a href="d2expected_names.html">d2expected_names()</a></code>,
-<code><a href="d3expected_names.html">d3expected_names()</a></code> or <code><a href="d4expected_names.html">d4expected_names()</a></code>.</p>
+<code><a href="d3expected_names.html">d3expected_names()</a></code>, <code><a href="d4expected_names.html">d4expected_names()</a></code> or <code><a href="d5expected_names.html">d5expected_names()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -111,11 +111,17 @@ data do not move, and the derivative is the Leibniz derivative of
 <code>identity = "score"</code>; <code><a href="expect_opg.html">expect_opg()</a></code> uses the second.</p>
 <p>The derivative of order <code>m</code> of \(f_{ab}\) needs observed derivatives of
 order up to <code>m + 1</code> for the score identity and <code>m + 2</code> for the Hessian
-identity. The package provides five orders, so the Hessian identity at
-<code>m = 4</code> signals an error that names <code>identity = "score"</code>.</p>
-<p>On the link scale the parameter-scale derivatives of every order up to <code>m</code>
-are computed by the same method and carried across by
-<code><a href="dexpected_link_higher.html">dexpected_link_higher()</a></code>.</p>
+identity. The package provides six orders, the sixth by the stencil of
+<code><a href="distrib_deriv6.html">distrib_deriv6()</a></code>, so the Hessian identity at <code>m = 5</code> signals an error
+that names <code>identity = "score"</code>.</p>
+<p>On the link scale and for <code>m</code> up to 4, the parameter-scale derivatives of
+every order up to <code>m</code> are computed by the same method and carried across by
+<code><a href="dexpected_link_higher.html">dexpected_link_higher()</a></code>. At <code>m = 5</code> the polynomial is evaluated with the
+observed derivatives on the link scale instead, the route that
+<code><a href="distrib_d5expected_hessian.html">distrib_d5expected_hessian()</a></code> takes for its stencil: the identities and the
+moved density hold in any coordinates, and the composition would read the
+parameter-scale stencil of <code><a href="distrib_deriv6.html">distrib_deriv6()</a></code> through the Faa di Bruno
+formula at order six.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

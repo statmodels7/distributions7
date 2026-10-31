@@ -6,9 +6,10 @@ defines, with respect to the parameters, on the parameter scale or the
 link scale. It is the route of
 [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md),
 [`distrib_d2expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d2expected_hessian.md),
-[`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md)
-and
+[`distrib_d3expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d3expected_hessian.md),
 [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
+and
+[`distrib_d5expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.md)
 when `method` is an object.
 
 ## Usage
@@ -37,7 +38,7 @@ dexpected_by_method(distrib, y, theta, scale, m, method)
 
 - m:
 
-  The derivative order, 1 to 4.
+  The derivative order, 1 to 5.
 
 - method:
 
@@ -49,9 +50,10 @@ dexpected_by_method(distrib, y, theta, scale, m, method)
 A named list keyed as
 [`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md),
 [`d2expected_names()`](https://statmodels7.github.io/distributions7/reference/d2expected_names.md),
-[`d3expected_names()`](https://statmodels7.github.io/distributions7/reference/d3expected_names.md)
+[`d3expected_names()`](https://statmodels7.github.io/distributions7/reference/d3expected_names.md),
+[`d4expected_names()`](https://statmodels7.github.io/distributions7/reference/d4expected_names.md)
 or
-[`d4expected_names()`](https://statmodels7.github.io/distributions7/reference/d4expected_names.md).
+[`d5expected_names()`](https://statmodels7.github.io/distributions7/reference/d5expected_names.md).
 
 ## Details
 
@@ -76,12 +78,23 @@ uses the second.
 
 The derivative of order `m` of \\f\_{ab}\\ needs observed derivatives of
 order up to `m + 1` for the score identity and `m + 2` for the Hessian
-identity. The package provides five orders, so the Hessian identity at
-`m = 4` signals an error that names `identity = "score"`.
+identity. The package provides six orders, the sixth by the stencil of
+[`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md),
+so the Hessian identity at `m = 5` signals an error that names
+`identity = "score"`.
 
-On the link scale the parameter-scale derivatives of every order up to
-`m` are computed by the same method and carried across by
+On the link scale and for `m` up to 4, the parameter-scale derivatives
+of every order up to `m` are computed by the same method and carried
+across by
 [`dexpected_link_higher()`](https://statmodels7.github.io/distributions7/reference/dexpected_link_higher.md).
+At `m = 5` the polynomial is evaluated with the observed derivatives on
+the link scale instead, the route that
+[`distrib_d5expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.md)
+takes for its stencil: the identities and the moved density hold in any
+coordinates, and the composition would read the parameter-scale stencil
+of
+[`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
+through the Faa di Bruno formula at order six.
 
 ## See also
 
