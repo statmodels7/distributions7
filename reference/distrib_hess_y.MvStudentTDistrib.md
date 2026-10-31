@@ -73,7 +73,7 @@ dim(hy)
 max(abs(hy[, , 1] -
         numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
                           y[1, ])))
-#> [1] 6.846601e-11
+#> [1] 6.853185e-11
 
 # Far out along one coordinate the curvature turns positive, where a
 # gaussian's never does.

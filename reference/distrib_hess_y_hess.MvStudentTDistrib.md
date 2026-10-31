@@ -98,5 +98,5 @@ c(gap = max(abs(hh[[key]] -
                 (f(h, h) - f(h, -h) - f(-h, h) + f(-h, -h)) / (4 * h * h))),
   scale = max(abs(hh[[key]])))
 #>          gap        scale 
-#> 8.103763e-07 1.163532e+00 
+#> 5.841129e-07 1.163532e+00 
 ```
