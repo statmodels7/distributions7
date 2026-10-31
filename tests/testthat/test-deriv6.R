@@ -301,8 +301,11 @@ test_that("an own sixth order is composed with the inverse links", {
     # the family's method ran once, and was asked for the parameter scale
     expect_identical(lg$calls6, 1L)
     expect_identical(lg$scale6, "parameter")
-    # on the log link every derivative of order two or more is -mu
-    expect_lt(max(abs(got[[1]] + mu)) / mu, 1e-11)
+    # on the log link every derivative of order two or more is -mu; the
+    # Faa di Bruno terms sum to max(y) * sum_k (k-1)! S(6,k) = 1082 max(y)
+    # and cancel to mu, so rounding is amplified by that ratio
+    cond <- max(y) * 1082 / mu
+    expect_lt(max(abs(got[[1]] + mu)) / mu, 20 * .Machine$double.eps * cond)
     # and the parameter scale is the method's own result
     expect_equal(distrib_deriv6(d, y, th)[[1]], -120 * y / mu^6)
   }

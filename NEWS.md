@@ -1,3 +1,9 @@
+# distributions7 0.94.2
+
+* Tests only: the precision required of the composed sixth derivative of a
+  test family is set by the condition number of the Faa di Bruno sum, which
+  cancels to mu; a fixed 1e-11 failed on ubuntu oldrel-1 at mu = 0.05.
+
 # distributions7 0.94.1
 
 * A family that registers its own method for `distrib_deriv6()` or
