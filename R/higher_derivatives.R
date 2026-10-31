@@ -443,3 +443,110 @@ deriv5_base <- function(x) {
 S7::method(distrib_deriv5, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   numerical_deriv5(distrib, y, theta, scale = scale, ...)
 }
+
+
+#' Sixth-Order Derivatives by One Tensor Stencil
+#'
+#' @description
+#' Computes the sixth-order derivative components, where each component is a
+#' single tensor-product central difference of the highest analytic order
+#' below it, through [tensor_derivatives()].
+#'
+#' @details
+#' The quantity that is differenced is the fifth order where it is analytic,
+#' which holds for a family that registers its own [distrib_deriv5()] method
+#' and for a wrapper of such a family. Each component is then one central
+#' difference of a fifth-order component in one parameter, and the whole
+#' order costs one stencil per parameter. Where the fifth order is not
+#' analytic, the order that is differenced is the one from which
+#' [numerical_deriv5()] differences, so that the sixth order is a stencil of
+#' order two (or higher) on the fourth order, or on the highest order below
+#' it that the family implements. A difference of a difference is never
+#' formed.
+#'
+#' The step of a difference of order \eqn{r} is
+#' \eqn{\varepsilon^{1/(r+a)}\max(1, |\theta_j|)}, with \eqn{a} the
+#' accuracy, reduced so that every node stays inside the parameter's domain.
+#'
+#' [distrib_deriv6()] calls this on the parameter scale and carries the result
+#' to the link scale itself. With `scale = "link"` the perturbation is applied
+#' to \eqn{\eta} and the differenced quantity is read on the link scale, so
+#' the result is the derivative of a link-scale quantity, obtained without the
+#' sixth derivative of a link; this second route is kept for comparison.
+#'
+#' @param distrib A distribution object.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters, aligned by the generic.
+#' @param scale `"parameter"` or `"link"`; the scale on which the
+#'   differenced quantity is read and on which the perturbation is applied.
+#' @param accuracy The order of accuracy of the central rules, passed to
+#'   [numericals7::fd_tensor()]. The default 4 uses four evaluations of the
+#'   fifth order per parameter where it is analytic; 2 uses two.
+#'
+#' @return A named list of sixth-derivative component vectors, each of length
+#'   `length(y)`, keyed lexicographically as
+#'   [`deriv_names(distrib@params, 6)`][deriv_names] gives them.
+#'
+#' @examples
+#' numerical_deriv6(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
+#' @seealso [distrib_deriv6()], the generic; [numerical_deriv5()], the order
+#'   below; [tensor_derivatives()], which does the differencing.
+#' @export
+numerical_deriv6 <- function(distrib, y, theta, scale = c("parameter", "link"),
+                             accuracy = 4L) {
+  scale <- match.arg(scale)
+  tensor_derivatives(distrib, y, theta, order = 6L, base = deriv6_base(distrib),
+                     scale = scale, accuracy = accuracy)
+}
+
+
+#' The Order from Which a Sixth Derivative Is Differenced
+#'
+#' @description
+#' Returns 5 where the family's fifth derivative is analytic, as
+#' [has_exact_deriv5()] reports it, and otherwise the order that
+#' [deriv5_base()] returns.
+#'
+#' @param x A distribution object.
+#'
+#' @return An integer from 0 to 5.
+#'
+#' @seealso [numerical_deriv6()], which passes it to [tensor_derivatives()].
+#' @keywords internal
+deriv6_base <- function(x) {
+  if (has_exact_deriv5(x)) return(5L)
+  deriv5_base(x)
+}
+
+
+#' @title Default Sixth-Order Derivatives for `distrib` Objects
+#' @name distrib_deriv6.distrib
+#'
+#' @description
+#' Defines the route of every family at the sixth order: one tensor-product
+#' difference of its highest analytic order, through [numerical_deriv6()].
+#'
+#' @details
+#' This method is registered on the base class, and no family or wrapper
+#' overrides it. The quantity that is differenced is the fifth order where
+#' [has_exact_deriv5()] is `TRUE`, and the order that [numerical_deriv5()]
+#' differences otherwise.
+#'
+#' @param distrib An object inheriting from `distrib`.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters, aligned by the generic.
+#' @param scale Handled by the generic after dispatch; this method always
+#'   returns the parameter scale.
+#' @param ... Passed to [numerical_deriv6()], which accepts `accuracy`.
+#'
+#' @return A named list of sixth-derivative component vectors, each of length
+#'   `length(y)`, keyed lexicographically as
+#'   [`deriv_names(distrib@params, 6)`][deriv_names] gives them.
+#'
+#' @seealso [numerical_deriv6()], which does the differencing;
+#'   [distrib_deriv5.distrib()] for the order below.
+#' @keywords internal
+S7::method(distrib_deriv6, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+  numerical_deriv6(distrib, y, theta, scale = "parameter", ...)
+}

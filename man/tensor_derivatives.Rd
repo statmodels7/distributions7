@@ -25,7 +25,7 @@ tensor_derivatives(
 
 \item{order}{The order of the derivatives, a whole number above \code{base}.}
 
-\item{base}{The highest order that the family implements itself, 0 to 4.}
+\item{base}{The highest order that the family implements itself, 0 to 5.}
 
 \item{rel_step}{\code{NULL}, the default, for the step above, or a relative step
 that replaces \eqn{\varepsilon^{1/(r+a)}}.}
@@ -46,7 +46,8 @@ A named list of component vectors, keyed as
 Computes the derivative components of order \code{order} of the log-density
 from the highest order that the family implements itself: the log-density
 (\code{base = 0}), the score (\code{base = 1}), the Hessian (\code{base = 2}), the third
-order (\code{base = 3}) or the fourth (\code{base = 4}). Each component is a single
+order (\code{base = 3}), the fourth (\code{base = 4}) or the fifth (\code{base = 5}). Each
+component is a single
 tensor-product central difference of order \code{order - base}, never a
 difference of a difference.
 }
@@ -73,6 +74,7 @@ quantity.
 }
 \seealso{
 \code{\link[=analytic_order]{analytic_order()}} for how \code{base} is found; \code{\link[=numerical_deriv3]{numerical_deriv3()}},
-\code{\link[=numerical_deriv4]{numerical_deriv4()}} and \code{\link[=numerical_deriv5]{numerical_deriv5()}}, which call this.
+\code{\link[=numerical_deriv4]{numerical_deriv4()}}, \code{\link[=numerical_deriv5]{numerical_deriv5()}} and \code{\link[=numerical_deriv6]{numerical_deriv6()}},
+which call this.
 }
 \keyword{internal}

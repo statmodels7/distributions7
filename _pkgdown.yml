@@ -110,9 +110,11 @@ reference:
   - distrib_d2expected_hessian
   - distrib_d3expected_hessian
   - distrib_d4expected_hessian
+  - distrib_d5expected_hessian
   - distrib_deriv3
   - distrib_deriv4
   - distrib_deriv5
+  - distrib_deriv6
   - distrib_grad_y
   - distrib_hess_y
   - distrib_deriv3_y
@@ -240,6 +242,7 @@ reference:
   - numerical_deriv3
   - numerical_deriv4
   - numerical_deriv5
+  - numerical_deriv6
   - numerical_grad_y
   - numerical_hess_y
   - numerical_deriv_y
@@ -268,6 +271,8 @@ reference:
   - d3expected_key
   - d4expected_names
   - d4expected_key
+  - d5expected_names
+  - d5expected_key
   - param_smoothness
   - params_order
   - kink_decomposition

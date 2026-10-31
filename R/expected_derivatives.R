@@ -239,7 +239,8 @@ NULL
 #'
 #' @description
 #' Routes to [distrib_gradient()], [distrib_hessian()], [distrib_deriv3()],
-#' [distrib_deriv4()] or [distrib_deriv5()] according to `order`, so that code
+#' [distrib_deriv4()], [distrib_deriv5()] or [distrib_deriv6()] according to
+#' `order`, so that code
 #' working at an order fixed only at run time does not have to branch. The
 #' methods of [expected_derivative_methods] read it: [expect_integrate()] and
 #' [expect_mc()] for the quantity that they average, and the score identity for
@@ -248,7 +249,7 @@ NULL
 #' @param distrib An object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned to `distrib@params`.
-#' @param order The derivative order, a single integer from 1 to 5. Anything
+#' @param order The derivative order, a single integer from 1 to 6. Anything
 #'   else signals an error.
 #'
 #' @return A named list of derivative component vectors; each has length
@@ -267,6 +268,7 @@ observed_deriv <- function(distrib, y, theta, order) {
     "3" = distrib_deriv3(distrib, y, theta),
     "4" = distrib_deriv4(distrib, y, theta),
     "5" = distrib_deriv5(distrib, y, theta),
+    "6" = distrib_deriv6(distrib, y, theta),
     stop("Unsupported derivative order: ", order, call. = FALSE)
   )
 }

@@ -101,24 +101,25 @@ NULL
 # where l_{...} are the parameter-scale derivatives and B_{m,j} are the partial
 # (incomplete) Bell polynomials.
 
-#' Partial Bell Polynomials for Orders up to Five
+#' Partial Bell Polynomials for Orders up to Six
 #'
 #' @description
 #' Evaluates the partial (incomplete) Bell polynomial \eqn{B_{m,j}} at the
-#' derivatives of the inverse link, for \eqn{m \le 5}.
+#' derivatives of the inverse link, for \eqn{m \le 6}.
 #'
 #' @details
 #' These are the coefficients that Faa di Bruno's formula needs. Because each
 #' parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 #' diagonal and the multivariate formula factorizes into a product of univariate
 #' ones, so only \eqn{B_{m,j}} for a single variable is required. They are
-#' written out as a table of the fifteen polynomials with \eqn{m \le 5}.
+#' written out as a table of the twenty-one polynomials with \eqn{m \le 6}.
 #'
 #' The polynomial \eqn{B_{m,j}} is the coefficient of \eqn{t^m/m!} in
 #' \eqn{(\sum_k x_k t^k/k!)^j/j!}. The coefficients of the order-5 row sum to
-#' the Bell number \eqn{B_5 = 52}.
+#' the Bell number \eqn{B_5 = 52}, and those of the order-6 row to
+#' \eqn{B_6 = 203}.
 #'
-#' @param m The total order, 1 to 5.
+#' @param m The total order, 1 to 6.
 #' @param j The number of blocks, 1 to `m`.
 #' @param h A list with `h[[k]]` the \eqn{k}-th derivative of the inverse
 #'   link evaluated at \eqn{\eta}, as a numeric vector.
@@ -161,7 +162,19 @@ bell_partial <- function(m, j, h) {
       h[[1]]^5                                       # B_{5,5}
     ))
   }
-  stop("Link-scale derivatives are implemented up to order 5.", call. = FALSE)
+  if (m == 6L) {
+    return(switch(j,
+      h[[6]],                                        # B_{6,1}
+      6 * h[[1]] * h[[5]] + 15 * h[[2]] * h[[4]] +
+        10 * h[[3]]^2,                               # B_{6,2}
+      15 * h[[1]]^2 * h[[4]] + 60 * h[[1]] * h[[2]] * h[[3]] +
+        15 * h[[2]]^3,                               # B_{6,3}
+      20 * h[[1]]^3 * h[[3]] + 45 * h[[1]]^2 * h[[2]]^2, # B_{6,4}
+      15 * h[[1]]^4 * h[[2]],                        # B_{6,5}
+      h[[1]]^6                                       # B_{6,6}
+    ))
+  }
+  stop("Link-scale derivatives are implemented up to order 6.", call. = FALSE)
 }
 
 #' Index Tuples Matching the Package's Component Naming
@@ -211,7 +224,7 @@ deriv_index_list <- function(p, order) {
 #' Inverse-Link Derivatives for Every Parameter
 #'
 #' @description
-#' Returns the derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's
+#' Returns the derivatives \eqn{h', h'', \dots, h^{(6)}} of each parameter's
 #' inverse link, evaluated at \eqn{\eta = g(\theta)}, up to `order`.
 #'
 #' @details
@@ -221,7 +234,7 @@ deriv_index_list <- function(p, order) {
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters, on the natural scale.
-#' @param order The highest derivative order needed, 1 to 5.
+#' @param order The highest derivative order needed, 1 to 6.
 #'
 #' @return A list with one element per parameter; each element is a list whose
 #'   \eqn{k}-th element is \eqn{h^{(k)}} evaluated at that parameter's
@@ -264,7 +277,8 @@ inverse_link_derivs <- function(distrib, theta, order) {
 #' @param theta A named list of parameters.
 #' @param expected Logical; whether the derivatives to compute are expected
 #'   ones.
-#' @param order The order to assemble, 1 to 5.
+#' @param order The order to assemble, 1 to 6. Order 6 is observed only, and
+#'   `expected = TRUE` with it signals an error.
 #' @param method `NULL` or an object inheriting from [ExpectMethod], passed to
 #'   the expected derivatives of the lower orders so that every order of a call
 #'   is obtained by the same method. It is read only when `expected` is `TRUE`.
@@ -300,6 +314,12 @@ link_scale_lower_orders <- function(distrib, y, theta, expected, order,
     nat[[4]] <- distrib_deriv4(distrib, y, theta, expected = expected,
                              method = method)
   }
+  if (order >= 6L) {
+    if (isTRUE(expected)) {
+      stop("The fifth derivative has no expected form.", call. = FALSE)
+    }
+    nat[[5]] <- distrib_deriv5(distrib, y, theta)
+  }
 
   nat
 }
@@ -331,7 +351,7 @@ link_scale_lower_orders <- function(distrib, y, theta, expected, order,
 #' @param nat A list with `nat[[m]]` the named list of parameter-scale
 #'   derivatives of order `m`. Its first element may be a list of zeros,
 #'   as it is for expected derivatives.
-#' @param order The derivative order to assemble, 1 to 5.
+#' @param order The derivative order to assemble, 1 to 6.
 #'
 #' @return A named list of link-scale derivative component vectors.
 #'

@@ -90,8 +90,11 @@ test_that("integration reproduces the closed form of the derivatives", {
                distrib_d3expected_hessian(d, y, th), tolerance = 1e-5)
   expect_equal(distrib_d4expected_hessian(d, y, th, method = m),
                distrib_d4expected_hessian(d, y, th), tolerance = 1e-4)
-  # the Hessian identity needs observed derivatives of order 6 at order 4
-  expect_error(distrib_d4expected_hessian(d, y, th, method = expect_integrate()),
+  # the Hessian identity reads observed derivatives of order 6 at order 4,
+  # which distrib_deriv6() supplies, and of order 7 at order 5
+  expect_equal(distrib_d4expected_hessian(d, y, th, method = expect_integrate()),
+               distrib_d4expected_hessian(d, y, th), tolerance = 1e-6)
+  expect_error(distrib_d5expected_hessian(d, y, th, method = expect_integrate()),
                'identity = "score"')
   expect_no_error(distrib_d3expected_hessian(d, y, th, method = expect_integrate()))
 })

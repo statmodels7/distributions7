@@ -214,6 +214,7 @@ Collate:
     'd5_skewnormal1.R'
     'd5_vonmises1.R'
     'd5_weibull1.R'
+    'd5expected_hessian.R'
     'expect_method.R'
     'dexpected_method.R'
     'dirichlet_distrib.R'

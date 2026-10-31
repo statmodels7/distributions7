@@ -28,10 +28,10 @@ overrides the fallback by ordinary S7 dispatch.
 \code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}.}
 \item{derivatives in the parameters}{\code{\link[=distrib_gradient]{distrib_gradient()}},
 \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}, \code{\link[=distrib_deriv5]{distrib_deriv5()}}, and the derivatives of the
-expected information \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}},
-\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}, \code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}} and
-\code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}}.}
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, \code{\link[=distrib_deriv5]{distrib_deriv5()}}, \code{\link[=distrib_deriv6]{distrib_deriv6()}}, and the
+derivatives of the expected information \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}},
+\code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}}, \code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}},
+\code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} and \code{\link[=distrib_d5expected_hessian]{distrib_d5expected_hessian()}}.}
 \item{derivatives in the response}{\code{\link[=distrib_grad_y]{distrib_grad_y()}},
 \code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}}, \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}}.
 A discrete family has no method for them because its support has no
@@ -58,8 +58,9 @@ by name, removes the names carried by the values and validates it against
 \code{params_bounds}, treated as open intervals. The derivative generics in
 the parameters of orders one to four also take \code{scale}, which the generic
 applies after dispatch, so a method returns the parameter scale and
-never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. \code{\link[=distrib_deriv5]{distrib_deriv5()}} is the
-exception: its methods read \code{scale} and apply it themselves.
+never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. The same holds for
+\code{\link[=distrib_deriv6]{distrib_deriv6()}}. \code{\link[=distrib_deriv5]{distrib_deriv5()}} is the exception: its methods read
+\code{scale} and apply it themselves.
 }
 
 \examples{

@@ -15,21 +15,21 @@ dexpected_by_method(distrib, y, theta, scale, m, method)
 
 \item{scale}{\code{"parameter"} or \code{"link"}.}
 
-\item{m}{The derivative order, 1 to 4.}
+\item{m}{The derivative order, 1 to 5.}
 
 \item{method}{An object inheriting from \link{ExpectMethod}.}
 }
 \value{
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}}, \code{\link[=d2expected_names]{d2expected_names()}},
-\code{\link[=d3expected_names]{d3expected_names()}} or \code{\link[=d4expected_names]{d4expected_names()}}.
+\code{\link[=d3expected_names]{d3expected_names()}}, \code{\link[=d4expected_names]{d4expected_names()}} or \code{\link[=d5expected_names]{d5expected_names()}}.
 }
 \description{
 Returns the derivative of order \code{m} of the matrix that an
 \link{ExpectMethod} defines, with respect to the parameters, on the parameter
 scale or the link scale. It is the route of
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=distrib_d2expected_hessian]{distrib_d2expected_hessian()}},
-\code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}} and \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} when
-\code{method} is an object.
+\code{\link[=distrib_d3expected_hessian]{distrib_d3expected_hessian()}}, \code{\link[=distrib_d4expected_hessian]{distrib_d4expected_hessian()}} and
+\code{\link[=distrib_d5expected_hessian]{distrib_d5expected_hessian()}} when \code{method} is an object.
 }
 \details{
 For \code{\link[=expect_integrate]{expect_integrate()}} and \code{\link[=expect_mc]{expect_mc()}} the matrix is
@@ -46,8 +46,9 @@ data do not move, and the derivative is the Leibniz derivative of
 
 The derivative of order \code{m} of \eqn{f_{ab}} needs observed derivatives of
 order up to \code{m + 1} for the score identity and \code{m + 2} for the Hessian
-identity. The package provides five orders, so the Hessian identity at
-\code{m = 4} signals an error that names \code{identity = "score"}.
+identity. The package provides six orders, the sixth by the stencil of
+\code{\link[=distrib_deriv6]{distrib_deriv6()}}, so the Hessian identity at \code{m = 5} signals an error
+that names \code{identity = "score"}.
 
 On the link scale the parameter-scale derivatives of every order up to \code{m}
 are computed by the same method and carried across by

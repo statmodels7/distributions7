@@ -23,10 +23,10 @@
 #'     [distrib_quantile()], [distrib_rng()], [distrib_atoms()].}
 #'   \item{derivatives in the parameters}{[distrib_gradient()],
 #'     [distrib_hessian()], [distrib_expected_hessian()], [distrib_deriv3()],
-#'     [distrib_deriv4()], [distrib_deriv5()], and the derivatives of the
-#'     expected information [distrib_dexpected_hessian()],
-#'     [distrib_d2expected_hessian()], [distrib_d3expected_hessian()] and
-#'     [distrib_d4expected_hessian()].}
+#'     [distrib_deriv4()], [distrib_deriv5()], [distrib_deriv6()], and the
+#'     derivatives of the expected information [distrib_dexpected_hessian()],
+#'     [distrib_d2expected_hessian()], [distrib_d3expected_hessian()],
+#'     [distrib_d4expected_hessian()] and [distrib_d5expected_hessian()].}
 #'   \item{derivatives in the response}{[distrib_grad_y()],
 #'     [distrib_hess_y()], [distrib_deriv3_y()], [distrib_deriv4_y()].
 #'     A discrete family has no method for them because its support has no
@@ -52,8 +52,9 @@
 #' `params_bounds`, treated as open intervals. The derivative generics in
 #' the parameters of orders one to four also take `scale`, which the generic
 #' applies after dispatch, so a method returns the parameter scale and
-#' never reads it; see [link_scale_derivatives()]. [distrib_deriv5()] is the
-#' exception: its methods read `scale` and apply it themselves.
+#' never reads it; see [link_scale_derivatives()]. The same holds for
+#' [distrib_deriv6()]. [distrib_deriv5()] is the exception: its methods read
+#' `scale` and apply it themselves.
 #'
 #' @return Nothing. This page is the index of the generics documented on their
 #'   own pages; the value returned is theirs.
@@ -698,6 +699,71 @@ distrib_deriv5 <- S7::new_generic("distrib_deriv5", "distrib", function(distrib,
   theta <- args$theta
   scale <- match.arg(scale)
   S7::S7_dispatch()
+})
+
+#' Sixth-Order Derivatives
+#'
+#' @description
+#' Computes the unique sixth-order partial derivatives of the log-likelihood
+#' with respect to the distribution's parameters, on the parameter scale or on
+#' the link scale.
+#'
+#' @details
+#' The order is needed by a score-driven filter: the derivative of order
+#' \eqn{k} of the filtered predictor in the filter's parameters contains the
+#' derivative of order \eqn{k + 1} of the log-likelihood in the predictor, so
+#' the fifth derivative of the predictor reads the sixth of the family.
+#'
+#' No family computes the sixth order in closed form. The default method,
+#' [numerical_deriv6()], applies one central difference to the highest order
+#' that the family computes itself: the fifth where [distrib_deriv5()] is
+#' analytic for the family, which holds for every univariate family shipped
+#' with the package that has a closed-form fifth order and for a wrapper of
+#' such a family; otherwise the fourth, or the highest order below it that the
+#' family implements. A difference of a difference is never formed.
+#'
+#' As for [distrib_deriv5()], there is no `expected` argument.
+#'
+#' The method returns the parameter scale, and the generic applies the link
+#' scale after dispatch, by the diagonal Faa di Bruno formula of
+#' [to_link_scale()] at order six. It composes the sixth order with the
+#' parameter-scale orders one to five and with the derivatives of the inverse
+#' links up to the sixth.
+#'
+#' @param distrib A distribution object inheriting from the `distrib` class.
+#' @param y A numeric vector of observations.
+#' @param theta A named list (or named numeric vector) of distribution
+#'   parameters. Each parameter must have length 1 or `length(y)`.
+#' @param scale `"parameter"` (the default) for derivatives with respect to
+#'   the parameters, `"link"` for derivatives with respect to the
+#'   unconstrained predictors.
+#' @param ... Additional arguments passed to the specific method; the default
+#'   method passes `accuracy` to [numerical_deriv6()].
+#'
+#' @return A named list of derivative-component vectors, in which each vector
+#'   has length `length(y)` and the names are those that
+#'   [`deriv_names(distrib@params, 6)`][deriv_names] gives (e.g.
+#'   `"mu_mu_mu_sigma_sigma_sigma"`).
+#'
+#' @examples
+#' distrib_deriv6(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_deriv6(poisson_distrib(), c(0, 2, 5), list(mu = 3), scale = "link")
+#'
+#' @seealso [distrib_deriv5()] for the order below, [numerical_deriv6()] for
+#'   the differencing.
+#' @export
+distrib_deriv6 <- S7::new_generic("distrib_deriv6", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+  args <- check_derivative_args(distrib, y, theta)
+  y <- args$y
+  theta <- args$theta
+  scale <- match.arg(scale)
+  res <- S7::S7_dispatch()
+  if (scale == "link") {
+    nat <- link_scale_lower_orders(distrib, y, theta, FALSE, 6L)
+    to_link_scale(distrib, theta, c(nat, list(res)), 6L)
+  } else {
+    res
+  }
 })
 
 #' Whether a Family Supplies Its Own Fourth Derivative

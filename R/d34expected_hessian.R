@@ -58,9 +58,9 @@ NULL
 #'   [ExpectMethod], as for [distrib_dexpected_hessian()]. An object returns the
 #'   derivative of the matrix that the method defines, by Leibniz's formula for
 #'   [expect_opg()] and with the moved density for [expect_integrate()] and
-#'   [expect_mc()]; with `identity = "hessian"` the fourth derivative needs
-#'   observed derivatives of order 6 and signals an error that names
-#'   `identity = "score"`. See [expected_derivative_methods].
+#'   [expect_mc()]; with `identity = "hessian"` the fourth derivative reads
+#'   observed derivatives of order 6, which [distrib_deriv6()] computes by one
+#'   stencil on the fifth. See [expected_derivative_methods].
 #' @param ... Passed to methods.
 #'
 #' @return A named list of numeric vectors, keyed as

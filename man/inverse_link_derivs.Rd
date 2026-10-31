@@ -11,7 +11,7 @@ inverse_link_derivs(distrib, theta, order)
 
 \item{theta}{A named list of parameters, on the natural scale.}
 
-\item{order}{The highest derivative order needed, 1 to 5.}
+\item{order}{The highest derivative order needed, 1 to 6.}
 }
 \value{
 A list with one element per parameter; each element is a list whose
@@ -19,7 +19,7 @@ A list with one element per parameter; each element is a list whose
 \eqn{\eta}.
 }
 \description{
-Returns the derivatives \eqn{h', h'', \dots, h^{(5)}} of each parameter's
+Returns the derivatives \eqn{h', h'', \dots, h^{(6)}} of each parameter's
 inverse link, evaluated at \eqn{\eta = g(\theta)}, up to \code{order}.
 }
 \details{

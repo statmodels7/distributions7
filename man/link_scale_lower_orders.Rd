@@ -16,7 +16,8 @@ link_scale_lower_orders(distrib, y, theta, expected, order, method = NULL)
 \item{expected}{Logical; whether the derivatives to compute are expected
 ones.}
 
-\item{order}{The order to assemble, 1 to 5.}
+\item{order}{The order to assemble, 1 to 6. Order 6 is observed only, and
+\code{expected = TRUE} with it signals an error.}
 
 \item{method}{\code{NULL} or an object inheriting from \link{ExpectMethod}, passed to
 the expected derivatives of the lower orders so that every order of a call

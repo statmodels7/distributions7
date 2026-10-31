@@ -112,7 +112,7 @@ poly_eval <- function(poly, getter) {
 #' @keywords internal
 observed_getter <- function(distrib, ys, th) {
   params <- distrib@params
-  cache <- vector("list", 5L)
+  cache <- vector("list", 6L)
   function(tuple) {
     k <- length(tuple)
     if (is.null(cache[[k]])) cache[[k]] <<- observed_deriv(distrib, ys, th, k)
@@ -131,7 +131,7 @@ observed_getter <- function(distrib, ys, th) {
 #' [distrib_dexpected_hessian()] and its relatives name each component.
 #'
 #' @param params The parameter names.
-#' @param m The derivative order, 0 to 4.
+#' @param m The derivative order, 0 to 5.
 #'
 #' @return A list of components, each with `key`, `a`, `b` and `S`.
 #'
@@ -149,7 +149,8 @@ dexpected_components <- function(params, m) {
       dexpected_key(params, a, b, S[1L]),
       d2expected_key(params, a, b, S[1L], S[2L]),
       d3expected_key(params, a, b, S[1L], S[2L], S[3L]),
-      d4expected_key(params, a, b, S[1L], S[2L], S[3L], S[4L]))
+      d4expected_key(params, a, b, S[1L], S[2L], S[3L], S[4L]),
+      d5expected_key(params, a, b, S[1L], S[2L], S[3L], S[4L], S[5L]))
   }
   out <- list()
   for (r in seq_len(nrow(pairs))) {
@@ -168,8 +169,8 @@ dexpected_components <- function(params, m) {
 #' [ExpectMethod] defines, with respect to the parameters, on the parameter
 #' scale or the link scale. It is the route of
 #' [distrib_dexpected_hessian()], [distrib_d2expected_hessian()],
-#' [distrib_d3expected_hessian()] and [distrib_d4expected_hessian()] when
-#' `method` is an object.
+#' [distrib_d3expected_hessian()], [distrib_d4expected_hessian()] and
+#' [distrib_d5expected_hessian()] when `method` is an object.
 #'
 #' @details
 #' For [expect_integrate()] and [expect_mc()] the matrix is
@@ -186,8 +187,9 @@ dexpected_components <- function(params, m) {
 #'
 #' The derivative of order `m` of \eqn{f_{ab}} needs observed derivatives of
 #' order up to `m + 1` for the score identity and `m + 2` for the Hessian
-#' identity. The package provides five orders, so the Hessian identity at
-#' `m = 4` signals an error that names `identity = "score"`.
+#' identity. The package provides six orders, the sixth by the stencil of
+#' [distrib_deriv6()], so the Hessian identity at `m = 5` signals an error
+#' that names `identity = "score"`.
 #'
 #' On the link scale the parameter-scale derivatives of every order up to `m`
 #' are computed by the same method and carried across by
@@ -197,11 +199,11 @@ dexpected_components <- function(params, m) {
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned.
 #' @param scale `"parameter"` or `"link"`.
-#' @param m The derivative order, 1 to 4.
+#' @param m The derivative order, 1 to 5.
 #' @param method An object inheriting from [ExpectMethod].
 #'
 #' @return A named list keyed as [dexpected_names()], [d2expected_names()],
-#'   [d3expected_names()] or [d4expected_names()].
+#'   [d3expected_names()], [d4expected_names()] or [d5expected_names()].
 #'
 #' @seealso [expected_derivative_methods]
 #' @keywords internal
@@ -217,11 +219,11 @@ dexpected_by_method <- function(distrib, y, theta, scale, m, method) {
   opg <- S7::S7_inherits(method, ExpectOPG)
   identity <- if (opg) "score" else method@identity
   need <- m + if (identical(identity, "hessian")) 2L else 1L
-  if (need > 5L) {
+  if (need > 6L) {
     stop(sprintf(paste0(
       "The derivative of order %d of the expected information needs ",
       "observed derivatives of order %d for identity = \"hessian\", and ",
-      "the package provides five. Use identity = \"score\"."), m, need),
+      "the package provides six. Use identity = \"score\"."), m, need),
       call. = FALSE)
   }
   if (identical(identity, "hessian")) {
@@ -240,7 +242,7 @@ dexpected_by_method <- function(distrib, y, theta, scale, m, method) {
     names(vals) <- vapply(comps, function(cp) cp$key, character(1))
     canon <- switch(j + 1L, hess_names(params), dexpected_names(params),
                     d2expected_names(params), d3expected_names(params),
-                    d4expected_names(params))
+                    d4expected_names(params), d5expected_names(params))
     nat[[j + 1L]] <- vals[canon]
   }
   if (identical(scale, "parameter")) return(nat[[m + 1L]])

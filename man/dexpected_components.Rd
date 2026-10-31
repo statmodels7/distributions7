@@ -9,7 +9,7 @@ dexpected_components(params, m)
 \arguments{
 \item{params}{The parameter names.}
 
-\item{m}{The derivative order, 0 to 4.}
+\item{m}{The derivative order, 0 to 5.}
 }
 \value{
 A list of components, each with \code{key}, \code{a}, \code{b} and \code{S}.

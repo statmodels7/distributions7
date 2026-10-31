@@ -93,7 +93,7 @@ d34expected_analytic <- function(distrib, y, theta, scale, order, threads,
 #' @description
 #' Applies Leibniz's rule and the diagonal Faa di Bruno formula to
 #' \eqn{F_{ab}(\eta) = E_{ab}(\theta(\eta))\,h_a'(\eta_a)\,h_b'(\eta_b)}, at
-#' orders one to four.
+#' orders one to five.
 #'
 #' @details
 #' For a multiset \eqn{S} of coordinates, with \eqn{G_{ab} = E_{ab}\circ\theta}
@@ -116,10 +116,10 @@ d34expected_analytic <- function(distrib, y, theta, scale, order, threads,
 #' @param nat A list: `nat[[1]]` the expected information on the parameter
 #'   scale, keyed as [hess_names()], and `nat[[m + 1]]` its derivatives of
 #'   order `m`, keyed as [dexpected_names()], [d2expected_names()],
-#'   [d3expected_names()] and [d4expected_names()].
+#'   [d3expected_names()], [d4expected_names()] and [d5expected_names()].
 #' @param h The inverse link's derivatives, from [inverse_link_derivs()], to
 #'   order `order + 1`.
-#' @param order `1L` to `4L`.
+#' @param order `1L` to `5L`.
 #'
 #' @return A named list on the link scale, keyed as the order's names.
 #'
@@ -137,7 +137,8 @@ dexpected_link_higher <- function(params, nat, h, order) {
       dexpected_key(params, a, b, T[1L]),
       d2expected_key(params, a, b, T[1L], T[2L]),
       d3expected_key(params, a, b, T[1L], T[2L], T[3L]),
-      d4expected_key(params, a, b, T[1L], T[2L], T[3L], T[4L]))
+      d4expected_key(params, a, b, T[1L], T[2L], T[3L], T[4L]),
+      d5expected_key(params, a, b, T[1L], T[2L], T[3L], T[4L], T[5L]))
   }
   hk <- function(i, k) h[[i]][[k]]
   # d_T G_ab, T given by its multiplicities over the indices
@@ -167,7 +168,8 @@ dexpected_link_higher <- function(params, nat, h, order) {
     acc
   }
   nm <- switch(order, dexpected_names(params), d2expected_names(params),
-               d3expected_names(params), d4expected_names(params))
+               d3expected_names(params), d4expected_names(params),
+               d5expected_names(params))
   out <- stats::setNames(vector("list", length(nm)), nm)
   for (r in seq_len(nrow(pairs))) {
     a <- pairs[r, 1L]; b <- pairs[r, 2L]

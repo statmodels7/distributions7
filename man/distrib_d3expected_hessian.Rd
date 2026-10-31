@@ -27,9 +27,9 @@ distrib_d3expected_hessian(
 \link{ExpectMethod}, as for \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}. An object returns the
 derivative of the matrix that the method defines, by Leibniz's formula for
 \code{\link[=expect_opg]{expect_opg()}} and with the moved density for \code{\link[=expect_integrate]{expect_integrate()}} and
-\code{\link[=expect_mc]{expect_mc()}}; with \code{identity = "hessian"} the fourth derivative needs
-observed derivatives of order 6 and signals an error that names
-\code{identity = "score"}. See \link{expected_derivative_methods}.}
+\code{\link[=expect_mc]{expect_mc()}}; with \code{identity = "hessian"} the fourth derivative reads
+observed derivatives of order 6, which \code{\link[=distrib_deriv6]{distrib_deriv6()}} computes by one
+stencil on the fifth. See \link{expected_derivative_methods}.}
 
 \item{...}{Passed to methods.}
 }

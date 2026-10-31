@@ -13,7 +13,7 @@ observed_deriv(distrib, y, theta, order)
 
 \item{theta}{A named list of parameters, aligned to \code{distrib@params}.}
 
-\item{order}{The derivative order, a single integer from 1 to 5. Anything
+\item{order}{The derivative order, a single integer from 1 to 6. Anything
 else signals an error.}
 }
 \value{
@@ -24,7 +24,8 @@ a caller pairing two orders must match by name.
 }
 \description{
 Routes to \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}} or \code{\link[=distrib_deriv5]{distrib_deriv5()}} according to \code{order}, so that code
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, \code{\link[=distrib_deriv5]{distrib_deriv5()}} or \code{\link[=distrib_deriv6]{distrib_deriv6()}} according to
+\code{order}, so that code
 working at an order fixed only at run time does not have to branch. The
 methods of \link{expected_derivative_methods} read it: \code{\link[=expect_integrate]{expect_integrate()}} and
 \code{\link[=expect_mc]{expect_mc()}} for the quantity that they average, and the score identity for

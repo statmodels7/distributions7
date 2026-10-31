@@ -349,7 +349,8 @@ numerical_hessian <- function(distrib, y, theta, rel_step = .Machine$double.eps^
 #' Computes the derivative components of order `order` of the log-density
 #' from the highest order that the family implements itself: the log-density
 #' (`base = 0`), the score (`base = 1`), the Hessian (`base = 2`), the third
-#' order (`base = 3`) or the fourth (`base = 4`). Each component is a single
+#' order (`base = 3`), the fourth (`base = 4`) or the fifth (`base = 5`). Each
+#' component is a single
 #' tensor-product central difference of order `order - base`, never a
 #' difference of a difference.
 #'
@@ -378,7 +379,7 @@ numerical_hessian <- function(distrib, y, theta, rel_step = .Machine$double.eps^
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, aligned by the generic.
 #' @param order The order of the derivatives, a whole number above `base`.
-#' @param base The highest order that the family implements itself, 0 to 4.
+#' @param base The highest order that the family implements itself, 0 to 5.
 #' @param rel_step `NULL`, the default, for the step above, or a relative step
 #'   that replaces \eqn{\varepsilon^{1/(r+a)}}.
 #' @param skip Character vector of component names left `NULL`, or `NULL`.
@@ -391,7 +392,8 @@ numerical_hessian <- function(distrib, y, theta, rel_step = .Machine$double.eps^
 #'   [`deriv_names(distrib@params, order)`][deriv_names] gives them.
 #'
 #' @seealso [analytic_order()] for how `base` is found; [numerical_deriv3()],
-#'   [numerical_deriv4()] and [numerical_deriv5()], which call this.
+#'   [numerical_deriv4()], [numerical_deriv5()] and [numerical_deriv6()],
+#'   which call this.
 #' @keywords internal
 tensor_derivatives <- function(distrib, y, theta, order, base, rel_step = NULL,
                                skip = NULL, scale = c("parameter", "link"),
@@ -416,7 +418,7 @@ tensor_derivatives <- function(distrib, y, theta, order, base, rel_step = NULL,
   known <- list()
   if (base > 0L) {
     gen <- list(distrib_gradient, distrib_hessian, distrib_deriv3,
-                distrib_deriv4)[[base]]
+                distrib_deriv4, distrib_deriv5)[[base]]
     keys <- if (base == 2L) hess_names(params) else deriv_names(params, base)
     known <- list(numericals7::fd_known(function(x) {
       unname(gen(distrib, y, cs$to_theta(x), scale = scale)[keys])

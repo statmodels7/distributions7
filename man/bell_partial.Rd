@@ -2,12 +2,12 @@
 % Please edit documentation in R/link_scale.R
 \name{bell_partial}
 \alias{bell_partial}
-\title{Partial Bell Polynomials for Orders up to Five}
+\title{Partial Bell Polynomials for Orders up to Six}
 \usage{
 bell_partial(m, j, h)
 }
 \arguments{
-\item{m}{The total order, 1 to 5.}
+\item{m}{The total order, 1 to 6.}
 
 \item{j}{The number of blocks, 1 to \code{m}.}
 
@@ -19,18 +19,19 @@ A numeric vector, the polynomial evaluated element-wise.
 }
 \description{
 Evaluates the partial (incomplete) Bell polynomial \eqn{B_{m,j}} at the
-derivatives of the inverse link, for \eqn{m \le 5}.
+derivatives of the inverse link, for \eqn{m \le 6}.
 }
 \details{
 These are the coefficients that Faa di Bruno's formula needs. Because each
 parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
 diagonal and the multivariate formula factorizes into a product of univariate
 ones, so only \eqn{B_{m,j}} for a single variable is required. They are
-written out as a table of the fifteen polynomials with \eqn{m \le 5}.
+written out as a table of the twenty-one polynomials with \eqn{m \le 6}.
 
 The polynomial \eqn{B_{m,j}} is the coefficient of \eqn{t^m/m!} in
 \eqn{(\sum_k x_k t^k/k!)^j/j!}. The coefficients of the order-5 row sum to
-the Bell number \eqn{B_5 = 52}.
+the Bell number \eqn{B_5 = 52}, and those of the order-6 row to
+\eqn{B_6 = 203}.
 }
 \seealso{
 \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, \code{\link[=to_link_scale]{to_link_scale()}}

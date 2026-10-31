@@ -193,7 +193,16 @@ test_that("a wrong Bell coefficient would fail the comparison", {
 })
 
 
-test_that("the sixth order is still refused, and the message says which", {
-  h <- as.list(rep(1, 6))
-  expect_error(bell_partial(6L, 1L, h), "up to order 5")
+test_that("the sixth row holds the Stirling numbers, and the seventh is rejected", {
+  # at h = (1, 1, ...) B_{6,j} is the number of partitions of six elements
+  # into j blocks, S(6, j), which sum to the Bell number 203
+  h <- as.list(rep(1, 7))
+  s6 <- vapply(1:6, function(j) bell_partial(6L, j, h), numeric(1))
+  expect_identical(s6, c(1, 31, 90, 65, 15, 1))
+  # one polynomial against its expansion at unequal arguments
+  x <- as.list(c(0.7, -1.3, 2.1, 0.4, -0.9, 1.6))
+  expect_equal(bell_partial(6L, 3L, x),
+               15 * x[[1]]^2 * x[[4]] + 60 * x[[1]] * x[[2]] * x[[3]] +
+                 15 * x[[2]]^3)
+  expect_error(bell_partial(7L, 1L, h), "up to order 6")
 })

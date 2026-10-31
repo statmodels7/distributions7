@@ -12,12 +12,12 @@ dexpected_link_higher(params, nat, h, order)
 \item{nat}{A list: \code{nat[[1]]} the expected information on the parameter
 scale, keyed as \code{\link[=hess_names]{hess_names()}}, and \code{nat[[m + 1]]} its derivatives of
 order \code{m}, keyed as \code{\link[=dexpected_names]{dexpected_names()}}, \code{\link[=d2expected_names]{d2expected_names()}},
-\code{\link[=d3expected_names]{d3expected_names()}} and \code{\link[=d4expected_names]{d4expected_names()}}.}
+\code{\link[=d3expected_names]{d3expected_names()}}, \code{\link[=d4expected_names]{d4expected_names()}} and \code{\link[=d5expected_names]{d5expected_names()}}.}
 
 \item{h}{The inverse link's derivatives, from \code{\link[=inverse_link_derivs]{inverse_link_derivs()}}, to
 order \code{order + 1}.}
 
-\item{order}{\code{1L} to \code{4L}.}
+\item{order}{\code{1L} to \code{5L}.}
 }
 \value{
 A named list on the link scale, keyed as the order's names.
@@ -25,7 +25,7 @@ A named list on the link scale, keyed as the order's names.
 \description{
 Applies Leibniz's rule and the diagonal Faa di Bruno formula to
 \eqn{F_{ab}(\eta) = E_{ab}(\theta(\eta))\,h_a'(\eta_a)\,h_b'(\eta_b)}, at
-orders one to four.
+orders one to five.
 }
 \details{
 For a multiset \eqn{S} of coordinates, with \eqn{G_{ab} = E_{ab}\circ\theta}

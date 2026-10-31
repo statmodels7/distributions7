@@ -15,7 +15,7 @@ to_link_scale(distrib, theta, nat, order)
 derivatives of order \code{m}. Its first element may be a list of zeros,
 as it is for expected derivatives.}
 
-\item{order}{The derivative order to assemble, 1 to 5.}
+\item{order}{The derivative order to assemble, 1 to 6.}
 }
 \value{
 A named list of link-scale derivative component vectors.
