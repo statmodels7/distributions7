@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,10 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.94.1" id="distributions7-0941">distributions7 0.94.1<a class="anchor" aria-label="anchor" href="#distributions7-0941"></a></h2>
+<ul><li>A family that registers its own method for <code><a href="../reference/distrib_deriv6.html">distrib_deriv6()</a></code> or <code><a href="../reference/distrib_d5expected_hessian.html">distrib_d5expected_hessian()</a></code> returns the parameter scale, and the link scale is obtained by the Faa di Bruno composition with the inverse-link derivatives up to the sixth, exact up to rounding. Families without such a method keep the single stencil in the linear predictors. A user’s method for either generic receives <code>scale = "parameter"</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.94.0" id="distributions7-0940">distributions7 0.94.0<a class="anchor" aria-label="anchor" href="#distributions7-0940"></a></h2>
 <ul><li>

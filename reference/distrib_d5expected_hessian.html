@@ -13,7 +13,7 @@ with one component per pair \((a,b)\) and per unordered quintuple
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,16 +120,21 @@ analytic second derivative of its expected information signals an error,
 as it does for the third and fourth orders. The step of a stencil of order
 \(r\) is \(\varepsilon^{1/(r+4)}\max(1, |x|)\) in the coordinate
 \(x\), reduced so that every node stays inside the domain.</p>
-<p>On <code>scale = "link"</code> the stencil is taken in the linear predictors, on the
-link-scale fourth derivative, which <code><a href="distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code> computes
-exactly from the analytic orders and the derivatives of the inverse links.
-A stencil on the parameter scale composed with the lower orders by Leibniz's
-rule and the Faa di Bruno formula would need the sixth derivative of the
-inverse links, and was measured against 50-digit references and rejected:
-where a parameter is small the terms of the composition cancel, and the
-stencil's error is amplified up to a relative error of 6e-3, against 2e-9
-or better for the stencil in \(\eta\). The method reads <code>scale</code> and
-returns the scale that it is given.</p>
+<p>The route on <code>scale = "link"</code> depends on where the parameter-scale fifth
+order comes from. A family that registers its own method for this generic
+(see <code><a href="has_exact_d5expected.html">has_exact_d5expected()</a></code>) returns the parameter scale, and the generic
+composes it with the lower orders by Leibniz's rule and the Faa di Bruno
+formula, using the derivatives of the inverse links up to the sixth. Every
+term is exact, and the composition is correct up to rounding. For any
+other family the fifth order is itself a stencil, and the stencil is taken
+in the linear predictors, on the link-scale fourth derivative, which
+<code><a href="distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code> computes exactly from the analytic orders and
+the derivatives of the inverse links. Composing a stencil on the parameter
+scale instead was measured against 50-digit references and rejected: where
+a parameter is small the terms of the composition cancel, and the error of
+the stencil is amplified up to a relative error of 6e-3, against 2e-9 or
+better for the stencil in \(\eta\). The default method reads <code>scale</code> and
+returns the scale that it is given; a method of a family does not read it.</p>
 <p>With an object as <code>method</code>, the result is the derivative of the matrix that
 the method defines, computed as for the lower orders by Leibniz's formula
 for <code><a href="expect_opg.html">expect_opg()</a></code> and with the moved density for <code><a href="expect_integrate.html">expect_integrate()</a></code> and
@@ -143,7 +148,7 @@ in any coordinates.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_d4expected_hessian.html">distrib_d4expected_hessian()</a></code> for the order below,
-<code><a href="d5expected_names.html">d5expected_names()</a></code>, <code><a href="distrib_deriv6.html">distrib_deriv6()</a></code></p></div>
+<code><a href="d5expected_names.html">d5expected_names()</a></code>, <code><a href="distrib_deriv6.html">distrib_deriv6()</a></code>, <code><a href="has_exact_d5expected.html">has_exact_d5expected()</a></code></p></div>
     </div>
 
     <div class="section level2">

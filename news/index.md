@@ -1,5 +1,17 @@
 # Changelog
 
+## distributions7 0.94.1
+
+- A family that registers its own method for
+  [`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
+  or
+  [`distrib_d5expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d5expected_hessian.md)
+  returns the parameter scale, and the link scale is obtained by the Faa
+  di Bruno composition with the inverse-link derivatives up to the
+  sixth, exact up to rounding. Families without such a method keep the
+  single stencil in the linear predictors. A user’s method for either
+  generic receives `scale = "parameter"`.
+
 ## distributions7 0.94.0
 
 - [`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)

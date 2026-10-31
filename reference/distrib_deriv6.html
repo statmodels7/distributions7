@@ -11,7 +11,7 @@ the link scale."><meta property="og:image" content="https://statmodels7.github.i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,23 +104,30 @@ with the package that has a closed-form fifth order and for a wrapper of
 such a family; otherwise the fourth, or the highest order below it that the
 family implements. A difference of a difference is never formed.</p>
 <p>As for <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code>, there is no <code>expected</code> argument.</p>
-<p>On the link scale the stencil is taken in the linear predictors
-\(\eta\), on the link-scale fifth order, which <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code>
-computes exactly from the analytic orders and the derivatives of the inverse
-links. The alternative, a stencil on the parameter scale composed with the
-lower orders by the Faa di Bruno formula at order six, was measured against
-50-digit references and rejected: where a parameter is small the terms of
-that formula are large and of opposite sign (for a Poisson mean of 0.05
+<p>The route on the link scale depends on where the parameter-scale sixth
+order comes from. A family that registers its own method for this generic
+(see <code><a href="has_exact_deriv6.html">has_exact_deriv6()</a></code>) returns the parameter scale, as the methods of
+orders one to four do, and the generic composes it with the lower orders by
+the Faa di Bruno formula at order six, using the derivatives of the inverse
+links up to the sixth. Every term is then exact and the composition is
+correct up to rounding. For any other family the sixth order is itself a
+stencil, and the stencil is taken in the linear predictors \(\eta\), on
+the link-scale fifth order, which <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> computes exactly from
+the analytic orders and the derivatives of the inverse links. Composing a
+stencil on the parameter scale instead was measured against 50-digit
+references and rejected: where a parameter is small the terms of the Faa di
+Bruno formula are large and of opposite sign (for a Poisson mean of 0.05
 every link-scale derivative is \(-\mu\), while the parameter-scale terms
-are of order \(120 y/\mu^6\)), so the stencil's error is amplified, up to
-a relative error of 2e-2 against 2e-10 for the stencil in \(\eta\). As
-for <code><a href="distrib_deriv5.html">distrib_deriv5()</a></code>, the method reads <code>scale</code> and returns the scale that
-it is given.</p>
+are of order \(120 y/\mu^6\)), so the error of the stencil is amplified,
+up to a relative error of 2e-2 against 2e-10 for the stencil in
+\(\eta\). The default method reads <code>scale</code> and returns the scale that it
+is given; a method of a family does not read it.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="distrib_deriv5.html">distrib_deriv5()</a></code> for the order below, <code><a href="numerical_deriv6.html">numerical_deriv6()</a></code> for
-the differencing.</p></div>
+the differencing, <code><a href="has_exact_deriv6.html">has_exact_deriv6()</a></code> for the predicate that selects the
+route on the link scale.</p></div>
     </div>
 
     <div class="section level2">

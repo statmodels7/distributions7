@@ -2785,6 +2785,10 @@ transforms that make it work on a divergent density.
   : The Order from Which the Fifth Derivative of the Information Is
   Differenced
 
+- [`d5expected_scale()`](https://statmodels7.github.io/distributions7/reference/d5expected_scale.md)
+  : Carry an Analytic Fifth Derivative of the Information to the Link
+  Scale
+
 - [`declares_atoms()`](https://statmodels7.github.io/distributions7/reference/declares_atoms.md)
   : Does a Distribution Declare Atoms
 
@@ -2796,6 +2800,9 @@ transforms that make it work on a divergent density.
 
 - [`deriv6_base()`](https://statmodels7.github.io/distributions7/reference/deriv6_base.md)
   : The Order from Which a Sixth Derivative Is Differenced
+
+- [`deriv6_scale()`](https://statmodels7.github.io/distributions7/reference/deriv6_scale.md)
+  : Carry an Analytic Sixth Order to the Link Scale
 
 - [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
   : Index Tuples Matching the Package's Component Naming
@@ -3710,11 +3717,17 @@ transforms that make it work on a divergent density.
 - [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
   : Can the Parent Supply Exact CDF Derivatives?
 
+- [`has_exact_d5expected()`](https://statmodels7.github.io/distributions7/reference/has_exact_d5expected.md)
+  : Does a Family Supply Its Own Fifth Derivative of the Information?
+
 - [`has_exact_deriv4.distrib`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv4.distrib.md)
   : Whether a Family's Fourth Derivative Is Analytic
 
 - [`has_exact_deriv5()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv5.md)
   : Is a Family's Fifth Derivative Analytic?
+
+- [`has_exact_deriv6()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv6.md)
+  : Does a Family Supply Its Own Sixth Derivative?
 
 - [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
   : Does This Distribution Compute Its Expected Information Exactly?

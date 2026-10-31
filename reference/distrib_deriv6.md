@@ -66,27 +66,37 @@ As for
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
 there is no `expected` argument.
 
-On the link scale the stencil is taken in the linear predictors
-\\\eta\\, on the link-scale fifth order, which
+The route on the link scale depends on where the parameter-scale sixth
+order comes from. A family that registers its own method for this
+generic (see
+[`has_exact_deriv6()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv6.md))
+returns the parameter scale, as the methods of orders one to four do,
+and the generic composes it with the lower orders by the Faa di Bruno
+formula at order six, using the derivatives of the inverse links up to
+the sixth. Every term is then exact and the composition is correct up to
+rounding. For any other family the sixth order is itself a stencil, and
+the stencil is taken in the linear predictors \\\eta\\, on the
+link-scale fifth order, which
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
 computes exactly from the analytic orders and the derivatives of the
-inverse links. The alternative, a stencil on the parameter scale
-composed with the lower orders by the Faa di Bruno formula at order six,
-was measured against 50-digit references and rejected: where a parameter
-is small the terms of that formula are large and of opposite sign (for a
-Poisson mean of 0.05 every link-scale derivative is \\-\mu\\, while the
-parameter-scale terms are of order \\120 y/\mu^6\\), so the stencil's
-error is amplified, up to a relative error of 2e-2 against 2e-10 for the
-stencil in \\\eta\\. As for
-[`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md),
-the method reads `scale` and returns the scale that it is given.
+inverse links. Composing a stencil on the parameter scale instead was
+measured against 50-digit references and rejected: where a parameter is
+small the terms of the Faa di Bruno formula are large and of opposite
+sign (for a Poisson mean of 0.05 every link-scale derivative is
+\\-\mu\\, while the parameter-scale terms are of order \\120 y/\mu^6\\),
+so the error of the stencil is amplified, up to a relative error of 2e-2
+against 2e-10 for the stencil in \\\eta\\. The default method reads
+`scale` and returns the scale that it is given; a method of a family
+does not read it.
 
 ## See also
 
 [`distrib_deriv5()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv5.md)
 for the order below,
 [`numerical_deriv6()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv6.md)
-for the differencing.
+for the differencing,
+[`has_exact_deriv6()`](https://statmodels7.github.io/distributions7/reference/has_exact_deriv6.md)
+for the predicate that selects the route on the link scale.
 
 ## Examples
 

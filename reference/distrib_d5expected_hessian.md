@@ -83,18 +83,24 @@ the third and fourth orders. The step of a stencil of order \\r\\ is
 \\\varepsilon^{1/(r+4)}\max(1, \|x\|)\\ in the coordinate \\x\\, reduced
 so that every node stays inside the domain.
 
-On `scale = "link"` the stencil is taken in the linear predictors, on
-the link-scale fourth derivative, which
+The route on `scale = "link"` depends on where the parameter-scale fifth
+order comes from. A family that registers its own method for this
+generic (see
+[`has_exact_d5expected()`](https://statmodels7.github.io/distributions7/reference/has_exact_d5expected.md))
+returns the parameter scale, and the generic composes it with the lower
+orders by Leibniz's rule and the Faa di Bruno formula, using the
+derivatives of the inverse links up to the sixth. Every term is exact,
+and the composition is correct up to rounding. For any other family the
+fifth order is itself a stencil, and the stencil is taken in the linear
+predictors, on the link-scale fourth derivative, which
 [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
 computes exactly from the analytic orders and the derivatives of the
-inverse links. A stencil on the parameter scale composed with the lower
-orders by Leibniz's rule and the Faa di Bruno formula would need the
-sixth derivative of the inverse links, and was measured against 50-digit
-references and rejected: where a parameter is small the terms of the
-composition cancel, and the stencil's error is amplified up to a
-relative error of 6e-3, against 2e-9 or better for the stencil in
-\\\eta\\. The method reads `scale` and returns the scale that it is
-given.
+inverse links. Composing a stencil on the parameter scale instead was
+measured against 50-digit references and rejected: where a parameter is
+small the terms of the composition cancel, and the error of the stencil
+is amplified up to a relative error of 6e-3, against 2e-9 or better for
+the stencil in \\\eta\\. The default method reads `scale` and returns
+the scale that it is given; a method of a family does not read it.
 
 With an object as `method`, the result is the derivative of the matrix
 that the method defines, computed as for the lower orders by Leibniz's
@@ -117,7 +123,8 @@ coordinates.
 [`distrib_d4expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_d4expected_hessian.md)
 for the order below,
 [`d5expected_names()`](https://statmodels7.github.io/distributions7/reference/d5expected_names.md),
-[`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md)
+[`distrib_deriv6()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv6.md),
+[`has_exact_d5expected()`](https://statmodels7.github.io/distributions7/reference/has_exact_d5expected.md)
 
 ## Examples
 
