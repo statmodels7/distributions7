@@ -25,16 +25,15 @@ it is the single point at which the two parameter sets are reconciled.
 }
 \examples{
 d <- fixed(gaussian1_distrib(), mu = 0)
-str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
+str(fixed_full_theta(d, list(sigma = 2)))
 
 # The parent is then called at exactly this list.
 all.equal(distrib_pdf(d, c(-1, 1), list(sigma = 2)),
           distrib_pdf(gaussian1_distrib(), c(-1, 1),
-                      distributions7:::fixed_full_theta(d, list(sigma = 2))))
+                      fixed_full_theta(d, list(sigma = 2))))
 
 }
 \seealso{
 \code{\link[=fixed]{fixed()}} for the wrapper and \link{FixedContinuousDistrib} for what
 the methods do with the result.
 }
-\keyword{internal}

@@ -193,6 +193,7 @@ reference:
   - folded
   - reparametrize
   - fixed
+  - fixed_full_theta
   - transformation
   - transformer
   - starts_with("log_transform")
@@ -216,6 +217,7 @@ reference:
   - multinomial_distrib
   - mv_location
   - mv_sigma
+  - mvg_pieces
   - mv_marginal
   - mv_support
   - mv_reference_draw

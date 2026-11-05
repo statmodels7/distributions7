@@ -557,12 +557,60 @@ S7::method(kink_knots, TruncatedContinuousDistrib) <- function(distrib, theta, l
   kink_knots(distrib@parent_distrib, theta, lower, upper)
 }
 
+#' Polish a Root of a Kink's Argument to Adjacent Doubles
+#'
+#' @description
+#' Bisects the bracket \eqn{[a, b]} on which \eqn{v} changes sign, starting
+#' from the root `r` that [stats::uniroot()] returned, until the bracket is
+#' two adjacent doubles or a point with \eqn{v = 0} is met, and returns that
+#' point or the end of the bracket with the smaller \eqn{|v|}. A root that
+#' is representable exactly (\eqn{y = \mu} for \eqn{v = y - \mu}) is then
+#' returned exactly, so that it coincides with a quantile knot at the same
+#' point.
+#'
+#' @param f The function \eqn{v} of one argument.
+#' @param a,b The bracket.
+#' @param fa,fb The values of `f` at `a` and `b`, of opposite signs.
+#' @param r The root returned by [stats::uniroot()].
+#'
+#' @return A single number; `r` when `f` is not finite at a point visited.
+#'
+#' @examples
+#' f <- function(x) x - 0.1
+#' distributions7:::.kink_root_polish(f, 0, 1, -0.1, 0.9, 0.1 + 1e-15) == 0.1
+#'
+#' @keywords internal
+.kink_root_polish <- function(f, a, b, fa, fb, r) {
+  fr <- f(r)
+  if (length(fr) != 1L || !is.finite(fr)) return(r)
+  if (fr == 0) return(r)
+  if (sign(fr) == sign(fa)) {
+    a <- r; fa <- fr
+  } else {
+    b <- r; fb <- fr
+  }
+  repeat {
+    m <- a + (b - a) / 2
+    if (m <= a || m >= b) break
+    fm <- f(m)
+    if (length(fm) != 1L || !is.finite(fm)) return(r)
+    if (fm == 0) return(m)
+    if (sign(fm) == sign(fa)) {
+      a <- m; fa <- fm
+    } else {
+      b <- m; fb <- fm
+    }
+  }
+  if (abs(fa) <= abs(fb)) a else b
+}
+
 #' The Roots of a Kink's Argument in a Range
 #'
 #' @description
 #' Evaluates \eqn{v(y, \theta)} of a [kink_spec()] on 129 equally spaced
 #' points of \eqn{[\mathrm{lower}, \mathrm{upper}]} and 129 more on its
-#' central half, and refines each sign change with [stats::uniroot()]. A grid point at
+#' central half, refines each sign change with [stats::uniroot()] and then by
+#' bisection to adjacent doubles ([.kink_root_polish()]). A grid point at
 #' which \eqn{v} is exactly zero is returned as it is.
 #'
 #' @param kd A [kink_spec()].
@@ -590,6 +638,7 @@ S7::method(kink_knots, TruncatedContinuousDistrib) <- function(distrib, theta, l
     r <- tryCatch(stats::uniroot(f, c(y[i], y[i + 1L]), f.lower = v[i],
                                  f.upper = v[i + 1L], tol = 1e-14)$root,
                   error = function(e) NA_real_)
+    if (is.finite(r)) r <- .kink_root_polish(f, y[i], y[i + 1L], v[i], v[i + 1L], r)
     if (is.finite(r)) out <- c(out, r)
   }
   sort(unique(out))

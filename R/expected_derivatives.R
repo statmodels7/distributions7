@@ -348,13 +348,14 @@ expected_by_integrate <- function(distrib, y, theta, order,
   check_kink_identity(distrib, order, "expect_integrate")
   n <- length(y)
   nms <- if (order == 2L) hess_names(distrib@params) else deriv_names(distrib@params, order)
+  rows <- expectation_rows(distrib)
   out <- lapply(nms, function(nm) {
     v <- tryCatch(
-      expectation(
+      do.call(expectation, c(list(
         distrib,
-        function(y, theta) observed_deriv(distrib, y, theta, order)[[nm]],
+        function(y, theta, ...) observed_deriv(rows$at(...), y, theta, order)[[nm]],
         theta
-      ),
+      ), rows$dots)),
       error = function(e) {
         stop(sprintf(
           paste0(
@@ -373,6 +374,65 @@ expected_by_integrate <- function(distrib, y, theta, order,
     rep(v, length.out = n)
   })
   names(out) <- nms
+  out
+}
+
+#' The Rows of a Family's Constants Inside an Integrand
+#'
+#' @description
+#' Prepares the integrand of [expected_by_integrate()] and
+#' [expected_by_bartlett()] for a family whose constants vary by observation
+#' (a binomial's `size`). The observation index travels to the integrand as
+#' the further argument `const_row` of [expectation()], which indexes it
+#' like a parameter, and `at()` returns the family restricted to those rows
+#' with [distrib_at_rows()]. For a family without such constants `dots` is
+#' empty and `at()` returns the family unchanged.
+#'
+#' @param distrib A univariate family.
+#'
+#' @return A list with `dots`, the further arguments for [expectation()], and
+#'   `at`, a function of those arguments that returns the family.
+#'
+#' @examples
+#' r <- distributions7:::expectation_rows(binomial_distrib(size = c(5, 10)))
+#' r$at(const_row = c(2, 2, 1))@size
+#'
+#' @keywords internal
+expectation_rows <- function(distrib) {
+  n_const <- distrib_const_rows(distrib)
+  if (n_const <= 1L) {
+    return(list(dots = list(), at = function(...) distrib))
+  }
+  list(
+    dots = list(const_row = seq_len(n_const)),
+    at = function(const_row, ...) distrib_at_rows(distrib, const_row, n_const)
+  )
+}
+
+#' The Constants of a Family That Vary by Observation
+#'
+#' @description
+#' Collects the constants of `distrib` and of its parent families that vary
+#' by observation (a binomial's `size`), each recycled to `n`.
+#'
+#' @param distrib A univariate family.
+#' @param n The number of observations.
+#'
+#' @return A list of numeric vectors of length `n`, empty when the family has
+#'   no such constant.
+#'
+#' @examples
+#' distributions7:::distrib_const_columns(binomial_distrib(size = c(5, 10)), 4)
+#'
+#' @keywords internal
+distrib_const_columns <- function(distrib, n) {
+  out <- list()
+  if (S7::prop_exists(distrib, "parent_distrib")) {
+    out <- distrib_const_columns(distrib@parent_distrib, n)
+  }
+  if (S7::prop_exists(distrib, "size") && length(distrib@size) > 1L) {
+    out <- c(out, list(rep_len(as.numeric(distrib@size), n)))
+  }
   out
 }
 
@@ -459,10 +519,12 @@ score_identity_terms <- function(distrib, y, theta, order) {
 #' the integrand of the score identity for `identity = "score"`.
 #'
 #' @details
-#' One simulation is run for each row of `theta` after recycling.
-#' Observations whose parameters coincide are not merged, so a `theta` that
-#' varies over the observations costs one simulation per observation, and a
-#' scalar `theta` costs one simulation however long `y` is.
+#' One simulation is run for each distinct row of `theta` after recycling,
+#' a row including the family's constants that vary by observation (a
+#' binomial's `size`). Rows whose values coincide bit for bit share one
+#' simulation, run in the order of their first appearance, so a scalar
+#' `theta` costs one simulation however long `y` is, and a `theta` that
+#' takes k distinct values costs k simulations.
 #'
 #' Estimates the same quantity as [expected_by_integrate()] (Hessian identity)
 #' or [expected_by_bartlett()] (score identity), has an error that falls as
@@ -492,16 +554,24 @@ expected_by_mc <- function(distrib, y, theta, order, nsim,
   nms <- if (order == 2L) hess_names(distrib@params) else deriv_names(distrib@params, order)
   p <- distrib@n_params
 
-  # one simulation per distinct parameter configuration
-  th_rows <- transpose_params(expand_params(theta[seq_len(p)]))
-  vals <- lapply(th_rows, function(r) {
-    th <- as.list(r)
-    ys <- distrib_rng(distrib, nsim, th)
-    d <- if (score) score_identity_terms(distrib, ys, th, order)
-         else observed_deriv(distrib, ys, th, order)
+  # one simulation per distinct parameter configuration, a configuration
+  # being a row of theta together with the row's constants (a binomial's
+  # size); configurations equal bit for bit are simulated once, in the order
+  # of first appearance, as in expectation()
+  cols <- expectation_columns(distrib, theta[seq_len(p)], list())
+  key_of <- function(v) sprintf("%a", as.numeric(v))
+  keys <- lapply(c(cols$th, distrib_const_columns(distrib, cols$n)), key_of)
+  key <- do.call(paste, c(keys, sep = "|"))
+  first <- which(!duplicated(key))
+  vals <- lapply(first, function(j) {
+    th <- lapply(cols$th, `[[`, j)
+    d_j <- if (cols$rows) distrib_at_rows(distrib, j, cols$n) else distrib
+    ys <- distrib_rng(d_j, nsim, th)
+    d <- if (score) score_identity_terms(d_j, ys, th, order)
+         else observed_deriv(d_j, ys, th, order)
     vapply(nms, function(nm) base::mean(d[[nm]]), numeric(1))
   })
-  m <- do.call(rbind, vals)
+  m <- do.call(rbind, vals)[match(key, key[first]), , drop = FALSE]
 
   out <- lapply(seq_along(nms), function(k) rep(unname(m[, k]), length.out = n))
   names(out) <- nms
@@ -618,21 +688,23 @@ expected_by_bartlett <- function(distrib, y, theta, order) {
   idx_of <- plan$idx_of
   parts <- plan$parts
 
+  rows <- expectation_rows(distrib)
   out <- vector("list", length(nms))
   for (t in seq_along(nms)) {
     idx <- idx_of[[t]]
     acc <- 0
     for (pp in parts) {
-      integrand <- function(y, theta) {
+      integrand <- function(y, theta, ...) {
+        d_at <- rows$at(...)
         prod_val <- 1
         for (B in pp) {
           blk <- sort(idx[B])
           key <- paste(params[blk], collapse = "_")
-          prod_val <- prod_val * observed_deriv(distrib, y, theta, length(blk))[[key]]
+          prod_val <- prod_val * observed_deriv(d_at, y, theta, length(blk))[[key]]
         }
         prod_val
       }
-      acc <- acc + expectation(distrib, integrand, theta)
+      acc <- acc + do.call(expectation, c(list(distrib, integrand, theta), rows$dots))
     }
     out[[t]] <- rep(-acc, length.out = n)
   }

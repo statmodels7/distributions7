@@ -24,6 +24,7 @@ BugReports: https://github.com/statmodels7/distributions7/issues
 Depends:
     R (>= 4.1.0)
 LinkingTo:
+    numericals7,
     Rcpp,
     RcppParallel
 Imports:

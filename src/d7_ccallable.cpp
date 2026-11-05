@@ -234,6 +234,9 @@ int d7_parts_covered(int id);
 int d7_parts_max(void);
 void d7_parts(int id, double y, const double* th, int level, double* buf);
 void d7_parts_expected(int id, const double* th, int level, double* buf);
+// the expected Hessian by simulation or by integration (d7_expect.cpp)
+int d7_expect(int id, int method, int nobs, int ncol, const double* th,
+              const double* bounds, double nsim, const double* tol, double* out);
 void d7_parts_grad(int id, const double* buf, double* out);
 void d7_parts_hess(int id, const double* buf, double* out);
 void d7_parts_info(int id, const double* buf, double* out);
@@ -3816,6 +3819,7 @@ void d7_register_ccallable(DllInfo* dll) {
                         (DL_FUNC) d7_parts_d3);
     R_RegisterCCallable("distributions7", "d7_parts_d4",
                         (DL_FUNC) d7_parts_d4);
+    R_RegisterCCallable("distributions7", "d7_expect", (DL_FUNC) d7_expect);
 }
 
 // the twin of d7_joint_probe() for the parts route: the gradient, the

@@ -492,14 +492,14 @@ is_fixed <- function(distrib) {
 #'
 #' @examples
 #' d <- fixed(gaussian1_distrib(), mu = 0)
-#' str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
+#' str(fixed_full_theta(d, list(sigma = 2)))
 #'
 #' # The parent is then called at exactly this list.
 #' all.equal(distrib_pdf(d, c(-1, 1), list(sigma = 2)),
 #'           distrib_pdf(gaussian1_distrib(), c(-1, 1),
-#'                       distributions7:::fixed_full_theta(d, list(sigma = 2))))
+#'                       fixed_full_theta(d, list(sigma = 2))))
 #'
-#' @keywords internal
+#' @export
 fixed_full_theta <- function(distrib, theta) {
   theta <- align_theta(distrib, theta)
   free <- distrib@params

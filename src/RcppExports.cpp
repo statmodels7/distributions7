@@ -2276,6 +2276,37 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_expect_probe
+SEXP d7_expect_probe(int id, int method, Rcpp::NumericMatrix th, Rcpp::NumericVector bounds, double nsim, Rcpp::NumericVector tol);
+RcppExport SEXP _distributions7_d7_expect_probe(SEXP idSEXP, SEXP methodSEXP, SEXP thSEXP, SEXP boundsSEXP, SEXP nsimSEXP, SEXP tolSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type id(idSEXP);
+    Rcpp::traits::input_parameter< int >::type method(methodSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type th(thSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type bounds(boundsSEXP);
+    Rcpp::traits::input_parameter< double >::type nsim(nsimSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type tol(tolSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_expect_probe(id, method, th, bounds, nsim, tol));
+    return rcpp_result_gen;
+END_RCPP
+}
+// d7_expect_piece_probe
+SEXP d7_expect_piece_probe(int id, int what, Rcpp::NumericVector x, Rcpp::NumericVector th, int vb);
+RcppExport SEXP _distributions7_d7_expect_piece_probe(SEXP idSEXP, SEXP whatSEXP, SEXP xSEXP, SEXP thSEXP, SEXP vbSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type id(idSEXP);
+    Rcpp::traits::input_parameter< int >::type what(whatSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type th(thSEXP);
+    Rcpp::traits::input_parameter< int >::type vb(vbSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_expect_piece_probe(id, what, x, th, vb));
+    return rcpp_result_gen;
+END_RCPP
+}
 // bernoulli_dexpected1_cpp
 List bernoulli_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
 RcppExport SEXP _distributions7_bernoulli_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
@@ -8187,6 +8218,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_d7_scalar_classes_covered", (DL_FUNC) &_distributions7_d7_scalar_classes_covered, 0},
     {"_distributions7_d7_parts_probe", (DL_FUNC) &_distributions7_d7_parts_probe, 4},
     {"_distributions7_d7_parts_classes_covered", (DL_FUNC) &_distributions7_d7_parts_classes_covered, 0},
+    {"_distributions7_d7_expect_probe", (DL_FUNC) &_distributions7_d7_expect_probe, 6},
+    {"_distributions7_d7_expect_piece_probe", (DL_FUNC) &_distributions7_d7_expect_piece_probe, 5},
     {"_distributions7_bernoulli_dexpected1_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected1_cpp, 3},
     {"_distributions7_bernoulli_dexpected2_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected2_cpp, 3},
     {"_distributions7_binomial_dexpected1_cpp", (DL_FUNC) &_distributions7_binomial_dexpected1_cpp, 4},

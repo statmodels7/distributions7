@@ -29,10 +29,12 @@ that is requested: the observed derivative for \code{identity = "hessian"}, and
 the integrand of the score identity for \code{identity = "score"}.
 }
 \details{
-One simulation is run for each row of \code{theta} after recycling.
-Observations whose parameters coincide are not merged, so a \code{theta} that
-varies over the observations costs one simulation per observation, and a
-scalar \code{theta} costs one simulation however long \code{y} is.
+One simulation is run for each distinct row of \code{theta} after recycling,
+a row including the family's constants that vary by observation (a
+binomial's \code{size}). Rows whose values coincide bit for bit share one
+simulation, run in the order of their first appearance, so a scalar
+\code{theta} costs one simulation however long \code{y} is, and a \code{theta} that
+takes k distinct values costs k simulations.
 
 Estimates the same quantity as \code{\link[=expected_by_integrate]{expected_by_integrate()}} (Hessian identity)
 or \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} (score identity), has an error that falls as

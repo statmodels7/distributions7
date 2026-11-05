@@ -657,6 +657,14 @@ d7_parts_classes_covered <- function() {
     .Call(`_distributions7_d7_parts_classes_covered`)
 }
 
+d7_expect_probe <- function(id, method, th, bounds, nsim, tol) {
+    .Call(`_distributions7_d7_expect_probe`, id, method, th, bounds, nsim, tol)
+}
+
+d7_expect_piece_probe <- function(id, what, x, th, vb = 0L) {
+    .Call(`_distributions7_d7_expect_piece_probe`, id, what, x, th, vb)
+}
+
 bernoulli_dexpected1_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_bernoulli_dexpected1_cpp`, y, mu, threads)
 }

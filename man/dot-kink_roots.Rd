@@ -19,7 +19,8 @@ A numeric vector of roots, possibly empty.
 \description{
 Evaluates \eqn{v(y, \theta)} of a \code{\link[=kink_spec]{kink_spec()}} on 129 equally spaced
 points of \eqn{[\mathrm{lower}, \mathrm{upper}]} and 129 more on its
-central half, and refines each sign change with \code{\link[stats:uniroot]{stats::uniroot()}}. A grid point at
+central half, refines each sign change with \code{\link[stats:uniroot]{stats::uniroot()}} and then by
+bisection to adjacent doubles (\code{\link[=.kink_root_polish]{.kink_root_polish()}}). A grid point at
 which \eqn{v} is exactly zero is returned as it is.
 }
 \examples{
