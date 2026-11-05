@@ -8,6 +8,7 @@
 #include "pt_sqrt.h"
 #include "pt_discrete_pow.h"
 #include "pt_negbin2_series.h"
+#include "pt_parts.h"
 
 // Negative binomial in the mean and the size, Var = mu + mu^2/theta: one
 // function per component and order for the quantities the scalar registry
@@ -532,6 +533,126 @@ inline void negbin2_joint_dinfo(double y, const double* th, double* out) {
     out[4] = negbin2_dexpected_mu_mu_theta(m, t);
     out[3] = negbin2_dexpected_theta_theta_mu(m, t);
     out[7] = negbin2_dexpected_theta_theta_theta(m, t);
+}
+
+// l_theta^3 and l_theta^4 at one observation, copied from nb_d3_theta() and
+// nb_d4_theta() of negbin_hd.cpp (the vector kernels of deriv3 and deriv4),
+// without the cancellation; at y = 0 and y = 1 the closed forms above.
+inline double negbin2_d3_theta(double y, double mu, double th) {
+    if (y < 1.5) return negbin2_theta_y01(y, mu, th, 3);
+    const double s = th + mu, s3 = s * s * s;
+    if (!(th > 100.0 * (y > 1.0 ? y : 1.0))) {
+        const double s2 = s * s;
+        return R::psigamma(y + th, 2.0) - R::psigamma(th, 2.0)
+            - mu * (2.0 * th + mu) / (th * th * s2) - 2.0 * (y - mu) / s3;
+    }
+    double acc = 0.0;
+    for (double j = 0.0; j < y; j += 1.0) {
+        const double t = th + j;
+        acc += 2.0 * (mu - j) * (s * s + s * t + t * t) / (t * t * t * s3);
+    }
+    return acc - mu * mu * (3.0 * th + mu) / (th * th * s3);
+}
+
+inline double negbin2_d4_theta(double y, double mu, double th) {
+    if (y < 1.5) return negbin2_theta_y01(y, mu, th, 4);
+    const double s = th + mu, s2 = s * s, s4 = s2 * s2;
+    if (!(th > 100.0 * (y > 1.0 ? y : 1.0))) {
+        const double s3 = s2 * s;
+        return R::psigamma(y + th, 3.0) - R::psigamma(th, 3.0)
+            - 2.0 * mu * (th * s - (2.0 * th + mu) * (2.0 * th + mu))
+              / (th * th * th * s3)
+            + 6.0 * (y - mu) / s4;
+    }
+    double acc = 0.0;
+    for (double j = 0.0; j < y; j += 1.0) {
+        const double t = th + j, t2 = t * t;
+        acc -= 6.0 * (mu - j) * (t + s) * (t2 + s2) / (t2 * t2 * s4);
+    }
+    return acc + 2.0 * mu * mu * (6.0 * th * th + 4.0 * th * mu + mu * mu)
+                 / (th * th * th * s4);
+}
+
+// count_bracket() of pt_discrete_pow.h with l = log1p(c / m) passed in, so
+// that the orders 2, 3 and 4 share the logarithm; the operations are those of
+// count_bracket(), in the same order.
+inline double negbin2_count_bracket_l(double y, double m, double c, int k,
+                                      double l) {
+    double one_mq = -std::expm1(-k * l);
+    return coef_over_pow(y * one_mq, m, k) - coef_over_pow(c, m + c, k);
+}
+
+// The parts route (pt_parts.h). The buffer, P = 2 (mu, theta):
+//   [0] level            [1] y              [2] mu         [3] theta
+//   [4] score in theta, negbin2_score_theta_y()                    level 1
+//   [5] T = psi_T_rest(y, theta) (0 at y < 1.5, where it is unread) level 2
+//   [6] l = log1p(theta / mu), shared by count_bracket at 2, 3, 4   level 2
+//   [7] l_theta^3 at the observation, negbin2_d3_theta()            level 3
+//   [8] l_theta^4 at the observation, negbin2_d4_theta()            level 4
+//   [9] E[l_theta_theta], the series (expected buffer only)         level 2
+// The expected buffer leaves [1], [4] to [8] as NaN.
+inline void negbin2_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], t = th[1];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = t;
+    b[4] = level >= 1 ? negbin2_score_theta_y(y, m, t) : R_NaN;
+    b[5] = level >= 2 ? (y < 1.5 ? 0.0 : d7::psi_T_rest(y, t)) : R_NaN;
+    b[6] = level >= 2 ? std::log1p(t / m) : R_NaN;
+    b[7] = level >= 3 ? negbin2_d3_theta(y, m, t) : R_NaN;
+    b[8] = level >= 4 ? negbin2_d4_theta(y, m, t) : R_NaN;
+    b[9] = R_NaN;
+}
+
+inline void negbin2_parts_expected(const double* th, int level, double* b) {
+    const double m = th[0], t = th[1];
+    b[0] = level; b[1] = R_NaN; b[2] = m; b[3] = t;
+    for (int j = 4; j < 9; ++j) b[j] = R_NaN;
+    b[9] = level >= 2 ? negbin2_expected_theta_theta(m, t) : R_NaN;
+}
+
+inline void negbin2_parts_grad(const double* b, double* out) {
+    out[0] = negbin2_score_mu(b[1], b[2], b[3]);
+    out[1] = b[4];
+}
+
+inline void negbin2_parts_hess(const double* b, double* out) {
+    const double y = b[1], m = b[2], t = b[3];
+    out[0] = -negbin2_count_bracket_l(y, m, t, 2, b[6]);
+    out[3] = negbin2_hess_theta_theta(y, m, t, b[5]);
+    out[1] = out[2] = negbin2_hess_mu_theta(y, m, t);
+}
+
+// from the expected parts
+inline void negbin2_parts_info(const double* b, double* out) {
+    out[0] = negbin2_expected_mu_mu(b[2], b[3]);
+    out[3] = b[9];
+    out[1] = out[2] = 0.0;
+}
+
+// unique components in the order mu mu mu, mu mu theta, mu theta theta,
+// theta theta theta
+inline void negbin2_parts_d3(const double* b, double* out) {
+    const double yi = b[1], m = b[2], th = b[3];
+    const double s = th + m, s2 = s * s, s3 = s2 * s;
+    double u[4];
+    u[0] = 2.0 * negbin2_count_bracket_l(yi, m, th, 3, b[6]);
+    u[1] = 1.0 / s2 - 2.0 * (yi + th) / s3;
+    u[2] = -2.0 * (yi - m) / s3;
+    u[3] = b[7];
+    sym_fill(2, 3, u, out);
+}
+
+// mu mu mu mu, mu mu mu theta, mu mu theta theta, mu theta theta theta,
+// theta theta theta theta
+inline void negbin2_parts_d4(const double* b, double* out) {
+    const double yi = b[1], m = b[2], th = b[3];
+    const double s = th + m, s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
+    double u[5];
+    u[0] = -6.0 * negbin2_count_bracket_l(yi, m, th, 4, b[6]);
+    u[1] = -2.0 / s3 + 6.0 * (yi + th) / s4;
+    u[2] = -4.0 / s3 + 6.0 * (yi + th) / s4;
+    u[3] = 6.0 * (yi - m) / s4;
+    u[4] = b[8];
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

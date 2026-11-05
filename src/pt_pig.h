@@ -9,6 +9,7 @@
 #include "pt_sqrt.h"
 #include "pt_pig_debye.h"
 #include "pt_pig_mass.h"
+#include "pt_parts.h"
 
 // The Poisson-inverse Gaussian in both parametrizations: what the kernels of
 // pig_hd.cpp and the scalar registry share. The special functions are
@@ -1247,6 +1248,341 @@ inline void pig2_joint_dinfo(double y, const double* th, double* out) {
         out[3 + 4 * c] = D[2 + c];
         out[1 + 4 * c] = out[2 + 4 * c] = D[4 + c];
     }
+}
+
+// ---- the parts route (pt_parts.h) -------------------------------------------
+//
+// What costs at one observation is log S_y and its derivatives: in w for pig1
+// (pig_logS_w(), a sum below y = 21 and a Debye expansion above) and in
+// alpha for pig2 (psi_derivs(), the same two routes). Every order reads them,
+// so they are formed once, up to the order of the level. A lower derivative
+// does not depend on the order asked of the routine, so a buffer filled at
+// level 4 gives the gradient and the Hessian the numbers the joint routers
+// compute at their own order. The expected Hessian is a sum over the support
+// (a PigSeqW or PigSeq pass, or the series near the Poisson limit); the
+// sequence over the count is longer than the buffer, so the parts hold its
+// result, E[l_ab], and not the sequence.
+//
+// pig1, observed buffer (P = 2: mu, sigma)
+//   [0] level   [1] y   [2] mu   [3] sigma
+//   [4] log S_y(w)               level 1
+//   [5] d log S / dw             level 1
+//   [6] d^2 log S / dw^2         level 2
+//   [7] d^3 log S / dw^3         level 3
+//   [8] d^4 log S / dw^4         level 4
+//   (y outside the support leaves [4] to [8] at zero, as the joint routers
+//   do; orders three and four then return -Inf/NaN as pig1_row() does)
+// pig1, expected buffer
+//   [0] level   [1] NaN   [2] mu   [3] sigma
+//   [4] E[l_mu mu]  [5] E[l_sigma sigma]  [6] E[l_mu sigma]   level 2
+//   (NA where the sum was not completed, as pig1_joint_info() returns)
+inline void pig1_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], sg = th[1];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = sg;
+    double L[5] = {0, 0, 0, 0, 0};
+    if (level >= 1 && pig_in_support(y))
+        pig_logS_w(y, pig1_w(m, sg), level > 4 ? 4 : level, L);
+    for (int j = 0; j < 5; ++j)
+        b[4 + j] = (level >= 1 && level >= j) ? L[j] : R_NaN;
+}
+
+inline void pig1_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+    if (level >= 2) {
+        double E[3], D[6];
+        pig1_joint_expected<false>(th[0], th[1], E, D);
+        b[4] = E[0]; b[5] = E[1]; b[6] = E[2];
+    } else {
+        b[4] = b[5] = b[6] = R_NaN;
+    }
+}
+
+inline void pig1_parts_grad(const double* b, double* out) {
+    out[0] = pig1_score_mu(b[1], b[2], b[3], b + 4);
+    out[1] = pig1_score_sigma(b[1], b[2], b[3], b + 4);
+}
+
+inline void pig1_parts_hess(const double* b, double* out) {
+    out[0] = pig1_hess_mu_mu(b[1], b[2], b[3], b + 4);
+    out[3] = pig1_hess_sigma_sigma(b[1], b[2], b[3], b + 4);
+    out[1] = out[2] = pig1_hess_mu_sigma(b[1], b[2], b[3], b + 4);
+}
+
+inline void pig1_parts_info(const double* b, double* out) {
+    out[0] = b[4];
+    out[3] = b[5];
+    out[1] = out[2] = b[6];
+}
+
+// The block of order ORDER (3 or 4) of pig1_row() (pt_pig_rows.h, which
+// includes this header) with `only` and `pre` = L: the composition through
+// c = 1 + 2 sigma mu, s = sqrt(c), G = -2 mu / (1 + s) and w = sigma / (2 s),
+// run to order ORDER, written to v[0 .. PIG_LEN[ORDER] - 1] in the order
+// mu^ORDER, mu^(ORDER-1) sigma, ..., sigma^ORDER. The score and Hessian
+// slots are formed on the way and not returned.
+template <int ORDER>
+inline void pig1_parts_row(double yy, double m, double sg, const double* L,
+                           double* v) {
+    const int order = ORDER;
+    if (ISNAN(yy)) {
+        for (int j = 0; j < PIG_LEN[order]; ++j) v[j] = yy;
+        return;
+    }
+    if (!R_finite(yy) || yy < 0.0 || yy != std::floor(yy)) {
+        const int lo = PIG_OFF[order];
+        for (int j = 0; j < PIG_LEN[order]; ++j)
+            v[j] = (lo + j == 0) ? R_NegInf : R_NaN;
+        return;
+    }
+    double c = 1.0 + 2.0 * sg * m;
+    double s = d7::sqrt_cr(c);
+    double w = 0.5 * sg / s;
+    double C[15] = {0};
+    C[0] = c; C[1] = 2.0 * sg; C[2] = 2.0 * m; C[4] = 2.0;
+    double ic = 1.0 / c;
+    double hlog[5] = {std::log(c), ic, -ic * ic, 2.0 * ic * ic * ic,
+                      -6.0 * ic * ic * ic * ic};
+    double hsq[5] = {s, 0.5 / s, -0.25 / (s * c), 0.375 / (s * c * c),
+                     -0.9375 / (s * c * c * c)};
+    double LC[15], S[15];
+    pig_compose(hlog, C, order, LC);
+    pig_compose(hsq, C, order, S);
+    double ip = 1.0 / (1.0 + s);
+    double hphi[5] = {ip, -ip * ip, 2.0 * ip * ip * ip,
+                      -6.0 * ip * ip * ip * ip, 24.0 * ip * ip * ip * ip * ip};
+    double is = 1.0 / s;
+    double hpsi[5] = {is, -is * is, 2.0 * is * is * is,
+                      -6.0 * is * is * is * is, 24.0 * is * is * is * is * is};
+    double PH[15], PS[15], Wp[15], LS[15];
+    pig_compose(hphi, S, order, PH);
+    pig_compose(hpsi, S, order, PS);
+    double G[15];
+    for (int o = 0; o <= order; ++o) {
+        for (int j = 0; j <= o; ++j) {
+            int i = o - j, k = pix(i, j);
+            G[k] = -2.0 * (m * PH[k] + (i > 0 ? i * PH[pix(i - 1, j)] : 0.0));
+            Wp[k] = 0.5 * (sg * PS[k] + (j > 0 ? j * PS[pix(i, j - 1)] : 0.0));
+        }
+    }
+    Wp[0] = w;
+    pig_compose(L, Wp, order, LS);
+    double h = -yy / 2.0;
+    double im = 1.0 / m;
+    double ym[5] = {yy * std::log(m), yy * im, -yy * im * im,
+                    2.0 * yy * im * im * im, -6.0 * yy * im * im * im * im};
+    const int lo = PIG_OFF[order];
+    const int hi = PIG_OFF[order] + PIG_LEN[order];
+    for (int j = 0; j <= order; ++j) {
+        int i = order - j, k = pix(i, j);
+        if (k < lo || k >= hi) continue;
+        double val = h * LC[k] + G[k] + LS[k];
+        if (j == 0) val += ym[i];
+        v[k - lo] = val;
+    }
+}
+
+inline void pig1_parts_d3(const double* b, double* out) {
+    double u[4];
+    pig1_parts_row<3>(b[1], b[2], b[3], b + 4, u);
+    sym_fill(2, 3, u, out);
+}
+
+inline void pig1_parts_d4(const double* b, double* out) {
+    double u[5];
+    pig1_parts_row<4>(b[1], b[2], b[3], b + 4, u);
+    sym_fill(2, 4, u, out);
+}
+
+// pig2, observed buffer (P = 2: mu, alpha)
+//   [0] level   [1] y   [2] mu   [3] alpha
+//   [4] A1 = d log S / d alpha          level 1
+//   [5] psi'' (second derivative of psi = -alpha + log S)   level 2
+//   [6] psi'''                          level 3
+//   [7] psi''''                         level 4
+//   (log S_y itself is read only by the value and is not stored; the
+//   quantities of pig2_base() are cheap and recomputed in each order)
+// pig2, expected buffer
+//   [0] level   [1] NaN   [2] mu   [3] alpha
+//   [4] E[l_mu mu]  [5] E[l_alpha alpha]  [6] E[l_mu alpha]   level 2
+inline void pig2_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], aa = th[1];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = aa;
+    double p[5] = {0, 0, 0, 0, 0}, logS = 0.0, A1 = 0.0;
+    if (level >= 1 && pig_in_support(y))
+        psi_derivs(y, aa, level > 4 ? 4 : level, p, &logS, &A1);
+    b[4] = level >= 1 ? A1 : R_NaN;
+    b[5] = level >= 2 ? p[2] : R_NaN;
+    b[6] = level >= 3 ? p[3] : R_NaN;
+    b[7] = level >= 4 ? p[4] : R_NaN;
+}
+
+inline void pig2_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+    if (level >= 2) {
+        double E[3], D[6];
+        pig2_joint_expected<false>(th[0], th[1], E, D);
+        b[4] = E[0]; b[5] = E[1]; b[6] = E[2];
+    } else {
+        b[4] = b[5] = b[6] = R_NaN;
+    }
+}
+
+inline void pig2_parts_grad(const double* b, double* out) {
+    const Pig2Base B = pig2_base(b[1], b[2], b[3]);
+    out[0] = pig2_score_mu(b[1], b[2], B);
+    out[1] = pig2_score_alpha(b[1], b[2], b[3], B, b[4]);
+}
+
+inline void pig2_parts_hess(const double* b, double* out) {
+    const Pig2Base B = pig2_base(b[1], b[2], b[3]);
+    out[0] = pig2_hess_mu_mu(b[1], B);
+    out[3] = pig2_hess_alpha_alpha(b[1], B, b[5]);
+    out[1] = out[2] = pig2_hess_mu_alpha(b[1], B);
+}
+
+inline void pig2_parts_info(const double* b, double* out) {
+    out[0] = b[4];
+    out[3] = b[5];
+    out[1] = out[2] = b[6];
+}
+
+// The third order of pig2_row() (pt_pig_rows.h) with `only`, from the
+// stages it forms on the way, with psi''' from the buffer.
+inline void pig2_parts_d3(const double* b, double* out) {
+    const double yy = b[1], m = b[2], aa = b[3], p3 = b[6];
+    double u[4];
+    if (ISNAN(yy)) {
+        for (int j = 0; j < 4; ++j) u[j] = yy;
+        sym_fill(2, 3, u, out);
+        return;
+    }
+    if (!R_finite(yy) || yy < 0.0 || yy != std::floor(yy)) {
+        for (int j = 0; j < 4; ++j) u[j] = R_NaN;
+        sym_fill(2, 3, u, out);
+        return;
+    }
+    const Pig2Base B = pig2_base(yy, m, aa);
+    const double ir = B.ir, ir2 = ir * ir, ia = B.ia, im = B.im;
+    const double v0 = B.v0, v1 = B.v1, v2 = B.v2;
+    const double v3 = -24.0 * v0 * v0 * ia;
+    const double bb = B.b;
+    const double Q1 = B.Q1, Q2 = B.Q2, Q3 = -2.0 * yy - 6.0 * bb;
+    const double r_m = B.r_m, r_a = B.r_a, rm2 = B.rm2, ra2 = B.ra2;
+    const double uu = B.u, u_m = B.u_m;
+    const double T_m = B.T_m, T_a = B.T_a;
+    double r_mm = ra2 * ir, r_aa = rm2 * ir, r_ma = -r_m * r_a * ir;
+    double S_mm = r_mm * v0;
+    double S_ma = r_ma * v0 + u_m * v1;
+    double S_aa = r_aa * v0 + 2.0 * r_a * v1 + uu * v2;
+    double T_mm = bb * S_mm, T_ma = bb * S_ma, T_aa = bb * S_aa;
+    double r_mmm = -3.0 * ra2 * r_m * ir2;
+    double r_mma = (2.0 * r_a - 3.0 * ra2 * r_a) * ir2;
+    double r_maa = (-r_m + 3.0 * r_m * ra2) * ir2;
+    double r_aaa = -3.0 * rm2 * r_a * ir2;
+    double S_mmm = r_mmm * v0;
+    double S_mma = r_mma * v0 + r_mm * v1;
+    double S_maa = r_maa * v0 + 2.0 * r_ma * v1 + u_m * v2;
+    double S_aaa = r_aaa * v0 + 3.0 * r_aa * v1 + 3.0 * r_a * v2 +
+        uu * v3;
+    double T_mmm = bb * S_mmm, T_mma = bb * S_mma, T_maa = bb * S_maa,
+        T_aaa = bb * S_aaa;
+    double P_mmm = Q3 * T_m * T_m * T_m + 3.0 * Q2 * T_mm * T_m +
+        Q1 * T_mmm;
+    double P_mma = Q3 * T_m * T_m * T_a +
+        Q2 * (T_mm * T_a + 2.0 * T_ma * T_m) + Q1 * T_mma;
+    double P_maa = Q3 * T_m * T_a * T_a +
+        Q2 * (T_aa * T_m + 2.0 * T_ma * T_a) + Q1 * T_maa;
+    double P_aaa = Q3 * T_a * T_a * T_a + 3.0 * Q2 * T_aa * T_a +
+        Q1 * T_aaa;
+    u[0] = 2.0 * yy * im * im * im + P_mmm;
+    u[1] = P_mma;
+    u[2] = P_maa;
+    u[3] = -2.0 * yy * ia * ia * ia + p3 + P_aaa;
+    sym_fill(2, 3, u, out);
+}
+
+// The fourth order of pig2_row() with `only`, with psi'''' from the buffer.
+inline void pig2_parts_d4(const double* b, double* out) {
+    const double yy = b[1], m = b[2], aa = b[3], p4 = b[7];
+    double u[5];
+    if (ISNAN(yy)) {
+        for (int j = 0; j < 5; ++j) u[j] = yy;
+        sym_fill(2, 4, u, out);
+        return;
+    }
+    if (!R_finite(yy) || yy < 0.0 || yy != std::floor(yy)) {
+        for (int j = 0; j < 5; ++j) u[j] = R_NaN;
+        sym_fill(2, 4, u, out);
+        return;
+    }
+    const Pig2Base B = pig2_base(yy, m, aa);
+    const double ir = B.ir, ir2 = ir * ir, ir3 = ir2 * ir, ia = B.ia,
+        im = B.im;
+    const double v0 = B.v0, v1 = B.v1, v2 = B.v2;
+    const double v3 = -24.0 * v0 * v0 * ia;
+    const double v4 = 120.0 * v0 * v0 * v0;
+    const double bb = B.b;
+    const double Q1 = B.Q1, Q2 = B.Q2, Q3 = -2.0 * yy - 6.0 * bb,
+        Q4 = 6.0 * yy + 24.0 * bb;
+    const double r_m = B.r_m, r_a = B.r_a, rm2 = B.rm2, ra2 = B.ra2;
+    const double uu = B.u, u_m = B.u_m;
+    const double T_m = B.T_m, T_a = B.T_a;
+    double r_mm = ra2 * ir, r_aa = rm2 * ir, r_ma = -r_m * r_a * ir;
+    double S_mm = r_mm * v0;
+    double S_ma = r_ma * v0 + u_m * v1;
+    double S_aa = r_aa * v0 + 2.0 * r_a * v1 + uu * v2;
+    double T_mm = bb * S_mm, T_ma = bb * S_ma, T_aa = bb * S_aa;
+    double r_mmm = -3.0 * ra2 * r_m * ir2;
+    double r_mma = (2.0 * r_a - 3.0 * ra2 * r_a) * ir2;
+    double r_maa = (-r_m + 3.0 * r_m * ra2) * ir2;
+    double r_aaa = -3.0 * rm2 * r_a * ir2;
+    double S_mmm = r_mmm * v0;
+    double S_mma = r_mma * v0 + r_mm * v1;
+    double S_maa = r_maa * v0 + 2.0 * r_ma * v1 + u_m * v2;
+    double S_aaa = r_aaa * v0 + 3.0 * r_aa * v1 + 3.0 * r_a * v2 +
+        uu * v3;
+    double T_mmm = bb * S_mmm, T_mma = bb * S_mma, T_maa = bb * S_maa,
+        T_aaa = bb * S_aaa;
+    double r_mmmm = (-3.0 * ra2 + 15.0 * ra2 * rm2) * ir3;
+    double r_mmma = (-6.0 * r_a * r_m + 15.0 * ra2 * r_a * r_m) * ir3;
+    double r_mmaa = (2.0 - 15.0 * ra2 + 15.0 * ra2 * ra2) * ir3;
+    double r_maaa = (9.0 * r_m * r_a - 15.0 * r_m * ra2 * r_a) * ir3;
+    double r_aaaa = (-3.0 * rm2 + 15.0 * rm2 * ra2) * ir3;
+    double S_mmmm = r_mmmm * v0;
+    double S_mmma = r_mmma * v0 + r_mmm * v1;
+    double S_mmaa = r_mmaa * v0 + 2.0 * r_mma * v1 + r_mm * v2;
+    double S_maaa = r_maaa * v0 + 3.0 * r_maa * v1 + 3.0 * r_ma * v2 +
+        u_m * v3;
+    double S_aaaa = r_aaaa * v0 + 4.0 * r_aaa * v1 + 6.0 * r_aa * v2 +
+        4.0 * r_a * v3 + uu * v4;
+    double T_mmmm = bb * S_mmmm, T_mmma = bb * S_mmma,
+        T_mmaa = bb * S_mmaa, T_maaa = bb * S_maaa, T_aaaa = bb * S_aaaa;
+    double P_mmmm = Q4 * T_m * T_m * T_m * T_m +
+        6.0 * Q3 * T_mm * T_m * T_m +
+        Q2 * (3.0 * T_mm * T_mm + 4.0 * T_mmm * T_m) + Q1 * T_mmmm;
+    double P_mmma = Q4 * T_m * T_m * T_m * T_a +
+        Q3 * (3.0 * T_ma * T_m * T_m + 3.0 * T_mm * T_m * T_a) +
+        Q2 * (3.0 * T_mm * T_ma + 3.0 * T_mma * T_m + T_mmm * T_a) +
+        Q1 * T_mmma;
+    double P_mmaa = Q4 * T_m * T_m * T_a * T_a +
+        Q3 * (T_mm * T_a * T_a + T_aa * T_m * T_m +
+              4.0 * T_ma * T_m * T_a) +
+        Q2 * (T_mm * T_aa + 2.0 * T_ma * T_ma +
+              2.0 * T_maa * T_m + 2.0 * T_mma * T_a) +
+        Q1 * T_mmaa;
+    double P_maaa = Q4 * T_m * T_a * T_a * T_a +
+        Q3 * (3.0 * T_ma * T_a * T_a + 3.0 * T_aa * T_m * T_a) +
+        Q2 * (3.0 * T_aa * T_ma + 3.0 * T_maa * T_a + T_aaa * T_m) +
+        Q1 * T_maaa;
+    double P_aaaa = Q4 * T_a * T_a * T_a * T_a +
+        6.0 * Q3 * T_aa * T_a * T_a +
+        Q2 * (3.0 * T_aa * T_aa + 4.0 * T_aaa * T_a) + Q1 * T_aaaa;
+    u[0] = -6.0 * yy * im * im * im * im + P_mmmm;
+    u[1] = P_mmma;
+    u[2] = P_mmaa;
+    u[3] = P_maaa;
+    u[4] = 6.0 * yy * ia * ia * ia * ia + p4 + P_aaaa;
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

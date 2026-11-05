@@ -1,6 +1,9 @@
 #ifndef D7_PT_INVGAUSS2_H
 #define D7_PT_INVGAUSS2_H
 
+#include <Rcpp.h>
+#include "pt_parts.h"
+
 // Inverse gaussian in the mean and the shape lambda, Var = mu^3/lambda: one
 // function per component and order for the quantities the scalar registry
 // reads, called by the vector kernels (invgauss2.cpp, dexpected_kernels.cpp)
@@ -113,6 +116,70 @@ inline void invgauss2_joint_dinfo(double y, const double* th, double* out) {
     out[0] = invgauss2_dexpected_mu_mu_mu(m, L);
     out[4] = invgauss2_dexpected_mu_mu_lambda(m);
     out[7] = invgauss2_dexpected_lambda_lambda_lambda(L);
+}
+
+// The parts route (pt_parts.h). Nothing in this family is costly, so the buffer
+// holds the inputs every order reads, and each order is written from them:
+//   [0] level                       always
+//   [1] y                           observed parts; NaN in the expected parts
+//   [2] mu                          always
+//   [3] lambda                      always
+// Orders one and two call the joint routers' component functions. Orders
+// three and four are the expressions of invgauss2_deriv3_cpp and
+// invgauss2_deriv4_cpp (invgauss2.cpp) with expected = FALSE, so yy = y.
+inline void invgauss2_parts(double y, const double* th, int level, double* b) {
+    b[0] = level; b[1] = y; b[2] = th[0]; b[3] = th[1];
+}
+
+inline void invgauss2_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+}
+
+inline void invgauss2_parts_grad(const double* b, double* out) {
+    out[0] = invgauss2_score_mu(b[1], b[2], b[3]);
+    out[1] = invgauss2_score_lambda(b[1], b[2], b[3]);
+}
+
+inline void invgauss2_parts_hess(const double* b, double* out) {
+    out[0] = invgauss2_hess_mu_mu(b[1], b[2], b[3]);
+    out[3] = invgauss2_hess_lambda_lambda(b[3]);
+    out[1] = out[2] = invgauss2_hess_mu_lambda(b[1], b[2]);
+}
+
+// from the expected parts
+inline void invgauss2_parts_info(const double* b, double* out) {
+    out[0] = invgauss2_expected_mu_mu(b[2], b[3]);
+    out[3] = invgauss2_expected_lambda_lambda(b[3]);
+    out[1] = out[2] = 0.0;
+}
+
+// third order: invgauss2_deriv3_cpp, unique components in the sorted order
+// mu mu mu, mu mu lambda, mu lambda lambda, lambda lambda lambda
+inline void invgauss2_parts_d3(const double* b, double* out) {
+    const double yy = b[1], m = b[2], L = b[3];
+    const double m2 = m * m, m4 = m2 * m2, m5 = m4 * m;
+    double u[4];
+    u[0] = L * (12.0 * yy - 6.0 * m) / m5;
+    u[1] = (2.0 * m - 3.0 * yy) / m4;
+    u[2] = 0.0;
+    u[3] = 1.0 / (L * L * L);
+    sym_fill(2, 3, u, out);
+}
+
+// fourth order: invgauss2_deriv4_cpp, unique components in the sorted order
+// mu mu mu mu, mu mu mu lambda, mu mu lambda lambda, mu lambda lambda lambda,
+// lambda lambda lambda lambda
+inline void invgauss2_parts_d4(const double* b, double* out) {
+    const double yy = b[1], m = b[2], L = b[3];
+    const double m2 = m * m, m4 = m2 * m2, m5 = m4 * m, m6 = m5 * m;
+    const double L2 = L * L;
+    double u[5];
+    u[0] = L * (24.0 * m - 60.0 * yy) / m6;
+    u[1] = (12.0 * yy - 6.0 * m) / m5;
+    u[2] = 0.0;
+    u[3] = 0.0;
+    u[4] = -3.0 / (L2 * L2);
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

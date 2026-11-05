@@ -20,56 +20,9 @@ using namespace Rcpp;
 // d7::par_for, whose decomposition over output elements keeps the result
 // bit-identical at any thread count.
 
-namespace {
-
-struct Fs {
-    double f1, f2, f3, f4;      // derivatives in s
-    double m1, m2, m3, m4;      // derivatives in mu
-    double ms1, mms1, mmms1;    // mixed, one s
-};
-
-inline Fs gamma1_parts(double y, double m, double phi) {
-    double s = 1.0 / phi;
-    double z = y / m, w = (y - m) / m;   // w = z - 1 without the rounding of z
-    double m2 = m * m, m3 = m2 * m, m4 = m2 * m2;
-    Fs o;
-    // [log s - psi(s)] + [log z - (z-1)]: two cancelling pairs, each
-    // written out.  See psi_diff.h.
-    o.f1 = d7::psi_log_rest(s) + d7::psi_Ew2(z, w);
-    o.f2 = d7::psi1_rest(s);
-    o.f3 = d7::psi2_rest(s);
-    o.f4 = d7::psi3_rest(s);
-    o.m1 = s * w / m;
-    o.m2 = s * (1.0 - 2.0 * z) / m2;
-    o.m3 = s * (6.0 * z - 2.0) / m3;
-    o.m4 = s * (6.0 - 24.0 * z) / m4;
-    o.ms1 = w / m;
-    o.mms1 = (1.0 - 2.0 * z) / m2;
-    o.mmms1 = (6.0 * z - 2.0) / m3;
-    return o;
-}
-
-// The expected versions of the same quantities, at E[z] = 1 and
-// E[log z] = digamma(s) - log s.
-inline Fs gamma1_parts_expected(double m, double phi) {
-    double s = 1.0 / phi;
-    double m2 = m * m, m3 = m2 * m, m4 = m2 * m2;
-    Fs o;
-    o.f1 = 0.0;
-    o.f2 = d7::psi1_rest(s);
-    o.f3 = d7::psi2_rest(s);
-    o.f4 = d7::psi3_rest(s);
-    o.m1 = 0.0;
-    o.m2 = -s / m2;
-    o.m3 = 4.0 * s / m3;
-    o.m4 = -18.0 * s / m4;
-    o.ms1 = 0.0;
-    o.mms1 = -1.0 / m2;
-    o.mmms1 = 4.0 / m3;
-    return o;
-}
-
-} // namespace
+// The quantities of the third and fourth derivatives (d7::Gamma1Fs) and the
+// functions over them live in pt_gamma1.h, which the parts route of the
+// registry calls as well.
 
 // [[Rcpp::export]]
 List gamma1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi,
@@ -133,31 +86,6 @@ List gamma1_expected_hessian_cpp(NumericVector y, NumericVector mu,
                         Named("mu_phi") = h_mp);
 }
 
-namespace {
-
-inline void gamma1_d3(const Fs &o, double s, double *out) {
-    double s1 = -s * s, s2 = 2.0 * s * s * s, s3 = -6.0 * s * s * s * s;
-    out[0] = o.m3;                                   // mu mu mu
-    out[1] = o.mms1 * s1;                            // mu mu phi
-    out[2] = o.ms1 * s2;                             // mu phi phi
-    out[3] = o.f3 * s1 * s1 * s1 + 3.0 * o.f2 * s1 * s2 + o.f1 * s3;
-}
-
-inline void gamma1_d4(const Fs &o, double s, double *out) {
-    double s1 = -s * s, s2 = 2.0 * s * s * s, s3 = -6.0 * s * s * s * s,
-           s4 = 24.0 * s * s * s * s * s;
-    out[0] = o.m4;                                   // mu mu mu mu
-    out[1] = o.mmms1 * s1;                           // mu mu mu phi
-    out[2] = o.mms1 * s2;                            // mu mu phi phi
-    out[3] = o.ms1 * s3;                             // mu phi phi phi
-    out[4] = o.f4 * s1 * s1 * s1 * s1
-           + 6.0 * o.f3 * s1 * s1 * s2
-           + 3.0 * o.f2 * s2 * s2
-           + 4.0 * o.f2 * s1 * s3
-           + o.f1 * s4;
-}
-
-} // namespace
 
 // [[Rcpp::export]]
 List gamma1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector phi,
@@ -172,7 +100,7 @@ List gamma1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
         double v[4];
-        gamma1_d3(gamma1_parts(yp[i], m, p), 1.0 / p, v);
+        d7::gamma1_fs_d3(d7::gamma1_fs(yp[i], m, p), 1.0 / p, v);
         ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3];
     });
     return List::create(Named("mu_mu_mu") = a, Named("mu_mu_phi") = b,
@@ -192,7 +120,7 @@ List gamma1_deriv3_expected_cpp(NumericVector y, NumericVector mu,
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
         double v[4];
-        gamma1_d3(gamma1_parts_expected(m, p), 1.0 / p, v);
+        d7::gamma1_fs_d3(d7::gamma1_fs_expected(m, p), 1.0 / p, v);
         ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3];
     });
     return List::create(Named("mu_mu_mu") = a, Named("mu_mu_phi") = b,
@@ -213,7 +141,7 @@ List gamma1_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector phi,
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
         double v[5];
-        gamma1_d4(gamma1_parts(yp[i], m, p), 1.0 / p, v);
+        d7::gamma1_fs_d4(d7::gamma1_fs(yp[i], m, p), 1.0 / p, v);
         ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3]; ep[i] = v[4];
     });
     return List::create(Named("mu_mu_mu_mu") = a, Named("mu_mu_mu_phi") = b,
@@ -302,7 +230,7 @@ List gamma1_deriv4_expected_cpp(NumericVector y, NumericVector mu,
         double m = m_s ? mp[0] : mp[i];
         double p = p_s ? pp[0] : pp[i];
         double v[5];
-        gamma1_d4(gamma1_parts_expected(m, p), 1.0 / p, v);
+        d7::gamma1_fs_d4(d7::gamma1_fs_expected(m, p), 1.0 / p, v);
         ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3]; ep[i] = v[4];
     });
     return List::create(Named("mu_mu_mu_mu") = a, Named("mu_mu_mu_phi") = b,

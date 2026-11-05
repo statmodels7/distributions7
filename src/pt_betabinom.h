@@ -6,6 +6,7 @@
 #include <limits>
 #include <vector>
 #include "psi_diff.h"
+#include "pt_parts.h"
 
 // The beta-binomial in its two parametrizations: betabinom1 in the mean
 // proportion and the dispersion (mu, sigma), betabinom2 in the shapes
@@ -847,6 +848,356 @@ inline void betabinom2_joint_dinfo(double y, const double* th, double* out) {
     out[0 + 4] = o[4];
     out[3 + 4] = o[6];
     out[1 + 4] = out[2 + 4] = o[8];
+}
+
+// ---- the parts route (piano_motore.md, D7) ----------------------------------
+//
+// Orders one and two and the expected Hessian call the components of the
+// joint routers above. Orders three and four have no compiled kernel: they
+// transcribe the R assembly. For betabinom2, betabinom2_derivs() of
+// R/betabinom2_distrib.R: the direct sums of bb2_direct() where
+// alpha + beta > 1/bb1_direct_cut(), otherwise polygamma differences
+// (betabinom2_component()). For betabinom1, betabinom1_components() of
+// R/betabinom1_higher.R: bb1_direct() where sigma < bb1_direct_cut(),
+// otherwise the Faa di Bruno partition sum (chain_derivatives()) of the
+// shapes' derivatives over the map (alpha, beta) = (mu/sigma, (1 - mu)/sigma),
+// whose partials are those of md_betabinom1().
+
+// the derivatives of order K (3 or 4) of the log-mass in the shapes, as
+// betabinom2_derivs() forms them: out[j] has K - j derivatives in alpha and
+// j in beta
+inline void bb_shape_comps(double y, double n, double A, double B, int K,
+                           double* out) {
+    if (A + B > 1.0 / bb1_direct_cut()) {
+        bb2_direct(y, n, A, B, K, out);
+        return;
+    }
+    const double k = (double) (K - 1);
+    const double mixed = -R::psigamma(n + A + B, k) + R::psigamma(A + B, k);
+    out[0] = R::psigamma(y + A, k) - R::psigamma(A, k) + mixed;
+    for (int j = 1; j < K; ++j) out[j] = mixed;
+    out[K] = R::psigamma(n - y + B, k) - R::psigamma(B, k) + mixed;
+}
+
+// the partial of the shape A (ab = 0) or B (ab = 1) with p derivatives in mu
+// and q in sigma, A = mu / sigma and B = (1 - mu) / sigma (md_betabinom1())
+inline double bb1_inner(int ab, int p, int q, double mu, double s) {
+    if (p >= 2) return 0.0;
+    static const double fact[5] = {1.0, 1.0, 2.0, 6.0, 24.0};
+    double den = s;
+    for (int i = 0; i < q; ++i) den *= s;
+    const double r = ((q % 2) ? -1.0 : 1.0) * fact[q] / den;
+    if (p == 1) return ab == 0 ? r : -r;
+    return (ab == 0 ? mu : 1.0 - mu) * r;
+}
+
+// the component of order K with a derivatives in mu and K - a in sigma: the
+// sum over the set partitions of the K indices and the assignment of each
+// block to A or B of the product of the blocks' partials and D[na][nb], the
+// derivative of the log-mass in the shapes with na in A and nb in B
+inline double bb1_chain(int K, int a, double mu, double s,
+                        const double D[5][5]) {
+    long total = 1;
+    for (int i = 0; i < K; ++i) total *= K;
+    double acc = 0.0;
+    for (long code = 0; code < total; ++code) {
+        int g[4];
+        long r = code;
+        for (int i = 0; i < K; ++i) { g[i] = (int) (r % K); r /= K; }
+        bool ok = (g[0] == 0);
+        int mx = 0;
+        for (int i = 1; ok && i < K; ++i) {
+            if (g[i] > mx + 1) ok = false;
+            else if (g[i] > mx) mx = g[i];
+        }
+        if (!ok) continue;
+        const int m = mx + 1;
+        int bp[4] = {0, 0, 0, 0}, bq[4] = {0, 0, 0, 0};
+        for (int i = 0; i < K; ++i) {
+            if (i < a) ++bp[g[i]]; else ++bq[g[i]];
+        }
+        for (int mask = 0; mask < (1 << m); ++mask) {
+            int na = 0, nb = 0;
+            double prod = 1.0;
+            for (int k = 0; k < m; ++k) {
+                const int ab = (mask >> k) & 1;
+                if (ab) ++nb; else ++na;
+                prod *= bb1_inner(ab, bp[k], bq[k], mu, s);
+            }
+            if (prod != 0.0) acc += prod * D[na][nb];
+        }
+    }
+    return acc;
+}
+
+// ---- betabinom1 (mu, sigma), th = (mu, sigma, size) ----
+//
+// Buffer layout (index -> quantity -> lowest level):
+//   0  level
+//   1  y                                    (inputs)
+//   2  mu
+//   3  sigma
+//   4  size
+//   5  1 if sigma < cut and y on the support (orders 1-2 by the direct sums)
+//   6  lA, or the direct score in mu                   1
+//   7  lB, or the direct score in sigma                1
+//   8  lAA, or the direct d2 in (mu, mu)               2
+//   9  lAB, or the direct d2 in (mu, sigma)            2
+//  10  lBB, or the direct d2 in (sigma, sigma)         2
+//  11  1 if sigma < cut (orders 3-4 by the direct sums)
+//  12-15  order 3: the direct components (mmm, mms, mss, sss), or the shapes'
+//         (aaa, aab, abb, bbb)                        3
+//  16,17  lA, lB of the shapes, mixed route (the parent's gradient)   3
+//  18-20  lAA, lAB, lBB of the shapes, mixed route                    3
+//  21-25  order 4: the direct components or the shapes' (aaaa ... bbbb) 4
+inline void betabinom1_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], s = th[1], size = th[2];
+    for (int i = 1; i < 26; ++i) b[i] = R_NaN;
+    b[0] = (double) level;
+    b[1] = y;
+    b[2] = m;
+    b[3] = s;
+    b[4] = size;
+    const bool dir = s < bb1_direct_cut() && bb_on_support(y, size);
+    const bool dir34 = s < bb1_direct_cut();
+    b[5] = dir ? 1.0 : 0.0;
+    b[11] = dir34 ? 1.0 : 0.0;
+    if (level >= 1) {
+        if (dir) {
+            double v[2];
+            bb1_direct(y, size, m, s, 1, v);
+            b[6] = v[0];
+            b[7] = v[1];
+        } else {
+            const BBmap mp = bb_map(m, s);
+            const BBd1 d = bb_shape_d1(y, size, mp.A, mp.B);
+            b[6] = d.lA;
+            b[7] = d.lB;
+        }
+    }
+    if (level >= 2) {
+        if (dir) {
+            double v[3];
+            bb1_direct(y, size, m, s, 2, v);
+            b[8] = v[0];
+            b[9] = v[1];
+            b[10] = v[2];
+        } else {
+            const BBmap mp = bb_map(m, s);
+            const BBd2 d = bb_shape_d2(y, size, mp.A, mp.B);
+            b[8] = d.lAA;
+            b[9] = d.lAB;
+            b[10] = d.lBB;
+        }
+    }
+    if (level >= 3) {
+        if (dir34) {
+            double v[4];
+            bb1_direct(y, size, m, s, 3, v);
+            for (int j = 0; j < 4; ++j) b[12 + j] = v[j];
+        } else {
+            const double A = m / s, B = (1.0 - m) / s;
+            const BBd1 d1 = bb_shape_d1_mixed(y, size, A, B);
+            const BBd2 d2 = bb_shape_d2_mixed(y, size, A, B);
+            b[16] = d1.lA;
+            b[17] = d1.lB;
+            b[18] = d2.lAA;
+            b[19] = d2.lAB;
+            b[20] = d2.lBB;
+            bb_shape_comps(y, size, A, B, 3, b + 12);
+        }
+    }
+    if (level >= 4) {
+        if (dir34) {
+            double v[5];
+            bb1_direct(y, size, m, s, 4, v);
+            for (int j = 0; j < 5; ++j) b[21 + j] = v[j];
+        } else {
+            bb_shape_comps(y, size, m / s, (1.0 - m) / s, 4, b + 21);
+        }
+    }
+}
+
+// Buffer layout: 0 level, 1 NaN (no y), 2 mu, 3 sigma, 4 size,
+// 5 E[l_mu_mu], 6 E[l_mu_sigma], 7 E[l_sigma_sigma] (level 2).
+// One pass over the support forms the three sums, each with the terms and the
+// order of betabinom1_expected_kk() and betabinom1_expected_mu_sigma().
+inline void betabinom1_parts_expected(const double* th, int level, double* b) {
+    const double m = th[0], s = th[1], size = th[2];
+    for (int i = 1; i < 8; ++i) b[i] = R_NaN;
+    b[0] = (double) level;
+    b[2] = m;
+    b[3] = s;
+    b[4] = size;
+    if (level >= 2) {
+        BBmap mp = bb_map(m, s);
+        int N = (int) size;
+        const bool direct = s < bb1_direct_cut();
+        double e0 = 0.0, e1 = 0.0, e2 = 0.0;
+        for (int j = 0; j <= N; j++) {
+            double p = std::exp(bb_log_mass(j, mp.A, mp.B, size));
+            if (direct) {
+                double v[3];
+                bb1_direct(j, size, m, s, 2, v);
+                e0 += p * v[0];
+                e1 += p * v[1];
+                e2 += p * v[2];
+            } else {
+                BBderiv d = bb_shape_derivs(j, size, mp.A, mp.B);
+                e0 += p * betabinom1_hess_mu_mu(d, mp);
+                e1 += p * betabinom1_hess_mu_sigma(d, mp);
+                e2 += p * betabinom1_hess_sigma_sigma(d, mp);
+            }
+        }
+        b[5] = e0;
+        b[6] = e1;
+        b[7] = e2;
+    }
+}
+
+inline void betabinom1_parts_grad(const double* b, double* out) {
+    if (b[5] != 0.0) {
+        out[0] = b[6];
+        out[1] = b[7];
+        return;
+    }
+    const BBmap mp = bb_map(b[2], b[3]);
+    BBd1 d;
+    d.lA = b[6];
+    d.lB = b[7];
+    out[0] = betabinom1_score_mu(d, mp);
+    out[1] = betabinom1_score_sigma(d, mp);
+}
+
+inline void betabinom1_parts_hess(const double* b, double* out) {
+    if (b[5] != 0.0) {
+        out[0] = b[8];
+        out[1] = out[2] = b[9];
+        out[3] = b[10];
+        return;
+    }
+    const BBmap mp = bb_map(b[2], b[3]);
+    BBderiv d;
+    d.lA = b[6];
+    d.lB = b[7];
+    d.lAA = b[8];
+    d.lAB = b[9];
+    d.lBB = b[10];
+    out[0] = betabinom1_hess_mu_mu(d, mp);
+    out[1] = out[2] = betabinom1_hess_mu_sigma(d, mp);
+    out[3] = betabinom1_hess_sigma_sigma(d, mp);
+}
+
+inline void betabinom1_parts_info(const double* b, double* out) {
+    out[0] = b[5];
+    out[1] = out[2] = b[6];
+    out[3] = b[7];
+}
+
+inline void betabinom1_parts_d3(const double* b, double* out) {
+    double u[4];
+    if (b[11] != 0.0) {
+        for (int j = 0; j < 4; ++j) u[j] = b[12 + j];
+    } else {
+        double D[5][5];
+        for (int i = 0; i < 5; ++i) for (int j = 0; j < 5; ++j) D[i][j] = 0.0;
+        D[1][0] = b[16];
+        D[0][1] = b[17];
+        D[2][0] = b[18];
+        D[1][1] = b[19];
+        D[0][2] = b[20];
+        for (int j = 0; j < 4; ++j) D[3 - j][j] = b[12 + j];
+        for (int j = 0; j < 4; ++j) u[j] = bb1_chain(3, 3 - j, b[2], b[3], D);
+    }
+    sym_fill(2, 3, u, out);
+}
+
+inline void betabinom1_parts_d4(const double* b, double* out) {
+    double u[5];
+    if (b[11] != 0.0) {
+        for (int j = 0; j < 5; ++j) u[j] = b[21 + j];
+    } else {
+        double D[5][5];
+        for (int i = 0; i < 5; ++i) for (int j = 0; j < 5; ++j) D[i][j] = 0.0;
+        D[1][0] = b[16];
+        D[0][1] = b[17];
+        D[2][0] = b[18];
+        D[1][1] = b[19];
+        D[0][2] = b[20];
+        for (int j = 0; j < 4; ++j) D[3 - j][j] = b[12 + j];
+        for (int j = 0; j < 5; ++j) D[4 - j][j] = b[21 + j];
+        for (int j = 0; j < 5; ++j) u[j] = bb1_chain(4, 4 - j, b[2], b[3], D);
+    }
+    sym_fill(2, 4, u, out);
+}
+
+// ---- betabinom2 (alpha, beta), th = (alpha, beta, size) ----
+//
+// Buffer layout (index -> quantity -> lowest level):
+//   0  level;  1  y;  2  alpha;  3  beta;  4  size
+//   5  lA                                    1
+//   6  lB                                    1
+//   7  lAA                                   2
+//   8  lBB                                   2
+//   9  lAB                                   2
+//  10-13  order 3 (aaa, aab, abb, bbb)       3
+//  14-18  order 4 (aaaa, aaab, aabb, abbb, bbbb)   4
+inline void betabinom2_parts(double y, const double* th, int level, double* b) {
+    for (int i = 1; i < 19; ++i) b[i] = R_NaN;
+    b[0] = (double) level;
+    b[1] = y;
+    b[2] = th[0];
+    b[3] = th[1];
+    b[4] = th[2];
+    if (level >= 1) {
+        const BBd1 d = bb_shape_d1_mixed(y, th[2], th[0], th[1]);
+        b[5] = d.lA;
+        b[6] = d.lB;
+    }
+    if (level >= 2) {
+        const BBd2 d = bb_shape_d2_mixed(y, th[2], th[0], th[1]);
+        b[7] = d.lAA;
+        b[8] = d.lBB;
+        b[9] = d.lAB;
+    }
+    if (level >= 3) bb_shape_comps(y, th[2], th[0], th[1], 3, b + 10);
+    if (level >= 4) bb_shape_comps(y, th[2], th[0], th[1], 4, b + 14);
+}
+
+// Buffer layout: 0 level, 1 NaN, 2 alpha, 3 beta, 4 size,
+// 5 E[l_aa], 6 E[l_bb], 7 E[l_ab] (level 2).
+inline void betabinom2_parts_expected(const double* th, int level, double* b) {
+    for (int i = 1; i < 8; ++i) b[i] = R_NaN;
+    b[0] = (double) level;
+    b[2] = th[0];
+    b[3] = th[1];
+    b[4] = th[2];
+    if (level >= 2) betabinom2_expected_pairs(th[0], th[1], (int) th[2], b + 5);
+}
+
+inline void betabinom2_parts_grad(const double* b, double* out) {
+    out[0] = b[5];
+    out[1] = b[6];
+}
+
+inline void betabinom2_parts_hess(const double* b, double* out) {
+    out[0] = b[7];
+    out[3] = b[8];
+    out[1] = out[2] = b[9];
+}
+
+inline void betabinom2_parts_info(const double* b, double* out) {
+    out[0] = b[5];
+    out[3] = b[6];
+    out[1] = out[2] = b[7];
+}
+
+inline void betabinom2_parts_d3(const double* b, double* out) {
+    sym_fill(2, 3, b + 10, out);
+}
+
+inline void betabinom2_parts_d4(const double* b, double* out) {
+    sym_fill(2, 4, b + 14, out);
 }
 
 } // namespace d7

@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "pt_constants.h"
+#include "pt_parts.h"
 
 // The Gumbel (maximum) in location and scale, with z = (y - mu)/sigma and
 // w = exp(-z): one function per component and order for the quantities the
@@ -132,6 +133,78 @@ inline void gumbel_joint_dinfo(double y, const double* th, double* out) {
     out[4] = gumbel_dexpected_mu_mu_sigma(s);
     out[7] = gumbel_dexpected_sigma_sigma_sigma(s);
     out[5] = out[6] = gumbel_dexpected_mu_sigma_sigma(s);
+}
+
+// The parts route (pt_parts.h). The buffer, with z = (y - mu)/sigma and
+// w = exp(-z) as the joint routers form them:
+//
+//   [0] level
+//   [1] y                           NaN in the expected buffer
+//   [2] mu
+//   [3] sigma
+//   [4] z = (y - mu)/sigma          level 1
+//   [5] w = exp(-z)                 level 1
+//
+// The expected information reads sigma only.
+inline void gumbel_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], s = th[1];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = s;
+    b[4] = level >= 1 ? (y - m) / s : R_NaN;
+    b[5] = level >= 1 ? std::exp(-b[4]) : R_NaN;
+}
+
+inline void gumbel_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+    b[4] = R_NaN; b[5] = R_NaN;
+}
+
+inline void gumbel_parts_grad(const double* b, double* out) {
+    out[0] = gumbel_score_mu(b[5], b[3]);
+    out[1] = gumbel_score_sigma(b[4], b[5], b[3]);
+}
+
+inline void gumbel_parts_hess(const double* b, double* out) {
+    out[0] = gumbel_hess_mu_mu(b[5], b[3]);
+    out[3] = gumbel_hess_sigma_sigma(b[4], b[5], b[3]);
+    out[1] = out[2] = gumbel_hess_mu_sigma(b[4], b[5], b[3]);
+}
+
+// from the expected parts
+inline void gumbel_parts_info(const double* b, double* out) {
+    out[0] = gumbel_expected_mu_mu(b[3]);
+    out[3] = gumbel_expected_sigma_sigma(b[3]);
+    out[1] = out[2] = gumbel_expected_mu_sigma(b[3]);
+}
+
+// third order: gumbel_deriv3_cpp (gumbel_hd.cpp), unique components in the
+// sorted order mu mu mu, mu mu sigma, mu sigma sigma, sigma sigma sigma
+inline void gumbel_parts_d3(const double* b, double* out) {
+    const double z = b[4], w = b[5], s = b[3];
+    const double s3 = s * s * s;
+    const double z2 = z * z;
+    double u[4];
+    u[0] = -w / s3;
+    u[1] = w * (2.0 - z) / s3;
+    u[2] = (2.0 - 2.0 * w + 4.0 * z * w - z2 * w) / s3;
+    u[3] = (-2.0 + 6.0 * z - 6.0 * z * w + 6.0 * z2 * w - z2 * z * w) / s3;
+    sym_fill(2, 3, u, out);
+}
+
+// fourth order: gumbel_deriv4_cpp (gumbel_hd.cpp), unique components in the
+// sorted order mu mu mu mu, mu mu mu sigma, mu mu sigma sigma, mu sigma sigma
+// sigma, sigma sigma sigma sigma
+inline void gumbel_parts_d4(const double* b, double* out) {
+    const double z = b[4], w = b[5], s = b[3];
+    const double s4 = s * s * s * s;
+    const double z2 = z * z, z3 = z2 * z, z4 = z2 * z2;
+    double u[5];
+    u[0] = -w / s4;
+    u[1] = w * (3.0 - z) / s4;
+    u[2] = -w * (6.0 - 6.0 * z + z2) / s4;
+    u[3] = (-6.0 + 6.0 * w - 18.0 * z * w + 9.0 * z2 * w - z3 * w) / s4;
+    u[4] = (6.0 - 24.0 * z + 24.0 * z * w - 36.0 * z2 * w + 12.0 * z3 * w
+            - z4 * w) / s4;
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

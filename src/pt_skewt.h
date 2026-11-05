@@ -8,6 +8,7 @@
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
 #include "pt_skewt_exact.h"
+#include "pt_parts.h"
 
 // Azzalini's skew t in (mu, sigma, alpha, nu): one function per component
 // and order for the score and the diagonal of the Hessian, called by the
@@ -488,6 +489,132 @@ inline void skewt_joint_hess(double y, const double* th, double* out) {
                                   {2, 5, 7, 8}, {3, 6, 8, 9}};
     for (int b = 0; b < 4; ++b)
         for (int a = 0; a < 4; ++a) out[a + 4 * b] = h[pos[a][b]];
+}
+
+// THE PARTS ROUTE (piano_motore.md, D7). th = (mu, sigma, alpha, nu), P = 4.
+// The costly quantities of one observation are the table B_ij of
+// skewt_btab() (the t distribution function of w, its ratios and the integrals
+// in nu of skewt_R0()) and the derivative constants of nu; they are computed
+// once, for the highest order wanted, and every order is the generated closed
+// form of pt_skewt_table.h over the buffer, as skewt_obs<K>() runs it.
+// Layout of the buffer (index -> quantity -> lowest level):
+//   0      level
+//   1      y
+//   2      alpha                       (1)
+//   3      nu                          (1)
+//   4      a = z / sqrt(nu + z^2)      (1)
+//   5      irs = 1 / sqrt(nu + z^2)    (1)
+//   6      isg = 1 / sigma             (1)
+//   7      rm = sqrt(nu + 1)           (1)
+//   8      L = log(1 + z^2/nu)         (1)
+//   9-15   Cnu[0..6], the constants C^(k)(nu), k = 1..4  (k)
+//   16-51  B[i][j] (row-major, 6 x 6), i + j <= k        (k)
+// The expected buffer: 0 level, 1 y (NaN), 2-5 th, 6-21 the expected Hessian
+// (4 x 4, column-major, level 2).
+
+constexpr int kSkewtPartsB = 16;
+
+inline void skewt_parts(double y, const double* th, int level, double* b) {
+    const double nan = R_NaN;
+    b[0] = level;
+    b[1] = y;
+    const double al = th[2], nu = th[3];
+    const SkewtObs o = skewt_obs_vars(y, th[0], th[1], al, nu);
+    thread_local SkewtConst cc;
+    const int K = level < 1 ? 1 : (level > 4 ? 4 : level);
+    cc.at(nu, K);
+    double B[6][6] = {{0}};
+    switch (K) {
+    case 1: skewt_btab<1>(o, cc.Cm, B); break;
+    case 2: skewt_btab<2>(o, cc.Cm, B); break;
+    case 3: skewt_btab<3>(o, cc.Cm, B); break;
+    default: skewt_btab<4>(o, cc.Cm, B); break;
+    }
+    b[2] = al;
+    b[3] = nu;
+    b[4] = o.a;
+    b[5] = o.irs;
+    b[6] = o.isg;
+    b[7] = o.rm;
+    b[8] = o.L;
+    for (int k = 0; k < 7; ++k) b[9 + k] = (k >= 1 && k <= K) ? cc.Cnu[k] : nan;
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 6; ++j)
+            b[kSkewtPartsB + 6 * i + j] = (i + j <= K) ? B[i][j] : nan;
+}
+
+inline void skewt_parts_expected(const double* th, int level, double* b) {
+    b[0] = level;
+    b[1] = R_NaN;
+    for (int i = 0; i < 4; ++i) b[2 + i] = th[i];
+    if (level >= 2) {
+        skewt_joint_info(0.0, th, b + 6);
+    } else {
+        for (int i = 0; i < 16; ++i) b[6 + i] = R_NaN;
+    }
+}
+
+// the pieces of an order from the buffer
+struct SkewtPartsView {
+    double al, nu, a, irs, isg, rm, L;
+    double Cnu[7];
+    double B[6][6];
+};
+
+inline SkewtPartsView skewt_parts_view(const double* b) {
+    SkewtPartsView V;
+    V.al = b[2];
+    V.nu = b[3];
+    V.a = b[4];
+    V.irs = b[5];
+    V.isg = b[6];
+    V.rm = b[7];
+    V.L = b[8];
+    for (int k = 0; k < 7; ++k) V.Cnu[k] = b[9 + k];
+    for (int i = 0; i < 6; ++i)
+        for (int j = 0; j < 6; ++j) V.B[i][j] = b[kSkewtPartsB + 6 * i + j];
+    return V;
+}
+
+// out[a]: the score
+inline void skewt_parts_grad(const double* b, double* out) {
+    const SkewtPartsView V = skewt_parts_view(b);
+    double g[4];
+    skewt_dd_1(V.a, V.irs, V.isg, V.al, V.nu, V.rm, V.L, V.Cnu, V.B, g);
+    for (int a = 0; a < 4; ++a) out[a] = g[a];
+}
+
+// out[a + 4 c]: the Hessian, both triangles
+inline void skewt_parts_hess(const double* b, double* out) {
+    const SkewtPartsView V = skewt_parts_view(b);
+    double h[10];
+    skewt_dd_2(V.a, V.irs, V.isg, V.al, V.nu, V.rm, V.L, V.Cnu, V.B, h);
+    static const int pos[4][4] = {{0, 1, 2, 3}, {1, 4, 5, 6},
+                                  {2, 5, 7, 8}, {3, 6, 8, 9}};
+    for (int c = 0; c < 4; ++c)
+        for (int a = 0; a < 4; ++a) out[a + 4 * c] = h[pos[a][c]];
+}
+
+// out[a + 4 c]: the expected Hessian, as skewt_joint_info()
+inline void skewt_parts_info(const double* b, double* out) {
+    for (int i = 0; i < 16; ++i) out[i] = b[6 + i];
+}
+
+// the 20 unique components, the multisets of (mu, sigma, alpha, nu) in
+// lexicographic order, which is the order sym_fill() expects
+inline void skewt_parts_d3(const double* b, double* out) {
+    const SkewtPartsView V = skewt_parts_view(b);
+    double u[20];
+    skewt_dd_3(V.a, V.irs, V.isg, V.al, V.nu, V.rm, V.L, V.Cnu, V.B, u);
+    sym_fill(4, 3, u, out);
+}
+
+// the 35 unique components, in the same order
+inline void skewt_parts_d4(const double* b, double* out) {
+    const SkewtPartsView V = skewt_parts_view(b);
+    double u[35];
+    skewt_dd_4(V.a, V.irs, V.isg, V.al, V.nu, V.rm, V.L, V.Cnu, V.B, u);
+    sym_fill(4, 4, u, out);
 }
 
 } // namespace d7

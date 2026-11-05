@@ -5,7 +5,9 @@
 // per component and order for the quantities the scalar registry reads,
 // called by the vector kernels (binomial.cpp, dexpected_kernels.cpp).
 
+#include <Rcpp.h>
 #include "pt_discrete_pow.h"
+#include "pt_parts.h"
 
 namespace d7 {
 
@@ -39,6 +41,49 @@ inline void binomial_info_dinfo(int k, double y, const double* th,
                                 double* out) {
     out[0] = binomial_expected_mu_mu(th[0], th[1]);
     out[1] = binomial_dexpected_mu_mu_mu(th[0], th[1]);
+}
+
+// The parts route (pt_parts.h). Binomial has one parameter, the probability
+// mu, and the constant size th[1], and no special function, so the buffer
+// holds the inputs only:
+//   [0] level the buffer was filled to
+//   [1] y                                       level 0 (input)
+//   [2] mu                                      level 0 (input)
+//   [3] size                                    level 0 (constant)
+// The third and fourth orders recompute om = mu - 1 in their own
+// expressions, as binomial_hd.cpp does. The expected buffer is the same
+// with y set to NaN.
+inline void binomial_parts(double y, const double* th, int level, double* b) {
+    b[0] = level; b[1] = y; b[2] = th[0]; b[3] = th[1];
+}
+
+inline void binomial_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+}
+
+inline void binomial_parts_grad(const double* b, double* out) {
+    out[0] = binomial_score_mu(b[1], b[2], b[3]);
+}
+
+inline void binomial_parts_hess(const double* b, double* out) {
+    out[0] = binomial_hess_mu_mu(b[1], b[2], b[3]);
+}
+
+inline void binomial_parts_info(const double* b, double* out) {
+    out[0] = binomial_expected_mu_mu(b[2], b[3]);
+}
+
+// binomial_deriv3_cpp and binomial_deriv4_cpp (binomial_hd.cpp)
+inline void binomial_parts_d3(const double* b, double* out) {
+    double om = b[2] - 1.0;
+    out[0] = 2.0 * coef_over_pow(b[3] - b[1], om, 3)
+           + 2.0 * coef_over_pow(b[1], b[2], 3);
+}
+
+inline void binomial_parts_d4(const double* b, double* out) {
+    double om = b[2] - 1.0;
+    out[0] = -6.0 * coef_over_pow(b[3] - b[1], om, 4)
+           - 6.0 * coef_over_pow(b[1], b[2], 4);
 }
 
 } // namespace d7

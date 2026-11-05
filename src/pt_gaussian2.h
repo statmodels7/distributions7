@@ -1,6 +1,9 @@
 #ifndef D7_PT_GAUSSIAN2_H
 #define D7_PT_GAUSSIAN2_H
 
+#include <Rcpp.h>
+#include "pt_parts.h"
+
 // Gaussian in the mean and the variance v: one function per component and
 // order for the quantities the scalar registry reads, called by the vector
 // kernels (gaussian2.cpp, dexpected_kernels.cpp) and by the registry
@@ -121,6 +124,75 @@ inline void gaussian2_joint_dinfo(double y, const double* th, double* out) {
     out[0] = gaussian2_dexpected_mu_mu_mu();
     out[4] = gaussian2_dexpected_mu_mu_sigma2(u);
     out[7] = gaussian2_dexpected_sigma2_sigma2_sigma2(u);
+}
+
+// The parts route (pt_parts.h). The Gaussian in the variance has no special
+// function, so the buffer holds only inputs that every order reads, all cheap:
+//   [0] level                       always
+//   [1] y                           observed parts; NaN in the expected parts
+//   [2] mu                          always
+//   [3] v = sigma2                  always
+//   [4] u = 1/v                     always
+//   [5] r = y - mu                  observed parts; NaN in the expected parts
+// The expressions are those of the joint routers above and of
+// gaussian2_deriv3_cpp and gaussian2_deriv4_cpp (gaussian2.cpp).
+inline void gaussian2_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], v = th[1];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = v; b[4] = 1.0 / v;
+    b[5] = y - m;
+}
+
+inline void gaussian2_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+    b[4] = 1.0 / th[1];
+    b[5] = R_NaN;
+}
+
+inline void gaussian2_parts_grad(const double* b, double* out) {
+    out[0] = gaussian2_score_mu(b[5], b[4]);
+    out[1] = gaussian2_score_sigma2(b[5], b[3], b[4]);
+}
+
+inline void gaussian2_parts_hess(const double* b, double* out) {
+    out[0] = gaussian2_hess_mu_mu(b[4]);
+    out[3] = gaussian2_hess_sigma2_sigma2(b[5], b[3], b[4]);
+    out[1] = out[2] = gaussian2_hess_mu_sigma2(b[5], b[4]);
+}
+
+// from the expected parts
+inline void gaussian2_parts_info(const double* b, double* out) {
+    out[0] = gaussian2_expected_mu_mu(b[4]);
+    out[3] = gaussian2_expected_sigma2_sigma2(b[4]);
+    out[1] = out[2] = 0.0;
+}
+
+// third order: gaussian2_deriv3_cpp, unique components in the sorted order
+// mu mu mu, mu mu sigma2, mu sigma2 sigma2, sigma2 sigma2 sigma2
+inline void gaussian2_parts_d3(const double* b, double* out) {
+    const double r = b[5], v = b[3], u = b[4];
+    double u2 = u * u, u3 = u2 * u;
+    double z2 = r * r / v;
+    double w[4];
+    w[0] = 0.0;
+    w[1] = u2;
+    w[2] = 2.0 * r * u3;
+    w[3] = (3.0 * z2 - 1.0) * u3;
+    sym_fill(2, 3, w, out);
+}
+
+// fourth order: gaussian2_deriv4_cpp, unique components in the sorted order
+// mu^4, mu^3 sigma2, mu^2 sigma2^2, mu sigma2^3, sigma2^4
+inline void gaussian2_parts_d4(const double* b, double* out) {
+    const double r = b[5], v = b[3], u = b[4];
+    double u2 = u * u, u3 = u2 * u, u4 = u2 * u2;
+    double z2 = r * r / v;
+    double w[5];
+    w[0] = 0.0;
+    w[1] = 0.0;
+    w[2] = -2.0 * u3;
+    w[3] = -6.0 * r * u4;
+    w[4] = (3.0 - 12.0 * z2) * u4;
+    sym_fill(2, 4, w, out);
 }
 
 } // namespace d7

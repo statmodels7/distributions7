@@ -3,6 +3,7 @@
 
 #include <Rcpp.h>
 #include <cmath>
+#include "pt_parts.h"
 
 // The von Mises families, vonmises1 in (mu, kappa) and vonmises2 in
 // (mu, rho), rho = A(kappa) = I1(kappa)/I0(kappa): one function per
@@ -293,6 +294,194 @@ inline void vonmises2_joint_dinfo(double y, const double* th, double* out) {
   for (int j = 0; j < 8; ++j) out[j] = 0.0;
   out[4] = vonmises2_dexpected_mu_mu_rho(r, kk[0], kk[1]);
   out[7] = vonmises2_dexpected_rho_rho_rho(kk[2]);
+}
+
+// The parts route (pt_parts.h), vonmises1. The buffer, with mu = th[0] and
+// kappa = th[1]; the Bessel ratio and its derivatives are read once, each
+// from the numericals7 function the vector kernels use for that order:
+//
+//   [0]  level
+//   [1]  y                          NaN in the expected buffer
+//   [2]  mu
+//   [3]  kappa
+//   [4]  A(kappa)                   level 1 (expected buffer: level 2)
+//   [5]  A'(kappa)                  level 2 (expected buffer: level 2)
+//   [6]  A''(kappa)                 level 3
+//   [7]  A'''(kappa)                level 4
+//
+// The expected buffer reads A and A' from one evaluation of the pair
+// (upto), as vonmises1_joint_info() does, and fills [6] and [7] with NaN;
+// the expected Hessian is the only expected order read.
+inline void vonmises1_parts(double y, const double* th, int level, double* b) {
+  const double kappa = th[1];
+  b[0] = level; b[1] = y; b[2] = th[0]; b[3] = kappa;
+  if (level >= 1) {
+    const N7Bessel& B = vm_bessel();
+    b[4] = level >= 1 ? B.A(kappa) : R_NaN;
+    b[5] = level >= 2 ? B.d1(kappa) : R_NaN;
+    b[6] = level >= 3 ? B.d2(kappa) : R_NaN;
+    b[7] = level >= 4 ? B.d3(kappa) : R_NaN;
+  } else {
+    for (int j = 4; j <= 7; ++j) b[j] = R_NaN;
+  }
+}
+
+inline void vonmises1_parts_expected(const double* th, int level, double* b) {
+  const double kappa = th[1];
+  b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = kappa;
+  if (level >= 2) {
+    const N7Bessel& B = vm_bessel();
+    double a[2];
+    B.upto(kappa, 1, a);
+    b[4] = a[0];
+    b[5] = a[1];
+  } else {
+    b[4] = R_NaN;
+    b[5] = R_NaN;
+  }
+  b[6] = R_NaN;
+  b[7] = R_NaN;
+}
+
+inline void vonmises1_parts_grad(const double* b, double* out) {
+  const double kappa = b[3], d = b[1] - b[2];
+  out[0] = vonmises1_score_mu(kappa, std::sin(d));
+  out[1] = vonmises1_score_kappa(std::cos(d), b[4]);
+}
+
+inline void vonmises1_parts_hess(const double* b, double* out) {
+  const double kappa = b[3], d = b[1] - b[2];
+  out[0] = vonmises1_hess_mu_mu(kappa, std::cos(d));
+  out[3] = vonmises1_hess_kappa_kappa(b[5]);
+  out[1] = out[2] = vonmises1_hess_mu_kappa(std::sin(d));
+}
+
+// from the expected parts
+inline void vonmises1_parts_info(const double* b, double* out) {
+  const double kappa = b[3];
+  out[0] = vonmises1_expected_mu_mu(kappa, b[4]);
+  out[3] = vonmises1_expected_kappa_kappa(b[5]);
+  out[1] = out[2] = 0.0;
+}
+
+// vonmises1_deriv3_cpp() of vonmises.cpp, the same expressions
+inline void vonmises1_parts_d3(const double* b, double* out) {
+  const double k = b[3], d = b[1] - b[2];
+  double u[4];
+  u[0] = -k * std::sin(d);
+  u[1] = -std::cos(d);
+  u[2] = 0.0;
+  u[3] = -b[6];
+  sym_fill(2, 3, u, out);
+}
+
+// vonmises1_deriv4_cpp() of vonmises.cpp, the same expressions
+inline void vonmises1_parts_d4(const double* b, double* out) {
+  const double k = b[3], d = b[1] - b[2];
+  double u[5];
+  u[0] = k * std::cos(d);
+  u[1] = -std::sin(d);
+  u[2] = 0.0;
+  u[3] = 0.0;
+  u[4] = -b[7];
+  sym_fill(2, 4, u, out);
+}
+
+// The parts route, vonmises2, with mu = th[0] and rho = th[1]. kappa(rho)
+// and its derivatives come from vm2_kappa() once, to the order the level
+// asks for (1 to 4):
+//
+//   [0]  level
+//   [1]  y                          NaN in the expected buffer
+//   [2]  mu
+//   [3]  rho
+//   [4]  kappa(rho)                 level 1 (expected buffer: level 2)
+//   [5]  kappa'(rho)                level 1 (expected buffer: level 2)
+//   [6]  kappa''(rho)               level 2
+//   [7]  kappa'''(rho)              level 3
+//   [8]  kappa''''(rho)             level 4
+//
+// The expected buffer evaluates kappa to the first derivative, as
+// vonmises2_joint_info() does, and fills [6] to [8] with NaN. Orders 1 to 4
+// are all closed form here; each calls vm2_kappa() with the order of the
+// buffer's level, whereas each vector kernel calls it with its own order.
+inline void vonmises2_parts(double y, const double* th, int level, double* b) {
+  const double r = th[1];
+  b[0] = level; b[1] = y; b[2] = th[0]; b[3] = r;
+  if (level >= 1) {
+    const N7Bessel& B = vm_bessel();
+    double kk[5];
+    vm2_kappa(B, r, level < 4 ? level : 4, kk);
+    b[4] = kk[0];
+    b[5] = kk[1];
+    b[6] = level >= 2 ? kk[2] : R_NaN;
+    b[7] = level >= 3 ? kk[3] : R_NaN;
+    b[8] = level >= 4 ? kk[4] : R_NaN;
+  } else {
+    for (int j = 4; j <= 8; ++j) b[j] = R_NaN;
+  }
+}
+
+inline void vonmises2_parts_expected(const double* th, int level, double* b) {
+  const double r = th[1];
+  b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = r;
+  if (level >= 2) {
+    const N7Bessel& B = vm_bessel();
+    double kk[2];
+    vm2_kappa(B, r, 1, kk);
+    b[4] = kk[0];
+    b[5] = kk[1];
+  } else {
+    b[4] = R_NaN;
+    b[5] = R_NaN;
+  }
+  for (int j = 6; j <= 8; ++j) b[j] = R_NaN;
+}
+
+inline void vonmises2_parts_grad(const double* b, double* out) {
+  const double r = b[3], d = b[1] - b[2];
+  out[0] = vonmises2_score_mu(b[4], std::sin(d));
+  out[1] = vonmises2_score_rho(std::cos(d), r, b[5]);
+}
+
+inline void vonmises2_parts_hess(const double* b, double* out) {
+  const double r = b[3], d = b[1] - b[2];
+  const double c = std::cos(d);
+  out[0] = vonmises2_hess_mu_mu(b[4], c);
+  out[3] = vonmises2_hess_rho_rho(c, r, b[5], b[6]);
+  out[1] = out[2] = vonmises2_hess_mu_rho(std::sin(d), b[5]);
+}
+
+// from the expected parts
+inline void vonmises2_parts_info(const double* b, double* out) {
+  out[0] = vonmises2_expected_mu_mu(b[4], b[3]);
+  out[3] = vonmises2_expected_rho_rho(b[5]);
+  out[1] = out[2] = 0.0;
+}
+
+// vonmises2_deriv3_cpp() of vonmises.cpp, the same expressions
+inline void vonmises2_parts_d3(const double* b, double* out) {
+  const double r = b[3], d = b[1] - b[2];
+  const double c = std::cos(d), s = std::sin(d);
+  double u[4];
+  u[0] = -b[4] * s;
+  u[1] = -c * b[5];
+  u[2] = s * b[6];
+  u[3] = (c - r) * b[7] - 2.0 * b[6];
+  sym_fill(2, 3, u, out);
+}
+
+// vonmises2_deriv4_cpp() of vonmises.cpp, the same expressions
+inline void vonmises2_parts_d4(const double* b, double* out) {
+  const double r = b[3], d = b[1] - b[2];
+  const double c = std::cos(d), s = std::sin(d);
+  double u[5];
+  u[0] = b[4] * c;
+  u[1] = -s * b[5];
+  u[2] = -c * b[6];
+  u[3] = s * b[7];
+  u[4] = (c - r) * b[8] - 3.0 * b[7];
+  sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

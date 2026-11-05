@@ -3,6 +3,8 @@
 
 #include <Rcpp.h>
 #include <cmath>
+#include "pt_fdb2.h"
+#include "pt_parts.h"
 
 // The lognormal in the mean m and the variance v of Y: one function per
 // component and order for the quantities the scalar registry reads, lifted
@@ -351,6 +353,243 @@ inline void lognormal2_joint_dinfo(double y, const double* th, double* out) {
   out[7] = d[3];
   out[1] = out[2] = d[4];
   out[5] = out[6] = d[5];
+}
+
+// The parts route (pt_parts.h). The costly quantities are the logs: log(y/m)
+// and the logs of 1 + v/m^2 (S). The Hessian and the gradient reach them
+// through different expressions (joint_grad forms log(y/m) and log1p(v/(m m));
+// joint_hess forms lognormal2_logratio and log1p(v (1/m)^2)), and each route
+// keeps its own pair so that the orders agree bit for bit with their joints.
+// Orders three and four take the S of ln2_par, log1p(v (1/m) (1/m)), and the
+// parameter tables of Faa di Bruno that lognormal2_obs.cpp builds from it.
+// Index tri(i, j) = (i + j)(i + j + 1)/2 + j, with i the mean and j the
+// variance order, i + j <= 4 (15 entries):
+//   [0] level                        always
+//   [1] y                            observed parts; NaN in the expected parts
+//   [2] m                            always
+//   [3] v                            always
+//   [4] C_g = log(y/m)               level >= 1 (the gradient's C)
+//   [5] S_g = log1p(v/(m m))         level >= 1 (the gradient's S, the expected information's S)
+//   [6] C_h = lognormal2_logratio    level >= 2 (the Hessian's C, orders 3 and 4)
+//   [7] S_b = log1p(v (1/m)^2)       level >= 2 (the Hessian's S, lognormal2_base)
+//   [8] S_k = log1p(v (1/m) (1/m))   level >= 3 (the S of ln2_par)
+//   [9 + tri(i, j)]  dH2[i][j], i + j <= level: level 3 for i + j <= 3, level 4 for i + j = 4
+//   [24 + tri(i, j)] dH1[i][j], 3 <= i + j <= level: level 3 for i + j = 3, level 4 for i + j = 4
+// Entries above the level are NaN. The expected parts keep [5] only.
+inline int lognormal2_parts_tri(int i, int j) {
+    const int t = i + j;
+    return t * (t + 1) / 2 + j;
+}
+
+// The gradient's parameter quantities of lognormal2_gradient_par, with S given.
+inline Lognormal2GradientPar lognormal2_gradient_par_from(double m, double v, double S) {
+    const double t0 = 1.0 / m;
+    const double t1 = 1.0 / S;
+    const double t2 = t0 * t1;
+    const double t3 = 1.0 / (std::pow(m, 2) + v);
+    const double t4 = m * t3;
+    const double t6 = std::pow(S, -2);
+    Lognormal2GradientPar P;
+    P.S = S;
+    P.t0 = t0;
+    P.t1 = t1;
+    P.t2 = t2;
+    P.t3 = t3;
+    P.t4 = t4;
+    P.t6 = t6;
+    return P;
+}
+
+// The Hessian's quantities of lognormal2_base, with S given.
+inline Lognormal2Base lognormal2_base_from(double m, double v, double S) {
+    const double im = 1.0 / m, im2 = im * im;
+    const double r = v * im2, u = 1.0 / (1.0 + r);
+    Lognormal2Base B;
+    B.m = m;
+    B.S = S;
+    B.Sm = -2.0 * r * u * im;
+    B.Sv = u * im2;
+    B.Smm = 2.0 * r * (3.0 + r) * u * u * im2;
+    B.Smv = -2.0 * u * u * im2 * im;
+    B.Svv = -u * u * im2 * im2;
+    B.Cm = -im;
+    B.Cmm = im2;
+    return B;
+}
+
+// lognormal2_expected_all with S given.
+inline void lognormal2_expected_from(double m, double v, double S, double* o) {
+    const double W = 1.0 / (m * m + v);
+    const double x0 = std::pow(S, -2);
+    const double x1 = W * v;
+    const double x2 = 2 * x1;
+    const double x3 = std::pow(W, 2);
+    const double x4 = std::pow(v, 2) * x3;
+    o[0] = -x0 * (S * x2 + S * x4 + S + 2 * x4) / std::pow(m, 2);
+    o[1] = -1.0 / 4.0 * x0 * x3 * (S + 2);
+    o[2] = (1.0 / 2.0) * W * x0 * (S * x1 + S + x2) / m;
+}
+
+// C^(k) = (-1)^k (k-1)! / m^k for k = 1..K, as ln2_par forms it (Cm[0] unused).
+inline void lognormal2_parts_cm(double m, int K, double* Cm) {
+    const double im = 1.0 / m;
+    double c = -im;
+    Cm[0] = 0.0;
+    for (int k = 1; k <= K; ++k) { Cm[k] = c; c *= -k * im; }
+}
+
+// (C^2)^(k) by Leibniz, k = 0..K, as ln2_c2 forms it.
+inline void lognormal2_parts_c2(double C, const double* Cm, int K, double* C2d) {
+    double Cd[6];
+    Cd[0] = C;
+    for (int k = 1; k <= K; ++k) Cd[k] = Cm[k];
+    for (int k = 0; k <= K; ++k) {
+        double s = 0.0, binom = 1.0;
+        for (int l = 0; l <= k; ++l) {
+            s += binom * Cd[l] * Cd[k - l];
+            binom = binom * (k - l) / (l + 1);
+        }
+        C2d[k] = s;
+    }
+}
+
+// The Faa di Bruno tables dH2 (all i + j <= K) and dH1 (3 <= i + j <= K) of
+// ln2_par, written into the buffer. The tables of order K agree with those of
+// the kernel at any K >= i + j, because each entry depends only on its own
+// total order.
+inline void lognormal2_parts_tables(double m, double v, int K, double* b) {
+    const double im = 1.0 / m, r = v * im * im;
+    double dr[6][6] = {{0.0}};
+    double fm = im * im;
+    for (int p = 0; p <= K; ++p) {
+        dr[p][0] = v * fm;
+        dr[p][1] = fm;
+        fm *= -(p + 2.0) * im;
+    }
+    double sd[6] = {0.0};
+    {
+        const double i1 = 1.0 / (1.0 + r);
+        double f = i1;
+        for (int k = 1; k <= K; ++k) { sd[k] = f; f *= -k * i1; }
+    }
+    const double S = b[8];
+    double dS[6][6] = {{0.0}};
+    dS[0][0] = S;
+    for (int p = 0; p <= K; ++p)
+        for (int q = 0; p + q <= K; ++q)
+            if (p + q >= 1) dS[p][q] = d7::fdb2_compose(p, q, sd, dr);
+    double h1d[6] = {0.0}, h2d[6] = {0.0};
+    {
+        const double iS = 1.0 / S;
+        double f = -0.5 * iS;
+        double g = 0.5 * iS * iS;
+        for (int k = 1; k <= K; ++k) {
+            h1d[k] = f;
+            h2d[k] = g;
+            f *= -k * iS;
+            g *= -(k + 1.0) * iS;
+        }
+        h1d[1] -= 0.125;
+    }
+    for (int p = 0; p <= K; ++p)
+        for (int q = 0; p + q <= K; ++q) {
+            if (p + q == 0) {
+                b[9] = -0.5 / S;
+                continue;
+            }
+            b[9 + lognormal2_parts_tri(p, q)] = d7::fdb2_compose(p, q, h2d, dS);
+            if (p + q >= 3)
+                b[24 + lognormal2_parts_tri(p, q)] = d7::fdb2_compose(p, q, h1d, dS);
+        }
+}
+
+// The (i, j) component of ln2_component, read from the buffer.
+inline double lognormal2_parts_component(int i, int j, const double* b,
+                                         const double* Cm, const double* C2d) {
+    double s = b[24 + lognormal2_parts_tri(i, j)];
+    double binom = 1.0;
+    for (int kk = 0; kk <= i; ++kk) {
+        s += binom * b[9 + lognormal2_parts_tri(i - kk, j)] * C2d[kk];
+        binom = binom * (i - kk) / (kk + 1);
+    }
+    if (j == 0) s -= 0.5 * Cm[i];
+    return s;
+}
+
+inline void lognormal2_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], v = th[1];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = v;
+    for (int j = 4; j < 39; ++j) b[j] = R_NaN;
+    if (level >= 1) {
+        b[4] = std::log(y / m);
+        b[5] = std::log1p(v / (m * m));
+    }
+    if (level >= 2) {
+        const double im = 1.0 / m, im2 = im * im;
+        b[6] = lognormal2_logratio(y, m);
+        b[7] = std::log1p(v * im2);
+    }
+    if (level >= 3) {
+        const double im = 1.0 / m;
+        b[8] = std::log1p(v * im * im);
+        lognormal2_parts_tables(m, v, level, b);
+    }
+}
+
+inline void lognormal2_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1]; b[4] = R_NaN;
+    b[5] = level >= 2 ? std::log1p(th[1] / (th[0] * th[0])) : R_NaN;
+}
+
+inline void lognormal2_parts_grad(const double* b, double* out) {
+    const Lognormal2GradientPar Pg = lognormal2_gradient_par_from(b[2], b[3], b[5]);
+    out[0] = lognormal2_score_mean(Pg, b[4]);
+    out[1] = lognormal2_score_var(Pg, b[4]);
+}
+
+inline void lognormal2_parts_hess(const double* b, double* out) {
+    const Lognormal2Base B = lognormal2_base_from(b[2], b[3], b[7]);
+    out[0] = lognormal2_hess_mean_mean(B, b[6]);
+    out[3] = lognormal2_hess_var_var(B, b[6]);
+    out[1] = out[2] = lognormal2_hess_mean_var(B, b[6]);
+}
+
+// from the expected parts
+inline void lognormal2_parts_info(const double* b, double* out) {
+    double e[3];
+    lognormal2_expected_from(b[2], b[3], b[5], e);
+    out[0] = e[0];
+    out[3] = e[1];
+    out[1] = out[2] = e[2];
+}
+
+// third order: lognormal2_deriv3_cpp (lognormal2_obs.cpp), unique components in
+// the sorted order mean mean mean, mean mean var, mean var var, var var var
+inline void lognormal2_parts_d3(const double* b, double* out) {
+    double Cm[6], C2d[6];
+    lognormal2_parts_cm(b[2], 3, Cm);
+    lognormal2_parts_c2(b[6], Cm, 3, C2d);
+    double u[4];
+    u[0] = lognormal2_parts_component(3, 0, b, Cm, C2d);
+    u[1] = lognormal2_parts_component(2, 1, b, Cm, C2d);
+    u[2] = lognormal2_parts_component(1, 2, b, Cm, C2d);
+    u[3] = lognormal2_parts_component(0, 3, b, Cm, C2d);
+    sym_fill(2, 3, u, out);
+}
+
+// fourth order: lognormal2_deriv4_cpp (lognormal2_obs.cpp), unique components in
+// the sorted order mean^4, mean^3 var, mean^2 var^2, mean var^3, var^4
+inline void lognormal2_parts_d4(const double* b, double* out) {
+    double Cm[6], C2d[6];
+    lognormal2_parts_cm(b[2], 4, Cm);
+    lognormal2_parts_c2(b[6], Cm, 4, C2d);
+    double u[5];
+    u[0] = lognormal2_parts_component(4, 0, b, Cm, C2d);
+    u[1] = lognormal2_parts_component(3, 1, b, Cm, C2d);
+    u[2] = lognormal2_parts_component(2, 2, b, Cm, C2d);
+    u[3] = lognormal2_parts_component(1, 3, b, Cm, C2d);
+    u[4] = lognormal2_parts_component(0, 4, b, Cm, C2d);
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

@@ -1,6 +1,9 @@
 #ifndef D7_PT_INVGAUSS1_H
 #define D7_PT_INVGAUSS1_H
 
+#include <Rcpp.h>
+#include "pt_parts.h"
+
 // Inverse gaussian in the mean and the dispersion phi, Var = phi mu^3: one
 // function per component and order for the quantities the scalar registry
 // reads, called by the vector kernels (invgauss.cpp, dexpected_kernels.cpp)
@@ -129,6 +132,73 @@ inline void invgauss1_joint_dinfo(double y, const double* th, double* out) {
     out[0] = invgauss1_dexpected_mu_mu_mu(m, p);
     out[4] = invgauss1_dexpected_mu_mu_phi(m, p);
     out[7] = invgauss1_dexpected_phi_phi_phi(p);
+}
+
+// The parts route (pt_parts.h). Nothing in this family is costly, so the buffer
+// holds the inputs every order reads, and each order is written from them:
+//   [0] level                       always
+//   [1] y                           observed parts; NaN in the expected parts
+//   [2] mu                          always
+//   [3] phi                         always
+// Orders one and two call the joint routers' component functions. Orders
+// three and four are the expressions of invgauss_deriv3_cpp and
+// invgauss_deriv4_cpp (invgauss_hd.cpp), with r = mu - y as those kernels
+// write it.
+inline void invgauss1_parts(double y, const double* th, int level, double* b) {
+    b[0] = level; b[1] = y; b[2] = th[0]; b[3] = th[1];
+}
+
+inline void invgauss1_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+}
+
+inline void invgauss1_parts_grad(const double* b, double* out) {
+    out[0] = invgauss1_score_mu(b[1], b[2], b[3]);
+    out[1] = invgauss1_score_phi(b[1], b[2], b[3]);
+}
+
+inline void invgauss1_parts_hess(const double* b, double* out) {
+    out[0] = invgauss1_hess_mu_mu(b[1], b[2], b[3]);
+    out[3] = invgauss1_hess_phi_phi(b[1], b[2], b[3]);
+    out[1] = out[2] = invgauss1_hess_mu_phi(b[1], b[2], b[3]);
+}
+
+// from the expected parts
+inline void invgauss1_parts_info(const double* b, double* out) {
+    out[0] = invgauss1_expected_mu_mu(b[2], b[3]);
+    out[3] = invgauss1_expected_phi_phi(b[3]);
+    out[1] = out[2] = 0.0;
+}
+
+// third order: invgauss_deriv3_cpp, unique components in the sorted order
+// mu mu mu, mu mu phi, mu phi phi, phi phi phi
+inline void invgauss1_parts_d3(const double* b, double* out) {
+    const double y = b[1], m = b[2], p = b[3];
+    const double m2 = m * m, m3 = m2 * m, m4 = m2 * m2, m5 = m4 * m;
+    const double p2 = p * p, p3 = p2 * p, p4 = p2 * p2;
+    const double r = m - y;
+    double u[4];
+    u[0] = -6.0 * (m - 2.0 * y) / (m5 * p);
+    u[1] = (-2.0 * m + 3.0 * y) / (m4 * p2);
+    u[2] = -2.0 * r / (m3 * p3);
+    u[3] = (-p + 3.0 * r * r / (m2 * y)) / p4;
+    sym_fill(2, 3, u, out);
+}
+
+// fourth order: invgauss_deriv4_cpp, unique components in the sorted order
+// mu mu mu mu, mu mu mu phi, mu mu phi phi, mu phi phi phi, phi phi phi phi
+inline void invgauss1_parts_d4(const double* b, double* out) {
+    const double y = b[1], m = b[2], p = b[3];
+    const double m2 = m * m, m3 = m2 * m, m4 = m2 * m2, m5 = m4 * m, m6 = m4 * m2;
+    const double p2 = p * p, p3 = p2 * p, p4 = p2 * p2, p5 = p4 * p;
+    const double r = m - y;
+    double u[5];
+    u[0] = (24.0 * m - 60.0 * y) / (m6 * p);
+    u[1] = 6.0 * (m - 2.0 * y) / (m5 * p2);
+    u[2] = (4.0 * m - 6.0 * y) / (m4 * p3);
+    u[3] = 6.0 * r / (m3 * p4);
+    u[4] = 3.0 * (p - 4.0 * r * r / (m2 * y)) / p5;
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

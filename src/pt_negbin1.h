@@ -8,6 +8,7 @@
 #include "pt_sqrt.h"
 #include "pt_negbin1_asym.h"
 #include "pt_negbin1_mt.h"
+#include "pt_parts.h"
 
 // The negative binomial with a variance linear in the mean, in (mu, theta),
 // r = mu/theta: the parts of the log-mass (nb1_parts), the support sums that
@@ -813,6 +814,287 @@ inline void negbin1_joint_dinfo(double y, const double* th, double* out) {
     out[6] = out[5] = M[2];
     out[3] = negbin1_dexpected_theta_theta_mu(t, G);
     out[7] = negbin1_dexpected_theta_theta_theta(t, G);
+}
+
+// THE PARTS ROUTE. Orders three and four are negbin1_components() of
+// R/negbin1_higher.R (there is no compiled kernel for them), transcribed here:
+// for theta < 1 (nb1_exact_cut()) the form in mu + i theta, whose costly parts
+// are the power sums of negbin1_psums_cpp() and the derivatives of
+// log1p(theta)/theta; for theta >= 1 the size route, whose costly parts are
+// the polygamma differences G^(m)(r) = psi^(m-1)(y + r) - psi^(m-1)(r), r =
+// mu/theta, and the coefficient recursion in the powers of r.
+//
+// Buffer layout (index, quantity, lowest level):
+//   0  level
+//   1  y
+//   2  mu
+//   3  theta
+//   4  score in mu                              1
+//   5  score in theta                           1
+//   6  l_mu,mu                                  2
+//   7  l_mu,theta                              2
+//   8  l_theta,theta                            2
+//   9  G^(1)(r)  (size route, theta >= 1)       3
+//   10 G^(2)(r)                                 3
+//   11 G^(3)(r)                                 3
+//   12 G^(4)(r)                                 4
+//   13..16 sum_{i<y} i^b/(mu + i theta)^3, b = 0..3   (theta < 1)   3
+//   17..21 sum_{i<y} i^b/(mu + i theta)^4, b = 0..4   (theta < 1)   4
+//   22 M_2 = d^2/dtheta^2 log1p(theta)/theta    (theta < 1)         3
+//   23 M_3                                      (theta < 1)         3
+//   24 M_4                                      (theta < 1)         4
+// Slots of the route not taken are NaN. The expected buffer holds
+//   0 level, 1 NaN, 2 mu, 3 theta, 4 A, 5 G, 6 E[l_mu,theta]       (level 2).
+
+// psi_shift_diff() of R/psi_diff.R: psi^(n)(x + k) - psi^(n)(x)
+inline double negbin1_psi_shift(int n, double k, double x) {
+    if (x < 100.0) {
+        if (n == 0) return R::digamma(x + k) - R::digamma(x);
+        return R::psigamma(x + k, (double) n) - R::psigamma(x, (double) n);
+    }
+    const double a = x;
+    const double l1 = std::log1p(k / a);
+    auto dp = [&](double p) { return std::expm1(-p * l1) / std::pow(a, p); };
+    if (n == 0) {
+        return l1 - 0.5 * dp(1.0) - dp(2.0) / 12.0 + dp(4.0) / 120.0 - dp(6.0) / 252.0;
+    }
+    const double nd = (double) n;
+    const double sgn = (n - 1) % 2 == 0 ? 1.0 : -1.0;
+    const double f1 = std::tgamma(nd), f2 = std::tgamma(nd + 1.0);
+    const double f3 = std::tgamma(nd + 2.0);
+    const double f5 = std::tgamma(nd + 4.0);
+    const double f7 = std::tgamma(nd + 6.0);
+    return sgn * (f1 * dp(nd) + f2 / 2.0 * dp(nd + 1.0) + f3 / 12.0 * dp(nd + 2.0)
+                  - f5 / 720.0 * dp(nd + 4.0) + f7 / 30240.0 * dp(nd + 6.0));
+}
+
+// negbin1_psums_cpp(): acc[b] = sum_{i<y} i^b/(mu + i theta)^order, b = 0..order
+inline void negbin1_psums(double yi, double m, double th, int order,
+                          double* acc) {
+    for (int b = 0; b <= order; ++b) acc[b] = 0.0;
+    double t = m;
+    for (double k = 0.0; k < yi; k += 1.0) {
+        double d = t;
+        for (int p = 1; p < order; ++p) d *= t;
+        const double inv = 1.0 / d;
+        double kb = 1.0;
+        for (int b = 0; b <= order; ++b) {
+            acc[b] += kb * inv;
+            kb *= k;
+        }
+        t += th;
+    }
+}
+
+// nb1_M_derivs() of R/negbin1_higher.R (cut 0.5, 80 terms): M[b] for b = 0..nmax
+inline void negbin1_M_derivs(double th, int nmax, double* M) {
+    if (th < 0.5) {
+        for (int b = 0; b <= nmax; ++b) {
+            const double sb = (b % 2 == 0) ? 1.0 : -1.0;
+            double acc = 0.0, p = 1.0;
+            for (int nn = 0; nn <= 80; ++nn) {
+                double co = 1.0;
+                for (int i = 1; i <= b; ++i) co *= (nn + i);
+                const double sn = (nn % 2 == 0) ? 1.0 : -1.0;
+                const double w = sb * ((sn * co) / (nn + b + 1.0));
+                acc += w * p;
+                p *= th;
+            }
+            M[b] = acc;
+        }
+    } else {
+        double Mv = std::log1p(th) / th;
+        M[0] = Mv;
+        double f = 1.0;
+        for (int m = 0; m < nmax; ++m) {
+            const double sm = (m % 2 == 0) ? 1.0 : -1.0;
+            Mv = (sm * f / std::pow(1.0 + th, m + 1.0) - (m + 1.0) * Mv) / th;
+            f *= (m + 1.0);
+            M[m + 1] = Mv;
+        }
+    }
+}
+
+inline double negbin1_fact(int n) {
+    double f = 1.0;
+    for (int i = 2; i <= n; ++i) f *= (double) i;
+    return f;
+}
+
+inline double negbin1_sgn(int n) { return (n % 2 == 0) ? 1.0 : -1.0; }
+
+// nb1_components_exact(): the component with a derivatives in mu and
+// order - a in theta, from the power sums S (indexed by b) and M.
+inline double negbin1_exact_comp(int order, int a, double y, double mu,
+                                 double th, const double* S, const double* M) {
+    const int b = order - a;
+    double out = negbin1_sgn(order - 1) * negbin1_fact(order - 1) * S[b];
+    if (a == 0) {
+        out = out - mu * M[b] -
+            y * negbin1_sgn(b - 1) * negbin1_fact(b - 1) / std::pow(1.0 + th, (double) b);
+    } else if (a == 1) {
+        out = out - M[b];
+    }
+    return out;
+}
+
+// The size route of negbin1_components(): the G part by the coefficient
+// recursion, plus the elementary parts. G[m] = G^(m)(r), m = 1..4.
+inline double negbin1_gpart(int a, int b, double r, const double* G,
+                            double th, double y) {
+    double coef[7] = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    int len = 1;
+    for (int step = 1; step <= b; ++step) {
+        const int bb = step - 1;
+        double nw[7] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        for (int j = 0; j < len; ++j) {
+            nw[j] = nw[j] - (a + bb + j) * coef[j];
+            nw[j + 1] = nw[j + 1] - coef[j];
+        }
+        ++len;
+        for (int j = 0; j < len; ++j) coef[j] = nw[j];
+    }
+    double out = 0.0;
+    for (int j = 0; j < len; ++j) {
+        if (coef[j] == 0.0) continue;
+        const int m = a + j;
+        const double gm = (m == 0) ? std::lgamma(y + r) - std::lgamma(r) : G[m];
+        const double rp = (j == 0) ? 1.0 : (j == 2 ? r * r : std::pow(r, (double) j));
+        out = out + coef[j] * rp * gm;
+    }
+    return out / std::pow(th, (double) (a + b));
+}
+
+inline double negbin1_Bd(int m, double om) {
+    if (m == 0) return -std::log(om);
+    return negbin1_sgn(m) * negbin1_fact(m - 1) / std::pow(om, (double) m);
+}
+
+inline double negbin1_ud(int m, double th) {
+    return negbin1_sgn(m) * negbin1_fact(m) / std::pow(th, m + 1.0);
+}
+
+inline double negbin1_Md(int b, double th, double om) {
+    double s = 0.0;
+    for (int i = 0; i <= b; ++i) {
+        const double ch = negbin1_fact(b) / (negbin1_fact(i) * negbin1_fact(b - i));
+        s = s + ch * negbin1_ud(i, th) * negbin1_Bd(b - i, om);
+    }
+    return s;
+}
+
+inline double negbin1_Cd(int b, double y, double th, double om) {
+    if (b == 0) return y * std::log(th) - y * std::log(om);
+    return y * negbin1_sgn(b - 1) * negbin1_fact(b - 1) *
+        (1.0 / std::pow(th, (double) b) - 1.0 / std::pow(om, (double) b));
+}
+
+inline double negbin1_size_comp(int order, int a, double y, double mu,
+                                double th, const double* G) {
+    const int b = order - a;
+    const double r = mu / th, om = 1.0 + th;
+    double out = negbin1_gpart(a, b, r, G, th, y);
+    if (a == 0) out = out + mu * negbin1_Md(b, th, om) + negbin1_Cd(b, y, th, om);
+    if (a == 1) out = out + negbin1_Md(b, th, om);
+    return out;
+}
+
+inline void negbin1_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], t = th[1];
+    for (int j = 4; j < 25; ++j) b[j] = R_NaN;
+    b[0] = level; b[1] = y; b[2] = m; b[3] = t;
+    if (level >= 1) {
+        double v[5];
+        negbin1_low_orders(y, m, t, level >= 2 ? 2 : 1, v);
+        b[4] = v[0];
+        b[5] = v[1];
+        if (level >= 2) {
+            b[6] = v[2];
+            b[7] = v[3];
+            b[8] = v[4];
+        }
+    }
+    if (level >= 3) {
+        if (t < 1.0) {
+            negbin1_psums(y, m, t, 3, b + 13);
+            double M[5];
+            negbin1_M_derivs(t, level >= 4 ? 4 : 3, M);
+            b[22] = M[2];
+            b[23] = M[3];
+            if (level >= 4) {
+                negbin1_psums(y, m, t, 4, b + 17);
+                b[24] = M[4];
+            }
+        } else {
+            const double r = m / t;
+            b[9] = negbin1_psi_shift(0, y, r);
+            b[10] = negbin1_psi_shift(1, y, r);
+            b[11] = negbin1_psi_shift(2, y, r);
+            if (level >= 4) b[12] = negbin1_psi_shift(3, y, r);
+        }
+    }
+}
+
+inline void negbin1_parts_expected(const double* th, int level, double* b) {
+    const double m = th[0], t = th[1];
+    b[0] = level; b[1] = R_NaN; b[2] = m; b[3] = t;
+    for (int j = 4; j < 7; ++j) b[j] = R_NaN;
+    if (level >= 2) {
+        double A, G, M;
+        nb1_sums0m(m, t, &A, &G, &M);
+        b[4] = A;
+        b[5] = G;
+        b[6] = M;
+    }
+}
+
+inline void negbin1_parts_grad(const double* b, double* out) {
+    out[0] = b[4];
+    out[1] = b[5];
+}
+
+inline void negbin1_parts_hess(const double* b, double* out) {
+    out[0] = b[6];
+    out[3] = b[8];
+    out[1] = out[2] = b[7];
+}
+
+inline void negbin1_parts_info(const double* b, double* out) {
+    out[0] = negbin1_expected_mu_mu(b[4]);
+    out[3] = negbin1_expected_theta_theta(b[3], b[5]);
+    out[1] = out[2] = b[6];
+}
+
+// unique components in the order mu mu mu, mu mu theta, mu theta theta,
+// theta theta theta
+inline void negbin1_parts_d3(const double* b, double* out) {
+    const double y = b[1], m = b[2], t = b[3];
+    double u[4];
+    if (t < 1.0) {
+        const double S[4] = {b[13], b[14], b[15], b[16]};
+        const double M[5] = {R_NaN, R_NaN, b[22], b[23], R_NaN};
+        for (int k = 0; k < 4; ++k) u[k] = negbin1_exact_comp(3, 3 - k, y, m, t, S, M);
+    } else {
+        const double G[5] = {R_NaN, b[9], b[10], b[11], b[12]};
+        for (int k = 0; k < 4; ++k) u[k] = negbin1_size_comp(3, 3 - k, y, m, t, G);
+    }
+    sym_fill(2, 3, u, out);
+}
+
+// mu mu mu mu, mu mu mu theta, mu mu theta theta, mu theta theta theta,
+// theta theta theta theta
+inline void negbin1_parts_d4(const double* b, double* out) {
+    const double y = b[1], m = b[2], t = b[3];
+    double u[5];
+    if (t < 1.0) {
+        const double S[5] = {b[17], b[18], b[19], b[20], b[21]};
+        const double M[5] = {R_NaN, R_NaN, b[22], b[23], b[24]};
+        for (int k = 0; k < 5; ++k) u[k] = negbin1_exact_comp(4, 4 - k, y, m, t, S, M);
+    } else {
+        const double G[5] = {R_NaN, b[9], b[10], b[11], b[12]};
+        for (int k = 0; k < 5; ++k) u[k] = negbin1_size_comp(4, 4 - k, y, m, t, G);
+    }
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

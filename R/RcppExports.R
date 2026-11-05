@@ -649,6 +649,14 @@ d7_scalar_classes_covered <- function() {
     .Call(`_distributions7_d7_scalar_classes_covered`)
 }
 
+d7_parts_probe <- function(cls, y, theta, level = 4L) {
+    .Call(`_distributions7_d7_parts_probe`, cls, y, theta, level)
+}
+
+d7_parts_classes_covered <- function() {
+    .Call(`_distributions7_d7_parts_classes_covered`)
+}
+
 bernoulli_dexpected1_cpp <- function(y, mu, threads = 1L) {
     .Call(`_distributions7_bernoulli_dexpected1_cpp`, y, mu, threads)
 }

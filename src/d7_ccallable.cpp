@@ -230,6 +230,15 @@ void d7_joint_grad(int id, double y, const double* th, double* out);
 void d7_joint_hess(int id, double y, const double* th, double* out);
 void d7_joint_info(int id, double y, const double* th, double* out);
 void d7_joint_dinfo(int id, double y, const double* th, double* out);
+int d7_parts_covered(int id);
+int d7_parts_max(void);
+void d7_parts(int id, double y, const double* th, int level, double* buf);
+void d7_parts_expected(int id, const double* th, int level, double* buf);
+void d7_parts_grad(int id, const double* buf, double* out);
+void d7_parts_hess(int id, const double* buf, double* out);
+void d7_parts_info(int id, const double* buf, double* out);
+void d7_parts_d3(int id, const double* buf, double* out);
+void d7_parts_d4(int id, const double* buf, double* out);
 }
 
 namespace {
@@ -2975,6 +2984,382 @@ void d7_joint_dinfo(int id, double y, const double* th, double* out) {
     }
 }
 
+// THE PARTS ROUTE (piano_motore.md, D7; pt_parts.h). d7_parts() fills a
+// buffer of at most d7_parts_max() doubles at one observation with the
+// quantities that cost, up to `level`, the highest order the caller will
+// read; each order is then its own entry over the buffer. An order above the
+// buffer's level, or a family the route does not cover, writes NaN.
+// d7_parts_covered() is the highest order the route reaches for a family, 0
+// where it does not cover it.
+int d7_parts_covered(int id) {
+    // every family of the registry, to the fourth order; the wrappers are
+    // not covered (piano_motore.md, D1)
+    return id >= 0 && id < d7_n_scalar_classes ? 4 : 0;
+}
+
+int d7_parts_max(void) { return d7::kPartsMax; }
+
+void d7_parts(int id, double y, const double* th, int level, double* buf) {
+    switch (d7_parts_covered(id) >= level ? id : -1) {
+    case 1: d7::gamma1_parts(y, th, level, buf); break;
+    case 2: d7::poisson_parts(y, th, level, buf); break;
+    case 5: d7::bernoulli_parts(y, th, level, buf); break;
+    case 6: d7::binomial_parts(y, th, level, buf); break;
+    case 7: d7::exponential_parts(y, th, level, buf); break;
+    case 8: d7::geometric_parts(y, th, level, buf); break;
+    case 9: d7::chisq_parts(y, th, level, buf); break;
+    case 10: d7::cauchy_parts(y, th, level, buf); break;
+    case 11: d7::logistic_parts(y, th, level, buf); break;
+    case 12: d7::gaussian2_parts(y, th, level, buf); break;
+    case 13: d7::gaussian3_parts(y, th, level, buf); break;
+    case 14: d7::lognormal1_parts(y, th, level, buf); break;
+    case 15: d7::invgauss1_parts(y, th, level, buf); break;
+    case 16: d7::invgauss2_parts(y, th, level, buf); break;
+    case 17: d7::gamma2_parts(y, th, level, buf); break;
+    case 18: d7::gpd_parts(y, th, level, buf); break;
+    case 19: d7::vonmises1_parts(y, th, level, buf); break;
+    case 20: d7::vonmises2_parts(y, th, level, buf); break;
+    case 21: d7::weibull3_parts(y, th, level, buf); break;
+    case 22: d7::lognormal2_parts(y, th, level, buf); break;
+    case 23: d7::student_t1_parts(y, th, level, buf); break;
+    case 24: d7::student_t2_parts(y, th, level, buf); break;
+    case 25: d7::gengamma1_parts(y, th, level, buf); break;
+    case 26: d7::gengamma2_parts(y, th, level, buf); break;
+    case 27: d7::gumbel_parts(y, th, level, buf); break;
+    case 28: d7::laplace_parts(y, th, level, buf); break;
+    case 29: d7::laplace2_parts(y, th, level, buf); break;
+    case 30: d7::weibull1_parts(y, th, level, buf); break;
+    case 31: d7::beta2_parts(y, th, level, buf); break;
+    case 32: d7::enet_parts(y, th, level, buf); break;
+    case 33: d7::negbin1_parts(y, th, level, buf); break;
+    case 34: d7::skewnormal1_parts(y, th, level, buf); break;
+    case 35: d7::skewt_parts(y, th, level, buf); break;
+    case 36: d7::pseudohuber_parts(y, th, level, buf); break;
+    case 37: d7::pseudohuber2_parts(y, th, level, buf); break;
+    case 38: d7::skewnormal2_parts(y, th, level, buf); break;
+    case 39: d7::pig1_parts(y, th, level, buf); break;
+    case 40: d7::pig2_parts(y, th, level, buf); break;
+    case 41: d7::betabinom1_parts(y, th, level, buf); break;
+    case 42: d7::betabinom2_parts(y, th, level, buf); break;
+    case 0: d7::gaussian1_parts(y, th, level, buf); break;
+    case 3: d7::negbin2_parts(y, th, level, buf); break;
+    case 4: d7::beta1_parts(y, th, level, buf); break;
+    default: buf[0] = -1.0;
+    }
+}
+
+void d7_parts_expected(int id, const double* th, int level, double* buf) {
+    switch (d7_parts_covered(id) >= level ? id : -1) {
+    case 1: d7::gamma1_parts_expected(th, level, buf); break;
+    case 2: d7::poisson_parts_expected(th, level, buf); break;
+    case 5: d7::bernoulli_parts_expected(th, level, buf); break;
+    case 6: d7::binomial_parts_expected(th, level, buf); break;
+    case 7: d7::exponential_parts_expected(th, level, buf); break;
+    case 8: d7::geometric_parts_expected(th, level, buf); break;
+    case 9: d7::chisq_parts_expected(th, level, buf); break;
+    case 10: d7::cauchy_parts_expected(th, level, buf); break;
+    case 11: d7::logistic_parts_expected(th, level, buf); break;
+    case 12: d7::gaussian2_parts_expected(th, level, buf); break;
+    case 13: d7::gaussian3_parts_expected(th, level, buf); break;
+    case 14: d7::lognormal1_parts_expected(th, level, buf); break;
+    case 15: d7::invgauss1_parts_expected(th, level, buf); break;
+    case 16: d7::invgauss2_parts_expected(th, level, buf); break;
+    case 17: d7::gamma2_parts_expected(th, level, buf); break;
+    case 18: d7::gpd_parts_expected(th, level, buf); break;
+    case 19: d7::vonmises1_parts_expected(th, level, buf); break;
+    case 20: d7::vonmises2_parts_expected(th, level, buf); break;
+    case 21: d7::weibull3_parts_expected(th, level, buf); break;
+    case 22: d7::lognormal2_parts_expected(th, level, buf); break;
+    case 23: d7::student_t1_parts_expected(th, level, buf); break;
+    case 24: d7::student_t2_parts_expected(th, level, buf); break;
+    case 25: d7::gengamma1_parts_expected(th, level, buf); break;
+    case 26: d7::gengamma2_parts_expected(th, level, buf); break;
+    case 27: d7::gumbel_parts_expected(th, level, buf); break;
+    case 28: d7::laplace_parts_expected(th, level, buf); break;
+    case 29: d7::laplace2_parts_expected(th, level, buf); break;
+    case 30: d7::weibull1_parts_expected(th, level, buf); break;
+    case 31: d7::beta2_parts_expected(th, level, buf); break;
+    case 32: d7::enet_parts_expected(th, level, buf); break;
+    case 33: d7::negbin1_parts_expected(th, level, buf); break;
+    case 34: d7::skewnormal1_parts_expected(th, level, buf); break;
+    case 35: d7::skewt_parts_expected(th, level, buf); break;
+    case 36: d7::pseudohuber_parts_expected(th, level, buf); break;
+    case 37: d7::pseudohuber2_parts_expected(th, level, buf); break;
+    case 38: d7::skewnormal2_parts_expected(th, level, buf); break;
+    case 39: d7::pig1_parts_expected(th, level, buf); break;
+    case 40: d7::pig2_parts_expected(th, level, buf); break;
+    case 41: d7::betabinom1_parts_expected(th, level, buf); break;
+    case 42: d7::betabinom2_parts_expected(th, level, buf); break;
+    case 0: d7::gaussian1_parts_expected(th, level, buf); break;
+    case 3: d7::negbin2_parts_expected(th, level, buf); break;
+    case 4: d7::beta1_parts_expected(th, level, buf); break;
+    default: buf[0] = -1.0;
+    }
+}
+
+// the order an entry needs from the buffer, and the size of its output
+static bool parts_ready(int id, const double* buf, int order, double* out,
+                        int len) {
+    if (buf[0] >= order && d7_parts_covered(id) >= order) return true;
+    fill_nan(out, len);
+    return false;
+}
+
+void d7_parts_grad(int id, const double* buf, double* out) {
+    const int P = d7_parts_covered(id) > 0 ? id_np(id) : 0;
+    if (!parts_ready(id, buf, 1, out, P)) return;
+    switch (id) {
+    case 1: d7::gamma1_parts_grad(buf, out); break;
+    case 2: d7::poisson_parts_grad(buf, out); break;
+    case 5: d7::bernoulli_parts_grad(buf, out); break;
+    case 6: d7::binomial_parts_grad(buf, out); break;
+    case 7: d7::exponential_parts_grad(buf, out); break;
+    case 8: d7::geometric_parts_grad(buf, out); break;
+    case 9: d7::chisq_parts_grad(buf, out); break;
+    case 10: d7::cauchy_parts_grad(buf, out); break;
+    case 11: d7::logistic_parts_grad(buf, out); break;
+    case 12: d7::gaussian2_parts_grad(buf, out); break;
+    case 13: d7::gaussian3_parts_grad(buf, out); break;
+    case 14: d7::lognormal1_parts_grad(buf, out); break;
+    case 15: d7::invgauss1_parts_grad(buf, out); break;
+    case 16: d7::invgauss2_parts_grad(buf, out); break;
+    case 17: d7::gamma2_parts_grad(buf, out); break;
+    case 18: d7::gpd_parts_grad(buf, out); break;
+    case 19: d7::vonmises1_parts_grad(buf, out); break;
+    case 20: d7::vonmises2_parts_grad(buf, out); break;
+    case 21: d7::weibull3_parts_grad(buf, out); break;
+    case 22: d7::lognormal2_parts_grad(buf, out); break;
+    case 23: d7::student_t1_parts_grad(buf, out); break;
+    case 24: d7::student_t2_parts_grad(buf, out); break;
+    case 25: d7::gengamma1_parts_grad(buf, out); break;
+    case 26: d7::gengamma2_parts_grad(buf, out); break;
+    case 27: d7::gumbel_parts_grad(buf, out); break;
+    case 28: d7::laplace_parts_grad(buf, out); break;
+    case 29: d7::laplace2_parts_grad(buf, out); break;
+    case 30: d7::weibull1_parts_grad(buf, out); break;
+    case 31: d7::beta2_parts_grad(buf, out); break;
+    case 32: d7::enet_parts_grad(buf, out); break;
+    case 33: d7::negbin1_parts_grad(buf, out); break;
+    case 34: d7::skewnormal1_parts_grad(buf, out); break;
+    case 35: d7::skewt_parts_grad(buf, out); break;
+    case 36: d7::pseudohuber_parts_grad(buf, out); break;
+    case 37: d7::pseudohuber2_parts_grad(buf, out); break;
+    case 38: d7::skewnormal2_parts_grad(buf, out); break;
+    case 39: d7::pig1_parts_grad(buf, out); break;
+    case 40: d7::pig2_parts_grad(buf, out); break;
+    case 41: d7::betabinom1_parts_grad(buf, out); break;
+    case 42: d7::betabinom2_parts_grad(buf, out); break;
+    case 0: d7::gaussian1_parts_grad(buf, out); break;
+    case 3: d7::negbin2_parts_grad(buf, out); break;
+    case 4: d7::beta1_parts_grad(buf, out); break;
+    default: fill_nan(out, P);
+    }
+}
+
+void d7_parts_hess(int id, const double* buf, double* out) {
+    const int P = d7_parts_covered(id) > 0 ? id_np(id) : 0;
+    if (!parts_ready(id, buf, 2, out, P * P)) return;
+    switch (id) {
+    case 1: d7::gamma1_parts_hess(buf, out); break;
+    case 2: d7::poisson_parts_hess(buf, out); break;
+    case 5: d7::bernoulli_parts_hess(buf, out); break;
+    case 6: d7::binomial_parts_hess(buf, out); break;
+    case 7: d7::exponential_parts_hess(buf, out); break;
+    case 8: d7::geometric_parts_hess(buf, out); break;
+    case 9: d7::chisq_parts_hess(buf, out); break;
+    case 10: d7::cauchy_parts_hess(buf, out); break;
+    case 11: d7::logistic_parts_hess(buf, out); break;
+    case 12: d7::gaussian2_parts_hess(buf, out); break;
+    case 13: d7::gaussian3_parts_hess(buf, out); break;
+    case 14: d7::lognormal1_parts_hess(buf, out); break;
+    case 15: d7::invgauss1_parts_hess(buf, out); break;
+    case 16: d7::invgauss2_parts_hess(buf, out); break;
+    case 17: d7::gamma2_parts_hess(buf, out); break;
+    case 18: d7::gpd_parts_hess(buf, out); break;
+    case 19: d7::vonmises1_parts_hess(buf, out); break;
+    case 20: d7::vonmises2_parts_hess(buf, out); break;
+    case 21: d7::weibull3_parts_hess(buf, out); break;
+    case 22: d7::lognormal2_parts_hess(buf, out); break;
+    case 23: d7::student_t1_parts_hess(buf, out); break;
+    case 24: d7::student_t2_parts_hess(buf, out); break;
+    case 25: d7::gengamma1_parts_hess(buf, out); break;
+    case 26: d7::gengamma2_parts_hess(buf, out); break;
+    case 27: d7::gumbel_parts_hess(buf, out); break;
+    case 28: d7::laplace_parts_hess(buf, out); break;
+    case 29: d7::laplace2_parts_hess(buf, out); break;
+    case 30: d7::weibull1_parts_hess(buf, out); break;
+    case 31: d7::beta2_parts_hess(buf, out); break;
+    case 32: d7::enet_parts_hess(buf, out); break;
+    case 33: d7::negbin1_parts_hess(buf, out); break;
+    case 34: d7::skewnormal1_parts_hess(buf, out); break;
+    case 35: d7::skewt_parts_hess(buf, out); break;
+    case 36: d7::pseudohuber_parts_hess(buf, out); break;
+    case 37: d7::pseudohuber2_parts_hess(buf, out); break;
+    case 38: d7::skewnormal2_parts_hess(buf, out); break;
+    case 39: d7::pig1_parts_hess(buf, out); break;
+    case 40: d7::pig2_parts_hess(buf, out); break;
+    case 41: d7::betabinom1_parts_hess(buf, out); break;
+    case 42: d7::betabinom2_parts_hess(buf, out); break;
+    case 0: d7::gaussian1_parts_hess(buf, out); break;
+    case 3: d7::negbin2_parts_hess(buf, out); break;
+    case 4: d7::beta1_parts_hess(buf, out); break;
+    default: fill_nan(out, P * P);
+    }
+}
+
+void d7_parts_info(int id, const double* buf, double* out) {
+    const int P = d7_parts_covered(id) > 0 ? id_np(id) : 0;
+    if (!parts_ready(id, buf, 2, out, P * P)) return;
+    switch (id) {
+    case 1: d7::gamma1_parts_info(buf, out); break;
+    case 2: d7::poisson_parts_info(buf, out); break;
+    case 5: d7::bernoulli_parts_info(buf, out); break;
+    case 6: d7::binomial_parts_info(buf, out); break;
+    case 7: d7::exponential_parts_info(buf, out); break;
+    case 8: d7::geometric_parts_info(buf, out); break;
+    case 9: d7::chisq_parts_info(buf, out); break;
+    case 10: d7::cauchy_parts_info(buf, out); break;
+    case 11: d7::logistic_parts_info(buf, out); break;
+    case 12: d7::gaussian2_parts_info(buf, out); break;
+    case 13: d7::gaussian3_parts_info(buf, out); break;
+    case 14: d7::lognormal1_parts_info(buf, out); break;
+    case 15: d7::invgauss1_parts_info(buf, out); break;
+    case 16: d7::invgauss2_parts_info(buf, out); break;
+    case 17: d7::gamma2_parts_info(buf, out); break;
+    case 18: d7::gpd_parts_info(buf, out); break;
+    case 19: d7::vonmises1_parts_info(buf, out); break;
+    case 20: d7::vonmises2_parts_info(buf, out); break;
+    case 21: d7::weibull3_parts_info(buf, out); break;
+    case 22: d7::lognormal2_parts_info(buf, out); break;
+    case 23: d7::student_t1_parts_info(buf, out); break;
+    case 24: d7::student_t2_parts_info(buf, out); break;
+    case 25: d7::gengamma1_parts_info(buf, out); break;
+    case 26: d7::gengamma2_parts_info(buf, out); break;
+    case 27: d7::gumbel_parts_info(buf, out); break;
+    case 28: d7::laplace_parts_info(buf, out); break;
+    case 29: d7::laplace2_parts_info(buf, out); break;
+    case 30: d7::weibull1_parts_info(buf, out); break;
+    case 31: d7::beta2_parts_info(buf, out); break;
+    case 32: d7::enet_parts_info(buf, out); break;
+    case 33: d7::negbin1_parts_info(buf, out); break;
+    case 34: d7::skewnormal1_parts_info(buf, out); break;
+    case 35: d7::skewt_parts_info(buf, out); break;
+    case 36: d7::pseudohuber_parts_info(buf, out); break;
+    case 37: d7::pseudohuber2_parts_info(buf, out); break;
+    case 38: d7::skewnormal2_parts_info(buf, out); break;
+    case 39: d7::pig1_parts_info(buf, out); break;
+    case 40: d7::pig2_parts_info(buf, out); break;
+    case 41: d7::betabinom1_parts_info(buf, out); break;
+    case 42: d7::betabinom2_parts_info(buf, out); break;
+    case 0: d7::gaussian1_parts_info(buf, out); break;
+    case 3: d7::negbin2_parts_info(buf, out); break;
+    case 4: d7::beta1_parts_info(buf, out); break;
+    default: fill_nan(out, P * P);
+    }
+}
+
+void d7_parts_d3(int id, const double* buf, double* out) {
+    const int P = d7_parts_covered(id) > 0 ? id_np(id) : 0;
+    if (!parts_ready(id, buf, 3, out, P * P * P)) return;
+    switch (id) {
+    case 1: d7::gamma1_parts_d3(buf, out); break;
+    case 2: d7::poisson_parts_d3(buf, out); break;
+    case 5: d7::bernoulli_parts_d3(buf, out); break;
+    case 6: d7::binomial_parts_d3(buf, out); break;
+    case 7: d7::exponential_parts_d3(buf, out); break;
+    case 8: d7::geometric_parts_d3(buf, out); break;
+    case 9: d7::chisq_parts_d3(buf, out); break;
+    case 10: d7::cauchy_parts_d3(buf, out); break;
+    case 11: d7::logistic_parts_d3(buf, out); break;
+    case 12: d7::gaussian2_parts_d3(buf, out); break;
+    case 13: d7::gaussian3_parts_d3(buf, out); break;
+    case 14: d7::lognormal1_parts_d3(buf, out); break;
+    case 15: d7::invgauss1_parts_d3(buf, out); break;
+    case 16: d7::invgauss2_parts_d3(buf, out); break;
+    case 17: d7::gamma2_parts_d3(buf, out); break;
+    case 18: d7::gpd_parts_d3(buf, out); break;
+    case 19: d7::vonmises1_parts_d3(buf, out); break;
+    case 20: d7::vonmises2_parts_d3(buf, out); break;
+    case 21: d7::weibull3_parts_d3(buf, out); break;
+    case 22: d7::lognormal2_parts_d3(buf, out); break;
+    case 23: d7::student_t1_parts_d3(buf, out); break;
+    case 24: d7::student_t2_parts_d3(buf, out); break;
+    case 25: d7::gengamma1_parts_d3(buf, out); break;
+    case 26: d7::gengamma2_parts_d3(buf, out); break;
+    case 27: d7::gumbel_parts_d3(buf, out); break;
+    case 28: d7::laplace_parts_d3(buf, out); break;
+    case 29: d7::laplace2_parts_d3(buf, out); break;
+    case 30: d7::weibull1_parts_d3(buf, out); break;
+    case 31: d7::beta2_parts_d3(buf, out); break;
+    case 32: d7::enet_parts_d3(buf, out); break;
+    case 33: d7::negbin1_parts_d3(buf, out); break;
+    case 34: d7::skewnormal1_parts_d3(buf, out); break;
+    case 35: d7::skewt_parts_d3(buf, out); break;
+    case 36: d7::pseudohuber_parts_d3(buf, out); break;
+    case 37: d7::pseudohuber2_parts_d3(buf, out); break;
+    case 38: d7::skewnormal2_parts_d3(buf, out); break;
+    case 39: d7::pig1_parts_d3(buf, out); break;
+    case 40: d7::pig2_parts_d3(buf, out); break;
+    case 41: d7::betabinom1_parts_d3(buf, out); break;
+    case 42: d7::betabinom2_parts_d3(buf, out); break;
+    case 0: d7::gaussian1_parts_d3(buf, out); break;
+    case 3: d7::negbin2_parts_d3(buf, out); break;
+    case 4: d7::beta1_parts_d3(buf, out); break;
+    default: fill_nan(out, P * P * P);
+    }
+}
+
+void d7_parts_d4(int id, const double* buf, double* out) {
+    const int P = d7_parts_covered(id) > 0 ? id_np(id) : 0;
+    if (!parts_ready(id, buf, 4, out, P * P * P * P)) return;
+    switch (id) {
+    case 1: d7::gamma1_parts_d4(buf, out); break;
+    case 2: d7::poisson_parts_d4(buf, out); break;
+    case 5: d7::bernoulli_parts_d4(buf, out); break;
+    case 6: d7::binomial_parts_d4(buf, out); break;
+    case 7: d7::exponential_parts_d4(buf, out); break;
+    case 8: d7::geometric_parts_d4(buf, out); break;
+    case 9: d7::chisq_parts_d4(buf, out); break;
+    case 10: d7::cauchy_parts_d4(buf, out); break;
+    case 11: d7::logistic_parts_d4(buf, out); break;
+    case 12: d7::gaussian2_parts_d4(buf, out); break;
+    case 13: d7::gaussian3_parts_d4(buf, out); break;
+    case 14: d7::lognormal1_parts_d4(buf, out); break;
+    case 15: d7::invgauss1_parts_d4(buf, out); break;
+    case 16: d7::invgauss2_parts_d4(buf, out); break;
+    case 17: d7::gamma2_parts_d4(buf, out); break;
+    case 18: d7::gpd_parts_d4(buf, out); break;
+    case 19: d7::vonmises1_parts_d4(buf, out); break;
+    case 20: d7::vonmises2_parts_d4(buf, out); break;
+    case 21: d7::weibull3_parts_d4(buf, out); break;
+    case 22: d7::lognormal2_parts_d4(buf, out); break;
+    case 23: d7::student_t1_parts_d4(buf, out); break;
+    case 24: d7::student_t2_parts_d4(buf, out); break;
+    case 25: d7::gengamma1_parts_d4(buf, out); break;
+    case 26: d7::gengamma2_parts_d4(buf, out); break;
+    case 27: d7::gumbel_parts_d4(buf, out); break;
+    case 28: d7::laplace_parts_d4(buf, out); break;
+    case 29: d7::laplace2_parts_d4(buf, out); break;
+    case 30: d7::weibull1_parts_d4(buf, out); break;
+    case 31: d7::beta2_parts_d4(buf, out); break;
+    case 32: d7::enet_parts_d4(buf, out); break;
+    case 33: d7::negbin1_parts_d4(buf, out); break;
+    case 34: d7::skewnormal1_parts_d4(buf, out); break;
+    case 35: d7::skewt_parts_d4(buf, out); break;
+    case 36: d7::pseudohuber_parts_d4(buf, out); break;
+    case 37: d7::pseudohuber2_parts_d4(buf, out); break;
+    case 38: d7::skewnormal2_parts_d4(buf, out); break;
+    case 39: d7::pig1_parts_d4(buf, out); break;
+    case 40: d7::pig2_parts_d4(buf, out); break;
+    case 41: d7::betabinom1_parts_d4(buf, out); break;
+    case 42: d7::betabinom2_parts_d4(buf, out); break;
+    case 0: d7::gaussian1_parts_d4(buf, out); break;
+    case 3: d7::negbin2_parts_d4(buf, out); break;
+    case 4: d7::beta1_parts_d4(buf, out); break;
+    default: fill_nan(out, P * P * P * P);
+    }
+}
+
 } // extern "C"
 
 // exposed to this package's own tests: the twin comparison against
@@ -3414,4 +3799,74 @@ void d7_register_ccallable(DllInfo* dll) {
                         (DL_FUNC) d7_joint_info);
     R_RegisterCCallable("distributions7", "d7_joint_dinfo",
                         (DL_FUNC) d7_joint_dinfo);
+    R_RegisterCCallable("distributions7", "d7_parts_covered",
+                        (DL_FUNC) d7_parts_covered);
+    R_RegisterCCallable("distributions7", "d7_parts_max",
+                        (DL_FUNC) d7_parts_max);
+    R_RegisterCCallable("distributions7", "d7_parts", (DL_FUNC) d7_parts);
+    R_RegisterCCallable("distributions7", "d7_parts_expected",
+                        (DL_FUNC) d7_parts_expected);
+    R_RegisterCCallable("distributions7", "d7_parts_grad",
+                        (DL_FUNC) d7_parts_grad);
+    R_RegisterCCallable("distributions7", "d7_parts_hess",
+                        (DL_FUNC) d7_parts_hess);
+    R_RegisterCCallable("distributions7", "d7_parts_info",
+                        (DL_FUNC) d7_parts_info);
+    R_RegisterCCallable("distributions7", "d7_parts_d3",
+                        (DL_FUNC) d7_parts_d3);
+    R_RegisterCCallable("distributions7", "d7_parts_d4",
+                        (DL_FUNC) d7_parts_d4);
+}
+
+// the twin of d7_joint_probe() for the parts route: the gradient, the
+// Hessian, the expected information and the orders three and four at every
+// observation, each read from one buffer filled to `level` (the expected
+// information from the expected parts); an order above `level` is NaN
+// [[Rcpp::export]]
+Rcpp::List d7_parts_probe(std::string cls, Rcpp::NumericVector y,
+                          Rcpp::NumericMatrix theta, int level = 4) {
+    int id = d7_scalar_id(cls.c_str());
+    int cov = d7_parts_covered(id);
+    int n = y.size(), np = theta.ncol();
+    int P = cov > 0 ? id_np(id) : 0;
+    Rcpp::NumericMatrix g(n, P);
+    Rcpp::NumericVector h(n * P * P), e(n * P * P), d3(n * P * P * P),
+        d4(n * P * P * P * P);
+    std::vector<double> th(np), buf(d7::kPartsMax), bufe(d7::kPartsMax),
+        og(P), oh(P * P), oe(P * P), o3(P * P * P), o4(P * P * P * P);
+    for (int i = 0; i < n && P > 0; ++i) {
+        for (int j = 0; j < np; ++j) th[j] = theta(i, j);
+        d7_parts(id, y[i], th.data(), level, buf.data());
+        d7_parts_expected(id, th.data(), 2, bufe.data());
+        d7_parts_grad(id, buf.data(), og.data());
+        d7_parts_hess(id, buf.data(), oh.data());
+        d7_parts_info(id, bufe.data(), oe.data());
+        d7_parts_d3(id, buf.data(), o3.data());
+        d7_parts_d4(id, buf.data(), o4.data());
+        for (int a = 0; a < P; ++a) g(i, a) = og[a];
+        for (int j = 0; j < P * P; ++j) {
+            h[i + n * j] = oh[j];
+            e[i + n * j] = oe[j];
+        }
+        for (int j = 0; j < P * P * P; ++j) d3[i + n * j] = o3[j];
+        for (int j = 0; j < P * P * P * P; ++j) d4[i + n * j] = o4[j];
+    }
+    h.attr("dim") = Rcpp::IntegerVector::create(n, P, P);
+    e.attr("dim") = Rcpp::IntegerVector::create(n, P, P);
+    d3.attr("dim") = Rcpp::IntegerVector::create(n, P, P, P);
+    d4.attr("dim") = Rcpp::IntegerVector::create(n, P, P, P, P);
+    return Rcpp::List::create(Rcpp::_["id"] = id, Rcpp::_["covered"] = cov,
+                              Rcpp::_["grad"] = g, Rcpp::_["hess"] = h,
+                              Rcpp::_["info"] = e, Rcpp::_["d3"] = d3,
+                              Rcpp::_["d4"] = d4);
+}
+
+// the classes the parts route covers, for the twin tests
+// [[Rcpp::export]]
+Rcpp::CharacterVector d7_parts_classes_covered() {
+    std::vector<std::string> out;
+    for (int i = 0; i < d7_n_scalar_classes; ++i) {
+        if (d7_parts_covered(i) > 0) out.push_back(d7_scalar_classes[i]);
+    }
+    return Rcpp::wrap(out);
 }

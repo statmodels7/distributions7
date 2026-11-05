@@ -3,6 +3,8 @@
 
 #include <Rcpp.h>
 #include <cmath>
+#include <algorithm>
+#include "pt_parts.h"
 #include "pt_mills.h"
 #include "pt_sqrt.h"
 #include "pt_enet_logz.h"
@@ -382,6 +384,252 @@ inline void enet_joint_dinfo(double y, const double* th, double* out) {
     out[4 + 18] = enet_dexpected_lambda_lambda_alpha(P, T);
     out[8 + 18] = enet_dexpected_alpha_alpha_alpha(P, T);
     out[5 + 18] = out[7 + 18] = enet_dexpected_lambda_alpha_alpha(P, T);
+}
+
+// ---- the parts route (piano_motore.md, D7) ----------------------------------
+//
+// Orders one and two and the expected Hessian call the components of the
+// joint routers above. Orders three and four are transcribed from
+// enet_deriv_k() and its helpers (enet.cpp), here under enet_parts_ names:
+// the table of one parameter value, formed at z = 0 and s = 0, plus the one
+// component that carries the data at order three, sgn(z) - z in
+// (mu, lambda, alpha). The costly quantity is the table of the partial
+// derivatives of log Z in (a, c), formed once by enet_logz_ac() to the order
+// the level asks for (its entries of low order do not depend on that order).
+
+// The derivatives of l = -a|z| - c z^2/2 - log Z(a, c) in (mu, a, c) along
+// the index tuple ix (0 = mu, 1 = a, 2 = c) of length m, with s = sgn(z)
+inline double enet_parts_l_ac(int m, const int* ix, double z, double s,
+                              double a, double c, const double d[5][5]) {
+    int nm = 0, na = 0, nc = 0;
+    for (int r = 0; r < m; ++r) {
+        if (ix[r] == 0) ++nm;
+        else if (ix[r] == 1) ++na;
+        else ++nc;
+    }
+    if (m == 1) {
+        if (nm) return a * s + c * z;
+        if (na) return -std::fabs(z) - d[1][0];
+        return -z * z / 2.0 - d[0][1];
+    }
+    if (nm == 0) return -d[na][nc];
+    if (m == 2) {
+        if (nm == 2) return -c;
+        return na ? s : z;
+    }
+    if (m == 3 && nm == 2 && nc == 1) return -1.0;
+    return 0.0;
+}
+
+inline double enet_parts_l_form(int m, const double (*dir)[3], double z,
+                                double s, double a, double c,
+                                const double d[5][5]) {
+    int ix[4] = {0, 0, 0, 0};
+    double out = 0.0;
+    int total = 1;
+    for (int r = 0; r < m; ++r) total *= 3;
+    for (int t = 0; t < total; ++t) {
+        int u = t;
+        double w = 1.0;
+        for (int r = 0; r < m; ++r) {
+            ix[r] = u % 3;
+            u /= 3;
+            w *= dir[r][ix[r]];
+        }
+        if (w != 0.0) out += w * enet_parts_l_ac(m, ix, z, s, a, c, d);
+    }
+    return out;
+}
+
+// One derivative of order k in (mu, lambda, alpha), with nm, nl and na the
+// counts of each (the partition sum over the bilinear map to (a, c))
+inline double enet_parts_deriv_lam_al(int nm, int nl, int na, double z,
+                                      double s, double lam, double al,
+                                      const double d[5][5]) {
+    const double a = lam * al, c = lam * (1.0 - al);
+    const double emu[3] = {1.0, 0.0, 0.0}, w[3] = {0.0, al, 1.0 - al},
+                 lv[3] = {0.0, lam, -lam}, v[3] = {0.0, 1.0, -1.0};
+    static const double fact[5] = {1.0, 1.0, 2.0, 6.0, 24.0};
+    double out = 0.0;
+    for (int j = 0; j <= std::min(nl, na); ++j) {
+        const double coef = fact[nl] / (fact[j] * fact[nl - j]) *
+                            fact[na] / (fact[j] * fact[na - j]) * fact[j];
+        double dir[4][3];
+        int m = 0;
+        auto add = [&](const double* e, int times) {
+            for (int t = 0; t < times; ++t, ++m)
+                for (int q = 0; q < 3; ++q) dir[m][q] = e[q];
+        };
+        add(emu, nm);
+        add(w, nl - j);
+        add(lv, na - j);
+        add(v, j);
+        out += coef * enet_parts_l_form(m, dir, z, s, a, c, d);
+    }
+    return out;
+}
+
+// Buffer layout, observed and expected alike (index -> quantity -> lowest
+// level; the expected buffer has NaN at 1 and reads level 2 only):
+//   0  level
+//   1  y            2  mu            3  lambda         4  alpha
+//   5  a = lambda alpha                6  c = lambda (1 - alpha)
+//   8  Z_a   9  Z_c                                           1
+//  10  Z_aa  11  Z_ac  12  Z_cc                               2
+//  13-16  Z_aaa, Z_aac, Z_acc, Z_ccc                          3
+//  17-21  Z_aaaa, Z_aaac, Z_aacc, Z_accc, Z_cccc              4
+// (Z the logarithm of the normalizing constant; slot 7 is unused.)
+inline void enet_parts_fill(double y, const double* th, int level, double* b) {
+    for (int i = 1; i < 22; ++i) b[i] = R_NaN;
+    b[0] = (double) level;
+    b[1] = y;
+    b[2] = th[0];
+    b[3] = th[1];
+    b[4] = th[2];
+    b[5] = th[1] * th[2];
+    b[6] = th[1] * (1.0 - th[2]);
+    if (level >= 1) {
+        const int n = level > 4 ? 4 : level;
+        double d[5][5];
+        for (int i = 0; i < 5; ++i) for (int j = 0; j < 5; ++j) d[i][j] = 0.0;
+        enet_logz_ac(b[5], b[6], n, d);
+        b[8] = d[1][0];
+        b[9] = d[0][1];
+        if (n >= 2) {
+            b[10] = d[2][0];
+            b[11] = d[1][1];
+            b[12] = d[0][2];
+        }
+        if (n >= 3) {
+            b[13] = d[3][0];
+            b[14] = d[2][1];
+            b[15] = d[1][2];
+            b[16] = d[0][3];
+        }
+        if (n >= 4) {
+            b[17] = d[4][0];
+            b[18] = d[3][1];
+            b[19] = d[2][2];
+            b[20] = d[1][3];
+            b[21] = d[0][4];
+        }
+    }
+}
+
+inline void enet_parts(double y, const double* th, int level, double* b) {
+    enet_parts_fill(y, th, level, b);
+}
+
+inline void enet_parts_expected(const double* th, int level, double* b) {
+    enet_parts_fill(R_NaN, th, level, b);
+}
+
+// the EnetPar the components read, from the buffer
+inline EnetPar enet_parts_par(const double* b) {
+    EnetPar P;
+    P.lam = b[3];
+    P.al = b[4];
+    P.a = b[5];
+    P.c = b[6];
+    P.x = R_NaN;
+    P.za = b[8];
+    P.zc = b[9];
+    P.zaa = b[10];
+    P.zac = b[11];
+    P.zcc = b[12];
+    P.t3.aaa = b[13];
+    P.t3.aac = b[14];
+    P.t3.acc = b[15];
+    P.t3.ccc = b[16];
+    return P;
+}
+
+inline void enet_parts_grad(const double* b, double* out) {
+    const EnetPar P = enet_parts_par(b);
+    double z = b[1] - b[2];
+    out[0] = enet_score_mu(P, z);
+    out[1] = enet_score_lambda(P, z);
+    out[2] = enet_score_alpha(P, z);
+}
+
+inline void enet_parts_hess(const double* b, double* out) {
+    const EnetPar P = enet_parts_par(b);
+    double z = b[1] - b[2];
+    out[0] = enet_hess_mu_mu(P);
+    out[4] = enet_hess_lambda_lambda(P);
+    out[8] = enet_hess_alpha_alpha(P);
+    out[1] = out[3] = enet_hess_mu_lambda(P, z);
+    out[2] = out[6] = enet_hess_mu_alpha(P, z);
+    out[5] = out[7] = enet_hess_lambda_alpha(P, z);
+}
+
+inline void enet_parts_info(const double* b, double* out) {
+    const EnetPar P = enet_parts_par(b);
+    out[0] = enet_expected_mu_mu(P);
+    out[4] = enet_expected_lambda_lambda(P);
+    out[8] = enet_expected_alpha_alpha(P);
+    out[1] = out[3] = 0.0;
+    out[2] = out[6] = 0.0;
+    out[5] = out[7] = enet_expected_lambda_alpha(P);
+}
+
+// the table of partial derivatives of log Z from the buffer
+inline void enet_parts_table(const double* b, double d[5][5]) {
+    for (int i = 0; i < 5; ++i) for (int j = 0; j < 5; ++j) d[i][j] = 0.0;
+    d[1][0] = b[8];
+    d[0][1] = b[9];
+    d[2][0] = b[10];
+    d[1][1] = b[11];
+    d[0][2] = b[12];
+    d[3][0] = b[13];
+    d[2][1] = b[14];
+    d[1][2] = b[15];
+    d[0][3] = b[16];
+    d[4][0] = b[17];
+    d[3][1] = b[18];
+    d[2][2] = b[19];
+    d[1][3] = b[20];
+    d[0][4] = b[21];
+}
+
+// the 10 unique components, tuples (i0 <= i1 <= i2) over (mu, lambda, alpha)
+inline void enet_parts_d3(const double* b, double* out) {
+    double d[5][5];
+    enet_parts_table(b, d);
+    double u[10];
+    int w = 0;
+    for (int i0 = 0; i0 < 3; ++i0)
+        for (int i1 = i0; i1 < 3; ++i1)
+            for (int i2 = i1; i2 < 3; ++i2) {
+                int c3[3] = {0, 0, 0};
+                ++c3[i0]; ++c3[i1]; ++c3[i2];
+                double v = enet_parts_deriv_lam_al(c3[0], c3[1], c3[2], 0.0,
+                                                   0.0, b[3], b[4], d);
+                if (c3[0] == 1 && c3[1] == 1 && c3[2] == 1) {
+                    const double z = b[1] - b[2];
+                    v += enet_sign(z) - z;
+                }
+                u[w++] = v;
+            }
+    sym_fill(3, 3, u, out);
+}
+
+// the 15 unique components, tuples (i0 <= i1 <= i2 <= i3)
+inline void enet_parts_d4(const double* b, double* out) {
+    double d[5][5];
+    enet_parts_table(b, d);
+    double u[15];
+    int w = 0;
+    for (int i0 = 0; i0 < 3; ++i0)
+        for (int i1 = i0; i1 < 3; ++i1)
+            for (int i2 = i1; i2 < 3; ++i2)
+                for (int i3 = i2; i3 < 3; ++i3) {
+                    int c3[3] = {0, 0, 0};
+                    ++c3[i0]; ++c3[i1]; ++c3[i2]; ++c3[i3];
+                    u[w++] = enet_parts_deriv_lam_al(c3[0], c3[1], c3[2], 0.0,
+                                                     0.0, b[3], b[4], d);
+                }
+    sym_fill(3, 4, u, out);
 }
 
 } // namespace d7

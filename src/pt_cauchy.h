@@ -6,8 +6,10 @@
 // (cauchy.cpp, dexpected_kernels.cpp) and by the registry
 // (d7_ccallable.cpp). res = y - mu.
 
+#include <Rcpp.h>
 #include <cmath>
 #include <complex>
+#include "pt_parts.h"
 
 namespace d7 {
 
@@ -172,6 +174,103 @@ inline void cauchy_joint_dinfo(double y, const double* th, double* out) {
     for (int j = 0; j < 8; ++j) out[j] = 0.0;
     out[4] = cauchy_dexpected_mu_mu_sigma(s);
     out[7] = cauchy_dexpected_sigma_sigma_sigma(s);
+}
+
+// The parts route (pt_parts.h). The Cauchy has no special function. Its one
+// costly quantity is the complex reciprocal 1/Y of Y = res + i s, computed by
+// Smith's division, which every order reads, so the buffer holds it once:
+//   [0] level                       always
+//   [1] y                           observed parts; NaN in the expected parts
+//   [2] mu                          observed parts; NaN in the expected parts
+//   [3] sigma                       always
+//   [4] res = y - mu                observed parts; NaN in the expected parts
+//   [5] Re(1/Y)                     level >= 1; NaN in the expected parts
+//   [6] Im(1/Y)                     level >= 1; NaN in the expected parts
+// Each order is the function of the joint router with the reciprocal read
+// from the buffer. cauchy_yinv() receives the same arguments that
+// cauchy_logdens_d() gives it, so the values are bit-identical.
+
+// cauchy_logdens_d() with the reciprocal w = 1/Y given: the same operations in
+// the same order.
+inline double cauchy_parts_logdens_d(int n, int j, std::complex<double> w,
+                                     double s) {
+    std::complex<double> X(1.0, 0.0);
+    double f = 1.0;
+    for (int m = 0; m < n; m++) X *= w;
+    for (int m = 2; m < n; m++) f *= m;
+    const int k = n - j;
+    const double sg = ((j + n - 1) % 2) ? -1.0 : 1.0;
+    double v = -2.0 * sg * f * cauchy_ik_part(k, X, true);
+    if (j == 0) {
+        double is = 1.0;
+        for (int m = 0; m < n; m++) is /= s;
+        v += ((n - 1) % 2 ? -f : f) * is;
+    }
+    return v;
+}
+
+inline void cauchy_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], s = th[1];
+    const double res = y - m;
+    b[0] = level; b[1] = y; b[2] = m; b[3] = s; b[4] = res;
+    if (level >= 1) {
+        const std::complex<double> w = cauchy_yinv(res, s);
+        b[5] = w.real(); b[6] = w.imag();
+    } else {
+        b[5] = R_NaN; b[6] = R_NaN;
+    }
+}
+
+inline void cauchy_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = R_NaN; b[3] = th[1]; b[4] = R_NaN;
+    b[5] = R_NaN; b[6] = R_NaN;
+}
+
+inline std::complex<double> cauchy_parts_w(const double* b) {
+    return std::complex<double>(b[5], b[6]);
+}
+
+// from the observed parts: score in mu and in sigma (the joint grad)
+inline void cauchy_parts_grad(const double* b, double* out) {
+    const std::complex<double> w = cauchy_parts_w(b);
+    const double s = b[3];
+    out[0] = cauchy_parts_logdens_d(1, 1, w, s);
+    out[1] = cauchy_parts_logdens_d(1, 0, w, s);
+}
+
+inline void cauchy_parts_hess(const double* b, double* out) {
+    const std::complex<double> w = cauchy_parts_w(b);
+    const double s = b[3];
+    out[0] = cauchy_parts_logdens_d(2, 2, w, s);
+    out[3] = cauchy_parts_logdens_d(2, 0, w, s);
+    out[1] = out[2] = cauchy_parts_logdens_d(2, 1, w, s);
+}
+
+// from the expected parts
+inline void cauchy_parts_info(const double* b, double* out) {
+    out[0] = cauchy_expected_mu_mu(b[3]);
+    out[3] = cauchy_expected_sigma_sigma(b[3]);
+    out[1] = out[2] = 0.0;
+}
+
+// third order: cauchy_list(3) in cauchy_hd.cpp, component with m sigma
+// indices is order-3 derivative with j = 3 - m mu indices; unique components
+// in the sorted order mu mu mu, mu mu sigma, mu sigma sigma, sigma sigma sigma
+inline void cauchy_parts_d3(const double* b, double* out) {
+    const std::complex<double> w = cauchy_parts_w(b);
+    const double s = b[3];
+    double u[4];
+    for (int k = 0; k <= 3; k++) u[k] = cauchy_parts_logdens_d(3, 3 - k, w, s);
+    sym_fill(2, 3, u, out);
+}
+
+// fourth order: cauchy_list(4) in cauchy_hd.cpp, same convention
+inline void cauchy_parts_d4(const double* b, double* out) {
+    const std::complex<double> w = cauchy_parts_w(b);
+    const double s = b[3];
+    double u[5];
+    for (int k = 0; k <= 4; k++) u[k] = cauchy_parts_logdens_d(4, 4 - k, w, s);
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

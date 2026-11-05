@@ -3,6 +3,7 @@
 
 #include <Rcpp.h>
 #include <cmath>
+#include "pt_parts.h"
 
 // The Student t in its location mu, standard deviation s and degrees of freedom nu:
 // one function per component and order for the quantities the scalar
@@ -403,6 +404,187 @@ inline void student_t2_joint_dinfo(double y, const double* th, double* out) {
   out[4 + 18] = student_t2_dexpected_sigma_sigma_nu(s, ik);
   out[8 + 18] = student_t2_dexpected_nu_nu_nu(t2_V8(v));
   out[5 + 18] = out[7 + 18] = student_t2_dexpected_sigma_nu_nu(s, ik);
+}
+
+// The parts route (piano_motore.md, D7). Buffer layout, observed:
+//   b[0] level, b[1] y, b[2] mu, b[3] s, b[4] ik = 1/(nu - 2),
+//   b[5] t2_V0(nu) (level 1), b[6] t2_V1(nu) (level 2),
+//   b[7] t2_V3(nu) (level 3), b[8] t2_V5(nu) (level 4),
+//   b[9] DQ = student_t2_DQ(z, ik) (level 1), b[10] NaN.
+// Expected: the same slots with b[1] = NaN, b[5]..b[9] NaN and
+//   b[10] t2_V2(nu) (level 2).
+inline void student_t2_parts(double y, const double* th, int level, double* b) {
+  const double m = th[0], s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 2.0);
+  const double z = (y - m) / s;
+  b[0] = level; b[1] = y; b[2] = m; b[3] = s; b[4] = ik;
+  b[5] = level >= 1 ? t2_V0(v) : R_NaN;
+  b[6] = level >= 2 ? t2_V1(v) : R_NaN;
+  b[7] = level >= 3 ? t2_V3(v) : R_NaN;
+  b[8] = level >= 4 ? t2_V5(v) : R_NaN;
+  b[9] = level >= 1 ? student_t2_DQ(z, ik) : R_NaN;
+  b[10] = R_NaN;
+}
+
+inline void student_t2_parts_expected(const double* th, int level, double* b) {
+  const double m = th[0], s = th[1], v = th[2];
+  const double ik = 1.0 / (v - 2.0);
+  b[0] = level; b[1] = R_NaN; b[2] = m; b[3] = s; b[4] = ik;
+  b[5] = R_NaN; b[6] = R_NaN; b[7] = R_NaN; b[8] = R_NaN; b[9] = R_NaN;
+  b[10] = level >= 2 ? t2_V2(v) : R_NaN;
+}
+
+inline void student_t2_parts_grad(const double* b, double* out) {
+  const double s = b[3], ik = b[4];
+  const double z = (b[1] - b[2]) / s;
+  out[0] = student_t2_score_mu(z, s, ik);
+  out[1] = student_t2_score_sigma(z, s, ik);
+  out[2] = student_t2_score_nu(z, ik, b[5], b[9]);
+}
+
+inline void student_t2_parts_hess(const double* b, double* out) {
+  const double s = b[3], ik = b[4];
+  const double z = (b[1] - b[2]) / s;
+  out[0] = student_t2_hess_mu_mu(z, s, ik);
+  out[4] = student_t2_hess_sigma_sigma(z, s, ik);
+  out[8] = student_t2_hess_nu_nu(z, ik, b[6]);
+  out[1] = out[3] = student_t2_hess_mu_sigma(z, s, ik);
+  out[2] = out[6] = student_t2_hess_mu_nu(z, s, ik);
+  out[5] = out[7] = student_t2_hess_sigma_nu(z, s, ik);
+}
+
+// from the expected parts
+inline void student_t2_parts_info(const double* b, double* out) {
+  const double s = b[3], ik = b[4];
+  out[0] = student_t2_expected_mu_mu(s, ik);
+  out[4] = student_t2_expected_sigma_sigma(s, ik);
+  out[8] = student_t2_expected_nu_nu(b[10]);
+  out[1] = out[3] = 0.0;
+  out[2] = out[6] = 0.0;
+  out[5] = out[7] = student_t2_expected_sigma_nu(s, ik);
+}
+
+// the third derivative, from student_t2_deriv3_cpp; unique components in the
+// kernel's order (mu_mu_mu, mu_mu_sigma, mu_mu_nu, mu_sigma_sigma,
+// mu_sigma_nu, mu_nu_nu, sigma_sigma_sigma, sigma_sigma_nu, sigma_nu_nu,
+// nu_nu_nu), which is the sorted-tuple order
+inline void student_t2_parts_d3(const double* b, double* out) {
+  const double s = b[3], ik = b[4], V3 = b[7];
+  const double w2 = 9*ik;
+  const double w8 = 2/std::pow(s, 3);
+  const double w14 = std::pow(s, -2);
+  const double w18 = std::pow(ik, 2);
+  const double w24 = std::pow(ik, 3);
+  const double w25 = 9*w24;
+  const double z = (b[1] - b[2]) / s;
+  const double q = z * z * ik;
+  const double t = 1.0 / (1.0 + q);
+  // u = q/(1 + q) in [0, 1], and zt = z t, where q itself may overflow
+  const double u = (q < 1.0) ? q * t : 1.0 / (1.0 + 1.0 / q);
+  const double zt = (std::fabs(z) <= 1.0) ? z * t : 1.0 / (1.0 / z + z * ik);
+  const double w0 = 3*t;
+  const double w1 = -u;
+  const double w3 = t*w2;
+  const double w4 = 3*u;
+  const double w5 = ik*w4;
+  const double w6 = w0 + w1 + w3 - w5;
+  const double w7 = ik*t;
+  const double w9 = w8*zt;
+  const double w10 = std::pow(t, 2);
+  const double w11 = ik*w0;
+  const double w12 = std::pow(u, 2);
+  const double w13 = u*w0;
+  const double w15 = w14*w7;
+  const double w16 = 2*u;
+  const double w17 = 2*zt;
+  const double w19 = (w1 + w11)/s;
+  const double w20 = std::pow(u, 3);
+  const double w21 = t*w12;
+  const double w22 = u*w10;
+  const double w23 = z*zt;
+  double c[10];
+  c[0] = -w6*w7*w9;
+  c[1] = w10*w8*(t - u*w2 + w11 - w4);
+  c[2] = w15*(3*ik*w10 - u*w3 + w12 - w13);
+  c[3] = t*w6*w9;
+  c[4] = w15*w17*(3*ik*t - w16 - w5);
+  c[5] = t*w17*w18*w19;
+  c[6] = w8*(-std::pow(t, 3) + 6*w10*w23 + w12*w23 + w13*w23 + 2*w20 + 6*w21 + 15*w22);
+  c[7] = u*w14*(9*ik*w10 - 5*t*u - u*w11 - w12);
+  c[8] = w16*w19*w7;
+  c[9] = V3 - 1.0/2.0*w18*w20 - 3.0/2.0*w18*w21 + 3*w20*w24 + w21*w25 + w22*w25;
+  sym_fill(3, 3, c, out);
+}
+
+// the fourth derivative, from student_t2_deriv4_cpp; the 15 unique
+// components in the kernel's (sorted-tuple) order
+inline void student_t2_parts_d4(const double* b, double* out) {
+  const double s = b[3], ik = b[4], V5 = b[8];
+  const double w1 = 18*ik;
+  const double w4 = 3*ik;
+  const double w11 = std::pow(s, -4);
+  const double w12 = 6*w11;
+  const double w15 = 24*w11;
+  const double w16 = std::pow(ik, 2);
+  const double w18 = std::pow(s, -3);
+  const double w19 = 2*w18;
+  const double w23 = std::pow(s, -2);
+  const double w24 = w16*w23;
+  const double w28 = std::pow(ik, 3);
+  const double w29 = 6*w28;
+  const double w40 = std::pow(ik, 4);
+  const double w41 = 36*w40;
+  const double z = (b[1] - b[2]) / s;
+  const double q = z * z * ik;
+  const double t = 1.0 / (1.0 + q);
+  // u = q/(1 + q) in [0, 1], and zt = z t, where q itself may overflow
+  const double u = (q < 1.0) ? q * t : 1.0 / (1.0 + 1.0 / q);
+  const double zt = (std::fabs(z) <= 1.0) ? z * t : 1.0 / (1.0 / z + z * ik);
+  const double w0 = t*u;
+  const double w2 = -w0*w1;
+  const double w3 = std::pow(u, 2);
+  const double w5 = w3*w4;
+  const double w6 = std::pow(t, 2);
+  const double w7 = 3*w6;
+  const double w8 = ik*w7 + w3;
+  const double w9 = -6*w0 + w2 + w5 + w6 + w8;
+  const double w10 = ik*w6;
+  const double w13 = t*w4 - u;
+  const double w14 = t - u*w4 + w13;
+  const double w17 = 18*w10;
+  const double w20 = t*w19*zt;
+  const double w21 = -2*t*u;
+  const double w22 = 2*w3 + w5;
+  const double w25 = w6*zt;
+  const double w26 = 9*w10;
+  const double w27 = 4*t;
+  const double w30 = -w13/s;
+  const double w31 = std::pow(u, 4);
+  const double w32 = std::pow(u, 3);
+  const double w33 = t*w32;
+  const double w34 = std::pow(t, 3);
+  const double w35 = u*w34;
+  const double w36 = z*zt;
+  const double w37 = w3*w6;
+  const double w38 = w27*w3;
+  const double w39 = u*w6;
+  double c[15];
+  c[0] = w10*w12*w9;
+  c[1] = w10*w14*w15*zt;
+  c[2] = w16*w20*(-8*w0 + w17 + w2 + w3 + w7);
+  c[3] = -w12*w6*w9;
+  c[4] = 6*w10*w18*(8*ik*t*u - w10 - w21 - w22);
+  c[5] = 6*w24*w6*(5*ik*t*u + t*u - w10 - w3);
+  c[6] = -w14*w15*w25;
+  c[7] = ik*w20*(24*ik*t*u + 10*t*u - w22 - w26);
+  c[8] = w24*w27*zt*(6*ik*t*u - w21 - w8);
+  c[9] = w25*w29*w30;
+  c[10] = w12*(std::pow(t, 4) - 2*w31 - w32*w36 - 8*w33 - 10*w34*w36 - 26*w35 - w36*w38 - 5*w36*w39 - 9*w37);
+  c[11] = u*w19*(u*w17 - w1*w34 + w32 + w38 + 15*w39);
+  c[12] = 2*ik*w0*w23*(9*ik*t*u + 5*t*u - w26 - w3);
+  c[13] = 6*w16*w30*w39;
+  c[14] = V5 + w28*w31 + 4*w28*w33 + w29*w37 - 9*w31*w40 - w33*w41 - w35*w41 - 54*w37*w40;
+  sym_fill(3, 4, c, out);
 }
 
 } // namespace d7

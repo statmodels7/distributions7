@@ -2252,6 +2252,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// d7_parts_probe
+Rcpp::List d7_parts_probe(std::string cls, Rcpp::NumericVector y, Rcpp::NumericMatrix theta, int level);
+RcppExport SEXP _distributions7_d7_parts_probe(SEXP clsSEXP, SEXP ySEXP, SEXP thetaSEXP, SEXP levelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type cls(clsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< int >::type level(levelSEXP);
+    rcpp_result_gen = Rcpp::wrap(d7_parts_probe(cls, y, theta, level));
+    return rcpp_result_gen;
+END_RCPP
+}
+// d7_parts_classes_covered
+Rcpp::CharacterVector d7_parts_classes_covered();
+RcppExport SEXP _distributions7_d7_parts_classes_covered() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(d7_parts_classes_covered());
+    return rcpp_result_gen;
+END_RCPP
+}
 // bernoulli_dexpected1_cpp
 List bernoulli_dexpected1_cpp(NumericVector y, NumericVector mu, int threads);
 RcppExport SEXP _distributions7_bernoulli_dexpected1_cpp(SEXP ySEXP, SEXP muSEXP, SEXP threadsSEXP) {
@@ -8161,6 +8185,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_fold_rule_cpp", (DL_FUNC) &_distributions7_fold_rule_cpp, 3},
     {"_distributions7_d7_scalar_thread_safe_probe", (DL_FUNC) &_distributions7_d7_scalar_thread_safe_probe, 1},
     {"_distributions7_d7_scalar_classes_covered", (DL_FUNC) &_distributions7_d7_scalar_classes_covered, 0},
+    {"_distributions7_d7_parts_probe", (DL_FUNC) &_distributions7_d7_parts_probe, 4},
+    {"_distributions7_d7_parts_classes_covered", (DL_FUNC) &_distributions7_d7_parts_classes_covered, 0},
     {"_distributions7_bernoulli_dexpected1_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected1_cpp, 3},
     {"_distributions7_bernoulli_dexpected2_cpp", (DL_FUNC) &_distributions7_bernoulli_dexpected2_cpp, 3},
     {"_distributions7_binomial_dexpected1_cpp", (DL_FUNC) &_distributions7_binomial_dexpected1_cpp, 4},

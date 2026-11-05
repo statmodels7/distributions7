@@ -7,6 +7,7 @@
 #include <map>
 #include <vector>
 #include "psi_diff.h"
+#include "pt_parts.h"
 
 // Gamma in the mean m and the variance v, with shape a = m^2/v and rate
 // m/v. The log-density is written as
@@ -288,6 +289,122 @@ inline void gamma2_joint_dinfo(double y, const double* th, double* out) {
     out[3] = gamma2_dexpected_sigma2_sigma2_mu(m, v, r1, r2);
     out[5] = out[6] = gamma2_dexpected_mu_sigma2_sigma2(m, v, r1, r2);
     out[7] = gamma2_dexpected_sigma2_sigma2_sigma2(m, v, r1, r2);
+}
+
+// The parts route (pt_parts.h). The buffer, with the lowest level that fills
+// each entry in brackets:
+//   [0] level
+//   [1] y                      (NaN for the expected parts)
+//   [2] m = mu
+//   [3] v = sigma2
+//   [4] a = m m / v            (always)
+//   [5] w = (y - m) / m        (always; 0 for the expected parts)
+//   [6] e0 = psi_Ew2(y/m, w)   (1; 0 for the expected parts)
+//   [7] Gd1 = G'(a)            (1; 0 for the expected parts, as in gamma2_shape_rests)
+//   [8] Gd2 = G''(a)           (2)
+//   [9] Gd3 = G'''(a)          (3)
+//   [10] Gd4 = G''''(a)        (4)
+// The tables of the orders are rebuilt from the buffer by the same arithmetic
+// as gamma2_fill_tables(), so each order reads the values the joint entries
+// compute, bit for bit.
+
+// The tables of one order from the buffer; the arithmetic of
+// gamma2_fill_tables() with e0, w and the shape rests read from b.
+inline void gamma2_parts_tables(const double* b, int order, Gamma2Tables& T) {
+    const double m = b[2], v = b[3], w = b[5];
+    const double iv = 1.0 / v;
+    const double c[3] = {m * m, 2.0 * m, 2.0};
+    for (int p = 0; p < 3; ++p) {
+        double f = c[p] * iv;
+        for (int q = 0; q <= order; ++q) {
+            T.da[p][q] = f;
+            f *= -(q + 1.0) * iv;
+        }
+    }
+    T.de[0] = b[6];
+    double fk = -1.0 / m;
+    for (int k = 1; k <= order; ++k) {
+        T.de[k] = fk * ((1.0 - k) - k * w);
+        fk *= -static_cast<double>(k) / m;
+    }
+    T.Gd[0] = 0.0;
+    for (int r = 1; r <= 4; ++r) T.Gd[r] = (r <= order) ? b[6 + r] : 0.0;
+}
+
+inline void gamma2_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], v = th[1];
+    const double a = m * m / v;
+    const double w = (y - m) / m;
+    b[0] = level; b[1] = y; b[2] = m; b[3] = v; b[4] = a; b[5] = w;
+    b[6] = level >= 1 ? d7::psi_Ew2(y / m, w) : R_NaN;
+    b[7] = level >= 1 ? d7::psi_log_rest(a) : R_NaN;
+    b[8] = level >= 2 ? d7::psi1_rest(a) : R_NaN;
+    b[9] = level >= 3 ? d7::psi2_rest(a) : R_NaN;
+    b[10] = level >= 4 ? d7::psi3_rest(a) : R_NaN;
+}
+
+// The expected parts: E[e] = -G'(a) and w = 0, so e0 and Gd1 are 0.
+inline void gamma2_parts_expected(const double* th, int level, double* b) {
+    const double m = th[0], v = th[1];
+    const double a = m * m / v;
+    b[0] = level; b[1] = R_NaN; b[2] = m; b[3] = v; b[4] = a; b[5] = 0.0;
+    b[6] = 0.0;
+    b[7] = 0.0;
+    b[8] = level >= 2 ? d7::psi1_rest(a) : R_NaN;
+    b[9] = level >= 3 ? d7::psi2_rest(a) : R_NaN;
+    b[10] = level >= 4 ? d7::psi3_rest(a) : R_NaN;
+}
+
+inline void gamma2_parts_grad(const double* b, double* out) {
+    Gamma2Tables T;
+    gamma2_parts_tables(b, 2, T);
+    out[0] = gamma2_component(1, 0, T);
+    out[1] = gamma2_component(0, 1, T);
+}
+
+inline void gamma2_parts_hess(const double* b, double* out) {
+    Gamma2Tables T;
+    gamma2_parts_tables(b, 2, T);
+    out[0] = gamma2_component(2, 0, T);
+    out[3] = gamma2_component(0, 2, T);
+    out[1] = out[2] = gamma2_component(1, 1, T);
+}
+
+// from the expected parts
+inline void gamma2_parts_info(const double* b, double* out) {
+    Gamma2Tables T;
+    gamma2_parts_tables(b, 2, T);
+    out[0] = gamma2_component(2, 0, T);
+    out[3] = gamma2_component(0, 2, T);
+    out[1] = out[2] = gamma2_component(1, 1, T);
+}
+
+// the unique components of the third derivative in the order of
+// gamma_deriv3_cpp: mu mu mu, mu mu sigma2, mu sigma2 sigma2, sigma2 sigma2
+// sigma2
+inline void gamma2_parts_d3(const double* b, double* out) {
+    Gamma2Tables T;
+    gamma2_parts_tables(b, 3, T);
+    double u[4];
+    u[0] = gamma2_component(3, 0, T);
+    u[1] = gamma2_component(2, 1, T);
+    u[2] = gamma2_component(1, 2, T);
+    u[3] = gamma2_component(0, 3, T);
+    sym_fill(2, 3, u, out);
+}
+
+// the unique components of the fourth derivative, in the order of
+// gamma_deriv4_cpp
+inline void gamma2_parts_d4(const double* b, double* out) {
+    Gamma2Tables T;
+    gamma2_parts_tables(b, 4, T);
+    double u[5];
+    u[0] = gamma2_component(4, 0, T);
+    u[1] = gamma2_component(3, 1, T);
+    u[2] = gamma2_component(2, 2, T);
+    u[3] = gamma2_component(1, 3, T);
+    u[4] = gamma2_component(0, 4, T);
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7

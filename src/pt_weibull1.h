@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include "pt_constants.h"
+#include "pt_parts.h"
 
 // The Weibull in its scale mu and shape sigma, with z = y/mu, lz = log z
 // and u = z^sigma = exp(sigma lz): one function per component and order
@@ -133,6 +134,77 @@ inline void weibull1_joint_dinfo(double y, const double* th, double* out) {
     out[4] = weibull1_dexpected_mu_mu_sigma(m, s);
     out[1] = out[2] = weibull1_dexpected_mu_sigma_mu(m);
     out[7] = weibull1_dexpected_sigma_sigma_sigma(s);
+}
+
+// The parts route (pt_parts.h). The buffer, with the lowest level that fills
+// each entry in brackets:
+//   [0] level
+//   [1] y                        (NaN for the expected parts)
+//   [2] mu
+//   [3] sigma
+//   [4] lz = log(y / mu)         (1)
+//   [5] u = exp(sigma lz)        (1)
+// The expected parts need no special function: the expected information
+// reads the constants kGumbelInfo and kEulerGamma, so [4] and [5] stay NaN.
+
+inline void weibull1_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], s = th[1];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = s;
+    b[4] = level >= 1 ? std::log(y / m) : R_NaN;
+    b[5] = level >= 1 ? std::exp(s * b[4]) : R_NaN;
+}
+
+inline void weibull1_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+    b[4] = R_NaN; b[5] = R_NaN;
+}
+
+inline void weibull1_parts_grad(const double* b, double* out) {
+    out[0] = weibull1_score_mu(b[5], b[2], b[3]);
+    out[1] = weibull1_score_sigma(b[4], b[5], b[3]);
+}
+
+inline void weibull1_parts_hess(const double* b, double* out) {
+    out[0] = weibull1_hess_mu_mu(b[5], b[2], b[3]);
+    out[3] = weibull1_hess_sigma_sigma(b[4], b[5], b[3]);
+    out[1] = out[2] = weibull1_hess_mu_sigma(b[4], b[5], b[2], b[3]);
+}
+
+// from the expected parts
+inline void weibull1_parts_info(const double* b, double* out) {
+    out[0] = weibull1_expected_mu_mu(b[2], b[3]);
+    out[3] = weibull1_expected_sigma_sigma(b[3]);
+    out[1] = out[2] = weibull1_expected_mu_sigma(b[2]);
+}
+
+// the unique components of the third derivative in the order of
+// weibull_deriv3_cpp: mu mu mu, mu mu sigma, mu sigma sigma, sigma sigma sigma
+inline void weibull1_parts_d3(const double* b, double* out) {
+    const double m = b[2], s = b[3], L = b[4], u = b[5];
+    double m2 = m * m, m3 = m2 * m, s3 = s * s * s;
+    double uq[4];
+    uq[0] = s * (-2.0 + (1.0 + s) * (2.0 + s) * u) / m3;
+    uq[1] = (1.0 - (1.0 + 2.0 * s) * u - s * (1.0 + s) * L * u) / m2;
+    uq[2] = L * u * (2.0 + s * L) / m;
+    uq[3] = 2.0 / s3 - u * L * L * L;
+    sym_fill(2, 3, uq, out);
+}
+
+// the unique components of the fourth derivative, in the order of
+// weibull_deriv4_cpp
+inline void weibull1_parts_d4(const double* b, double* out) {
+    const double m = b[2], s = b[3], L = b[4], u = b[5];
+    double m2 = m * m, m3 = m2 * m, m4 = m2 * m2, s4 = s * s * s * s;
+    double L2 = L * L;
+    double uq[5];
+    uq[0] = s * (6.0 - (1.0 + s) * (2.0 + s) * (3.0 + s) * u) / m4;
+    uq[1] = (-2.0 + (2.0 + 6.0 * s + 3.0 * s * s) * u
+             + s * (1.0 + s) * (2.0 + s) * L * u) / m3;
+    uq[2] = -u * (2.0 + 2.0 * (1.0 + 2.0 * s) * L
+                  + s * (1.0 + s) * L2) / m2;
+    uq[3] = L2 * u * (3.0 + s * L) / m;
+    uq[4] = -6.0 / s4 - u * L2 * L2;
+    sym_fill(2, 4, uq, out);
 }
 
 } // namespace d7

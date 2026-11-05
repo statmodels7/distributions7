@@ -6,6 +6,7 @@
 #include "pt_mills.h"
 #include "pt_loc_scale.h"
 #include "pt_logphi.h"
+#include "pt_parts.h"
 
 // The skew normal in its direct parametrization (mu, sigma, alpha),
 // l = log 2 - log sigma + log phi(z) + log Phi(alpha z), z = (y - mu)/sigma:
@@ -311,6 +312,121 @@ inline void skewnormal1_joint_dinfo(double y, const double* th, double* out) {
             skewnormal1_quad_full(th + 2, I, D);
         });
     loc_scale_full_dinfo(s, 3, th[1], out);
+}
+
+// The parts route (pt_parts.h), P = 3, (mu, sigma, alpha). The buffer:
+// [0] level, [1] y, [2] mu, [3] sigma, [4] alpha, then the derivatives of
+// log Phi at t = alpha z, from one call of logphi_derivs():
+// [5] g1 = r (level 1), [6] g2 = dr (level 2), [7] g3 (level 3), [8] g4
+// (level 4). The expected parts hold y as NaN, the parameters and no g.
+inline void skewnormal1_parts(double y, const double* th, int level,
+                              double* b) {
+    const double m = th[0], s = th[1], a = th[2];
+    b[0] = level; b[1] = y; b[2] = m; b[3] = s; b[4] = a;
+    for (int k = 5; k <= 8; ++k) b[k] = R_NaN;
+    if (level >= 1) {
+        const double z = (y - m) / s;
+        const int n = level > 4 ? 4 : level;
+        double gg[6];
+        logphi_derivs(a * z, n, gg);
+        for (int k = 1; k <= n; ++k) b[4 + k] = gg[k];
+    }
+}
+
+inline void skewnormal1_parts_expected(const double* th, int level,
+                                       double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1]; b[4] = th[2];
+    for (int k = 5; k <= 8; ++k) b[k] = R_NaN;
+}
+
+inline void skewnormal1_parts_grad(const double* b, double* out) {
+    const double s = b[3], a = b[4];
+    const double z = (b[1] - b[2]) / s;
+    const double r = b[5];
+    out[0] = skewnormal1_score_mu(z, s, a, r);
+    out[1] = skewnormal1_score_sigma(z, s, a, r);
+    out[2] = skewnormal1_score_alpha(z, r);
+}
+
+inline void skewnormal1_parts_hess(const double* b, double* out) {
+    const double s = b[3], a = b[4];
+    const double z = (b[1] - b[2]) / s;
+    const double r = b[5], dr = b[6];
+    out[0] = skewnormal1_hess_mu_mu(s, a, dr);
+    out[4] = skewnormal1_hess_sigma_sigma(z, s, a, r, dr);
+    out[8] = skewnormal1_hess_alpha_alpha(z, dr);
+    out[1] = out[3] = skewnormal1_hess_mu_sigma(z, s, a, r, dr);
+    out[2] = out[6] = skewnormal1_hess_mu_alpha(z, s, a, r, dr);
+    out[5] = out[7] = skewnormal1_hess_sigma_alpha(z, s, a, r, dr);
+}
+
+// the expected Hessian, from the expected parts: the full quadrature in the
+// shape, as skewnormal1_joint_info()
+inline void skewnormal1_parts_info(const double* b, double* out) {
+    const double shape[1] = {b[4]};
+    const LocScaleFullSlot& s = loc_scale_full_cached(
+        0, shape, 1, [&](double* I, double* D) {
+            skewnormal1_quad_full(shape, I, D);
+        });
+    loc_scale_full_info(s, 3, b[3], out);
+}
+
+// the ten unique components, as skewnormal_deriv3_cpp
+inline void skewnormal1_parts_d3(const double* b, double* out) {
+    const double s = b[3], a = b[4];
+    const double s2 = s * s, s3 = s2 * s;
+    const double z = (b[1] - b[2]) / s;
+    const double t = a * z;
+    const double z2 = z * z, t2 = t * t;
+    const double g1 = b[5], g2 = b[6], g3 = b[7];
+    const double h1 = -z + a * g1;
+    const double h2 = -1.0 + a * a * g2;
+    const double h3 = a * a * a * g3;
+    double u[10];
+    u[0] = skewnormal1_d3_mu_mu_mu(s, a, g3);
+    u[1] = -(z * h3 + 2.0 * h2) / s3;
+    u[2] = a * (2.0 * g2 + t * g3) / s2;
+    u[3] = -(z2 * h3 + 4.0 * z * h2 + 2.0 * h1) / s3;
+    u[4] = (g1 + 3.0 * t * g2 + t2 * g3) / s2;
+    u[5] = -z * (2.0 * g2 + t * g3) / s;
+    u[6] = skewnormal1_d3_sigma_sigma_sigma(z, s, a, g1, g2, g3);
+    u[7] = z * (2.0 * g1 + 4.0 * t * g2 + t2 * g3) / s2;
+    u[8] = -z2 * (2.0 * g2 + t * g3) / s;
+    u[9] = skewnormal1_d3_alpha_alpha_alpha(z, g3);
+    sym_fill(3, 3, u, out);
+}
+
+// the fifteen unique components, as skewnormal_deriv4_cpp
+inline void skewnormal1_parts_d4(const double* b, double* out) {
+    const double s = b[3], a = b[4];
+    const double s2 = s * s, s3 = s2 * s, s4 = s2 * s2;
+    const double z = (b[1] - b[2]) / s;
+    const double t = a * z;
+    const double z2 = z * z, z3 = z2 * z, z4 = z2 * z2;
+    const double t2 = t * t, t3 = t2 * t;
+    const double g1 = b[5], g2 = b[6], g3 = b[7], g4 = b[8];
+    const double h1 = -z + a * g1;
+    const double h2 = -1.0 + a * a * g2;
+    const double h3 = a * a * a * g3;
+    const double h4 = a * a * a * a * g4;
+    double u[15];
+    u[0] = h4 / s4;
+    u[1] = (z * h4 + 3.0 * h3) / s4;
+    u[2] = -a * a * (3.0 * g3 + t * g4) / s3;
+    u[3] = (z2 * h4 + 6.0 * z * h3 + 6.0 * h2) / s4;
+    u[4] = -a * (4.0 * g2 + 5.0 * t * g3 + t2 * g4) / s3;
+    u[5] = (2.0 * g2 + 4.0 * t * g3 + t2 * g4) / s2;
+    u[6] = (z3 * h4 + 9.0 * z2 * h3 + 18.0 * z * h2 + 6.0 * h1) / s4;
+    u[7] = -(2.0 * g1 + 10.0 * t * g2 + 7.0 * t2 * g3 + t3 * g4) / s3;
+    u[8] = z * (4.0 * g2 + 5.0 * t * g3 + t2 * g4) / s2;
+    u[9] = -z2 * (3.0 * g3 + t * g4) / s;
+    u[10] = (6.0 + 24.0 * z * h1 + 36.0 * z2 * h2 + 12.0 * z3 * h3
+             + z4 * h4) / s4;
+    u[11] = -z * (6.0 * g1 + 18.0 * t * g2 + 9.0 * t2 * g3 + t3 * g4) / s3;
+    u[12] = z2 * (6.0 * g2 + 6.0 * t * g3 + t2 * g4) / s2;
+    u[13] = -z3 * (3.0 * g3 + t * g4) / s;
+    u[14] = z4 * g4;
+    sym_fill(3, 4, u, out);
 }
 
 } // namespace d7

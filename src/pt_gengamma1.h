@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <cmath>
 #include <cfloat>
+#include "pt_parts.h"
 
 // The generalized gamma in Stacy's form, scale a, shape d and power p: one
 // function per component and order for the quantities the scalar registry
@@ -390,6 +391,196 @@ inline void gengamma1_joint_dinfo(double y, const double* th, double* out) {
   out[7] = out[5] = 0.0;
   out[16] = out[14] = gengamma1_dexpected_d_d_p(d, p, PB1, PB2);
   out[25] = out[23] = gengamma1_dexpected_d_p_p(d, p, PB0, PB1, PB2);
+}
+
+// --- The parts route (pt_parts.h) -------------------------------------------
+// The coefficients of the third and fourth derivatives, from the make()
+// lambdas of gengamma1_deriv3_cpp and gengamma1_deriv4_cpp, and the
+// per-observation expressions of those kernels.
+inline void gengamma1_k3(double d, double p, double PB0, double PB1,
+                         double PB2, double* K) {
+  const double c0 = std::pow(p, 2);
+  const double c1 = 2*p;
+  const double c2 = 1.0/p;
+  const double c3 = std::pow(d, 3);
+  const double c4 = std::pow(p, 3);
+  const double c5 = 1.0/c4;
+  const double c6 = PB2*std::pow(d, 2);
+  const double c7 = PB1*d*p;
+  const double c8 = PB0*c0;
+  K[0] = p*(c0 + 3*p + 2);
+  K[1] = -2*d;
+  K[2] = 1;
+  K[3] = -p - 1;
+  K[4] = -c1 - 1;
+  K[5] = c2;
+  K[6] = 2*c2;
+  K[7] = -c5*(PB2*c3 - 2*c4)/c3;
+  K[8] = (PB1*c1 + PB2*d)/std::pow(p, 4);
+  K[9] = -(c6 + 4*c7 + 2*c8)/std::pow(p, 5);
+  K[10] = -c5;
+  K[11] = d*(c6 + 6*c7 + 6*c8)/std::pow(p, 6);
+}
+
+inline void gengamma1_k4(double d, double p, double PB0, double PB1,
+                         double PB2, double PB3, double* K) {
+  const double c0 = std::pow(p, 3);
+  const double c1 = std::pow(p, 2);
+  const double c2 = 6*c1;
+  const double c3 = 6*d;
+  const double c4 = 3*p;
+  const double c5 = 1.0/p;
+  const double c6 = 1.0/c1;
+  const double c7 = std::pow(d, 4);
+  const double c8 = std::pow(p, 4);
+  const double c9 = 1.0/c8;
+  const double c10 = std::pow(d, 2);
+  const double c11 = PB2*p;
+  const double c12 = PB3*std::pow(d, 3);
+  const double c13 = PB0*c0;
+  const double c14 = PB1*c1*d;
+  const double c15 = c10*c11;
+  K[0] = -p*(c0 + c2 + 11*p + 6);
+  K[1] = c3;
+  K[2] = -2;
+  K[3] = c1 + c4 + 2;
+  K[4] = 3*c1 + 6*p + 2;
+  K[5] = -c5*(p + 1);
+  K[6] = -2*c5*(2*p + 1);
+  K[7] = -2;
+  K[8] = c6;
+  K[9] = 3*c6;
+  K[10] = -c9*(PB3*c7 + 6*c8)/c7;
+  K[11] = (PB2*c4 + PB3*d)/std::pow(p, 5);
+  K[12] = -(PB1*c2 + PB3*c10 + c11*c3)/std::pow(p, 6);
+  K[13] = (c12 + 6*c13 + 18*c14 + 9*c15)/std::pow(p, 7);
+  K[14] = -c9;
+  K[15] = -d*(c12 + 24*c13 + 36*c14 + 12*c15)/std::pow(p, 8);
+}
+
+// The buffer of the parts route, P = 3 in (a, d, p). Index, quantity, lowest
+// level:
+//   [0] level            [1] a            [2] d            [3] p
+//   [4] UU = p log(y/a)  (1)              [5] TT = e^UU    (1)
+//   [6] lia = -log(a)    (1)
+//   [7] PB0 = digamma(k1) (1)   [8] PB1 = trigamma(k1) (2)
+//   [9] PB2 = psigamma(k1, 2) (3)   [10] PB3 = psigamma(k1, 3) (4)
+// with k1 = d/p + 1. The expected parts leave UU and TT as NaN; lia and
+// the polygammas are filled as above.
+inline double gengamma1_parts_S(const double* b, int m) {
+  return gg1_scale(1.0 / b[1], 1.0, m, 0, b[6], 0.0);
+}
+
+inline void gengamma1_parts(double y, const double* th, int level, double* b) {
+  const double a = th[0], d = th[1], p = th[2];
+  const double k1 = d / p + 1.0;
+  b[0] = level; b[1] = a; b[2] = d; b[3] = p;
+  b[4] = level >= 1 ? p * gg1_logratio(y, a) : R_NaN;
+  b[5] = level >= 1 ? std::exp(b[4]) : R_NaN;
+  b[6] = -std::log(a);
+  b[7] = level >= 1 ? R::digamma(k1) : R_NaN;
+  b[8] = level >= 2 ? R::trigamma(k1) : R_NaN;
+  b[9] = level >= 3 ? R::psigamma(k1, 2.0) : R_NaN;
+  b[10] = level >= 4 ? R::psigamma(k1, 3.0) : R_NaN;
+}
+
+inline void gengamma1_parts_expected(const double* th, int level, double* b) {
+  const double a = th[0], d = th[1], p = th[2];
+  const double k1 = d / p + 1.0;
+  b[0] = level; b[1] = a; b[2] = d; b[3] = p;
+  b[4] = R_NaN;
+  b[5] = R_NaN;
+  b[6] = -std::log(a);
+  b[7] = level >= 1 ? R::digamma(k1) : R_NaN;
+  b[8] = level >= 2 ? R::trigamma(k1) : R_NaN;
+  b[9] = level >= 3 ? R::psigamma(k1, 2.0) : R_NaN;
+  b[10] = level >= 4 ? R::psigamma(k1, 3.0) : R_NaN;
+}
+
+inline void gengamma1_parts_grad(const double* b, double* out) {
+  const double d = b[2], p = b[3];
+  out[0] = gengamma1_score_a(d, p, b[5], gengamma1_parts_S(b, 1));
+  out[1] = gengamma1_score_d(d, p, b[7], b[4]);
+  out[2] = gengamma1_score_p(d, p, b[7], b[4], b[5]);
+}
+
+inline void gengamma1_parts_hess(const double* b, double* out) {
+  const double d = b[2], p = b[3], UU = b[4], TT = b[5];
+  const double PB0 = b[7], PB1 = b[8];
+  const double S1 = gengamma1_parts_S(b, 1);
+  const double S2 = gengamma1_parts_S(b, 2);
+  out[0] = gengamma1_hess_a_a(d, p, TT, S2);
+  out[4] = gengamma1_hess_d_d(d, p, PB1);
+  out[8] = gengamma1_hess_p_p(d, p, PB0, PB1, UU, TT);
+  out[1] = out[3] = gengamma1_hess_a_d(S1);
+  out[2] = out[6] = gengamma1_hess_a_p(UU, TT, S1);
+  out[5] = out[7] = gengamma1_hess_d_p(d, p, PB0, PB1);
+}
+
+// from the expected parts
+inline void gengamma1_parts_info(const double* b, double* out) {
+  const double d = b[2], p = b[3], PB0 = b[7], PB1 = b[8];
+  const double S1 = gengamma1_parts_S(b, 1);
+  const double S2 = gengamma1_parts_S(b, 2);
+  out[0] = gengamma1_expected_a_a(d, p, S2);
+  out[4] = gengamma1_expected_d_d(d, p, PB1);
+  out[8] = gengamma1_expected_p_p(d, p, PB0, PB1);
+  out[1] = out[3] = gengamma1_expected_a_d(S1);
+  out[2] = out[6] = gengamma1_expected_a_p(d, p, PB0, S1);
+  out[5] = out[7] = gengamma1_expected_d_p(d, p, PB0, PB1);
+}
+
+// the unique components in the order of the kernel (111, 112, 113, 122, 123,
+// 133, 222, 223, 233, 333)
+inline void gengamma1_parts_d3(const double* b, double* out) {
+  const double d = b[2], p = b[3], UU = b[4], TT = b[5];
+  double K[12];
+  gengamma1_k3(d, p, b[7], b[8], b[9], K);
+  const double S_1_0 = gengamma1_parts_S(b, 1);
+  const double S_2_0 = gengamma1_parts_S(b, 2);
+  const double S_3_0 = gengamma1_parts_S(b, 3);
+  double u[10];
+  u[0] = S_3_0*(K[0]*TT + K[1]);
+  u[1] = K[2]*S_2_0;
+  u[2] = S_2_0*TT*(K[3]*UU + K[4]);
+  u[3] = 0.0;
+  u[4] = 0.0;
+  u[5] = S_1_0*TT*UU*(K[5]*UU + K[6]);
+  u[6] = K[7];
+  u[7] = K[8];
+  u[8] = K[9];
+  u[9] = K[10]*TT*std::pow(UU, 3) + K[11];
+  sym_fill(3, 3, u, out);
+}
+
+// the unique components in the order of the kernel (1111, 1112, 1113, 1122,
+// 1123, 1133, 1222, 1223, 1233, 1333, 2222, 2223, 2233, 2333, 3333)
+inline void gengamma1_parts_d4(const double* b, double* out) {
+  const double d = b[2], p = b[3], UU = b[4], TT = b[5];
+  double K[16];
+  gengamma1_k4(d, p, b[7], b[8], b[9], b[10], K);
+  const double S_1_0 = gengamma1_parts_S(b, 1);
+  const double S_2_0 = gengamma1_parts_S(b, 2);
+  const double S_3_0 = gengamma1_parts_S(b, 3);
+  const double S_4_0 = gengamma1_parts_S(b, 4);
+  const double u0 = std::pow(UU, 2);
+  double u[15];
+  u[0] = S_4_0*(K[0]*TT + K[1]);
+  u[1] = K[2]*S_3_0;
+  u[2] = S_3_0*TT*(K[3]*UU + K[4]);
+  u[3] = 0.0;
+  u[4] = 0.0;
+  u[5] = S_2_0*TT*(K[5]*u0 + K[6]*UU + K[7]);
+  u[6] = 0.0;
+  u[7] = 0.0;
+  u[8] = 0.0;
+  u[9] = S_1_0*TT*u0*(K[8]*UU + K[9]);
+  u[10] = K[10];
+  u[11] = K[11];
+  u[12] = K[12];
+  u[13] = K[13];
+  u[14] = K[14]*TT*std::pow(UU, 4) + K[15];
+  sym_fill(3, 4, u, out);
 }
 
 } // namespace d7

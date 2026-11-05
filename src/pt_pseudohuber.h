@@ -7,6 +7,7 @@
 #include "pt_loc_scale.h"
 #include "pt_sqrt.h"
 #include "pt_ph_nu.h"
+#include "pt_parts.h"
 
 // The pseudo-Huber family (mu, sigma, nu): with res = y - mu and
 // D = sqrt(nu + res^2/sigma^2),
@@ -337,6 +338,136 @@ inline void pseudohuber_joint_dinfo(double y, const double* th, double* out) {
     const LocScaleFullSlot& s = loc_scale_full_cached(2, sh, 1,
         [&](double* I, double* D) { pseudohuber_quad_full(sh, I, D); });
     loc_scale_full_dinfo(s, 3, th[1], out);
+}
+
+// The parts route (piano_motore.md, D7). th = (mu, sigma, nu), P = 3.
+// Buffer layout, index -> quantity (lowest level that fills it):
+//   0 level, 1 y, 2 mu, 3 sigma, 4 nu,
+//   5 B'(nu) (1), 6 nu_const = -B''(nu) (2), 7 B'''(nu) (3), 8 B''''(nu) (4).
+// The B^(k) come from ph_nu_derivs() at K = level; ph_nu()'s four Bessel K
+// values feed only fields no order reads, and are not formed. The expected
+// buffer holds the standardized expected Hessian of the quadrature of
+// pseudohuber_joint_info() (index 5 + a + 3 b, level 2).
+inline void pseudohuber_parts(double y, const double* th, int level,
+                              double* b) {
+    b[0] = level; b[1] = y; b[2] = th[0]; b[3] = th[1]; b[4] = th[2];
+    for (int i = 5; i <= 8; ++i) b[i] = R_NaN;
+    if (level >= 1) {
+        const int K = level > 4 ? 4 : level;
+        double dB[6] = {0}, dlR[6] = {0}, R0;
+        ph_nu_derivs(th[2], K, dB, dlR, R0);
+        b[5] = dB[1];
+        if (K >= 2) b[6] = -dB[2];
+        if (K >= 3) b[7] = dB[3];
+        if (K >= 4) b[8] = dB[4];
+    }
+}
+
+inline void pseudohuber_parts_expected(const double* th, int level,
+                                       double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1]; b[4] = th[2];
+    for (int i = 5; i <= 13; ++i) b[i] = R_NaN;
+    if (level >= 2) {
+        const double* sh = th + 2;
+        const LocScaleFullSlot& s = loc_scale_full_cached(2, sh, 1,
+            [&](double* I, double* D) { pseudohuber_quad_full(sh, I, D); });
+        for (int i = 0; i < 9; ++i) b[5 + i] = s.I[i];
+    }
+}
+
+// the nu-only part of the buffer as the component functions read it
+inline PhNu pseudohuber_parts_nu(const double* b) {
+    PhNu N = {};
+    N.dB[1] = b[5];
+    N.nu_const = b[6];
+    N.dB[3] = b[7];
+    N.dB[4] = b[8];
+    return N;
+}
+
+inline void pseudohuber_parts_grad(const double* b, double* out) {
+    const double s = b[3], v = b[4];
+    const double r = b[2] - b[1];
+    const PhA A = ph_a(r, s, v);
+    const PhNu P = pseudohuber_parts_nu(b);
+    out[0] = pseudohuber_score_mu(s, A);
+    out[1] = pseudohuber_score_sigma(r, s, A);
+    out[2] = pseudohuber_score_nu(v, s, A, P);
+}
+
+inline void pseudohuber_parts_hess(const double* b, double* out) {
+    const double s = b[3], v = b[4];
+    const double r = b[2] - b[1];
+    const PhA A = ph_a(r, s, v);
+    const PhNu P = pseudohuber_parts_nu(b);
+    out[0] = pseudohuber_hess_mu_mu(s, A);
+    out[4] = pseudohuber_hess_sigma_sigma(r, s, A);
+    out[8] = pseudohuber_hess_nu_nu(s, A, P);
+    out[1] = out[3] = pseudohuber_hess_mu_sigma(s, A);
+    out[2] = out[6] = pseudohuber_hess_mu_nu(s, A);
+    out[5] = out[7] = pseudohuber_hess_sigma_nu(A);
+}
+
+// the expected Hessian, as loc_scale_full_info() scales the standardized one
+inline void pseudohuber_parts_info(const double* b, double* out) {
+    for (int c = 0; c < 3; ++c)
+        for (int a = 0; a < 3; ++a) {
+            const int m = (a < 2) + (c < 2);
+            out[a + 3 * c] = b[5 + a + 3 * c] / loc_scale_sigma_pow(m, b[3]);
+        }
+}
+
+// third order: pseudohuber_deriv3_cpp, unique components in the sorted order
+// mmm, mms, mmn, mss, msn, mnn, sss, ssn, snn, nnn
+inline void pseudohuber_parts_d3(const double* b, double* out) {
+    const double s = b[3], v = b[4];
+    const double r = b[2] - b[1];
+    const PhA PA = ph_a(r, s, v);
+    const PhNu P = pseudohuber_parts_nu(b);
+    double u[10];
+    u[0] = pseudohuber_d3_mu_mu_mu(s, PA);
+    u[1] = pseudohuber_d3_mu_mu_sigma(s, PA);
+    u[2] = pseudohuber_d3_mu_mu_nu(s, PA);
+    u[3] = pseudohuber_d3_mu_sigma_sigma(s, PA);
+    u[4] = pseudohuber_d3_mu_sigma_nu(PA);
+    u[5] = pseudohuber_d3_mu_nu_nu(s, PA);
+    u[6] = pseudohuber_d3_sigma_sigma_sigma(r, s, PA);
+    u[7] = pseudohuber_d3_sigma_sigma_nu(s, PA);
+    u[8] = pseudohuber_d3_sigma_nu_nu(s, PA);
+    u[9] = pseudohuber_d3_nu_nu_nu(v, s, PA, P, 0.0);
+    sym_fill(3, 3, u, out);
+}
+
+// fourth order: pseudohuber_deriv4_cpp (pseudohuber_hd.cpp), unique
+// components in the sorted order mmmm, mmms, mmmn, mmss, mmsn, mmnn, msss,
+// mssn, msnn, mnnn, ssss, sssn, ssnn, snnn, nnnn
+inline void pseudohuber_parts_d4(const double* b, double* out) {
+    const double s = b[3], v = b[4];
+    const double r = b[2] - b[1];
+    const double s2 = s * s, s3 = s2 * s, s4 = s2 * s2, s5 = s4 * s;
+    const PhA PA = ph_a(r, s, v);
+    const double A = PA.A, p = PA.rho, p2 = p * p, p4 = p2 * p2,
+                 k = PA.kap2, q = s / A, A2 = A * A;
+    double u[15];
+    u[0] = 3.0 * k * (k - 4.0 * p2) / (s * A * A2);
+    u[1] = 3.0 * k * p * (p2 - 4.0 * k) / (s2 * A2);
+    u[2] = 3.0 * q * p * (2.0 * p2 - 3.0 * k) / (2.0 * A * A2);
+    u[3] = 3.0 * k * k * (3.0 * p2 - 2.0 * k) / (s3 * A);
+    u[4] = (-2.0 * p4 + 11.0 * k * p2 - 2.0 * k * k) / (2.0 * A * A2);
+    u[5] = -3.0 * q * q * q * (k - 4.0 * p2) / (4.0 * A2);
+    u[6] = -3.0 * p * (-8.0 + 16.0 * p2 - 15.0 * k * p4
+        - 10.0 * p4 * p2) / s4;
+    u[7] = 3.0 * k * p * (2.0 * k - 3.0 * p2) / (2.0 * s * A2);
+    u[8] = 3.0 * q * q * p * (2.0 * k - 3.0 * p2) / (4.0 * A2);
+    u[9] = 15.0 * q * q * q * q * q * p / (8.0 * A);
+    u[10] = 6.0 / s4 + (r / s5) * p *
+        (-60.0 + 75.0 * p2 - 54.0 * p4 + 15.0 * p4 * p2);
+    u[11] = 3.0 * k * p2 * (p2 - 4.0 * k) / (2.0 * s2 * A);
+    u[12] = 3.0 * q * p2 * (2.0 * p2 - 3.0 * k) / (4.0 * A2);
+    u[13] = -15.0 * q * q * q * q * p2 / (8.0 * A);
+    const double q2 = q * q;
+    u[14] = 0.9375 * q2 * q2 * q2 * q - b[8];
+    sym_fill(3, 4, u, out);
 }
 
 } // namespace d7

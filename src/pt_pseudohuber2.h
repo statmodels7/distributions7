@@ -9,6 +9,7 @@
 #include "pt_sqrt.h"
 #include "pt_ph_nu.h"
 #include "pt_pseudohuber2_table.h"
+#include "pt_parts.h"
 
 // The pseudo-Huber family in its standard-deviation parametrization
 // (mu, sigma, nu): with R(nu) = sqrt(nu) K_2(sqrt(nu)) / K_1(sqrt(nu)),
@@ -381,6 +382,132 @@ inline void pseudohuber2_joint_dinfo(double y, const double* th, double* out) {
     const LocScaleFullSlot& s = loc_scale_full_cached(3, sh, 1,
         [&](double* I, double* D) { pseudohuber2_quad_full(sh, I, D); });
     loc_scale_full_dinfo(s, 3, th[1], out);
+}
+
+// The parts route (piano_motore.md, D7). th = (mu, sigma, nu), P = 3.
+// Buffer layout, index -> quantity (lowest level that fills it):
+//   0 level, 1 y, 2 mu, 3 sigma, 4 nu,
+//   5 R(nu) (1), 6 R'(nu) (1), 7 R''(nu) (2), 8 R'''(nu) (3), 9 R''''(nu) (4),
+//   10 h'(nu) (1), 11 h''(nu) (2), 12 h'''(nu) (3), 13 h''''(nu) (4).
+// They come from nu_part() at K = level. The expected buffer holds the
+// standardized expected Hessian of the quadrature of pseudohuber2_joint_info()
+// (index 5 + a + 3 b, level 2).
+inline void pseudohuber2_parts(double y, const double* th, int level,
+                               double* b) {
+    b[0] = level; b[1] = y; b[2] = th[0]; b[3] = th[1]; b[4] = th[2];
+    for (int i = 5; i <= 13; ++i) b[i] = R_NaN;
+    if (level >= 1) {
+        const int K = level > 4 ? 4 : level;
+        NuPart np = {{0}, {0}};
+        nu_part(th[2], K, np);
+        b[5] = np.R[0]; b[6] = np.R[1]; b[10] = np.h[1];
+        if (K >= 2) { b[7] = np.R[2]; b[11] = np.h[2]; }
+        if (K >= 3) { b[8] = np.R[3]; b[12] = np.h[3]; }
+        if (K >= 4) { b[9] = np.R[4]; b[13] = np.h[4]; }
+    }
+}
+
+inline void pseudohuber2_parts_expected(const double* th, int level,
+                                        double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1]; b[4] = th[2];
+    for (int i = 5; i <= 13; ++i) b[i] = R_NaN;
+    if (level >= 2) {
+        const double* sh = th + 2;
+        const LocScaleFullSlot& s = loc_scale_full_cached(3, sh, 1,
+            [&](double* I, double* D) { pseudohuber2_quad_full(sh, I, D); });
+        for (int i = 0; i < 9; ++i) b[5 + i] = s.I[i];
+    }
+}
+
+// the nu-only part of the buffer as the component functions read it
+inline NuPart pseudohuber2_parts_nu(const double* b) {
+    NuPart np = {{0}, {0}};
+    np.R[0] = b[5]; np.R[1] = b[6]; np.R[2] = b[7];
+    np.R[3] = b[8]; np.R[4] = b[9];
+    np.h[1] = b[10]; np.h[2] = b[11]; np.h[3] = b[12]; np.h[4] = b[13];
+    return np;
+}
+
+inline void pseudohuber2_parts_grad(const double* b, double* out) {
+    const double s = b[3], v = b[4];
+    const NuPart np = pseudohuber2_parts_nu(b);
+    const double z = (b[1] - b[2]) / s;
+    const Ph2Z P = ph2_z(z, v, np.R[0]);
+    out[0] = pseudohuber2_score_mu(s, P, np);
+    out[1] = pseudohuber2_score_sigma(z, s, P, np);
+    out[2] = pseudohuber2_score_nu(z, P, np);
+}
+
+inline void pseudohuber2_parts_hess(const double* b, double* out) {
+    const double s = b[3], v = b[4];
+    const NuPart np = pseudohuber2_parts_nu(b);
+    const double z = (b[1] - b[2]) / s;
+    const Ph2Z P = ph2_z(z, v, np.R[0]);
+    out[0] = pseudohuber2_hess_mu_mu(s, P, np, v);
+    out[4] = pseudohuber2_hess_sigma_sigma(z, s, P, np, v);
+    out[8] = pseudohuber2_hess_nu_nu(z, P, np);
+    out[1] = out[3] = pseudohuber2_hess_mu_sigma(s, P, np, v);
+    out[2] = out[6] = pseudohuber2_hess_mu_nu(s, P, np, v);
+    out[5] = out[7] = pseudohuber2_hess_sigma_nu(z, s, P, np, v);
+}
+
+// the expected Hessian, as loc_scale_full_info() scales the standardized one
+inline void pseudohuber2_parts_info(const double* b, double* out) {
+    for (int c = 0; c < 3; ++c)
+        for (int a = 0; a < 3; ++a) {
+            const int m = (a < 2) + (c < 2);
+            out[a + 3 * c] = b[5 + a + 3 * c] / loc_scale_sigma_pow(m, b[3]);
+        }
+}
+
+// orders three and four: high_order() of pseudohuber2.cpp at one row. The
+// components of ph2_hd_3/4 come in the lexicographic order of the parameter
+// positions, which is the sorted-tuple order; the pure sigma component adds
+// fm / sigma^m and the pure nu component adds h^(m)(nu).
+inline void pseudohuber2_parts_d3(const double* b, double* out) {
+    const double y = b[1], m_i = b[2], s = b[3], v = b[4];
+    const NuPart np = pseudohuber2_parts_nu(b);
+    const int m = 3;
+    const double fm = -2.0;
+    const double r = y - m_i;
+    const double cA = s * d7::sqrt_cr(v);
+    const double A = std::hypot(d7::sqrt_cr(np.R[0]) * r, cA);
+    const double iA = 1.0 / A, uu = r * iA;
+    const double is = 1.0 / s;
+    double comp[10];
+    ph2_hd_3(uu, v, iA, is, np.R, comp);
+    double u[10];
+    for (int c = 0; c < 10; c++) {
+        const double dD = -comp[c];
+        double o = -dD;
+        if (c == 6) o += fm * std::pow(is, m);
+        if (c == 9) o += np.h[m];
+        u[c] = o;
+    }
+    sym_fill(3, 3, u, out);
+}
+
+inline void pseudohuber2_parts_d4(const double* b, double* out) {
+    const double y = b[1], m_i = b[2], s = b[3], v = b[4];
+    const NuPart np = pseudohuber2_parts_nu(b);
+    const int m = 4;
+    const double fm = 6.0;
+    const double r = y - m_i;
+    const double cA = s * d7::sqrt_cr(v);
+    const double A = std::hypot(d7::sqrt_cr(np.R[0]) * r, cA);
+    const double iA = 1.0 / A, uu = r * iA;
+    const double is = 1.0 / s;
+    double comp[15];
+    ph2_hd_4(uu, v, iA, is, np.R, comp);
+    double u[15];
+    for (int c = 0; c < 15; c++) {
+        const double dD = -comp[c];
+        double o = -dD;
+        if (c == 10) o += fm * std::pow(is, m);
+        if (c == 14) o += np.h[m];
+        u[c] = o;
+    }
+    sym_fill(3, 4, u, out);
 }
 
 } // namespace d7

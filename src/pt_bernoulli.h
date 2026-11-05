@@ -6,7 +6,9 @@
 // (bernoulli.cpp, dexpected_kernels.cpp) and by the registry
 // (d7_ccallable.cpp).
 
+#include <Rcpp.h>
 #include "pt_discrete_pow.h"
+#include "pt_parts.h"
 
 namespace d7 {
 
@@ -38,6 +40,47 @@ inline void bernoulli_info_dinfo(int k, double y, const double* th,
                                  double* out) {
     out[0] = bernoulli_expected_mu_mu(th[0]);
     out[1] = bernoulli_dexpected_mu_mu_mu(th[0]);
+}
+
+// The parts route (pt_parts.h). Bernoulli has one parameter, the mean mu,
+// and no special function, so the buffer holds the inputs only:
+//   [0] level the buffer was filled to
+//   [1] y                                       level 0 (input)
+//   [2] mu                                      level 0 (input)
+// The third and fourth orders recompute om = mu - 1 in their own
+// expressions, as bernoulli_hd.cpp does. The expected buffer is the same
+// with y set to NaN.
+inline void bernoulli_parts(double y, const double* th, int level, double* b) {
+    b[0] = level; b[1] = y; b[2] = th[0];
+}
+
+inline void bernoulli_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0];
+}
+
+inline void bernoulli_parts_grad(const double* b, double* out) {
+    out[0] = bernoulli_score_mu(b[1], b[2]);
+}
+
+inline void bernoulli_parts_hess(const double* b, double* out) {
+    out[0] = bernoulli_hess_mu_mu(b[1], b[2]);
+}
+
+inline void bernoulli_parts_info(const double* b, double* out) {
+    out[0] = bernoulli_expected_mu_mu(b[2]);
+}
+
+// bernoulli_deriv3_cpp and bernoulli_deriv4_cpp (bernoulli_hd.cpp)
+inline void bernoulli_parts_d3(const double* b, double* out) {
+    double om = b[2] - 1.0;
+    out[0] = -2.0 * coef_over_pow(b[1] - 1.0, om, 3)
+           + 2.0 * coef_over_pow(b[1], b[2], 3);
+}
+
+inline void bernoulli_parts_d4(const double* b, double* out) {
+    double om = b[2] - 1.0;
+    out[0] = 6.0 * coef_over_pow(b[1] - 1.0, om, 4)
+           - 6.0 * coef_over_pow(b[1], b[2], 4);
 }
 
 } // namespace d7

@@ -3,6 +3,7 @@
 
 #include <Rcpp.h>
 #include <cmath>
+#include "pt_parts.h"
 
 // The generalized Pareto in (sigma, xi). With z = y/sigma, t = 1 + xi z and
 // u = xi z,
@@ -280,6 +281,143 @@ inline void gpd_joint_dinfo(double y, const double* th, double* out) {
   out[3] = 0.0;
   out[5] = out[6] = gpd_dexpected_sigma_xi_xi(sv, x);
   out[7] = gpd_dexpected_xi_xi_xi(x);
+}
+
+// The parts route (pt_parts.h). The buffer, with the lowest level that fills
+// each entry in brackets. Outside the support every observed order is NaN, as
+// in gpd_joint_grad(); the costly entries are then NaN as well.
+//   [0] level
+//   [1] y                           (NaN for the expected parts)
+//   [2] sigma
+//   [3] xi
+//   [4] t = gpd_t(y, sigma, xi)     (always)
+//   [5] 1 inside the support, 0 outside (always; 1 for the expected parts)
+//   [6] z = y / sigma               (always)
+//   [7] u = xi z                    (always)
+//   [8] T1 = 1 / t                  (always)
+//   [9] is = 1 / sigma              (always)
+//   [10] v = u / t                  (always)
+//   [11] LT = gpd_logt(u, t)        (1)
+//   [12] F1 = gpd_phi(1, ...)       (1)
+//   [13] F2 = gpd_phi(2, ...)       (2)
+//   [14] F3 = gpd_phi(3, ...)       (3)
+//   [15] F4 = gpd_phi(4, ...)       (4)
+// The expected parts need no special function: the expected entries are
+// arithmetic in sigma and xi, read from b[2], b[3] and b[9].
+
+inline void gpd_parts(double y, const double* th, int level, double* b) {
+  const double sv = th[0], x = th[1];
+  const double t = gpd_t(y, sv, x);
+  const bool in = gpd_in_support(y, t);
+  const double z = y / sv, u = x * z, v = u / t;
+  const double T1 = 1.0 / t, is = 1.0 / sv;
+  b[0] = level; b[1] = y; b[2] = sv; b[3] = x; b[4] = t;
+  b[5] = in ? 1.0 : 0.0;
+  b[6] = z; b[7] = u; b[8] = T1; b[9] = is; b[10] = v;
+  b[11] = (level >= 1 && in) ? gpd_logt(u, t) : R_NaN;
+  b[12] = (level >= 1 && in) ? gpd_phi(1, u, v, t, b[11]) : R_NaN;
+  b[13] = (level >= 2 && in) ? gpd_phi(2, u, v, t, b[11]) : R_NaN;
+  b[14] = (level >= 3 && in) ? gpd_phi(3, u, v, t, b[11]) : R_NaN;
+  b[15] = (level >= 4 && in) ? gpd_phi(4, u, v, t, b[11]) : R_NaN;
+}
+
+inline void gpd_parts_expected(const double* th, int level, double* b) {
+  const double sv = th[0], x = th[1];
+  b[0] = level; b[1] = R_NaN; b[2] = sv; b[3] = x; b[4] = R_NaN;
+  b[5] = 1.0;
+  b[6] = R_NaN; b[7] = R_NaN; b[8] = R_NaN; b[9] = 1.0 / sv; b[10] = R_NaN;
+  for (int j = 11; j <= 15; ++j) b[j] = R_NaN;
+}
+
+inline void gpd_parts_grad(const double* b, double* out) {
+  if (b[5] == 0.0) {
+    out[0] = R_NaN;
+    out[1] = R_NaN;
+    return;
+  }
+  const double z = b[6], x = b[3], T1 = b[8], is = b[9], F1 = b[12];
+  out[0] = gpd_score_sigma(z, x, T1, is);
+  out[1] = gpd_score_xi(z, T1, F1);
+}
+
+inline void gpd_parts_hess(const double* b, double* out) {
+  if (b[5] == 0.0) {
+    out[0] = R_NaN;
+    out[3] = R_NaN;
+    out[1] = out[2] = R_NaN;
+    return;
+  }
+  const double z = b[6], x = b[3], T1 = b[8], is = b[9], F2 = b[13];
+  out[0] = gpd_hess_sigma_sigma(z, x, T1, is);
+  out[3] = gpd_hess_xi_xi(z, T1, F2);
+  out[1] = out[2] = gpd_hess_sigma_xi(z, x, T1, is);
+}
+
+// from the expected parts
+inline void gpd_parts_info(const double* b, double* out) {
+  const double sv = b[2], x = b[3];
+  out[0] = gpd_expected_sigma_sigma(sv, x);
+  out[3] = gpd_expected_xi_xi(x);
+  out[1] = out[2] = gpd_expected_sigma_xi(sv, x);
+}
+
+// the unique components of the third derivative in the order of
+// gpd_deriv3_cpp: sigma sigma sigma, sigma sigma xi, sigma xi xi, xi xi xi
+inline void gpd_parts_d3(const double* b, double* out) {
+  if (b[5] == 0.0) {
+    for (int j = 0; j < 8; ++j) out[j] = R_NaN;
+    return;
+  }
+  const double z = b[6], x = b[3], T1 = b[8], is = b[9], F3 = b[14];
+  const double w0 = T1*z;
+  const double w1 = 3*w0;
+  const double w2 = std::pow(T1, 2)*std::pow(z, 2);
+  const double w3 = 3*w2;
+  const double w4 = std::pow(x, 2);
+  const double w5 = std::pow(T1, 3);
+  const double w6 = std::pow(z, 3);
+  const double w7 = w5*w6;
+  const double w8 = 2*w2;
+  double uq[4];
+  uq[0] = (2*w1*x + 2*w1 - 2*w3*w4 - 2*w3*x + 2*w4*w7 + 2*w7*std::pow(x, 3) - 2) * gpd_ipow(is, 3);
+  uq[1] = (w0*(4*T1*x*z + 3*T1*z - w4*w8 - w8*x - 2)) * gpd_ipow(is, 2);
+  uq[2] = (w8*(w0*x + w0 - 1)) * gpd_ipow(is, 1);
+  uq[3] = (-w6*(F3*z + 2*w5));
+  sym_fill(2, 3, uq, out);
+}
+
+// the unique components of the fourth derivative, in the order of
+// gpd_deriv4_cpp
+inline void gpd_parts_d4(const double* b, double* out) {
+  if (b[5] == 0.0) {
+    for (int j = 0; j < 16; ++j) out[j] = R_NaN;
+    return;
+  }
+  const double z = b[6], x = b[3], T1 = b[8], is = b[9], F4 = b[15];
+  const double w0 = T1*z;
+  const double w1 = 4*w0;
+  const double w2 = -w1;
+  const double w3 = std::pow(T1, 2);
+  const double w4 = std::pow(z, 2);
+  const double w5 = w3*w4;
+  const double w6 = 6*w5;
+  const double w7 = std::pow(x, 3);
+  const double w8 = std::pow(T1, 4);
+  const double w9 = std::pow(z, 4);
+  const double w10 = w8*w9;
+  const double w11 = std::pow(x, 2);
+  const double w12 = std::pow(T1, 3)*std::pow(z, 3);
+  const double w13 = 4*w12;
+  const double w14 = 6*w0;
+  const double w15 = w0*x;
+  const double w16 = 3*w12;
+  double uq[5];
+  uq[0] = (-6*w1*x + 6*w10*w7 + 6*w10*std::pow(x, 4) - 6*w11*w13 + 6*w11*w6 - 6*w13*w7 + 6*w2 + 6*w6*x + 6) * gpd_ipow(is, 4);
+  uq[1] = (2*w0*(-w11*w16 + 9*w11*w3*w4 - w14 - 9*w15 - w16*w7 + 8*w3*w4*x + 3)) * gpd_ipow(is, 3);
+  uq[2] = (2*w5*(3*w11*w5 - w14*x + w2 + 3*w5*x + 3)) * gpd_ipow(is, 2);
+  uq[3] = (6*w12*(-w0 - w15 + 1)) * gpd_ipow(is, 1);
+  uq[4] = (w9*(-F4*z + 6*w8));
+  sym_fill(2, 4, uq, out);
 }
 
 } // namespace d7

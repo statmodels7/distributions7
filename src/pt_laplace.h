@@ -1,7 +1,9 @@
 #ifndef D7_PT_LAPLACE_H
 #define D7_PT_LAPLACE_H
 
+#include <Rcpp.h>
 #include <cmath>
+#include "pt_parts.h"
 
 // The Laplace in location mu and scale b, l = -log(2b) - |y - mu|/b: one
 // function per component and order for the quantities the scalar registry
@@ -119,6 +121,79 @@ inline void laplace_joint_dinfo(double y, const double* th, double* out) {
     for (int j = 0; j < 8; ++j) out[j] = 0.0;
     out[4] = laplace_dexpected_mu_mu_sigma(b);
     out[7] = laplace_dexpected_sigma_sigma_sigma(b);
+}
+
+// The parts route (pt_parts.h). The buffer, with r = y - mu, the sign of r
+// and its modulus as the joint routers form them, and 1/b, which the orders
+// three and four read:
+//
+//   [0] level
+//   [1] y                           NaN in the expected buffer
+//   [2] mu
+//   [3] b
+//   [4] 1/b                         always
+//   [5] sgn(r), 0 at r = 0          level 1
+//   [6] |r|                         level 1
+inline void laplace_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], bb = th[1];
+    const double r = y - m;
+    b[0] = level; b[1] = y; b[2] = m; b[3] = bb; b[4] = 1.0 / bb;
+    b[5] = level >= 1 ? laplace_sign(r) : R_NaN;
+    b[6] = level >= 1 ? std::fabs(r) : R_NaN;
+}
+
+inline void laplace_parts_expected(const double* th, int level, double* b) {
+    b[0] = level; b[1] = R_NaN; b[2] = th[0]; b[3] = th[1];
+    b[4] = 1.0 / th[1];
+    b[5] = R_NaN; b[6] = R_NaN;
+}
+
+inline void laplace_parts_grad(const double* b, double* out) {
+    out[0] = laplace_score_mu(b[5], b[3]);
+    out[1] = laplace_score_sigma(b[6], b[3]);
+}
+
+inline void laplace_parts_hess(const double* b, double* out) {
+    out[0] = laplace_hess_mu_mu();
+    out[3] = laplace_hess_sigma_sigma(b[6], b[3]);
+    out[1] = out[2] = laplace_hess_mu_sigma(b[5], b[3]);
+}
+
+// from the expected parts
+inline void laplace_parts_info(const double* b, double* out) {
+    out[0] = laplace_expected_mu_mu(b[3]);
+    out[3] = laplace_expected_sigma_sigma(b[3]);
+    out[1] = out[2] = 0.0;
+}
+
+// third order: laplace_deriv3_cpp (laplace_hd.cpp), unique components in the
+// sorted order mu mu mu, mu mu sigma, mu sigma sigma, sigma sigma sigma
+inline void laplace_parts_d3(const double* b, double* out) {
+    const double s = b[5], ib = b[4];
+    const double ib3 = ib * ib * ib;
+    const double u = b[6] * ib;
+    double uu[4];
+    uu[0] = 0.0;
+    uu[1] = 0.0;
+    uu[2] = 2.0 * s * ib3;
+    uu[3] = (6.0 * u - 2.0) * ib3;
+    sym_fill(2, 3, uu, out);
+}
+
+// fourth order: laplace_deriv4_cpp (laplace_hd.cpp), unique components in
+// the sorted order mu mu mu mu, mu mu mu sigma, mu mu sigma sigma, mu sigma
+// sigma sigma, sigma sigma sigma sigma
+inline void laplace_parts_d4(const double* b, double* out) {
+    const double s = b[5], ib = b[4];
+    const double ib2 = ib * ib, ib4 = ib2 * ib2;
+    const double u = b[6] * ib;
+    double uu[5];
+    uu[0] = 0.0;
+    uu[1] = 0.0;
+    uu[2] = 0.0;
+    uu[3] = -6.0 * s * ib4;
+    uu[4] = (6.0 - 24.0 * u) * ib4;
+    sym_fill(2, 4, uu, out);
 }
 
 } // namespace d7

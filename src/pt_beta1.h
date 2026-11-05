@@ -3,6 +3,7 @@
 
 #include <Rcpp.h>
 #include <cmath>
+#include "pt_parts.h"
 
 // Beta in the mean and the precision, with shapes alpha = mu phi and
 // beta = (1 - mu) phi: one function per component and order for the
@@ -178,6 +179,118 @@ inline void beta1_joint_dinfo(double y, const double* th, double* out) {
     out[6] = out[5] = beta1_dexpected_mu_phi_phi(m, p, a1, b1, a2, b2);
     out[3] = beta1_dexpected_phi_phi_mu(m, p, a1, b1, a2, b2);
     out[7] = beta1_dexpected_phi_phi_phi(m, c2, a2, b2);
+}
+
+// The parts route (pt_parts.h). The buffer, with mu = th[0], phi = th[1],
+// al = mu phi and be = (1 - mu) phi as the joint routers form them, and
+// b' = phi - mu phi as the vector kernels beta_deriv3_cpp() and
+// beta_deriv4_cpp() form the second shape. The two routes give the same value
+// to rounding, and each order keeps its own route, so the second shape has
+// its own slots:
+//
+//   [0]  level
+//   [1]  y                          NaN in the expected buffer
+//   [2]  mu
+//   [3]  phi
+//   [4]  log y                      level 1
+//   [5]  log(1 - y)                 level 1
+//   [6]  digamma(al)                level 1
+//   [7]  digamma(be)                level 1
+//   [8]  digamma(phi)               level 1
+//   [9]  trigamma(al)               level 2
+//   [10] trigamma(be)               level 2
+//   [11] trigamma(phi)              level 2
+//   [12] trigamma(b')               level 3
+//   [13] psigamma(al, 2)            level 3
+//   [14] psigamma(b', 2)            level 3
+//   [15] psigamma(phi, 2)           level 3
+//   [16] psigamma(al, 3)            level 4
+//   [17] psigamma(b', 3)            level 4
+//   [18] psigamma(phi, 3)           level 4
+//
+// The expected buffer fills levels 0 and 1 with NaN and level 2 with [9] to
+// [11]; the expected Hessian is the only expected order read.
+inline void beta1_parts(double y, const double* th, int level, double* b) {
+    const double m = th[0], p = th[1];
+    const double al = m * p, be = (1.0 - m) * p, bp = p - m * p;
+    b[0] = level; b[1] = y; b[2] = m; b[3] = p;
+    b[4] = level >= 1 ? std::log(y) : R_NaN;
+    b[5] = level >= 1 ? std::log(1.0 - y) : R_NaN;
+    b[6] = level >= 1 ? R::digamma(al) : R_NaN;
+    b[7] = level >= 1 ? R::digamma(be) : R_NaN;
+    b[8] = level >= 1 ? R::digamma(p) : R_NaN;
+    b[9] = level >= 2 ? R::trigamma(al) : R_NaN;
+    b[10] = level >= 2 ? R::trigamma(be) : R_NaN;
+    b[11] = level >= 2 ? R::trigamma(p) : R_NaN;
+    b[12] = level >= 3 ? R::trigamma(bp) : R_NaN;
+    b[13] = level >= 3 ? R::psigamma(al, 2.0) : R_NaN;
+    b[14] = level >= 3 ? R::psigamma(bp, 2.0) : R_NaN;
+    b[15] = level >= 3 ? R::psigamma(p, 2.0) : R_NaN;
+    b[16] = level >= 4 ? R::psigamma(al, 3.0) : R_NaN;
+    b[17] = level >= 4 ? R::psigamma(bp, 3.0) : R_NaN;
+    b[18] = level >= 4 ? R::psigamma(p, 3.0) : R_NaN;
+}
+
+inline void beta1_parts_expected(const double* th, int level, double* b) {
+    const double m = th[0], p = th[1];
+    const double al = m * p, be = (1.0 - m) * p;
+    b[0] = level; b[1] = R_NaN; b[2] = m; b[3] = p;
+    for (int j = 4; j <= 8; ++j) b[j] = R_NaN;
+    b[9] = level >= 2 ? R::trigamma(al) : R_NaN;
+    b[10] = level >= 2 ? R::trigamma(be) : R_NaN;
+    b[11] = level >= 2 ? R::trigamma(p) : R_NaN;
+    for (int j = 12; j <= 18; ++j) b[j] = R_NaN;
+}
+
+inline void beta1_parts_grad(const double* b, double* out) {
+    out[0] = beta1_score_mu(b[3], b[4], b[5], b[6], b[7]);
+    out[1] = beta1_score_phi(b[2], b[4], b[5], b[8], b[6], b[7]);
+}
+
+inline void beta1_parts_hess(const double* b, double* out) {
+    const double y = b[1], m = b[2], p = b[3];
+    out[0] = beta1_hess_mu_mu(p, b[9], b[10]);
+    out[3] = beta1_hess_phi_phi(m, b[11], b[9], b[10]);
+    out[1] = out[2] = beta1_hess_mu_phi(y, m, p, b[6], b[7], b[9], b[10]);
+}
+
+// from the expected parts
+inline void beta1_parts_info(const double* b, double* out) {
+    const double m = b[2], p = b[3];
+    out[0] = beta1_expected_mu_mu(p, b[9], b[10]);
+    out[3] = beta1_expected_phi_phi(m, b[11], b[9], b[10]);
+    out[1] = out[2] = beta1_expected_mu_phi(m, p, b[9], b[10]);
+}
+
+// beta_deriv3_cpp() of beta.cpp's vector kernels, the same expressions
+inline void beta1_parts_d3(const double* b, double* out) {
+    const double m = b[2], p = b[3];
+    const double p2 = p * p, p3 = p2 * p;
+    const double Ta = b[9], Tb = b[12];
+    const double P2a = b[13], P2b = b[14], P2phi = b[15];
+    double u[4];
+    u[0] = p3 * (-P2a + P2b);
+    u[1] = p * (-(m * p * P2a) + (m - 1.0) * p * P2b - 2.0 * (Ta + Tb));
+    u[2] = -(m * m * p * P2a) + (m - 1.0) * (m - 1.0) * p * P2b - 2.0 * m * Ta - 2.0 * (m - 1.0) * Tb;
+    u[3] = P2phi - m * m * m * P2a + (m - 1.0) * (m - 1.0) * (m - 1.0) * P2b;
+    sym_fill(2, 3, u, out);
+}
+
+// beta_deriv4_cpp() of beta.cpp's vector kernels, the same expressions
+inline void beta1_parts_d4(const double* b, double* out) {
+    const double m = b[2], p = b[3];
+    const double om = m - 1.0;
+    const double p2 = p * p, p4 = p2 * p2;
+    const double Ta = b[9], Tb = b[12];
+    const double P2a = b[13], P2b = b[14], P2phi = b[15];
+    const double P3a = b[16], P3b = b[17], P3phi = b[18];
+    double u[5];
+    u[0] = -(p4 * (P3a + P3b));
+    u[1] = p2 * (-3.0 * P2a - m * p * P3a + 3.0 * P2b - om * p * P3b);
+    u[2] = p * (-4.0 * m * P2a - m * m * p * P3a + om * (4.0 * P2b - om * p * P3b)) - 2.0 * (Ta + Tb);
+    u[3] = -3.0 * m * m * P2a - m * m * m * p * P3a + om * om * (3.0 * P2b - om * p * P3b);
+    u[4] = P3phi - m * m * m * m * P3a - om * om * om * om * P3b;
+    sym_fill(2, 4, u, out);
 }
 
 } // namespace d7
