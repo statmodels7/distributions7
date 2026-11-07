@@ -1,8 +1,8 @@
 # The compiled expected Hessian by simulation and by integration
 # (d7_expect(), src/d7_expect.cpp) against the R route,
-# distrib_expected_hessian(method = expect_mc() / expect_integrate()), with
-# identical(): the same doubles and, for the simulation, the same state of
-# the random stream afterwards. The families are those of
+# distrib_expected_hessian(method = expect_mc() / expect_integrate()): the
+# same values on the scale of the R route (identical on Windows) and, for the
+# simulation, the identical state of the random stream afterwards. The families are those of
 # helper-joint-registry.R.
 
 expect_twin_one <- function(d, th, method, nsim = 50, seed = 1) {
@@ -33,7 +33,11 @@ expect_twin_one <- function(d, th, method, nsim = 50, seed = 1) {
   expect_false(inherits(ref, "error"), label = paste(lab, "R route"))
   if (inherits(ref, "error")) return(invisible(NULL))
   ref <- do.call(cbind, ref[hess_names(d@params)])
-  expect_identical(unname(got), unname(ref), label = lab)
+  # on the scale of the R route, not identical(): the R route's quadrature
+  # sums through the BLAS (OpenBLAS on ubuntu, FMA on arm64 macOS) and the
+  # draws' derivatives are compiled under another contraction setting, so
+  # the last bits differ by platform
+  expect_agrees_on_scale(unname(got), unname(ref), tolerance = 1e-12, label = lab)
   if (mc) expect_identical(after_c, after_r, label = paste(lab, "stream"))
   invisible(got)
 }

@@ -1,3 +1,12 @@
+# distributions7 0.95.1
+
+* Tests only: the expected Hessian of `d7_expect()` is compared with the R
+  route on the scale of its values instead of with `identical()`, and the
+  random stream after a simulation is still compared exactly. The R route's
+  quadrature sums through the BLAS, and the derivatives at the draws are
+  compiled under another contraction setting, so the last bits differ on
+  ubuntu and on arm64 macOS.
+
 # distributions7 0.95.0
 
 * Every univariate family has a "parts" entry in the C registry
