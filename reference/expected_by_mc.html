@@ -11,7 +11,7 @@ the integrand of the score identity for identity = "score".'><meta property="og:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.95.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,10 +89,12 @@ length <code>length(y)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>One simulation is run for each row of <code>theta</code> after recycling.
-Observations whose parameters coincide are not merged, so a <code>theta</code> that
-varies over the observations costs one simulation per observation, and a
-scalar <code>theta</code> costs one simulation however long <code>y</code> is.</p>
+    <p>One simulation is run for each distinct row of <code>theta</code> after recycling,
+a row including the family's constants that vary by observation (a
+binomial's <code>size</code>). Rows whose values coincide bit for bit share one
+simulation, run in the order of their first appearance, so a scalar
+<code>theta</code> costs one simulation however long <code>y</code> is, and a <code>theta</code> that
+takes k distinct values costs k simulations.</p>
 <p>Estimates the same quantity as <code><a href="expected_by_integrate.html">expected_by_integrate()</a></code> (Hessian identity)
 or <code><a href="expected_by_bartlett.html">expected_by_bartlett()</a></code> (score identity), has an error that falls as
 \(1/\sqrt{n_{sim}}\), and is stochastic unless the seed is fixed. Its cost

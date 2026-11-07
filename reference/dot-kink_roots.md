@@ -3,9 +3,11 @@
 Evaluates \\v(y, \theta)\\ of a
 [`kink_spec()`](https://statmodels7.github.io/distributions7/reference/kink_spec.md)
 on 129 equally spaced points of \\\[\mathrm{lower}, \mathrm{upper}\]\\
-and 129 more on its central half, and refines each sign change with
-[`stats::uniroot()`](https://rdrr.io/r/stats/uniroot.html). A grid point
-at which \\v\\ is exactly zero is returned as it is.
+and 129 more on its central half, refines each sign change with
+[`stats::uniroot()`](https://rdrr.io/r/stats/uniroot.html) and then by
+bisection to adjacent doubles
+([`.kink_root_polish()`](https://statmodels7.github.io/distributions7/reference/dot-kink_root_polish.md)).
+A grid point at which \\v\\ is exactly zero is returned as it is.
 
 ## Usage
 

@@ -44,10 +44,12 @@ A named list of expected derivative component vectors; each has length
 
 ## Details
 
-One simulation is run for each row of `theta` after recycling.
-Observations whose parameters coincide are not merged, so a `theta` that
-varies over the observations costs one simulation per observation, and a
-scalar `theta` costs one simulation however long `y` is.
+One simulation is run for each distinct row of `theta` after recycling,
+a row including the family's constants that vary by observation (a
+binomial's `size`). Rows whose values coincide bit for bit share one
+simulation, run in the order of their first appearance, so a scalar
+`theta` costs one simulation however long `y` is, and a `theta` that
+takes k distinct values costs k simulations.
 
 Estimates the same quantity as
 [`expected_by_integrate()`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md)

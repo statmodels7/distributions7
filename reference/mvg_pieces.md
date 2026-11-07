@@ -83,7 +83,7 @@ for a consumer.
 d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
-pc <- distributions7:::mvg_pieces(d, theta, derivs = TRUE)
+pc <- mvg_pieces(d, theta, derivs = TRUE)
 names(pc)
 #>  [1] "mu"        "eta"       "p"         "s"         "sigma"     "sigma_inv"
 #>  [7] "logdet"    "inverted"  "ai"        "a"         "dlogdet"  
@@ -106,7 +106,7 @@ round(pc$a[[3]], 4)
 o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 th_o <- list(mu1 = 0.5, mu2 = -0.3, omega_log_L1 = 0.1,
              omega_log_L2 = -0.2, omega_L2.1 = 0.4)
-po <- distributions7:::mvg_pieces(o, th_o)
+po <- mvg_pieces(o, th_o)
 all.equal(po$logdet, -parameters7::param_logdet(o@param, unlist(th_o)[3:5]))
 #> [1] TRUE
 ```

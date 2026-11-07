@@ -40,7 +40,7 @@ for what the methods do with the result.
 
 ``` r
 d <- fixed(gaussian1_distrib(), mu = 0)
-str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
+str(fixed_full_theta(d, list(sigma = 2)))
 #> List of 2
 #>  $ mu   : num 0
 #>  $ sigma: num 2
@@ -48,6 +48,6 @@ str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
 # The parent is then called at exactly this list.
 all.equal(distrib_pdf(d, c(-1, 1), list(sigma = 2)),
           distrib_pdf(gaussian1_distrib(), c(-1, 1),
-                      distributions7:::fixed_full_theta(d, list(sigma = 2))))
+                      fixed_full_theta(d, list(sigma = 2))))
 #> [1] TRUE
 ```

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.94.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.95.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,19 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.95.0" id="distributions7-0950">distributions7 0.95.0<a class="anchor" aria-label="anchor" href="#distributions7-0950"></a></h2>
+<ul><li>Every univariate family has a “parts” entry in the C registry (<code>d7_parts()</code> and one entry per derivative order and for the expected information), which computes the special functions once per observation and reads them at every order. The gradient and the Hessian through it are equal to the joint entries.</li>
+<li>
+<code>d7_expect()</code>, registered as a C callable, computes the expected information by simulation and by integration (<code><a href="../reference/expect_mc.html">expect_mc()</a></code>, <code><a href="../reference/expect_integrate.html">expect_integrate()</a></code>) in C, with the results and the random stream of the R route.</li>
+<li>The header <code>inst/include/d7_link_scale.h</code> gives compiled callers the link-scale transformation of the first two orders.</li>
+<li>
+<code><a href="../reference/expected_by_mc.html">expected_by_mc()</a></code> simulates each distinct parameter setting once; a binomial with a size per observation works with <code><a href="../reference/expect_mc.html">expect_mc()</a></code> and <code><a href="../reference/expect_integrate.html">expect_integrate()</a></code>; the root of a kink is located to adjacent doubles.</li>
+<li>
+<code><a href="../reference/fixed_full_theta.html">fixed_full_theta()</a></code> and <code><a href="../reference/mvg_pieces.html">mvg_pieces()</a></code> are exported.</li>
+<li>
+<code>numericals7</code> is in <code>LinkingTo</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.94.2" id="distributions7-0942">distributions7 0.94.2<a class="anchor" aria-label="anchor" href="#distributions7-0942"></a></h2>
 <ul><li>Tests only: the precision required of the composed sixth derivative of a test family is set by the condition number of the Faa di Bruno sum, which cancels to mu; a fixed 1e-11 failed on ubuntu oldrel-1 at mu = 0.05.</li>

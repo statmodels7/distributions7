@@ -278,6 +278,8 @@ values.
   : Write a Distribution in Different Coordinates
 - [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
   : Fix Parameters of a Distribution at Known Values
+- [`fixed_full_theta()`](https://statmodels7.github.io/distributions7/reference/fixed_full_theta.md)
+  : Splice the Fixed Values Back Into a Full Parameter List
 - [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
   : Apply a Variable Transformation to a Distribution Object
 - [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md)
@@ -332,6 +334,8 @@ its scale matrix or in the inverse of that.
   : The Location Vector That a Parameter List Describes
 - [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
   : The Matrix That a Parameter List Describes
+- [`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md)
+  : The Pieces From Which a Multivariate Gaussian Evaluates
 - [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
   : A Marginal of a Multivariate Distribution
 - [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
@@ -2473,6 +2477,9 @@ transforms that make it work on a divergent density.
 - [`distrib_cdf.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.multivariate_distrib.md)
   : Distribution Function of a Multivariate Distribution
 
+- [`distrib_const_columns()`](https://statmodels7.github.io/distributions7/reference/distrib_const_columns.md)
+  : The Constants of a Family That Vary by Observation
+
 - [`distrib_const_rows()`](https://statmodels7.github.io/distributions7/reference/distrib_const_rows.md)
   : Number of Observations Over Which a Family's Constants Vary
 
@@ -3079,6 +3086,9 @@ transforms that make it work on a divergent density.
 - [`.kink_report()`](https://statmodels7.github.io/distributions7/reference/dot-kink_report.md)
   : Print the Table of check_kink
 
+- [`.kink_root_polish()`](https://statmodels7.github.io/distributions7/reference/dot-kink_root_polish.md)
+  : Polish a Root of a Kink's Argument to Adjacent Doubles
+
 - [`.kink_roots()`](https://statmodels7.github.io/distributions7/reference/dot-kink_roots.md)
   : The Roots of a Kink's Argument in a Range
 
@@ -3116,6 +3126,9 @@ transforms that make it work on a divergent density.
 
 - [`expectation_columns()`](https://statmodels7.github.io/distributions7/reference/expectation_columns.md)
   : Aligned Parameter Columns for an Expectation
+
+- [`expectation_rows()`](https://statmodels7.github.io/distributions7/reference/expectation_rows.md)
+  : The Rows of a Family's Constants Inside an Integrand
 
 - [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md)
   : Expected Derivatives by the Bartlett Identity
@@ -3217,9 +3230,6 @@ transforms that make it work on a divergent density.
 
 - [`fixed_expand_stems()`](https://statmodels7.github.io/distributions7/reference/fixed_expand_stems.md)
   : Expand the Stem of a Vector Parameter in fixed()
-
-- [`fixed_full_theta()`](https://statmodels7.github.io/distributions7/reference/fixed_full_theta.md)
-  : Splice the Fixed Values Back Into a Full Parameter List
 
 - [`fixed_scalar_route()`](https://statmodels7.github.io/distributions7/reference/fixed_scalar_route.md)
   : The Scalar Route of a Fixed Family
@@ -3900,9 +3910,6 @@ transforms that make it work on a divergent density.
 
 - [`mvg_higher()`](https://statmodels7.github.io/distributions7/reference/mvg_higher.md)
   : The Closed-Form Higher Derivatives of a Multivariate Gaussian
-
-- [`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md)
-  : The Pieces From Which a Multivariate Gaussian Evaluates
 
 - [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md)
   : Precision Derivative Arrays of a Multivariate Gaussian

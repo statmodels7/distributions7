@@ -241,6 +241,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.multivariate_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_const_columns.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_const_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.html</loc></url>
@@ -898,6 +899,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-kink_probe_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-kink_probe_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-kink_report.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dot-kink_root_polish.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-kink_roots.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-kink_touched.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-mvt_const_slices.html</loc></url>
@@ -918,6 +920,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/expectation.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expectation.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expectation_columns.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/expectation_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_by_integrate.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_by_mc.html</loc></url>
