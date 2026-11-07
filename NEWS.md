@@ -1,3 +1,22 @@
+# distributions7 0.95.0
+
+* Every univariate family has a "parts" entry in the C registry
+  (`d7_parts()` and one entry per derivative order and for the expected
+  information), which computes the special functions once per observation
+  and reads them at every order. The gradient and the Hessian through it
+  are equal to the joint entries.
+* `d7_expect()`, registered as a C callable, computes the expected
+  information by simulation and by integration (`expect_mc()`,
+  `expect_integrate()`) in C, with the results and the random stream of
+  the R route.
+* The header `inst/include/d7_link_scale.h` gives compiled callers the
+  link-scale transformation of the first two orders.
+* `expected_by_mc()` simulates each distinct parameter setting once; a
+  binomial with a size per observation works with `expect_mc()` and
+  `expect_integrate()`; the root of a kink is located to adjacent doubles.
+* `fixed_full_theta()` and `mvg_pieces()` are exported.
+* `numericals7` is in `LinkingTo`.
+
 # distributions7 0.94.2
 
 * Tests only: the precision required of the composed sixth derivative of a
