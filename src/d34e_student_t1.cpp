@@ -17,6 +17,11 @@
 // d/dnu h^m = -m h^(m+1). Each order is its own kernel. The components are in
 // the order of d3expected_names() and d4expected_names() for student_t1.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include <cmath>
 #include "d7_par.h"
