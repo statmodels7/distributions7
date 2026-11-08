@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.95.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.95.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,10 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.95.1" id="distributions7-0951">distributions7 0.95.1<a class="anchor" aria-label="anchor" href="#distributions7-0951"></a></h2>
+<ul><li>Tests only: the expected Hessian of <code>d7_expect()</code> is compared with the R route on the scale of its values instead of with <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code>, and the random stream after a simulation is still compared exactly. The R route’s quadrature sums through the BLAS, and the derivatives at the draws are compiled under another contraction setting, so the last bits differ on ubuntu and on arm64 macOS.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.95.0" id="distributions7-0950">distributions7 0.95.0<a class="anchor" aria-label="anchor" href="#distributions7-0950"></a></h2>
 <ul><li>Every univariate family has a “parts” entry in the C registry (<code>d7_parts()</code> and one entry per derivative order and for the expected information), which computes the special functions once per observation and reads them at every order. The gradient and the Hessian through it are equal to the joint entries.</li>
