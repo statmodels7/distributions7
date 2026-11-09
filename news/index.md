@@ -1,5 +1,12 @@
 # Changelog
 
+## distributions7 0.95.2
+
+- The compiled registry and the Student t kernels are compiled without
+  contracting `a * b + c` into a fused multiply-add on clang, as
+  `d7_expect.cpp` already was, so that on arm64 macOS they round as R’s
+  operations do.
+
 ## distributions7 0.95.1
 
 - Tests only: the expected Hessian of `d7_expect()` is compared with the
