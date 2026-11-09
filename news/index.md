@@ -1,5 +1,12 @@
 # Changelog
 
+## distributions7 0.95.3
+
+- Every compiled source file is compiled without contracting `a * b + c`
+  into a fused multiply-add on clang, so that the registry and the R
+  route round alike on arm64 macOS (0.95.2 covered only the registry and
+  the Student t kernels).
+
 ## distributions7 0.95.2
 
 - The compiled registry and the Student t kernels are compiled without

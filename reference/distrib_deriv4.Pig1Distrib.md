@@ -112,5 +112,5 @@ rbind(score = system.time(distrib_gradient(d, x, th))[["elapsed"]],
       fourth = system.time(distrib_deriv4(d, x, th))[["elapsed"]])
 #>         [,1]
 #> score  0.007
-#> fourth 0.005
+#> fourth 0.006
 ```

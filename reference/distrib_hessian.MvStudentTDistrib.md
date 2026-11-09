@@ -120,7 +120,7 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 2.206509e-09
+#> [1] 2.208612e-09
 
 # The location block moves with the observation, where a gaussian's does
 # not: the curvature at a far row is smaller.
