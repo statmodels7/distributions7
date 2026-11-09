@@ -14,6 +14,11 @@
 // the order-4 kernel the fifteen of d4expected_names(), in that order (E_mm, E_tt,
 // E_mt, each with the derivative indices mu^n, mu^(n-1) theta, ..., theta^n).
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d34e_run.h"
 #include "pt_negbin1_d34e.h"

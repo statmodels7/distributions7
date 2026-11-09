@@ -56,6 +56,11 @@
 // the pairs (mu_mu, alpha_alpha, mu_alpha) in turn, and within a pair the index
 // multisets with j indices on alpha, j = 0, 1, ...
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include <algorithm>
 #include <cmath>

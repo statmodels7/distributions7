@@ -11,6 +11,11 @@
 // (n7_bessel_ratio_inverse), A^(1) .. A^(4) from n7_bessel_ratio_upto, and A^(5)
 // from the Riccati equation, with A = rho, as in vonmises1.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include <algorithm>
 #include <cmath>

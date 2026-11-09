@@ -12,6 +12,11 @@
 // with (1/kappa)^(m) = (-1)^m m! / kappa^(m+1), and it is formed here, so the
 // fifth derivative is not taken from numericals7 (its upto() stops at four).
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include <algorithm>
 #include <cmath>

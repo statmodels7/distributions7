@@ -4,6 +4,11 @@
 // d34e_elem.py) and emitted with common subexpressions. Components are in
 // the order of d3expected_names() and d4expected_names().
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d34e_run.h"
 using namespace Rcpp;

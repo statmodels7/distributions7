@@ -6,6 +6,11 @@
 // part psi^(k)(1 + x) plus its pole (arguments below 1), so the monomial
 // parts cancel exactly and no large term is ever summed with its opposite.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "psi_diff.h"

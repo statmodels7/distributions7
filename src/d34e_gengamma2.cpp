@@ -5,6 +5,11 @@
 // function per order. The polygamma differences cancel for large or small k;
 // there the expressions are evaluated in double-double (pt_gengamma2.h).
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include <cmath>
 #include "d34e_run.h"

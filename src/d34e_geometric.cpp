@@ -3,6 +3,11 @@
 // E = -1/r with r = mu (1 + mu). With t = 2 mu + 1 the third derivative is
 // 6 t (1 + 2 r) / r^4 and the fourth is -24 (1 + 5 r + 5 r^2) / r^5.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "d34e_run.h"

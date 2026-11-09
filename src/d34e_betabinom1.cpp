@@ -52,6 +52,11 @@
 // d4expected_names(), in that order: the pairs (mu, mu), (sigma, sigma),
 // (mu, sigma), each with the derivatives mu^p sigma^(T-p) for p = T, ..., 0.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include <cmath>
 #include <vector>

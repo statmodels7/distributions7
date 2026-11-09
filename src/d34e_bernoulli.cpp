@@ -4,6 +4,11 @@
 // derivative is -6 s (1 - 2 q) / q^4 and the fourth is -24 (1 - 5 q + 5 q^2) /
 // q^5, both obtained by differentiating the partial fractions of 1/q.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "d34e_run.h"
