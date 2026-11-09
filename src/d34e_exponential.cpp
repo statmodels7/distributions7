@@ -3,6 +3,11 @@
 // is E = -1/mu^2, so the n-th derivative is (-1)^(n+1) (n+1)! mu^(-2-n):
 // 24/mu^5 at order 3 and -120/mu^6 at order 4.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "d34e_run.h"

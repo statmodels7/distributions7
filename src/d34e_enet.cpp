@@ -46,6 +46,11 @@
 // tables are formed per distinct pair, as enet.cpp does for the first
 // derivatives. A pair of scalars costs one table.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include <Rmath.h>
 #include <algorithm>

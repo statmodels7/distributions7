@@ -19,6 +19,11 @@
 // the derivative indices in the order mu.mu.mu, mu.mu.sigma2, mu.sigma2.sigma2,
 // sigma2.sigma2.sigma2 (order 3) and then the order-4 multisets, the same way.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "psi_diff.h"

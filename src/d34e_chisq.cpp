@@ -5,6 +5,11 @@
 // -psi^(5)(x)/64. Each is one polygamma call of R, the same function the
 // order-1 and order-2 kernels use.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "d34e_run.h"

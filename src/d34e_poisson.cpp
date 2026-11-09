@@ -2,6 +2,11 @@
 // Poisson in its mean mu, on the parameter scale. The expected Hessian is
 // E = -1/mu, so the third derivative is 6/mu^4 and the fourth is -24/mu^5.
 
+// R evaluates these expressions one operation at a time; clang (arm64
+// macOS) would otherwise fuse a*b + c into one rounding
+#if defined(__clang__)
+#pragma clang fp contract(off)
+#endif
 #include <Rcpp.h>
 #include "d7_par.h"
 #include "d34e_run.h"
